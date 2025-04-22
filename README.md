@@ -10,9 +10,9 @@
 
 ## Overview
 
-**AS-StageFX** is a versatile set of dynamic lighting, audio visualizers, and special effects. Initially focused on stage lighting, the suite has expanded to include glitter, glitch, warp, and other creative effects. Whether you're capturing gpose shots, creating machinima, setting the scene for a virtual concert, or adding unique flair to your visuals, these shaders provide customizable tools.
+**AS-StageFX** is a set of dynamic lighting, audio visualizers, and special effects. Initially focused on stage lighting, the collection also include glitter, glitch, warp, and other creative effects. Whether you're capturing gpose shots, creating machinima, setting the scene for a virtual concert, or adding unique flair to your visuals, these shaders provide customizable tools.
 
-Most shaders feature seamless integration with **[Listeningway](https://github.com/Listeningway)** for sophisticated audio reactivity.
+Most shaders feature seamless integration with **[Listeningway](https://github.com/Listeningway)** for audio reactivity.
 
 ---
 
