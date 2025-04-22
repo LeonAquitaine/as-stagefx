@@ -2,6 +2,8 @@
 
 [![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)
 
+![Listeningway7c](https://github.com/user-attachments/assets/e8b32c91-071d-490c-8c07-903738a8d3a0)
+
 **A suite of dynamic, audio-reactive visual effect shaders for ReShade, with a focus on video production and virtual performance art.**
 
 ---
