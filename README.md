@@ -2,36 +2,38 @@
 
 [![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)
 
-**A suite of effect shaders for ReShade, meticulously crafted for Final Fantasy XIV screenshots, video production, and virtual performance art.**
-
-![AS-StageFX - Rock Stage Example](https://i.imgur.com/placeholder.jpg)
+**A suite of dynamic, audio-reactive visual effect shaders for ReShade, with a focus on video production and virtual performance art.**
 
 ---
 
 ## Overview
 
-**AS-StageFX** brings dynamic stage lighting and atmospheric effects to your fingertips within ReShade. Whether you're capturing stunning gpose shots, creating machinima, or setting the scene for a virtual concert in FFXIV, these shaders provide powerful tools to enhance your visuals.
+**AS-StageFX** is a versatile set of dynamic lighting, audio visualizers, and special effects. Initially focused on stage lighting, the suite has expanded to include glitter, glitch, warp, and other creative effects. Whether you're capturing gpose shots, creating machinima, setting the scene for a virtual concert, or adding unique flair to your visuals, these shaders provide customizable tools.
 
-This collection focuses on performance-style effects, featuring the **Rock Stage Suite** and seamless integration with audio reactivity tools.
+Most shaders feature seamless integration with **[Listeningway](https://github.com/Listeningway)** for sophisticated audio reactivity.
 
 ---
 
 ## Features
 
-**Rock Stage Suite**: A comprehensive set of shaders within AS-StageFX for building dynamic stage environments:
-  * **Light Wall**: Generate configurable grids of light panels with diverse patterns, animations, and audio reactivity. Perfect for backdrops and ambient lighting.
-  * **Spotlights**: Add customizable directional stage lights with realistic beam effects, colour control, and movement. Ideal for highlighting subjects.
-  * **Atmospherics**: Enhance scene depth and mood with volumetric fog, haze, and particle effects that interact intelligently with your scene geometry.
+AS-StageFX includes a variety of distinct visual effects:
 
-**Deep Audio Integration**:
-  * Leverages **[Listeningway](https://github.com/Listeningway)** for sophisticated audio reactivity (optional but highly recommended).
-  * Effects respond dynamically to beat detection, frequency ranges, and overall volume.
+**Stage Lighting & Ambiance:**
+* **Rock Stage: Light Wall (`AS_RockStage-LightWall.1.fx`):** Generate configurable grids of light panels with diverse patterns, 3D perspective, audio reactivity, and customizable color palettes. Perfect for backdrops.
+* **Rock Stage: Spotlights (`AS_RockStage-Spotlights.1.fx`):** Add up to 3 customizable directional stage lights with realistic beam/glow effects, depth masking, and audio-reactive intensity and movement.
+* **Glitter (`AS_Glitter.1.fx`):** Creates a realistic, dynamic sparkle effect on surfaces that responds to scene lighting, depth, camera movement, and audio. Includes bloom and fresnel effects.
+* **Lava Lamp (`AS_LavaLamp.1.fx`):** Renders smooth, merging blobs like a lava lamp, with audio-reactive size, movement, and color. Includes depth occlusion.
 
-**Advanced Capabilities**:
-  * **Depth-Aware Effects**: Shaders intelligently interact with scene geometry, ensuring lights and fog wrap naturally around objects and characters (requires proper ReShade depth buffer setup).
-  * **Multiple Blend Modes**: Fine-tune how lighting effects combine with your scene for various artistic outcomes.
-  * **Pattern Presets**: Quickly apply pre-configured looks for the Light Wall and other effects.
-  * **Optimized Performance**: Designed with performance in mind, though complex scenes may require tuning.
+**Audio Visualizers & Glitch FX:**
+* **Hologram Glitch (`AS_HologramGlitch.1.fx`):** Applies audio-driven hologram and digital glitch effects, including scanlines, RGB split, jitter, and pulsing synced to music.
+* **Mandala (`AS_Mandala.1.fx`):** Generates a stylized, circular mandala that acts as a full-spectrum audio visualizer (UV meter) using all Listeningway bands, with repetitions and mirroring.
+* **Warp (`AS_Warp.1.fx`):** Creates a circular mirrored or wavy region (often behind a character) that pulses, changes radius, and ripples/warps in sync with audio.
+
+**Core Capabilities:**
+* **Deep Audio Integration:** Most effects leverage **[Listeningway](https://github.com/Listeningway)**, allowing various parameters (intensity, speed, size, color, etc.) to react dynamically to volume, beat, bass, treble, or specific frequency bands.
+* **Depth-Aware Effects:** Many shaders intelligently interact with scene geometry (using the depth buffer) for natural integration, masking, and occlusion.
+* **Customization:** Offers extensive controls for colors, intensity, speed, positioning, blend modes, and audio source selection per effect.
+* **Shared Utilities (`AS_Utils.fxh`):** Uses a common backend for blend modes, audio processing, color palettes, and timing, ensuring consistency.
 
 ---
 
@@ -39,71 +41,137 @@ This collection focuses on performance-style effects, featuring the **Rock Stage
 
 **Prerequisites:**
 * **ReShade**: Ensure you have the latest version of [ReShade](https://reshade.me/) installed for your target application (e.g., FFXIV).
-* **(Optional) Listeningway**: For audio reactivity, install [Listeningway](https://github.com/Listeningway).
+* **(Optional) Listeningway**: For audio reactivity, install [Listeningway](https://github.com/Listeningway). Highly recommended for most shaders in this pack.
 
 **Steps:**
-1.  **Download:** Obtain the latest release of **AS-StageFX** from the release page.
+1.  **Download:** Obtain the latest release of **AS-StageFX** from the [Releases Page](https://github.com/LeonAquitaine/as-stagefx/releases).
 2.  **Extract Files:** Unzip the downloaded archive.
-3.  **Copy Shaders:** Place the `AS` folder into your game's `reshade-shaders\Shaders` directory.
-4.  **Launch & Activate:** Start your game. Open the ReShade overlay (usually the `Home` key) and reload your shaders if necessary. You should now find the **AS-StageFX** shaders (prefixed with `AS_`) in the shader list. Enable the ones you wish to use.
+3.  **Copy Shaders:** Place the `AS` folder (which is inside the `shaders` folder from the download) into your game's `reshade-shaders\Shaders` directory.
+    * *Example Path:* `C:\Program Files (x86)\SquareEnix\FINAL FANTASY XIV - A Realm Reborn\game\reshade-shaders\Shaders\AS`
+5.  **Launch & Activate:** Start your game. Open the ReShade overlay (usually the `Home` key) and reload your shaders if necessary (`Ctrl+Shift+R` or via settings). You should now find the **AS-StageFX** shaders (prefixed with `AS_`) in the shader list. Enable the ones you wish to use.
 
 ---
 
 ## Usage Guide
 
+Below are details on each effect shader included in AS-StageFX:
+
+### Glitter Effect (`AS_Glitter.1.fx`)
+
+Creates a realistic, dynamic glitter/sparkle effect on surfaces.
+
+* **Description:** Simulates tiny reflective particles that pop in, glow, and fade out, responding dynamically to scene lighting, depth, camera movement, and audio.
+* **Key Features:**
+    * Natural sparkle distribution via multi-layered Voronoi noise.
+    * Customizable sparkle animation and lifetime.
+    * Depth-based masking for precise placement control.
+    * High-quality bloom effect with adjustable quality settings.
+    * Fresnel effect based on surface normals for realistic light interaction (sparkles brighter at glancing angles).
+    * Multiple blend modes and color options.
+    * Audio-reactive sparkle intensity and animation speed via Listeningway.
+
+### Hologram Glitch Effect (`AS_HologramGlitch.1.fx`)
+
+Applies audio-driven hologram and digital glitch effects.
+
+* **Description:** Creates scanlines, RGB color splitting, and digital jitter/glitching effects that pulse and react to music via Listeningway for impactful visuals.
+* **Key Features:**
+    * Audio-reactive scanlines, RGB split intensity, and digital glitch frequency/strength.
+    * Pulsing, jitter, and color offsets driven by selectable audio sources (volume, beat, bass, treble, etc.).
+    * Adjustable base intensity, speed, and randomness for each effect component.
+    * Debug visualizations for mask and audio input.
+
+### Lava Lamp Effect (`AS_LavaLamp.1.fx`)
+
+Renders an audio-reactive visualization resembling a lava lamp.
+
+* **Description:** Creates smooth, merging blobs of color whose size, movement speed, and color intensity are modulated by audio input.
+* **Key Features:**
+    * Adjustable blob count, base size, blend strength, and movement characteristics.
+    * Audio-reactive blob size and movement speed via Listeningway.
+    * Customizable colors for blobs and background.
+    * Controls for gravity/buoyancy simulation.
+    * Depth occlusion support to mask the effect by scene geometry.
+    * Debug modes for viewing mask/audio.
+
+### Mandala Audio Visualizer (`AS_Mandala.1.fx`)
+
+Generates a stylized mandala acting as a full-spectrum audio visualizer.
+
+* **Description:** Creates a circular, centered mandala pattern that visualizes intensity across all available Listeningway audio bands simultaneously.
+* **Key Features:**
+    * Uses all Listeningway audio bands for a detailed UV meter effect.
+    * Color gradient (blue for low intensity through red to yellow for high) based on band strength.
+    * User-selectable number of repetitions (slices) from 2 to 16.
+    * Pattern style options: linear or mirrored repetition.
+    * Smooth animation and response to audio changes.
+
 ### Rock Stage: Light Wall (`AS_RockStage-LightWall.1.fx`)
 
-Creates a versatile grid of light panels, ideal for backgrounds.
+Creates a versatile grid of configurable light panels, ideal for backgrounds.
 
-* **Patterns:** Select from 14+ built-in patterns (e.g., Empty Heart, Diamond, Checker, Beat Meter) or create custom looks.
-* **Audio Reactivity:** Panels can pulse, change colour, or animate based on audio input via Listeningway.
-* **Customization:** Adjust grid size, colours, brightness, effect intensity, and animation speed.
-* **Spotlight Bursts:** Add dynamic flare effects.
-* **Depth Integration:** Configure depth settings to ensure the wall appears correctly positioned within your 3D scene.
+* **Description:** Renders a seamless grid of soft, overlapping light panels with built-in patterns, perfect for dance club or concert backdrops with full customization.
+* **Key Features:**
+    * 14+ built-in patterns (Heart, Diamond, Beat Meter, etc.) controlling panel visibility.
+    * Audio-reactive patterns and pulsing effects via Listeningway.
+    * Customizable color palettes (9 presets + custom) with smooth interpolation.
+    * Optional light burst effects and cross beams for added drama.
+    * 3D perspective controls (tilt, pitch, roll) for depth simulation.
+    * Multiple blend modes for seamless scene integration.
 
 ### Rock Stage: Spotlights (`AS_RockStage-Spotlights.1.fx`)
 
-Adds up to 3 independent, directional spotlights.
+Simulates a vibrant stage lighting system with directional spotlights.
 
-* **Control:** Position, aim, and customize each spotlight individually.
-* **Audio Reactivity:** Intensity, colour, sway, and animations can react to music.
-* **Beam Properties:** Adjust beam colour, softness, length, width, and atmospheric scattering.
-* **Visual Quality:** Features realistic light glow and atmospheric interaction.
+* **Description:** Adds up to 3 independently controllable spotlights with customizable properties, glow effects, and audio reactivity for dramatic lighting.
+* **Key Features:**
+    * Control position, size, color, angle, and direction for each of the 3 spotlights.
+    * Audio-reactive light intensity, automated sway/movement, and pulsing via Listeningway.
+    * Atmospheric bokeh glow effects that inherit spotlight colors.
+    * Depth-based masking for natural integration with the scene (lights appear behind objects).
+    * Multiple blend modes for different lighting scenarios (additive, screen, etc.).
+
+### Warp Effect (`AS_Warp.1.fx`)
+
+Creates an audio-reactive circular mirror or wave effect.
+
+* **Description:** Generates a circular or elliptical region (often centered behind a character) that mirrors or distorts the scene within it, pulsing and warping in sync with music.
+* **Key Features:**
+    * Circular or elliptical region with adjustable edge softness.
+    * Audio-reactive pulsing effect, radius changes, and wave/ripple intensity via Listeningway.
+    * User-selectable audio source (volume, beat, bass, treble, etc.) to drive effects.
+    * Adjustable base mirror strength, wave frequency/amplitude, and edge softness.
+    * Debug visualizations for viewing the effect mask and audio input.
 
 ---
 
 ## Tips for Optimal Results
 
-* **Depth Buffer Access:** Crucial for many features! Ensure ReShade has depth buffer access enabled and correctly configured for your game. Check the ReShade overlay's `Add-ons` or `DX11/DX12` tab. You may need to select the correct depth buffer format.
-* **Shader Order:** The order in which ReShade applies effects matters. Generally, place **AS-StageFX** effects *after* colour correction (like LUTs or levels) but *before* final post-processing effects like bloom, sharpening, or lens flares. Experiment to find what looks best!
-* **Performance Tuning:** These shaders are optimized, but complex effects can be demanding. Disable features or shaders you aren't actively using within the ReShade overlay to save performance. Reduce grid sizes or particle counts if needed.
-* **Listeningway Setup:** For the best audio reactivity, ensure Listeningway is running and properly configured to capture the audio source you want the shaders to react to (e.g., game audio, system audio, specific application).
+* **Depth Buffer Access:** Crucial for many features! Ensure ReShade has depth buffer access enabled and correctly configured for your game. Check the ReShade overlay's `Add-ons` or `DX11/DX12` tab. You may need to select the correct depth buffer format (often one with reversed depth works best for FFXIV).
+* **Shader Order:** The order in which ReShade applies effects matters. Experiment, but generally place **AS-StageFX** effects *after* foundational color grading (like LUTs or levels) but *before* final screen-space effects like bloom, sharpening, lens flares, or letterboxing. Visualizers might work well placed earlier or later depending on the desired interaction.
+* **Performance Tuning:** These shaders are optimized, but complex effects or multiple active shaders can be demanding. Disable effects or specific features within their settings when not needed. Reduce particle counts, grid sizes, or quality settings if performance issues arise.
+* **Listeningway Setup:** For the best audio reactivity, ensure Listeningway is running and properly configured to capture the audio source you want the shaders to react to (e.g., game audio, system audio, specific application like Spotify). Adjust Listeningway's sensitivity and band settings as needed.
 
 ---
 
 ## Credits
 
-* **Author:** [Leon Aquitaine](https://bsky.app/profile/leon.aquitaine.social)
+* **Author / Lead Developer:** [Leon Aquitaine](https://bsky.app/profile/leon.aquitaine.social)
 * **Product:** AS-StageFX
 * **Technology:** Built upon the [ReShade FX](https://github.com/crosire/reshade-shaders/blob/slim/REFERENCE.md) shader framework.
-* **Acknowledgements:** Special thanks to the broader ReShade development community and testers.
+* **Acknowledgements:** Special thanks to the broader ReShade development community (especially contributors like prod80, Lord of Lunacy, etc. for foundational techniques) and testers within the FFXIV gposing community.
 
 ---
 
 ## License
 
-The shaders included in **AS-StageFX** are licensed under the **Creative Commons Attribution 4.0 International License (CC BY 4.0)**.
+The shaders included in **AS-StageFX** are licensed under the **Creative Commons Attribution 4.0 International License (CC BY 4.0)**. See the [LICENSE.md](LICENSE.md) file for full details.
 
 [![CC BY 4.0](https://licensebuttons.net/l/by/4.0/88x31.png)](https://creativecommons.org/licenses/by/4.0/)
 
-This means you are free to:
-* **Share** — copy and redistribute the material in any medium or format.
-* **Adapt** — remix, transform, and build upon the material for any purpose, even commercially.
+This means you are free to share and adapt these shaders with appropriate credit.
 
-Under the following terms:
-* **Attribution** — You must give appropriate credit, provide a link to the license, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
-
-*(Please note: ReShade itself and Listeningway have their own licenses.)*
+*(Please note: ReShade itself and Listeningway have their own separate licenses.)*
 
 ---
 
