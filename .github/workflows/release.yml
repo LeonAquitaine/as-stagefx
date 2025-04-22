@@ -46,14 +46,34 @@ jobs:
             git push origin "${{ env.VERSION }}"
           fi
 
-      - name: Delete existing release if it exists
-        uses: dev-drprasad/delete-tag-and-release@v0.2.0
+      - name: Check for existing release
+        id: check_release
+        uses: actions/github-script@v6
         with:
-          delete_release: true
-          tag_name: ${{ env.VERSION }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        continue-on-error: true
+          script: |
+            try {
+              const release = await github.rest.repos.getReleaseByTag({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                tag: process.env.VERSION
+              });
+              
+              if (release && release.data) {
+                console.log(`Existing release found with ID: ${release.data.id}`);
+                // Delete the existing release
+                await github.rest.repos.deleteRelease({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  release_id: release.data.id
+                });
+                console.log('Existing release deleted');
+                return 'deleted';
+              }
+              return 'not_found';
+            } catch (error) {
+              console.log('No existing release found:', error.message);
+              return 'not_found';
+            }
 
       - name: Create release
         uses: softprops/action-gh-release@v1
