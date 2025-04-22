@@ -31,9 +31,15 @@ jobs:
           VERSION=$(cat version.txt)
           echo "VERSION=${VERSION}" >> $GITHUB_ENV
           
+      - name: Process release template
+        run: |
+          # Create a temporary file with the version variable replaced
+          mkdir -p /tmp/release
+          cat docs/template/release.md | sed "s/\${VERSION}/${{ env.VERSION }}/g" > /tmp/release/release.md
+          
       - name: Zip shaders folder
         run: |
-          zip -r shaders.zip shaders/
+          zip -r as-stagefx-${{ env.VERSION }}.zip shaders/
 
       - name: Create tag if it doesn't exist
         id: create_tag
@@ -79,7 +85,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ env.VERSION }}
-          body_path: docs/template/release.md
-          files: shaders.zip
+          body_path: /tmp/release/release.md
+          files: as-stagefx-${{ env.VERSION }}.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
