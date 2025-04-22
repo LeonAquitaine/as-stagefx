@@ -1,0 +1,65 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+
+# Add necessary permissions for creating releases
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Check for version.txt
+        id: check_version
+        run: |
+          if [ ! -f version.txt ]; then
+            echo "version.txt not found!"
+            exit 1
+          fi
+
+      - name: Get version
+        id: get_version
+        run: |
+          VERSION=$(cat version.txt)
+          echo "VERSION=${VERSION}" >> $GITHUB_ENV
+          
+      - name: Zip shaders folder
+        run: |
+          zip -r shaders.zip shaders/
+
+      - name: Create tag if it doesn't exist
+        id: create_tag
+        run: |
+          git fetch --tags
+          if git tag -l | grep -q "${{ env.VERSION }}"; then
+            echo "Tag ${{ env.VERSION }} already exists."
+          else
+            git tag "${{ env.VERSION }}"
+            git push origin "${{ env.VERSION }}"
+          fi
+
+      - name: Delete existing release if it exists
+        uses: dev-drprasad/delete-tag-and-release@v0.2.0
+        with:
+          delete_release: true
+          tag_name: ${{ env.VERSION }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
+
+      - name: Create release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ env.VERSION }}
+          body_path: docs/template/release.md
+          files: shaders.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
