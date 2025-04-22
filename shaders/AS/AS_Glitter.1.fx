@@ -1,6 +1,8 @@
 /**
  * AS_Glitter.1.fx - Dynamic Sparkle Effect Shader Version 1.0
- * Copyright (c) 2025 Aquitaine Studio
+ * Author: Leon Aquitaine
+ * License: Creative Commons Attribution 4.0 International
+ * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
  * 
  * ===================================================================================
  *
