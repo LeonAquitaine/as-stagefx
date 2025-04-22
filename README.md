@@ -16,6 +16,24 @@ Most shaders feature seamless integration with **[Listeningway](https://github.c
 
 ---
 
+## Installation
+
+**Prerequisites:**
+* **ReShade**: Ensure you have the latest version of [ReShade](https://reshade.me/) installed for your target application (e.g., FFXIV).
+* **(Optional) Listeningway**: For audio reactivity, install [Listeningway](https://github.com/Listeningway). Highly recommended for most shaders in this pack.
+
+**Steps:**
+1. **Download:** [Download the ZIP file](https://github.com/LeonAquitaine/as-stagefx/releases/latest) containing the shaders from the [Releases Page](https://github.com/LeonAquitaine/as-stagefx/releases).
+2. **Extract Files:** Unzip the downloaded archive.
+3. **Copy Shaders:** Place the `AS` folder (which is inside the `shaders` folder from the download) into your game's `reshade-shaders\Shaders` directory.
+   * **Example Path:** 
+     ```
+     C:\Program Files (x86)\SquareEnix\FINAL FANTASY XIV - A Realm Reborn\game\reshade-shaders\Shaders\AS
+     ```
+4. **Launch & Activate:** Start your game. Open the ReShade overlay (usually the `Home` key) and reload your shaders if necessary (`Ctrl+Shift+R` or via settings). You should now find the **AS-StageFX** shaders (prefixed with `AS_`) in the shader list. Enable the ones you wish to use.
+
+---
+
 ## Features
 
 AS-StageFX includes a variety of distinct visual effects:
@@ -36,21 +54,6 @@ AS-StageFX includes a variety of distinct visual effects:
 * **Depth-Aware Effects:** Many shaders intelligently interact with scene geometry (using the depth buffer) for natural integration, masking, and occlusion.
 * **Customization:** Offers extensive controls for colors, intensity, speed, positioning, blend modes, and audio source selection per effect.
 * **Shared Utilities (`AS_Utils.fxh`):** Uses a common backend for blend modes, audio processing, color palettes, and timing, ensuring consistency.
-
----
-
-## Installation
-
-**Prerequisites:**
-* **ReShade**: Ensure you have the latest version of [ReShade](https://reshade.me/) installed for your target application (e.g., FFXIV).
-* **(Optional) Listeningway**: For audio reactivity, install [Listeningway](https://github.com/Listeningway). Highly recommended for most shaders in this pack.
-
-**Steps:**
-1.  **Download:** Obtain the latest release of **AS-StageFX** from the [Releases Page](https://github.com/LeonAquitaine/as-stagefx/releases).
-2.  **Extract Files:** Unzip the downloaded archive.
-3.  **Copy Shaders:** Place the `AS` folder (which is inside the `shaders` folder from the download) into your game's `reshade-shaders\Shaders` directory.
-    * *Example Path:* `C:\Program Files (x86)\SquareEnix\FINAL FANTASY XIV - A Realm Reborn\game\reshade-shaders\Shaders\AS`
-5.  **Launch & Activate:** Start your game. Open the ReShade overlay (usually the `Home` key) and reload your shaders if necessary (`Ctrl+Shift+R` or via settings). You should now find the **AS-StageFX** shaders (prefixed with `AS_`) in the shader list. Enable the ones you wish to use.
 
 ---
 
