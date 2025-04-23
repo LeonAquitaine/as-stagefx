@@ -174,7 +174,7 @@ float4 PS_Spotlights(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_
     return float4(result, orig.a);
 }
 
-technique AS_RS_Spotlights < ui_label = "[AS] RS: Spotlights"; ui_tooltip = "Configurable stage spotlights with audio reactivity."; > {
+technique AS_RS_Spotlights < ui_label = "[AS] Rock Stage: Spotlights"; ui_tooltip = "Configurable stage spotlights with audio reactivity."; > {
     pass {
         VertexShader = PostProcessVS;
         PixelShader = PS_Spotlights;

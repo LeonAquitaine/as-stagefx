@@ -396,7 +396,7 @@ void PS_CopyTimingBuffer(
 
 // --- Technique ---
 technique AS_MV_MotionTrails_1 <
-    ui_label = "[AS] MV: Motion Trails";
+    ui_label = "[AS] Music Video: Motion Trails";
     ui_tooltip = "Creates dynamic motion trails perfect for music videos and creative compositions.";
 >
 {
