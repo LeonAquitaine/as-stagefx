@@ -523,7 +523,7 @@ float4 PS_StageGrid(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_T
     return float4(result, orig.a);
 }
 
-technique AS_RS_LightWall < ui_label = "[AS] RS: Light Wall"; ui_tooltip = "Soft glowing multicolor grid."; > {
+technique AS_RS_LightWall < ui_label = "[AS] Rock Stage: Light Wall"; ui_tooltip = "Soft glowing multicolor grid."; > {
     pass {
         VertexShader = PostProcessVS;
         PixelShader = PS_StageGrid;
