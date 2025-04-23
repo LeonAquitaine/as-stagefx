@@ -77,12 +77,20 @@ uniform float fEcho_Strength <
     ui_category = "Trail Design";
 > = 0.8;
 
-uniform bool bEcho_ShowObjects <
-    ui_type = "bool";
-    ui_label = "Highlight Subject";
-    ui_tooltip = "Show the objects isolated by depth cutoff on top of the effect";
+uniform int iEcho_SubjectOverlay <
+    ui_type = "combo";
+    ui_label = "Subject Overlay";
+    ui_tooltip = "How to display the subject in front of the trail effect.";
+    ui_items = "Show Character\0Pulse Character\0Show Silhouette\0";
     ui_category = "Trail Design";
-> = false;
+> = 0;
+
+uniform float3 fEcho_SilhouetteColor <
+    ui_type = "color";
+    ui_label = "Silhouette Color";
+    ui_tooltip = "Color to use for the subject silhouette when 'Show Silhouette' is selected.";
+    ui_category = "Trail Design";
+> = float3(0.0, 0.0, 0.0);
 
 uniform bool bEcho_ForceClear <
     ui_type = "bool";
@@ -371,14 +379,18 @@ void PS_EchoComposite(
         else if (iEcho_DebugMode == 3) { finalResult = linearDepth.xxx; }
     }
 
-    // --- Show Tracked Objects ---
-    if (bEcho_ShowObjects)
-    {
-        float linearDepth = ReShade::GetLinearizedDepth(texcoord);
-        float currMask = step(linearDepth, fEcho_DepthCutoff);
-        
-        // Apply highlighting when the option is enabled
+    // --- Subject Overlay Modes ---
+    float linearDepth = ReShade::GetLinearizedDepth(texcoord);
+    float currMask = step(linearDepth, fEcho_DepthCutoff);
+    if (iEcho_SubjectOverlay == 0) {
+        // Show Character: overlay the original color where masked
         finalResult = lerp(finalResult, originalColor.rgb, currMask);
+    } else if (iEcho_SubjectOverlay == 1) {
+        // Pulse Character: do nothing, just show the effect
+        // (No overlay)
+    } else if (iEcho_SubjectOverlay == 2) {
+        // Show Silhouette: overlay the selected color where masked
+        finalResult = lerp(finalResult, fEcho_SilhouetteColor, currMask);
     }
 
     out_Color = float4(saturate(finalResult), originalColor.a);
