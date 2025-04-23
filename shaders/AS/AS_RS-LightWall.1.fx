@@ -1,5 +1,5 @@
 /**
- * AS_RockStage-LightWall.1.fx - Light Wall Grid Effect
+ * AS_RS-LightWall.1.fx - Light Wall Grid Effect
  * Author: Leon Aquitaine
  * License: Creative Commons Attribution 4.0 International
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
@@ -523,7 +523,7 @@ float4 PS_StageGrid(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_T
     return float4(result, orig.a);
 }
 
-technique AS_StageGrid < ui_label = "[AS] Rock Stage: Light Wall"; ui_tooltip = "Soft glowing multicolor grid."; > {
+technique AS_RS_LightWall < ui_label = "[AS] RS: Light Wall"; ui_tooltip = "Soft glowing multicolor grid."; > {
     pass {
         VertexShader = PostProcessVS;
         PixelShader = PS_StageGrid;

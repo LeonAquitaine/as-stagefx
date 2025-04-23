@@ -1,5 +1,5 @@
 /**
- * AS_MotionTrails.1.fx - Music-Reactive Depth-Based Trail Effect
+ * AS_MV-MotionTrails.1.fx - Music-Reactive Depth-Based Trail Effect
  * Author: Leon Aquitaine (based on original code)
  * License: Creative Commons Attribution 4.0 International
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
@@ -395,8 +395,8 @@ void PS_CopyTimingBuffer(
 }
 
 // --- Technique ---
-technique AS_MotionTrails_1 <
-    ui_label = "[AS] Motion Trails";
+technique AS_MV_MotionTrails_1 <
+    ui_label = "[AS] MV: Motion Trails";
     ui_tooltip = "Creates dynamic motion trails perfect for music videos and creative compositions.";
 >
 {

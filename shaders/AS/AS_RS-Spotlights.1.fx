@@ -155,7 +155,7 @@ float3 renderBokeh(float2 uv, float3 spotSum) {
     return bokeh;
 }
 
-float4 PS_RockStage(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target {
+float4 PS_Spotlights(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target {
     float2 uv = texcoord;
     float audioPulse = AS_getAudioSource(SpotAudioSource);
     float3 spotSum, spotMask;
@@ -174,9 +174,9 @@ float4 PS_RockStage(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_T
     return float4(result, orig.a);
 }
 
-technique AS_RockStage < ui_label = "[AS] Rock Stage: Light Beams"; ui_tooltip = "Rock stage lighting, bokeh, and reflection."; > {
+technique AS_RS_Spotlights < ui_label = "[AS] RS: Spotlights"; ui_tooltip = "Configurable stage spotlights with audio reactivity."; > {
     pass {
         VertexShader = PostProcessVS;
-        PixelShader = PS_RockStage;
+        PixelShader = PS_Spotlights;
     }
 }

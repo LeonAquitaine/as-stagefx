@@ -39,8 +39,8 @@ Most shaders feature seamless integration with **[Listeningway](https://github.c
 AS-StageFX includes a variety of distinct visual effects:
 
 **Stage Lighting & Ambiance:**
-* **Rock Stage: Light Wall (`AS_RockStage-LightWall.1.fx`):** Generate configurable grids of light panels with diverse patterns, 3D perspective, audio reactivity, and customizable color palettes. Perfect for backdrops.
-* **Rock Stage: Spotlights (`AS_RockStage-Spotlights.1.fx`):** Add up to 3 customizable directional stage lights with realistic beam/glow effects, depth masking, and audio-reactive intensity and movement.
+* **RS: Light Wall (`AS_RS-LightWall.1.fx`):** Generate configurable grids of light panels with diverse patterns, 3D perspective, audio reactivity, and customizable color palettes. Perfect for backdrops.
+* **RS: Spotlights (`AS_RS-Spotlights.1.fx`):** Add up to 3 customizable directional stage lights with realistic beam/glow effects, depth masking, and audio-reactive intensity and movement.
 * **Glitter (`AS_Glitter.1.fx`):** Creates a realistic, dynamic sparkle effect on surfaces that responds to scene lighting, depth, camera movement, and audio. Includes bloom and fresnel effects.
 * **Lava Lamp (`AS_LavaLamp.1.fx`):** Renders smooth, merging blobs like a lava lamp, with audio-reactive size, movement, and color. Includes depth occlusion.
 
@@ -48,7 +48,7 @@ AS-StageFX includes a variety of distinct visual effects:
 * **Hologram Glitch (`AS_HologramGlitch.1.fx`):** Applies audio-driven hologram and digital glitch effects, including scanlines, RGB split, jitter, and pulsing synced to music.
 * **Mandala (`AS_Mandala.1.fx`):** Generates a stylized, circular mandala that acts as a full-spectrum audio visualizer (UV meter) using all Listeningway bands, with repetitions and mirroring.
 * **Warp (`AS_Warp.1.fx`):** Creates a circular mirrored or wavy region (often behind a character) that pulses, changes radius, and ripples/warps in sync with audio.
-* **Motion Trails (`AS_MotionTrails.1.fx`):** Creates music-reactive, depth-based motion trails for dramatic visual effects in videos and screenshots.
+* **MV: Motion Trails (`AS_MV-MotionTrails.1.fx`):** Creates music-reactive, depth-based motion trails for dramatic visual effects in videos and screenshots.
 
 **Core Capabilities:**
 * **Deep Audio Integration:** Most effects leverage **[Listeningway](https://github.com/Listeningway)**, allowing various parameters (intensity, speed, size, color, etc.) to react dynamically to volume, beat, bass, treble, or specific frequency bands.
@@ -112,7 +112,7 @@ Generates a stylized mandala acting as a full-spectrum audio visualizer.
     * Pattern style options: linear or mirrored repetition.
     * Smooth animation and response to audio changes.
 
-### Rock Stage: Light Wall (`AS_RockStage-LightWall.1.fx`)
+### RS: Light Wall (`AS_RS-LightWall.1.fx`)
 
 Creates a versatile grid of configurable light panels, ideal for backgrounds.
 
@@ -125,7 +125,7 @@ Creates a versatile grid of configurable light panels, ideal for backgrounds.
     * 3D perspective controls (tilt, pitch, roll) for depth simulation.
     * Multiple blend modes for seamless scene integration.
 
-### Rock Stage: Spotlights (`AS_RockStage-Spotlights.1.fx`)
+### RS: Spotlights (`AS_RS-Spotlights.1.fx`)
 
 Simulates a vibrant stage lighting system with directional spotlights.
 
@@ -149,7 +149,7 @@ Creates an audio-reactive circular mirror or wave effect.
     * Adjustable base mirror strength, wave frequency/amplitude, and edge softness.
     * Debug visualizations for viewing the effect mask and audio input.
 
-### Motion Trails Effect (`AS_MotionTrails.1.fx`)
+### MV: Motion Trails (`AS_MV-MotionTrails.1.fx`)
 
 Creates music-reactive, depth-based motion trails for dramatic visual effects.
 

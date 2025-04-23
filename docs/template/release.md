@@ -29,7 +29,7 @@ This package includes the following shaders:
 - AS_HologramGlitch - Creates hologram-style visual distortions
 - AS_LavaLamp - Simulates lava lamp fluid motion effects
 - AS_Mandala - Generates mandala-style geometric patterns
-- AS_MotionTrails - Creates music-reactive, depth-based motion trails for dramatic visual effects
-- AS_RockStage-LightWall - Simulates concert light wall effects
-- AS_RockStage-Spotlights - Adds dynamic spotlight effects
+- AS_MV-MotionTrails - Creates music-reactive, depth-based motion trails for dramatic visual effects
+- AS_RS-LightWall - Simulates concert light wall effects
+- AS_RS-Spotlights - Adds dynamic spotlight effects
 - AS_Warp - Creates various warping visual effects
