@@ -48,6 +48,7 @@ AS-StageFX includes a variety of distinct visual effects:
 * **Hologram Glitch (`AS_HologramGlitch.1.fx`):** Applies audio-driven hologram and digital glitch effects, including scanlines, RGB split, jitter, and pulsing synced to music.
 * **Mandala (`AS_Mandala.1.fx`):** Generates a stylized, circular mandala that acts as a full-spectrum audio visualizer (UV meter) using all Listeningway bands, with repetitions and mirroring.
 * **Warp (`AS_Warp.1.fx`):** Creates a circular mirrored or wavy region (often behind a character) that pulses, changes radius, and ripples/warps in sync with audio.
+* **Motion Trails (`AS_MotionTrails.1.fx`):** Creates music-reactive, depth-based motion trails for dramatic visual effects in videos and screenshots.
 
 **Core Capabilities:**
 * **Deep Audio Integration:** Most effects leverage **[Listeningway](https://github.com/Listeningway)**, allowing various parameters (intensity, speed, size, color, etc.) to react dynamically to volume, beat, bass, treble, or specific frequency bands.
@@ -147,6 +148,21 @@ Creates an audio-reactive circular mirror or wave effect.
     * User-selectable audio source (volume, beat, bass, treble, etc.) to drive effects.
     * Adjustable base mirror strength, wave frequency/amplitude, and edge softness.
     * Debug visualizations for viewing the effect mask and audio input.
+
+### Motion Trails Effect (`AS_MotionTrails.1.fx`)
+
+Creates music-reactive, depth-based motion trails for dramatic visual effects.
+
+* **Description:**
+    * Objects within a specified depth threshold leave behind colored trails that slowly fade, creating dynamic visual paths ideal for music videos, dramatic footage, and creative compositions.
+* **Key Features:**
+    * Depth-based subject tracking for dynamic trail effects
+    * User-definable trail color, strength, and persistence
+    * Audio-reactive trail timing, intensity, and colors through Listeningway
+    * Multiple blend modes for scene integration
+    * Optional real-time subject highlight for better visualization
+    * Several timing modes: tempo-based, frame-based, on audio beat, or manual
+    * Precise depth control for targeting specific scene elements
 
 ---
 

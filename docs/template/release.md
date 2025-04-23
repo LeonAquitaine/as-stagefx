@@ -21,3 +21,15 @@
 - Reload your shaders if necessary (`Ctrl+Shift+R` or via settings).
 - You should now find the AS-StageFX shaders (prefixed with `AS_`) in the shader list.
 - Enable the ones you wish to use.
+
+## Available Shaders
+
+This package includes the following shaders:
+- AS_Glitter - Adds sparkle and glitter effects
+- AS_HologramGlitch - Creates hologram-style visual distortions
+- AS_LavaLamp - Simulates lava lamp fluid motion effects
+- AS_Mandala - Generates mandala-style geometric patterns
+- AS_MotionTrails - Creates music-reactive, depth-based motion trails for dramatic visual effects
+- AS_RockStage-LightWall - Simulates concert light wall effects
+- AS_RockStage-Spotlights - Adds dynamic spotlight effects
+- AS_Warp - Creates various warping visual effects
