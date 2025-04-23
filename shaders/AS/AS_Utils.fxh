@@ -19,6 +19,7 @@
  * - Modulo, aspect ratio, and angle conversion helpers
  * - Color palette interpolation
  * - Screen coordinate transformation
+ * - Depth mask, normal reconstruction, fresnel, animation phase, debug output, and star mask
  *
  * ===================================================================================
  */
@@ -111,3 +112,60 @@ float3 AS_paletteLerp(float3 c0, float3 c1, float t) {
 // --- Rescale to Screen ---
 // Converts normalized UV coordinates to pixel positions
 float2 AS_rescaleToScreen(float2 uv) { return uv * float2(BUFFER_WIDTH, BUFFER_HEIGHT); }
+
+// --- Depth Mask Helper ---
+// Returns a fade mask based on scene depth, near/far planes, and curve
+float AS_depthMask(float depth, float nearPlane, float farPlane, float curve) {
+    float mask = smoothstep(nearPlane, farPlane, depth);
+    return 1.0 - pow(mask, curve);
+}
+
+// --- Normal Reconstruction Helper ---
+// Reconstructs normal from depth buffer using screen-space derivatives
+float3 AS_reconstructNormal(float2 texcoord) {
+    float3 offset = float3(ReShade::PixelSize.xy, 0.0);
+    float depthCenter = ReShade::GetLinearizedDepth(texcoord);
+    float depthLeft = ReShade::GetLinearizedDepth(texcoord - offset.xz * 2.0);
+    float depthRight = ReShade::GetLinearizedDepth(texcoord + offset.xz * 2.0);
+    float depthTop = ReShade::GetLinearizedDepth(texcoord - offset.zy * 2.0);
+    float depthBottom = ReShade::GetLinearizedDepth(texcoord + offset.zy * 2.0);
+    float3 dx = float3(offset.x * 4.0, 0.0, depthRight - depthLeft);
+    float3 dy = float3(0.0, offset.y * 4.0, depthBottom - depthTop);
+    float3 normal = normalize(cross(dx, dy));
+    return normal;
+}
+
+// --- Fresnel Helper ---
+// Returns fresnel term for a given normal and view direction
+float AS_fresnel(float3 normal, float3 viewDir, float power) {
+    return pow(1.0 - saturate(dot(normal, viewDir)), power);
+}
+
+// --- Animation Phase Helper ---
+// Returns a fade-in/out value for a normalized cycle (0-1)
+float AS_fadeInOut(float cycle, float fadeInEnd, float fadeOutStart) {
+    if (cycle < fadeInEnd)
+        return smoothstep(0.0, fadeInEnd, cycle) / fadeInEnd;
+    else if (cycle > fadeOutStart)
+        return 1.0 - smoothstep(fadeOutStart, 1.0, cycle) / (1.0 - fadeOutStart);
+    return 1.0;
+}
+
+// --- Debug Output Helper ---
+// Returns a debug color based on mode and value
+float4 AS_debugOutput(int mode, float4 orig, float4 mask, float4 audio, float4 effect) {
+    if (mode == 1) return mask;
+    if (mode == 2) return audio;
+    if (mode == 3) return effect;
+    return orig;
+}
+
+// --- Star Mask Helper ---
+// Returns a star-shaped mask for sparkle effects
+float AS_starMask(float2 p, float size, float points, float angle) {
+    float2 uv = p;
+    float a = atan2(uv.y, uv.x) + angle;
+    float r = length(uv);
+    float f = cos(a * points) * 0.5 + 0.5;
+    return 1.0 - smoothstep(f * size, f * size + 0.01, r);
+}

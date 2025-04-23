@@ -71,21 +71,6 @@ uniform float BlendAmount <
 // --- Debug ---
 uniform int DebugMode < ui_type = "combo"; ui_label = "Debug Mode"; ui_tooltip = "Show debug visualizations."; ui_items = "Off\0Mask\0Audio\0"; ui_category = "Debug"; > = 0;
 
-// --- Audio Source Helper ---
-float GetAudioSource(int source) {
-    return AS_getAudioSource(source);
-}
-
-// --- Time Helper ---
-float getTime(float frameCount) {
-    return AS_getTime(frameCount);
-}
-
-// --- Blend Helper ---
-float3 blendResult(float3 orig, float3 fx, int mode) {
-    return AS_blendResult(orig, fx, mode);
-}
-
 // --- Main Effect ---
 uniform int frameCount < source = "framecount"; >;
 
@@ -96,7 +81,6 @@ float4 PS_AudioMirror(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV
     float dist;
     float2 dir;
     if (MirrorShape == 1) {
-        // Circular: scale uv so the effect is a perfect circle regardless of aspect ratio
         float minDim = min(screen.x, screen.y);
         float2 uv_circ = float2(uv.x * screen.x / minDim, uv.y * screen.y / minDim);
         dist = length(uv_circ);
@@ -105,33 +89,25 @@ float4 PS_AudioMirror(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV
         dist = length(uv);
         dir = normalize(uv);
     }
-    float audio = GetAudioSource(MirrorAudioSource);
-    float waveAudio = GetAudioSource(MirrorWaveAudioSource);
+    float audio = AS_getAudioSource(MirrorAudioSource);
+    float waveAudio = AS_getAudioSource(MirrorWaveAudioSource);
     float radius = MirrorBaseRadius + audio * MirrorRadiusAudioMult;
     float edge = smoothstep(radius, radius + MirrorEdgeSoftness, dist);
     float mask = 1.0 - edge;
-
-    // Wave/ripple effect
-    float time = getTime(frameCount);
+    float time = AS_getTime(frameCount);
     float wave = sin(dist * MirrorWaveFreq * 6.2831 + time * 2.0) * (MirrorWaveStrength + waveAudio * MirrorWaveAudioMult);
     float2 mirrorCoord = center + dir * (radius - (dist - wave));
-    // Mirror effect: reflect across the circle's edge
     float2 reflected = center + (texcoord - center) * -1.0 + 2.0 * (dir * radius);
     float2 finalCoord = lerp(texcoord, lerp(mirrorCoord, reflected, MirrorReflectStrength), mask);
-
     float4 scene = tex2D(ReShade::BackBuffer, finalCoord);
     float4 orig = tex2D(ReShade::BackBuffer, texcoord);
     float sceneDepth = ReShade::GetLinearizedDepth(texcoord);
     float effectDepth = MirrorDepth;
     if (sceneDepth < effectDepth - 0.0005)
         return orig;
-
-    // Debug visualizations
-    if (DebugMode == 1) return float4(mask.xxx, 1.0); // Show mask
-    if (DebugMode == 2) return float4(audio.xxx, 1.0); // Show audio value
-
-    // Blend using blend mode and amount
-    float3 blended = blendResult(orig.rgb, scene.rgb, BlendMode);
+    if (DebugMode == 1) return float4(mask.xxx, 1.0);
+    if (DebugMode == 2) return float4(audio.xxx, 1.0);
+    float3 blended = AS_blendResult(orig.rgb, scene.rgb, BlendMode);
     float3 result = lerp(orig.rgb, blended, mask * BlendAmount);
     return float4(result, orig.a);
 }

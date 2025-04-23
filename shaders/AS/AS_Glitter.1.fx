@@ -391,20 +391,16 @@ float GetAudioSource(int source) {
 float4 PS_RenderSparkles(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target {
     float4 color = tex2D(ReShade::BackBuffer, texcoord);
     float depth = ReShade::GetLinearizedDepth(texcoord);
-    bool forceEnable = (DebugMode == 5); if (forceEnable) { depth = 0.5; }
-    float depthMask = smoothstep(NearPlane, FarPlane, depth); depthMask = 1.0 - pow(depthMask, DepthCurve); if (forceEnable) { depthMask = 1.0; }
+    bool forceEnable = (DebugMode == 5);
+    if (forceEnable) { depth = 0.5; }
+    float depthMask = AS_depthMask(depth, NearPlane, FarPlane, DepthCurve);
+    if (forceEnable) { depthMask = 1.0; }
     if (!AllowInfiniteCutoff && depth >= FarPlane) {
         return float4(0.0, 0.0, 0.0, 0.0);
     }
     float3 normal = float3(0, 0, 1);
     if (!forceEnable) {
-         float3 offset = float3(ReShade::PixelSize.xy, 0.0);
-         float2 posCenter = texcoord;
-         float depthCenter = ReShade::GetLinearizedDepth(posCenter);
-         float depthLeft = ReShade::GetLinearizedDepth(posCenter - offset.xz * 2.0); float depthRight = ReShade::GetLinearizedDepth(posCenter + offset.xz * 2.0);
-         float depthTop = ReShade::GetLinearizedDepth(posCenter - offset.zy * 2.0); float depthBottom = ReShade::GetLinearizedDepth(posCenter + offset.zy * 2.0);
-         float3 dx = float3(offset.x * 4.0, 0.0, depthRight - depthLeft); float3 dy = float3(0.0, offset.y * 4.0, depthBottom - depthTop);
-         normal = normalize(cross(dx, dy)); normal = normal * 0.5 + 0.5; normal = normal * 2.0 - 1.0;
+        normal = AS_reconstructNormal(texcoord);
     }
     float actualTimeScale = TimeScale / 333.33;
     if (EnableListeningway) {
@@ -417,15 +413,21 @@ float4 PS_RenderSparkles(float4 pos : SV_Position, float2 texcoord : TEXCOORD) :
     if (EnableListeningway) {
         sparkleIntensity *= (1.0 + GetAudioSource(Listeningway_SparkleSource) * Listeningway_SparkleMultiplier);
     }
-    float3 viewDir = float3(0.0, 0.0, 1.0); float fresnel = pow(1.0 - saturate(dot(normal, viewDir)), 5.0);
+    float3 viewDir = float3(0.0, 0.0, 1.0);
+    float fresnel = AS_fresnel(normal, viewDir, 5.0);
     if (!forceEnable && ObeyOcclusion) { sparkleIntensity *= fresnel * depthMask; }
     else if (!forceEnable && !ObeyOcclusion) { sparkleIntensity *= fresnel; }
     sparkleIntensity *= GlitterBrightness;
-    if (DebugMode == 1) return float4(depth.xxx, 1.0); else if (DebugMode == 2) return float4(normal * 0.5 + 0.5, 1.0); else if (DebugMode == 3) return float4(sparkleIntensity.xxx, 1.0); else if (DebugMode == 4) return float4(depthMask.xxx, 1.0);
+    if (DebugMode == 1) return float4(depth.xxx, 1.0);
+    else if (DebugMode == 2) return float4(normal * 0.5 + 0.5, 1.0);
+    else if (DebugMode == 3) return float4(sparkleIntensity.xxx, 1.0);
+    else if (DebugMode == 4) return float4(depthMask.xxx, 1.0);
     float3 finalGlitterColor = GlitterColor;
-    if (DepthColoringEnable && !forceEnable) { float depthFactor = smoothstep(NearPlane, FarPlane, depth); finalGlitterColor = lerp(NearColor, FarColor, depthFactor); }
+    if (DepthColoringEnable && !forceEnable) {
+        float depthFactor = smoothstep(NearPlane, FarPlane, depth);
+        finalGlitterColor = lerp(NearColor, FarColor, depthFactor);
+    }
     float3 sparkleContribution = finalGlitterColor * sparkleIntensity * 5.0;
-    // Output only the sparkles (on black), alpha as mask
     return float4(sparkleContribution, sparkleIntensity > 0.05 ? 1.0 : 0.0);
 }
 

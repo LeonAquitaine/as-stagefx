@@ -100,24 +100,15 @@ float3 getBackgroundColor() {
     return PaletteBackground[clamp(Palette,0,9)];
 }
 
-float getTime(float frameCount) {
-    return AS_getTime(frameCount);
-}
-
-float3 blendResult(float3 orig, float3 lava, int mode) {
-    return AS_blendResult(orig, lava, mode);
-}
-
 // --- Main Pixel Shader ---
 float4 PS_LavaLamp(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target {
     float4 orig = tex2D(ReShade::BackBuffer, texcoord);
     float sceneDepth = ReShade::GetLinearizedDepth(texcoord);
     if (sceneDepth < EffectDepth - 0.0005)
         return orig;
-    float time = getTime(frameCount);
+    float time = AS_getTime(frameCount);
     float blendAudio = AS_getAudioSource(BlendAudioSource) * BlendAudioMult;
     float gravityAudioRaw = abs(AS_getAudioSource(GravityAudioSource));
-    // Gentle, slow modulation: use a slow sine modulated by audio
     float slowMod = 0.5 + 0.5 * sin(time * 0.25 + gravityAudioRaw * 2.0);
     float gravityAudio = GravityAudioMult * slowMod;
     float gravityFinal = Gravity * (1.0 + gravityAudio);
@@ -130,7 +121,6 @@ float4 PS_LavaLamp(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Ta
         float phase = AS_hash11(float(i) * 13.7);
         float baseSpeed = lerp(0.08, 0.22, rand.y);
         float dir = lerp(-1.0, 1.0, rand.x);
-        // Animate y from -0.2 to 1.2 (or 1.2 to -0.2 for negative gravity)
         float yStart = gravityFinal >= 0.0 ? -0.2 : 1.2;
         float yEnd   = gravityFinal >= 0.0 ? 1.2  : -0.2;
         float y = lerp(yStart, yEnd, frac(time * abs(gravityFinal) * (0.5) * baseSpeed + phase));
@@ -141,7 +131,6 @@ float4 PS_LavaLamp(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Ta
         float d = length(texcoord - center);
         float blendFinal = BlendStrength + blendAudio;
         float w = size / (d * max(blendFinal, 0.01) + 1e-4);
-        // Fade in/out as blob enters/leaves the viewport (y in [0,1])
         float fade = smoothstep(-0.1, 0.1, y) * (1.0 - smoothstep(0.9, 1.1, y));
         w *= fade;
         mask += w;
@@ -150,7 +139,7 @@ float4 PS_LavaLamp(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Ta
     }
     mask = saturate(mask);
     float3 color = lerp(getBackgroundColor(), blendedColor / max(totalWeight, 1e-4), mask);
-    float3 finalColor = blendResult(orig.rgb, color, BlendMode);
+    float3 finalColor = AS_blendResult(orig.rgb, color, BlendMode);
     finalColor = lerp(orig.rgb, finalColor, BlendAmount);
     if (DebugMode == 1) return float4(mask.xxx, 1.0);
     if (DebugMode == 2) return float4(0.0.xxx, 1.0);

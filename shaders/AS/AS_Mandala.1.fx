@@ -55,11 +55,6 @@ uniform int frameCount < source = "framecount"; >;
 // --- Listeningway Integration ---
 uniform bool EnableListeningway < ui_label = "Enable Listeningway"; ui_tooltip = "Enable audio-reactive controls using the Listeningway addon. When enabled, effects will respond to music and sound. [Learn more](https://github.com/gposingway/Listeningway)"; ui_category = "Listeningway Integration"; > = false;
 
-// --- Time Helper ---
-float getTime(float frameCount) {
-    return AS_getTime(frameCount);
-}
-
 // --- Color Gradient Helper ---
 float3 bandColor(float t) {
     if (MandalaInvertColors) t = 1.0 - t;
@@ -169,24 +164,6 @@ float3 bandColor(float t) {
     return float3(1.0, 1.0, 1.0);
 }
 
-// --- Alpha Source Helper ---
-float getAlphaSource() {
-#if defined(LISTENINGWAY_INSTALLED)
-    if (MandalaAlphaSource == 0) return 0.0; // Off
-    if (MandalaAlphaSource == 1) return 1.0; // Solid
-    if (MandalaAlphaSource == 2) return Listeningway_Volume;
-    if (MandalaAlphaSource == 3) return Listeningway_Beat;
-    if (MandalaAlphaSource == 4) return Listeningway_FreqBands[0]; // Bass
-    if (MandalaAlphaSource == 5) return Listeningway_FreqBands[7]; // Treble
-#endif
-    return 1.0;
-}
-
-// --- Blend Mode Helper ---
-float3 blendResult(float3 orig, float3 mandala, int mode) {
-    return AS_blendResult(orig, mandala, mode);
-}
-
 // --- Main Effect ---
 float4 PS_Mandala(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target {
     float2 center = float2(0.5, 0.5);
@@ -194,9 +171,8 @@ float4 PS_Mandala(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Tar
     float2 screen = float2(BUFFER_WIDTH, BUFFER_HEIGHT);
     float aspect = screen.x / screen.y;
     float dist;
-    float time = getTime(frameCount);
+    float time = AS_getTime(frameCount);
     if (MandalaShape == 1) {
-        // Circular: scale uv so the mandala is a perfect circle regardless of aspect ratio
         float minDim = min(screen.x, screen.y);
         float2 uv_circ = float2(uv.x * screen.x / minDim, uv.y * screen.y / minDim);
         dist = length(uv_circ);
@@ -208,17 +184,15 @@ float4 PS_Mandala(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Tar
 #ifdef Listeningway_FreqBands
     bands = 8;
 #endif
-    int realRepetitions = 1 << MandalaRepetitions; // 2^MandalaRepetitions
+    int realRepetitions = 1 << MandalaRepetitions;
     int totalBars = bands * realRepetitions;
     float barStep = 6.2831853 / float(totalBars);
     float barIdxF = AS_mymod(angle + 3.1415926, 6.2831853) / barStep;
     int barIdx = int(floor(barIdxF));
     int freqIdx;
     if (MandalaPattern == 0) {
-        // Linear: repeat 0..bands-1 for each repetition
         freqIdx = barIdx % bands;
     } else {
-        // Mirrored: repeat 0..bands-1 then bands-1..0 for each repetition
         int mirrorLen = bands * 2;
         int mirroredIdx = barIdx % mirrorLen;
         if (mirroredIdx < bands) {
@@ -244,13 +218,20 @@ float4 PS_Mandala(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Tar
     float effectDepth = MandalaDepth;
     if (sceneDepth < effectDepth - 0.0005)
         return orig;
-    float alpha = getAlphaSource();
-    // For transparent-to-white/black, modulate alpha by bandValue
+    float alpha = 1.0;
+#if defined(LISTENINGWAY_INSTALLED)
+    if (MandalaAlphaSource == 0) alpha = 0.0;
+    else if (MandalaAlphaSource == 1) alpha = 1.0;
+    else if (MandalaAlphaSource == 2) alpha = Listeningway_Volume;
+    else if (MandalaAlphaSource == 3) alpha = Listeningway_Beat;
+    else if (MandalaAlphaSource == 4) alpha = Listeningway_FreqBands[0];
+    else if (MandalaAlphaSource == 5) alpha = Listeningway_FreqBands[7];
+#endif
     if (MandalaColorPattern == 10 || MandalaColorPattern == 11) {
         alpha *= bandValue;
     }
     if (DebugMode == 1) return float4(bandValue.xxx, 1.0);
-    float3 blended = blendResult(orig.rgb, color, BlendMode);
+    float3 blended = AS_blendResult(orig.rgb, color, BlendMode);
     float blendAlpha = edge * mask * alpha * BlendAmount;
     return float4(lerp(orig.rgb, blended, blendAlpha), 1.0);
 }
