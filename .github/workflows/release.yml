@@ -39,7 +39,7 @@ jobs:
           
       - name: Zip shaders folder
         run: |
-          zip -r as-stagefx-${{ env.VERSION }}.zip shaders/
+          zip -r as-stagefx-${{ env.VERSION }}.zip shaders/ -x "shaders/*.md" -x "shaders/AS/*.md"
 
       - name: Create tag if it doesn't exist
         id: create_tag
