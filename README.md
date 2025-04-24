@@ -54,7 +54,7 @@ AS-StageFX includes a variety of distinct visual effects:
 * **Deep Audio Integration:** Most effects leverage **[Listeningway](https://github.com/Listeningway)**, allowing various parameters (intensity, speed, size, color, etc.) to react dynamically to volume, beat, bass, treble, or specific frequency bands.
 * **Depth-Aware Effects:** Many shaders intelligently interact with scene geometry (using the depth buffer) for natural integration, masking, and occlusion.
 * **Customization:** Offers extensive controls for colors, intensity, speed, positioning, blend modes, and audio source selection per effect.
-* **Shared Utilities (`AS_Utils.fxh`):** Uses a common backend for blend modes, audio processing, color palettes, and timing, ensuring consistency.
+* **Shared Utilities (`AS_Utils.1.fxh`):** Uses a common backend for blend modes, audio processing, color palettes, and timing, ensuring consistency.
 
 ---
 
@@ -167,6 +167,12 @@ Creates music-reactive, depth-based motion trails for dramatic visual effects.
     * Optional real-time subject highlight for better visualization
     * Several timing modes: tempo-based, frame-based, on audio beat, or manual
     * Precise depth control for targeting specific scene elements
+
+---
+
+## Versioning System
+
+All current shader and utility files end in `.1.*` (e.g., `AS_Glitter.1.fx`, `AS_Utils.1.fxh`) because they are version 1 of the AS-StageFX shader collection. A new version (e.g., `.2.fx`, `.2.fxh`) will be created whenever it is necessary to 'break the contract'—that is, when the behavior of uniforms or their expected functions changes in a way that could break compatibility with existing presets or usage. This ensures that older presets remain functional and users can choose which version to use.
 
 ---
 
