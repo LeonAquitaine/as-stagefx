@@ -30,7 +30,7 @@
 #include "ReShade.fxh"
 #include "ReShadeUI.fxh"
 #include "ListeningwayUniforms.fxh"
-#include "AS_Utils.fxh"
+#include "AS_Utils.1.fxh"
 
 // --- Shader Controls ---
 // --- Center Group ---
@@ -46,12 +46,13 @@ uniform float MirrorDepth < ui_type = "slider"; ui_label = "Depth"; ui_tooltip =
 uniform int MirrorShape < ui_type = "combo"; ui_label = "Shape"; ui_items = "Screen-Relative\0Circular\0"; ui_category = "Audio Mirror"; > = 0;
 
 // --- Listeningway Integration ---
-uniform bool EnableListeningway < ui_label = "Enable Listeningway"; ui_tooltip = "Enable audio-reactive controls using the Listeningway addon. When enabled, effects will respond to music and sound. [Learn more](https://github.com/gposingway/Listeningway)"; ui_category = "Listeningway Integration"; > = false;
-uniform int MirrorAudioSource < ui_type = "combo"; ui_label = "Radius Source"; ui_items = "Off\0Solid\0Volume\0Beat\0Bass\0Treble\0"; ui_category = "Listeningway Integration"; > = 3;
-uniform float MirrorRadiusAudioMult < ui_type = "slider"; ui_label = "Radius Strength"; ui_tooltip = "How much the selected audio source increases the mirror radius."; ui_min = 0.0; ui_max = 0.5; ui_step = 0.01; ui_category = "Listeningway Integration"; > = 0.12;
+AS_LISTENINGWAY_UI_CONTROLS("Listeningway Integration")
 
-uniform int MirrorWaveAudioSource < ui_type = "combo"; ui_label = "Wave Source"; ui_items = "Off\0Solid\0Volume\0Beat\0Bass\0Treble\0"; ui_category = "Listeningway Integration"; > = 3;
-uniform float MirrorWaveAudioMult < ui_type = "slider"; ui_label = "Wave Strength"; ui_tooltip = "How much the selected audio source increases the wave/ripple amount."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Listeningway Integration"; > = 0.3;
+AS_AUDIO_SOURCE_UI(MirrorAudioSource, "Radius Source", AS_AUDIO_BEAT, "Listeningway Integration")
+AS_AUDIO_MULTIPLIER_UI(MirrorRadiusAudioMult, "Radius Strength", 0.12, 0.5, "Listeningway Integration")
+
+AS_AUDIO_SOURCE_UI(MirrorWaveAudioSource, "Wave Source", AS_AUDIO_BEAT, "Listeningway Integration")
+AS_AUDIO_MULTIPLIER_UI(MirrorWaveAudioMult, "Wave Strength", 0.3, 1.0, "Listeningway Integration")
 
 // --- Blend ---
 uniform int BlendMode <
@@ -69,7 +70,7 @@ uniform float BlendAmount <
 > = 1.0;
 
 // --- Debug ---
-uniform int DebugMode < ui_type = "combo"; ui_label = "Debug Mode"; ui_tooltip = "Show debug visualizations."; ui_items = "Off\0Mask\0Audio\0"; ui_category = "Debug"; > = 0;
+AS_DEBUG_MODE_UI("Off\0Audio Levels\0Warp Pattern\0")
 
 // --- Main Effect ---
 uniform int frameCount < source = "framecount"; >;

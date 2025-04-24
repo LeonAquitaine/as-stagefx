@@ -31,7 +31,7 @@
 #include "ReShade.fxh"
 #include "ReShadeUI.fxh"
 #include "ListeningwayUniforms.fxh"
-#include "AS_Utils.fxh"
+#include "AS_Utils.1.fxh"
 
 // --- Helper Functions and Namespace ---
 namespace AS_DepthEcho {
@@ -46,152 +46,33 @@ namespace AS_DepthEcho {
 }
 
 // --- UI Uniforms - Main Design Controls ---
-uniform float fEcho_DepthCutoff <
-    ui_type = "slider";
-    ui_min = 0.01; ui_max = 0.5; ui_step = 0.01;
-    ui_label = "Subject Focus";
-    ui_tooltip = "Objects closer than this depth value will create trails";
-    ui_category = "Trail Design";
-> = 0.04;
-
-uniform float fEcho_FadeRate <
-    ui_type = "slider";
-    ui_min = 0.8; ui_max = 0.99; ui_step = 0.01;
-    ui_label = "Trail Persistence";
-    ui_tooltip = "How slowly trails fade away (higher = longer lasting)";
-    ui_category = "Trail Design";
-> = 0.95;
-
-uniform float3 fEcho_Color <
-    ui_type = "color";
-    ui_label = "Trail Hue";
-    ui_tooltip = "Color of the trail effect";
-    ui_category = "Trail Design";
-> = float3(0.2, 0.5, 1.0);
-
-uniform float fEcho_Strength <
-    ui_type = "slider";
-    ui_min = 0.1; ui_max = 2.0; ui_step = 0.1;
-    ui_label = "Trail Intensity";
-    ui_tooltip = "Intensity of the trail effect";
-    ui_category = "Trail Design";
-> = 0.8;
-
-uniform int iEcho_SubjectOverlay <
-    ui_type = "combo";
-    ui_label = "Subject Overlay";
-    ui_tooltip = "How to display the subject in front of the trail effect.";
-    ui_items = "Show Character\0Pulse Character\0Show Silhouette\0";
-    ui_category = "Trail Design";
-> = 0;
-
-uniform float3 fEcho_SilhouetteColor <
-    ui_type = "color";
-    ui_label = "Silhouette Color";
-    ui_tooltip = "Color to use for the subject silhouette when 'Show Silhouette' is selected.";
-    ui_category = "Trail Design";
-> = float3(0.0, 0.0, 0.0);
-
-uniform bool bEcho_ForceClear <
-    ui_type = "bool";
-    ui_label = "Clear All Trails";
-    ui_tooltip = "Set this to true and toggle once to force-clear all trails.";
-    ui_category = "Trail Design";
-> = false;
+uniform float fEcho_DepthCutoff < ui_type = "slider"; ui_min = 0.01; ui_max = 0.5; ui_step = 0.01; ui_label = "Subject Focus"; ui_tooltip = "Objects closer than this depth value will create trails"; ui_category = "Trail Design"; > = 0.04;
+uniform float fEcho_FadeRate < ui_type = "slider"; ui_min = 0.8; ui_max = 0.99; ui_step = 0.01; ui_label = "Trail Persistence"; ui_tooltip = "How slowly trails fade away (higher = longer lasting)"; ui_category = "Trail Design"; > = 0.95;
+uniform float3 fEcho_Color < ui_type = "color"; ui_label = "Trail Hue"; ui_tooltip = "Color of the trail effect"; ui_category = "Trail Design"; > = float3(0.2, 0.5, 1.0);
+uniform float fEcho_Strength < ui_type = "slider"; ui_min = 0.1; ui_max = 2.0; ui_step = 0.1; ui_label = "Trail Intensity"; ui_tooltip = "Intensity of the trail effect"; ui_category = "Trail Design"; > = 0.8;
+uniform int iEcho_SubjectOverlay < ui_type = "combo"; ui_label = "Subject Overlay"; ui_tooltip = "How to display the subject in front of the trail effect."; ui_items = "Show Character\0Pulse Character\0Show Silhouette\0"; ui_category = "Trail Design"; > = 0;
+uniform float3 fEcho_SilhouetteColor < ui_type = "color"; ui_label = "Silhouette Color"; ui_tooltip = "Color to use for the subject silhouette when 'Show Silhouette' is selected."; ui_category = "Trail Design"; > = float3(0.0, 0.0, 0.0);
+uniform bool bEcho_ForceClear < ui_type = "bool"; ui_label = "Clear All Trails"; ui_tooltip = "Set this to true and toggle once to force-clear all trails."; ui_category = "Trail Design"; > = false;
 
 // --- Trail Timing ---
-uniform int iEcho_CaptureMode <
-    ui_type = "combo";
-    ui_label = "Timing Method";
-    ui_tooltip = "Controls how frequently trail markers are created";
-    ui_items = "Tempo-Based\0Every N Frames\0On Audio Beat\0Manual Trigger\0";
-    ui_category = "Trail Timing";
-> = 0;
-
-uniform float fEcho_TimeInterval <
-    ui_type = "slider";
-    ui_min = 0; ui_max = 5000; ui_step = 25;
-    ui_label = "Beat Interval (ms)";
-    ui_tooltip = "Time between trail markers in milliseconds when using Tempo-Based mode (0 = continuous)";
-    ui_category = "Trail Timing";
-> = 1000.0;
-
-uniform int iEcho_FrameInterval <
-    ui_type = "slider";
-    ui_min = 1; ui_max = 60; ui_step = 1;
-    ui_label = "Frame Spacing";
-    ui_tooltip = "Create a trail marker every N frames when using frame-based mode";
-    ui_category = "Trail Timing";
-> = 15;
-
-uniform bool bEcho_ManualCapture <
-    ui_type = "bool";
-    ui_label = "Drop Trail Marker";
-    ui_tooltip = "Toggle this to manually create a trail marker when in Manual Trigger mode";
-    ui_category = "Trail Timing";
-> = false;
+uniform int iEcho_CaptureMode < ui_type = "combo"; ui_label = "Timing Method"; ui_tooltip = "Controls how frequently trail markers are created"; ui_items = "Tempo-Based\0Every N Frames\0On Audio Beat\0Manual Trigger\0"; ui_category = "Trail Timing"; > = 0;
+uniform float fEcho_TimeInterval < ui_type = "slider"; ui_min = 0; ui_max = 5000; ui_step = 25; ui_label = "Beat Interval (ms)"; ui_tooltip = "Time between trail markers in milliseconds when using Tempo-Based mode (0 = continuous)"; ui_category = "Trail Timing"; > = 1000.0;
+uniform int iEcho_FrameInterval < ui_type = "slider"; ui_min = 1; ui_max = 60; ui_step = 1; ui_label = "Frame Spacing"; ui_tooltip = "Create a trail marker every N frames when using frame-based mode"; ui_category = "Trail Timing"; > = 15;
+uniform bool bEcho_ManualCapture < ui_type = "bool"; ui_label = "Drop Trail Marker"; ui_tooltip = "Toggle this to manually create a trail marker when in Manual Trigger mode"; ui_category = "Trail Timing"; > = false;
 
 // --- Beat Synchronization ---
-uniform int Echo_TimingSource <
-    ui_type = "combo";
-    ui_label = "Rhythm Source";
-    ui_tooltip = "Audio source that affects the trail timing/intervals.";
-    ui_items = "Off\0Solid\0Volume\0Beat\0Bass\0Treble\0";
-    ui_category = "Beat Synchronization";
-> = 3;
-
-uniform float Echo_TimingMult <
-    ui_type = "slider";
-    ui_label = "Beat Impact";
-    ui_tooltip = "How strongly audio affects trail timing/intervals.";
-    ui_min = 0.0; ui_max = 1.0; ui_step = 0.01;
-    ui_category = "Beat Synchronization";
-> = 0.5;
-
-uniform int Echo_IntensitySource <
-    ui_type = "combo";
-    ui_label = "Energy Source";
-    ui_tooltip = "Audio source that affects the trail brightness.";
-    ui_items = "Off\0Solid\0Volume\0Beat\0Bass\0Treble\0";
-    ui_category = "Beat Synchronization";
-> = 3;
-
-uniform float Echo_IntensityMult <
-    ui_type = "slider";
-    ui_label = "Energy Boost";
-    ui_tooltip = "How strongly audio affects trail brightness.";
-    ui_min = 0.0; ui_max = 2.0; ui_step = 0.01;
-    ui_category = "Beat Synchronization";
-> = 0.5;
+AS_LISTENINGWAY_UI_CONTROLS("Beat Synchronization")
+AS_AUDIO_SOURCE_UI(Echo_TimingSource, "Rhythm Source", AS_AUDIO_BEAT, "Beat Synchronization")
+AS_AUDIO_MULTIPLIER_UI(Echo_TimingMult, "Beat Impact", 0.5, 1.0, "Beat Synchronization")
+AS_AUDIO_SOURCE_UI(Echo_IntensitySource, "Energy Source", AS_AUDIO_BEAT, "Beat Synchronization")
+AS_AUDIO_MULTIPLIER_UI(Echo_IntensityMult, "Energy Boost", 0.5, 2.0, "Beat Synchronization")
 
 // --- Final Composition and Debug (moved to end) ---
-uniform int BlendMode <
-    ui_type = "combo";
-    ui_label = "Mix Style";
-    ui_tooltip = "How the trail effect blends with the original scene.";
-    ui_items = "Normal\0Lighter Only\0Darker Only\0Additive\0Multiply\0Screen\0";
-    ui_category = "Final Composition";
-> = 0;
-
-uniform float BlendAmount <
-    ui_type = "slider";
-    ui_label = "Effect Opacity";
-    ui_tooltip = "How strongly the effect is blended with the scene.";
-    ui_min = 0.0; ui_max = 1.0; ui_step = 0.01;
-    ui_category = "Final Composition";
-> = 1.0;
+uniform int BlendMode < ui_type = "combo"; ui_label = "Mix Style"; ui_tooltip = "How the trail effect blends with the original scene."; ui_items = "Normal\0Lighter Only\0Darker Only\0Additive\0Multiply\0Screen\0"; ui_category = "Final Composition"; > = 0;
+uniform float BlendAmount < ui_type = "slider"; ui_label = "Effect Opacity"; ui_tooltip = "How strongly the effect is blended with the scene."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Final Composition"; > = 1.0;
 
 // --- Debug Mode Uniform ---
-uniform int iEcho_DebugMode <
-    ui_type = "combo";
-    ui_label = "Debug Mode";
-    ui_tooltip = "Show debug visualizations.";
-    ui_items = "Off\0" // 0
-               "Depth Mask\0" // 1
-               "Echo Buffer\0" // 2
-               "Linear Depth\0"; // 3
-    ui_category = "Debug";
-> = 0;
+AS_DEBUG_MODE_UI("Off\0Depth Mask\0Echo Buffer\0Linear Depth\0")
 
 // Add frame counter for frame-based capture mode
 uniform int frameCount < source = "framecount"; >;
@@ -368,15 +249,15 @@ void PS_EchoComposite(
     float3 finalResult = lerp(originalColor.rgb, blendedResult, BlendAmount * echoColor.a);
 
     // --- Debug Modes ---
-    if (iEcho_DebugMode > 0)
+    if (DebugMode > 0)
     {
         float linearDepth = ReShade::GetLinearizedDepth(texcoord);
         float currMask = step(linearDepth, fEcho_DepthCutoff);
 
         // Simplified debug options
-        if (iEcho_DebugMode == 1) { finalResult = currMask.xxx; }
-        else if (iEcho_DebugMode == 2) { finalResult = echoColor.rgb; }
-        else if (iEcho_DebugMode == 3) { finalResult = linearDepth.xxx; }
+        if (DebugMode == 1) { finalResult = currMask.xxx; }
+        else if (DebugMode == 2) { finalResult = echoColor.rgb; }
+        else if (DebugMode == 3) { finalResult = linearDepth.xxx; }
     }
 
     // --- Subject Overlay Modes ---

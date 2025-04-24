@@ -28,23 +28,23 @@
 #include "ReShade.fxh"
 #include "ReShadeUI.fxh"
 #include "ListeningwayUniforms.fxh"
-#include "AS_Utils.fxh"
+#include "AS_Utils.1.fxh"
 
 // --- Listeningway Integration ---
-uniform bool EnableListeningway < ui_label = "Enable Listeningway"; ui_tooltip = "Enable audio-reactive controls using the Listeningway addon. When enabled, effects will respond to music and sound. [Learn more](https://github.com/gposingway/Listeningway)"; ui_category = "Listeningway Integration"; > = false;
+AS_LISTENINGWAY_UI_CONTROLS("Listeningway Integration")
 
-uniform int ScanlineSource < ui_type = "combo"; ui_label = "Scanline Source"; ui_items = "Off\0Solid\0Volume\0Beat\0Bass\0Treble\0"; ui_category = "Listeningway Integration"; > = 3;
-uniform float ScanlineIntensity < ui_type = "slider"; ui_label = "Scanline Intensity"; ui_tooltip = "How strong the scanlines appear (audio-reactive)."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Listeningway Integration"; > = 0.35;
-uniform float ScanlineSpeed < ui_type = "slider"; ui_label = "Scanline Speed"; ui_tooltip = "How fast scanlines move (audio-reactive)."; ui_min = 0.0; ui_max = 10.0; ui_step = 0.1; ui_category = "Listeningway Integration"; > = 2.0;
+AS_AUDIO_SOURCE_UI(ScanlineSource, "Scanline Source", AS_AUDIO_BEAT, "Listeningway Integration")
+AS_AUDIO_MULTIPLIER_UI(ScanlineIntensity, "Scanline Intensity", 0.35, 1.0, "Listeningway Integration")
+AS_AUDIO_MULTIPLIER_UI(ScanlineSpeed, "Scanline Speed", 2.0, 10.0, "Listeningway Integration")
 
-uniform int RGBSplitSource < ui_type = "combo"; ui_label = "RGB Split Source"; ui_items = "Off\0Solid\0Volume\0Beat\0Bass\0Treble\0"; ui_category = "Listeningway Integration"; > = 3;
-uniform float RGBSplitAmount < ui_type = "slider"; ui_label = "RGB Split"; ui_tooltip = "How far color channels are split (audio-reactive)."; ui_min = 0.0; ui_max = 0.03; ui_step = 0.001; ui_category = "Listeningway Integration"; > = 0.012;
+AS_AUDIO_SOURCE_UI(RGBSplitSource, "RGB Split Source", AS_AUDIO_BEAT, "Listeningway Integration")
+AS_AUDIO_MULTIPLIER_UI(RGBSplitAmount, "RGB Split", 0.012, 0.03, "Listeningway Integration")
 
-uniform int RGBSplitAngleSource < ui_type = "combo"; ui_label = "RGB Split Angle Source"; ui_items = "Off\0Solid\0Volume\0Beat\0Bass\0Treble\0"; ui_category = "Listeningway Integration"; > = 3;
+AS_AUDIO_SOURCE_UI(RGBSplitAngleSource, "RGB Split Angle Source", AS_AUDIO_BEAT, "Listeningway Integration")
 
-uniform int GlitchSource < ui_type = "combo"; ui_label = "Glitch Source"; ui_items = "Off\0Solid\0Volume\0Beat\0Bass\0Treble\0"; ui_category = "Listeningway Integration"; > = 3;
-uniform float GlitchStrength < ui_type = "slider"; ui_label = "Glitch Strength"; ui_tooltip = "How strong the random jitter is (audio-reactive)."; ui_min = 0.0; ui_max = 0.05; ui_step = 0.001; ui_category = "Listeningway Integration"; > = 0.018;
-uniform float GlitchSpeed < ui_type = "slider"; ui_label = "Glitch Speed"; ui_tooltip = "How fast the jitter changes (audio-reactive)."; ui_min = 0.0; ui_max = 20.0; ui_step = 0.1; ui_category = "Listeningway Integration"; > = 7.0;
+AS_AUDIO_SOURCE_UI(GlitchSource, "Glitch Source", AS_AUDIO_BEAT, "Listeningway Integration")
+AS_AUDIO_MULTIPLIER_UI(GlitchStrength, "Glitch Strength", 0.018, 0.05, "Listeningway Integration")
+AS_AUDIO_MULTIPLIER_UI(GlitchSpeed, "Glitch Speed", 7.0, 20.0, "Listeningway Integration")
 
 // --- Shader Controls ---
 uniform float HoloGlitchDepth < ui_type = "slider"; ui_label = "Depth"; ui_tooltip = "Controls the reference depth for the glitch effect. Lower values bring the effect closer to the camera, higher values push it further back."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Cut-off Distance"; > = 0.05;
@@ -54,7 +54,7 @@ uniform int BlendMode < ui_type = "combo"; ui_label = "Mode"; ui_items = "Normal
 uniform float BlendAmount < ui_type = "slider"; ui_label = "Amount"; ui_tooltip = "How strongly the effect is blended with the scene."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Blend"; > = 1.0;
 
 // --- Debug ---
-uniform int DebugMode < ui_type = "combo"; ui_label = "Debug Mode"; ui_tooltip = "Show debug visualizations."; ui_items = "Off\0Scanline\0RGB Split\0Glitch\0Audio\0"; ui_category = "Debug"; > = 0;
+AS_DEBUG_MODE_UI("Off\0Scanline\0RGB Split\0Glitch\0Audio\0")
 
 // --- Frame Count ---
 uniform int frameCount < source = "framecount"; >;

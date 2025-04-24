@@ -31,7 +31,7 @@
 #include "ReShade.fxh"
 #include "ReShadeUI.fxh"
 #include "ListeningwayUniforms.fxh"
-#include "AS_Utils.fxh"
+#include "AS_Utils.1.fxh"
 
 // --- Controls ---
 // --- Light Beams ---
@@ -74,8 +74,9 @@ uniform float Spot3_SwaySpeed < ui_type = "slider"; ui_label = "Speed"; ui_min =
 uniform float Spot3_SwayAngle < ui_type = "slider"; ui_label = "Sway"; ui_min = 0.0; ui_max = 180.0; ui_category = "Light Beam C"; > = 0.0;
 
 // --- Global Audio Settings ---
-uniform int SpotAudioSource < ui_type = "combo"; ui_label = "Audio Source"; ui_items = "Off\0Solid\0Volume\0Beat\0Bass\0Treble\0"; ui_category = "Audio Reactivity"; > = 3;
-uniform float SpotAudioMult < ui_type = "slider"; ui_label = "Audio Pulse"; ui_min = 0.0; ui_max = 0.5; ui_category = "Audio Reactivity"; > = 0.15;
+AS_LISTENINGWAY_UI_CONTROLS("Audio Reactivity")
+AS_AUDIO_SOURCE_UI(SpotAudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
+AS_AUDIO_MULTIPLIER_UI(SpotAudioMult, "Audio Pulse", 0.15, 0.5, "Audio Reactivity")
 
 // --- Bokeh Settings ---
 uniform float BokehDensity < ui_type = "slider"; ui_label = "Density"; ui_min = 0.0; ui_max = 1.0; ui_category = "Stage Effects"; > = 0.25;
@@ -90,7 +91,7 @@ uniform int BlendMode < ui_type = "combo"; ui_label = "Mode"; ui_items = "Normal
 uniform float BlendAmount < ui_type = "slider"; ui_label = "Strength"; ui_min = 0.0; ui_max = 1.0; ui_category = "Final Mix"; > = 1.0;
 
 // --- Debug Settings ---
-uniform int DebugMode < ui_type = "combo"; ui_label = "View"; ui_items = "Off\0Spotlights\0Bokeh\0"; ui_category = "Debug"; > = 0;
+AS_DEBUG_MODE_UI("Off\0Spotlights\0Bokeh\0")
 
 uniform int frameCount < source = "framecount"; >;
 
