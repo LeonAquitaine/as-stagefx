@@ -45,7 +45,7 @@ AS-StageFX includes a variety of distinct visual effects:
 **Cinematic Effects (CN):**
 * **CN: Digital Glitch (`AS_CN-DigitalGlitch.1.fx`):** Applies audio-driven digital artifacts, glitches and hologram effects, including scanlines, RGB split, jitter, and pulsing synced to music.
 * **CN: Glitter (`AS_CN-Glitter.1.fx`):** Creates a realistic, dynamic sparkle effect on surfaces that responds to scene lighting, depth, camera movement, and audio. Includes bloom and fresnel effects.
-* **CN: Motion Trails (`AS_CN-MotionTrails.1.fx`):** Creates music-reactive, depth-based motion trails for dramatic visual effects in videos and screenshots. (Technique: [AS] Creative: Motion Trails)
+* **CN: Motion Trails (`AS_CN-MotionTrails.1.fx`):** Creates music-reactive, depth-based motion trails for dramatic visual effects in videos and screenshots. (Technique: [AS] Cinematic: Motion Trails)
 * **CN: Plasma Flow (`AS_CN-PlasmaFlow.1.fx`):** Generates smooth, swirling, organic plasma-like patterns reminiscent of a lava lamp but more fluid and customizable, ideal for atmospheric visuals in music videos.
 * **CN: Spectrum Ring (`AS_CN-SpectrumRing.1.fx`):** Generates a stylized, circular audio visualizer that displays all Listeningway frequency bands, with repetitions and mirroring options.
 * **CN: Stencil Mask (`AS_CN-StencilMask.1.fx`):** Isolates foreground subjects based on depth and applies customizable borders and projected shadows, with options for border styles and audio reactivity.
@@ -171,10 +171,10 @@ Creates an audio-reactive circular mirror or wave effect.
 
 Creates music-reactive, depth-based motion trails for dramatic visual effects.
 
-*Technique name in ReShade: `[AS] Creative: Motion Trails`*
+*Technique name in ReShade: `[AS] Cinematic: Motion Trails`*
 
 * **Description:**
-    * Objects within a specified depth threshold leave behind colored trails that slowly fade, creating dynamic visual paths ideal for music videos, dramatic footage, and creative compositions.
+    * Objects within a specified depth threshold leave behind colored trails that slowly fade, creating dynamic visual paths ideal for music videos, dramatic footage, and cinematic compositions.
 * **Key Features:**
     * Depth-based subject tracking for dynamic trail effects
     * User-definable trail color, strength, and persistence

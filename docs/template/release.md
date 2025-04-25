@@ -30,7 +30,7 @@ This package includes the following shaders:
 - **AS_RS-LightWall** - Generates configurable grids of light panels with diverse patterns
 - **AS_RS-Spotlights** - Adds up to 3 customizable directional stage lights
 
-**Creative Effects (CN):**
+**Cinematic Effects (CN):**
 - **AS_CN-DigitalGlitch** - Applies audio-driven digital artifacts and hologram effects
 - **AS_CN-Glitter** - Creates a realistic, dynamic sparkle effect on surfaces
 - **AS_CN-MotionTrails** - Creates music-reactive, depth-based motion trails
