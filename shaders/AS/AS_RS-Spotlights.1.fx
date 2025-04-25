@@ -33,45 +33,86 @@
 #include "ListeningwayUniforms.fxh"
 #include "AS_Utils.1.fxh"
 
+// --- Tunable Constants ---
+static const int NUMSPOTS_MIN = 1;
+static const int NUMSPOTS_MAX = 3;
+static const int NUMSPOTS_DEFAULT = 3;
+static const float SPOT_RADIUS_MIN = 0.05;
+static const float SPOT_RADIUS_MAX = 1.5;
+static const float SPOT_RADIUS_DEFAULT = 0.18;
+static const float SPOT_INTENSITY_MIN = 0.0;
+static const float SPOT_INTENSITY_MAX = 2.0;
+static const float SPOT_INTENSITY_DEFAULT = 1.0;
+static const float SPOT_ANGLE_MIN = 10.0;
+static const float SPOT_ANGLE_MAX = 160.0;
+static const float SPOT_ANGLE_DEFAULT = 90.0;
+static const float SPOT_DIRECTION_MIN = -190.0;
+static const float SPOT_DIRECTION_MAX = 180.0;
+static const float SPOT_DIRECTION_DEFAULT = 0.0;
+static const float SPOT_AUDIOMULT_MIN = 0.0;
+static const float SPOT_AUDIOMULT_MAX = 0.5;
+static const float SPOT_AUDIOMULT_DEFAULT = 0.15;
+static const float SPOT_SWAYSPEED_MIN = 0.0;
+static const float SPOT_SWAYSPEED_MAX = 5.0;
+static const float SPOT_SWAYSPEED_DEFAULT = 0.0;
+static const float SPOT_SWAYANGLE_MIN = 0.0;
+static const float SPOT_SWAYANGLE_MAX = 180.0;
+static const float SPOT_SWAYANGLE_DEFAULT = 0.0;
+static const float BOKEH_DENSITY_MIN = 0.0;
+static const float BOKEH_DENSITY_MAX = 1.0;
+static const float BOKEH_DENSITY_DEFAULT = 0.25;
+static const float BOKEH_SIZE_MIN = 0.01;
+static const float BOKEH_SIZE_MAX = 0.2;
+static const float BOKEH_SIZE_DEFAULT = 0.08;
+static const float BOKEH_STRENGTH_MIN = 0.0;
+static const float BOKEH_STRENGTH_MAX = 2.0;
+static const float BOKEH_STRENGTH_DEFAULT = 0.7;
+static const float STAGEDEPTH_MIN = 0.0;
+static const float STAGEDEPTH_MAX = 1.0;
+static const float STAGEDEPTH_DEFAULT = 0.08;
+static const float BLENDAMOUNT_MIN = 0.0;
+static const float BLENDAMOUNT_MAX = 1.0;
+static const float BLENDAMOUNT_DEFAULT = 1.0;
+
 // --- Controls ---
 // --- Light Beams ---
-uniform int NumSpots < ui_type = "slider"; ui_label = "Spotlight Count"; ui_min = 1; ui_max = 3; ui_category = "Light Beams"; > = 3;
+uniform int NumSpots < ui_type = "slider"; ui_label = "Spotlight Count"; ui_min = NUMSPOTS_MIN; ui_max = NUMSPOTS_MAX; ui_category = "Light Beams"; > = NUMSPOTS_DEFAULT;
 
 // --- Light Beam A ---
 uniform float3 Spot1_Color < ui_type = "color"; ui_label = "Color"; ui_category = "Light Beam A"; > = float3(0.3,0.6,1.0);
 uniform float2 Spot1_Position < ui_type = "drag"; ui_label = "Position"; ui_min = 0.0; ui_max = 1.0; ui_category = "Light Beam A"; > = float2(0.3,0.35);
-uniform float Spot1_Radius < ui_type = "slider"; ui_label = "Size"; ui_min = 0.05; ui_max = 1.5; ui_category = "Light Beam A"; > = 0.18;
-uniform float Spot1_Intensity < ui_type = "slider"; ui_label = "Intensity"; ui_min = 0.0; ui_max = 2.0; ui_category = "Light Beam A"; > = 1.0;
-uniform float Spot1_Angle < ui_type = "slider"; ui_label = "Opening"; ui_min = 10.0; ui_max = 160.0; ui_category = "Light Beam A"; > = 90.0;
-uniform float Spot1_Direction < ui_type = "slider"; ui_label = "Direction"; ui_min = -190.0; ui_max = 180.0; ui_category = "Light Beam A"; > = 0.0;
+uniform float Spot1_Radius < ui_type = "slider"; ui_label = "Size"; ui_min = SPOT_RADIUS_MIN; ui_max = SPOT_RADIUS_MAX; ui_category = "Light Beam A"; > = SPOT_RADIUS_DEFAULT;
+uniform float Spot1_Intensity < ui_type = "slider"; ui_label = "Intensity"; ui_min = SPOT_INTENSITY_MIN; ui_max = SPOT_INTENSITY_MAX; ui_category = "Light Beam A"; > = SPOT_INTENSITY_DEFAULT;
+uniform float Spot1_Angle < ui_type = "slider"; ui_label = "Opening"; ui_min = SPOT_ANGLE_MIN; ui_max = SPOT_ANGLE_MAX; ui_category = "Light Beam A"; > = SPOT_ANGLE_DEFAULT;
+uniform float Spot1_Direction < ui_type = "slider"; ui_label = "Direction"; ui_min = SPOT_DIRECTION_MIN; ui_max = SPOT_DIRECTION_MAX; ui_category = "Light Beam A"; > = SPOT_DIRECTION_DEFAULT;
 uniform int Spot1_AudioSource < ui_type = "combo"; ui_label = "Source"; ui_items = "Off\0Solid\0Volume\0Beat\0Bass\0Treble\0"; ui_category = "Light Beam A"; > = 3;
-uniform float Spot1_AudioMult < ui_type = "slider"; ui_label = "Pulse"; ui_min = 0.0; ui_max = 0.5; ui_category = "Light Beam A"; > = 0.15;
-uniform float Spot1_SwaySpeed < ui_type = "slider"; ui_label = "Speed"; ui_min = 0.0; ui_max = 5.0; ui_category = "Light Beam A"; > = 0.0;
-uniform float Spot1_SwayAngle < ui_type = "slider"; ui_label = "Sway"; ui_min = 0.0; ui_max = 180.0; ui_category = "Light Beam A"; > = 0.0;
+uniform float Spot1_AudioMult < ui_type = "slider"; ui_label = "Pulse"; ui_min = SPOT_AUDIOMULT_MIN; ui_max = SPOT_AUDIOMULT_MAX; ui_category = "Light Beam A"; > = SPOT_AUDIOMULT_DEFAULT;
+uniform float Spot1_SwaySpeed < ui_type = "slider"; ui_label = "Speed"; ui_min = SPOT_SWAYSPEED_MIN; ui_max = SPOT_SWAYSPEED_MAX; ui_category = "Light Beam A"; > = SPOT_SWAYSPEED_DEFAULT;
+uniform float Spot1_SwayAngle < ui_type = "slider"; ui_label = "Sway"; ui_min = SPOT_SWAYANGLE_MIN; ui_max = SPOT_SWAYANGLE_MAX; ui_category = "Light Beam A"; > = SPOT_SWAYANGLE_DEFAULT;
 
 // --- Light Beam B ---
 uniform float3 Spot2_Color < ui_type = "color"; ui_label = "Color"; ui_category = "Light Beam B"; > = float3(1.0,0.5,0.2);
 uniform float2 Spot2_Position < ui_type = "drag"; ui_label = "Position"; ui_min = 0.0; ui_max = 1.0; ui_category = "Light Beam B"; > = float2(0.7,0.35);
-uniform float Spot2_Radius < ui_type = "slider"; ui_label = "Size"; ui_min = 0.05; ui_max = 1.5; ui_category = "Light Beam B"; > = 0.18;
-uniform float Spot2_Intensity < ui_type = "slider"; ui_label = "Intensity"; ui_min = 0.0; ui_max = 2.0; ui_category = "Light Beam B"; > = 1.0;
-uniform float Spot2_Angle < ui_type = "slider"; ui_label = "Opening"; ui_min = 10.0; ui_max = 160.0; ui_category = "Light Beam B"; > = 90.0;
-uniform float Spot2_Direction < ui_type = "slider"; ui_label = "Direction"; ui_min = -190.0; ui_max = 180.0; ui_category = "Light Beam B"; > = 0.0;
+uniform float Spot2_Radius < ui_type = "slider"; ui_label = "Size"; ui_min = SPOT_RADIUS_MIN; ui_max = SPOT_RADIUS_MAX; ui_category = "Light Beam B"; > = SPOT_RADIUS_DEFAULT;
+uniform float Spot2_Intensity < ui_type = "slider"; ui_label = "Intensity"; ui_min = SPOT_INTENSITY_MIN; ui_max = SPOT_INTENSITY_MAX; ui_category = "Light Beam B"; > = SPOT_INTENSITY_DEFAULT;
+uniform float Spot2_Angle < ui_type = "slider"; ui_label = "Opening"; ui_min = SPOT_ANGLE_MIN; ui_max = SPOT_ANGLE_MAX; ui_category = "Light Beam B"; > = SPOT_ANGLE_DEFAULT;
+uniform float Spot2_Direction < ui_type = "slider"; ui_label = "Direction"; ui_min = SPOT_DIRECTION_MIN; ui_max = SPOT_DIRECTION_MAX; ui_category = "Light Beam B"; > = SPOT_DIRECTION_DEFAULT;
 uniform int Spot2_AudioSource < ui_type = "combo"; ui_label = "Source"; ui_items = "Off\0Solid\0Volume\0Beat\0Bass\0Treble\0"; ui_category = "Light Beam B"; > = 3;
-uniform float Spot2_AudioMult < ui_type = "slider"; ui_label = "Pulse"; ui_min = 0.0; ui_max = 0.5; ui_category = "Light Beam B"; > = 0.15;
-uniform float Spot2_SwaySpeed < ui_type = "slider"; ui_label = "Speed"; ui_min = 0.0; ui_max = 5.0; ui_category = "Light Beam B"; > = 0.0;
-uniform float Spot2_SwayAngle < ui_type = "slider"; ui_label = "Sway"; ui_min = 0.0; ui_max = 180.0; ui_category = "Light Beam B"; > = 0.0;
+uniform float Spot2_AudioMult < ui_type = "slider"; ui_label = "Pulse"; ui_min = SPOT_AUDIOMULT_MIN; ui_max = SPOT_AUDIOMULT_MAX; ui_category = "Light Beam B"; > = SPOT_AUDIOMULT_DEFAULT;
+uniform float Spot2_SwaySpeed < ui_type = "slider"; ui_label = "Speed"; ui_min = SPOT_SWAYSPEED_MIN; ui_max = SPOT_SWAYSPEED_MAX; ui_category = "Light Beam B"; > = SPOT_SWAYSPEED_DEFAULT;
+uniform float Spot2_SwayAngle < ui_type = "slider"; ui_label = "Sway"; ui_min = SPOT_SWAYANGLE_MIN; ui_max = SPOT_SWAYANGLE_MAX; ui_category = "Light Beam B"; > = SPOT_SWAYANGLE_DEFAULT;
 
 // --- Light Beam C ---
 uniform float3 Spot3_Color < ui_type = "color"; ui_label = "Color"; ui_category = "Light Beam C"; > = float3(0.8,0.3,1.0);
 uniform float2 Spot3_Position < ui_type = "drag"; ui_label = "Position"; ui_min = 0.0; ui_max = 1.0; ui_category = "Light Beam C"; > = float2(0.5,0.22);
-uniform float Spot3_Radius < ui_type = "slider"; ui_label = "Size"; ui_min = 0.05; ui_max = 1.5; ui_category = "Light Beam C"; > = 0.18;
-uniform float Spot3_Intensity < ui_type = "slider"; ui_label = "Intensity"; ui_min = 0.0; ui_max = 2.0; ui_category = "Light Beam C"; > = 1.0;
-uniform float Spot3_Angle < ui_type = "slider"; ui_label = "Opening"; ui_min = 10.0; ui_max = 160.0; ui_category = "Light Beam C"; > = 90.0;
-uniform float Spot3_Direction < ui_type = "slider"; ui_label = "Direction"; ui_min = -190.0; ui_max = 180.0; ui_category = "Light Beam C"; > = 0.0;
+uniform float Spot3_Radius < ui_type = "slider"; ui_label = "Size"; ui_min = SPOT_RADIUS_MIN; ui_max = SPOT_RADIUS_MAX; ui_category = "Light Beam C"; > = SPOT_RADIUS_DEFAULT;
+uniform float Spot3_Intensity < ui_type = "slider"; ui_label = "Intensity"; ui_min = SPOT_INTENSITY_MIN; ui_max = SPOT_INTENSITY_MAX; ui_category = "Light Beam C"; > = SPOT_INTENSITY_DEFAULT;
+uniform float Spot3_Angle < ui_type = "slider"; ui_label = "Opening"; ui_min = SPOT_ANGLE_MIN; ui_max = SPOT_ANGLE_MAX; ui_category = "Light Beam C"; > = SPOT_ANGLE_DEFAULT;
+uniform float Spot3_Direction < ui_type = "slider"; ui_label = "Direction"; ui_min = SPOT_DIRECTION_MIN; ui_max = SPOT_DIRECTION_MAX; ui_category = "Light Beam C"; > = SPOT_DIRECTION_DEFAULT;
 uniform int Spot3_AudioSource < ui_type = "combo"; ui_label = "Source"; ui_items = "Off\0Solid\0Volume\0Beat\0Bass\0Treble\0"; ui_category = "Light Beam C"; > = 3;
-uniform float Spot3_AudioMult < ui_type = "slider"; ui_label = "Pulse"; ui_min = 0.0; ui_max = 0.5; ui_category = "Light Beam C"; > = 0.15;
-uniform float Spot3_SwaySpeed < ui_type = "slider"; ui_label = "Speed"; ui_min = 0.0; ui_max = 5.0; ui_category = "Light Beam C"; > = 0.0;
-uniform float Spot3_SwayAngle < ui_type = "slider"; ui_label = "Sway"; ui_min = 0.0; ui_max = 180.0; ui_category = "Light Beam C"; > = 0.0;
+uniform float Spot3_AudioMult < ui_type = "slider"; ui_label = "Pulse"; ui_min = SPOT_AUDIOMULT_MIN; ui_max = SPOT_AUDIOMULT_MAX; ui_category = "Light Beam C"; > = SPOT_AUDIOMULT_DEFAULT;
+uniform float Spot3_SwaySpeed < ui_type = "slider"; ui_label = "Speed"; ui_min = SPOT_SWAYSPEED_MIN; ui_max = SPOT_SWAYSPEED_MAX; ui_category = "Light Beam C"; > = SPOT_SWAYSPEED_DEFAULT;
+uniform float Spot3_SwayAngle < ui_type = "slider"; ui_label = "Sway"; ui_min = SPOT_SWAYANGLE_MIN; ui_max = SPOT_SWAYANGLE_MAX; ui_category = "Light Beam C"; > = SPOT_SWAYANGLE_DEFAULT;
 
 // --- Global Audio Settings ---
 AS_LISTENINGWAY_UI_CONTROLS("Audio Reactivity")
@@ -79,21 +120,19 @@ AS_AUDIO_SOURCE_UI(SpotAudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reacti
 AS_AUDIO_MULTIPLIER_UI(SpotAudioMult, "Audio Pulse", 0.15, 0.5, "Audio Reactivity")
 
 // --- Bokeh Settings ---
-uniform float BokehDensity < ui_type = "slider"; ui_label = "Density"; ui_min = 0.0; ui_max = 1.0; ui_category = "Stage Effects"; > = 0.25;
-uniform float BokehSize < ui_type = "slider"; ui_label = "Size"; ui_min = 0.01; ui_max = 0.2; ui_category = "Stage Effects"; > = 0.08;
-uniform float BokehStrength < ui_type = "slider"; ui_label = "Strength"; ui_min = 0.0; ui_max = 2.0; ui_category = "Stage Effects"; > = 0.7;
+uniform float BokehDensity < ui_type = "slider"; ui_label = "Density"; ui_min = BOKEH_DENSITY_MIN; ui_max = BOKEH_DENSITY_MAX; ui_category = "Stage Effects"; > = BOKEH_DENSITY_DEFAULT;
+uniform float BokehSize < ui_type = "slider"; ui_label = "Size"; ui_min = BOKEH_SIZE_MIN; ui_max = BOKEH_SIZE_MAX; ui_category = "Stage Effects"; > = BOKEH_SIZE_DEFAULT;
+uniform float BokehStrength < ui_type = "slider"; ui_label = "Strength"; ui_min = BOKEH_STRENGTH_MIN; ui_max = BOKEH_STRENGTH_MAX; ui_category = "Stage Effects"; > = BOKEH_STRENGTH_DEFAULT;
 
 // --- Stage Depth Control ---
-uniform float StageDepth < ui_type = "slider"; ui_label = "Distance"; ui_tooltip = "Controls how far back the stage effect appears (lower = closer, higher = further)."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Stage Distance"; > = 0.08;
+uniform float StageDepth < ui_type = "slider"; ui_label = "Distance"; ui_tooltip = "Controls how far back the stage effect appears (lower = closer, higher = further)."; ui_min = STAGEDEPTH_MIN; ui_max = STAGEDEPTH_MAX; ui_step = 0.01; ui_category = "Stage Distance"; > = STAGEDEPTH_DEFAULT;
 
 // --- Blend Settings ---
 uniform int BlendMode < ui_type = "combo"; ui_label = "Mode"; ui_items = "Normal\0Lighter Only\0Darker Only\0Additive\0Multiply\0Screen\0"; ui_category = "Final Mix"; > = 3;
-uniform float BlendAmount < ui_type = "slider"; ui_label = "Strength"; ui_min = 0.0; ui_max = 1.0; ui_category = "Final Mix"; > = 1.0;
+uniform float BlendAmount < ui_type = "slider"; ui_label = "Strength"; ui_min = BLENDAMOUNT_MIN; ui_max = BLENDAMOUNT_MAX; ui_category = "Final Mix"; > = BLENDAMOUNT_DEFAULT;
 
 // --- Debug Settings ---
 AS_DEBUG_MODE_UI("Off\0Spotlights\0Bokeh\0")
-
-uniform int frameCount < source = "framecount"; >;
 
 // --- Main Effect ---
 float3 renderSpotlights(float2 uv, float audioPulse, out float3 spotSum, out float3 spotMask) {
@@ -112,7 +151,7 @@ float3 renderSpotlights(float2 uv, float audioPulse, out float3 spotSum, out flo
     float swayAngles[3] = { Spot1_SwayAngle, Spot2_SwayAngle, Spot3_SwayAngle };
     float coneLength = 0.7;
     float coneSoft = 0.18;
-    float time = AS_getTime(frameCount);
+    float time = AS_getTime();
     for (int i = 0; i < NumSpots; ++i) {
         float2 spos = spots[i];
         float3 scol = cols[i];

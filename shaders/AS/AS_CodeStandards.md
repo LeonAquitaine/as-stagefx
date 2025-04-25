@@ -69,6 +69,37 @@ Organize uniforms in logical sections with consistent naming. Use these standard
 8. **Debug** - Debug visualization options (using the standard macro)
 9. **System Uniforms** - frameCount, etc.
 
+## UI Tunable Constants
+
+UI uniforms must have tunable constants declared at the beginning of a file, following a specific naming convention:
+- Use `_MIN`, `_MAX`, and `_DEFAULT` (or `_DEF`) suffixes for each tunable range
+- Group related tunables together
+- Include comments for any constants with non-obvious purposes
+
+Example:
+```hlsl
+// --- Tunable Constants ---
+static const float RADIUS_MIN = 0.1;
+static const float RADIUS_MAX = 0.5;
+static const float RADIUS_DEFAULT = 0.25; // Base radius before audio modification
+
+static const float THICKNESS_MIN = 0.01;
+static const float THICKNESS_MAX = 0.15; 
+static const float THICKNESS_DEFAULT = 0.05; // Line thickness in screen-space units
+
+static const int REPETITIONS_MIN = 1;
+static const int REPETITIONS_MAX = 8;     // Maximum supported by the algorithm
+static const int REPETITIONS_DEFAULT = 3; // 2^3 = 8 actual repetitions
+```
+
+These constants should then be referenced in the uniform declarations to ensure consistency:
+
+```hlsl
+uniform float Radius < ui_type = "slider"; ui_label = "Radius"; 
+  ui_min = RADIUS_MIN; ui_max = RADIUS_MAX; ui_step = 0.01; 
+  ui_category = "Effect-Specific Appearance"; > = RADIUS_DEFAULT;
+```
+
 ## UI Control Standardization
 
 - Use standardized UI parameter names where applicable:

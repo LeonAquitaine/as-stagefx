@@ -10,9 +10,9 @@
 
 ## Overview
 
-**AS-StageFX** is a set of dynamic lighting, audio visualizers, and special effects. Initially focused on stage lighting, the collection also include glitter, glitch, warp, and other creative effects. Whether you're capturing gpose shots, creating machinima, setting the scene for a virtual concert, or adding unique flair to your visuals, these shaders provide customizable tools.
+**AS-StageFX** is a set of dynamic lighting, audio visualizers, and special effects. Initially focused on stage lighting, the collection also includes glitter, glitch, warp, and other creative effects. Whether you're capturing gpose shots, creating machinima, setting the scene for a virtual concert, or adding unique flair to your visuals, these shaders provide customizable tools.
 
-Most shaders feature seamless integration with **[Listeningway](https://github.com/Listeningway)** for audio reactivity.
+Most shaders feature seamless integration with **[Listeningway](https://github.com/gposingway/Listeningway)** for audio reactivity.
 
 ---
 
@@ -20,7 +20,7 @@ Most shaders feature seamless integration with **[Listeningway](https://github.c
 
 **Prerequisites:**
 * **ReShade**: Ensure you have the latest version of [ReShade](https://reshade.me/) installed for your target application (e.g., FFXIV).
-* **(Optional) Listeningway**: For audio reactivity, install [Listeningway](https://github.com/Listeningway). Highly recommended for most shaders in this pack.
+* **(Optional) Listeningway**: For audio reactivity, install [Listeningway](https://github.com/gposingway/Listeningway). Highly recommended for most shaders in this pack.
 
 **Steps:**
 1. **Download:** [Download the ZIP file](https://github.com/LeonAquitaine/as-stagefx/releases/latest) containing the shaders from the [Releases Page](https://github.com/LeonAquitaine/as-stagefx/releases).
@@ -41,17 +41,18 @@ AS-StageFX includes a variety of distinct visual effects:
 **Stage Lighting & Ambiance:**
 * **RS: Light Wall (`AS_RS-LightWall.1.fx`):** Generate configurable grids of light panels with diverse patterns, 3D perspective, audio reactivity, and customizable color palettes. Perfect for backdrops.
 * **RS: Spotlights (`AS_RS-Spotlights.1.fx`):** Add up to 3 customizable directional stage lights with realistic beam/glow effects, depth masking, and audio-reactive intensity and movement. (Technique: [AS] Rock Stage: Spotlights)
-* **Glitter (`AS_Glitter.1.fx`):** Creates a realistic, dynamic sparkle effect on surfaces that responds to scene lighting, depth, camera movement, and audio. Includes bloom and fresnel effects.
-* **Lava Lamp (`AS_LavaLamp.1.fx`):** Renders smooth, merging blobs like a lava lamp, with audio-reactive size, movement, and color. Includes depth occlusion.
 
-**Audio Visualizers & Glitch FX:**
-* **Hologram Glitch (`AS_HologramGlitch.1.fx`):** Applies audio-driven hologram and digital glitch effects, including scanlines, RGB split, jitter, and pulsing synced to music.
-* **Mandala (`AS_Mandala.1.fx`):** Generates a stylized, circular mandala that acts as a full-spectrum audio visualizer (UV meter) using all Listeningway bands, with repetitions and mirroring.
-* **Warp (`AS_Warp.1.fx`):** Creates a circular mirrored or wavy region (often behind a character) that pulses, changes radius, and ripples/warps in sync with audio.
-* **MV: Motion Trails (`AS_MV-MotionTrails.1.fx`):** Creates music-reactive, depth-based motion trails for dramatic visual effects in videos and screenshots. (Technique: [AS] Music Video: Motion Trails)
+**Cinematic Effects (CN):**
+* **CN: Digital Glitch (`AS_CN-DigitalGlitch.1.fx`):** Applies audio-driven digital artifacts, glitches and hologram effects, including scanlines, RGB split, jitter, and pulsing synced to music.
+* **CN: Glitter (`AS_CN-Glitter.1.fx`):** Creates a realistic, dynamic sparkle effect on surfaces that responds to scene lighting, depth, camera movement, and audio. Includes bloom and fresnel effects.
+* **CN: Motion Trails (`AS_CN-MotionTrails.1.fx`):** Creates music-reactive, depth-based motion trails for dramatic visual effects in videos and screenshots. (Technique: [AS] Creative: Motion Trails)
+* **CN: Plasma Flow (`AS_CN-PlasmaFlow.1.fx`):** Generates smooth, swirling, organic plasma-like patterns reminiscent of a lava lamp but more fluid and customizable, ideal for atmospheric visuals in music videos.
+* **CN: Spectrum Ring (`AS_CN-SpectrumRing.1.fx`):** Generates a stylized, circular audio visualizer that displays all Listeningway frequency bands, with repetitions and mirroring options.
+* **CN: Stencil Mask (`AS_CN-StencilMask.1.fx`):** Isolates foreground subjects based on depth and applies customizable borders and projected shadows, with options for border styles and audio reactivity.
+* **CN: Warp (`AS_CN-Warp.1.fx`):** Creates a circular mirrored or wavy region (often behind a character) that pulses, changes radius, and ripples/warps in sync with audio.
 
 **Core Capabilities:**
-* **Deep Audio Integration:** Most effects leverage **[Listeningway](https://github.com/Listeningway)**, allowing various parameters (intensity, speed, size, color, etc.) to react dynamically to volume, beat, bass, treble, or specific frequency bands.
+* **Deep Audio Integration:** Most effects leverage **[Listeningway](https://github.com/gposingway/Listeningway)**, allowing various parameters (intensity, speed, size, color, etc.) to react dynamically to volume, beat, bass, treble, or specific frequency bands.
 * **Depth-Aware Effects:** Many shaders intelligently interact with scene geometry (using the depth buffer) for natural integration, masking, and occlusion.
 * **Customization:** Offers extensive controls for colors, intensity, speed, positioning, blend modes, and audio source selection per effect.
 * **Shared Utilities (`AS_Utils.1.fxh`):** Uses a common backend for blend modes, audio processing, color palettes, and timing, ensuring consistency.
@@ -62,7 +63,7 @@ AS-StageFX includes a variety of distinct visual effects:
 
 Below are details on each effect shader included in AS-StageFX:
 
-### Glitter Effect (`AS_Glitter.1.fx`)
+### CN: Glitter Effect (`AS_CN-Glitter.1.fx`)
 
 Creates a realistic, dynamic glitter/sparkle effect on surfaces.
 
@@ -76,40 +77,42 @@ Creates a realistic, dynamic glitter/sparkle effect on surfaces.
     * Multiple blend modes and color options.
     * Audio-reactive sparkle intensity and animation speed via Listeningway.
 
-### Hologram Glitch Effect (`AS_HologramGlitch.1.fx`)
+### CN: Digital Glitch Effect (`AS_CN-DigitalGlitch.1.fx`)
 
-Applies audio-driven hologram and digital glitch effects.
+Applies audio-driven digital artifacts, glitches, and hologram effects.
 
-* **Description:** Creates scanlines, RGB color splitting, and digital jitter/glitching effects that pulse and react to music via Listeningway for impactful visuals.
+* **Description:** Creates digital artifacts, glitches, and holographic visuals with scanlines, RGB color splitting, and jitter effects that pulse and react to music via Listeningway.
 * **Key Features:**
+    * Multiple effect types (hologram, RGB shift, block corruption, scanlines, noise & static)
     * Audio-reactive scanlines, RGB split intensity, and digital glitch frequency/strength.
     * Pulsing, jitter, and color offsets driven by selectable audio sources (volume, beat, bass, treble, etc.).
     * Adjustable base intensity, speed, and randomness for each effect component.
+    * Depth-controlled positioning for precise placement in 3D space.
     * Debug visualizations for mask and audio input.
 
-### Lava Lamp Effect (`AS_LavaLamp.1.fx`)
+### CN: Plasma Flow (`AS_CN-PlasmaFlow.1.fx`)
 
-Renders an audio-reactive visualization resembling a lava lamp.
+Generates smooth, flowing plasma-like patterns for atmospheric visuals.
 
-* **Description:** Creates smooth, merging blobs of color whose size, movement speed, and color intensity are modulated by audio input.
+* **Description:** Creates a sophisticated, gentle, and flexible plasma-like effect with smooth, swirling, organic patterns reminiscent of a lava lamp but more fluid and customizable.
 * **Key Features:**
-    * Adjustable blob count, base size, blend strength, and movement characteristics.
-    * Audio-reactive blob size and movement speed via Listeningway.
-    * Customizable colors for blobs and background.
-    * Controls for gravity/buoyancy simulation.
-    * Depth occlusion support to mask the effect by scene geometry.
-    * Debug modes for viewing mask/audio.
+    * Procedural plasma/noise effect with smooth, flowing motion using domain warping.
+    * User-customizable colors with support for up to 4 base colors for rich gradients.
+    * Adjustable movement controls for speed, scale/zoom, and complexity/turbulence.
+    * Pattern shape parameters to influence the plasma form (e.g., 'Warp Intensity').
+    * Audio reactivity via Listeningway for dynamic modulation of movement, color, and complexity.
+    * Multiple blend modes for seamless scene integration.
 
-### Mandala Audio Visualizer (`AS_Mandala.1.fx`)
+### CN: Spectrum Ring Visualizer (`AS_CN-SpectrumRing.1.fx`)
 
-Generates a stylized mandala acting as a full-spectrum audio visualizer.
+Generates a circular audio spectrum visualizer.
 
-* **Description:** Creates a circular, centered mandala pattern that visualizes intensity across all available Listeningway audio bands simultaneously.
+* **Description:** Creates a circular, centered ring pattern that visualizes intensity across all available Listeningway audio bands simultaneously.
 * **Key Features:**
-    * Uses all Listeningway audio bands for a detailed UV meter effect.
-    * Color gradient (blue for low intensity through red to yellow for high) based on band strength.
-    * User-selectable number of repetitions (slices) from 2 to 16.
-    * Pattern style options: linear or mirrored repetition.
+    * Uses all Listeningway audio bands for a detailed spectrum visualization.
+    * Customizable color gradient based on audio intensity.
+    * User-selectable number of repetitions (segments) for the visualization.
+    * Multiple pattern style options (linear or mirrored repetition).
     * Smooth animation and response to audio changes.
 
 ### RS: Light Wall (`AS_RS-LightWall.1.fx`)
@@ -139,7 +142,20 @@ Simulates a vibrant stage lighting system with directional spotlights.
     * Depth-based masking for natural integration with the scene (lights appear behind objects).
     * Multiple blend modes for different lighting scenarios (additive, screen, etc.).
 
-### Warp Effect (`AS_Warp.1.fx`)
+### CN: Stencil Mask (`AS_CN-StencilMask.1.fx`)
+
+Creates a stencil mask effect with customizable borders and projected shadows.
+
+* **Description:** Isolates foreground subjects based on depth and applies customizable borders and projected shadows around them.
+* **Key Features:**
+    * Depth-based subject isolation.
+    * Multiple border styles (Solid, Glow, Pulse, Dash, Double Line).
+    * Customizable border color, opacity, thickness, and smoothing.
+    * Optional projected shadow with customizable color, opacity, and offset.
+    * Audio reactivity via Listeningway for border thickness, pulse, and shadow movement.
+    * Debug modes for visualizing masks.
+
+### CN: Warp Effect (`AS_CN-Warp.1.fx`)
 
 Creates an audio-reactive circular mirror or wave effect.
 
@@ -151,11 +167,11 @@ Creates an audio-reactive circular mirror or wave effect.
     * Adjustable base mirror strength, wave frequency/amplitude, and edge softness.
     * Debug visualizations for viewing the effect mask and audio input.
 
-### MV: Motion Trails (`AS_MV-MotionTrails.1.fx`)
+### CN: Motion Trails (`AS_CN-MotionTrails.1.fx`)
 
 Creates music-reactive, depth-based motion trails for dramatic visual effects.
 
-*Technique name in ReShade: `[AS] Music Video: Motion Trails`*
+*Technique name in ReShade: `[AS] Creative: Motion Trails`*
 
 * **Description:**
     * Objects within a specified depth threshold leave behind colored trails that slowly fade, creating dynamic visual paths ideal for music videos, dramatic footage, and creative compositions.
@@ -167,47 +183,3 @@ Creates music-reactive, depth-based motion trails for dramatic visual effects.
     * Optional real-time subject highlight for better visualization
     * Several timing modes: tempo-based, frame-based, on audio beat, or manual
     * Precise depth control for targeting specific scene elements
-
----
-
-## Versioning System
-
-All current shader and utility files end in `.1.*` (e.g., `AS_Glitter.1.fx`, `AS_Utils.1.fxh`) because they are version 1 of the AS-StageFX shader collection. A new version (e.g., `.2.fx`, `.2.fxh`) will be created whenever it is necessary to 'break the contract'—that is, when the behavior of uniforms or their expected functions changes in a way that could break compatibility with existing presets or usage. This ensures that older presets remain functional and users can choose which version to use.
-
----
-
-## Tips for Optimal Results
-
-* **Depth Buffer Access:** Crucial for many features! Ensure ReShade has depth buffer access enabled and correctly configured for your game. Check the ReShade overlay's `Add-ons` or `DX11/DX12` tab. You may need to select the correct depth buffer format (often one with reversed depth works best for FFXIV).
-* **Shader Order:** The order in which ReShade applies effects matters. Experiment, but generally place **AS-StageFX** effects *after* foundational color grading (like LUTs or levels) but *before* final screen-space effects like bloom, sharpening, lens flares, or letterboxing. Visualizers might work well placed earlier or later depending on the desired interaction.
-* **Performance Tuning:** These shaders are optimized, but complex effects or multiple active shaders can be demanding. Disable effects or specific features within their settings when not needed. Reduce particle counts, grid sizes, or quality settings if performance issues arise.
-* **Listeningway Setup:** For the best audio reactivity, ensure Listeningway is running and properly configured to capture the audio source you want the shaders to react to (e.g., game audio, system audio, specific application like Spotify). Adjust Listeningway's sensitivity and band settings as needed.
-
----
-
-## Credits
-
-* **Author / Lead Developer:** [Leon Aquitaine](https://bsky.app/profile/leon.aquitaine.social)
-* **Product:** AS-StageFX
-* **Technology:** Built upon the [ReShade FX](https://github.com/crosire/reshade-shaders/blob/slim/REFERENCE.md) shader framework.
-* **Acknowledgements:** Special thanks to the broader ReShade development community (especially contributors like prod80, Lord of Lunacy, etc. for foundational techniques) and testers within the FFXIV gposing community.
-
----
-
-## License
-
-The shaders included in **AS-StageFX** are licensed under the **Creative Commons Attribution 4.0 International License (CC BY 4.0)**. See the [LICENSE.md](LICENSE.md) file for full details.
-
-[![CC BY 4.0](https://licensebuttons.net/l/by/4.0/88x31.png)](https://creativecommons.org/licenses/by/4.0/)
-
-This means you are free to share and adapt these shaders with appropriate credit.
-
-*(Please note: ReShade itself and Listeningway have their own separate licenses.)*
-
----
-
-## Support & Contribution
-
-* **Found a Bug?** Report issues via the [GitHub Issues Page](https://github.com/LeonAquitaine/as-stagefx/issues).
-* **Need Help?** Join the Sights of Eorzea community on [Discord](https://discord.com/servers/sights-of-eorzea-1124828911700811957).
-* **Stay Updated:** Follow [@Leon Aquitaine](https://bsky.app/profile/leon.aquitaine.social) on BlueSky.

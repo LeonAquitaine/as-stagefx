@@ -32,7 +32,7 @@
 #include "ReShade.fxh"
 #include "ReShadeUI.fxh"
 #include "ListeningwayUniforms.fxh"
-#include "AS_Utils.fxh"
+#include "AS_Utils.1.fxh"
 
 // --- Tunable Constants ---
 static const float MIN_MARGIN = 0.10; // Minimum margin as a fraction of cell size (10%)
@@ -53,44 +53,117 @@ static const float SWAY_TIME_SCALE = 0.008; // Time scale for sway and palette a
 static const int PALETTE_COUNT = 9; // Number of built-in palettes (excluding Custom)
 static const int PALETTE_COLORS = 5;
 
+// --- Tunable Constants ---
+static const float GRIDSPACING_MIN = 0.05;
+static const float GRIDSPACING_MAX = 0.5;
+static const float GRIDSPACING_DEFAULT = 0.063;
+static const float GRIDGLOW_MIN = 0.001;
+static const float GRIDGLOW_MAX = 0.1;
+static const float GRIDGLOW_DEFAULT = 0.041;
+static const float GRIDSTRENGTH_MIN = 0.0;
+static const float GRIDSTRENGTH_MAX = 2.0;
+static const float GRIDSTRENGTH_DEFAULT = 0.615;
+static const float GRIDLINETHICKNESS_MIN = 0.001;
+static const float GRIDLINETHICKNESS_MAX = 0.08;
+static const float GRIDLINETHICKNESS_DEFAULT = 0.08;
+static const float GRIDSHIFTY_MIN = -8.0;
+static const float GRIDSHIFTY_MAX = 8.0;
+static const float GRIDSHIFTY_DEFAULT = 0.0;
+static const float TILTX_MIN = -30.0;
+static const float TILTX_MAX = 30.0;
+static const float TILTX_DEFAULT = 9.1;
+static const float TILTY_MIN = -30.0;
+static const float TILTY_MAX = 30.0;
+static const float TILTY_DEFAULT = 15.5;
+static const float PARALLAXSCROLL_MIN = -10.0;
+static const float PARALLAXSCROLL_MAX = 10.0;
+static const float PARALLAXSCROLL_DEFAULT = 3.0;
+static const float SWAYINCLINATION_MIN = -30.0;
+static const float SWAYINCLINATION_MAX = 30.0;
+static const float SWAYINCLINATION_DEFAULT = 0.0;
+static const float SWAYANGLE_MIN = 0.0;
+static const float SWAYANGLE_MAX = 30.0;
+static const float SWAYANGLE_DEFAULT = 0.0;
+static const float SWAYSPEED_MIN = 0.0;
+static const float SWAYSPEED_MAX = 2.0;
+static const float SWAYSPEED_DEFAULT = 0.0;
+static const float HOTSPOTPOS_MIN = -0.5;
+static const float HOTSPOTPOS_MAX = 0.5;
+static const float HOTSPOTPOS_DEFAULT_X = -0.469;
+static const float HOTSPOTPOS_DEFAULT_Y = 0.471;
+static const float BEAMLENGTH_MIN = 0.0;
+static const float BEAMLENGTH_MAX = 1.0;
+static const float BEAMLENGTH_DEFAULT_X = 0.804;
+static const float BEAMLENGTH_DEFAULT_Y = 0.502;
+static const float SPECULARSIZE_MIN = 0.01;
+static const float SPECULARSIZE_MAX = 0.5;
+static const float SPECULARSIZE_DEFAULT = 0.101;
+static const float SPECULARBLUR_MIN = 1.0;
+static const float SPECULARBLUR_MAX = 32.0;
+static const float SPECULARBLUR_DEFAULT = 32.0;
+static const float SPECULARBRIGHTNESS_MIN = 0.0;
+static const float SPECULARBRIGHTNESS_MAX = 3.0;
+static const float SPECULARBRIGHTNESS_DEFAULT = 3.0;
+static const float SPECULARSTRENGTH_MIN = 0.0;
+static const float SPECULARSTRENGTH_MAX = 2.0;
+static const float SPECULARSTRENGTH_DEFAULT = 0.199;
+static const float VIGNETTEROUNDNESS_MIN = 0.0;
+static const float VIGNETTEROUNDNESS_MAX = 1.0;
+static const float VIGNETTEROUNDNESS_DEFAULT = 1.0;
+static const float GLOWSHAPE_MIN = 0.0;
+static const float GLOWSHAPE_MAX = 1.0;
+static const float GLOWSHAPE_DEFAULT = 0.381;
+static const float MARGINGRADIENTSTRENGTH_MIN = 0.1;
+static const float MARGINGRADIENTSTRENGTH_MAX = 3.0;
+static const float MARGINGRADIENTSTRENGTH_DEFAULT = 0.100;
+static const float VUBARLOGMULTIPLIER_MIN = 1.0;
+static const float VUBARLOGMULTIPLIER_MAX = 8.0;
+static const float VUBARLOGMULTIPLIER_DEFAULT = 4.54;
+static const float STAGEDEPTH_MIN = 0.0;
+static const float STAGEDEPTH_MAX = 1.0;
+static const float STAGEDEPTH_DEFAULT = 0.06;
+static const float BLENDAMOUNT_MIN = 0.0;
+static const float BLENDAMOUNT_MAX = 1.0;
+static const float BLENDAMOUNT_DEFAULT = 1.0;
+
 // --- Controls ---
 // --- Light Boxes ---
-uniform float GridSpacing < ui_type = "slider"; ui_label = "Size"; ui_min = 0.05; ui_max = 0.5; ui_category = "Light Boxes"; > = 0.063;
-uniform float GridGlow < ui_type = "slider"; ui_label = "Glow Diffusion"; ui_min = 0.001; ui_max = 0.1; ui_category = "Light Boxes"; > = 0.041;
-uniform float GridStrength < ui_type = "slider"; ui_label = "Light Intensity"; ui_min = 0.0; ui_max = 2.0; ui_category = "Light Boxes"; > = 0.615;
-uniform float GridLineThickness < ui_type = "slider"; ui_label = "Divider Size"; ui_min = 0.001; ui_max = 0.08; ui_category = "Light Boxes"; > = 0.08;
+uniform float GridSpacing < ui_type = "slider"; ui_label = "Size"; ui_min = GRIDSPACING_MIN; ui_max = GRIDSPACING_MAX; ui_category = "Light Boxes"; > = GRIDSPACING_DEFAULT;
+uniform float GridGlow < ui_type = "slider"; ui_label = "Glow Diffusion"; ui_min = GRIDGLOW_MIN; ui_max = GRIDGLOW_MAX; ui_category = "Light Boxes"; > = GRIDGLOW_DEFAULT;
+uniform float GridStrength < ui_type = "slider"; ui_label = "Light Intensity"; ui_min = GRIDSTRENGTH_MIN; ui_max = GRIDSTRENGTH_MAX; ui_category = "Light Boxes"; > = GRIDSTRENGTH_DEFAULT;
+uniform float GridLineThickness < ui_type = "slider"; ui_label = "Divider Size"; ui_min = GRIDLINETHICKNESS_MIN; ui_max = GRIDLINETHICKNESS_MAX; ui_category = "Light Boxes"; > = GRIDLINETHICKNESS_DEFAULT;
 
 // --- Vertical Grid Shift ---
-uniform float GridShiftY < ui_type = "slider"; ui_label = "Elevation"; ui_tooltip = "Adjust the vertical position of the light boxes (-8 to +8 boxes)."; ui_min = -8.0; ui_max = 8.0; ui_step = 0.01; ui_category = "Light Boxes"; > = 0.0;
+uniform float GridShiftY < ui_type = "slider"; ui_label = "Elevation"; ui_tooltip = "Adjust the vertical position of the light boxes (-8 to +8 boxes)."; ui_min = GRIDSHIFTY_MIN; ui_max = GRIDSHIFTY_MAX; ui_step = 0.01; ui_category = "Light Boxes"; > = GRIDSHIFTY_DEFAULT;
 
 // --- Tilt Controls ---
-uniform float TiltX < ui_type = "slider"; ui_label = "Pitch"; ui_tooltip = "Tilt the light boxes forward or back."; ui_min = -30.0; ui_max = 30.0; ui_step = 0.1; ui_category = "Light Boxes"; > = 9.1;
-uniform float TiltY < ui_type = "slider"; ui_label = "Roll"; ui_tooltip = "Tilt the light boxes left or right."; ui_min = -30.0; ui_max = 30.0; ui_step = 0.1; ui_category = "Light Boxes"; > = 15.5;
+uniform float TiltX < ui_type = "slider"; ui_label = "Pitch"; ui_tooltip = "Tilt the light boxes forward or back."; ui_min = TILTX_MIN; ui_max = TILTX_MAX; ui_step = 0.1; ui_category = "Light Boxes"; > = TILTX_DEFAULT;
+uniform float TiltY < ui_type = "slider"; ui_label = "Roll"; ui_tooltip = "Tilt the light boxes left or right."; ui_min = TILTY_MIN; ui_max = TILTY_MAX; ui_step = 0.1; ui_category = "Light Boxes"; > = TILTY_DEFAULT;
 
 // --- Pattern Selection ---
 uniform int PatternPreset < ui_type = "combo"; ui_label = "Pattern"; ui_items = "Full Stage\0Heart\0Empty Heart\0Diamond\0Checker\0Stripes\0Circle\0X-Cross\0Pac-Man\0Bunny\0Star\0Smile\0Space Invader\0Beat Meter\0"; ui_category = "Light Boxes"; > = 2;
 
 // --- Parallax Scroll ---
-uniform float ParallaxScroll < ui_type = "slider"; ui_label = "Runway Scroll"; ui_tooltip = "Animates the pattern horizontally. Negative = left, positive = right. Higher magnitude = faster."; ui_min = -10.0; ui_max = 10.0; ui_step = 1; ui_category = "Performance"; > = 3.0;
+uniform float ParallaxScroll < ui_type = "slider"; ui_label = "Runway Scroll"; ui_tooltip = "Animates the pattern horizontally. Negative = left, positive = right. Higher magnitude = faster."; ui_min = PARALLAXSCROLL_MIN; ui_max = PARALLAXSCROLL_MAX; ui_step = 1; ui_category = "Performance"; > = PARALLAXSCROLL_DEFAULT;
 
 // --- Sway ---
-uniform float SwayInclination < ui_type = "slider"; ui_label = "Crowd Angle"; ui_min = -30.0; ui_max = 30.0; ui_category = "Performance"; > = 0.0;
-uniform float SwayAngle < ui_type = "slider"; ui_label = "Intensity"; ui_min = 0.0; ui_max = 30.0; ui_category = "Performance"; > = 0.0;
-uniform float SwaySpeed < ui_type = "slider"; ui_label = "Tempo"; ui_min = 0.0; ui_max = 2.0; ui_category = "Performance"; > = 0.0;
+uniform float SwayInclination < ui_type = "slider"; ui_label = "Crowd Angle"; ui_min = SWAYINCLINATION_MIN; ui_max = SWAYINCLINATION_MAX; ui_category = "Performance"; > = SWAYINCLINATION_DEFAULT;
+uniform float SwayAngle < ui_type = "slider"; ui_label = "Intensity"; ui_min = SWAYANGLE_MIN; ui_max = SWAYANGLE_MAX; ui_category = "Performance"; > = SWAYANGLE_DEFAULT;
+uniform float SwaySpeed < ui_type = "slider"; ui_label = "Tempo"; ui_min = SWAYSPEED_MIN; ui_max = SWAYSPEED_MAX; ui_category = "Performance"; > = SWAYSPEED_DEFAULT;
 
 // --- Hotspots ---
-uniform float2 HotspotPos < ui_type = "drag"; ui_label = "Position"; ui_min = -0.5; ui_max = 0.5; ui_category = "Spotlights"; > = float2(-0.469, 0.471);
-uniform float2 BeamLength < ui_type = "drag"; ui_label = "Beam Length"; ui_tooltip = "Controls the length of light beams (X = Horizontal, Y = Vertical)"; ui_min = 0.0; ui_max = 1.0; ui_category = "Spotlights"; > = float2(0.804, 0.502);
+uniform float2 HotspotPos < ui_type = "drag"; ui_label = "Position"; ui_min = HOTSPOTPOS_MIN; ui_max = HOTSPOTPOS_MAX; ui_category = "Spotlights"; > = float2(HOTSPOTPOS_DEFAULT_X, HOTSPOTPOS_DEFAULT_Y);
+uniform float2 BeamLength < ui_type = "drag"; ui_label = "Beam Length"; ui_tooltip = "Controls the length of light beams (X = Horizontal, Y = Vertical)"; ui_min = BEAMLENGTH_MIN; ui_max = BEAMLENGTH_MAX; ui_category = "Spotlights"; > = float2(BEAMLENGTH_DEFAULT_X, BEAMLENGTH_DEFAULT_Y);
 // Specular
-uniform float SpecularSize < ui_type = "slider"; ui_label = "Burst Size"; ui_min = 0.01; ui_max = 0.5; ui_category = "Spotlights"; > = 0.101;
-uniform float SpecularBlur < ui_type = "slider"; ui_label = "Burst Softness"; ui_min = 1.0; ui_max = 32.0; ui_category = "Spotlights"; > = 32.0;
-uniform float SpecularBrightness < ui_type = "slider"; ui_label = "Burst Intensity"; ui_min = 0.0; ui_max = 3.0; ui_category = "Spotlights"; > = 3.0;
-uniform float SpecularStrength < ui_type = "slider"; ui_label = "Burst Power"; ui_min = 0.0; ui_max = 2.0; ui_category = "Spotlights"; > = 0.199;
+uniform float SpecularSize < ui_type = "slider"; ui_label = "Burst Size"; ui_min = SPECULARSIZE_MIN; ui_max = SPECULARSIZE_MAX; ui_category = "Spotlights"; > = SPECULARSIZE_DEFAULT;
+uniform float SpecularBlur < ui_type = "slider"; ui_label = "Burst Softness"; ui_min = SPECULARBLUR_MIN; ui_max = SPECULARBLUR_MAX; ui_category = "Spotlights"; > = SPECULARBLUR_DEFAULT;
+uniform float SpecularBrightness < ui_type = "slider"; ui_label = "Burst Intensity"; ui_min = SPECULARBRIGHTNESS_MIN; ui_max = SPECULARBRIGHTNESS_MAX; ui_category = "Spotlights"; > = SPECULARBRIGHTNESS_DEFAULT;
+uniform float SpecularStrength < ui_type = "slider"; ui_label = "Burst Power"; ui_min = SPECULARSTRENGTH_MIN; ui_max = SPECULARSTRENGTH_MAX; ui_category = "Spotlights"; > = SPECULARSTRENGTH_DEFAULT;
 
 // --- Appearance ---
-uniform float VignetteRoundness < ui_type = "slider"; ui_label = "Shape"; ui_tooltip = "0 = square blocks, 1 = round blocks"; ui_min = 0.0; ui_max = 1.0; ui_category = "Stage Effects"; > = 1.0;
-uniform float GlowShape < ui_type = "slider"; ui_label = "Glow Pattern"; ui_tooltip = "0 = circular glow, 1 = square glow"; ui_min = 0.0; ui_max = 1.0; ui_category = "Stage Effects"; > = 0.381;
-uniform float MarginGradientStrength < ui_type = "slider"; ui_label = "Edge Darkness"; ui_min = 0.1; ui_max = 3.0; ui_category = "Stage Effects"; > = 0.100;
+uniform float VignetteRoundness < ui_type = "slider"; ui_label = "Shape"; ui_tooltip = "0 = square blocks, 1 = round blocks"; ui_min = VIGNETTEROUNDNESS_MIN; ui_max = VIGNETTEROUNDNESS_MAX; ui_category = "Stage Effects"; > = VIGNETTEROUNDNESS_DEFAULT;
+uniform float GlowShape < ui_type = "slider"; ui_label = "Glow Pattern"; ui_tooltip = "0 = circular glow, 1 = square glow"; ui_min = GLOWSHAPE_MIN; ui_max = GLOWSHAPE_MAX; ui_category = "Stage Effects"; > = GLOWSHAPE_DEFAULT;
+uniform float MarginGradientStrength < ui_type = "slider"; ui_label = "Edge Darkness"; ui_min = MARGINGRADIENTSTRENGTH_MIN; ui_max = MARGINGRADIENTSTRENGTH_MAX; ui_category = "Stage Effects"; > = MARGINGRADIENTSTRENGTH_DEFAULT;
 
 // --- Color ---
 uniform int PalettePreset < ui_type = "combo"; ui_label = "Theme"; ui_items = "Bluewave\0Bright Lights\0Disco\0Electronica\0Industrial\0Metal\0Monotone\0Pastel Pop\0Redline\0Custom\0"; ui_category = "Lighting"; > = 8;
@@ -103,20 +176,20 @@ uniform int VisualizationMode < ui_type = "combo"; ui_label = "Show Mode"; ui_it
 
 // --- Listeningway Integration ---
 uniform int VUMeterSource < ui_type = "combo"; ui_label = "Source"; ui_items = "Volume\0Beat\0Bass\0Mid\0Treble\0"; ui_category = "Audio Reactivity"; > = 1;
-uniform float VUBarLogMultiplier < ui_type = "slider"; ui_label = "Frequency Boost"; ui_tooltip = "Boosts higher frequency bars logarithmically. 1.0 = no boost, higher = more boost."; ui_min = 1.0; ui_max = 8.0; ui_step = 0.01; ui_category = "Audio Reactivity"; > = 4.54;
+uniform float VUBarLogMultiplier < ui_type = "slider"; ui_label = "Frequency Boost"; ui_tooltip = "Boosts higher frequency bars logarithmically. 1.0 = no boost, higher = more boost."; ui_min = VUBARLOGMULTIPLIER_MIN; ui_max = VUBARLOGMULTIPLIER_MAX; ui_step = 0.01; ui_category = "Audio Reactivity"; > = VUBARLOGMULTIPLIER_DEFAULT;
 
 // --- Stage Depth ---
-uniform float StageDepth < ui_type = "slider"; ui_label = "Distance"; ui_tooltip = "Controls how far back the stage effect appears (lower = closer, higher = further)."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Stage Distance"; > = 0.06;
+uniform float StageDepth < ui_type = "slider"; ui_label = "Distance"; ui_tooltip = "Controls how far back the stage effect appears (lower = closer, higher = further)."; ui_min = STAGEDEPTH_MIN; ui_max = STAGEDEPTH_MAX; ui_step = 0.01; ui_category = "Stage Distance"; > = STAGEDEPTH_DEFAULT;
 
 // --- Blend ---
 uniform int BlendMode < ui_type = "combo"; ui_label = "Mode"; ui_items = "Normal\0Lighter Only\0Darker Only\0Additive\0Multiply\0Screen\0"; ui_category = "Final Mix"; > = 0;
-uniform float BlendAmount < ui_type = "slider"; ui_label = "Strength"; ui_min = 0.0; ui_max = 1.0; ui_category = "Final Mix"; > = 1.0;
+uniform float BlendAmount < ui_type = "slider"; ui_label = "Strength"; ui_min = BLENDAMOUNT_MIN; ui_max = BLENDAMOUNT_MAX; ui_category = "Final Mix"; > = BLENDAMOUNT_DEFAULT;
 
 // --- Debug ---
 uniform int DebugMode < ui_type = "combo"; ui_label = "View"; ui_items = "Off\0Block Glow\0Light Bursts\0Block Outlines\0"; ui_category = "Debug"; > = 0;
 
 // --- Frame Count ---
-uniform int frameCount < source = "framecount"; >;
+
 
 // 8x8 patterns
 static const int PATTERN_SIZE = 8;
@@ -254,7 +327,7 @@ static const int PATTERN_ARROWLEFT[PATTERN_SIZE * PATTERN_SIZE] = {
 };
 
 int getPatternValue(int x, int y) {
-    float time = AS_getTime(frameCount);
+    float time = AS_getTime();
     int shift = (int)floor(ParallaxScroll * time * 0.2);
     int fineY = (int)round(GridShiftY);
     int px = ((x + shift) % PATTERN_SIZE + PATTERN_SIZE) % PATTERN_SIZE;
@@ -428,7 +501,7 @@ float cruxRayH(float2 local) {
 }
 
 float3 renderLavaLampGrid(float2 uv) {
-    float time = AS_getTime(frameCount);
+    float time = AS_getTime();
     // Remove full-effect parallax: do NOT offset uv by ParallaxScroll
     float2 uv_sway = swayRotate(uv, time);
     float2 grid_size = float2(GridSpacing * BUFFER_HEIGHT / BUFFER_WIDTH, GridSpacing);

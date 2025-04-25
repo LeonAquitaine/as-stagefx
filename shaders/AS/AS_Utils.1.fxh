@@ -1,5 +1,5 @@
 /**
- * AS_Utils.1.fxh - Common Utility Functions for AS Shader Collection
+ * AS_Utils.1.fxh - Common Utility Functions for AS StageFX Shader Collection
  * Author: Leon Aquitaine
  * License: Creative Commons Attribution 4.0 International
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
@@ -7,7 +7,7 @@
  * ===================================================================================
  *
  * DESCRIPTION:
- * This header file provides common utility functions used across the Aquitaine Studio
+ * This header file provides common utility functions used across the AS StageFX
  * shader collection. It includes blend modes, audio processing, mathematical helpers,
  * and various convenience functions to maintain consistency across shaders.
  *
@@ -43,13 +43,13 @@
 #define __AS_LISTENINGWAY_INCLUDED
 
 // --- Audio Constants ---
-#define AS_AUDIO_OFF     0
-#define AS_AUDIO_SOLID   1
-#define AS_AUDIO_VOLUME  2
-#define AS_AUDIO_BEAT    3
-#define AS_AUDIO_BASS    4
-#define AS_AUDIO_TREBLE  5
-#define AS_AUDIO_MID     6
+#define AS_AUDIO_OFF     0  // Audio source disabled
+#define AS_AUDIO_SOLID   1  // Constant value (no audio reactivity)
+#define AS_AUDIO_VOLUME  2  // Overall audio volume
+#define AS_AUDIO_BEAT    3  // Beat detection
+#define AS_AUDIO_BASS    4  // Low frequency band
+#define AS_AUDIO_TREBLE  5  // High frequency band
+#define AS_AUDIO_MID     6  // Mid frequency band
 
 // Default number of frequency bands (matches Listeningway's default)
 #define AS_DEFAULT_NUM_BANDS 8
@@ -151,8 +151,11 @@ float3 AS_paletteLerp(float3 c0, float3 c1, float t) {
 // ============================================================================
 
 // --- Time Functions ---
+uniform int frameCount < source = "framecount"; >; // Frame count from ReShade
+
 // Returns consistent time value in seconds, using Listeningway if available
-float AS_getTime(int frameCount) {
+
+float AS_getTime() {
 #if defined(LISTENINGWAY_INSTALLED)
     return Listeningway_TotalPhases120Hz * 0.016;
 #else
