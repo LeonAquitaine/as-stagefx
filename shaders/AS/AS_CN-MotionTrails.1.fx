@@ -1,5 +1,5 @@
 /**
- * AS_MV-MotionTrails.1.fx - Music-Reactive Depth-Based Trail Effect
+ * AS_CN-MotionTrails.1.fx - Music-Reactive Depth-Based Trail Effect
  * Author: Leon Aquitaine (based on original code)
  * License: Creative Commons Attribution 4.0 International
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
@@ -45,19 +45,39 @@ namespace AS_DepthEcho {
     }
 }
 
+// --- Tunable Constants ---
+static const float FECHO_DEPTHCUTOFF_MIN = 0.01;
+static const float FECHO_DEPTHCUTOFF_MAX = 0.5;
+static const float FECHO_DEPTHCUTOFF_DEFAULT = 0.04;
+static const float FECHO_FADERATE_MIN = 0.8;
+static const float FECHO_FADERATE_MAX = 0.99;
+static const float FECHO_FADERATE_DEFAULT = 0.95;
+static const float FECHO_STRENGTH_MIN = 0.1;
+static const float FECHO_STRENGTH_MAX = 2.0;
+static const float FECHO_STRENGTH_DEFAULT = 0.8;
+static const float FECHO_TIMEINTERVAL_MIN = 0.0;
+static const float FECHO_TIMEINTERVAL_MAX = 5000.0;
+static const float FECHO_TIMEINTERVAL_DEFAULT = 1000.0;
+static const int IECHO_FRAMEINTERVAL_MIN = 1;
+static const int IECHO_FRAMEINTERVAL_MAX = 60;
+static const int IECHO_FRAMEINTERVAL_DEFAULT = 15;
+static const float BLENDAMOUNT_MIN = 0.0;
+static const float BLENDAMOUNT_MAX = 1.0;
+static const float BLENDAMOUNT_DEFAULT = 1.0;
+
 // --- UI Uniforms - Main Design Controls ---
-uniform float fEcho_DepthCutoff < ui_type = "slider"; ui_min = 0.01; ui_max = 0.5; ui_step = 0.01; ui_label = "Subject Focus"; ui_tooltip = "Objects closer than this depth value will create trails"; ui_category = "Trail Design"; > = 0.04;
-uniform float fEcho_FadeRate < ui_type = "slider"; ui_min = 0.8; ui_max = 0.99; ui_step = 0.01; ui_label = "Trail Persistence"; ui_tooltip = "How slowly trails fade away (higher = longer lasting)"; ui_category = "Trail Design"; > = 0.95;
+uniform float fEcho_DepthCutoff < ui_type = "slider"; ui_min = FECHO_DEPTHCUTOFF_MIN; ui_max = FECHO_DEPTHCUTOFF_MAX; ui_step = 0.01; ui_label = "Subject Focus"; ui_tooltip = "Objects closer than this depth value will create trails"; ui_category = "Trail Design"; > = FECHO_DEPTHCUTOFF_DEFAULT;
+uniform float fEcho_FadeRate < ui_type = "slider"; ui_min = FECHO_FADERATE_MIN; ui_max = FECHO_FADERATE_MAX; ui_step = 0.01; ui_label = "Trail Persistence"; ui_tooltip = "How slowly trails fade away (higher = longer lasting)"; ui_category = "Trail Design"; > = FECHO_FADERATE_DEFAULT;
 uniform float3 fEcho_Color < ui_type = "color"; ui_label = "Trail Hue"; ui_tooltip = "Color of the trail effect"; ui_category = "Trail Design"; > = float3(0.2, 0.5, 1.0);
-uniform float fEcho_Strength < ui_type = "slider"; ui_min = 0.1; ui_max = 2.0; ui_step = 0.1; ui_label = "Trail Intensity"; ui_tooltip = "Intensity of the trail effect"; ui_category = "Trail Design"; > = 0.8;
+uniform float fEcho_Strength < ui_type = "slider"; ui_min = FECHO_STRENGTH_MIN; ui_max = FECHO_STRENGTH_MAX; ui_step = 0.1; ui_label = "Trail Intensity"; ui_tooltip = "Intensity of the trail effect"; ui_category = "Trail Design"; > = FECHO_STRENGTH_DEFAULT;
 uniform int iEcho_SubjectOverlay < ui_type = "combo"; ui_label = "Subject Overlay"; ui_tooltip = "How to display the subject in front of the trail effect."; ui_items = "Show Character\0Pulse Character\0Show Silhouette\0"; ui_category = "Trail Design"; > = 0;
 uniform float3 fEcho_SilhouetteColor < ui_type = "color"; ui_label = "Silhouette Color"; ui_tooltip = "Color to use for the subject silhouette when 'Show Silhouette' is selected."; ui_category = "Trail Design"; > = float3(0.0, 0.0, 0.0);
 uniform bool bEcho_ForceClear < ui_type = "bool"; ui_label = "Clear All Trails"; ui_tooltip = "Set this to true and toggle once to force-clear all trails."; ui_category = "Trail Design"; > = false;
 
 // --- Trail Timing ---
 uniform int iEcho_CaptureMode < ui_type = "combo"; ui_label = "Timing Method"; ui_tooltip = "Controls how frequently trail markers are created"; ui_items = "Tempo-Based\0Every N Frames\0On Audio Beat\0Manual Trigger\0"; ui_category = "Trail Timing"; > = 0;
-uniform float fEcho_TimeInterval < ui_type = "slider"; ui_min = 0; ui_max = 5000; ui_step = 25; ui_label = "Beat Interval (ms)"; ui_tooltip = "Time between trail markers in milliseconds when using Tempo-Based mode (0 = continuous)"; ui_category = "Trail Timing"; > = 1000.0;
-uniform int iEcho_FrameInterval < ui_type = "slider"; ui_min = 1; ui_max = 60; ui_step = 1; ui_label = "Frame Spacing"; ui_tooltip = "Create a trail marker every N frames when using frame-based mode"; ui_category = "Trail Timing"; > = 15;
+uniform float fEcho_TimeInterval < ui_type = "slider"; ui_min = FECHO_TIMEINTERVAL_MIN; ui_max = FECHO_TIMEINTERVAL_MAX; ui_step = 25; ui_label = "Beat Interval (ms)"; ui_tooltip = "Time between trail markers in milliseconds when using Tempo-Based mode (0 = continuous)"; ui_category = "Trail Timing"; > = FECHO_TIMEINTERVAL_DEFAULT;
+uniform int iEcho_FrameInterval < ui_type = "slider"; ui_min = IECHO_FRAMEINTERVAL_MIN; ui_max = IECHO_FRAMEINTERVAL_MAX; ui_step = 1; ui_label = "Frame Spacing"; ui_tooltip = "Create a trail marker every N frames when using frame-based mode"; ui_category = "Trail Timing"; > = IECHO_FRAMEINTERVAL_DEFAULT;
 uniform bool bEcho_ManualCapture < ui_type = "bool"; ui_label = "Drop Trail Marker"; ui_tooltip = "Toggle this to manually create a trail marker when in Manual Trigger mode"; ui_category = "Trail Timing"; > = false;
 
 // --- Beat Synchronization ---
@@ -69,13 +89,13 @@ AS_AUDIO_MULTIPLIER_UI(Echo_IntensityMult, "Energy Boost", 0.5, 2.0, "Beat Synch
 
 // --- Final Composition and Debug (moved to end) ---
 uniform int BlendMode < ui_type = "combo"; ui_label = "Mix Style"; ui_tooltip = "How the trail effect blends with the original scene."; ui_items = "Normal\0Lighter Only\0Darker Only\0Additive\0Multiply\0Screen\0"; ui_category = "Final Composition"; > = 0;
-uniform float BlendAmount < ui_type = "slider"; ui_label = "Effect Opacity"; ui_tooltip = "How strongly the effect is blended with the scene."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Final Composition"; > = 1.0;
+uniform float BlendAmount < ui_type = "slider"; ui_label = "Effect Opacity"; ui_tooltip = "How strongly the effect is blended with the scene."; ui_min = BLENDAMOUNT_MIN; ui_max = BLENDAMOUNT_MAX; ui_step = 0.01; ui_category = "Final Composition"; > = BLENDAMOUNT_DEFAULT;
 
 // --- Debug Mode Uniform ---
 AS_DEBUG_MODE_UI("Off\0Depth Mask\0Echo Buffer\0Linear Depth\0")
 
 // Add frame counter for frame-based capture mode
-uniform int frameCount < source = "framecount"; >;
+
 
 // --- Variables to track beat detection ---
 uniform float PrevBeatValue < source = "frametime"; >;
@@ -289,7 +309,7 @@ void PS_CopyTimingBuffer(
 
 // --- Technique ---
 technique AS_MV_MotionTrails_1 <
-    ui_label = "[AS] Music Video: Motion Trails";
+    ui_label = "[AS] Cinematic: Motion Trails";
     ui_tooltip = "Creates dynamic motion trails perfect for music videos and creative compositions.";
 >
 {

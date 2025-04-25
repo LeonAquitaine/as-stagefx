@@ -1,5 +1,5 @@
 /**
- * AS_Glitter.1.fx - Dynamic Sparkle Effect Shader Version 1.0
+ * AS_CN-Glitter.1.fx - Dynamic Sparkle Effect Shader Version 1.0
  * Author: Leon Aquitaine
  * License: Creative Commons Attribution 4.0 International
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
@@ -36,28 +36,65 @@
 #include "AS_Utils.1.fxh"
 
 // --- Tunable Constants ---
-static const float SPARKLE_DENSITY_MIN = 0.1;
-static const float SPARKLE_DENSITY_MAX = 20.0;
-static const float SPARKLE_SIZE_MIN = 0.1;
-static const float SPARKLE_SIZE_MAX = 10.0;
-static const float BLOOM_QUALITY_LEVELS = 6.0;
+static const float GLITTERDENSITY_MIN = 0.1;
+static const float GLITTERDENSITY_MAX = 20.0;
+static const float GLITTERDENSITY_DEFAULT = 10.0;
+static const float GLITTERSIZE_MIN = 0.1;
+static const float GLITTERSIZE_MAX = 10.0;
+static const float GLITTERSIZE_DEFAULT = 5.0;
+static const float GLITTERBRIGHTNESS_MIN = 0.1;
+static const float GLITTERBRIGHTNESS_MAX = 12.0;
+static const float GLITTERBRIGHTNESS_DEFAULT = 6.0;
+static const float GLITTERSHARPNESS_MIN = 0.1;
+static const float GLITTERSHARPNESS_MAX = 2.1;
+static const float GLITTERSHARPNESS_DEFAULT = 1.1;
+static const float GLITTERSPEED_MIN = 0.1;
+static const float GLITTERSPEED_MAX = 1.5;
+static const float GLITTERSPEED_DEFAULT = 0.8;
+static const float GLITTERLIFETIME_MIN = 1.0;
+static const float GLITTERLIFETIME_MAX = 20.0;
+static const float GLITTERLIFETIME_DEFAULT = 10.0;
+static const float BLOOMINTENSITY_MIN = 0.1;
+static const float BLOOMINTENSITY_MAX = 3.1;
+static const float BLOOMINTENSITY_DEFAULT = 1.6;
+static const float BLOOMRADIUS_MIN = 1.0;
+static const float BLOOMRADIUS_MAX = 10.2;
+static const float BLOOMRADIUS_DEFAULT = 5.6;
+static const float BLOOMDISPERSION_MIN = 1.0;
+static const float BLOOMDISPERSION_MAX = 3.0;
+static const float BLOOMDISPERSION_DEFAULT = 2.0;
+static const float NEARPLANE_MIN = 0.0;
+static const float NEARPLANE_MAX = 1.0;
+static const float NEARPLANE_DEFAULT = 0.0;
+static const float FARPLANE_MIN = 0.0;
+static const float FARPLANE_MAX = 1.0;
+static const float FARPLANE_DEFAULT = 1.0;
+static const float DEPTHCURVE_MIN = 0.1;
+static const float DEPTHCURVE_MAX = 10.0;
+static const float DEPTHCURVE_DEFAULT = 1.0;
+static const float BLENDAMOUNT_MIN = 0.0;
+static const float BLENDAMOUNT_MAX = 1.0;
+static const float BLENDAMOUNT_DEFAULT = 1.0;
+static const float TIMESCALE_MIN = 1.0;
+static const float TIMESCALE_DEFAULT = 9.0;
+static const float TIMESCALE_MAX = 20.0;
 
 // --- Sparkle Appearance ---
-uniform float GlitterDensity < ui_type = "slider"; ui_label = "Density"; ui_tooltip = "Controls how many sparkles are generated on the screen. Higher values increase the number of sparkles."; ui_min = 0.1; ui_max = 20.0; ui_step = 0.1; ui_category = "Sparkle Appearance"; > = 10.0;
-uniform float GlitterSize < ui_type = "slider"; ui_label = "Size"; ui_tooltip = "Adjusts the size of each individual sparkle. Larger values make sparkles appear bigger."; ui_min = 0.1; ui_max = 10.0; ui_step = 0.1; ui_category = "Sparkle Appearance"; > = 5.0;
-uniform float GlitterBrightness < ui_type = "slider"; ui_label = "Brightness"; ui_tooltip = "Sets the overall brightness of the sparkles. Higher values make sparkles more intense and visible."; ui_min = 0.1; ui_max = 12.0; ui_step = 0.1; ui_category = "Sparkle Appearance"; > = 6.0;
-uniform float GlitterSharpness < ui_type = "slider"; ui_label = "Sharpness"; ui_tooltip = "Controls how crisp or soft the edges of sparkles appear. Higher values make sparkles more defined."; ui_min = 0.1; ui_max = 2.1; ui_step = 0.05; ui_category = "Sparkle Appearance"; > = 1.1;
+uniform float GlitterDensity < ui_type = "slider"; ui_label = "Density"; ui_tooltip = "Controls how many sparkles are generated on the screen. Higher values increase the number of sparkles."; ui_min = GLITTERDENSITY_MIN; ui_max = GLITTERDENSITY_MAX; ui_step = 0.1; ui_category = "Sparkle Appearance"; > = GLITTERDENSITY_DEFAULT;
+uniform float GlitterSize < ui_type = "slider"; ui_label = "Size"; ui_tooltip = "Adjusts the size of each individual sparkle. Larger values make sparkles appear bigger."; ui_min = GLITTERSIZE_MIN; ui_max = GLITTERSIZE_MAX; ui_step = 0.1; ui_category = "Sparkle Appearance"; > = GLITTERSIZE_DEFAULT;
+uniform float GlitterBrightness < ui_type = "slider"; ui_label = "Brightness"; ui_tooltip = "Sets the overall brightness of the sparkles. Higher values make sparkles more intense and visible."; ui_min = GLITTERBRIGHTNESS_MIN; ui_max = GLITTERBRIGHTNESS_MAX; ui_step = 0.1; ui_category = "Sparkle Appearance"; > = GLITTERBRIGHTNESS_DEFAULT;
+uniform float GlitterSharpness < ui_type = "slider"; ui_label = "Sharpness"; ui_tooltip = "Controls how crisp or soft the edges of sparkles appear. Higher values make sparkles more defined."; ui_min = GLITTERSHARPNESS_MIN; ui_max = GLITTERSHARPNESS_MAX; ui_step = 0.05; ui_category = "Sparkle Appearance"; > = GLITTERSHARPNESS_DEFAULT;
 
 // --- Animation ---
-uniform float GlitterSpeed < ui_type = "slider"; ui_label = "Speed"; ui_tooltip = "Sets how quickly sparkles animate and move. Higher values increase animation speed."; ui_min = 0.1; ui_max = 1.5; ui_step = 0.05; ui_category = "Animation"; > = 0.8;
-uniform float GlitterLifetime < ui_type = "slider"; ui_label = "Lifetime"; ui_tooltip = "Determines how long each sparkle remains visible before fading out."; ui_min = 1.0; ui_max = 20.0; ui_step = 0.1; ui_category = "Animation"; > = 10.0;
-uniform float TimeScale < ui_type = "slider"; ui_label = "Time Scale"; ui_tooltip = "Scales the overall animation timing for all sparkles. Use to speed up or slow down the effect globally."; ui_min = 1.0; ui_max = 17.0; ui_step = 0.5; ui_category = "Animation"; > = 9.0;
+uniform float GlitterSpeed < ui_type = "slider"; ui_label = "Speed"; ui_tooltip = "Sets how quickly sparkles animate and move. Higher values increase animation speed."; ui_min = GLITTERSPEED_MIN; ui_max = GLITTERSPEED_MAX; ui_step = 0.05; ui_category = "Animation"; > = GLITTERSPEED_DEFAULT;
+uniform float GlitterLifetime < ui_type = "slider"; ui_label = "Lifetime"; ui_tooltip = "Determines how long each sparkle remains visible before fading out."; ui_min = GLITTERLIFETIME_MIN; ui_max = GLITTERLIFETIME_MAX; ui_step = 0.1; ui_category = "Animation"; > = GLITTERLIFETIME_DEFAULT;
+uniform float TimeScale < ui_type = "slider"; ui_label = "Time Scale"; ui_tooltip = "Scales the overall animation timing for all sparkles. Use to speed up or slow down the effect globally."; ui_min = TIMESCALE_MIN; ui_max = TIMESCALE_MAX; ui_step = 0.5; ui_category = "Animation"; > = TIMESCALE_DEFAULT;
 
 // --- Bloom Effect ---
 uniform bool EnableBloom < ui_label = "Bloom"; ui_tooltip = "Enables or disables the bloom (glow) effect around sparkles for a softer, more radiant look."; ui_category = "Bloom Effect"; > = true;
-uniform float BloomIntensity < ui_type = "slider"; ui_label = "Intensity"; ui_tooltip = "Controls how strong the bloom (glow) effect appears around sparkles."; ui_min = 0.1; ui_max = 3.1; ui_step = 0.05; ui_category = "Bloom Effect"; ui_spacing = 1; ui_bind = "EnableBloom"; > = 1.6;
-uniform float BloomRadius < ui_type = "slider"; ui_label = "Radius"; ui_tooltip = "Sets how far the bloom effect extends from each sparkle. Larger values create a wider glow."; ui_min = 1.0; ui_max = 10.2; ui_step = 0.2; ui_category = "Bloom Effect"; ui_bind = "EnableBloom"; > = 5.6;
-uniform float BloomDispersion < ui_type = "slider"; ui_label = "Dispersion"; ui_tooltip = "Adjusts how quickly the bloom fades at the edges. Higher values make the glow softer and more gradual."; ui_min = 1.0; ui_max = 3.0; ui_step = 0.05; ui_category = "Bloom Effect"; ui_bind = "EnableBloom"; > = 2.0;
+uniform float BloomIntensity < ui_type = "slider"; ui_label = "Intensity"; ui_tooltip = "Controls how strong the bloom (glow) effect appears around sparkles."; ui_min = BLOOMINTENSITY_MIN; ui_max = BLOOMINTENSITY_MAX; ui_step = 0.05; ui_category = "Bloom Effect"; ui_spacing = 1; ui_bind = "EnableBloom"; > = BLOOMINTENSITY_DEFAULT;
+uniform float BloomRadius < ui_type = "slider"; ui_label = "Radius"; ui_tooltip = "Sets how far the bloom effect extends from each sparkle. Larger values create a wider glow."; ui_min = BLOOMRADIUS_MIN; ui_max = BLOOMRADIUS_MAX; ui_step = 0.2; ui_category = "Bloom Effect"; ui_bind = "EnableBloom"; > = BLOOMRADIUS_DEFAULT;
+uniform float BloomDispersion < ui_type = "slider"; ui_label = "Dispersion"; ui_tooltip = "Adjusts how quickly the bloom fades at the edges. Higher values make the glow softer and more gradual."; ui_min = BLOOMDISPERSION_MIN; ui_max = BLOOMDISPERSION_MAX; ui_step = 0.05; ui_category = "Bloom Effect"; ui_bind = "EnableBloom"; > = BLOOMDISPERSION_DEFAULT;
 uniform int BloomQuality < ui_type = "combo"; ui_label = "Quality"; ui_tooltip = "Selects the quality level for the bloom effect. Higher quality reduces artifacts but may impact performance."; ui_items = "Potato\0Low\0Medium\0High\0Ultra\0AI Overlord\0"; ui_category = "Bloom Effect"; ui_bind = "EnableBloom"; > = 2;
 uniform bool BloomDither < ui_label = "Dither"; ui_tooltip = "Adds subtle noise to the bloom to reduce color banding and grid patterns."; ui_category = "Bloom Effect"; ui_bind = "EnableBloom"; > = true;
 
@@ -77,9 +114,9 @@ AS_AUDIO_SOURCE_UI(Listeningway_TimeScaleSource, "Time Source", AS_AUDIO_BEAT, "
 AS_AUDIO_MULTIPLIER_UI(Listeningway_TimeScaleBand1Multiplier, "Time Intensity", 1.0, 5.0, "Audio Reactivity")
 
 // --- Depth Masking ---
-uniform float NearPlane < ui_type = "slider"; ui_label = "Near"; ui_tooltip = "Controls the minimum distance from the camera where sparkles can appear. Lower values allow sparkles closer to the camera."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Depth Masking"; > = 0.0;
-uniform float FarPlane < ui_type = "slider"; ui_label = "Far"; ui_tooltip = "Controls the maximum distance from the camera where sparkles can appear. Lower values bring the cutoff closer."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Depth Masking"; > = 1.0;
-uniform float DepthCurve < ui_type = "slider"; ui_label = "Curve"; ui_tooltip = "Adjusts how quickly sparkles fade out with distance. Higher values make the fade sharper."; ui_min = 0.1; ui_max = 10.0; ui_step = 0.1; ui_category = "Depth Masking"; > = 1.0;
+uniform float NearPlane < ui_type = "slider"; ui_label = "Near"; ui_tooltip = "Controls the minimum distance from the camera where sparkles can appear. Lower values allow sparkles closer to the camera."; ui_min = NEARPLANE_MIN; ui_max = NEARPLANE_MAX; ui_step = 0.01; ui_category = "Depth Masking"; > = NEARPLANE_DEFAULT;
+uniform float FarPlane < ui_type = "slider"; ui_label = "Far"; ui_tooltip = "Controls the maximum distance from the camera where sparkles can appear. Lower values bring the cutoff closer."; ui_min = FARPLANE_MIN; ui_max = FARPLANE_MAX; ui_step = 0.01; ui_category = "Depth Masking"; > = FARPLANE_DEFAULT;
+uniform float DepthCurve < ui_type = "slider"; ui_label = "Curve"; ui_tooltip = "Adjusts how quickly sparkles fade out with distance. Higher values make the fade sharper."; ui_min = DEPTHCURVE_MIN; ui_max = DEPTHCURVE_MAX; ui_step = 0.1; ui_category = "Depth Masking"; > = DEPTHCURVE_DEFAULT;
 uniform bool AllowInfiniteCutoff < ui_label = "Infinite Cutoff"; ui_tooltip = "If enabled, sparkles can appear all the way to the horizon. If disabled, sparkles beyond the cutoff distance are hidden."; ui_category = "Depth Masking"; > = true;
 
 // --- Occlusion Control ---
@@ -104,13 +141,13 @@ uniform bool SkipFresnel < ui_label = " Skip Normal Reconstruction"; ui_tooltip 
 
 // --- Final Mix ---
 uniform int BlendMode < ui_type = "combo"; ui_label = "Mode"; ui_items = "Normal\0Lighter Only\0Darker Only\0Additive\0Multiply\0Screen\0"; ui_category = "Final Mix"; > = 0;
-uniform float BlendAmount < ui_type = "slider"; ui_label = "Strength"; ui_tooltip = "How strongly the effect is blended with the scene."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Final Mix"; > = 1.0;
+uniform float BlendAmount < ui_type = "slider"; ui_label = "Strength"; ui_tooltip = "How strongly the effect is blended with the scene."; ui_min = BLENDAMOUNT_MIN; ui_max = BLENDAMOUNT_MAX; ui_step = 0.01; ui_category = "Final Mix"; > = BLENDAMOUNT_DEFAULT;
 
 // --- Debug ---
 AS_DEBUG_MODE_UI("Off\0Depth\0Normals\0Sparkle Intensity\0Depth Mask\0Force Enable\0")
 
 // --- System Uniforms ---
-uniform int frameCount < source = "framecount"; >;
+
 
 // --- Textures and Samplers ---
 texture GlitterRT { 
@@ -417,7 +454,7 @@ float4 PS_RenderSparkles(float4 pos : SV_Position, float2 texcoord : TEXCOORD) :
                                                  Listeningway_TimeScaleBand1Multiplier / 333.33, 
                                                  EnableListeningway, 1); // Additive mode
     }
-    float time = AS_getTime(frameCount) * actualTimeScale;
+    float time = AS_getTime() * actualTimeScale;
     
     // Generate sparkles
     float positionHash = AS_hash21(floor(texcoord * 10.0)).x * 10.0;
@@ -576,7 +613,7 @@ float4 PS_BloomV(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Targ
 }
 
 // --- Technique Definition ---
-technique AS_Glitter < ui_label = "[AS] Glitter"; ui_tooltip = "Adds dynamic sparkles that pop in, glow, and fade out"; > {
+technique AS_Glitter < ui_label = "[AS] Cinematic: Glitter"; ui_tooltip = "Adds dynamic sparkles that pop in, glow, and fade out"; > {
     pass RenderSparkles { 
         VertexShader = PostProcessVS; 
         PixelShader = PS_RenderSparkles; 

@@ -1,5 +1,5 @@
 /**
- * AS_Mandala.1.fx - Audio-Reactive Mandala UV Meter Shader
+ * AS_CN-SpectrumRing.1.fx - Audio-Reactive Circular Frequency Visualizer
  * Author: Leon Aquitaine
  * License: Creative Commons Attribution 4.0 International
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
@@ -7,16 +7,16 @@
  * ===================================================================================
  *
  * DESCRIPTION:
- * This shader creates a stylized, audio-reactive mandala effect that acts as a UV meter using all available
- * Listeningway audio bands. The mandala is colored from blue (low) through red to orange/yellow (high),
- * and can be repeated and mirrored for various visual styles.
+ * This shader creates a stylized, audio-reactive circular frequency spectrum visualization that maps
+ * all available Listeningway audio bands to a ring display. The spectrum is colored from blue (low) 
+ * through red to orange/yellow (high), with customizable patterns and styles.
  *
  * FEATURES:
- * - Uses all Listeningway audio bands for a full-spectrum visualizer
+ * - Uses all Listeningway audio bands (up to 32) for a full-spectrum visualizer
  * - Color gradient from blue (low) to yellow (high) based on band intensity
  * - User-selectable number of repetitions (2-16)
  * - Pattern style: linear or mirrored
- * - Centered, circular mandala with smooth animation
+ * - Centered, circular visualization with smooth animation
  *
  * IMPLEMENTATION OVERVIEW:
  * 1. Divides a circle into segments, with each segment representing an audio frequency band
@@ -33,48 +33,63 @@
 #include "AS_Utils.1.fxh"
 
 // --- Tunable Constants ---
-static const int MAX_REPETITIONS = 8;
-static const int MIN_REPETITIONS = 1;
-static const float MIN_RADIUS = 0.1;
-static const float MAX_RADIUS = 0.5;
+static const int REPETITIONS_MIN = 1;
+static const int REPETITIONS_MAX = 8;
+static const int REPETITIONS_DEFAULT = 3;
+static const float RADIUS_MIN = 0.1;
+static const float RADIUS_MAX = 0.5;
+static const float RADIUS_DEFAULT = 0.25;
+static const float THICKNESS_MIN = 0.01;
+static const float THICKNESS_MAX = 0.15;
+static const float THICKNESS_DEFAULT = 0.05;
+static const float FADE_MIN = 0.0;
+static const float FADE_MAX = 0.2;
+static const float FADE_DEFAULT = 0.08;
+static const float BANDMULT_MIN = 0.0;
+static const float BANDMULT_MAX = 3.0;
+static const float BANDMULT_DEFAULT = 1.0;
+static const float EFFECTDEPTH_MIN = 0.0;
+static const float EFFECTDEPTH_MAX = 1.0;
+static const float EFFECTDEPTH_DEFAULT = 0.05;
+static const float BLENDSTRENGTH_MIN = 0.0;
+static const float BLENDSTRENGTH_MAX = 1.0;
+static const float BLENDSTRENGTH_DEFAULT = 1.0;
 
 // --- Palette & Style ---
-uniform int MandalaColorPattern < ui_type = "combo"; ui_label = "Color Pattern"; ui_items = "Rainbow\0Intensity Reds\0Intensity Blues\0Blue-White\0Black-White\0Fire\0Aqua\0Pastel\0Neon\0Viridis\0Transparent-White\0Transparent-Black\0"; ui_category = "Palette & Style"; > = 0;
-uniform bool MandalaInvertColors < ui_label = "Invert Colors"; ui_tooltip = "Invert the color pattern (reverse gradient direction)."; ui_category = "Palette & Style"; > = false;
+uniform int ColorPattern < ui_type = "combo"; ui_label = "Color Pattern"; ui_items = "Rainbow\0Intensity Reds\0Intensity Blues\0Blue-White\0Black-White\0Fire\0Aqua\0Pastel\0Neon\0Viridis\0Transparent-White\0Transparent-Black\0"; ui_category = "Palette & Style"; > = 0;
+uniform bool InvertColors < ui_label = "Invert Colors"; ui_tooltip = "Invert the color pattern (reverse gradient direction)."; ui_category = "Palette & Style"; > = false;
 
-// --- Mandala Appearance ---
-uniform int MandalaRepetitions < ui_type = "slider"; ui_label = "Repetitions"; ui_tooltip = "Number of mandala repetitions (actual repetitions = 2^value)."; ui_min = 1; ui_max = 8; ui_step = 1; ui_category = "Mandala Appearance"; > = 3;
-uniform int MandalaPattern < ui_type = "combo"; ui_label = "Pattern"; ui_items = "Linear\0Mirrored\0"; ui_category = "Mandala Appearance"; > = 0;
-uniform float MandalaRadius < ui_type = "slider"; ui_label = "Radius"; ui_tooltip = "Base radius of the mandala."; ui_min = 0.1; ui_max = 0.5; ui_step = 0.01; ui_category = "Mandala Appearance"; > = 0.25;
-uniform float MandalaThickness < ui_type = "slider"; ui_label = "Thickness"; ui_tooltip = "Thickness of the mandala pattern."; ui_min = 0.01; ui_max = 0.15; ui_step = 0.005; ui_category = "Mandala Appearance"; > = 0.05;
-uniform float MandalaFade < ui_type = "slider"; ui_label = "Fade"; ui_tooltip = "Edge fade for the mandala pattern."; ui_min = 0.0; ui_max = 0.2; ui_step = 0.01; ui_category = "Mandala Appearance"; > = 0.08;
-
-// --- Mandala Shape ---
-uniform int MandalaShape < ui_type = "combo"; ui_label = "Shape"; ui_items = "Screen-Relative\0Circular\0"; ui_category = "Shape & Transparency"; > = 0;
+// --- Effect-Specific Appearance ---
+uniform int Repetitions < ui_type = "slider"; ui_label = "Repetitions"; ui_tooltip = "Number of spectrum repetitions (actual repetitions = 2^value)."; ui_min = REPETITIONS_MIN; ui_max = REPETITIONS_MAX; ui_step = 1; ui_category = "Effect-Specific Appearance"; > = REPETITIONS_DEFAULT;
+uniform int PatternStyle < ui_type = "combo"; ui_label = "Pattern Style"; ui_items = "Linear\0Mirrored\0"; ui_category = "Effect-Specific Appearance"; > = 0;
+uniform float Radius < ui_type = "slider"; ui_label = "Radius"; ui_tooltip = "Base radius of the spectrum ring."; ui_min = RADIUS_MIN; ui_max = RADIUS_MAX; ui_step = 0.01; ui_category = "Effect-Specific Appearance"; > = RADIUS_DEFAULT;
+uniform float Thickness < ui_type = "slider"; ui_label = "Thickness"; ui_tooltip = "Thickness of the spectrum ring pattern."; ui_min = THICKNESS_MIN; ui_max = THICKNESS_MAX; ui_step = 0.005; ui_category = "Effect-Specific Appearance"; > = THICKNESS_DEFAULT;
+uniform float Fade < ui_type = "slider"; ui_label = "Fade"; ui_tooltip = "Edge fade for the spectrum ring pattern."; ui_min = FADE_MIN; ui_max = FADE_MAX; ui_step = 0.01; ui_category = "Effect-Specific Appearance"; > = FADE_DEFAULT;
+uniform int Shape < ui_type = "combo"; ui_label = "Shape"; ui_items = "Screen-Relative\0Circular\0"; ui_category = "Effect-Specific Appearance"; > = 0;
 
 // --- Audio Reactivity ---
-AS_LISTENINGWAY_UI_CONTROLS("Audio Reactivity")
-AS_AUDIO_SOURCE_UI(MandalaAlphaSource, "Transparency Source", AS_AUDIO_BEAT, "Audio Reactivity")
+AS_AUDIO_SOURCE_UI(AlphaSource, "Transparency Source", AS_AUDIO_BEAT, "Audio Reactivity")
+AS_AUDIO_SOURCE_UI(RadiusSource, "Radius Source", AS_AUDIO_BEAT, "Audio Reactivity")
+AS_AUDIO_MULTIPLIER_UI(RadiusMult, "Radius Impact", 0.5, 2.0, "Audio Reactivity")
+uniform int BandTarget < ui_type = "combo"; ui_label = "Band Target"; ui_tooltip = "What property to adjust based on band intensity"; ui_items = "Radius\0Thickness\0"; ui_category = "Audio Reactivity"; > = 0;
+uniform float BandMult < ui_type = "slider"; ui_label = "Band Impact"; ui_tooltip = "How strongly the selected frequency band affects the target property."; ui_min = BANDMULT_MIN; ui_max = BANDMULT_MAX; ui_step = 0.1; ui_category = "Audio Reactivity"; > = BANDMULT_DEFAULT;
 
 // --- Stage Distance ---
-uniform float MandalaDepth < ui_type = "slider"; ui_label = "Distance"; ui_tooltip = "Controls the reference depth for the mandala effect. Lower values bring the effect closer to the camera, higher values push it further back."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Stage Distance"; > = 0.05;
+uniform float EffectDepth < ui_type = "slider"; ui_label = "Effect Depth"; ui_tooltip = "Controls the reference depth for the spectrum ring effect. Lower values bring the effect closer to the camera, higher values push it further back."; ui_min = EFFECTDEPTH_MIN; ui_max = EFFECTDEPTH_MAX; ui_step = 0.01; ui_category = "Stage Distance"; > = EFFECTDEPTH_DEFAULT;
 
 // --- Final Mix ---
-uniform int BlendMode < ui_type = "combo"; ui_label = "Mode"; ui_items = "Normal\0Lighter Only\0Darker Only\0Additive\0Multiply\0Screen\0"; ui_category = "Final Mix"; > = 0;
-uniform float BlendAmount < ui_type = "slider"; ui_label = "Strength"; ui_tooltip = "How strongly the mandala effect is blended with the scene."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Final Mix"; > = 1.0;
+uniform int BlendMode < ui_type = "combo"; ui_label = "Blend Mode"; ui_items = "Normal\0Lighter Only\0Darker Only\0Additive\0Multiply\0Screen\0"; ui_category = "Final Mix"; > = 0;
+uniform float BlendStrength < ui_type = "slider"; ui_label = "Blend Strength"; ui_tooltip = "How strongly the spectrum ring effect is blended with the scene."; ui_min = BLENDSTRENGTH_MIN; ui_max = BLENDSTRENGTH_MAX; ui_step = 0.01; ui_category = "Final Mix"; > = BLENDSTRENGTH_DEFAULT;
 
 // --- Debug ---
 AS_DEBUG_MODE_UI("Off\0Bands\0")
 
-// --- System Uniforms ---
-uniform int frameCount < source = "framecount"; >;
-
 // --- Helper Functions ---
-namespace AS_Mandala {
+namespace AS_SpectrumRing {
     // Color gradient helper
     float3 bandColor(float t) {
-        if (MandalaInvertColors) t = 1.0 - t;
-        if (MandalaColorPattern == 0) {
+        if (InvertColors) t = 1.0 - t;
+        if (ColorPattern == 0) {
             // Rainbow
             float3 c0 = float3(0.2, 0.4, 1.0);   // Blue
             float3 c1 = float3(0.0, 0.8, 1.0);   // Cyan
@@ -94,7 +109,7 @@ namespace AS_Mandala {
             else if (seg < 6.0) return lerp(c5, c6, seg - 5.0);
             else if (seg < 7.0) return lerp(c6, c7, seg - 6.0);
             else return lerp(c7, c8, (t - 1.0) * 8.0 + 1.0);
-        } else if (MandalaColorPattern == 1) {
+        } else if (ColorPattern == 1) {
             // Intensity Reds
             float3 c0 = float3(0.2, 0.0, 0.0); // Dark red
             float3 c1 = float3(0.6, 0.1, 0.1); // Medium red
@@ -104,7 +119,7 @@ namespace AS_Mandala {
             if (seg < 1.0) return lerp(c0, c1, seg);
             else if (seg < 2.0) return lerp(c1, c2, seg - 1.0);
             else return lerp(c2, c3, seg - 2.0);
-        } else if (MandalaColorPattern == 2) {
+        } else if (ColorPattern == 2) {
             // Intensity Blues
             float3 c0 = float3(0.0, 0.0, 0.2); // Dark blue
             float3 c1 = float3(0.0, 0.2, 0.6); // Medium blue
@@ -114,13 +129,13 @@ namespace AS_Mandala {
             if (seg < 1.0) return lerp(c0, c1, seg);
             else if (seg < 2.0) return lerp(c1, c2, seg - 1.0);
             else return lerp(c2, c3, seg - 2.0);
-        } else if (MandalaColorPattern == 3) {
+        } else if (ColorPattern == 3) {
             // Blue to White
             return lerp(float3(0.2, 0.4, 1.0), float3(1.0, 1.0, 1.0), t);
-        } else if (MandalaColorPattern == 4) {
+        } else if (ColorPattern == 4) {
             // Black to White
             return lerp(float3(0.0, 0.0, 0.0), float3(1.0, 1.0, 1.0), t);
-        } else if (MandalaColorPattern == 5) {
+        } else if (ColorPattern == 5) {
             // Fire (dark red -> orange -> yellow -> white)
             float3 c0 = float3(0.2, 0.0, 0.0);
             float3 c1 = float3(0.8, 0.2, 0.0);
@@ -132,7 +147,7 @@ namespace AS_Mandala {
             else if (seg < 2.0) return lerp(c1, c2, seg - 1.0);
             else if (seg < 3.0) return lerp(c2, c3, seg - 2.0);
             else return lerp(c3, c4, seg - 3.0);
-        } else if (MandalaColorPattern == 6) {
+        } else if (ColorPattern == 6) {
             // Aqua (deep blue -> cyan -> aqua -> white)
             float3 c0 = float3(0.0, 0.2, 0.4);
             float3 c1 = float3(0.0, 0.8, 1.0);
@@ -142,7 +157,7 @@ namespace AS_Mandala {
             if (seg < 1.0) return lerp(c0, c1, seg);
             else if (seg < 2.0) return lerp(c1, c2, seg - 1.0);
             else return lerp(c2, c3, seg - 2.0);
-        } else if (MandalaColorPattern == 7) {
+        } else if (ColorPattern == 7) {
             // Pastel (soft blue -> pink -> yellow -> mint)
             float3 c0 = float3(0.7, 0.8, 1.0);
             float3 c1 = float3(1.0, 0.7, 0.9);
@@ -152,7 +167,7 @@ namespace AS_Mandala {
             if (seg < 1.0) return lerp(c0, c1, seg);
             else if (seg < 2.0) return lerp(c1, c2, seg - 1.0);
             else return lerp(c2, c3, seg - 2.0);
-        } else if (MandalaColorPattern == 8) {
+        } else if (ColorPattern == 8) {
             // Neon (magenta -> blue -> green -> yellow)
             float3 c0 = float3(1.0, 0.0, 1.0);
             float3 c1 = float3(0.2, 0.2, 1.0);
@@ -162,7 +177,7 @@ namespace AS_Mandala {
             if (seg < 1.0) return lerp(c0, c1, seg);
             else if (seg < 2.0) return lerp(c1, c2, seg - 1.0);
             else return lerp(c2, c3, seg - 2.0);
-        } else if (MandalaColorPattern == 9) {
+        } else if (ColorPattern == 9) {
             // Viridis (dark blue -> green -> yellow)
             float3 c0 = float3(0.2, 0.2, 0.4);
             float3 c1 = float3(0.2, 0.8, 0.4);
@@ -170,36 +185,38 @@ namespace AS_Mandala {
             float seg = t * 2.0;
             if (seg < 1.0) return lerp(c0, c1, seg);
             else return lerp(c1, c2, seg - 1.0);
-        } else if (MandalaColorPattern == 10) {
+        } else if (ColorPattern == 10) {
             // Transparent to White (color is always white, but alpha is t)
             return float3(1.0, 1.0, 1.0);
-        } else if (MandalaColorPattern == 11) {
+        } else if (ColorPattern == 11) {
             // Transparent to Black (color is always black, but alpha is t)
             return float3(0.0, 0.0, 0.0);
         }
         return float3(1.0, 1.0, 1.0);
     }
-}
+} // End namespace AS_SpectrumRing
 
 // --- Main Effect ---
-float4 PS_Mandala(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target {
+float4 PS_SpectrumRing(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target {
     // Get original color and apply depth cutoff
     float4 orig = tex2D(ReShade::BackBuffer, texcoord);
     float sceneDepth = ReShade::GetLinearizedDepth(texcoord);
     
-    if (sceneDepth < MandalaDepth - 0.0005)
+    if (sceneDepth < EffectDepth - 0.0005)
         return orig;
     
-    // Calculate mandala position and coordinates
+    // Calculate spectrum ring position and coordinates
     float2 center = float2(0.5, 0.5);
     float2 uv = texcoord - center;
     float2 screen = float2(BUFFER_WIDTH, BUFFER_HEIGHT);
     float aspect = screen.x / screen.y;
     float dist;
-    float time = AS_getTime(frameCount);
+    
+    // Always show at least something in debug mode, even without Listeningway
+    bool debugMode = (DebugMode == 1);
     
     // Handle different shape modes
-    if (MandalaShape == 1) {
+    if (Shape == 1) {
         // Circular mode - adjust for aspect ratio
         float minDim = min(screen.x, screen.y);
         float2 uv_circ = float2(uv.x * screen.x / minDim, uv.y * screen.y / minDim);
@@ -213,18 +230,18 @@ float4 PS_Mandala(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Tar
     float angle = atan2(uv.y, uv.x);
     
     // Calculate repetitions and total number of bars
-    int realRepetitions = 1 << MandalaRepetitions;
+    int realRepetitions = 1 << Repetitions;
     
-    // Map angle to bar index using our utility function
-    float barStep = 6.2831853 / float(realRepetitions * AS_getNumFrequencyBands());
+    // Map angle to bar index
+    float barStep = 6.2831853 / float(realRepetitions * max(1, AS_getNumFrequencyBands()));
     float barIdxF = AS_mod(angle + 3.1415926, 6.2831853) / barStep;
     int barIdx = int(floor(barIdxF));
     
     // Calculate frequency index based on pattern type
     int freqIdx;
-    int numBands = AS_getNumFrequencyBands();
+    int numBands = max(1, min(AS_getNumFrequencyBands(), 32)); // Ensure at least 1 band
     
-    if (MandalaPattern == 0) {
+    if (PatternStyle == 0) {
         // Linear pattern - simple modulo
         freqIdx = barIdx % numBands;
     } else {
@@ -238,49 +255,74 @@ float4 PS_Mandala(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Tar
         }
     }
     
-    // Get audio band value using our safety function
-    float bandValue = AS_getFrequencyBand(freqIdx);
+    // Get audio band value, fallback to 0.5 in debug mode if no Listeningway
+    float bandValue = 0.0;
     
-    // Calculate radius and thickness
-    float radius = MandalaRadius + bandValue * 0.18;
-    float thickness = MandalaThickness + bandValue * 0.04;
-    float fade = MandalaFade;
+    // Fallback for debugging
+    if (debugMode) {
+        // Generate a simple pattern for debugging
+        bandValue = sin(freqIdx * 0.5 + AS_getTime() * 2.0) * 0.5 + 0.5;
+    } else {
+        #if defined(LISTENINGWAY_INSTALLED)
+            // Direct access to Listeningway frequency band data
+            bandValue = Listeningway_FreqBands[min(freqIdx, LISTENINGWAY_NUM_BANDS-1)];
+        #else
+            // Use simple sin wave pattern when Listeningway is not available
+            bandValue = abs(sin(angle * realRepetitions + AS_getTime()));
+        #endif
+    }
+    
+    // Apply audio reactivity to radius
+    float audioRadius = max(0.1, AS_getAudioSource(RadiusSource));
+    float radius = Radius * (1.0 + audioRadius * RadiusMult);
+    
+    // Apply band intensity to selected target property for this specific band
+    float thickness = Thickness;
+    if (BandTarget == 0) {
+        // Apply to radius - each band affects its own segment
+        radius *= (1.0 + bandValue * BandMult);
+    } else if (BandTarget == 1) {
+        // Apply to thickness - each band affects its own segment
+        thickness *= (1.0 + bandValue * BandMult);
+    }
     
     // Create ring shape with smooth edges
     float edge = smoothstep(radius, radius + thickness, dist) * 
-                (1.0 - smoothstep(radius + thickness, radius + thickness + fade, dist));
+                (1.0 - smoothstep(radius + thickness, radius + thickness + Fade, dist));
     
     // Apply shape mask if in circular mode
     float mask = 1.0;
-    if (MandalaShape == 1) {
-        float maxR = MandalaRadius + 0.18 + MandalaThickness + MandalaFade;
+    if (Shape == 1) {
+        float maxR = Radius + 0.18 + Thickness + Fade;
         mask = 1.0 - smoothstep(maxR, maxR + 0.05, dist);
     }
     
     // Get color based on band value
-    float3 color = AS_Mandala::bandColor(bandValue);
+    float3 color = AS_SpectrumRing::bandColor(bandValue);
     
-    // Handle audio-reactive transparency
-    float alpha = AS_getAudioSource(MandalaAlphaSource);
+    // Handle audio-reactive transparency - ensure minimum value for visibility
+    float alpha = max(0.5, AS_getAudioSource(AlphaSource));
     
     // Special handling for transparent color patterns
-    if (MandalaColorPattern == 10 || MandalaColorPattern == 11) {
-        alpha *= bandValue;
+    if (ColorPattern == 10 || ColorPattern == 11) {
+        alpha *= max(0.3, bandValue);
     }
     
-    // Debug mode - show band value
-    if (DebugMode == 1) return float4(bandValue.xxx, 1.0);
+    // Debug mode - show band value with color
+    if (debugMode) {
+        return float4(color * bandValue, 1.0);
+    }
     
     // Apply blend mode and blend amount
     float3 blended = AS_blendResult(orig.rgb, color, BlendMode);
-    float blendAlpha = edge * mask * alpha * BlendAmount;
+    float blendAlpha = edge * mask * alpha * BlendStrength;
     
     return float4(lerp(orig.rgb, blended, blendAlpha), 1.0);
 }
 
-technique AS_Mandala < ui_label = "[AS] Mandala"; ui_tooltip = "Audio-reactive mandala UV meter using all audio bands."; > {
+technique AS_SpectrumRing < ui_label = "[AS] Cinematic: Spectrum Ring"; ui_tooltip = "Audio-reactive spectrum ring UV meter using all audio bands."; > {
     pass {
         VertexShader = PostProcessVS;
-        PixelShader = PS_Mandala;
+        PixelShader = PS_SpectrumRing;
     }
 }

@@ -1,5 +1,5 @@
 /**
- * AS_Warp.1.fx - Audio-Reactive Circular Mirror Effect
+ * AS_CN-Warp.1.fx - Audio-Reactive Circular Mirror Effect
  * Author: Leon Aquitaine
  * License: Creative Commons Attribution 4.0 International
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
@@ -37,13 +37,14 @@
 uniform float MirrorCenterX < ui_type = "slider"; ui_label = "X (Horizontal)"; ui_tooltip = "Horizontal position of the mirror center (0 = left, 1 = right)."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Position"; > = 0.5;
 uniform float MirrorCenterY < ui_type = "slider"; ui_label = "Y (Vertical)"; ui_tooltip = "Vertical position of the mirror center (0 = top, 1 = bottom)."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Position"; > = 0.5;
 
+uniform int MirrorShape < ui_type = "combo"; ui_label = "Shape"; ui_items = "Screen-Relative\0Circular\0"; ui_category = "Audio Mirror"; > = 0;
 uniform float MirrorBaseRadius < ui_type = "slider"; ui_label = "Base Radius"; ui_tooltip = "Base radius of the mirror circle."; ui_min = 0.05; ui_max = 0.5; ui_step = 0.01; ui_category = "Audio Mirror"; > = 0.18;
 uniform float MirrorWaveFreq < ui_type = "slider"; ui_label = "Wave Freq"; ui_tooltip = "Frequency of the wave/ripple effect."; ui_min = 1.0; ui_max = 20.0; ui_step = 0.1; ui_category = "Audio Mirror"; > = 8.0;
 uniform float MirrorWaveStrength < ui_type = "slider"; ui_label = "Wave Strength"; ui_tooltip = "Strength of the wave/ripple distortion."; ui_min = 0.0; ui_max = 0.2; ui_step = 0.005; ui_category = "Audio Mirror"; > = 0.06;
 uniform float MirrorEdgeSoftness < ui_type = "slider"; ui_label = "Edge Softness"; ui_tooltip = "Softness of the mirror's edge (fade out)."; ui_min = 0.0; ui_max = 0.2; ui_step = 0.005; ui_category = "Audio Mirror"; > = 0.08;
 uniform float MirrorReflectStrength < ui_type = "slider"; ui_label = "Mirror Strength"; ui_tooltip = "How strongly the mirror distorts the scene (1 = full mirror, 0 = no effect)."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Audio Mirror"; > = 0.85;
 uniform float MirrorDepth < ui_type = "slider"; ui_label = "Depth"; ui_tooltip = "Controls the reference depth for the mirror effect. Lower values bring the effect closer to the camera, higher values push it further back."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Audio Mirror"; > = 0.05;
-uniform int MirrorShape < ui_type = "combo"; ui_label = "Shape"; ui_items = "Screen-Relative\0Circular\0"; ui_category = "Audio Mirror"; > = 0;
+uniform float BlendAmount < ui_type = "slider"; ui_label = "Amount"; ui_tooltip = "How strongly the effect is blended with the scene."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Blend"; > = 1.0;
 
 // --- Listeningway Integration ---
 AS_LISTENINGWAY_UI_CONTROLS("Listeningway Integration")
@@ -61,19 +62,12 @@ uniform int BlendMode <
     ui_items = "Normal\0Lighter Only\0Darker Only\0Additive\0Multiply\0Screen\0";
     ui_category = "Blend";
 > = 0;
-uniform float BlendAmount <
-    ui_type = "slider";
-    ui_label = "Amount";
-    ui_tooltip = "How strongly the effect is blended with the scene.";
-    ui_min = 0.0; ui_max = 1.0; ui_step = 0.01;
-    ui_category = "Blend";
-> = 1.0;
 
 // --- Debug ---
 AS_DEBUG_MODE_UI("Off\0Audio Levels\0Warp Pattern\0")
 
 // --- Main Effect ---
-uniform int frameCount < source = "framecount"; >;
+
 
 float4 PS_AudioMirror(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target {
     float2 center = float2(MirrorCenterX, MirrorCenterY);
@@ -95,7 +89,7 @@ float4 PS_AudioMirror(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV
     float radius = MirrorBaseRadius + audio * MirrorRadiusAudioMult;
     float edge = smoothstep(radius, radius + MirrorEdgeSoftness, dist);
     float mask = 1.0 - edge;
-    float time = AS_getTime(frameCount);
+    float time = AS_getTime();
     float wave = sin(dist * MirrorWaveFreq * 6.2831 + time * 2.0) * (MirrorWaveStrength + waveAudio * MirrorWaveAudioMult);
     float2 mirrorCoord = center + dir * (radius - (dist - wave));
     float2 reflected = center + (texcoord - center) * -1.0 + 2.0 * (dir * radius);
@@ -113,7 +107,7 @@ float4 PS_AudioMirror(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV
     return float4(result, orig.a);
 }
 
-technique AS_Warp < ui_label = "[AS] Warp"; ui_tooltip = "Circular mirrored effect that pulses and waves with music."; > {
+technique AS_Warp < ui_label = "[AS] Cinematic: Warp"; ui_tooltip = "Circular mirrored effect that pulses and waves with music."; > {
     pass {
         VertexShader = PostProcessVS;
         PixelShader = PS_AudioMirror;
