@@ -25,11 +25,16 @@
 ## Available Shaders
 
 This package includes the following shaders:
-- AS_Glitter - Adds sparkle and glitter effects
-- AS_HologramGlitch - Creates hologram-style visual distortions
-- AS_LavaLamp - Simulates lava lamp fluid motion effects
-- AS_Mandala - Generates mandala-style geometric patterns
-- AS_MV-MotionTrails - Creates music-reactive, depth-based motion trails for dramatic visual effects
-- AS_RS-LightWall - Simulates concert light wall effects
-- AS_RS-Spotlights - Adds dynamic spotlight effects
-- AS_Warp - Creates various warping visual effects
+
+**Stage Lighting & Ambiance:**
+- **AS_RS-LightWall** - Generates configurable grids of light panels with diverse patterns
+- **AS_RS-Spotlights** - Adds up to 3 customizable directional stage lights
+
+**Creative Effects (CN):**
+- **AS_CN-DigitalGlitch** - Applies audio-driven digital artifacts and hologram effects
+- **AS_CN-Glitter** - Creates a realistic, dynamic sparkle effect on surfaces
+- **AS_CN-MotionTrails** - Creates music-reactive, depth-based motion trails
+- **AS_CN-PlasmaFlow** - Generates smooth, swirling, organic plasma-like patterns
+- **AS_CN-SpectrumRing** - Generates a stylized, circular audio visualizer
+- **AS_CN-StencilMask** - Isolates foreground subjects with customizable borders
+- **AS_CN-Warp** - Creates a circular mirrored or wavy region that reacts to audio
