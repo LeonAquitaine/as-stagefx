@@ -76,7 +76,9 @@ AS-StageFX includes a variety of distinct visual effects:
   <tr>
     <td width="50%"><strong>CN: Motion Trails</strong> (<code>AS_CN-MotionTrails.1.fx</code>)<br>
       Creates music-reactive, depth-based motion trails for dramatic visual effects in videos and screenshots.<br><em>Technique: [AS] Cinematic: Motion Trails</em></td>
-    <td width="50%"><div style="text-align:center"><img src="https://github.com/user-attachments/assets/PLACEHOLDER-MOTIONTRAILS.gif" alt="Motion Trails Effect" style="max-width:100%;"></div></td>
+    <td width="50%"><div style="text-align:center">
+      <img src="https://github.com/user-attachments/assets/1b7a2750-89be-424b-b149-4d850692d9f8" alt="Motion Trails Effect" style="max-width:100%;">
+    </div></td>
   </tr>
   <tr>
     <td width="50%"><strong>CN: Plasma Flow</strong> (<code>AS_CN-PlasmaFlow.1.fx</code>)<br>
