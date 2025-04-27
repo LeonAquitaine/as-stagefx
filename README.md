@@ -45,26 +45,33 @@ AS-StageFX includes a variety of distinct visual effects:
   <tr>
     <td width="50%"><strong>RS: Light Wall</strong> (<code>AS_RS-LightWall.1.fx</code>)<br>
       Generate configurable grids of light panels with diverse patterns, 3D perspective, audio reactivity, and customizable color palettes. Perfect for backdrops.</td>
-    <td width="50%"><div style="text-align:center"><img src="https://github.com/user-attachments/assets/PLACEHOLDER-LIGHTWALL.gif" alt="Light Wall Effect" style="max-width:100%;"></div></td>
+    <td width="50%"><div style="text-align:center">
+      <img src="https://github.com/user-attachments/assets/ece86ab7-36f1-459c-8c83-31414c3b5cc3" alt="Light Wall Effect" style="max-width:100%;">
+    </div></td>
   </tr>
   <tr>
     <td width="50%"><strong>RS: Spotlights</strong> (<code>AS_RS-Spotlights.1.fx</code>)<br>
       Add up to 3 customizable directional stage lights with realistic beam/glow effects, depth masking, and audio-reactive intensity and movement.<br><em>Technique: [AS] Rock Stage: Spotlights</em></td>
-    <td width="50%"><div style="text-align:center"><img src="https://github.com/user-attachments/assets/PLACEHOLDER-SPOTLIGHTS.gif" alt="Spotlights Effect" style="max-width:100%;"></div></td>
+    <td width="50%"><div style="text-align:center">
+      <img src="https://github.com/user-attachments/assets/73e1081b-147e-4355-b867-d4964238245b" alt="Spotlights Effect" style="max-width:100%;">
+    </div></td>
   </tr>
-  
   <tr>
     <th colspan="2"><strong>Cinematic Effects (CN)</strong></th>
   </tr>
   <tr>
     <td width="50%"><strong>CN: Digital Glitch</strong> (<code>AS_CN-DigitalGlitch.1.fx</code>)<br>
       Applies audio-driven digital artifacts, glitches and hologram effects, including scanlines, RGB split, jitter, and pulsing synced to music.</td>
-    <td width="50%"><div style="text-align:center"><img src="https://github.com/user-attachments/assets/PLACEHOLDER-DIGITALGLITCH.gif" alt="Digital Glitch Effect" style="max-width:100%;"></div></td>
+    <td width="50%"><div style="text-align:center">
+      <img src="https://github.com/user-attachments/assets/6786cb0a-f2c7-4d82-8584-1c669c7513ea" alt="Digital Glitch Effect" style="max-width:100%;">
+    </div></td>
   </tr>
   <tr>
     <td width="50%"><strong>CN: Glitter</strong> (<code>AS_CN-Glitter.1.fx</code>)<br>
       Creates a realistic, dynamic sparkle effect on surfaces that responds to scene lighting, depth, camera movement, and audio. Includes bloom and fresnel effects.</td>
-    <td width="50%"><div style="text-align:center"><img src="https://github.com/user-attachments/assets/PLACEHOLDER-GLITTER.gif" alt="Glitter Effect" style="max-width:100%;"></div></td>
+    <td width="50%"><div style="text-align:center">
+      <img src="https://github.com/user-attachments/assets/a0998834-4795-414e-a685-9c7ab685a515" alt="Glitter Effect" style="max-width:100%;">
+    </div></td>
   </tr>
   <tr>
     <td width="50%"><strong>CN: Motion Trails</strong> (<code>AS_CN-MotionTrails.1.fx</code>)<br>
