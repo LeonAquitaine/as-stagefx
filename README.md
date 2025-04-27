@@ -38,24 +38,76 @@ Most shaders feature seamless integration with **[Listeningway](https://github.c
 
 AS-StageFX includes a variety of distinct visual effects:
 
-**Stage Lighting & Ambiance:**
-* **RS: Light Wall (`AS_RS-LightWall.1.fx`):** Generate configurable grids of light panels with diverse patterns, 3D perspective, audio reactivity, and customizable color palettes. Perfect for backdrops.
-* **RS: Spotlights (`AS_RS-Spotlights.1.fx`):** Add up to 3 customizable directional stage lights with realistic beam/glow effects, depth masking, and audio-reactive intensity and movement. (Technique: [AS] Rock Stage: Spotlights)
+<table>
+  <tr>
+    <th colspan="2"><strong>Stage Lighting & Ambiance (RS)</strong></th>
+  </tr>
+  <tr>
+    <td width="50%"><strong>RS: Light Wall</strong> (<code>AS_RS-LightWall.1.fx</code>)<br>
+      Generate configurable grids of light panels with diverse patterns, 3D perspective, audio reactivity, and customizable color palettes. Perfect for backdrops.</td>
+    <td width="50%"><div style="text-align:center"><img src="https://github.com/user-attachments/assets/PLACEHOLDER-LIGHTWALL.gif" alt="Light Wall Effect" style="max-width:100%;"></div></td>
+  </tr>
+  <tr>
+    <td width="50%"><strong>RS: Spotlights</strong> (<code>AS_RS-Spotlights.1.fx</code>)<br>
+      Add up to 3 customizable directional stage lights with realistic beam/glow effects, depth masking, and audio-reactive intensity and movement.<br><em>Technique: [AS] Rock Stage: Spotlights</em></td>
+    <td width="50%"><div style="text-align:center"><img src="https://github.com/user-attachments/assets/PLACEHOLDER-SPOTLIGHTS.gif" alt="Spotlights Effect" style="max-width:100%;"></div></td>
+  </tr>
+  
+  <tr>
+    <th colspan="2"><strong>Cinematic Effects (CN)</strong></th>
+  </tr>
+  <tr>
+    <td width="50%"><strong>CN: Digital Glitch</strong> (<code>AS_CN-DigitalGlitch.1.fx</code>)<br>
+      Applies audio-driven digital artifacts, glitches and hologram effects, including scanlines, RGB split, jitter, and pulsing synced to music.</td>
+    <td width="50%"><div style="text-align:center"><img src="https://github.com/user-attachments/assets/PLACEHOLDER-DIGITALGLITCH.gif" alt="Digital Glitch Effect" style="max-width:100%;"></div></td>
+  </tr>
+  <tr>
+    <td width="50%"><strong>CN: Glitter</strong> (<code>AS_CN-Glitter.1.fx</code>)<br>
+      Creates a realistic, dynamic sparkle effect on surfaces that responds to scene lighting, depth, camera movement, and audio. Includes bloom and fresnel effects.</td>
+    <td width="50%"><div style="text-align:center"><img src="https://github.com/user-attachments/assets/PLACEHOLDER-GLITTER.gif" alt="Glitter Effect" style="max-width:100%;"></div></td>
+  </tr>
+  <tr>
+    <td width="50%"><strong>CN: Motion Trails</strong> (<code>AS_CN-MotionTrails.1.fx</code>)<br>
+      Creates music-reactive, depth-based motion trails for dramatic visual effects in videos and screenshots.<br><em>Technique: [AS] Cinematic: Motion Trails</em></td>
+    <td width="50%"><div style="text-align:center"><img src="https://github.com/user-attachments/assets/PLACEHOLDER-MOTIONTRAILS.gif" alt="Motion Trails Effect" style="max-width:100%;"></div></td>
+  </tr>
+  <tr>
+    <td width="50%"><strong>CN: Plasma Flow</strong> (<code>AS_CN-PlasmaFlow.1.fx</code>)<br>
+      Generates smooth, swirling, organic plasma-like patterns reminiscent of a lava lamp but more fluid and customizable, ideal for atmospheric visuals in music videos.</td>
+    <td width="50%"><div style="text-align:center"><img src="https://github.com/user-attachments/assets/PLACEHOLDER-PLASMAFLOW.gif" alt="Plasma Flow Effect" style="max-width:100%;"></div></td>
+  </tr>
+  <tr>
+    <td width="50%"><strong>CN: Spectrum Ring</strong> (<code>AS_CN-SpectrumRing.1.fx</code>)<br>
+      Generates a stylized, circular audio visualizer that displays all Listeningway frequency bands, with repetitions and mirroring options.</td>
+    <td width="50%"><div style="text-align:center"><img src="https://github.com/user-attachments/assets/PLACEHOLDER-SPECTRUMRING.gif" alt="Spectrum Ring Effect" style="max-width:100%;"></div></td>
+  </tr>
+  <tr>
+    <td width="50%"><strong>CN: Stencil Mask</strong> (<code>AS_CN-StencilMask.1.fx</code>)<br>
+      Isolates foreground subjects based on depth and applies customizable borders and projected shadows, with options for border styles and audio reactivity.</td>
+    <td width="50%"><div style="text-align:center"><img src="https://github.com/user-attachments/assets/PLACEHOLDER-STENCILMASK.gif" alt="Stencil Mask Effect" style="max-width:100%;"></div></td>
+  </tr>
+  <tr>
+    <td width="50%"><strong>CN: Warp</strong> (<code>AS_CN-Warp.1.fx</code>)<br>
+      Creates a circular mirrored or wavy region (often behind a character) that pulses, changes radius, and ripples/warps in sync with audio.</td>
+    <td width="50%"><div style="text-align:center"><img src="https://github.com/user-attachments/assets/PLACEHOLDER-WARP.gif" alt="Warp Effect" style="max-width:100%;"></div></td>
+  </tr>
+</table>
 
-**Cinematic Effects (CN):**
-* **CN: Digital Glitch (`AS_CN-DigitalGlitch.1.fx`):** Applies audio-driven digital artifacts, glitches and hologram effects, including scanlines, RGB split, jitter, and pulsing synced to music.
-* **CN: Glitter (`AS_CN-Glitter.1.fx`):** Creates a realistic, dynamic sparkle effect on surfaces that responds to scene lighting, depth, camera movement, and audio. Includes bloom and fresnel effects.
-* **CN: Motion Trails (`AS_CN-MotionTrails.1.fx`):** Creates music-reactive, depth-based motion trails for dramatic visual effects in videos and screenshots. (Technique: [AS] Cinematic: Motion Trails)
-* **CN: Plasma Flow (`AS_CN-PlasmaFlow.1.fx`):** Generates smooth, swirling, organic plasma-like patterns reminiscent of a lava lamp but more fluid and customizable, ideal for atmospheric visuals in music videos.
-* **CN: Spectrum Ring (`AS_CN-SpectrumRing.1.fx`):** Generates a stylized, circular audio visualizer that displays all Listeningway frequency bands, with repetitions and mirroring options.
-* **CN: Stencil Mask (`AS_CN-StencilMask.1.fx`):** Isolates foreground subjects based on depth and applies customizable borders and projected shadows, with options for border styles and audio reactivity.
-* **CN: Warp (`AS_CN-Warp.1.fx`):** Creates a circular mirrored or wavy region (often behind a character) that pulses, changes radius, and ripples/warps in sync with audio.
-
-**Core Capabilities:**
-* **Deep Audio Integration:** Most effects leverage **[Listeningway](https://github.com/gposingway/Listeningway)**, allowing various parameters (intensity, speed, size, color, etc.) to react dynamically to volume, beat, bass, treble, or specific frequency bands.
-* **Depth-Aware Effects:** Many shaders intelligently interact with scene geometry (using the depth buffer) for natural integration, masking, and occlusion.
-* **Customization:** Offers extensive controls for colors, intensity, speed, positioning, blend modes, and audio source selection per effect.
-* **Shared Utilities (`AS_Utils.1.fxh`):** Uses a common backend for blend modes, audio processing, color palettes, and timing, ensuring consistency.
+<table>
+  <tr>
+    <th><strong>Core Capabilities</strong></th>
+  </tr>
+  <tr>
+    <td>
+      <ul>
+        <li><strong>Deep Audio Integration:</strong> Most effects leverage <strong><a href="https://github.com/gposingway/Listeningway">Listeningway</a></strong>, allowing various parameters (intensity, speed, size, color, etc.) to react dynamically to volume, beat, bass, treble, or specific frequency bands.</li>
+        <li><strong>Depth-Aware Effects:</strong> Many shaders intelligently interact with scene geometry (using the depth buffer) for natural integration, masking, and occlusion.</li>
+        <li><strong>Customization:</strong> Offers extensive controls for colors, intensity, speed, positioning, blend modes, and audio source selection per effect.</li>
+        <li><strong>Shared Utilities:</strong> Uses a common backend (<code>AS_Utils.1.fxh</code>) for blend modes, audio processing, color palettes, and timing, ensuring consistency.</li>
+      </ul>
+    </td>
+  </tr>
+</table>
 
 ---
 
