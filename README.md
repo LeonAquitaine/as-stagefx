@@ -74,22 +74,30 @@ AS-StageFX includes a variety of distinct visual effects:
   <tr>
     <td width="50%"><strong>CN: Plasma Flow</strong> (<code>AS_CN-PlasmaFlow.1.fx</code>)<br>
       Generates smooth, swirling, organic plasma-like patterns reminiscent of a lava lamp but more fluid and customizable, ideal for atmospheric visuals in music videos.</td>
-    <td width="50%"><div style="text-align:center"><img src="https://github.com/user-attachments/assets/PLACEHOLDER-PLASMAFLOW.gif" alt="Plasma Flow Effect" style="max-width:100%;"></div></td>
+    <td width="50%"><div style="text-align:center">
+      <img src="https://github.com/user-attachments/assets/ba95325d-eff0-439e-a452-567675da84fe" alt="Plasma Flow Effect" style="max-width:100%;">
+    </div></td>
   </tr>
   <tr>
     <td width="50%"><strong>CN: Spectrum Ring</strong> (<code>AS_CN-SpectrumRing.1.fx</code>)<br>
       Generates a stylized, circular audio visualizer that displays all Listeningway frequency bands, with repetitions and mirroring options.</td>
-    <td width="50%"><div style="text-align:center"><img src="https://github.com/user-attachments/assets/PLACEHOLDER-SPECTRUMRING.gif" alt="Spectrum Ring Effect" style="max-width:100%;"></div></td>
+    <td width="50%"><div style="text-align:center">
+      <img src="https://github.com/user-attachments/assets/e193b002-d3aa-4d86-8584-7eb667f6ff6c" alt="Spectrum Ring Effect" style="max-width:100%;">
+    </div></td>
   </tr>
   <tr>
     <td width="50%"><strong>CN: Stencil Mask</strong> (<code>AS_CN-StencilMask.1.fx</code>)<br>
       Isolates foreground subjects based on depth and applies customizable borders and projected shadows, with options for border styles and audio reactivity.</td>
-    <td width="50%"><div style="text-align:center"><img src="https://github.com/user-attachments/assets/PLACEHOLDER-STENCILMASK.gif" alt="Stencil Mask Effect" style="max-width:100%;"></div></td>
+    <td width="50%"><div style="text-align:center">
+      <img src="https://github.com/user-attachments/assets/98097147-0a9e-40ac-ae21-0b19e5241c91" alt="Stencil Mask Effect" style="max-width:100%;">
+  </div></td>
   </tr>
   <tr>
     <td width="50%"><strong>CN: Warp</strong> (<code>AS_CN-Warp.1.fx</code>)<br>
       Creates a circular mirrored or wavy region (often behind a character) that pulses, changes radius, and ripples/warps in sync with audio.</td>
-    <td width="50%"><div style="text-align:center"><img src="https://github.com/user-attachments/assets/PLACEHOLDER-WARP.gif" alt="Warp Effect" style="max-width:100%;"></div></td>
+    <td width="50%"><div style="text-align:center">
+<img src="https://github.com/user-attachments/assets/c707583a-99a1-4463-a02f-cdefd2db3e6a" alt="Warp Effect" style="max-width:100%;">
+</div></td>
   </tr>
 </table>
 
