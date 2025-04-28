@@ -146,3 +146,11 @@ AS-StageFX includes a variety of distinct visual effects:
     </td>
   </tr>
 </table>
+
+---
+
+## Disclaimer
+
+The sample images used in this repository contain characters and stickers from Final Fantasy XIV. These elements are the intellectual property of Square Enix Co., Ltd. and are used here solely for demonstration purposes. All Final Fantasy XIV content is © SQUARE ENIX CO., LTD. All Rights Reserved.
+
+This shader collection is a fan-made project and is not affiliated with, endorsed by, or supported by Square Enix.
