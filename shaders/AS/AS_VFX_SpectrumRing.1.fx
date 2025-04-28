@@ -55,7 +55,12 @@ static const float BLENDSTRENGTH_MAX = 1.0;
 static const float BLENDSTRENGTH_DEFAULT = 1.0;
 
 // --- Palette & Style ---
-uniform int ColorPattern < ui_type = "combo"; ui_label = "Color Pattern"; ui_items = "Rainbow\0Intensity Reds\0Intensity Blues\0Blue-White\0Black-White\0Fire\0Aqua\0Pastel\0Neon\0Viridis\0Transparent-White\0Transparent-Black\0"; ui_category = "Palette & Style"; > = 0;
+// Use the AS_Utils palette selection UI macro
+AS_PALETTE_SELECTION_UI(ColorPattern, "Color Pattern", AS_PALETTE_RAINBOW, "Palette & Style")
+
+// Include custom palette options
+AS_CUSTOM_PALETTE_UI("Palette & Style")
+
 uniform bool InvertColors < ui_label = "Invert Colors"; ui_tooltip = "Invert the color pattern (reverse gradient direction)."; ui_category = "Palette & Style"; > = false;
 
 // --- Effect-Specific Appearance ---
@@ -88,110 +93,9 @@ namespace AS_SpectrumRing {
     // Color gradient helper
     float3 bandColor(float t) {
         if (InvertColors) t = 1.0 - t;
-        if (ColorPattern == 0) {
-            // Rainbow
-            float3 c0 = float3(0.2, 0.4, 1.0);   // Blue
-            float3 c1 = float3(0.0, 0.8, 1.0);   // Cyan
-            float3 c2 = float3(0.0, 1.0, 0.4);   // Aqua-Green
-            float3 c3 = float3(0.0, 1.0, 0.0);   // Green
-            float3 c4 = float3(1.0, 1.0, 0.0);   // Yellow
-            float3 c5 = float3(1.0, 0.6, 0.0);   // Orange
-            float3 c6 = float3(1.0, 0.2, 0.0);   // Red-Orange
-            float3 c7 = float3(1.0, 0.0, 0.0);   // Red
-            float3 c8 = float3(1.0, 0.5, 0.2);   // Orange-Yellow (high)
-            float seg = t * 7.0;
-            if (seg < 1.0) return lerp(c0, c1, seg);
-            else if (seg < 2.0) return lerp(c1, c2, seg - 1.0);
-            else if (seg < 3.0) return lerp(c2, c3, seg - 2.0);
-            else if (seg < 4.0) return lerp(c3, c4, seg - 3.0);
-            else if (seg < 5.0) return lerp(c4, c5, seg - 4.0);
-            else if (seg < 6.0) return lerp(c5, c6, seg - 5.0);
-            else if (seg < 7.0) return lerp(c6, c7, seg - 6.0);
-            else return lerp(c7, c8, (t - 1.0) * 8.0 + 1.0);
-        } else if (ColorPattern == 1) {
-            // Intensity Reds
-            float3 c0 = float3(0.2, 0.0, 0.0); // Dark red
-            float3 c1 = float3(0.6, 0.1, 0.1); // Medium red
-            float3 c2 = float3(1.0, 0.2, 0.2); // Bright red
-            float3 c3 = float3(1.0, 0.5, 0.2); // Orange
-            float seg = t * 3.0;
-            if (seg < 1.0) return lerp(c0, c1, seg);
-            else if (seg < 2.0) return lerp(c1, c2, seg - 1.0);
-            else return lerp(c2, c3, seg - 2.0);
-        } else if (ColorPattern == 2) {
-            // Intensity Blues
-            float3 c0 = float3(0.0, 0.0, 0.2); // Dark blue
-            float3 c1 = float3(0.0, 0.2, 0.6); // Medium blue
-            float3 c2 = float3(0.2, 0.4, 1.0); // Bright blue
-            float3 c3 = float3(0.6, 0.8, 1.0); // Light blue
-            float seg = t * 3.0;
-            if (seg < 1.0) return lerp(c0, c1, seg);
-            else if (seg < 2.0) return lerp(c1, c2, seg - 1.0);
-            else return lerp(c2, c3, seg - 2.0);
-        } else if (ColorPattern == 3) {
-            // Blue to White
-            return lerp(float3(0.2, 0.4, 1.0), float3(1.0, 1.0, 1.0), t);
-        } else if (ColorPattern == 4) {
-            // Black to White
-            return lerp(float3(0.0, 0.0, 0.0), float3(1.0, 1.0, 1.0), t);
-        } else if (ColorPattern == 5) {
-            // Fire (dark red -> orange -> yellow -> white)
-            float3 c0 = float3(0.2, 0.0, 0.0);
-            float3 c1 = float3(0.8, 0.2, 0.0);
-            float3 c2 = float3(1.0, 0.6, 0.0);
-            float3 c3 = float3(1.0, 1.0, 0.2);
-            float3 c4 = float3(1.0, 1.0, 1.0);
-            float seg = t * 4.0;
-            if (seg < 1.0) return lerp(c0, c1, seg);
-            else if (seg < 2.0) return lerp(c1, c2, seg - 1.0);
-            else if (seg < 3.0) return lerp(c2, c3, seg - 2.0);
-            else return lerp(c3, c4, seg - 3.0);
-        } else if (ColorPattern == 6) {
-            // Aqua (deep blue -> cyan -> aqua -> white)
-            float3 c0 = float3(0.0, 0.2, 0.4);
-            float3 c1 = float3(0.0, 0.8, 1.0);
-            float3 c2 = float3(0.2, 1.0, 0.8);
-            float3 c3 = float3(1.0, 1.0, 1.0);
-            float seg = t * 3.0;
-            if (seg < 1.0) return lerp(c0, c1, seg);
-            else if (seg < 2.0) return lerp(c1, c2, seg - 1.0);
-            else return lerp(c2, c3, seg - 2.0);
-        } else if (ColorPattern == 7) {
-            // Pastel (soft blue -> pink -> yellow -> mint)
-            float3 c0 = float3(0.7, 0.8, 1.0);
-            float3 c1 = float3(1.0, 0.7, 0.9);
-            float3 c2 = float3(1.0, 1.0, 0.7);
-            float3 c3 = float3(0.7, 1.0, 0.8);
-            float seg = t * 3.0;
-            if (seg < 1.0) return lerp(c0, c1, seg);
-            else if (seg < 2.0) return lerp(c1, c2, seg - 1.0);
-            else return lerp(c2, c3, seg - 2.0);
-        } else if (ColorPattern == 8) {
-            // Neon (magenta -> blue -> green -> yellow)
-            float3 c0 = float3(1.0, 0.0, 1.0);
-            float3 c1 = float3(0.2, 0.2, 1.0);
-            float3 c2 = float3(0.0, 1.0, 0.2);
-            float3 c3 = float3(1.0, 1.0, 0.0);
-            float seg = t * 3.0;
-            if (seg < 1.0) return lerp(c0, c1, seg);
-            else if (seg < 2.0) return lerp(c1, c2, seg - 1.0);
-            else return lerp(c2, c3, seg - 2.0);
-        } else if (ColorPattern == 9) {
-            // Viridis (dark blue -> green -> yellow)
-            float3 c0 = float3(0.2, 0.2, 0.4);
-            float3 c1 = float3(0.2, 0.8, 0.4);
-            float3 c2 = float3(0.9, 0.9, 0.2);
-            float seg = t * 2.0;
-            if (seg < 1.0) return lerp(c0, c1, seg);
-            else return lerp(c1, c2, seg - 1.0);
-        } else if (ColorPattern == 10) {
-            // Transparent to White (color is always white, but alpha is t)
-            return float3(1.0, 1.0, 1.0);
-        } else if (ColorPattern == 11) {
-            // Transparent to Black (color is always black, but alpha is t)
-            return float3(0.0, 0.0, 0.0);
-        }
-        return float3(1.0, 1.0, 1.0);
+        
+        // Use the standardized AS_Utils palette system
+        return AS_getInterpolatedColor(ColorPattern, t);
     }
 } // End namespace AS_SpectrumRing
 

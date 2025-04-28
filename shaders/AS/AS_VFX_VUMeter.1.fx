@@ -51,38 +51,9 @@ static const float LINE_THICKNESS_DEFAULT = 0.012;
 static const float SENSIBILITY_MIN = 0.5;
 static const float SENSIBILITY_MAX = 2.0;
 static const float SENSIBILITY_DEFAULT = 0.94;
-static const int PALETTE_DEFAULT = 3; // Neon
-static const int PALETTE_COUNT = 6;
-static const int PALETTE_COLORS = 5;
 static const float BLENDAMOUNT_MIN = 0.0;
 static const float BLENDAMOUNT_MAX = 1.0;
 static const float BLENDAMOUNT_DEFAULT = 1.0;
-
-// Usual VU palettes
-static const float3 PALETTE_CLASSIC[5] = {
-    float3(0.0, 1.0, 0.0), // Green
-    float3(0.7, 1.0, 0.0), // Yellow-Green
-    float3(1.0, 1.0, 0.0), // Yellow
-    float3(1.0, 0.5, 0.0), // Orange
-    float3(1.0, 0.0, 0.0)  // Red
-};
-static const float3 PALETTE_BLUE[5] = {
-    float3(0.2, 0.6, 1.0), float3(0.3, 0.8, 1.0), float3(0.5, 1.0, 1.0), float3(0.7, 0.9, 1.0), float3(1.0, 1.0, 1.0)
-};
-// Music video palettes
-static const float3 PALETTE_SUNSET[5] = {
-    float3(1.0, 0.4, 0.0), float3(1.0, 0.7, 0.0), float3(1.0, 1.0, 0.0), float3(1.0, 0.0, 0.5), float3(0.5, 0.0, 1.0)
-};
-static const float3 PALETTE_NEON[5] = {
-    float3(0.0, 1.0, 1.0), float3(0.0, 0.5, 1.0), float3(0.5, 0.0, 1.0), float3(1.0, 0.0, 1.0), float3(1.0, 0.0, 0.5)
-};
-static const float3 PALETTE_RETRO[5] = {
-    float3(1.0, 0.0, 0.5), float3(1.0, 0.5, 0.0), float3(1.0, 1.0, 0.0), float3(0.0, 1.0, 0.5), float3(0.0, 0.5, 1.0)
-};
-// Custom palette (user-defined)
-uniform float3 CustomPalette[5] < ui_type = "color"; ui_label = "Custom Palette Colors"; ui_category = "Appearance"; > = {
-    float3(1.0, 1.0, 1.0), float3(1.0, 1.0, 1.0), float3(1.0, 1.0, 1.0), float3(1.0, 1.0, 1.0), float3(1.0, 1.0, 1.0)
-};
 
 // --- UI Controls ---
 uniform float Zoom < ui_type = "slider"; ui_label = "Zoom"; ui_min = ZOOM_MIN; ui_max = ZOOM_MAX; ui_step = 0.01; ui_category = "Transform"; > = ZOOM_DEFAULT;
@@ -104,7 +75,11 @@ uniform float LineThickness < ui_type = "slider"; ui_label = "Line Thickness"; u
 uniform float Sensibility < ui_type = "slider"; ui_label = "Sensibility"; ui_min = SENSIBILITY_MIN; ui_max = SENSIBILITY_MAX; ui_step = 0.01; ui_category = "Audio Reactivity"; > = SENSIBILITY_DEFAULT;
 
 // --- Palette & Style ---
-uniform int PaletteMode < ui_type = "combo"; ui_label = "Palette"; ui_items = "Classic VU\0Blue\0Sunset\0Neon\0Retro\0Custom\0"; ui_category = "Appearance"; > = PALETTE_DEFAULT;
+// Use the AS_Utils palette selection UI macro
+AS_PALETTE_SELECTION_UI(PaletteMode, "Palette", AS_PALETTE_NEON, "Appearance")
+
+// Add custom palette colors using the AS_Utils macro
+AS_CUSTOM_PALETTE_UI("Appearance")
 
 // --- Stage Depth Controls ---
 AS_STAGEDEPTH_UI(StageDepth, "Stage Depth", "Stage")
@@ -119,21 +94,10 @@ namespace AS_VUMeterBG {
         // Use the standardized band access function that handles different band sizes
         return saturate(AS_getFrequencyBand(i)) * Sensibility;
     }
+    
     float3 getPaletteColorByValue(float value) {
-        float3 c0, c1, c2, c3, c4;
-        if (PaletteMode == 0) { c0 = PALETTE_CLASSIC[0]; c1 = PALETTE_CLASSIC[1]; c2 = PALETTE_CLASSIC[2]; c3 = PALETTE_CLASSIC[3]; c4 = PALETTE_CLASSIC[4]; }
-        else if (PaletteMode == 1) { c0 = PALETTE_BLUE[0]; c1 = PALETTE_BLUE[1]; c2 = PALETTE_BLUE[2]; c3 = PALETTE_BLUE[3]; c4 = PALETTE_BLUE[4]; }
-        else if (PaletteMode == 2) { c0 = PALETTE_SUNSET[0]; c1 = PALETTE_SUNSET[1]; c2 = PALETTE_SUNSET[2]; c3 = PALETTE_SUNSET[3]; c4 = PALETTE_SUNSET[4]; }
-        else if (PaletteMode == 3) { c0 = PALETTE_NEON[0]; c1 = PALETTE_NEON[1]; c2 = PALETTE_NEON[2]; c3 = PALETTE_NEON[3]; c4 = PALETTE_NEON[4]; }
-        else if (PaletteMode == 4) { c0 = PALETTE_RETRO[0]; c1 = PALETTE_RETRO[1]; c2 = PALETTE_RETRO[2]; c3 = PALETTE_RETRO[3]; c4 = PALETTE_RETRO[4]; }
-        else { c0 = CustomPalette[0]; c1 = CustomPalette[1]; c2 = CustomPalette[2]; c3 = CustomPalette[3]; c4 = CustomPalette[4]; }
-        if (value <= 0.0) return c0;
-        if (value >= 1.0) return c4;
-        float seg = value * 4.0;
-        if (seg < 1.0) return lerp(c0, c1, seg);
-        if (seg < 2.0) return lerp(c1, c2, seg - 1.0);
-        if (seg < 3.0) return lerp(c2, c3, seg - 2.0);
-        return lerp(c3, c4, seg - 3.0);
+        // Use the standardized AS_Utils palette function
+        return AS_getInterpolatedColor(PaletteMode, value);
     }
 }
 

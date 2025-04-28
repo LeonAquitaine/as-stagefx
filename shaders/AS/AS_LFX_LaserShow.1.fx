@@ -104,68 +104,11 @@ static const int VORTEX_COUNT_MAX = 5;
 static const int VORTEX_COUNT_DEFAULT = 2;
 
 // ============================================================================
-// PALETTE CONSTANTS
-// ============================================================================
-static const int PALETTE_SIZE = 5;
-static const int PALETTE_COUNT = 6; // 5 presets + 1 custom
-static const int PALETTE_CUSTOM = 5; // Index of the custom palette
-
-// Pre-defined music-themed color palettes (flattened to 1D array)
-static const float3 PALETTE_COLORS[PALETTE_COUNT * PALETTE_SIZE] = {
-    // 0: "Synthwave Nights" - Pink to blue neon gradient
-    float3(0.98, 0.20, 0.92), // Hot pink
-    float3(0.75, 0.10, 0.85), // Magenta
-    float3(0.47, 0.12, 0.95), // Purple
-    float3(0.15, 0.20, 0.98), // Blue
-    float3(0.10, 0.78, 0.98), // Cyan
-    
-    // 1: "Disco Fever" - Rainbow disco lights
-    float3(1.00, 0.12, 0.22), // Red
-    float3(1.00, 0.50, 0.10), // Orange
-    float3(1.00, 0.95, 0.10), // Yellow
-    float3(0.15, 0.95, 0.10), // Green
-    float3(0.25, 0.25, 0.98), // Blue
-    
-    // 2: "Rave Pulse" - Electric neon colors
-    float3(0.05, 0.95, 0.02), // Neon green
-    float3(0.90, 0.95, 0.02), // Neon yellow
-    float3(0.99, 0.55, 0.01), // Neon orange
-    float3(0.95, 0.05, 0.65), // Neon pink
-    float3(0.60, 0.05, 0.95), // Neon purple
-    
-    // 3: "Chill Lofi" - Soft pastel gradients
-    float3(0.55, 0.60, 0.98), // Pastel blue
-    float3(0.85, 0.65, 0.95), // Pastel purple
-    float3(0.98, 0.70, 0.80), // Pastel pink
-    float3(0.98, 0.85, 0.65), // Pastel yellow
-    float3(0.65, 0.95, 0.85), // Pastel teal
-    
-    // 4: "Bass Drop" - Deep punchy colors
-    float3(0.10, 0.02, 0.25), // Deep purple
-    float3(0.18, 0.04, 0.45), // Indigo
-    float3(0.25, 0.05, 0.65), // Medium purple
-    float3(0.45, 0.05, 0.85), // Bright purple
-    float3(0.85, 0.12, 0.95), // Magenta
-    
-    // 5: Custom palette (placeholder values, actually using uniforms)
-    float3(1.0, 0.2, 0.1), // Default is red
-    float3(1.0, 0.5, 0.1), // Default is orange
-    float3(1.0, 1.0, 0.1), // Default is yellow
-    float3(0.1, 1.0, 0.1), // Default is green
-    float3(0.1, 0.2, 1.0)  // Default is blue
-};
-
-// ============================================================================
 // PALETTE & STYLE
 // ============================================================================
-uniform int PaletteIndex < ui_type = "combo"; ui_label = "Palette"; ui_items = "Synthwave Nights\0Disco Fever\0Rave Pulse\0Chill Lofi\0Bass Drop\0Custom\0"; ui_category = "Palette & Style"; > = 0;
-
-// Custom palette colors (only shown when Custom palette is selected)
-uniform float3 CustomColor0 < ui_type = "color"; ui_label = "Custom Color 1"; ui_category = "Custom Palette"; ui_tooltip = "First color in the custom palette"; > = float3(1.0, 0.2, 0.1);
-uniform float3 CustomColor1 < ui_type = "color"; ui_label = "Custom Color 2"; ui_category = "Custom Palette"; ui_tooltip = "Second color in the custom palette"; > = float3(1.0, 0.5, 0.1);
-uniform float3 CustomColor2 < ui_type = "color"; ui_label = "Custom Color 3"; ui_category = "Custom Palette"; ui_tooltip = "Third color in the custom palette"; > = float3(1.0, 1.0, 0.1);
-uniform float3 CustomColor3 < ui_type = "color"; ui_label = "Custom Color 4"; ui_category = "Custom Palette"; ui_tooltip = "Fourth color in the custom palette"; > = float3(0.1, 1.0, 0.1);
-uniform float3 CustomColor4 < ui_type = "color"; ui_label = "Custom Color 5"; ui_category = "Custom Palette"; ui_tooltip = "Fifth color in the custom palette"; > = float3(0.1, 0.2, 1.0);
+// Using standardized AS_Utils palette selection
+AS_PALETTE_SELECTION_UI(PalettePreset, "Palette", AS_PALETTE_NEON, "Palette & Style")
+AS_CUSTOM_PALETTE_UI("Custom Palette")
 
 // ============================================================================
 // EFFECT-SPECIFIC APPEARANCE
@@ -199,7 +142,8 @@ AS_AUDIO_MULTIPLIER_UI(BlinkAudioMult, "Blinking Audio Multiplier", 1.0, 2.0, "A
 // ============================================================================
 // STAGE DISTANCE (DEPTH)
 // ============================================================================
-uniform float StageDepth < ui_type = "slider"; ui_label = "Stage Distance"; ui_tooltip = "Controls the reference depth for the laser effect. Lower values bring the effect closer to the camera, higher values push it further back."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Stage Distance"; > = 0.05;
+// Using standardized stage depth control
+AS_STAGEDEPTH_UI(StageDepth, "Stage Distance", "Stage Distance")
 
 // ============================================================================
 // NOISE (SMOKE)
@@ -225,7 +169,9 @@ AS_AUDIO_MULTIPLIER_UI(VortexAudioMult, "Vortex Audio Multiplier", 1.0, 5.0, "Vo
 // ============================================================================
 // FINAL MIX
 // ============================================================================
-uniform int BlendMode < ui_type = "combo"; ui_label = "Blend Mode"; ui_items = "Normal\0Lighter Only\0Darker Only\0Additive\0Multiply\0Screen\0"; ui_category = "Final Mix"; > = 3;
+// Using standardized blend mode controls
+AS_BLENDMODE_UI_DEFAULT(BlendMode, "Final Mix", 3)
+AS_BLENDAMOUNT_UI(BlendAmount, "Final Mix")
 
 // ============================================================================
 // DEBUG
@@ -242,42 +188,13 @@ AS_DEBUG_MODE_UI("Off\0Smoke\0Audio\0Laser\0")
 // ============================================================================
 namespace AS_LaserShow {
 
-// Get color from the currently selected palette
+// Get color from the currently selected palette using standardized AS_Utils functions
 float3 GetPaletteColor(int beamIndex, int totalBeams) {
-    // For custom palette, get colors directly from uniforms
-    float3 customPalette[PALETTE_SIZE] = {
-        CustomColor0,
-        CustomColor1, 
-        CustomColor2,
-        CustomColor3,
-        CustomColor4
-    };
-    
     // Normalize beam index between 0 and 1
     float t = (totalBeams <= 1) ? 0.0 : float(beamIndex) / float(totalBeams - 1);
     
-    // Map t to palette index (0 to PALETTE_SIZE-1)
-    float indexFloat = t * (PALETTE_SIZE - 1);
-    int indexLow = int(floor(indexFloat));
-    int indexHigh = int(ceil(indexFloat));
-    float frac = indexFloat - float(indexLow);
-    
-    // Ensure indices are in bounds
-    indexLow = clamp(indexLow, 0, PALETTE_SIZE - 1);
-    indexHigh = clamp(indexHigh, 0, PALETTE_SIZE - 1);
-    
-    // Get colors from the appropriate palette
-    float3 colorLow, colorHigh;
-    if (PaletteIndex == PALETTE_CUSTOM) {
-        colorLow = customPalette[indexLow];
-        colorHigh = customPalette[indexHigh];
-    } else {
-        colorLow = PALETTE_COLORS[PaletteIndex * PALETTE_SIZE + indexLow];
-        colorHigh = PALETTE_COLORS[PaletteIndex * PALETTE_SIZE + indexHigh];
-    }
-    
-    // Interpolate between the two closest colors
-    return lerp(colorLow, colorHigh, frac);
+    // Use the standardized interpolation function from AS_Utils
+    return AS_getInterpolatedColor(PalettePreset, t);
 }
 
 // --- Simplex Noise Implementation (2D, optimized for FBM) ---
@@ -422,8 +339,12 @@ float4 PS_LaserShow(float4 pos : SV_Position, float2 texcoord : TexCoord) : SV_T
     float4 audioDbg = float4(fanAudio, blinkAudio, 0, 1);
     float4 laserDbg = float4(finalLaser, 1.0);
     float4 outColor = AS_debugOutput(DebugMode, orig, maskDbg, audioDbg, laserDbg);
-    if (DebugMode == 0)
-        outColor = float4(AS_blendResult(orig.rgb, effect.rgb, BlendMode), 1.0);
+    if (DebugMode == 0) {
+        // Use standard blend function from AS_Utils with blend amount
+        float3 blended = AS_blendResult(orig.rgb, effect.rgb, BlendMode);
+        // Apply blend amount for final mix
+        outColor = float4(lerp(orig.rgb, blended, BlendAmount), orig.a);
+    }
     return outColor;
 }
 

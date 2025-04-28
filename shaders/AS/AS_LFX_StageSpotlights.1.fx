@@ -118,15 +118,14 @@ uniform float Spot3_SwaySpeed < ui_type = "slider"; ui_label = "Speed"; ui_min =
 uniform float Spot3_SwayAngle < ui_type = "slider"; ui_label = "Sway"; ui_min = SPOT_SWAYANGLE_MIN; ui_max = SPOT_SWAYANGLE_MAX; ui_category = "Light Beam C"; > = SPOT_SWAYANGLE_DEFAULT;
 
 // --- Spotlight Audio Controls ---
-// Implemented using standard AS_Utils macros for consistent UI and behavior
-AS_AUDIO_SOURCE_UI(Spot1_AudioSource, "Source", AS_AUDIO_BEAT, "Light Beam A")
-AS_AUDIO_MULTIPLIER_UI(Spot1_AudioMult, "Pulse", SPOT_AUDIOMULT_DEFAULT, SPOT_AUDIOMULT_MAX, "Light Beam A")
+uniform int Spot1_AudioSource < ui_type = "combo"; ui_label = "Source"; ui_items = "Volume\0Beat\0Bass\0Mid\0Treble\0"; ui_category = "Light Beam A"; > = 1;
+uniform float Spot1_AudioMult < ui_type = "slider"; ui_label = "Pulse"; ui_min = SPOT_AUDIOMULT_MIN; ui_max = SPOT_AUDIOMULT_MAX; ui_category = "Light Beam A"; > = SPOT_AUDIOMULT_DEFAULT;
 
-AS_AUDIO_SOURCE_UI(Spot2_AudioSource, "Source", AS_AUDIO_BEAT, "Light Beam B")
-AS_AUDIO_MULTIPLIER_UI(Spot2_AudioMult, "Pulse", SPOT_AUDIOMULT_DEFAULT, SPOT_AUDIOMULT_MAX, "Light Beam B")
+uniform int Spot2_AudioSource < ui_type = "combo"; ui_label = "Source"; ui_items = "Volume\0Beat\0Bass\0Mid\0Treble\0"; ui_category = "Light Beam B"; > = 1;
+uniform float Spot2_AudioMult < ui_type = "slider"; ui_label = "Pulse"; ui_min = SPOT_AUDIOMULT_MIN; ui_max = SPOT_AUDIOMULT_MAX; ui_category = "Light Beam B"; > = SPOT_AUDIOMULT_DEFAULT;
 
-AS_AUDIO_SOURCE_UI(Spot3_AudioSource, "Source", AS_AUDIO_BEAT, "Light Beam C")
-AS_AUDIO_MULTIPLIER_UI(Spot3_AudioMult, "Pulse", SPOT_AUDIOMULT_DEFAULT, SPOT_AUDIOMULT_MAX, "Light Beam C")
+uniform int Spot3_AudioSource < ui_type = "combo"; ui_label = "Source"; ui_items = "Volume\0Beat\0Bass\0Mid\0Treble\0"; ui_category = "Light Beam C"; > = 1;
+uniform float Spot3_AudioMult < ui_type = "slider"; ui_label = "Pulse"; ui_min = SPOT_AUDIOMULT_MIN; ui_max = SPOT_AUDIOMULT_MAX; ui_category = "Light Beam C"; > = SPOT_AUDIOMULT_DEFAULT;
 
 // --- Global Audio Settings ---
 AS_AUDIO_SOURCE_UI(SpotAudioSource, "Global Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
@@ -138,6 +137,7 @@ uniform float BokehSize < ui_type = "slider"; ui_label = "Size"; ui_min = BOKEH_
 uniform float BokehStrength < ui_type = "slider"; ui_label = "Strength"; ui_min = BOKEH_STRENGTH_MIN; ui_max = BOKEH_STRENGTH_MAX; ui_category = "Stage Effects"; > = BOKEH_STRENGTH_DEFAULT;
 
 // --- Stage Depth Control ---
+// Standardized stage depth control
 AS_STAGEDEPTH_UI(StageDepth, "Distance", "Stage Distance")
 
 // --- Blend Settings ---

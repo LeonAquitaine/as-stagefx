@@ -151,6 +151,31 @@ bool AS_isDebugMode(int currentMode, int targetMode) {
 
 #endif // __AS_DEBUG_MODE_INCLUDED
 
+// --- Sway Animation UI Standardization ---
+#ifndef __AS_SWAY_UI_INCLUDED
+#define __AS_SWAY_UI_INCLUDED
+
+// --- Sway UI Macros ---
+#define AS_SWAYSPEED_UI(name, category) \
+uniform float name < \
+    ui_type = "slider"; \
+    ui_label = "Sway Speed"; \
+    ui_tooltip = "Controls the speed of the swaying animation"; \
+    ui_min = 0.0; ui_max = 5.0; ui_step = 0.01; \
+    ui_category = category; \
+> = 1.0;
+
+#define AS_SWAYANGLE_UI(name, category) \
+uniform float name < \
+    ui_type = "slider"; \
+    ui_label = "Sway Angle"; \
+    ui_tooltip = "Maximum angle of the swaying in degrees"; \
+    ui_min = 0.0; ui_max = 180.0; ui_step = 1.0; \
+    ui_category = category; \
+> = 15.0;
+
+#endif // __AS_SWAY_UI_INCLUDED
+
 // --- Math Helpers ---
 // NOTE: AS_mod must be defined before any function that uses it (such as AS_mapAngleToBand)
 // to avoid undeclared identifier errors during shader compilation.
@@ -407,7 +432,6 @@ float AS_fresnel(float3 normal, float3 viewDir, float power) {
 }
 
 // --- Animation Helpers ---
-// Returns a fade-in/out value for a normalized cycle (0-1)
 float AS_fadeInOut(float cycle, float fadeInEnd, float fadeOutStart) {
     if (cycle < fadeInEnd)
         return smoothstep(0.0, fadeInEnd, cycle) / fadeInEnd;
@@ -460,47 +484,326 @@ float AS_starMask(float2 p, float size, float points, float angle) {
 }
 
 // ============================================================================
-// SHARED TUNABLE CONSTANTS
+// PALETTE & COLOR SYSTEM
 // ============================================================================
 
-#ifndef __AS_TUNABLES_INCLUDED
-#define __AS_TUNABLES_INCLUDED
+// --- Palette Constants ---
+#ifndef __AS_PALETTE_INCLUDED
+#define __AS_PALETTE_INCLUDED
 
-// --- Stage Distance (Depth) Constants ---
-// Controls how far back stage effects appear in the scene
-#define AS_STAGEDEPTH_MIN 0.0
-#define AS_STAGEDEPTH_MAX 1.0
-#define AS_STAGEDEPTH_DEFAULT 0.05
+// Standard palette size
+#define AS_PALETTE_COLORS 5
 
-// --- Blend Amount Constants ---
-// Controls intensity of effect blending
-#define AS_BLENDAMOUNT_MIN 0.0
-#define AS_BLENDAMOUNT_MAX 1.0
-#define AS_BLENDAMOUNT_DEFAULT 1.0
+// Define palette modes for all shaders
+#define AS_PALETTE_CLASSIC_VU    0
+#define AS_PALETTE_BLUE          1
+#define AS_PALETTE_SUNSET        2
+#define AS_PALETTE_NEON          3
+#define AS_PALETTE_RETRO         4
+#define AS_PALETTE_BLUEWAVE      5
+#define AS_PALETTE_BRIGHT_LIGHTS 6
+#define AS_PALETTE_DISCO         7
+#define AS_PALETTE_ELECTRONICA   8
+#define AS_PALETTE_INDUSTRIAL    9
+#define AS_PALETTE_METAL        10
+#define AS_PALETTE_MONOTONE     11
+#define AS_PALETTE_PASTEL_POP   12
+#define AS_PALETTE_REDLINE      13
+#define AS_PALETTE_RAINBOW      14
+#define AS_PALETTE_FIRE         15
+#define AS_PALETTE_AQUA         16
+#define AS_PALETTE_VIRIDIS      17
+#define AS_PALETTE_DEEP_PURPLE  18
+#define AS_PALETTE_CUSTOM       99
 
-// --- Common UI Macros for Standard Parameters ---
-// Standardized Stage Depth control
+// Total number of built-in palettes
+#define AS_PALETTE_COUNT 19
+
+// --- Standard Palette Arrays ---
+// All palettes standardized to 5 colors for consistent interface
+// HLSL doesn't support true multidimensional arrays, so we use a flattened array
+static const float3 AS_PALETTES[AS_PALETTE_COUNT * AS_PALETTE_COLORS] = {
+    // Classic VU (green -> yellow -> red)
+    float3(0.0, 1.0, 0.0),   // Green
+    float3(0.7, 1.0, 0.0),   // Yellow-Green
+    float3(1.0, 1.0, 0.0),   // Yellow
+    float3(1.0, 0.5, 0.0),   // Orange
+    float3(1.0, 0.0, 0.0),   // Red
+    
+    // Blue
+    float3(0.2, 0.6, 1.0),
+    float3(0.3, 0.8, 1.0),
+    float3(0.5, 1.0, 1.0),
+    float3(0.7, 0.9, 1.0),
+    float3(1.0, 1.0, 1.0),
+    
+    // Sunset
+    float3(1.0, 0.4, 0.0),
+    float3(1.0, 0.7, 0.0),
+    float3(1.0, 1.0, 0.0),
+    float3(1.0, 0.0, 0.5),
+    float3(0.5, 0.0, 1.0),
+    
+    // Neon
+    float3(0.0, 1.0, 1.0),
+    float3(0.0, 0.5, 1.0),
+    float3(0.5, 0.0, 1.0),
+    float3(1.0, 0.0, 1.0),
+    float3(1.0, 0.0, 0.5),
+    
+    // Retro
+    float3(1.0, 0.0, 0.5),
+    float3(1.0, 0.5, 0.0),
+    float3(1.0, 1.0, 0.0),
+    float3(0.0, 1.0, 0.5),
+    float3(0.0, 0.5, 1.0),
+    
+    // Bluewave
+    float3(0.2, 0.6, 1.0),
+    float3(0.4, 0.8, 1.0),
+    float3(0.6, 0.9, 1.0),
+    float3(0.8, 1.0, 1.0),
+    float3(0.0, 0.4, 1.0),
+    
+    // Bright Lights
+    float3(1.0, 1.0, 0.6),
+    float3(0.6, 1.0, 1.0),
+    float3(1.0, 0.6, 1.0),
+    float3(1.0, 0.8, 0.6),
+    float3(0.6, 0.8, 1.0),
+    
+    // Disco
+    float3(1.0, 0.2, 0.6),
+    float3(1.0, 0.8, 0.2),
+    float3(0.2, 1.0, 0.8),
+    float3(0.8, 0.2, 1.0),
+    float3(0.2, 0.8, 1.0),
+    
+    // Electronica
+    float3(0.0, 1.0, 0.7),
+    float3(0.2, 0.6, 1.0),
+    float3(0.7, 0.0, 1.0),
+    float3(1.0, 0.2, 0.6),
+    float3(0.0, 1.0, 0.3),
+    
+    // Industrial
+    float3(0.8, 0.8, 0.7),
+    float3(0.5, 0.5, 0.5),
+    float3(1.0, 0.6, 0.1),
+    float3(0.2, 0.2, 0.2),
+    float3(0.9, 0.7, 0.2),
+    
+    // Metal
+    float3(0.7, 0.7, 0.7),
+    float3(0.2, 0.2, 0.2),
+    float3(1.0, 0.2, 0.2),
+    float3(0.7, 0.5, 0.2),
+    float3(0.3, 0.3, 0.3),
+    
+    // Monotone
+    float3(0.9, 0.9, 0.9),
+    float3(0.7, 0.7, 0.7),
+    float3(0.5, 0.5, 0.5),
+    float3(0.3, 0.3, 0.3),
+    float3(0.1, 0.1, 0.1),
+    
+    // Pastel Pop
+    float3(0.98, 0.80, 0.89),
+    float3(0.80, 0.93, 0.98),
+    float3(0.98, 0.96, 0.80),
+    float3(0.80, 0.98, 0.87),
+    float3(0.93, 0.80, 0.98),
+    
+    // Redline
+    float3(1.0, 0.2, 0.2),
+    float3(1.0, 0.4, 0.4),
+    float3(1.0, 0.6, 0.6),
+    float3(1.0, 0.8, 0.8),
+    float3(1.0, 0.0, 0.0),
+    
+    // Rainbow
+    float3(0.2, 0.4, 1.0),   // Blue
+    float3(0.0, 1.0, 0.4),   // Green
+    float3(1.0, 1.0, 0.0),   // Yellow
+    float3(1.0, 0.6, 0.0),   // Orange
+    float3(1.0, 0.0, 0.0),   // Red
+    
+    // Fire
+    float3(0.2, 0.0, 0.0),   // Dark red
+    float3(0.8, 0.2, 0.0),   // Bright red
+    float3(1.0, 0.6, 0.0),   // Orange
+    float3(1.0, 1.0, 0.2),   // Yellow
+    float3(1.0, 1.0, 1.0),   // White
+    
+    // Aqua
+    float3(0.0, 0.2, 0.4),   // Deep blue
+    float3(0.0, 0.8, 1.0),   // Cyan
+    float3(0.2, 1.0, 0.8),   // Aqua
+    float3(0.6, 1.0, 1.0),   // Light cyan
+    float3(1.0, 1.0, 1.0),   // White
+    
+    // Viridis
+    float3(0.2, 0.2, 0.4),   // Dark blue
+    float3(0.1, 0.4, 0.4),   // Dark teal
+    float3(0.2, 0.8, 0.4),   // Green
+    float3(0.6, 0.9, 0.2),   // Light green
+    float3(0.9, 0.9, 0.2),   // Yellow
+    
+    // Deep Purple (from LaserShow's "Bass Drop" palette)
+    float3(0.10, 0.02, 0.25), // Deep purple
+    float3(0.18, 0.04, 0.45), // Indigo
+    float3(0.25, 0.05, 0.65), // Medium purple
+    float3(0.45, 0.05, 0.85), // Bright purple
+    float3(0.85, 0.12, 0.95)  // Magenta
+};
+
+// --- Custom Palette UI Macros ---
+// Standard custom palette UI with 5 colors
+#define AS_CUSTOM_PALETTE_UI(category) \
+uniform float3 CustomPaletteColor0 < ui_type = "color"; ui_label = "Color 1"; ui_category = category; > = float3(1.0, 0.0, 0.0); \
+uniform float3 CustomPaletteColor1 < ui_type = "color"; ui_label = "Color 2"; ui_category = category; > = float3(1.0, 1.0, 0.0); \
+uniform float3 CustomPaletteColor2 < ui_type = "color"; ui_label = "Color 3"; ui_category = category; > = float3(0.0, 1.0, 0.0); \
+uniform float3 CustomPaletteColor3 < ui_type = "color"; ui_label = "Color 4"; ui_category = category; > = float3(0.0, 0.0, 1.0); \
+uniform float3 CustomPaletteColor4 < ui_type = "color"; ui_label = "Color 5"; ui_category = category; > = float3(1.0, 0.0, 1.0);
+
+// --- Palette Functions ---
+float3 AS_getPaletteColor(int paletteIndex, int colorIndex) {
+    if (paletteIndex >= 0 && paletteIndex < AS_PALETTE_COUNT && colorIndex >= 0 && colorIndex < AS_PALETTE_COLORS) {
+        int flatIndex = paletteIndex * AS_PALETTE_COLORS + colorIndex;
+        return AS_PALETTES[flatIndex];
+    }
+    return float3(1.0, 1.0, 1.0); // Default to white if out of bounds
+}
+
+// Get a color from a custom palette (shader must define CustomPaletteColor0-4)
+float3 AS_getCustomPaletteColor(int colorIndex) {
+    // Default palette colors in case the shader doesn't define them
+    static const float3 defaultCustomColors[AS_PALETTE_COLORS] = {
+        float3(1.0, 0.0, 0.0), // Red
+        float3(1.0, 1.0, 0.0), // Yellow
+        float3(0.0, 1.0, 0.0), // Green
+        float3(0.0, 0.0, 1.0), // Blue
+        float3(1.0, 0.0, 1.0)  // Magenta
+    };
+    
+#ifdef CustomPaletteColor0
+    // Only use these if they are defined in the shader
+    if (colorIndex == 0) return CustomPaletteColor0;
+    if (colorIndex == 1) return CustomPaletteColor1;
+    if (colorIndex == 2) return CustomPaletteColor2;
+    if (colorIndex == 3) return CustomPaletteColor3;
+    if (colorIndex == 4) return CustomPaletteColor4;
+#else
+    // Otherwise use the default colors
+    if (colorIndex >= 0 && colorIndex < AS_PALETTE_COLORS) {
+        return defaultCustomColors[colorIndex];
+    }
+#endif
+    
+    return float3(1.0, 1.0, 1.0); // Default to white if out of bounds
+}
+
+// Get a color from any palette (built-in or custom)
+float3 AS_getColorFromPalette(int paletteIndex, int colorIndex) {
+    if (paletteIndex == AS_PALETTE_CUSTOM) {
+        return AS_getCustomPaletteColor(colorIndex);
+    }
+    return AS_getPaletteColor(paletteIndex, colorIndex);
+}
+
+// Get a color from a palette by interpolating between colors based on t (0-1)
+float3 AS_getInterpolatedColor(int paletteIndex, float t) {
+    // Clamp t to valid range
+    t = saturate(t);
+    
+    // Calculate segment and fractional position
+    float segment = t * (AS_PALETTE_COLORS - 1);
+    int idx = int(segment);
+    float frac = segment - idx;
+    
+    // Get the two colors to interpolate between
+    float3 c1 = AS_getColorFromPalette(paletteIndex, idx);
+    float3 c2 = AS_getColorFromPalette(paletteIndex, min(idx + 1, AS_PALETTE_COLORS - 1));
+    
+    // Interpolate between the colors
+    return lerp(c1, c2, frac);
+}
+
+// Same function but with custom colors explicitly provided
+float3 AS_getInterpolatedColorCustom(float t, float3 customColors[AS_PALETTE_COLORS]) {
+    // Clamp t to valid range
+    t = saturate(t);
+    
+    // Calculate segment and fractional position
+    float segment = t * (AS_PALETTE_COLORS - 1);
+    int idx = int(segment);
+    float frac = segment - idx;
+    
+    // Get the two colors to interpolate between
+    float3 c1 = customColors[idx];
+    float3 c2 = customColors[min(idx + 1, AS_PALETTE_COLORS - 1)];
+    
+    // Interpolate between the colors
+    return lerp(c1, c2, frac);
+}
+
+// Rainbow palette function for special use cases (smooth HSV transition)
+float3 AS_getRainbowColor(float t) {
+    // Wrap t to 0-1 range
+    t = AS_mod(t, 1.0);
+    
+    // Simple HSV to RGB for rainbow effect
+    float h = t * 6.0;
+    float i = floor(h);
+    float f = h - i;
+    float q = 1.0 - f;
+    
+    if (i == 0.0) return float3(1.0, f, 0.0);
+    if (i == 1.0) return float3(q, 1.0, 0.0);
+    if (i == 2.0) return float3(0.0, 1.0, f);
+    if (i == 3.0) return float3(0.0, q, 1.0);
+    if (i == 4.0) return float3(f, 0.0, 1.0);
+    return float3(1.0, 0.0, q);
+}
+
+// Helper to invert a palette color
+float3 AS_invertPaletteColor(float3 color) {
+    return float3(1.0, 1.0, 1.0) - color;
+}
+
+// Standard palette selection UI
+#define AS_PALETTE_SELECTION_UI(name, label, defaultPalette, category) \
+uniform int name < \
+    ui_type = "combo"; \
+    ui_label = label; \
+    ui_items = "Classic VU\0Blue\0Sunset\0Neon\0Retro\0Bluewave\0Bright Lights\0Disco\0Electronica\0Industrial\0Metal\0Monotone\0Pastel Pop\0Redline\0Rainbow\0Fire\0Aqua\0Viridis\0Deep Purple\0Custom\0"; \
+    ui_category = category; \
+> = defaultPalette;
+
+#endif // __AS_PALETTE_INCLUDED
+
+#ifndef __AS_STAGEDEPTH_UI_INCLUDED
+#define __AS_STAGEDEPTH_UI_INCLUDED
+
+// --- Stage Depth UI Macro ---
 #define AS_STAGEDEPTH_UI(name, label, category) \
 uniform float name < \
     ui_type = "slider"; \
     ui_label = label; \
-    ui_tooltip = "Controls how far back the effect appears (lower = closer, higher = further)."; \
-    ui_min = AS_STAGEDEPTH_MIN; \
-    ui_max = AS_STAGEDEPTH_MAX; \
+    ui_tooltip = "Controls how far back the stage effect appears."; \
+    ui_min = 0.0; \
+    ui_max = 1.0; \
     ui_step = 0.01; \
     ui_category = category; \
-> = AS_STAGEDEPTH_DEFAULT;
+> = 0.05;
 
-// Standardized Blend Mode control
-#define AS_BLENDMODE_UI(name, category) \
-uniform int name < \
-    ui_type = "combo"; \
-    ui_label = "Mode"; \
-    ui_items = "Normal\0Lighter Only\0Darker Only\0Additive\0Multiply\0Screen\0"; \
-    ui_category = category; \
-> = 0;
+#endif // __AS_STAGEDEPTH_UI_INCLUDED
 
-// Standardized Blend Mode control with custom default
+// --- Blend Mode UI Standardization ---
+#ifndef __AS_BLEND_UI_INCLUDED
+#define __AS_BLEND_UI_INCLUDED
+
+// --- Blend Mode UI Macro with default value ---
 #define AS_BLENDMODE_UI_DEFAULT(name, category, defaultMode) \
 uniform int name < \
     ui_type = "combo"; \
@@ -509,51 +812,18 @@ uniform int name < \
     ui_category = category; \
 > = defaultMode;
 
-// Standardized Blend Amount control
+// --- Blend Mode UI Macro (defaults to Normal) ---
+#define AS_BLENDMODE_UI(name, category) \
+    AS_BLENDMODE_UI_DEFAULT(name, category, 0)
+
+// --- Blend Amount UI Macro ---
 #define AS_BLENDAMOUNT_UI(name, category) \
 uniform float name < \
     ui_type = "slider"; \
     ui_label = "Strength"; \
-    ui_min = AS_BLENDAMOUNT_MIN; \
-    ui_max = AS_BLENDAMOUNT_MAX; \
-    ui_step = 0.01; \
+    ui_min = 0.0; \
+    ui_max = 1.0; \
     ui_category = category; \
-> = AS_BLENDAMOUNT_DEFAULT;
+> = 1.0;
 
-// --- Sway Animation Constants ---
-// Controls how quickly an element sways back and forth
-#define AS_SWAYSPEED_MIN 0.0
-#define AS_SWAYSPEED_MAX 5.0
-#define AS_SWAYSPEED_DEFAULT 1.0
-
-// Controls how far an element sways in degrees
-#define AS_SWAYANGLE_MIN 0.0
-#define AS_SWAYANGLE_MAX 180.0
-#define AS_SWAYANGLE_DEFAULT 15.0
-
-// --- Common UI Macros for Sway Parameters ---
-// Standardized Sway Speed control
-#define AS_SWAYSPEED_UI(name, category) \
-uniform float name < \
-    ui_type = "slider"; \
-    ui_label = "Sway Speed"; \
-    ui_tooltip = "Controls how quickly the element sways back and forth."; \
-    ui_min = AS_SWAYSPEED_MIN; \
-    ui_max = AS_SWAYSPEED_MAX; \
-    ui_step = 0.01; \
-    ui_category = category; \
-> = AS_SWAYSPEED_DEFAULT;
-
-// Standardized Sway Angle control
-#define AS_SWAYANGLE_UI(name, category) \
-uniform float name < \
-    ui_type = "slider"; \
-    ui_label = "Sway Angle"; \
-    ui_tooltip = "Controls how far the element sways (in degrees)."; \
-    ui_min = AS_SWAYANGLE_MIN; \
-    ui_max = AS_SWAYANGLE_MAX; \
-    ui_step = 0.1; \
-    ui_category = category; \
-> = AS_SWAYANGLE_DEFAULT;
-
-#endif // __AS_TUNABLES_INCLUDED
+#endif // __AS_BLEND_UI_INCLUDED

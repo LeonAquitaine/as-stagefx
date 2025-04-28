@@ -165,13 +165,14 @@ uniform float GlowShape < ui_type = "slider"; ui_label = "Glow Pattern"; ui_tool
 uniform float MarginGradientStrength < ui_type = "slider"; ui_label = "Edge Darkness"; ui_min = MARGINGRADIENTSTRENGTH_MIN; ui_max = MARGINGRADIENTSTRENGTH_MAX; ui_category = "Stage Effects"; > = MARGINGRADIENTSTRENGTH_DEFAULT;
 
 // --- Color ---
-uniform int PalettePreset < ui_type = "combo"; ui_label = "Theme"; ui_items = "Bluewave\0Bright Lights\0Disco\0Electronica\0Industrial\0Metal\0Monotone\0Pastel Pop\0Redline\0Custom\0"; ui_category = "Lighting"; > = 8;
-uniform float3 ColorA < ui_type = "color"; ui_label = "Light A"; ui_category = "Lighting"; > = float3(0.702,0.400,1.0);
-uniform float3 ColorB < ui_type = "color"; ui_label = "Light B"; ui_category = "Lighting"; > = float3(0.302,0.702,1.0);
-uniform float3 ColorC < ui_type = "color"; ui_label = "Light C"; ui_category = "Lighting"; > = float3(1.0,0.8,0.3);
-uniform float3 ColorD < ui_type = "color"; ui_label = "Light D"; ui_category = "Lighting"; > = float3(1.0,0.3,0.5);
-uniform float3 ColorE < ui_type = "color"; ui_label = "Light E"; ui_category = "Lighting"; > = float3(0.2,1.0,0.6);
-uniform int VisualizationMode < ui_type = "combo"; ui_label = "Show Mode"; ui_items = "Random Panels\0Wave Pattern\0Audio Reactive\0Beat Wave\0"; ui_category = "Lighting"; > = 2;
+// Use the AS_Utils palette selection UI macro for the LightWall shader
+AS_PALETTE_SELECTION_UI(PalettePreset, "Theme", AS_PALETTE_REDLINE, "Lighting")
+
+// --- Color Visualization ---
+uniform int VisualizationMode < ui_type = "combo"; ui_label = "Color Mode"; ui_items = "Light Panel\0Wave\0VU Meter\0VU Wave\0"; ui_tooltip = "How colors are distributed across the light panels"; ui_category = "Lighting"; > = 0;
+
+// Add custom palette colors using the AS_Utils macro
+AS_CUSTOM_PALETTE_UI("Lighting")
 
 // --- Listeningway Integration ---
 uniform int VUMeterSource < ui_type = "combo"; ui_label = "Source"; ui_items = "Volume\0Beat\0Bass\0Mid\0Treble\0"; ui_category = "Audio Reactivity"; > = 1;
@@ -380,8 +381,13 @@ static const float3 PALETTES[PALETTE_COUNT * PALETTE_COLORS] = {
 };
 
 float3 getCustomPaletteColor(int idx) {
-    float3 custom[PALETTE_COLORS] = { ColorA, ColorB, ColorC, ColorD, ColorE };
-    return custom[idx];
+    // Use the CustomPaletteColor variables defined by the AS_CUSTOM_PALETTE_UI macro
+    if (idx == 0) return CustomPaletteColor0;
+    if (idx == 1) return CustomPaletteColor1;
+    if (idx == 2) return CustomPaletteColor2;
+    if (idx == 3) return CustomPaletteColor3;
+    if (idx == 4) return CustomPaletteColor4;
+    return float3(1.0, 1.0, 1.0);
 }
 
 float3 getPaletteColor(int idx) {
@@ -391,12 +397,8 @@ float3 getPaletteColor(int idx) {
 }
 
 float3 palette(float t) {
-    float seg = t * (PALETTE_COLORS - 1);
-    int i = int(seg);
-    float localT = frac(seg);
-    float3 c0 = getPaletteColor(i);
-    float3 c1 = getPaletteColor(min(i+1, PALETTE_COLORS-1));
-    return AS_paletteLerp(c0, c1, localT);
+    // Use the standardized AS_Utils palette interpolation function
+    return AS_getInterpolatedColor(PalettePreset, t);
 }
 
 float hash12(float2 p) {
