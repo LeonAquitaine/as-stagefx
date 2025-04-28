@@ -57,6 +57,12 @@ AS-StageFX includes a variety of distinct visual effects:
     </div></td>
   </tr>
   <tr>
+    <td width="50%"><strong>Laser Cannon</strong> (<code>AS_LaserCannon.1.fx</code>)<br>
+      Renders multiple colored laser beams emanating from a user-defined origin, illuminating a swirling, animated smoke field. Features audio-reactive fanning, blinking, and vortex effects.<br><em>Technique: [AS] Laser Cannon Smoke</em></td>
+    <td width="50%"><div style="text-align:center"><img src="https://github.com/user-attachments/assets/placeholder-lasercannon" alt="Laser Cannon Effect" style="max-width:100%;"></div></td>
+  </tr>
+  
+  <tr>
     <th colspan="2"><strong>Cinematic Effects (CN)</strong></th>
   </tr>
   <tr>
@@ -82,7 +88,7 @@ AS-StageFX includes a variety of distinct visual effects:
   </tr>
   <tr>
     <td width="50%"><strong>CN: Plasma Flow</strong> (<code>AS_CN-PlasmaFlow.1.fx</code>)<br>
-      Generates smooth, swirling, organic plasma-like patterns reminiscent of a lava lamp but more fluid and customizable, ideal for atmospheric visuals in music videos.</td>
+      Generates smooth, swirling, organic plasma-like patterns with enhanced palette options, domain warping, and strong audio reactivity. Ideal for music video backgrounds and atmospheric visuals.</td>
     <td width="50%"><div style="text-align:center">
       <img src="https://github.com/user-attachments/assets/ba95325d-eff0-439e-a452-567675da84fe" alt="Plasma Flow Effect" style="max-width:100%;">
     </div></td>
@@ -99,14 +105,24 @@ AS-StageFX includes a variety of distinct visual effects:
       Isolates foreground subjects based on depth and applies customizable borders and projected shadows, with options for border styles and audio reactivity.</td>
     <td width="50%"><div style="text-align:center">
       <img src="https://github.com/user-attachments/assets/98097147-0a9e-40ac-ae21-0b19e5241c91" alt="Stencil Mask Effect" style="max-width:100%;">
-  </div></td>
+    </div></td>
+  </tr>
+  <tr>
+    <td width="50%"><strong>CN: VU Meter</strong> (<code>AS_CN-VUMeter.1.fx</code>)<br>
+      Visualizes Listeningway frequency bands as a VU meter background with multiple presentation modes (bars, line, dots), color palettes, and customizable appearance options.<br><em>Technique: [AS] VU Meter Background</em></td>
+    <td width="50%"><div style="text-align:center"><img src="https://github.com/user-attachments/assets/placeholder-vumeter" alt="VU Meter Effect" style="max-width:100%;"></div></td>
+  </tr>
+  <tr>
+    <td width="50%"><strong>CN: Boom Sticker</strong> (<code>AS_CN-BoomSticker.1.fx</code>)<br>
+      Displays a texture overlay ("sticker") with controls for placement, scale, rotation, and audio reactivity. Perfect for adding overlays that react to music.<br><em>Technique: [AS] Cinematic: BoomSticker</em></td>
+    <td width="50%"><div style="text-align:center"><img src="https://github.com/user-attachments/assets/placeholder-boomsticker" alt="Boom Sticker Effect" style="max-width:100%;"></div></td>
   </tr>
   <tr>
     <td width="50%"><strong>CN: Warp</strong> (<code>AS_CN-Warp.1.fx</code>)<br>
       Creates a circular mirrored or wavy region (often behind a character) that pulses, changes radius, and ripples/warps in sync with audio.</td>
     <td width="50%"><div style="text-align:center">
-<img src="https://github.com/user-attachments/assets/c707583a-99a1-4463-a02f-cdefd2db3e6a" alt="Warp Effect" style="max-width:100%;">
-</div></td>
+      <img src="https://github.com/user-attachments/assets/c707583a-99a1-4463-a02f-cdefd2db3e6a" alt="Warp Effect" style="max-width:100%;">
+    </div></td>
   </tr>
 </table>
 
@@ -124,3 +140,60 @@ AS-StageFX includes a variety of distinct visual effects:
     </td>
   </tr>
 </table>
+
+---
+
+## Usage Guide
+
+Below are details on each effect shader included in AS-StageFX:
+
+### CN: VU Meter Background (`AS_CN-VUMeter.1.fx`)
+
+Creates an audio-reactive VU meter visualization background.
+
+* **Description:** Visualizes Listeningway frequency bands as a stylish VU meter background with multiple presentation modes, color palettes, and customizable appearance.
+* **Key Features:**
+    * Visualizes all Listeningway frequency bands (up to 32 bands)
+    * Multiple presentation modes: vertical bars, horizontal bars, line, dots, classic VU
+    * Several built-in color palettes (classic, blue, neon, retro, sunset, custom)
+    * Adjustable bar width, spacing, roundness
+    * Optional mirroring for symmetrical visualization
+    * Customizable background alpha for transparency
+    * Zoom and position controls
+    * Audio-reactive sensibility
+    * Multiple blend modes
+
+### CN: Boom Sticker (`AS_CN-BoomSticker.1.fx`)
+
+Applies a texture overlay with audio reactivity.
+
+* **Description:** Displays a texture ("sticker") with controls for placement, scale, rotation, and audio reactivity, ideal for overlays that react to music.
+* **Key Features:**
+    * Simple texture overlay with position, scale, and rotation controls
+    * Audio reactivity for opacity and scale
+    * Supports standard sway animation
+    * Snap rotation for quick angle adjustments
+    * Fine rotation for precise control
+    * Customizable depth masking
+    * Debug visualization modes
+    * Optimized for performance
+
+### Laser Cannon Smoke (`AS_LaserCannon.1.fx`)
+
+Creates dynamic laser beams through animated smoke.
+
+* **Description:** Renders multiple colored laser beams emanating from a user-defined origin, illuminating a swirling, animated smoke field with audio-reactive fanning and blinking.
+* **Key Features:**
+    * Up to 12 configurable, colored laser beams with analytical intensity
+    * Multiple built-in color palettes (Synthwave, Disco, Rave, Chill, Bass Drop, Custom)
+    * Procedural FBM Simplex noise smoke with domain warping
+    * Vortex controls for swirling smoke effects
+    * Audio-reactive fanning and blinking (Listeningway integration)
+    * Customizable beam width, intensity, and core brightness
+    * Adjustable smoke density and animation
+    * Depth-based occlusion and user-tunable blending
+    * Multiple blend modes
+
+### CN: Glitter Effect (`AS_CN-Glitter.1.fx`)
+
+Creates a realistic, dynamic sparkle effect on surfaces that responds to scene lighting, depth, camera movement, and audio. Includes bloom and fresnel effects.

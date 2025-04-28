@@ -26,15 +26,18 @@
 
 This package includes the following shaders:
 
-**Stage Lighting & Ambiance:**
+**Stage Lighting & Ambiance (RS):**
 - **AS_RS-LightWall** - Generates configurable grids of light panels with diverse patterns
 - **AS_RS-Spotlights** - Adds up to 3 customizable directional stage lights
+- **AS_LaserCannon** - Creates multiple colored laser beams with animated smoke effects
 
 **Cinematic Effects (CN):**
+- **AS_CN-BoomSticker** - Displays a texture overlay with audio-reactive positioning
 - **AS_CN-DigitalGlitch** - Applies audio-driven digital artifacts and hologram effects
 - **AS_CN-Glitter** - Creates a realistic, dynamic sparkle effect on surfaces
 - **AS_CN-MotionTrails** - Creates music-reactive, depth-based motion trails
 - **AS_CN-PlasmaFlow** - Generates smooth, swirling, organic plasma-like patterns
 - **AS_CN-SpectrumRing** - Generates a stylized, circular audio visualizer
 - **AS_CN-StencilMask** - Isolates foreground subjects with customizable borders
+- **AS_CN-VUMeter** - Visualizes audio frequency bands as a VU meter background
 - **AS_CN-Warp** - Creates a circular mirrored or wavy region that reacts to audio
