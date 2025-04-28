@@ -147,8 +147,8 @@ void PS_BoomSticker(in float4 position : SV_Position, in float2 texCoord : TEXCO
     
     // Handle debug modes
     if (DebugMode == 1) {
-        // Debug audio beat
-        float beat = Listeningway_Beat;
+        // Debug audio beat - use AS_getAudioSource instead of direct Listeningway reference
+        float beat = AS_getAudioSource(AS_AUDIO_BEAT);
         passColor = float4(beat, beat, beat, 1.0);
         return;
     }
@@ -160,12 +160,7 @@ void PS_BoomSticker(in float4 position : SV_Position, in float2 texCoord : TEXCO
     }
     else if (DebugMode == 3) {
         // Debug selected audio source
-        
         float audioValue = AS_getAudioSource(BoomSticker_AudioSource);
-
-
-        // Direct access to Listeningway values based on selected source
-        
         passColor = float4(audioValue, audioValue, audioValue, 1.0);
         return;
     }

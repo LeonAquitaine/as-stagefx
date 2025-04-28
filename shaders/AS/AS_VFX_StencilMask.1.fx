@@ -177,8 +177,9 @@ namespace AS_StencilMask {
 // --- Main Effect ---
 float4 PS_StencilMask(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target {
     if (DebugMode == 4) {
-        // Use Listeningway_Beat for debug
-        return float4(Listeningway_Beat, Listeningway_Beat, Listeningway_Beat, 1.0);
+        // Use AS_getAudioSource instead of direct Listeningway_Beat reference
+        float audioValue = AS_getAudioSource(AS_AUDIO_BEAT);
+        return float4(audioValue, audioValue, audioValue, 1.0);
     }
     float4 originalColor = tex2D(ReShade::BackBuffer, texcoord);
     float time = AS_getTime();
