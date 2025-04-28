@@ -34,13 +34,9 @@
 
 // --- Helper Functions and Namespace ---
 namespace AS_DepthEcho {
-    // Get audio source value directly using AS_getAudioSource
+    // Use AS_Utils' audio functions directly instead of creating a local wrapper
     float getAudioSource(int source) {
-        #if defined(LISTENINGWAY_INSTALLED)
-            return AS_getAudioSource(source);
-        #else
-            return source == 1 ? 1.0 : 0.0; // Return 1.0 for "Solid" option when Listeningway not installed
-        #endif
+        return AS_getAudioSource(source);
     }
 }
 
@@ -124,7 +120,7 @@ void PS_TimingCaptureUpdate(
     float captureStoredLastFrame = prevTimingCapture.g; // Previous capture state
     
     // Define variables
-    float currentPhase = Listeningway_TotalPhases60Hz; // Phase at the start of *this* frame
+    float currentPhase = AS_getTime() * 60.0; // Use AS_Utils' time function which already handles Listeningway fallback
     bool capture = false;
     
     // Determine if we should capture based on the selected capture mode
@@ -167,23 +163,21 @@ void PS_TimingCaptureUpdate(
             break;
             
         case 2: // On Audio Beat Mode
-            #if defined(LISTENINGWAY_INSTALLED)
-                // Use a static variable to track the on-beat flag
-                static bool onBeat = false;
-                float currentBeatValue = Listeningway_Beat;
-                // If not on beat and beat is high, trigger and set flag
-                if (!onBeat && currentBeatValue >= 1.0) {
-                    capture = true;
-                    onBeat = true;
-                }
-                // If on beat and beat drops below 0.8, unset flag
-                else if (onBeat && currentBeatValue < 0.8) {
-                    onBeat = false;
-                }
-            #else
-                // Fallback when Listeningway isn't installed - use frame-based approach
-                capture = (frameCount % 30 == 0); // Default to every 30 frames (about twice per second at 60fps)
-            #endif
+            // Use AS_getAudioSource for better compatibility
+            float beatValue = AS_getAudioSource(AS_AUDIO_BEAT);
+            
+            // Use a static variable to track the on-beat flag
+            static bool onBeat = false;
+            
+            // If not on beat and beat is high, trigger and set flag
+            if (!onBeat && beatValue >= 0.9) {
+                capture = true;
+                onBeat = true;
+            }
+            // If on beat and beat drops below threshold, unset flag
+            else if (onBeat && beatValue < 0.7) {
+                onBeat = false;
+            }
             break;
             
         case 3: // Manual Trigger Mode

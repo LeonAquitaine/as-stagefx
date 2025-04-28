@@ -347,7 +347,7 @@ int getPatternValue(int x, int y) {
     if (PatternPreset == 12) return PATTERN_ARROWLEFT[py * PATTERN_SIZE + px];
     // Dynamic: VU Meter pattern (now at position 13)
     if (PatternPreset == 13) {
-#if defined(LISTENINGWAY_INSTALLED)
+#if defined(__LISTENINGWAY_INSTALLED)
         float band = saturate(Listeningway_FreqBands[px] * pow(VUBarLogMultiplier, px)); // Logarithmic boost
         int bandHeight = (int)round(band * (PATTERN_SIZE));
         if ((PATTERN_SIZE - 1 - py) < bandHeight) return 1;

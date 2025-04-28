@@ -408,15 +408,6 @@ namespace AS_Glitter {
     }
 } // end namespace AS_Glitter
 
-// --- Audio Source Helper ---
-float GetAudioSource(int source) {
-#if defined(LISTENINGWAY_INSTALLED)
-    return AS_getAudioSource(source);
-#else
-    return 0.0;
-#endif
-}
-
 // --- Main Effects ---
 // First pass: Sparkle generation
 float4 PS_RenderSparkles(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target {

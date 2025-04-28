@@ -49,9 +49,9 @@
 #define __AS_LISTENINGWAY_INCLUDED
 
 // Define a macro to check for Listeningway availability
-#ifndef LISTENINGWAY_AVAILABLE
+#ifndef __LISTENINGWAY_AVAILABLE
     #if __RESHADE__ >= 40800 // Version check for ReShade 4.8+
-        #define LISTENINGWAY_AVAILABLE 1
+        #define __LISTENINGWAY_AVAILABLE 1
         
         // Try to include Listeningway, but don't error if it's not found
         // #pragma message "Note: Checking for Listeningway..."
@@ -70,7 +70,7 @@
         
         // If Listeningway wasn't found, provide fallback implementations
         #ifndef LISTENINGWAY_INSTALLED
-            #pragma message "Note: Listeningway not found, using fallback implementations."
+            // #pragma message "Note: Listeningway not found, using fallback implementations."
             // Define fallback variables used by the rest of the code
             static const float Listeningway_Volume = 0.0;
             static const float Listeningway_Beat = 0.0;

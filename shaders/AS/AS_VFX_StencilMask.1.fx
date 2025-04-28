@@ -188,32 +188,15 @@ float4 PS_StencilMask(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV
     float shadowMovement = 0.0;
     float borderThicknessAudio = 0.0;
     
-    // Get audio values based on selected sources
-    #if defined(LISTENINGWAY_INSTALLED)
-        // Border Pulse
-        if (BorderPulseSource == 2) audioPulse = Listeningway_Volume;
-        else if (BorderPulseSource == 3) audioPulse = Listeningway_Beat;
-        else if (BorderPulseSource == 4) audioPulse = Listeningway_FreqBands[0]; // Bass
-        else if (BorderPulseSource == 5) audioPulse = Listeningway_FreqBands[7]; // Treble
-        else if (BorderPulseSource == 6) audioPulse = Listeningway_FreqBands[3]; // Mid
-        else if (BorderPulseSource == 1) audioPulse = 1.0; // Solid
-
-        // Shadow Movement
-        if (ShadowMovementSource == 2) shadowMovement = Listeningway_Volume;
-        else if (ShadowMovementSource == 3) shadowMovement = Listeningway_Beat;
-        else if (ShadowMovementSource == 4) shadowMovement = Listeningway_FreqBands[0]; // Bass
-        else if (ShadowMovementSource == 5) shadowMovement = Listeningway_FreqBands[7]; // Treble
-        else if (ShadowMovementSource == 6) shadowMovement = Listeningway_FreqBands[3]; // Mid
-        else if (ShadowMovementSource == 1) shadowMovement = 1.0; // Solid
-
-        // Border Thickness
-        if (BorderThicknessSource == 2) borderThicknessAudio = Listeningway_Volume;
-        else if (BorderThicknessSource == 3) borderThicknessAudio = Listeningway_Beat;
-        else if (BorderThicknessSource == 4) borderThicknessAudio = Listeningway_FreqBands[0]; // Bass
-        else if (BorderThicknessSource == 5) borderThicknessAudio = Listeningway_FreqBands[7]; // Treble
-        else if (BorderThicknessSource == 6) borderThicknessAudio = Listeningway_FreqBands[3]; // Mid
-        else if (BorderThicknessSource == 1) borderThicknessAudio = 1.0; // Solid
-    #endif
+    // Get audio values based on selected sources using AS_Utils functions
+    // Border Pulse
+    audioPulse = AS_getAudioSource(BorderPulseSource);
+    
+    // Shadow Movement
+    shadowMovement = AS_getAudioSource(ShadowMovementSource);
+    
+    // Border Thickness
+    borderThicknessAudio = AS_getAudioSource(BorderThicknessSource);
     
     // Apply audio intensity multiplier
     audioPulse *= AudioIntensity;
