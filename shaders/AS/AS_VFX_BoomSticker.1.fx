@@ -13,11 +13,30 @@
  * - Simple texture overlay with position, scale, and rotation controls
  * - Audio reactivity for opacity and scale
  * - Customizable depth masking
+ * - Support for custom texture via preprocessor definition
+ *
+ * USAGE:
+ * To use a custom texture, add these lines to your "PreprocessorDefinitions.h" file:
+ * #define BoomSticker1_FileName "path/to/your/texture.png"
+ * #define BoomSticker1_Width 1920
+ * #define BoomSticker1_Height 1080
  *
  * ===================================================================================
  */
 
+// Default texture if not defined by the user
+#ifndef BoomSticker1_FileName
+    #define BoomSticker1_FileName "LayerStage.png"
+#endif
 
+// Default texture dimensions if not defined by the user
+#ifndef BoomSticker1_Width
+    #define BoomSticker1_Width BUFFER_WIDTH
+#endif
+
+#ifndef BoomSticker1_Height
+    #define BoomSticker1_Height BUFFER_HEIGHT
+#endif
 
 #include "AS_Utils.1.fxh"
 
@@ -32,7 +51,7 @@ float2 rotateUV(float2 uv, float angle) {
 }
 
 // Main sticker texture and sampler
-texture BoomSticker_Texture <source="LayerStage.png";> { Width = BUFFER_WIDTH; Height = BUFFER_HEIGHT; Format=RGBA8; };
+texture BoomSticker_Texture <source=BoomSticker1_FileName;> { Width = BoomSticker1_Width; Height = BoomSticker1_Height; Format=RGBA8; };
 sampler BoomSticker_Sampler { Texture = BoomSticker_Texture; };
 
 // Appearance Controls
@@ -187,8 +206,15 @@ void PS_BoomSticker(in float4 position : SV_Position, in float2 texCoord : TEXCO
     float AspectY = (1.0 - BUFFER_HEIGHT * (1.0 / BUFFER_WIDTH));
     float3 mulUV = float3(texCoord.x, texCoord.y, 1);
     
-    // Calculate scale
+    // Calculate texture aspect ratio correction
+    float textureAspect = float(BoomSticker1_Width) / float(BoomSticker1_Height);
+    float screenAspect = float(BUFFER_WIDTH) / float(BUFFER_HEIGHT);
+    float aspectCorrection = textureAspect / screenAspect;
+    
+    // Calculate scale with aspect ratio preservation
     float2 ScaleSize = float2(BUFFER_WIDTH, BUFFER_HEIGHT) * scale / BUFFER_SCREEN_SIZE;
+    // Apply aspect ratio correction to maintain texture proportions
+    ScaleSize.x *= aspectCorrection;
     float ScaleX = ScaleSize.x * AspectX * BoomSticker_ScaleXY.x;
     float ScaleY = ScaleSize.y * AspectY * BoomSticker_ScaleXY.y;
     
