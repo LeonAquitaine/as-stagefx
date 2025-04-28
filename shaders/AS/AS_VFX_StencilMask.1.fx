@@ -1,5 +1,5 @@
 /**
- * AS_CN-StencilMask.1.fx - Creates a stencil mask effect with borders and shadows.
+ * AS_VFX_StencilMask.1.fx - Creates a stencil mask effect with borders and shadows.
  * Author: Leon Aquitaine
  * License: Creative Commons Attribution 4.0 International
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.

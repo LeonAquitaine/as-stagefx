@@ -1,5 +1,5 @@
 /**
- * AS_CN-Glitter.1.fx - Dynamic Sparkle Effect Shader Version 1.0
+ * AS_VFX_SparkleBloom.1.fx - Dynamic Sparkle Effect Shader Version 1.0
  * Author: Leon Aquitaine
  * License: Creative Commons Attribution 4.0 International
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.

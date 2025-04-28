@@ -1,5 +1,5 @@
 /*
- * AS_CN-BoomSticker.1.fx - Simple sticker texture overlay with audio reactivity
+ * AS_VFX_BoomSticker.1.fx - Simple sticker texture overlay with audio reactivity
  * Author: Leon Aquitaine
  * License: Creative Commons Attribution 4.0 International
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
@@ -234,8 +234,8 @@ void PS_BoomSticker(in float4 position : SV_Position, in float2 texCoord : TEXCO
 }
 
 // Technique definition
-technique BoomSticker_Tech <
-    ui_label = "[AS] Cinematic: BoomSticker";
+technique AS_VFX_BoomSticker <
+    ui_label = "[AS] BoomSticker";
     ui_tooltip = "Simple overlay sticker with audio reactivity";
 >
 {

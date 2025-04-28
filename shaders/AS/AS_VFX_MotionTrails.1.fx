@@ -1,6 +1,6 @@
 /**
- * AS_CN-MotionTrails.1.fx - Music-Reactive Depth-Based Trail Effect
- * Author: Leon Aquitaine (based on original code)
+ * AS_VFX_MotionTrails.1.fx - Music-Reactive Depth-Based Trail Effect
+ * Author: Leon Aquitaine
  * License: Creative Commons Attribution 4.0 International
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
  * 

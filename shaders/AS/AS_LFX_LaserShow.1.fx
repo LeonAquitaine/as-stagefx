@@ -1,5 +1,5 @@
 /**
- * AS_LaserCannonSmoke.1.fx - Audio-Reactive Laser Cannon in Procedural Smoke
+ * AS_LFX_LaserShow.1.fx - Audio-Reactive Laser Show with Procedural Smoke
  * Author: Leon Aquitaine
  * License: Creative Commons Attribution 4.0 International
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
@@ -242,7 +242,7 @@ AS_DEBUG_MODE_UI("Off\0Smoke\0Audio\0Laser\0")
 // ============================================================================
 // NAMESPACE & HELPERS
 // ============================================================================
-namespace AS_LaserCannonSmoke {
+namespace AS_LaserShow {
 
 // Get color from the currently selected palette
 float3 GetPaletteColor(int beamIndex, int totalBeams) {
@@ -344,7 +344,7 @@ float2 AS_aspectCorrectUV(float2 uv) {
     return float2((uv.x - 0.5) * aspect + 0.5, uv.y);
 }
 
-float4 PS_LaserCannonSmoke(float4 pos : SV_Position, float2 texcoord : TexCoord) : SV_Target {
+float4 PS_LaserShow(float4 pos : SV_Position, float2 texcoord : TexCoord) : SV_Target {
     float4 orig = tex2D(ReShade::BackBuffer, texcoord);
     float2 aspectUV = AS_aspectCorrectUV(texcoord);
     float2 origin = LaserOrigin;
@@ -357,7 +357,7 @@ float4 PS_LaserCannonSmoke(float4 pos : SV_Position, float2 texcoord : TexCoord)
 
     // --- Noise (smoke) ---
     float time = AS_getTime();
-    float noise = AS_LaserCannonSmoke::FBMNoise(aspectUV, time, NoiseScale, NoiseSpeed);
+    float noise = AS_LaserShow::FBMNoise(aspectUV, time, NoiseScale, NoiseSpeed);
     float smoke = pow(noise, SmokeDensity);
 
     // --- Fanning and Blinking Animation (audio-reactive) ---
@@ -395,10 +395,10 @@ float4 PS_LaserCannonSmoke(float4 pos : SV_Position, float2 texcoord : TexCoord)
         float angle = baseAngle + frac * spread;
         
         // Calculate beam intensity at this pixel
-        float beamIntensity = AS_LaserCannonSmoke::BeamIntensity(aspectUV, aspectOrigin, angle, LaserWidth, LaserCore);
+        float beamIntensity = AS_LaserShow::BeamIntensity(aspectUV, aspectOrigin, angle, LaserWidth, LaserCore);
         
         // Get the color for this specific beam from our palette
-        float3 beamColor = AS_LaserCannonSmoke::GetPaletteColor(i, NumBeams);
+        float3 beamColor = AS_LaserShow::GetPaletteColor(i, NumBeams);
         
         // Add this beam's contribution to the cumulative color
         cumulativeColor += beamColor * beamIntensity;
@@ -432,9 +432,9 @@ float4 PS_LaserCannonSmoke(float4 pos : SV_Position, float2 texcoord : TexCoord)
 // ============================================================================
 // TECHNIQUE
 // ============================================================================
-technique AS_LaserCannonSmoke < ui_label = "[AS] Laser Cannon Smoke"; ui_tooltip = "Audio-reactive laser beams through procedural smoke"; > {
+technique AS_LaserShow < ui_label = "[AS] Laser Show"; ui_tooltip = "Audio-reactive laser beams through procedural smoke"; > {
     pass {
         VertexShader = PostProcessVS;
-        PixelShader = PS_LaserCannonSmoke;
+        PixelShader = PS_LaserShow;
     }
 }

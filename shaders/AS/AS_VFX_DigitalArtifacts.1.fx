@@ -1,5 +1,5 @@
 /**
- * AS_CN-DigitalGlitch.1.fx - Digital Effect Generator for Glitches and Holograms
+ * AS_VFX_DigitalArtifacts.1.fx - Digital Effect Generator for Glitches and Holograms
  * Author: Leon Aquitaine
  * License: Creative Commons Attribution 4.0 International
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
@@ -32,7 +32,7 @@
 #include "AS_Utils.1.fxh"
 
 // --- Namespace for Helpers and Constants ---
-namespace AS_DigitalGlitch {
+namespace AS_DigitalArtifacts {
     // --- Tunable Constants ---
     static const int MAX_GLITCH_TYPES = 5;
 
@@ -264,7 +264,7 @@ uniform float EffectDepth < ui_type = "slider"; ui_label = "Effect Depth"; ui_to
 uniform float DepthFalloff < ui_type = "slider"; ui_label = "Depth Falloff"; ui_tooltip = "Controls how quickly the effect fades with distance."; ui_min = 0.5; ui_max = 5.0; ui_step = 0.1; ui_category = "Stage Distance"; > = 2.0;
 
 // --- Main Effect ---
-float4 PS_DigitalGlitch(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target {
+float4 PS_DigitalArtifacts(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target {
     // Get original color
     float4 originalColor = tex2D(ReShade::BackBuffer, texcoord);
     
@@ -280,63 +280,63 @@ float4 PS_DigitalGlitch(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : 
     
     // Audio-reactive parameters
     float time = AS_getTime();
-    float audioIntensity = AS_getAudioSource(AS_DigitalGlitch::IntensitySource) * AS_DigitalGlitch::IntensityMult;
-    float audioParameter = AS_getAudioSource(AS_DigitalGlitch::ParameterSource) * AS_DigitalGlitch::ParameterMult;
+    float audioIntensity = AS_getAudioSource(AS_DigitalArtifacts::IntensitySource) * AS_DigitalArtifacts::IntensityMult;
+    float audioParameter = AS_getAudioSource(AS_DigitalArtifacts::ParameterSource) * AS_DigitalArtifacts::ParameterMult;
     
     // Hologram-specific audio parameters
-    float scanlineAudio = AS_getAudioSource(AS_DigitalGlitch::ScanlineSource) * AS_DigitalGlitch::ScanlineIntensity;
-    float rgbSplitAudio = AS_getAudioSource(AS_DigitalGlitch::RGBSplitSource) * AS_DigitalGlitch::RGBSplitMult;
+    float scanlineAudio = AS_getAudioSource(AS_DigitalArtifacts::ScanlineSource) * AS_DigitalArtifacts::ScanlineIntensity;
+    float rgbSplitAudio = AS_getAudioSource(AS_DigitalArtifacts::RGBSplitSource) * AS_DigitalArtifacts::RGBSplitMult;
     
     // Apply audio reactivity to effect parameters
-    float intensity = AS_DigitalGlitch::EffectIntensity * (1.0 + audioIntensity);
-    float speed = AS_DigitalGlitch::EffectSpeed * (1.0 + audioParameter * 0.2);
-    float blockSizeValue = AS_DigitalGlitch::BlockSize * (1.0 + audioParameter * 0.3);
+    float intensity = AS_DigitalArtifacts::EffectIntensity * (1.0 + audioIntensity);
+    float speed = AS_DigitalArtifacts::EffectSpeed * (1.0 + audioParameter * 0.2);
+    float blockSizeValue = AS_DigitalArtifacts::BlockSize * (1.0 + audioParameter * 0.3);
     
     // Add audio reactivity to block density
-    float blockDensityAudio = AS_getAudioSource(AS_DigitalGlitch::BlockDensitySource) * AS_DigitalGlitch::BlockDensityMult;
-    float blockDensityValue = AS_DigitalGlitch::BlockDensity * (1.0 + blockDensityAudio);
+    float blockDensityAudio = AS_getAudioSource(AS_DigitalArtifacts::BlockDensitySource) * AS_DigitalArtifacts::BlockDensityMult;
+    float blockDensityValue = AS_DigitalArtifacts::BlockDensity * (1.0 + blockDensityAudio);
     blockDensityValue = clamp(blockDensityValue, 0.0, 1.0); // Keep within valid range
     
     // Apply selected effect
     float3 effectColor;
     
-    if (AS_DigitalGlitch::EffectType == 0) {
+    if (AS_DigitalArtifacts::EffectType == 0) {
         // Hologram effect
-        effectColor = AS_DigitalGlitch::hologramEffect(
-            texcoord, time, intensity, AS_DigitalGlitch::ScanlineFrequency, AS_DigitalGlitch::RGBSplitAmount, 
+        effectColor = AS_DigitalArtifacts::hologramEffect(
+            texcoord, time, intensity, AS_DigitalArtifacts::ScanlineFrequency, AS_DigitalArtifacts::RGBSplitAmount, 
             scanlineAudio, rgbSplitAudio, speed
         );
     }
-    else if (AS_DigitalGlitch::EffectType == 1) {
+    else if (AS_DigitalArtifacts::EffectType == 1) {
         // RGB Shift
-        effectColor = AS_DigitalGlitch::rgbShift(texcoord, time, intensity, speed);
+        effectColor = AS_DigitalArtifacts::rgbShift(texcoord, time, intensity, speed);
     }
-    else if (AS_DigitalGlitch::EffectType == 2) {
+    else if (AS_DigitalArtifacts::EffectType == 2) {
         // Block Corruption
-        effectColor = AS_DigitalGlitch::blockCorruption(texcoord, time, intensity, blockSizeValue, blockDensityValue);
+        effectColor = AS_DigitalArtifacts::blockCorruption(texcoord, time, intensity, blockSizeValue, blockDensityValue);
     }
-    else if (AS_DigitalGlitch::EffectType == 3) {
+    else if (AS_DigitalArtifacts::EffectType == 3) {
         // Scanlines
-        effectColor = AS_DigitalGlitch::scanlineGlitch(texcoord, time, intensity, blockSizeValue);
+        effectColor = AS_DigitalArtifacts::scanlineGlitch(texcoord, time, intensity, blockSizeValue);
     }
     else { // 4
         // Noise & Static
-        effectColor = AS_DigitalGlitch::noiseGlitch(texcoord, time, intensity, speed);
+        effectColor = AS_DigitalArtifacts::noiseGlitch(texcoord, time, intensity, speed);
     }
     
     // Apply color tint
-    effectColor = lerp(effectColor, effectColor * AS_DigitalGlitch::EffectColor, AS_DigitalGlitch::ColorInfluence);
+    effectColor = lerp(effectColor, effectColor * AS_DigitalArtifacts::EffectColor, AS_DigitalArtifacts::ColorInfluence);
     
     // Debug modes
-    if (AS_DigitalGlitch::DebugMode == 1) {
+    if (AS_DigitalArtifacts::DebugMode == 1) {
         return float4(depthMask.xxx, 1.0); // Show depth mask
     }
-    else if (AS_DigitalGlitch::DebugMode == 2) {
+    else if (AS_DigitalArtifacts::DebugMode == 2) {
         return float4(effectColor, 1.0); // Show effect only
     }
-    else if (AS_DigitalGlitch::DebugMode == 3) {
+    else if (AS_DigitalArtifacts::DebugMode == 3) {
         // Show audio values
-        if (AS_DigitalGlitch::EffectType == 0) { // Hologram
+        if (AS_DigitalArtifacts::EffectType == 0) { // Hologram
             return float4(audioIntensity, scanlineAudio, rgbSplitAudio, 1.0);
         }
         else {
@@ -345,13 +345,13 @@ float4 PS_DigitalGlitch(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : 
     }
     
     // Apply blend mode and depth mask
-    float3 result = AS_blendResult(originalColor.rgb, effectColor, AS_DigitalGlitch::BlendMode);
-    return float4(lerp(originalColor.rgb, result, depthMask * AS_DigitalGlitch::BlendAmount), originalColor.a);
+    float3 result = AS_blendResult(originalColor.rgb, effectColor, AS_DigitalArtifacts::BlendMode);
+    return float4(lerp(originalColor.rgb, result, depthMask * AS_DigitalArtifacts::BlendAmount), originalColor.a);
 }
 
-technique AS_DigitalGlitch < ui_label = "[AS] Cinematic: Digital Glitch"; ui_tooltip = "Creates digital artifacts, glitches, and holographic effects that can be positioned in 3D space."; > {
+technique AS_DigitalArtifacts < ui_label = "[AS] Digital Artifacts"; ui_tooltip = "Creates digital artifacts, glitches, and holographic effects that can be positioned in 3D space."; > {
     pass {
         VertexShader = PostProcessVS;
-        PixelShader = PS_DigitalGlitch;
+        PixelShader = PS_DigitalArtifacts;
     }
 }
