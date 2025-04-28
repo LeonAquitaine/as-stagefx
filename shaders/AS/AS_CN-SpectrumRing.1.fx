@@ -29,7 +29,6 @@
 
 #include "ReShade.fxh"
 #include "ReShadeUI.fxh"
-#include "ListeningwayUniforms.fxh"
 #include "AS_Utils.1.fxh"
 
 // --- Tunable Constants ---
@@ -233,8 +232,8 @@ float4 PS_SpectrumRing(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : S
     int realRepetitions = 1 << Repetitions;
     
     // Map angle to bar index
-    float barStep = 6.2831853 / float(realRepetitions * max(1, AS_getNumFrequencyBands()));
-    float barIdxF = AS_mod(angle + 3.1415926, 6.2831853) / barStep;
+    float barStep = AS_TWO_PI / float(realRepetitions * max(1, AS_getNumFrequencyBands()));
+    float barIdxF = AS_mod(angle + AS_PI, AS_TWO_PI) / barStep;
     int barIdx = int(floor(barIdxF));
     
     // Calculate frequency index based on pattern type
@@ -263,13 +262,9 @@ float4 PS_SpectrumRing(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : S
         // Generate a simple pattern for debugging
         bandValue = sin(freqIdx * 0.5 + AS_getTime() * 2.0) * 0.5 + 0.5;
     } else {
-        #if defined(LISTENINGWAY_INSTALLED)
-            // Direct access to Listeningway frequency band data
-            bandValue = Listeningway_FreqBands[min(freqIdx, LISTENINGWAY_NUM_BANDS-1)];
-        #else
-            // Use simple sin wave pattern when Listeningway is not available
-            bandValue = abs(sin(angle * realRepetitions + AS_getTime()));
-        #endif
+        // Use standardized frequency band access function from AS_Utils
+        // This will automatically handle different band sizes and provide graceful fallback
+        bandValue = AS_getFrequencyBand(freqIdx);
     }
     
     // Apply audio reactivity to radius

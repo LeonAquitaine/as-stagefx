@@ -35,7 +35,7 @@
 #include "AS_Utils.1.fxh"
 
 // --- Tunable Constants ---
-static const float PI = 3.14159265359;
+// Using AS_PI from AS_Utils instead of local PI definition
 static const int MAX_SHADOW_SAMPLES = 16; // Note: Not currently used, consider removing if final
 static const float MAX_EDGE_BIAS = 10.0; // Note: Not currently used, consider removing if final
 static const float FOREGROUNDPLANE_MIN = 0.0;
@@ -68,13 +68,13 @@ static const float SHADOWEXPAND_DEFAULT = 1.5;
 uniform float ForegroundPlane < ui_type = "slider"; ui_label = "Foreground Plane"; ui_tooltip = "Depth threshold for foreground subjects."; ui_min = FOREGROUNDPLANE_MIN; ui_max = FOREGROUNDPLANE_MAX; ui_step = 0.01; ui_category = "Effect-Specific Appearance"; > = FOREGROUNDPLANE_DEFAULT;
 
 // --- Border Settings ---
-uniform int BorderStyle < ui_type = "combo"; ui_label = "Border Style"; ui_items = "Solid\\0Glow\\0Pulse\\0Dash\\0Double Line\\0"; ui_category = "Effect-Specific Appearance"; > = 0; // Category updated
+uniform int BorderStyle < ui_type = "combo"; ui_label = "Border Style"; ui_items = "Solid\0Glow\0Dash\0"; ui_category = "Effect-Specific Appearance"; > = 0; // Category updated
 uniform float3 BorderColor < ui_type = "color"; ui_label = "Border Color"; ui_category = "Effect-Specific Appearance"; > = float3(1.0, 1.0, 1.0); // Category updated
 uniform float BorderOpacity < ui_type = "slider"; ui_label = "Border Opacity"; ui_min = BORDEROPACITY_MIN; ui_max = BORDEROPACITY_MAX; ui_step = 0.01; ui_category = "Effect-Specific Appearance"; > = BORDEROPACITY_DEFAULT; // Renamed, Label updated, Category updated
 uniform float BorderThickness < ui_type = "slider"; ui_label = "Border Thickness"; ui_min = BORDERTHICKNESS_MIN; ui_max = BORDERTHICKNESS_MAX; ui_step = 0.001; ui_category = "Effect-Specific Appearance"; > = BORDERTHICKNESS_DEFAULT; // Category updated
 uniform float MeltStrength < ui_type = "slider"; ui_label = "Border Melt"; ui_tooltip = "Smooths/melts jagged border ends. 0 = off, higher = more smoothing."; ui_min = MELTSTRENGTH_MIN; ui_max = MELTSTRENGTH_MAX; ui_step = 0.01; ui_category = "Effect-Specific Appearance"; > = MELTSTRENGTH_DEFAULT; // Category updated
 // 0: 4 dir, 1: 8 dir, 2: 16 dir, 3: 32 dir, 4: 64 dir
-uniform int BorderSmoothing < ui_type = "combo"; ui_label = "Border Smoothing"; ui_items = "4 directions\\0" "8 directions\\0" "16 directions\\0" "32 directions\\0" "64 directions\\0"; ui_category = "Effect-Specific Appearance"; > = 2; // Category updated
+uniform int BorderSmoothing < ui_type = "combo"; ui_label = "Border Smoothing"; ui_items = "Potato\0Low\0Medium\0High\0AI Overlord\0"; ui_category = "Effect-Specific Appearance"; > = 2; // Category updated
 
 // --- Shadow Settings ---
 uniform bool EnableShadow < ui_label = "Enable Shadow"; ui_category = "Effect-Specific Appearance"; > = true; // Category updated
@@ -85,16 +85,21 @@ uniform float ShadowBlur < ui_type = "slider"; ui_label = "Shadow Blur"; ui_min 
 uniform float ShadowExpand < ui_type = "slider"; ui_label = "Shadow Expand"; ui_min = SHADOWEXPAND_MIN; ui_max = SHADOWEXPAND_MAX; ui_step = 0.1; ui_category = "Effect-Specific Appearance"; > = SHADOWEXPAND_DEFAULT; // Category updated // Note: Not currently used, consider implementing or removing
 
 // --- Audio Reactivity ---
-AS_LISTENINGWAY_UI_CONTROLS("Audio Reactivity") // Adds EnableListeningway uniform
-AS_AUDIO_SOURCE_UI(BorderThicknessSource, "Border Thickness Source", AS_AUDIO_BEAT, "Audio Reactivity")
-AS_AUDIO_MULTIPLIER_UI(BorderThicknessMult, "Border Thickness Impact", 0.5, 1.0, "Audio Reactivity")
-AS_AUDIO_SOURCE_UI(BorderPulseSource, "Border Pulse Source", AS_AUDIO_BEAT, "Audio Reactivity")
-AS_AUDIO_MULTIPLIER_UI(BorderPulseMult, "Border Pulse Impact", 1.0, 3.0, "Audio Reactivity")
-AS_AUDIO_SOURCE_UI(ShadowOffsetSource, "Shadow Movement Source", AS_AUDIO_BASS, "Audio Reactivity")
-AS_AUDIO_MULTIPLIER_UI(ShadowOffsetMult, "Shadow Movement Impact", 1.0, 3.0, "Audio Reactivity")
+// Remove all AS_ audio macros and source/multiplier uniforms
+// Instead, use Listeningway uniforms directly
+// Example: Listeningway_Beat, Listeningway_Volume, Listeningway_Bass, Listeningway_Treble, Listeningway_Mid
+uniform float AudioIntensity < ui_type = "slider"; ui_label = "Audio Intensity"; ui_tooltip = "Scales the audio input for all audio-reactive features."; ui_min = 0.0; ui_max = 3.0; ui_step = 0.01; ui_category = "Audio Reactivity"; > = 1.0;
+
+// Audio source selectors for each reactive parameter
+uniform int BorderPulseSource < ui_type = "combo"; ui_label = "Border Pulse Source"; ui_items = "Off\0Solid\0Volume\0Beat\0Bass\0Treble\0Mid\0"; ui_tooltip = "Audio source that controls border pulsing effect."; ui_category = "Audio Reactivity"; > = 3; // Default to Beat
+
+uniform int BorderThicknessSource < ui_type = "combo"; ui_label = "Border Thickness Source"; ui_items = "Off\0Solid\0Volume\0Beat\0Bass\0Treble\0Mid\0"; ui_tooltip = "Audio source that controls border thickness modulation."; ui_category = "Audio Reactivity"; > = 2; // Default to Volume
+
+uniform int ShadowMovementSource < ui_type = "combo"; ui_label = "Shadow Movement Source"; ui_items = "Off\0Solid\0Volume\0Beat\0Bass\0Treble\0Mid\0"; ui_tooltip = "Audio source that controls shadow movement."; ui_category = "Audio Reactivity"; > = 4; // Default to Bass
 
 // --- Debug ---
-AS_DEBUG_MODE_UI("Off\\0Subject Mask\\0Border Only\\0Shadow Only\\0")
+// Direct uniform for debug dropdown to bypass macro issues
+uniform int DebugMode < ui_type = "combo"; ui_label = "Debug View"; ui_items = "Off\0Subject Mask\0Border Only\0Shadow Only\0Audio\0"; ui_category = "Debug"; > = 0;
 
 // --- Helper Functions ---
 namespace AS_StencilMask {
@@ -117,7 +122,7 @@ namespace AS_StencilMask {
         float radius = thicknessNorm * minDim;
         float maxMask = 0.0;
         for (int i = 0; i < directions; i++) {
-            float angle = (PI * 2.0 / directions) * i;
+            float angle = (AS_PI * 2.0 / directions) * i;
             float2 offset = float2(cos(angle), sin(angle)) * pixelSize * radius;
             float mask = subjectMask(texcoord + offset);
             maxMask = max(maxMask, mask);
@@ -155,15 +160,10 @@ namespace AS_StencilMask {
     float applyBorderStyle(float borderMask, float time, int style, float audioPulse, float2 texcoord) {
         if (style == 0) return borderMask; // Solid
         if (style == 1) return borderMask * (0.75 + 0.25 * sin(time * 2.0)); // Glow
-        if (style == 2) return borderMask * (1.0 + audioPulse * 0.5); // Pulse (uses BorderPulseSource)
-        if (style == 3) { // Dash
+        // style == 2 is now Dash
+        if (style == 2) { // Dash
             float dash = sin(texcoord.x * 50.0 + time * 2.0) * 0.5 + 0.5;
             return borderMask * smoothstep(0.4, 0.6, dash);
-        }
-        if (style == 4) { // Double Line
-            float inner = smoothstep(0.4, 0.6, borderMask);
-            float outer = smoothstep(0.8, 1.0, borderMask);
-            return (inner - outer) * 2.0; // This might need adjustment based on desired look
         }
         return borderMask;
     }
@@ -176,99 +176,89 @@ namespace AS_StencilMask {
 
 // --- Main Effect ---
 float4 PS_StencilMask(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target {
+    if (DebugMode == 4) {
+        // Use Listeningway_Beat for debug
+        return float4(Listeningway_Beat, Listeningway_Beat, Listeningway_Beat, 1.0);
+    }
     float4 originalColor = tex2D(ReShade::BackBuffer, texcoord);
-    float time = AS_getTime(); // Use utility function for time
+    float time = AS_getTime();
 
     // --- Audio Reactivity Values ---
     float audioPulse = 0.0;
     float shadowMovement = 0.0;
     float borderThicknessAudio = 0.0;
+    
+    // Get audio values based on selected sources
+    #if defined(LISTENINGWAY_INSTALLED)
+        // Border Pulse
+        if (BorderPulseSource == 2) audioPulse = Listeningway_Volume;
+        else if (BorderPulseSource == 3) audioPulse = Listeningway_Beat;
+        else if (BorderPulseSource == 4) audioPulse = Listeningway_FreqBands[0]; // Bass
+        else if (BorderPulseSource == 5) audioPulse = Listeningway_FreqBands[7]; // Treble
+        else if (BorderPulseSource == 6) audioPulse = Listeningway_FreqBands[3]; // Mid
+        else if (BorderPulseSource == 1) audioPulse = 1.0; // Solid
 
-    if (EnableListeningway) { // Check the UI toggle
-        audioPulse = AS_getAudioSource(BorderPulseSource) * BorderPulseMult;
-        shadowMovement = AS_getAudioSource(ShadowOffsetSource) * ShadowOffsetMult;
-        // Only calculate border thickness audio if source is selected
-        if (BorderThicknessSource > 0) {
-            borderThicknessAudio = AS_getAudioSource(BorderThicknessSource);
-        }
-    }
+        // Shadow Movement
+        if (ShadowMovementSource == 2) shadowMovement = Listeningway_Volume;
+        else if (ShadowMovementSource == 3) shadowMovement = Listeningway_Beat;
+        else if (ShadowMovementSource == 4) shadowMovement = Listeningway_FreqBands[0]; // Bass
+        else if (ShadowMovementSource == 5) shadowMovement = Listeningway_FreqBands[7]; // Treble
+        else if (ShadowMovementSource == 6) shadowMovement = Listeningway_FreqBands[3]; // Mid
+        else if (ShadowMovementSource == 1) shadowMovement = 1.0; // Solid
+
+        // Border Thickness
+        if (BorderThicknessSource == 2) borderThicknessAudio = Listeningway_Volume;
+        else if (BorderThicknessSource == 3) borderThicknessAudio = Listeningway_Beat;
+        else if (BorderThicknessSource == 4) borderThicknessAudio = Listeningway_FreqBands[0]; // Bass
+        else if (BorderThicknessSource == 5) borderThicknessAudio = Listeningway_FreqBands[7]; // Treble
+        else if (BorderThicknessSource == 6) borderThicknessAudio = Listeningway_FreqBands[3]; // Mid
+        else if (BorderThicknessSource == 1) borderThicknessAudio = 1.0; // Solid
+    #endif
+    
+    // Apply audio intensity multiplier
+    audioPulse *= AudioIntensity;
+    shadowMovement *= AudioIntensity;
+    borderThicknessAudio *= AudioIntensity;
 
     // --- Subject Mask ---
     float subjectMask = AS_StencilMask::subjectMask(texcoord);
 
     // --- Border Calculation ---
     float borderMask = 0.0;
-    // Calculate reactive border thickness: Base + (Audio * Multiplier)
-    float borderThicknessReactive = BorderThickness;
-    if (EnableListeningway && BorderThicknessSource > 0) {
-        float additionalThickness = borderThicknessAudio * BorderThicknessMult;
-        borderThicknessReactive += additionalThickness;
-    }
-    // Ensure thickness doesn't go below zero if base is small and audio/mult are negative (though mult UI prevents this)
+    float borderThicknessReactive = BorderThickness + borderThicknessAudio * 0.1; // scale as needed
     borderThicknessReactive = max(0.0, borderThicknessReactive);
-
-    // Dilate and smooth the mask
     float dilatedMask = AS_StencilMask::smoothDilatedMask(texcoord, borderThicknessReactive, BorderSmoothing, MeltStrength);
-    // Apply border style (pulse uses audioPulse calculated earlier)
     borderMask = AS_StencilMask::applyBorderStyle(dilatedMask, time, BorderStyle, audioPulse, texcoord);
 
     // --- Shadow Calculation ---
     float shadowMask = 0.0;
-    float2 dynamicOffset = ShadowOffset; // Start with base offset
-
+    float2 dynamicOffset = ShadowOffset;
+    dynamicOffset += float2(
+        sin(time * 2.0) * shadowMovement * 0.01,
+        cos(time * 1.7) * shadowMovement * 0.01
+    );
     if (EnableShadow) {
-        // Apply audio-reactive movement if enabled
-        if (EnableListeningway && ShadowOffsetSource > 0 && shadowMovement > 0.01) {
-            dynamicOffset += float2(
-                sin(time * 2.0) * shadowMovement * 0.01, // Scale movement effect
-                cos(time * 1.7) * shadowMovement * 0.01
-            );
-        }
-
         float2 shadowCoord = texcoord + dynamicOffset;
-        // Use the same reactive thickness for the shadow dilation
         float dilatedMaskShadow = AS_StencilMask::smoothDilatedMask(shadowCoord, borderThicknessReactive, BorderSmoothing, MeltStrength);
-        // Apply border style to shadow mask (using shadowCoord for texture-dependent styles like Dash)
         shadowMask = AS_StencilMask::applyBorderStyle(dilatedMaskShadow, time, BorderStyle, audioPulse, shadowCoord);
     }
 
     // --- Debug Modes ---
-    if (DebugMode == 1) return float4(subjectMask.xxx, 1.0); // Subject Mask
-    if (DebugMode == 2) { // Border Only
-        // Apply alpha directly for debug view
-        return float4(BorderColor, borderMask * BorderOpacity); // Updated uniform name
-    }
-    if (DebugMode == 3 && EnableShadow) { // Shadow Only
-        // Apply alpha directly for debug view
-        return float4(ShadowColor, shadowMask * ShadowOpacity); // Updated uniform name
-    }
+    if (DebugMode == 1) return float4(subjectMask.xxx, 1.0);
+    if (DebugMode == 2) return float4(BorderColor, borderMask * BorderOpacity);
+    if (DebugMode == 3 && EnableShadow) return float4(ShadowColor, shadowMask * ShadowOpacity);
 
     // --- Compositing ---
     float4 result = originalColor;
-
-    // 1. Apply Shadow (underneath everything else)
     if (EnableShadow && shadowMask > 0.01) {
-        // Lerp original color towards shadow color based on shadow mask and alpha
-        result.rgb = lerp(result.rgb, ShadowColor, saturate(shadowMask * ShadowOpacity)); // Updated uniform name
+        result.rgb = lerp(result.rgb, ShadowColor, saturate(shadowMask * ShadowOpacity));
     }
-
-    // 2. Apply Border (over shadow, under subject)
     if (borderMask > 0.01) {
-        // Lerp current result towards border color based on border mask and alpha
-        result.rgb = lerp(result.rgb, BorderColor, saturate(borderMask * BorderOpacity)); // Updated uniform name
+        result.rgb = lerp(result.rgb, BorderColor, saturate(borderMask * BorderOpacity));
     }
-
-    // 3. Re-apply original subject color where subject mask is high
-    // This ensures the subject itself isn't tinted by border/shadow
-    // We lerp towards originalColor based on the subject mask.
-    // Using smoothstep can help create a slightly softer edge between subject and border/shadow.
-    // float subjectBlendFactor = smoothstep(0.0, 0.1, subjectMask); // Optional softening
-    float subjectBlendFactor = subjectMask; // Hard edge
+    float subjectBlendFactor = subjectMask;
     result.rgb = lerp(result.rgb, originalColor.rgb, subjectBlendFactor);
-
-    // Preserve original alpha if needed, or set to 1.0
     result.a = originalColor.a;
-
     return result;
 }
 

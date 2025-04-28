@@ -1,6 +1,6 @@
 /**
  * AS_CN-PlasmaFlow.1.fx - Audio-Reactive Plasma/Flow Field Shader
- * Author: Leon Aquitaine (based on PlasmaWall)
+ * Author: Leon Aquitaine (rewrite by Copilot)
  * License: Creative Commons Attribution 4.0 International
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
  * 
@@ -27,7 +27,6 @@
 
 #include "ReShade.fxh"
 #include "ReShadeUI.fxh"
-#include "ListeningwayUniforms.fxh"
 #include "AS_Utils.1.fxh"
 
 // --- Tunable Constants ---
@@ -143,7 +142,7 @@ uniform float PlasmaContrast < ui_type = "slider"; ui_label = "Plasma Contrast";
 uniform float PlasmaSpeed < ui_type = "slider"; ui_label = "Speed"; ui_tooltip = "How quickly the plasma flows."; ui_min = SPEED_MIN; ui_max = SPEED_MAX; ui_step = 0.01; ui_category = "Animation"; > = SPEED_DEFAULT;
 
 // --- Audio Reactivity ---
-AS_LISTENINGWAY_UI_CONTROLS("Audio Reactivity")
+
 AS_AUDIO_SOURCE_UI(AudioMoveSource, "Movement Source", AS_AUDIO_VOLUME, "Audio Reactivity")
 AS_AUDIO_MULTIPLIER_UI(AudioMoveMult, "Movement Strength", 1.0, 4.0, "Audio Reactivity")
 AS_AUDIO_SOURCE_UI(AudioColorSource, "Color Source", AS_AUDIO_BASS, "Audio Reactivity")

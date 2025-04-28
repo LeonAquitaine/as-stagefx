@@ -42,6 +42,9 @@
 #ifndef __AS_LISTENINGWAY_INCLUDED
 #define __AS_LISTENINGWAY_INCLUDED
 
+#include "ListeningwayUniforms.fxh" // For audio reactivity features
+
+
 // --- Audio Constants ---
 #define AS_AUDIO_OFF     0  // Audio source disabled
 #define AS_AUDIO_SOLID   1  // Constant value (no audio reactivity)
@@ -58,14 +61,6 @@
 #define AS_AUDIO_SOURCE_ITEMS "Off\0Solid\0Volume\0Beat\0Bass\0Treble\0Mid\0"
 
 // --- UI Control Macros ---
-// Define standard UI controls for Listeningway integration
-#define AS_LISTENINGWAY_UI_CONTROLS(category) \
-uniform bool EnableListeningway < \
-    ui_label = "Enable Integration"; \
-    ui_tooltip = "Enable audio-reactive controls using the Listeningway addon. When enabled, the effect will respond to music and sound. [Learn more](https://github.com/gposingway/Listeningway)"; \
-    ui_category = category; \
-> = false;
-
 // Define standard audio source control (reuse this macro for each audio reactive parameter)
 #define AS_AUDIO_SOURCE_UI(name, label, defaultSource, category) \
 uniform int name < \
@@ -73,7 +68,6 @@ uniform int name < \
     ui_label = label; \
     ui_items = AS_AUDIO_SOURCE_ITEMS; \
     ui_category = category; \
-    ui_bind = "EnableListeningway"; \
 > = defaultSource;
 
 // Define standard multiplier control for audio reactivity
@@ -84,10 +78,10 @@ uniform float name < \
     ui_tooltip = "Controls how much the selected audio source affects this parameter."; \
     ui_min = 0.0; ui_max = maxValue; ui_step = 0.05; \
     ui_category = category; \
-    ui_bind = "EnableListeningway"; \
 > = defaultValue;
 
 #endif // __AS_LISTENINGWAY_INCLUDED
+
 
 // --- Debug Mode Standardization ---
 #ifndef __AS_DEBUG_MODE_INCLUDED
@@ -213,15 +207,28 @@ float AS_getVUMeterValue(int source) {
 
 // Returns normalized audio value from specified source
 float AS_getAudioSource(int source) {
-#if defined(LISTENINGWAY_INSTALLED)
     if (source == AS_AUDIO_OFF)    return 0.0;                // Off
     if (source == AS_AUDIO_SOLID)  return 1.0;                // Solid
     if (source == AS_AUDIO_VOLUME) return Listeningway_Volume; // Volume
     if (source == AS_AUDIO_BEAT)   return Listeningway_Beat;   // Beat
-    if (source == AS_AUDIO_BASS)   return Listeningway_FreqBands[0]; // Bass
-    if (source == AS_AUDIO_TREBLE) return Listeningway_FreqBands[7]; // Treble
-    if (source == AS_AUDIO_MID)    return Listeningway_FreqBands[3]; // Mid
-#endif
+    
+    // Updated frequency band indices to work with the new band size
+    int numBands = AS_getNumFrequencyBands();
+    if (numBands <= 1) return 0.0; // Safety check
+    
+    if (source == AS_AUDIO_BASS) {
+        // Bass is the first 20% of bands, use first band
+        return Listeningway_FreqBands[0]; 
+    }
+    if (source == AS_AUDIO_MID) {
+        // Mid is the middle of the spectrum, use center band
+        return Listeningway_FreqBands[numBands / 2]; 
+    }
+    if (source == AS_AUDIO_TREBLE) {
+        // Treble is the last 20% of bands, use last band
+        return Listeningway_FreqBands[numBands - 1]; 
+    }
+    
     return 0.0;
 }
 
@@ -252,6 +259,19 @@ float AS_applyAudioReactivityEx(float baseValue, int audioSource, float multipli
 // ============================================================================
 // MATH & PROCEDURAL GENERATION
 // ============================================================================
+
+// --- Math Constants ---
+// Standard mathematical constants for consistent use across all shaders
+#ifndef __AS_MATH_CONSTANTS
+#define __AS_MATH_CONSTANTS
+static const float AS_PI = 3.14159265359;
+static const float AS_TWO_PI = 6.28318530718;
+static const float AS_HALF_PI = 1.57079632679;
+static const float AS_QUARTER_PI = 0.78539816339;
+static const float AS_INV_PI = 0.31830988618;
+static const float AS_E = 2.71828182846;
+static const float AS_GOLDEN_RATIO = 1.61803398875;
+#endif // __AS_MATH_CONSTANTS
 
 // --- Math Helpers ---
 // Corrects UV coordinates for non-square aspect ratios
@@ -352,6 +372,31 @@ float AS_fadeInOut(float cycle, float fadeInEnd, float fadeOutStart) {
     return 1.0;
 }
 
+// --- Sway Animation Helpers ---
+// Applies sinusoidal sway effect based on time
+// swayAngle: maximum angle of sway in degrees
+// swaySpeed: speed of the sway animation
+// returns: sway offset in radians
+float AS_applySway(float swayAngle, float swaySpeed) {
+    float time = AS_getTime();
+    float swayPhase = time * swaySpeed;
+    return AS_radians(swayAngle) * sin(swayPhase);
+}
+
+// Audio-reactive version of sway effect
+// swayAngle: maximum angle of sway in degrees
+// swaySpeed: speed of the sway animation
+// audioSource: audio source to modulate the sway with
+// audioMult: audio multiplier
+// returns: audio-reactive sway offset in radians
+float AS_applyAudioSway(float swayAngle, float swaySpeed, int audioSource, float audioMult) {
+    float time = AS_getTime();
+    float audioLevel = AS_getAudioSource(audioSource);
+    float reactiveAngle = swayAngle * (1.0 + audioLevel * audioMult);
+    float swayPhase = time * swaySpeed;
+    return AS_radians(reactiveAngle) * sin(swayPhase);
+ }
+
 // --- Visualization Helpers ---
 // Returns a debug color based on mode and value
 float4 AS_debugOutput(int mode, float4 orig, float4 mask, float4 audio, float4 effect) {
@@ -369,3 +414,102 @@ float AS_starMask(float2 p, float size, float points, float angle) {
     float f = cos(a * points) * 0.5 + 0.5;
     return 1.0 - smoothstep(f * size, f * size + 0.01, r);
 }
+
+// ============================================================================
+// SHARED TUNABLE CONSTANTS
+// ============================================================================
+
+#ifndef __AS_TUNABLES_INCLUDED
+#define __AS_TUNABLES_INCLUDED
+
+// --- Stage Distance (Depth) Constants ---
+// Controls how far back stage effects appear in the scene
+#define AS_STAGEDEPTH_MIN 0.0
+#define AS_STAGEDEPTH_MAX 1.0
+#define AS_STAGEDEPTH_DEFAULT 0.05
+
+// --- Blend Amount Constants ---
+// Controls intensity of effect blending
+#define AS_BLENDAMOUNT_MIN 0.0
+#define AS_BLENDAMOUNT_MAX 1.0
+#define AS_BLENDAMOUNT_DEFAULT 1.0
+
+// --- Common UI Macros for Standard Parameters ---
+// Standardized Stage Depth control
+#define AS_STAGEDEPTH_UI(name, label, category) \
+uniform float name < \
+    ui_type = "slider"; \
+    ui_label = label; \
+    ui_tooltip = "Controls how far back the effect appears (lower = closer, higher = further)."; \
+    ui_min = AS_STAGEDEPTH_MIN; \
+    ui_max = AS_STAGEDEPTH_MAX; \
+    ui_step = 0.01; \
+    ui_category = category; \
+> = AS_STAGEDEPTH_DEFAULT;
+
+// Standardized Blend Mode control
+#define AS_BLENDMODE_UI(name, category) \
+uniform int name < \
+    ui_type = "combo"; \
+    ui_label = "Mode"; \
+    ui_items = "Normal\0Lighter Only\0Darker Only\0Additive\0Multiply\0Screen\0"; \
+    ui_category = category; \
+> = 0;
+
+// Standardized Blend Mode control with custom default
+#define AS_BLENDMODE_UI_DEFAULT(name, category, defaultMode) \
+uniform int name < \
+    ui_type = "combo"; \
+    ui_label = "Mode"; \
+    ui_items = "Normal\0Lighter Only\0Darker Only\0Additive\0Multiply\0Screen\0"; \
+    ui_category = category; \
+> = defaultMode;
+
+// Standardized Blend Amount control
+#define AS_BLENDAMOUNT_UI(name, category) \
+uniform float name < \
+    ui_type = "slider"; \
+    ui_label = "Strength"; \
+    ui_min = AS_BLENDAMOUNT_MIN; \
+    ui_max = AS_BLENDAMOUNT_MAX; \
+    ui_step = 0.01; \
+    ui_category = category; \
+> = AS_BLENDAMOUNT_DEFAULT;
+
+// --- Sway Animation Constants ---
+// Controls how quickly an element sways back and forth
+#define AS_SWAYSPEED_MIN 0.0
+#define AS_SWAYSPEED_MAX 5.0
+#define AS_SWAYSPEED_DEFAULT 1.0
+
+// Controls how far an element sways in degrees
+#define AS_SWAYANGLE_MIN 0.0
+#define AS_SWAYANGLE_MAX 180.0
+#define AS_SWAYANGLE_DEFAULT 15.0
+
+// --- Common UI Macros for Sway Parameters ---
+// Standardized Sway Speed control
+#define AS_SWAYSPEED_UI(name, category) \
+uniform float name < \
+    ui_type = "slider"; \
+    ui_label = "Sway Speed"; \
+    ui_tooltip = "Controls how quickly the element sways back and forth."; \
+    ui_min = AS_SWAYSPEED_MIN; \
+    ui_max = AS_SWAYSPEED_MAX; \
+    ui_step = 0.01; \
+    ui_category = category; \
+> = AS_SWAYSPEED_DEFAULT;
+
+// Standardized Sway Angle control
+#define AS_SWAYANGLE_UI(name, category) \
+uniform float name < \
+    ui_type = "slider"; \
+    ui_label = "Sway Angle"; \
+    ui_tooltip = "Controls how far the element sways (in degrees)."; \
+    ui_min = AS_SWAYANGLE_MIN; \
+    ui_max = AS_SWAYANGLE_MAX; \
+    ui_step = 0.1; \
+    ui_category = category; \
+> = AS_SWAYANGLE_DEFAULT;
+
+#endif // __AS_TUNABLES_INCLUDED

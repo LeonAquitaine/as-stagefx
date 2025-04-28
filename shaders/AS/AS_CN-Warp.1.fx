@@ -29,7 +29,6 @@
 
 #include "ReShade.fxh"
 #include "ReShadeUI.fxh"
-#include "ListeningwayUniforms.fxh"
 #include "AS_Utils.1.fxh"
 
 // --- Shader Controls ---
@@ -47,7 +46,6 @@ uniform float MirrorDepth < ui_type = "slider"; ui_label = "Depth"; ui_tooltip =
 uniform float BlendAmount < ui_type = "slider"; ui_label = "Amount"; ui_tooltip = "How strongly the effect is blended with the scene."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Blend"; > = 1.0;
 
 // --- Listeningway Integration ---
-AS_LISTENINGWAY_UI_CONTROLS("Listeningway Integration")
 
 AS_AUDIO_SOURCE_UI(MirrorAudioSource, "Radius Source", AS_AUDIO_BEAT, "Listeningway Integration")
 AS_AUDIO_MULTIPLIER_UI(MirrorRadiusAudioMult, "Radius Strength", 0.12, 0.5, "Listeningway Integration")

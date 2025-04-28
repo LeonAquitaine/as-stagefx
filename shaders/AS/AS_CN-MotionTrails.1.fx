@@ -30,7 +30,6 @@
 
 #include "ReShade.fxh"
 #include "ReShadeUI.fxh"
-#include "ListeningwayUniforms.fxh"
 #include "AS_Utils.1.fxh"
 
 // --- Helper Functions and Namespace ---
@@ -81,7 +80,7 @@ uniform int iEcho_FrameInterval < ui_type = "slider"; ui_min = IECHO_FRAMEINTERV
 uniform bool bEcho_ManualCapture < ui_type = "bool"; ui_label = "Drop Trail Marker"; ui_tooltip = "Toggle this to manually create a trail marker when in Manual Trigger mode"; ui_category = "Trail Timing"; > = false;
 
 // --- Beat Synchronization ---
-AS_LISTENINGWAY_UI_CONTROLS("Beat Synchronization")
+
 AS_AUDIO_SOURCE_UI(Echo_TimingSource, "Rhythm Source", AS_AUDIO_BEAT, "Beat Synchronization")
 AS_AUDIO_MULTIPLIER_UI(Echo_TimingMult, "Beat Impact", 0.5, 1.0, "Beat Synchronization")
 AS_AUDIO_SOURCE_UI(Echo_IntensitySource, "Energy Source", AS_AUDIO_BEAT, "Beat Synchronization")

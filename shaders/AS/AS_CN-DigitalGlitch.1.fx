@@ -35,7 +35,6 @@
 namespace AS_DigitalGlitch {
     // --- Tunable Constants ---
     static const int MAX_GLITCH_TYPES = 5;
-    static const float PI = 3.14159265359;
 
     // --- Main Effect Type ---
     uniform int EffectType < ui_type = "combo"; ui_label = "Effect Type"; ui_items = "Hologram\0RGB Shift\0Block Corruption\0Scanlines\0Noise & Static\0"; ui_category = "Main"; > = 0;
@@ -171,7 +170,7 @@ namespace AS_DigitalGlitch {
         float3 color = tex2D(ReShade::BackBuffer, shiftUV).rgb;
         
         // Scanline darkening
-        float scanlineDark = 0.9 + 0.1 * sin(uv.y * blockSize * PI * 2.0);
+        float scanlineDark = 0.9 + 0.1 * sin(uv.y * blockSize * AS_PI * 2.0);
         color *= scanlineDark;
         
         // Color corruption for some scanlines
@@ -233,7 +232,7 @@ namespace AS_DigitalGlitch {
         float scanlineMask = lerp(1.0, scanline, ScanlineIntensity * scanlineAudio);
         
         // RGB split effect
-        float angle = time * PI; // Rotate over time
+        float angle = time * AS_PI; // Rotate over time
         float2 rgbOffset = float2(cos(angle), sin(angle)) * (rgbSplitAmount * rgbAudio);
         
         // Glitch/jitter effect

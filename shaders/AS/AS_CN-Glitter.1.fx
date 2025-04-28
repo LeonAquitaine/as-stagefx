@@ -32,7 +32,6 @@
 
 #include "ReShade.fxh"
 #include "ReShadeUI.fxh"
-#include "ListeningwayUniforms.fxh"
 #include "AS_Utils.1.fxh"
 
 // --- Tunable Constants ---
@@ -105,7 +104,7 @@ uniform float3 NearColor < ui_type = "color"; ui_label = "Near Color"; ui_toolti
 uniform float3 FarColor < ui_type = "color"; ui_label = "Far Color"; ui_tooltip = "Color for sparkles far from the camera."; ui_category = "Color Settings"; > = float3(153/255.0, 204/255.0, 1.0);
 
 // --- Audio Reactivity ---
-AS_LISTENINGWAY_UI_CONTROLS("Audio Reactivity")
+
 AS_AUDIO_SOURCE_UI(Listeningway_SparkleSource, "Sparkle Source", AS_AUDIO_BEAT, "Audio Reactivity")
 AS_AUDIO_MULTIPLIER_UI(Listeningway_SparkleMultiplier, "Sparkle Intensity", 1.5, 5.0, "Audio Reactivity")
 AS_AUDIO_SOURCE_UI(Listeningway_BloomSource, "Bloom Source", AS_AUDIO_BEAT, "Audio Reactivity")
@@ -179,7 +178,7 @@ namespace AS_Glitter {
 
     // Gaussian distribution function for bloom
     float Gaussian(float x, float sigma) {
-        return (1.0 / (sqrt(2.0 * 3.14159265359) * sigma)) * exp(-(x * x) / (2.0 * sigma * sigma));
+        return (1.0 / (sqrt(2.0 * AS_PI) * sigma)) * exp(-(x * x) / (2.0 * sigma * sigma));
     }
     
     // Get bloom step size based on quality setting
@@ -449,11 +448,9 @@ float4 PS_RenderSparkles(float4 pos : SV_Position, float2 texcoord : TEXCOORD) :
     
     // Calculate time with audio reactivity
     float actualTimeScale = TimeScale / 333.33;
-    if (EnableListeningway) {
-        actualTimeScale = AS_applyAudioReactivityEx(TimeScale / 333.33, Listeningway_TimeScaleSource, 
-                                                 Listeningway_TimeScaleBand1Multiplier / 333.33, 
-                                                 EnableListeningway, 1); // Additive mode
-    }
+    actualTimeScale = AS_applyAudioReactivityEx(TimeScale / 333.33, Listeningway_TimeScaleSource, 
+                                             Listeningway_TimeScaleBand1Multiplier / 333.33, 
+                                             true, 1); // Additive mode, always enable audio
     float time = AS_getTime() * actualTimeScale;
     
     // Generate sparkles
@@ -463,7 +460,7 @@ float4 PS_RenderSparkles(float4 pos : SV_Position, float2 texcoord : TEXCOORD) :
     
     // Apply audio reactivity to sparkle intensity
     sparkleIntensity = AS_applyAudioReactivity(sparkleIntensity, Listeningway_SparkleSource, 
-                                            Listeningway_SparkleMultiplier, EnableListeningway);
+                                            Listeningway_SparkleMultiplier, true); // Always enable audio
     
     // Apply masking based on occlusion settings
     if (!forceEnable && ObeyOcclusion) { 
@@ -525,7 +522,7 @@ float4 PS_BloomH(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Targ
     // Calculate audio-reactive bloom intensity
     float bloomIntensity = BloomIntensity;
     bloomIntensity = AS_applyAudioReactivity(BloomIntensity, Listeningway_BloomSource, 
-                                          Listeningway_BloomMultiplier, EnableListeningway);
+                                          Listeningway_BloomMultiplier, true); // Always enable audio
     
     // Sample in horizontal direction for Gaussian blur
     for(int i = -MAX_SAMPLES; i <= MAX_SAMPLES; i++) {

@@ -31,7 +31,6 @@
 
 #include "ReShade.fxh"
 #include "ReShadeUI.fxh"
-#include "ListeningwayUniforms.fxh"
 #include "AS_Utils.1.fxh"
 
 // --- Tunable Constants ---
@@ -121,7 +120,7 @@ static const float VUBARLOGMULTIPLIER_MAX = 8.0;
 static const float VUBARLOGMULTIPLIER_DEFAULT = 4.54;
 static const float STAGEDEPTH_MIN = 0.0;
 static const float STAGEDEPTH_MAX = 1.0;
-static const float STAGEDEPTH_DEFAULT = 0.06;
+static const float STAGEDEPTH_DEFAULT = 0.05;
 static const float BLENDAMOUNT_MIN = 0.0;
 static const float BLENDAMOUNT_MAX = 1.0;
 static const float BLENDAMOUNT_DEFAULT = 1.0;
