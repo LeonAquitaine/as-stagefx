@@ -119,7 +119,9 @@ AS-StageFX includes a variety of distinct visual effects:
   <tr>
     <td width="50%"><strong>VFX: Boom Sticker</strong> (<code>AS_VFX_BoomSticker.1.fx</code>)<br>
       Displays a texture overlay ("sticker") with controls for placement, scale, rotation, and audio reactivity. Perfect for adding overlays that react to music.<br><em>Technique: [AS] Boom Sticker</em></td>
-    <td width="50%"><div style="text-align:center"><img src="https://github.com/user-attachments/assets/placeholder-boomsticker" alt="Boom Sticker Effect" style="max-width:100%;"></div></td>
+    <td width="50%"><div style="text-align:center">
+      <img src="https://github.com/user-attachments/assets/ee8e98b8-198b-4a65-a40d-032eca60dcc5" alt="Boom Sticker Effect" style="max-width:100%;">
+    </div></td>
   </tr>
   <tr>
     <td width="50%"><strong>VFX: Warp Distort</strong> (<code>AS_VFX_WarpDistort.1.fx</code>)<br>
