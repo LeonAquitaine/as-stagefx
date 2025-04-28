@@ -30,8 +30,8 @@
  * ===================================================================================
  */
 
-#include "ReShade.fxh"
-#include "ReShadeUI.fxh"
+
+
 #include "AS_Utils.1.fxh"
 
 // --- Tunable Constants ---
@@ -262,7 +262,7 @@ float4 PS_StencilMask(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV
     return result;
 }
 
-technique AS_StencilMask < ui_label = "[AS] Cinematic: Stencil Mask"; ui_tooltip = "Creates a stencil mask effect that isolates subjects with customizable borders and projected shadows."; > {
+technique AS_StencilMask < ui_label = "[AS] VFX: Stencil Mask"; ui_tooltip = "Creates a stencil mask effect that isolates subjects with customizable borders and projected shadows."; > {
     pass {
         VertexShader = PostProcessVS;
         PixelShader = PS_StencilMask;

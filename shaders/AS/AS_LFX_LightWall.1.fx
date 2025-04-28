@@ -29,8 +29,8 @@
  * ===================================================================================
  */
 
-#include "ReShade.fxh"
-#include "ReShadeUI.fxh"
+
+
 #include "AS_Utils.1.fxh"
 
 // --- Tunable Constants ---
@@ -595,7 +595,7 @@ float4 PS_StageGrid(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_T
     return float4(result, orig.a);
 }
 
-technique AS_LFX_LightWall < ui_label = "[AS] Light Wall"; ui_tooltip = "Soft glowing multicolor grid."; > {
+technique AS_LightWall < ui_label = "[AS] LFX: Light Wall"; ui_tooltip = "Soft glowing multicolor grid."; > {
     pass {
         VertexShader = PostProcessVS;
         PixelShader = PS_StageGrid;

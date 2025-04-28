@@ -27,8 +27,8 @@
  * ===================================================================================
  */
 
-#include "ReShade.fxh"
-#include "ReShadeUI.fxh"
+
+
 #include "AS_Utils.1.fxh"
 
 // --- Shader Controls ---
@@ -105,7 +105,7 @@ float4 PS_AudioMirror(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV
     return float4(result, orig.a);
 }
 
-technique AS_Warp < ui_label = "[AS] Cinematic: Warp"; ui_tooltip = "Circular mirrored effect that pulses and waves with music."; > {
+technique AS_Warp < ui_label = "[AS] VFX: Warp Distort"; ui_tooltip = "Circular mirrored effect that pulses and waves with music."; > {
     pass {
         VertexShader = PostProcessVS;
         PixelShader = PS_AudioMirror;

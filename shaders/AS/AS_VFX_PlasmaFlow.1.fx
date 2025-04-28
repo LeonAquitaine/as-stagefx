@@ -25,8 +25,8 @@
  * ===================================================================================
  */
 
-#include "ReShade.fxh"
-#include "ReShadeUI.fxh"
+
+
 #include "AS_Utils.1.fxh"
 
 // --- Tunable Constants ---
@@ -275,7 +275,7 @@ float4 PS_PlasmaFlow(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_
     return float4(finalColor, 1.0);
 }
 
-technique AS_PlasmaFlow_1 < ui_label = "[AS] Cinematic: Plasma Flow"; ui_tooltip = "Audio-reactive plasma/flow field for groovy, atmospheric visuals."; > {
+technique AS_PlasmaFlow_1 < ui_label = "[AS] VFX: Plasma Flow"; ui_tooltip = "Audio-reactive plasma/flow field for groovy, atmospheric visuals."; > {
     pass {
         VertexShader = PostProcessVS;
         PixelShader = PS_PlasmaFlow;

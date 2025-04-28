@@ -32,6 +32,12 @@
  */
 
 // ============================================================================
+// INCLUDES
+// ============================================================================
+#include "ReShade.fxh"
+#include "ReShadeUI.fxh"
+
+// ============================================================================
 // UI STANDARDIZATION & MACROS
 // ============================================================================
 
@@ -42,8 +48,46 @@
 #ifndef __AS_LISTENINGWAY_INCLUDED
 #define __AS_LISTENINGWAY_INCLUDED
 
-#include "ListeningwayUniforms.fxh" // For audio reactivity features
-
+// Define a macro to check for Listeningway availability
+#ifndef LISTENINGWAY_AVAILABLE
+    #if __RESHADE__ >= 40800 // Version check for ReShade 4.8+
+        #define LISTENINGWAY_AVAILABLE 1
+        
+        // Try to include Listeningway, but don't error if it's not found
+        // #pragma message "Note: Checking for Listeningway..."
+        
+        // Check if Listeningway is already defined/installed
+        #ifndef LISTENINGWAY_INSTALLED
+            // Try to include the file - this will define LISTENINGWAY_INSTALLED if present
+             // Make sure this is included first
+            
+            // Use try/catch equivalent with preprocessor
+            #ifndef LISTENINGWAY_INCLUDE_ATTEMPTED
+                #define LISTENINGWAY_INCLUDE_ATTEMPTED
+                #include "ListeningwayUniforms.fxh" 
+            #endif
+        #endif
+        
+        // If Listeningway wasn't found, provide fallback implementations
+        #ifndef LISTENINGWAY_INSTALLED
+            #pragma message "Note: Listeningway not found, using fallback implementations."
+            // Define fallback variables used by the rest of the code
+            static const float Listeningway_Volume = 0.0;
+            static const float Listeningway_Beat = 0.0;
+            static const float Listeningway_FreqBands[8] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+            static const float Listeningway_TotalPhases120Hz = 0.0;
+        #else
+            // #pragma message "Note: Listeningway found and enabled."
+        #endif
+    #else
+        #pragma message "Note: ReShade version too old for Listeningway, using fallback."
+        // Fallbacks for older ReShade versions
+        static const float Listeningway_Volume = 0.0;
+        static const float Listeningway_Beat = 0.0;
+        static const float Listeningway_FreqBands[8] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+        static const float Listeningway_TotalPhases120Hz = 0.0;
+    #endif
+#endif
 
 // --- Audio Constants ---
 #define AS_AUDIO_OFF     0  // Audio source disabled

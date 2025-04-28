@@ -28,8 +28,8 @@
  * ===================================================================================
  */
 
-#include "ReShade.fxh"
-#include "ReShadeUI.fxh"
+
+
 #include "AS_Utils.1.fxh"
 
 // --- Helper Functions and Namespace ---
@@ -307,8 +307,8 @@ void PS_CopyTimingBuffer(
 }
 
 // --- Technique ---
-technique AS_MV_MotionTrails_1 <
-    ui_label = "[AS] Cinematic: Motion Trails";
+technique AS_MotionTrails_1 <
+    ui_label = "[AS] VFX: Motion Trails";
     ui_tooltip = "Creates dynamic motion trails perfect for music videos and creative compositions.";
 >
 {

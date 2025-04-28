@@ -30,8 +30,8 @@
  * ===================================================================================
  */
 
-#include "ReShade.fxh"
-#include "ReShadeUI.fxh"
+
+
 #include "AS_Utils.1.fxh"
 
 // --- Tunable Constants ---
@@ -610,7 +610,7 @@ float4 PS_BloomV(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Targ
 }
 
 // --- Technique Definition ---
-technique AS_Glitter < ui_label = "[AS] Cinematic: Glitter"; ui_tooltip = "Adds dynamic sparkles that pop in, glow, and fade out"; > {
+technique AS_Glitter < ui_label = "[AS] VFX: Sparkle Bloom"; ui_tooltip = "Adds dynamic sparkles that pop in, glow, and fade out"; > {
     pass RenderSparkles { 
         VertexShader = PostProcessVS; 
         PixelShader = PS_RenderSparkles; 

@@ -27,8 +27,8 @@
  * ===================================================================================
  */
 
-#include "ReShade.fxh"
-#include "ReShadeUI.fxh"
+
+
 #include "AS_Utils.1.fxh"
 
 // --- Tunable Constants ---
@@ -315,7 +315,7 @@ float4 PS_SpectrumRing(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : S
     return float4(lerp(orig.rgb, blended, blendAlpha), 1.0);
 }
 
-technique AS_SpectrumRing < ui_label = "[AS] Cinematic: Spectrum Ring"; ui_tooltip = "Audio-reactive spectrum ring UV meter using all audio bands."; > {
+technique AS_SpectrumRing < ui_label = "[AS] VFX: Spectrum Ring"; ui_tooltip = "Audio-reactive spectrum ring UV meter using all audio bands."; > {
     pass {
         VertexShader = PostProcessVS;
         PixelShader = PS_SpectrumRing;

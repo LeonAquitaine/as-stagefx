@@ -29,8 +29,6 @@
 // ============================================================================
 // INCLUDES
 // ============================================================================
-#include "ReShade.fxh"
-#include "ReShadeUI.fxh"
 #include "AS_Utils.1.fxh"
 
 // ============================================================================
@@ -432,7 +430,7 @@ float4 PS_LaserShow(float4 pos : SV_Position, float2 texcoord : TexCoord) : SV_T
 // ============================================================================
 // TECHNIQUE
 // ============================================================================
-technique AS_LaserShow < ui_label = "[AS] Laser Show"; ui_tooltip = "Audio-reactive laser beams through procedural smoke"; > {
+technique AS_LaserShow < ui_label = "[AS] LFX: Laser Show"; ui_tooltip = "Audio-reactive laser beams through procedural smoke"; > {
     pass {
         VertexShader = PostProcessVS;
         PixelShader = PS_LaserShow;

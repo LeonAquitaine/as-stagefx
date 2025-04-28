@@ -29,8 +29,8 @@
  * ===================================================================================
  */
 
-#include "ReShade.fxh"
-#include "ReShadeUI.fxh"
+
+
 #include "AS_Utils.1.fxh"
 
 // --- Tunable Constants ---
@@ -283,7 +283,7 @@ float4 PS_VUMeterBG(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_T
     return float4(result, orig.a);
 }
 
-technique AS_VUMeterBG < ui_label = "[AS] VU Meter Background"; ui_tooltip = "Audio-reactive VU meter background using Listeningway."; > {
+technique AS_VUMeterBG < ui_label = "[AS] VFX: VU Meter"; ui_tooltip = "Audio-reactive VU meter background using Listeningway."; > {
     pass {
         VertexShader = PostProcessVS;
         PixelShader = PS_VUMeterBG;

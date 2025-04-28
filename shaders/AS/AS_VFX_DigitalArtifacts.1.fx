@@ -27,8 +27,8 @@
  * ===================================================================================
  */
 
-#include "ReShade.fxh"
-#include "ReShadeUI.fxh"
+
+
 #include "AS_Utils.1.fxh"
 
 // --- Namespace for Helpers and Constants ---
@@ -349,7 +349,7 @@ float4 PS_DigitalArtifacts(float4 pos : SV_Position, float2 texcoord : TEXCOORD)
     return float4(lerp(originalColor.rgb, result, depthMask * AS_DigitalArtifacts::BlendAmount), originalColor.a);
 }
 
-technique AS_DigitalArtifacts < ui_label = "[AS] Digital Artifacts"; ui_tooltip = "Creates digital artifacts, glitches, and holographic effects that can be positioned in 3D space."; > {
+technique AS_DigitalArtifacts < ui_label = "[AS] VFX: Digital Artifacts"; ui_tooltip = "Creates digital artifacts, glitches, and holographic effects that can be positioned in 3D space."; > {
     pass {
         VertexShader = PostProcessVS;
         PixelShader = PS_DigitalArtifacts;

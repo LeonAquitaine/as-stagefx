@@ -8,17 +8,17 @@
 
 ## File Organization
 
-- **Naming**: Use `AS_EffectName.Version.fx` (e.g., `AS_LavaLamp.1.fx`)
+- **Naming**: Use `AS_TypeCode_EffectName.Version.fx` (e.g., `AS_LFX_LaserShow.1.fx`)
 - **Required Headers**:
   ```hlsl
-  #include "ReShade.fxh"
-  #include "ReShadeUI.fxh"
+  
+  
   #include "AS_Utils.1.fxh"  // Always include for utilities and audio reactivity
   ```
 - **Standard Header Documentation**:
   ```hlsl
   /**
-   * AS_ShaderName.Version.fx - Brief description
+   * AS_TP_ShaderName.Version.fx - Brief description
    * Author: Author Name
    * License: Creative Commons Attribution 4.0 International
    * 

@@ -17,8 +17,8 @@
  * ===================================================================================
  */
 
-#include "ReShade.fxh"
-#include "ReShadeUI.fxh"
+
+
 #include "AS_Utils.1.fxh"
 
 // --- Helper Functions ---
@@ -234,8 +234,8 @@ void PS_BoomSticker(in float4 position : SV_Position, in float2 texCoord : TEXCO
 }
 
 // Technique definition
-technique AS_VFX_BoomSticker <
-    ui_label = "[AS] BoomSticker";
+technique AS_BoomSticker <
+    ui_label = "[AS] VFX: BoomSticker";
     ui_tooltip = "Simple overlay sticker with audio reactivity";
 >
 {
