@@ -14,13 +14,13 @@
  * FEATURES:
  * - Depth-based subject tracking for dynamic trail effects
  * - User-definable trail color, strength, and persistence
- * - Audio-reactive trail timing, intensity and colors through Listeningway
+ * - Audio-reactive trail timing, intensity and colors through AS_Utils audio integration
  * - Multiple blend modes for scene integration
  * - Optional real-time subject highlight for better visualization
  * - Precise depth control for targeting specific scene elements
  *
  * IMPLEMENTATION OVERVIEW:
- * 1. The shader uses Listeningway's timing system to capture scene snapshots at regular intervals
+ * 1. The shader uses AS_Utils timing system to capture scene snapshots at regular intervals
  * 2. Objects within a customizable depth threshold are isolated and stored
  * 3. These captured images are accumulated over time with a controllable fade rate
  * 4. Audio can modulate capture timing, trail intensity and colors for dynamic effects

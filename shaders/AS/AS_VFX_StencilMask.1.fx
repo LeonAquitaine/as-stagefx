@@ -85,9 +85,7 @@ uniform float ShadowBlur < ui_type = "slider"; ui_label = "Shadow Blur"; ui_min 
 uniform float ShadowExpand < ui_type = "slider"; ui_label = "Shadow Expand"; ui_min = SHADOWEXPAND_MIN; ui_max = SHADOWEXPAND_MAX; ui_step = 0.1; ui_category = "Effect-Specific Appearance"; > = SHADOWEXPAND_DEFAULT; // Category updated // Note: Not currently used, consider implementing or removing
 
 // --- Audio Reactivity ---
-// Remove all AS_ audio macros and source/multiplier uniforms
-// Instead, use Listeningway uniforms directly
-// Example: Listeningway_Beat, Listeningway_Volume, Listeningway_Bass, Listeningway_Treble, Listeningway_Mid
+// Use standard AS_Utils audio macros and controls
 uniform float AudioIntensity < ui_type = "slider"; ui_label = "Audio Intensity"; ui_tooltip = "Scales the audio input for all audio-reactive features."; ui_min = 0.0; ui_max = 3.0; ui_step = 0.01; ui_category = "Audio Reactivity"; > = 1.0;
 
 // Audio source selectors for each reactive parameter

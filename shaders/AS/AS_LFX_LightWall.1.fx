@@ -13,7 +13,7 @@
  *
  * FEATURES:
  * - 14 built-in patterns including Heart, Empty Heart, Diamond, and Beat Meter
- * - Audio-reactive panels that pulse to music via Listeningway
+ * - Audio-reactive panels that pulse to music via AS_Utils audio integration
  * - Customizable color palettes with 9 presets and custom options
  * - Light burst effects and cross beams for dramatic highlighting
  * - 3D perspective with tilt, pitch, and roll controls
@@ -347,14 +347,11 @@ int getPatternValue(int x, int y) {
     if (PatternPreset == 12) return PATTERN_ARROWLEFT[py * PATTERN_SIZE + px];
     // Dynamic: VU Meter pattern (now at position 13)
     if (PatternPreset == 13) {
-#if defined(__LISTENINGWAY_INSTALLED)
-        float band = saturate(Listeningway_FreqBands[px] * pow(VUBarLogMultiplier, px)); // Logarithmic boost
+        // Use AS_getFrequencyBand from AS_Utils which handles fallbacks
+        float band = saturate(AS_getFrequencyBand(px) * pow(VUBarLogMultiplier, px)); // Logarithmic boost
         int bandHeight = (int)round(band * (PATTERN_SIZE));
         if ((PATTERN_SIZE - 1 - py) < bandHeight) return 1;
         else return 0;
-#else
-        return 0;
-#endif
     }
     return 1;
 }

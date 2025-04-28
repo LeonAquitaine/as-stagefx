@@ -6,26 +6,23 @@
  * ===================================================================================
  *
  * DESCRIPTION:
- * Visualizes Listeningway_FreqBands as a VU meter background with zoom, pan, palette, smoothing, and glow controls.
- * Multiple presentation modes: vertical/horizontal bars, mirrored, line, dots, and classic VU.
+ * Creates an audio-reactive VU meter visualization with multiple display styles, customizable
+ * appearance and full audio integration through AS_Utils.
  *
  * FEATURES:
- * - Visualizes all Listeningway_FreqBands (32 bands)
- * - Multiple presentation modes (bars, line, dots, mirrored, classic VU)
- * - Palette support (classic, blue, neon, retro, sunset, custom)
+ * - Multiple visualization modes: vertical/horizontal bars, line, dots, and classic VU
+ * - Audio integration via AS_Utils for reliable cross-platform compatibility
+ * - Customizable appearance with multiple palette options
  * - Adjustable bar width, spacing, roundness
- * - Optional glow/bloom effect
- * - Optional smoothing/interpolation between bands
- * - Zoom and pan controls
- * - Sensibility (audio multiplier)
+ * - Zoom and pan controls for precise positioning
+ * - Customizable sensitivity for audio reactivity
  *
  * IMPLEMENTATION OVERVIEW:
  * 1. User selects mode, palette, and appearance controls
- * 2. Listeningway_FreqBands are sampled, optionally smoothed and scaled
+ * 2. Audio frequency data is accessed via AS_getFrequencyBand with optional smoothing
  * 3. Bars/lines/dots are drawn using palette color by value
- * 4. Optional glow and smoothing are applied
- * 5. Effect is zoomed/panned as needed
- *
+ * 4. Effect is zoomed/panned as needed and integrated with the scene
+ * 
  * ===================================================================================
  */
 
@@ -153,7 +150,7 @@ float4 PS_VUMeterBG(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_T
     float2 uv = (texcoord - center) / Zoom + center + Pan;
 
     float4 bg = float4(0, 0, 0, BackgroundAlpha);
-    int bands = 32; // Listeningway_FreqBands[0..31]
+    int bands = 32; // Using AS_getFrequencyBand which handles all band sizes
     float barGap = BarGap;
     float barWidth = BarWidth;
     float roundness = BarRoundness;
@@ -283,7 +280,7 @@ float4 PS_VUMeterBG(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_T
     return float4(result, orig.a);
 }
 
-technique AS_VUMeterBG < ui_label = "[AS] VFX: VU Meter"; ui_tooltip = "Audio-reactive VU meter background using Listeningway."; > {
+technique AS_VUMeterBG < ui_label = "[AS] VFX: VU Meter"; ui_tooltip = "Audio-reactive VU meter background using AS_Utils audio integration."; > {
     pass {
         VertexShader = PostProcessVS;
         PixelShader = PS_VUMeterBG;
