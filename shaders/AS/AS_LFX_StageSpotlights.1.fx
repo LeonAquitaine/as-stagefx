@@ -1,5 +1,5 @@
 /**
- * AS_RockStage-Spotlights.1.fx - Directional Stage Lighting Effect
+ * AS_LFX_StageSpotlights.1.fx - Directional Stage Lighting Effect
  * Author: Leon Aquitaine
  * License: Creative Commons Attribution 4.0 International
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
@@ -256,7 +256,7 @@ float4 PS_Spotlights(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_
     return float4(result, orig.a);
 }
 
-technique AS_RS_Spotlights < ui_label = "[AS] Rock Stage: Spotlights"; ui_tooltip = "Configurable stage spotlights with audio reactivity."; > {
+technique AS_LFX_StageSpotlights < ui_label = "[AS] Stage Spotlights"; ui_tooltip = "Configurable stage spotlights with audio reactivity."; > {
     pass {
         VertexShader = PostProcessVS;
         PixelShader = PS_Spotlights;

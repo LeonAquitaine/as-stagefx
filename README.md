@@ -40,88 +40,88 @@ AS-StageFX includes a variety of distinct visual effects:
 
 <table>
   <tr>
-    <th colspan="2"><strong>Stage Lighting & Ambiance (RS)</strong></th>
+    <th colspan="2"><strong>Lighting Effects (LFX)</strong></th>
   </tr>
   <tr>
-    <td width="50%"><strong>RS: Light Wall</strong> (<code>AS_RS-LightWall.1.fx</code>)<br>
+    <td width="50%"><strong>LFX: Light Wall</strong> (<code>AS_LFX_LightWall.1.fx</code>)<br>
       Generate configurable grids of light panels with diverse patterns, 3D perspective, audio reactivity, and customizable color palettes. Perfect for backdrops.</td>
     <td width="50%"><div style="text-align:center">
       <img src="https://github.com/user-attachments/assets/ece86ab7-36f1-459c-8c83-31414c3b5cc3" alt="Light Wall Effect" style="max-width:100%;">
     </div></td>
   </tr>
   <tr>
-    <td width="50%"><strong>RS: Spotlights</strong> (<code>AS_RS-Spotlights.1.fx</code>)<br>
-      Add up to 3 customizable directional stage lights with realistic beam/glow effects, depth masking, and audio-reactive intensity and movement.<br><em>Technique: [AS] Rock Stage: Spotlights</em></td>
+    <td width="50%"><strong>LFX: Stage Spotlights</strong> (<code>AS_LFX_StageSpotlights.1.fx</code>)<br>
+      Add up to 3 customizable directional stage lights with realistic beam/glow effects, depth masking, and audio-reactive intensity and movement.<br><em>Technique: [AS] Stage Spotlights</em></td>
     <td width="50%"><div style="text-align:center">
       <img src="https://github.com/user-attachments/assets/73e1081b-147e-4355-b867-d4964238245b" alt="Spotlights Effect" style="max-width:100%;">
     </div></td>
   </tr>
   <tr>
-    <td width="50%"><strong>Laser Cannon</strong> (<code>AS_LaserCannon.1.fx</code>)<br>
-      Renders multiple colored laser beams emanating from a user-defined origin, illuminating a swirling, animated smoke field. Features audio-reactive fanning, blinking, and vortex effects.<br><em>Technique: [AS] Laser Cannon Smoke</em></td>
-    <td width="50%"><div style="text-align:center"><img src="https://github.com/user-attachments/assets/placeholder-lasercannon" alt="Laser Cannon Effect" style="max-width:100%;"></div></td>
+    <td width="50%"><strong>LFX: Laser Show</strong> (<code>AS_LFX_LaserShow.1.fx</code>)<br>
+      Renders multiple colored laser beams emanating from a user-defined origin, illuminating a swirling, animated smoke field. Features audio-reactive fanning, blinking, and vortex effects.<br><em>Technique: [AS] Laser Show</em></td>
+    <td width="50%"><div style="text-align:center"><img src="https://github.com/user-attachments/assets/placeholder-lasercannon" alt="Laser Show Effect" style="max-width:100%;"></div></td>
   </tr>
   
   <tr>
-    <th colspan="2"><strong>Cinematic Effects (CN)</strong></th>
+    <th colspan="2"><strong>Visual Effects (VFX)</strong></th>
   </tr>
   <tr>
-    <td width="50%"><strong>CN: Digital Glitch</strong> (<code>AS_CN-DigitalGlitch.1.fx</code>)<br>
+    <td width="50%"><strong>VFX: Digital Artifacts</strong> (<code>AS_VFX_DigitalArtifacts.1.fx</code>)<br>
       Applies audio-driven digital artifacts, glitches and hologram effects, including scanlines, RGB split, jitter, and pulsing synced to music.</td>
     <td width="50%"><div style="text-align:center">
-      <img src="https://github.com/user-attachments/assets/6786cb0a-f2c7-4d82-8584-1c669c7513ea" alt="Digital Glitch Effect" style="max-width:100%;">
+      <img src="https://github.com/user-attachments/assets/6786cb0a-f2c7-4d82-8584-1c669c7513ea" alt="Digital Artifacts Effect" style="max-width:100%;">
     </div></td>
   </tr>
   <tr>
-    <td width="50%"><strong>CN: Glitter</strong> (<code>AS_CN-Glitter.1.fx</code>)<br>
+    <td width="50%"><strong>VFX: Sparkle Bloom</strong> (<code>AS_VFX_SparkleBloom.1.fx</code>)<br>
       Creates a realistic, dynamic sparkle effect on surfaces that responds to scene lighting, depth, camera movement, and audio. Includes bloom and fresnel effects.</td>
     <td width="50%"><div style="text-align:center">
-      <img src="https://github.com/user-attachments/assets/a0998834-4795-414e-a685-9c7ab685a515" alt="Glitter Effect" style="max-width:100%;">
+      <img src="https://github.com/user-attachments/assets/a0998834-4795-414e-a685-9c7ab685a515" alt="Sparkle Bloom Effect" style="max-width:100%;">
     </div></td>
   </tr>
   <tr>
-    <td width="50%"><strong>CN: Motion Trails</strong> (<code>AS_CN-MotionTrails.1.fx</code>)<br>
-      Creates music-reactive, depth-based motion trails for dramatic visual effects in videos and screenshots.<br><em>Technique: [AS] Cinematic: Motion Trails</em></td>
+    <td width="50%"><strong>VFX: Motion Trails</strong> (<code>AS_VFX_MotionTrails.1.fx</code>)<br>
+      Creates music-reactive, depth-based motion trails for dramatic visual effects in videos and screenshots.<br><em>Technique: [AS] Motion Trails</em></td>
     <td width="50%"><div style="text-align:center">
       <img src="https://github.com/user-attachments/assets/1b7a2750-89be-424b-b149-4d850692d9f8" alt="Motion Trails Effect" style="max-width:100%;">
     </div></td>
   </tr>
   <tr>
-    <td width="50%"><strong>CN: Plasma Flow</strong> (<code>AS_CN-PlasmaFlow.1.fx</code>)<br>
+    <td width="50%"><strong>VFX: Plasma Flow</strong> (<code>AS_VFX_PlasmaFlow.1.fx</code>)<br>
       Generates smooth, swirling, organic plasma-like patterns with enhanced palette options, domain warping, and strong audio reactivity. Ideal for music video backgrounds and atmospheric visuals.</td>
     <td width="50%"><div style="text-align:center">
       <img src="https://github.com/user-attachments/assets/ba95325d-eff0-439e-a452-567675da84fe" alt="Plasma Flow Effect" style="max-width:100%;">
     </div></td>
   </tr>
   <tr>
-    <td width="50%"><strong>CN: Spectrum Ring</strong> (<code>AS_CN-SpectrumRing.1.fx</code>)<br>
+    <td width="50%"><strong>VFX: Spectrum Ring</strong> (<code>AS_VFX_SpectrumRing.1.fx</code>)<br>
       Generates a stylized, circular audio visualizer that displays all Listeningway frequency bands, with repetitions and mirroring options.</td>
     <td width="50%"><div style="text-align:center">
       <img src="https://github.com/user-attachments/assets/e193b002-d3aa-4d86-8584-7eb667f6ff6c" alt="Spectrum Ring Effect" style="max-width:100%;">
     </div></td>
   </tr>
   <tr>
-    <td width="50%"><strong>CN: Stencil Mask</strong> (<code>AS_CN-StencilMask.1.fx</code>)<br>
+    <td width="50%"><strong>VFX: Stencil Mask</strong> (<code>AS_VFX_StencilMask.1.fx</code>)<br>
       Isolates foreground subjects based on depth and applies customizable borders and projected shadows, with options for border styles and audio reactivity.</td>
     <td width="50%"><div style="text-align:center">
       <img src="https://github.com/user-attachments/assets/98097147-0a9e-40ac-ae21-0b19e5241c91" alt="Stencil Mask Effect" style="max-width:100%;">
     </div></td>
   </tr>
   <tr>
-    <td width="50%"><strong>CN: VU Meter</strong> (<code>AS_CN-VUMeter.1.fx</code>)<br>
+    <td width="50%"><strong>VFX: VU Meter</strong> (<code>AS_VFX_VUMeter.1.fx</code>)<br>
       Visualizes Listeningway frequency bands as a VU meter background with multiple presentation modes (bars, line, dots), color palettes, and customizable appearance options.<br><em>Technique: [AS] VU Meter Background</em></td>
     <td width="50%"><div style="text-align:center"><img src="https://github.com/user-attachments/assets/placeholder-vumeter" alt="VU Meter Effect" style="max-width:100%;"></div></td>
   </tr>
   <tr>
-    <td width="50%"><strong>CN: Boom Sticker</strong> (<code>AS_CN-BoomSticker.1.fx</code>)<br>
-      Displays a texture overlay ("sticker") with controls for placement, scale, rotation, and audio reactivity. Perfect for adding overlays that react to music.<br><em>Technique: [AS] Cinematic: BoomSticker</em></td>
+    <td width="50%"><strong>VFX: Boom Sticker</strong> (<code>AS_VFX_BoomSticker.1.fx</code>)<br>
+      Displays a texture overlay ("sticker") with controls for placement, scale, rotation, and audio reactivity. Perfect for adding overlays that react to music.<br><em>Technique: [AS] Boom Sticker</em></td>
     <td width="50%"><div style="text-align:center"><img src="https://github.com/user-attachments/assets/placeholder-boomsticker" alt="Boom Sticker Effect" style="max-width:100%;"></div></td>
   </tr>
   <tr>
-    <td width="50%"><strong>CN: Warp</strong> (<code>AS_CN-Warp.1.fx</code>)<br>
+    <td width="50%"><strong>VFX: Warp Distort</strong> (<code>AS_VFX_WarpDistort.1.fx</code>)<br>
       Creates a circular mirrored or wavy region (often behind a character) that pulses, changes radius, and ripples/warps in sync with audio.</td>
     <td width="50%"><div style="text-align:center">
-      <img src="https://github.com/user-attachments/assets/c707583a-99a1-4463-a02f-cdefd2db3e6a" alt="Warp Effect" style="max-width:100%;">
+      <img src="https://github.com/user-attachments/assets/c707583a-99a1-4463-a02f-cdefd2db3e6a" alt="Warp Distort Effect" style="max-width:100%;">
     </div></td>
   </tr>
 </table>
@@ -147,7 +147,7 @@ AS-StageFX includes a variety of distinct visual effects:
 
 Below are details on each effect shader included in AS-StageFX:
 
-### CN: VU Meter Background (`AS_CN-VUMeter.1.fx`)
+### VFX: VU Meter (`AS_VFX_VUMeter.1.fx`)
 
 Creates an audio-reactive VU meter visualization background.
 
@@ -163,7 +163,7 @@ Creates an audio-reactive VU meter visualization background.
     * Audio-reactive sensibility
     * Multiple blend modes
 
-### CN: Boom Sticker (`AS_CN-BoomSticker.1.fx`)
+### VFX: Boom Sticker (`AS_VFX_BoomSticker.1.fx`)
 
 Applies a texture overlay with audio reactivity.
 
@@ -178,7 +178,7 @@ Applies a texture overlay with audio reactivity.
     * Debug visualization modes
     * Optimized for performance
 
-### Laser Cannon Smoke (`AS_LaserCannon.1.fx`)
+### LFX: Laser Show (`AS_LFX_LaserShow.1.fx`)
 
 Creates dynamic laser beams through animated smoke.
 
@@ -194,6 +194,6 @@ Creates dynamic laser beams through animated smoke.
     * Depth-based occlusion and user-tunable blending
     * Multiple blend modes
 
-### CN: Glitter Effect (`AS_CN-Glitter.1.fx`)
+### VFX: Sparkle Bloom (`AS_VFX_SparkleBloom.1.fx`)
 
 Creates a realistic, dynamic sparkle effect on surfaces that responds to scene lighting, depth, camera movement, and audio. Includes bloom and fresnel effects.

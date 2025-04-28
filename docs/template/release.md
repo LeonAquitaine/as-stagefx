@@ -26,18 +26,18 @@
 
 This package includes the following shaders:
 
-**Stage Lighting & Ambiance (RS):**
-- **AS_RS-LightWall** - Generates configurable grids of light panels with diverse patterns
-- **AS_RS-Spotlights** - Adds up to 3 customizable directional stage lights
-- **AS_LaserCannon** - Creates multiple colored laser beams with animated smoke effects
+**Lighting Effects (LFX):**
+- **AS_LFX_LightWall** - Generates configurable grids of light panels with diverse patterns
+- **AS_LFX_StageSpotlights** - Adds up to 3 customizable directional stage lights
+- **AS_LFX_LaserShow** - Creates multiple colored laser beams with animated smoke effects
 
-**Cinematic Effects (CN):**
-- **AS_CN-BoomSticker** - Displays a texture overlay with audio-reactive positioning
-- **AS_CN-DigitalGlitch** - Applies audio-driven digital artifacts and hologram effects
-- **AS_CN-Glitter** - Creates a realistic, dynamic sparkle effect on surfaces
-- **AS_CN-MotionTrails** - Creates music-reactive, depth-based motion trails
-- **AS_CN-PlasmaFlow** - Generates smooth, swirling, organic plasma-like patterns
-- **AS_CN-SpectrumRing** - Generates a stylized, circular audio visualizer
-- **AS_CN-StencilMask** - Isolates foreground subjects with customizable borders
-- **AS_CN-VUMeter** - Visualizes audio frequency bands as a VU meter background
-- **AS_CN-Warp** - Creates a circular mirrored or wavy region that reacts to audio
+**Visual Effects (VFX):**
+- **AS_VFX_BoomSticker** - Displays a texture overlay with audio-reactive positioning
+- **AS_VFX_DigitalArtifacts** - Applies audio-driven digital artifacts and hologram effects
+- **AS_VFX_SparkleBloom** - Creates a realistic, dynamic sparkle effect on surfaces
+- **AS_VFX_MotionTrails** - Creates music-reactive, depth-based motion trails
+- **AS_VFX_PlasmaFlow** - Generates smooth, swirling, organic plasma-like patterns
+- **AS_VFX_SpectrumRing** - Generates a stylized, circular audio visualizer
+- **AS_VFX_StencilMask** - Isolates foreground subjects with customizable borders
+- **AS_VFX_VUMeter** - Visualizes audio frequency bands as a VU meter background
+- **AS_VFX_WarpDistort** - Creates a circular mirrored or wavy region that reacts to audio

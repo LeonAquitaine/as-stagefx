@@ -1,5 +1,5 @@
 /**
- * AS_CN-SpectrumRing.1.fx - Audio-Reactive Circular Frequency Visualizer
+ * AS_VFX_SpectrumRing.1.fx - Audio-Reactive Circular Frequency Visualizer
  * Author: Leon Aquitaine
  * License: Creative Commons Attribution 4.0 International
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
