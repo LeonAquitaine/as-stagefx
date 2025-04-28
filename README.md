@@ -59,7 +59,9 @@ AS-StageFX includes a variety of distinct visual effects:
   <tr>
     <td width="50%"><strong>LFX: Laser Show</strong> (<code>AS_LFX_LaserShow.1.fx</code>)<br>
       Renders multiple colored laser beams emanating from a user-defined origin, illuminating a swirling, animated smoke field. Features audio-reactive fanning, blinking, and vortex effects.<br><em>Technique: [AS] Laser Show</em></td>
-    <td width="50%"><div style="text-align:center"><img src="https://github.com/user-attachments/assets/placeholder-lasercannon" alt="Laser Show Effect" style="max-width:100%;"></div></td>
+    <td width="50%"><div style="text-align:center">
+      <img src="https://github.com/user-attachments/assets/555b32cd-be6f-47c2-92a6-39994e861637" alt="Laser Show Effect" style="max-width:100%;">
+    </div></td>
   </tr>
   
   <tr>
@@ -110,7 +112,9 @@ AS-StageFX includes a variety of distinct visual effects:
   <tr>
     <td width="50%"><strong>VFX: VU Meter</strong> (<code>AS_VFX_VUMeter.1.fx</code>)<br>
       Visualizes Listeningway frequency bands as a VU meter background with multiple presentation modes (bars, line, dots), color palettes, and customizable appearance options.<br><em>Technique: [AS] VU Meter Background</em></td>
-    <td width="50%"><div style="text-align:center"><img src="https://github.com/user-attachments/assets/placeholder-vumeter" alt="VU Meter Effect" style="max-width:100%;"></div></td>
+    <td width="50%"><div style="text-align:center">
+      <img src="https://github.com/user-attachments/assets/1b83d29c-a838-492e-82c8-4c503a6867a5" alt="VU Meter Effect" style="max-width:100%;">
+    </div></td>
   </tr>
   <tr>
     <td width="50%"><strong>VFX: Boom Sticker</strong> (<code>AS_VFX_BoomSticker.1.fx</code>)<br>
