@@ -30,6 +30,7 @@
 // INCLUDES
 // ============================================================================
 #include "AS_Utils.1.fxh"
+#include "AS_Palettes.1.fxh"
 
 // ============================================================================
 // TUNABLE CONSTANTS
@@ -108,7 +109,7 @@ static const int VORTEX_COUNT_DEFAULT = 2;
 // ============================================================================
 // Using standardized AS_Utils palette selection
 AS_PALETTE_SELECTION_UI(PalettePreset, "Palette", AS_PALETTE_NEON, "Palette & Style")
-AS_CUSTOM_PALETTE_UI("Custom Palette")
+AS_DECLARE_CUSTOM_PALETTE(LaserShow_, "Palette & Style")
 
 // ============================================================================
 // EFFECT-SPECIFIC APPEARANCE
@@ -189,11 +190,10 @@ AS_DEBUG_MODE_UI("Off\0Smoke\0Audio\0Laser\0")
 namespace AS_LaserShow {
 
 // Get color from the currently selected palette using standardized AS_Utils functions
-float3 GetPaletteColor(int beamIndex, int totalBeams) {
-    // Normalize beam index between 0 and 1
-    float t = (totalBeams <= 1) ? 0.0 : float(beamIndex) / float(totalBeams - 1);
-    
-    // Use the standardized interpolation function from AS_Utils
+float3 LaserShow_getPaletteColor(float t) {
+    if (PalettePreset == AS_PALETTE_COUNT) {
+        return AS_GET_INTERPOLATED_CUSTOM_COLOR(LaserShow_, t);
+    }
     return AS_getInterpolatedColor(PalettePreset, t);
 }
 
@@ -313,7 +313,7 @@ float4 PS_LaserShow(float4 pos : SV_Position, float2 texcoord : TexCoord) : SV_T
         float beamIntensity = AS_LaserShow::BeamIntensity(aspectUV, aspectOrigin, angle, LaserWidth, LaserCore);
         
         // Get the color for this specific beam from our palette
-        float3 beamColor = AS_LaserShow::GetPaletteColor(i, NumBeams);
+        float3 beamColor = AS_LaserShow::LaserShow_getPaletteColor(float(i) / float(LASER_MAX_BEAMS));
         
         // Add this beam's contribution to the cumulative color
         cumulativeColor += beamColor * beamIntensity;
