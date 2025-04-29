@@ -1,6 +1,6 @@
 /**
  * AS_VFX_PlasmaFlow.1.fx - Audio-Reactive Plasma/Flow Field Shader
- * Author: Leon Aquitaine (rewrite by Copilot)
+ * Author: Leon Aquitaine
  * License: Creative Commons Attribution 4.0 International
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
  * 
