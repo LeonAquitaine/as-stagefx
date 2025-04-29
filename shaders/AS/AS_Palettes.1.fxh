@@ -279,32 +279,27 @@ uniform int name < \
     ui_category = category; \
 > = defaultPalette;
 
-// Standard custom palette UI
-#define AS_CUSTOM_PALETTE_UI(category) \
-uniform float3 CustomPaletteColor0 < \
-    ui_type = "color"; \
-    ui_label = "Custom Color 1"; \
-    ui_category = category; \
-> = float3(1.0, 0.0, 0.0); \
-uniform float3 CustomPaletteColor1 < \
-    ui_type = "color"; \
-    ui_label = "Custom Color 2"; \
-    ui_category = category; \
-> = float3(1.0, 1.0, 0.0); \
-uniform float3 CustomPaletteColor2 < \
-    ui_type = "color"; \
-    ui_label = "Custom Color 3"; \
-    ui_category = category; \
-> = float3(0.0, 1.0, 0.0); \
-uniform float3 CustomPaletteColor3 < \
-    ui_type = "color"; \
-    ui_label = "Custom Color 4"; \
-    ui_category = category; \
-> = float3(0.0, 0.0, 1.0); \
-uniform float3 CustomPaletteColor4 < \
-    ui_type = "color"; \
-    ui_label = "Custom Color 5"; \
-    ui_category = category; \
-> = float3(1.0, 0.0, 1.0);
+// Macro to declare custom palette uniforms with a unique prefix
+#define AS_DECLARE_CUSTOM_PALETTE(prefix, category) \
+    uniform float3 prefix##CustomPaletteColor0 < ui_type = "color"; ui_label = "Custom Color 1"; ui_category = category; > = float3(1.0, 0.0, 0.0); \
+    uniform float3 prefix##CustomPaletteColor1 < ui_type = "color"; ui_label = "Custom Color 2"; ui_category = category; > = float3(1.0, 1.0, 0.0); \
+    uniform float3 prefix##CustomPaletteColor2 < ui_type = "color"; ui_label = "Custom Color 3"; ui_category = category; > = float3(0.0, 1.0, 0.0); \
+    uniform float3 prefix##CustomPaletteColor3 < ui_type = "color"; ui_label = "Custom Color 4"; ui_category = category; > = float3(0.0, 0.0, 1.0); \
+    uniform float3 prefix##CustomPaletteColor4 < ui_type = "color"; ui_label = "Custom Color 5"; ui_category = category; > = float3(1.0, 0.0, 1.0);
+
+// Macro to fetch a custom palette color by prefix and index
+#define AS_GET_CUSTOM_PALETTE_COLOR(prefix, idx) \
+    ((idx) == 0 ? prefix##CustomPaletteColor0 : \
+    (idx) == 1 ? prefix##CustomPaletteColor1 : \
+    (idx) == 2 ? prefix##CustomPaletteColor2 : \
+    (idx) == 3 ? prefix##CustomPaletteColor3 : prefix##CustomPaletteColor4)
+
+// Interpolate color between custom palette colors (by prefix)
+#define AS_GET_INTERPOLATED_CUSTOM_COLOR(prefix, t) \
+    lerp( \
+        AS_GET_CUSTOM_PALETTE_COLOR(prefix, (int)floor(saturate(t)*(AS_PALETTE_COLORS-1))), \
+        AS_GET_CUSTOM_PALETTE_COLOR(prefix, min((int)floor(saturate(t)*(AS_PALETTE_COLORS-1))+1, AS_PALETTE_COLORS-1)), \
+        frac(saturate(t)*(AS_PALETTE_COLORS-1)) \
+    )
 
 #endif // __AS_PALETTES_INCLUDED
