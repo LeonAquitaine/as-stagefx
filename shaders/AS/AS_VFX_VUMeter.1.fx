@@ -78,9 +78,7 @@ uniform float Sensibility < ui_type = "slider"; ui_label = "Sensibility"; ui_min
 // --- Palette & Style ---
 // Use the palette selection UI macro from our dedicated palette system
 AS_PALETTE_SELECTION_UI(PaletteMode, "Palette", AS_PALETTE_NEON, "Appearance")
-
-// Add custom palette colors using the palette system macro
-AS_CUSTOM_PALETTE_UI("Appearance")
+AS_DECLARE_CUSTOM_PALETTE(VUMeter_, "Appearance")
 
 // --- Stage Depth Controls ---
 AS_STAGEDEPTH_UI(StageDepth, "Stage Depth", "Stage")
@@ -92,12 +90,12 @@ uniform float BlendAmount < ui_type = "slider"; ui_label = "Strength"; ui_toolti
 // --- Helper Functions ---
 namespace AS_VUMeterBG {
     float getSmoothedBand(int i, int bands) {
-        // Use the standardized band access function that handles different band sizes
         return saturate(AS_getFrequencyBand(i)) * Sensibility;
     }
-    
     float3 getPaletteColorByValue(float value) {
-        // Use the standardized AS_Utils palette function
+        if (PaletteMode == AS_PALETTE_COUNT) {
+            return AS_GET_INTERPOLATED_CUSTOM_COLOR(VUMeter_, value);
+        }
         return AS_getInterpolatedColor(PaletteMode, value);
     }
 }
