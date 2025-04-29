@@ -54,7 +54,6 @@
         #define __LISTENINGWAY_AVAILABLE 1
         
         // Try to include Listeningway, but don't error if it's not found
-        // #pragma message "Note: Checking for Listeningway..."
         
         // Check if Listeningway is already defined/installed
         #ifndef LISTENINGWAY_INSTALLED
@@ -70,7 +69,6 @@
         
         // If Listeningway wasn't found, provide fallback implementations
         #ifndef LISTENINGWAY_INSTALLED
-            // #pragma message "Note: Listeningway not found, using fallback implementations."
             // Define fallback variables used by the rest of the code
             static const float Listeningway_Volume = 0.0;
             static const float Listeningway_Beat = 0.0;
@@ -368,6 +366,11 @@ float2 AS_rescaleToScreen(float2 uv) {
 // 1D->1D hash: Returns pseudo-random float from 0-1 based on input float
 float AS_hash11(float n) { 
     return frac(sin(n) * 43758.5453); 
+}
+
+// 2D->1D hash: Returns pseudo-random float from 0-1 based on 2D input
+float AS_hash12(float2 p) {
+    return frac(sin(dot(p, float2(127.1, 311.7))) * 43758.5453);
 }
 
 // 1D->2D hash: Returns pseudo-random 2D vector with components from 0-1
