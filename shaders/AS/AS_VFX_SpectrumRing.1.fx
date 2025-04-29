@@ -58,9 +58,7 @@ static const float BLENDSTRENGTH_DEFAULT = 1.0;
 // --- Palette & Style ---
 // Use the AS_Palettes palette selection UI macro
 AS_PALETTE_SELECTION_UI(ColorPattern, "Color Pattern", AS_PALETTE_RAINBOW, "Palette & Style")
-
-// Include custom palette options
-AS_CUSTOM_PALETTE_UI("Palette & Style")
+AS_DECLARE_CUSTOM_PALETTE(SpectrumRing_, "Palette & Style")
 
 uniform bool InvertColors < ui_label = "Invert Colors"; ui_tooltip = "Invert the color pattern (reverse gradient direction)."; ui_category = "Palette & Style"; > = false;
 
@@ -90,13 +88,21 @@ uniform float BlendStrength < ui_type = "slider"; ui_label = "Blend Strength"; u
 AS_DEBUG_MODE_UI("Off\0Bands\0")
 
 // --- Helper Functions ---
+float3 SpectrumRing_getPaletteColor(float t) {
+    if (ColorPattern == AS_PALETTE_COUNT) {
+        return AS_GET_INTERPOLATED_CUSTOM_COLOR(SpectrumRing_, t);
+    }
+    return AS_getInterpolatedColor(ColorPattern, t);
+}
+
+// Namespace for spectrum ring specific functions
 namespace AS_SpectrumRing {
     // Color gradient helper
     float3 bandColor(float t) {
         if (InvertColors) t = 1.0 - t;
         
         // Use the standardized AS_Utils palette system
-        return AS_getInterpolatedColor(ColorPattern, t);
+        return SpectrumRing_getPaletteColor(t);
     }
 } // End namespace AS_SpectrumRing
 
