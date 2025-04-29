@@ -38,7 +38,6 @@
 static const float MIN_MARGIN = 0.10; // Minimum margin as a fraction of cell size (10%)
 static const float DEFAULT_BLOB_RADIUS_FACTOR = 0.8;
 static const float DEFAULT_BRIGHT_SPOT_SIZE = 12.0;
-static const float DEFAULT_VIGNETTE_SQUARENESS = 0.5;
 static const float DEFAULT_SPECULAR_BLEND = 0.7;
 static const float PALETTE_WAVE_X = 0.7; // Wave X frequency for Wave mode
 static const float PALETTE_WAVE_Y = 1.3; // Wave Y frequency for Wave mode
@@ -49,7 +48,6 @@ static const float PALETTE_VU_FREQ = 1.0; // Animation frequency for VU Meter
 static const float GRIDLINE_MASK_SOFTSTART = 0.01; // Soft edge start for grid mask
 static const float GRIDLINE_MASK_SOFTEND = 0.15; // Soft edge end for grid mask
 static const float CELL_GAP_FACTOR = 0.5; // Factor for cell gap (GridLineThickness * CELL_GAP_FACTOR)
-static const float SWAY_TIME_SCALE = 0.008; // Time scale for sway and palette animation
 static const int PALETTE_COUNT = 9; // Number of built-in palettes (excluding Custom)
 static const int PALETTE_COLORS = 5;
 
@@ -186,9 +184,6 @@ uniform float BlendAmount < ui_type = "slider"; ui_label = "Strength"; ui_min = 
 
 // --- Debug ---
 uniform int DebugMode < ui_type = "combo"; ui_label = "View"; ui_items = "Off\0Block Glow\0Light Bursts\0Block Outlines\0"; ui_category = "Debug"; > = 0;
-
-// --- Frame Count ---
-
 
 // 8x8 patterns
 static const int PATTERN_SIZE = 8;
@@ -356,29 +351,6 @@ int getPatternValue(int x, int y) {
     return 1;
 }
 
-// --- Helper: Palette Arrays ---
-// Flattened palette array: 9 palettes * 5 colors = 45 entries
-static const float3 PALETTES[PALETTE_COUNT * PALETTE_COLORS] = {
-    // Bluewave
-    float3(0.2,0.6,1.0), float3(0.4,0.8,1.0), float3(0.6,0.9,1.0), float3(0.8,1.0,1.0), float3(0.0,0.4,1.0),
-    // Bright Lights
-    float3(1.0,1.0,0.6), float3(0.6,1.0,1.0), float3(1.0,0.6,1.0), float3(1.0,0.8,0.6), float3(0.6,0.8,1.0),
-    // Disco
-    float3(1.0,0.2,0.6), float3(1.0,0.8,0.2), float3(0.2,1.0,0.8), float3(0.8,0.2,1.0), float3(0.2,0.8,1.0),
-    // Electronica
-    float3(0.0,1.0,0.7), float3(0.2,0.6,1.0), float3(0.7,0.0,1.0), float3(1.0,0.2,0.6), float3(0.0,1.0,0.3),
-    // Industrial
-    float3(0.8,0.8,0.7), float3(0.5,0.5,0.5), float3(1.0,0.6,0.1), float3(0.2,0.2,0.2), float3(0.9,0.7,0.2),
-    // Metal
-    float3(0.7,0.7,0.7), float3(0.2,0.2,0.2), float3(1.0,0.2,0.2), float3(0.7,0.5,0.2), float3(0.3,0.3,0.3),
-    // Monotone
-    float3(0.9,0.9,0.9), float3(0.7,0.7,0.7), float3(0.5,0.5,0.5), float3(0.3,0.3,0.3), float3(0.1,0.1,0.1),
-    // Pastel Pop
-    float3(0.98,0.80,0.89), float3(0.80,0.93,0.98), float3(0.98,0.96,0.80), float3(0.80,0.98,0.87), float3(0.93,0.80,0.98),
-    // Redline
-    float3(1.0,0.2,0.2), float3(1.0,0.4,0.4), float3(1.0,0.6,0.6), float3(1.0,0.8,0.8), float3(1.0,0.0,0.0)
-};
-
 float3 getCustomPaletteColor(int idx) {
     // Use the CustomPaletteColor variables defined by the AS_CUSTOM_PALETTE_UI macro
     if (idx == 0) return CustomPaletteColor0;
@@ -394,14 +366,6 @@ float3 LightWall_getPaletteColor(float t) {
         return AS_GET_INTERPOLATED_CUSTOM_COLOR(LightWall_, t);
     }
     return AS_getInterpolatedColor(PalettePreset, t);
-}
-
-float hash12(float2 p) {
-    return frac(sin(dot(p, float2(127.1, 311.7))) * 43758.5453);
-}
-
-float2 getHotspotOffset(int pos) {
-    return HotspotPos;
 }
 
 float glowFalloff(float2 local, float shape) {
@@ -506,8 +470,8 @@ float3 renderLavaLampGrid(float2 uv) {
     float t;
     if (VisualizationMode == 0) {
         // Light Panel: random color per cell, animated
-        t = hash12(cell_idx);
-        t = frac(t + PALETTE_ANIM_SPEED * sin(time + t * 6.28));
+        t = AS_hash12(cell_idx);
+        t = frac(t + PALETTE_ANIM_SPEED * sin(time + t * AS_TWO_PI));
     } else if (VisualizationMode == 1) {
         // Wave: color changes in a wave pattern across the grid
         float wave = 0.5 + 0.5 * sin(time + cell_idx.x * PALETTE_WAVE_X + cell_idx.y * PALETTE_WAVE_Y);
