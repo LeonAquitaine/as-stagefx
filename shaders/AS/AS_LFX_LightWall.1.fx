@@ -32,6 +32,7 @@
 
 
 #include "AS_Utils.1.fxh"
+#include "AS_Palettes.1.fxh"
 
 // --- Tunable Constants ---
 static const float MIN_MARGIN = 0.10; // Minimum margin as a fraction of cell size (10%)
@@ -167,12 +168,10 @@ uniform float MarginGradientStrength < ui_type = "slider"; ui_label = "Edge Dark
 // --- Color ---
 // Use the AS_Utils palette selection UI macro for the LightWall shader
 AS_PALETTE_SELECTION_UI(PalettePreset, "Theme", AS_PALETTE_REDLINE, "Lighting")
+AS_DECLARE_CUSTOM_PALETTE(LightWall_, "Lighting")
 
 // --- Color Visualization ---
 uniform int VisualizationMode < ui_type = "combo"; ui_label = "Color Mode"; ui_items = "Light Panel\0Wave\0VU Meter\0VU Wave\0"; ui_tooltip = "How colors are distributed across the light panels"; ui_category = "Lighting"; > = 0;
-
-// Add custom palette colors using the AS_Utils macro
-AS_CUSTOM_PALETTE_UI("Lighting")
 
 // --- Listeningway Integration ---
 uniform int VUMeterSource < ui_type = "combo"; ui_label = "Source"; ui_items = "Volume\0Beat\0Bass\0Mid\0Treble\0"; ui_category = "Audio Reactivity"; > = 1;
@@ -390,14 +389,10 @@ float3 getCustomPaletteColor(int idx) {
     return float3(1.0, 1.0, 1.0);
 }
 
-float3 getPaletteColor(int idx) {
-    if (PalettePreset < PALETTE_COUNT)
-        return PALETTES[PalettePreset * PALETTE_COLORS + idx];
-    return getCustomPaletteColor(idx);
-}
-
-float3 palette(float t) {
-    // Use the standardized AS_Utils palette interpolation function
+float3 LightWall_getPaletteColor(float t) {
+    if (PalettePreset == AS_PALETTE_COUNT) {
+        return AS_GET_INTERPOLATED_CUSTOM_COLOR(LightWall_, t);
+    }
     return AS_getInterpolatedColor(PalettePreset, t);
 }
 
@@ -531,7 +526,7 @@ float3 renderLavaLampGrid(float2 uv) {
         float wave = 0.5 + 0.5 * sin(dist * 2.5 + angle * 2.0 - time * 1.5 + vu * 4.0);
         t = wave;
     }
-    float3 color = palette(t);
+    float3 color = LightWall_getPaletteColor(t);
     float blobRadius = 1.0 - saturate(min(GridLineThickness, 0.5 * GridSpacing) / (GridSpacing * DEFAULT_BLOB_RADIUS_FACTOR));
     float base = 1.0;
     float margin = marginFalloff(local);
@@ -544,7 +539,7 @@ float3 renderLavaLampGrid(float2 uv) {
     float crux = max(cruxV, cruxH);
     float3 cruxColor = float3(1.0, 1.0, 1.0) * crux; // Only brightness from sliders
     float bright = exp(-glowFalloff(local, GlowShape) * DEFAULT_BRIGHT_SPOT_SIZE / blobRadius);
-    float3 brightColor = palette(frac(t + PALETTE_ANIM_OFFSET));
+    float3 brightColor = LightWall_getPaletteColor(frac(t + PALETTE_ANIM_OFFSET));
     float2 grid = frac(uv_sway / grid_size);
     float2 dist = min(grid, 1.0 - grid);
     float gridLine = exp(-dot(dist, dist) / (min(GridLineThickness, 0.5 * GridSpacing) * min(GridLineThickness, 0.5 * GridSpacing)));
