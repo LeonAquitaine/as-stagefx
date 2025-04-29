@@ -76,7 +76,7 @@ static const float BLEND_AMOUNT_DEFAULT = 1.0; // Full effect strength
 // --- Palette & Style ---
 // Using standardized palette system
 AS_PALETTE_SELECTION_UI(PalettePreset, "Palette", AS_PALETTE_NEON, "Palette & Style")
-AS_CUSTOM_PALETTE_UI("Custom Palette")
+AS_DECLARE_CUSTOM_PALETTE(PlasmaFlow_, "Palette & Style")
 
 // --- Plasma Appearance ---
 uniform float PlasmaScale < ui_type = "slider"; ui_label = "Scale"; ui_tooltip = "Zoom/scale of the plasma pattern."; ui_min = SCALE_MIN; ui_max = SCALE_MAX; ui_step = 0.01; ui_category = "Plasma Appearance"; > = SCALE_DEFAULT;
@@ -155,6 +155,13 @@ namespace AS_PlasmaFlow {
     }
 }
 
+float3 PlasmaFlow_getPaletteColor(float t) {
+    if (PalettePreset == AS_PALETTE_COUNT) {
+        return AS_GET_INTERPOLATED_CUSTOM_COLOR(PlasmaFlow_, t);
+    }
+    return AS_getInterpolatedColor(PalettePreset, t);
+}
+
 // --- Main Effect ---
 float4 PS_PlasmaFlow(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target {
     // Get original color and apply depth cutoff
@@ -200,7 +207,7 @@ float4 PS_PlasmaFlow(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_
     n = saturate(n + colorAudio * 0.15);
 
     // --- Color Mapping ---
-    float3 plasmaColor = AS_PlasmaFlow::plasmaGradient(n);
+    float3 plasmaColor = PlasmaFlow_getPaletteColor(n);
 
     // --- Debug Modes ---
     if (DebugMode == 1) return float4(n.xxx, 1.0); // Noise
