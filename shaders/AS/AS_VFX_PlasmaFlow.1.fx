@@ -28,6 +28,7 @@
 
 
 #include "AS_Utils.1.fxh"
+#include "AS_Palettes.1.fxh"
 
 // --- Tunable Constants ---
 static const int PLASMA_COLORS = 6;
@@ -73,62 +74,9 @@ static const float BLEND_AMOUNT_MAX = 1.0;
 static const float BLEND_AMOUNT_DEFAULT = 1.0; // Full effect strength
 
 // --- Palette & Style ---
-// Palette selector
-uniform int PlasmaPalette < ui_type = "combo"; ui_label = "Palette"; ui_items = "60s Groovy\0Vaporwave\0Inferno\0Aurora\0Neon Dream\0Psytrance\0Sunset\0Deep Ocean\0Electric Storm\0Pastel Flow\0Mystic Night\0Custom\0"; ui_category = "Palette & Style"; > = 10;
-// 6 user colors for Custom
-uniform float3 PlasmaColor0 < ui_type = "color"; ui_label = "Color 1"; ui_category = "Palette & Style"; > = float3(0.72, 0.82, 1.0); // Dreamy blue
-uniform float3 PlasmaColor1 < ui_type = "color"; ui_label = "Color 2"; ui_category = "Palette & Style"; > = float3(0.93, 0.76, 1.0); // Lavender
-uniform float3 PlasmaColor2 < ui_type = "color"; ui_label = "Color 3"; ui_category = "Palette & Style"; > = float3(0.98, 0.89, 0.98); // Soft pink
-uniform float3 PlasmaColor3 < ui_type = "color"; ui_label = "Color 4"; ui_category = "Palette & Style"; > = float3(0.85, 0.98, 0.93); // Mint
-uniform float3 PlasmaColor4 < ui_type = "color"; ui_label = "Color 5"; ui_category = "Palette & Style"; > = float3(0.98, 0.96, 0.82); // Cream
-uniform float3 PlasmaColor5 < ui_type = "color"; ui_label = "Color 6"; ui_category = "Palette & Style"; > = float3(0.80, 0.90, 0.98); // Pale sky
-
-// Palette presets (hardcoded)
-float3 getPaletteColor(int idx, int colorIdx) {
-    // Each palette: 6 colors
-    // 10 = Custom (use user colors)
-    if (idx == 0) { // 60s Groovy
-        float3 c[6] = {float3(0.98,0.62,0.11), float3(0.98,0.11,0.36), float3(0.36,0.11,0.98), float3(0.11,0.98,0.62), float3(0.98,0.89,0.11), float3(0.11,0.62,0.98)};
-        return c[colorIdx];
-    } else if (idx == 1) { // Vaporwave
-        float3 c[6] = {float3(0.58,0.36,0.98), float3(0.98,0.36,0.82), float3(0.36,0.98,0.98), float3(0.98,0.82,0.36), float3(0.36,0.58,0.98), float3(0.98,0.58,0.36)};
-        return c[colorIdx];
-    } else if (idx == 2) { // Inferno
-        float3 c[6] = {float3(0.98,0.36,0.11), float3(0.98,0.62,0.11), float3(0.98,0.89,0.11), float3(0.98,0.36,0.36), float3(0.62,0.11,0.11), float3(0.36,0.11,0.11)};
-        return c[colorIdx];
-    } else if (idx == 3) { // Aurora
-        float3 c[6] = {float3(0.11,0.98,0.62), float3(0.11,0.62,0.98), float3(0.36,0.98,0.36), float3(0.62,0.11,0.98), float3(0.36,0.36,0.98), float3(0.11,0.98,0.98)};
-        return c[colorIdx];
-    } else if (idx == 4) { // Neon Dream
-        float3 c[6] = {float3(0.98,0.11,0.62), float3(0.11,0.98,0.36), float3(0.36,0.11,0.98), float3(0.98,0.36,0.98), float3(0.36,0.98,0.62), float3(0.98,0.98,0.36)};
-        return c[colorIdx];
-    } else if (idx == 5) { // Psytrance
-        float3 c[6] = {float3(0.11,0.98,0.36), float3(0.36,0.98,0.11), float3(0.98,0.36,0.62), float3(0.62,0.11,0.98), float3(0.98,0.62,0.36), float3(0.36,0.62,0.98)};
-        return c[colorIdx];
-    } else if (idx == 6) { // Sunset
-        float3 c[6] = {float3(0.98,0.62,0.36), float3(0.98,0.36,0.11), float3(0.98,0.89,0.36), float3(0.98,0.62,0.11), float3(0.62,0.36,0.11), float3(0.36,0.11,0.11)};
-        return c[colorIdx];
-    } else if (idx == 7) { // Deep Ocean
-        float3 c[6] = {float3(0.11,0.36,0.98), float3(0.11,0.62,0.98), float3(0.36,0.98,0.98), float3(0.36,0.62,0.98), float3(0.11,0.98,0.62), float3(0.11,0.36,0.62)};
-        return c[colorIdx];
-    } else if (idx == 8) { // Electric Storm
-        float3 c[6] = {float3(0.98,0.98,0.36), float3(0.36,0.98,0.98), float3(0.36,0.36,0.98), float3(0.98,0.36,0.98), float3(0.98,0.36,0.36), float3(0.36,0.98,0.36)};
-        return c[colorIdx];
-    } else if (idx == 9) { // Pastel Flow
-        float3 c[6] = {float3(0.98,0.82,0.82), float3(0.82,0.98,0.98), float3(0.98,0.98,0.82), float3(0.82,0.82,0.98), float3(0.98,0.82,0.98), float3(0.82,0.98,0.82)};
-        return c[colorIdx];
-    } else if (idx == 10) { // Mystic Night
-        float3 c[6] = {float3(0.11,0.11,0.36), float3(0.36,0.11,0.36), float3(0.11,0.36,0.36), float3(0.36,0.36,0.11), float3(0.11,0.11,0.11), float3(0.36,0.11,0.11)};
-        return c[colorIdx];
-    }
-    // Custom
-    if (colorIdx == 0) return PlasmaColor0;
-    if (colorIdx == 1) return PlasmaColor1;
-    if (colorIdx == 2) return PlasmaColor2;
-    if (colorIdx == 3) return PlasmaColor3;
-    if (colorIdx == 4) return PlasmaColor4;
-    return PlasmaColor5;
-}
+// Using standardized palette system
+AS_PALETTE_SELECTION_UI(PalettePreset, "Palette", AS_PALETTE_NEON, "Palette & Style")
+AS_CUSTOM_PALETTE_UI("Custom Palette")
 
 // --- Plasma Appearance ---
 uniform float PlasmaScale < ui_type = "slider"; ui_label = "Scale"; ui_tooltip = "Zoom/scale of the plasma pattern."; ui_min = SCALE_MIN; ui_max = SCALE_MAX; ui_step = 0.01; ui_category = "Plasma Appearance"; > = SCALE_DEFAULT;
@@ -199,20 +147,11 @@ namespace AS_PlasmaFlow {
         return sum;
     }
 
-    // Map normalized noise value to a 6-color gradient (palette aware)
+    // Map normalized noise value to color gradient using centralized palette system
     float3 plasmaGradient(float t) {
         t = saturate(t);
-        float3 c0 = getPaletteColor(PlasmaPalette, 0);
-        float3 c1 = getPaletteColor(PlasmaPalette, 1);
-        float3 c2 = getPaletteColor(PlasmaPalette, 2);
-        float3 c3 = getPaletteColor(PlasmaPalette, 3);
-        float3 c4 = getPaletteColor(PlasmaPalette, 4);
-        float3 c5 = getPaletteColor(PlasmaPalette, 5);
-        if (t < 1.0/5.0) return lerp(c0, c1, t * 5.0);
-        else if (t < 2.0/5.0) return lerp(c1, c2, (t - 1.0/5.0) * 5.0);
-        else if (t < 3.0/5.0) return lerp(c2, c3, (t - 2.0/5.0) * 5.0);
-        else if (t < 4.0/5.0) return lerp(c3, c4, (t - 3.0/5.0) * 5.0);
-        else return lerp(c4, c5, (t - 4.0/5.0) * 5.0);
+        // Use standardized palette color interpolation
+        return AS_getInterpolatedColor(PalettePreset, t);
     }
 }
 

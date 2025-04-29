@@ -29,6 +29,7 @@
 
 
 #include "AS_Utils.1.fxh"
+#include "AS_Palettes.1.fxh"
 
 // --- Tunable Constants ---
 static const float ZOOM_MIN = 0.5;
@@ -75,10 +76,10 @@ uniform float LineThickness < ui_type = "slider"; ui_label = "Line Thickness"; u
 uniform float Sensibility < ui_type = "slider"; ui_label = "Sensibility"; ui_min = SENSIBILITY_MIN; ui_max = SENSIBILITY_MAX; ui_step = 0.01; ui_category = "Audio Reactivity"; > = SENSIBILITY_DEFAULT;
 
 // --- Palette & Style ---
-// Use the AS_Utils palette selection UI macro
+// Use the palette selection UI macro from our dedicated palette system
 AS_PALETTE_SELECTION_UI(PaletteMode, "Palette", AS_PALETTE_NEON, "Appearance")
 
-// Add custom palette colors using the AS_Utils macro
+// Add custom palette colors using the palette system macro
 AS_CUSTOM_PALETTE_UI("Appearance")
 
 // --- Stage Depth Controls ---

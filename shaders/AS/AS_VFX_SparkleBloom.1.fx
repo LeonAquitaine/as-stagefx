@@ -33,6 +33,7 @@
 
 
 #include "AS_Utils.1.fxh"
+#include "AS_Palettes.1.fxh"
 
 // --- Tunable Constants ---
 static const float GLITTERDENSITY_MIN = 0.1;

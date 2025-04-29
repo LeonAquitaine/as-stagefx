@@ -30,6 +30,7 @@
 
 
 #include "AS_Utils.1.fxh"
+#include "AS_Palettes.1.fxh"
 
 // --- Tunable Constants ---
 static const int REPETITIONS_MIN = 1;
@@ -55,7 +56,7 @@ static const float BLENDSTRENGTH_MAX = 1.0;
 static const float BLENDSTRENGTH_DEFAULT = 1.0;
 
 // --- Palette & Style ---
-// Use the AS_Utils palette selection UI macro
+// Use the AS_Palettes palette selection UI macro
 AS_PALETTE_SELECTION_UI(ColorPattern, "Color Pattern", AS_PALETTE_RAINBOW, "Palette & Style")
 
 // Include custom palette options
