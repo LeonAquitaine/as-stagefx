@@ -167,6 +167,9 @@ AS_BLENDAMOUNT_UI(BlendAmount, "Final Mix")
 // Sway Animation controls
 AS_SWAYSPEED_UI(SwaySpeed, "Animation")
 AS_SWAYANGLE_UI(SwayAngle, "Animation")
+
+// Rotation controls (Snap in 45° increments + Fine adjustment)
+AS_ROTATION_UI(SnapRotate, FineRotate, "Transform")
 ```
 
 ### Standardized Helper Functions

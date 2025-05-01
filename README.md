@@ -14,6 +14,12 @@
 
 Most shaders feature seamless integration with **[Listeningway](https://github.com/gposingway/Listeningway)** for audio reactivity.
 
+### Latest Updates (April 30, 2025)
+- Added standardized rotation controls to VUMeter and BoomSticker shaders
+- Fixed aspect ratio handling in VUMeter shader for proper display on all screen ratios
+- Fixed BloomQuality parameter in SparkleBloom shader
+- Code optimization and cleanup across multiple shaders
+
 ---
 
 ## Installation
