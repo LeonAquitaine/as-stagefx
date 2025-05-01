@@ -75,7 +75,7 @@ uniform float BoomSticker_Scale <
 
 uniform float2 BoomSticker_ScaleXY < 
     ui_category = "Appearance";
-    ui_label = "Scale XY";
+    ui_label = "Scale X/Y";
     ui_type = "slider";
     ui_min = 0.001;
     ui_max = 5.0;
@@ -91,30 +91,13 @@ uniform float2 BoomSticker_PosXY <
     ui_step = 0.001;
 > = float2(0.5, 0.5);
 
-uniform int BoomSticker_SnapRotate < 
-    ui_category = "Appearance";
-    ui_label = "Snap Rotation";
-    ui_type = "slider";
-    ui_min = -4;
-    ui_max = 4;
-    ui_step = 1;
-    ui_tooltip = "Snap rotation in 45 degree steps (-180 to 180)";
-> = 0;
-
-uniform float BoomSticker_Rotate < 
-    ui_category = "Appearance";
-    ui_label = "Fine Rotation";
-    ui_type = "slider";
-    ui_min = -90.0;
-    ui_max = 90.0;
-    ui_step = 0.01;
-> = 0.0;
+// Use standard rotation controls from AS_Utils
+AS_ROTATION_UI(BoomSticker_SnapRotate, BoomSticker_Rotate, "Appearance")
 
 // Position Controls
 AS_STAGEDEPTH_UI(BoomSticker_Depth, "Effect Depth", "Stage Distance")
 
 // Animation Controls
-// Add standardized Sway controls (non-audio reactive)
 AS_SWAYSPEED_UI(BoomSticker_SwaySpeed, "Animation")
 AS_SWAYANGLE_UI(BoomSticker_SwayAngle, "Animation")
 

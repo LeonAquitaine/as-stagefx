@@ -38,6 +38,22 @@
 #include "ReShadeUI.fxh"
 
 // ============================================================================
+// MATH CONSTANTS
+// ============================================================================
+// --- Math Constants ---
+// Standard mathematical constants for consistent use across all shaders
+#ifndef __AS_MATH_CONSTANTS
+#define __AS_MATH_CONSTANTS
+static const float AS_PI = 3.14159265359;
+static const float AS_TWO_PI = 6.28318530718;
+static const float AS_HALF_PI = 1.57079632679;
+static const float AS_QUARTER_PI = 0.78539816339;
+static const float AS_INV_PI = 0.31830988618;
+static const float AS_E = 2.71828182846;
+static const float AS_GOLDEN_RATIO = 1.61803398875;
+#endif // __AS_MATH_CONSTANTS
+
+// ============================================================================
 // UI STANDARDIZATION & MACROS
 // ============================================================================
 
@@ -168,7 +184,8 @@ uniform float name < \
     ui_type = "slider"; \
     ui_label = "Sway Angle"; \
     ui_tooltip = "Maximum angle of the swaying in degrees"; \
-    ui_min = 0.0; ui_max = 180.0; ui_step = 1.0; \
+    ui_min = 0.0; ui_max = 180.0; \
+    ui_step = 1.0; \
     ui_category = category; \
 > = 15.0;
 
@@ -327,18 +344,42 @@ float AS_applyAudioReactivityEx(float baseValue, int audioSource, float multipli
 // MATH & PROCEDURAL GENERATION
 // ============================================================================
 
-// --- Math Constants ---
-// Standard mathematical constants for consistent use across all shaders
-#ifndef __AS_MATH_CONSTANTS
-#define __AS_MATH_CONSTANTS
-static const float AS_PI = 3.14159265359;
-static const float AS_TWO_PI = 6.28318530718;
-static const float AS_HALF_PI = 1.57079632679;
-static const float AS_QUARTER_PI = 0.78539816339;
-static const float AS_INV_PI = 0.31830988618;
-static const float AS_E = 2.71828182846;
-static const float AS_GOLDEN_RATIO = 1.61803398875;
-#endif // __AS_MATH_CONSTANTS
+// --- Rotation UI Standardization ---
+#ifndef __AS_ROTATION_UI_INCLUDED
+#define __AS_ROTATION_UI_INCLUDED
+
+// --- Rotation UI Macro ---
+// Creates a standardized pair of rotation controls (snap + fine) that appear on the same line
+#define AS_ROTATION_UI(snapName, fineName, category) \
+uniform int snapName < \
+    ui_category = category; \
+    ui_label = "Snap Rotation"; \
+    ui_type = "slider"; \
+    ui_min = -4; \
+    ui_max = 4; \
+    ui_step = 1; \
+    ui_tooltip = "Snap rotation in 45° steps (-180° to +180°)"; \
+    ui_spacing = 0; \
+> = 0; \
+uniform float fineName < \
+    ui_category = category; \
+    ui_label = "Fine Rotation"; \
+    ui_type = "slider"; \
+    ui_min = -45.0; \
+    ui_max = 45.0; \
+    ui_step = 0.1; \
+    ui_tooltip = "Fine rotation adjustment in degrees"; \
+    ui_same_line = true; \
+> = 0.0;
+
+// --- Rotation Helper Function ---
+// Combines snap and fine rotation values and converts to radians
+float AS_getRotationRadians(int snapRotation, float fineRotation) {
+    float snapAngle = float(snapRotation) * 45.0;
+    return (snapAngle + fineRotation) * (AS_PI / 180.0);
+}
+
+#endif // __AS_ROTATION_UI_INCLUDED
 
 // --- Math Helpers ---
 // Corrects UV coordinates for non-square aspect ratios

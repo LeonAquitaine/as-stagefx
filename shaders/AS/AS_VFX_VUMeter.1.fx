@@ -32,7 +32,7 @@
 #include "AS_Palettes.1.fxh"
 
 // --- Tunable Constants ---
-static const float ZOOM_MIN = 0.5;
+static const float ZOOM_MIN = 0.2;
 static const float ZOOM_MAX = 2.0;
 static const float ZOOM_DEFAULT = 0.5;
 static const float2 PAN_MIN = float2(-1.0, -1.0);
@@ -60,9 +60,12 @@ static const float BLENDAMOUNT_DEFAULT = 1.0;
 uniform float Zoom < ui_type = "slider"; ui_label = "Zoom"; ui_min = ZOOM_MIN; ui_max = ZOOM_MAX; ui_step = 0.01; ui_category = "Transform"; > = ZOOM_DEFAULT;
 uniform float2 Pan < ui_type = "slider"; ui_label = "Position"; ui_min = PAN_MIN; ui_max = PAN_MAX; ui_step = 0.01; ui_category = "Transform"; > = PAN_DEFAULT;
 
+// Use standard rotation controls from AS_Utils
+AS_ROTATION_UI(SnapRotate, FineRotate, "Transform")
+
 // --- Appearance ---
 uniform bool MirrorBars < ui_type = "checkbox"; ui_label = "Mirrored"; ui_category = "Appearance"; > = false;
-uniform int PresentationMode < ui_type = "combo"; ui_label = "Mode"; ui_items = "Bars Vertical\0Bars Horizontal\0Line\0Dots\0Simple VU (Bottom)\0"; ui_category = "Appearance"; > = 0;
+uniform int PresentationMode < ui_type = "combo"; ui_label = "Mode"; ui_items = "Bars Vertical\0Bars Horizontal\0Line\0Dots\0"; ui_category = "Appearance"; > = 0;
 uniform float BackgroundAlpha < ui_type = "slider"; ui_label = "Background Alpha"; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Appearance"; > = 0.5;
 
 // --- Bar/Line Shape Controls ---
@@ -108,9 +111,39 @@ float4 PS_VUMeterBG(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_T
         return tex2D(ReShade::BackBuffer, texcoord);
     }
 
-    // Apply zoom and pan only (removed snap rotation)
+    // Apply transformations in the right order to ensure intuitive controls
     float2 center = float2(0.5, 0.5);
-    float2 uv = (texcoord - center) / Zoom + center + Pan;
+    float rotationAngle = AS_getRotationRadians(SnapRotate, FineRotate);
+    
+    // Calculate screen aspect ratio
+    float aspectRatio = float(BUFFER_WIDTH) / float(BUFFER_HEIGHT);
+    
+    // First center the UV coordinates
+    float2 centeredUV = texcoord - center;
+    
+    // Apply aspect ratio correction to prevent stretching
+    centeredUV.x *= aspectRatio;
+    
+    // Apply position (pan) in screen space before rotation
+    // This makes left/right and up/down consistent regardless of rotation
+    centeredUV -= float2(Pan.x * aspectRatio, Pan.y);
+    
+    // Apply zoom
+    float2 zoomedUV = centeredUV / Zoom;
+    
+    // Apply rotation
+    float sinAngle = sin(rotationAngle);
+    float cosAngle = cos(rotationAngle);
+    float2 rotatedUV = float2(
+        zoomedUV.x * cosAngle - zoomedUV.y * sinAngle,
+        zoomedUV.x * sinAngle + zoomedUV.y * cosAngle
+    );
+    
+    // Undo aspect ratio correction
+    rotatedUV.x /= aspectRatio;
+    
+    // Return to 0-1 range
+    float2 uv = rotatedUV + center;
 
     float4 bg = float4(0, 0, 0, BackgroundAlpha);
     int bands = 32; // Using AS_getFrequencyBand which handles all band sizes
@@ -209,7 +242,7 @@ float4 PS_VUMeterBG(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_T
             prevX = x;
             prevY = MirrorBars ? y : 1.0 - y;
         }
-    } else if (PresentationMode == 4) { // Dots
+    } else if (PresentationMode == 3) { // Dots
         float yBase = MirrorBars ? 0.5 : 0.0;
         float yMax = MirrorBars ? 0.5 : 1.0;
         float2 aspect = float2(ReShade::ScreenSize.x / ReShade::ScreenSize.y, 1.0);

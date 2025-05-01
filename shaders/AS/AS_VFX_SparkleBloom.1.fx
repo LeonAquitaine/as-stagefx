@@ -501,9 +501,19 @@ float4 PS_BloomH(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Targ
     float sigma = BloomRadius / BloomDispersion;
     float bufferScale = AS_Glitter::getEffectiveBloomBufferScale();
     
-    // Calculate the number of samples based on bloom radius
-    const int MAX_SAMPLES = 9; // Reduced maximum samples
-    float sampleStep = max(1.0, floor(BloomRadius * 2.0 / float(MAX_SAMPLES * 2 + 1)));
+    // Calculate the number of samples based on bloom quality setting
+    int sampleCount;
+    switch(BloomQuality) {
+        case 0: sampleCount = 5;  break; // Potato
+        case 1: sampleCount = 7;  break; // Low
+        case 2: sampleCount = 9;  break; // Medium (default)
+        case 3: sampleCount = 12; break; // High
+        case 4: sampleCount = 16; break; // Ultra
+        case 5: sampleCount = 24; break; // AI Overlord
+        default: sampleCount = 9; break; // Fallback to Medium
+    }
+    
+    float sampleStep = max(1.0, floor(BloomRadius * 2.0 / float(sampleCount * 2 + 1)));
     
     // Determine if we should use dithering
     float2 noise = float2(1.0, 1.0);
@@ -517,7 +527,7 @@ float4 PS_BloomH(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Targ
                                           Listeningway_BloomMultiplier, true); // Always enable audio
     
     // Sample in horizontal direction for Gaussian blur
-    for(int i = -MAX_SAMPLES; i <= MAX_SAMPLES; i++) {
+    for(int i = -sampleCount; i <= sampleCount; i++) {
         float x = float(i) * sampleStep;
         
         float weight = AS_Glitter::Gaussian(x, sigma);
@@ -561,9 +571,19 @@ float4 PS_BloomV(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Targ
         float sigma = BloomRadius / BloomDispersion;
         float bufferScale = AS_Glitter::getEffectiveBloomBufferScale();
         
-        // Calculate the number of samples based on bloom radius
-        const int MAX_SAMPLES = 9; // Reduced maximum samples
-        float sampleStep = max(1.0, floor(BloomRadius * 2.0 / float(MAX_SAMPLES * 2 + 1)));
+        // Calculate the number of samples based on bloom quality setting
+        int sampleCount;
+        switch(BloomQuality) {
+            case 0: sampleCount = 5;  break; // Potato
+            case 1: sampleCount = 7;  break; // Low
+            case 2: sampleCount = 9;  break; // Medium (default)
+            case 3: sampleCount = 12; break; // High
+            case 4: sampleCount = 16; break; // Ultra
+            case 5: sampleCount = 24; break; // AI Overlord
+            default: sampleCount = 9; break; // Fallback to Medium
+        }
+        
+        float sampleStep = max(1.0, floor(BloomRadius * 2.0 / float(sampleCount * 2 + 1)));
         
         // Determine if we should use dithering
         float2 noise = float2(1.0, 1.0);
@@ -572,7 +592,7 @@ float4 PS_BloomV(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Targ
         }
         
         // Sample in vertical direction for Gaussian blur
-        for(int i = -MAX_SAMPLES; i <= MAX_SAMPLES; i++) {
+        for(int i = -sampleCount; i <= sampleCount; i++) {
             float y = float(i) * sampleStep;
             
             float weight = AS_Glitter::Gaussian(y, sigma);
