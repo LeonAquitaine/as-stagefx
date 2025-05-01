@@ -1,7 +1,7 @@
 /**
  * AS_CodeStandards.md - Coding Standards for AS StageFX Shaders
  * Author: Leon Aquitaine
- * Updated: April 28, 2025
+ * Updated: May 1, 2025
  */
 
 # AS StageFX Code Standards
@@ -90,6 +90,33 @@ AS_AUDIO_MULTIPLIER_UI(Effect_AudioMultiplier, "Intensity", 1.0, 2.0, "Audio Rea
 // In pixel shader
 float effectStrength = AS_applyAudioReactivity(BaseStrength, Effect_AudioSource, 
                                              Effect_AudioMultiplier, true);
+```
+
+### Custom Audio Source UI Implementation
+When creating custom UI for audio sources (not using the standard AS_AUDIO_SOURCE_UI macro), you MUST properly map the UI values to the correct AS_AUDIO constants:
+
+```hlsl
+// UI definition with custom ordering
+uniform int AudioSource < 
+    ui_type = "combo";
+    ui_label = "Source";
+    ui_items = "Volume\0Beat\0Bass\0Mid\0Treble\0"; // UI index: 0=Volume, 1=Beat, etc.
+    ui_category = "Audio Reactivity";
+> = 0;
+
+// In your processing function, map UI values to AS_AUDIO constants
+int mappedAudioSource;
+switch(AudioSource) {
+    case 0: mappedAudioSource = AS_AUDIO_VOLUME; break; // UI "Volume" maps to constant 2
+    case 1: mappedAudioSource = AS_AUDIO_BEAT; break;   // UI "Beat" maps to constant 3
+    case 2: mappedAudioSource = AS_AUDIO_BASS; break;   // UI "Bass" maps to constant 4
+    case 3: mappedAudioSource = AS_AUDIO_MID; break;    // UI "Mid" maps to constant 5
+    case 4: mappedAudioSource = AS_AUDIO_TREBLE; break; // UI "Treble" maps to constant 6
+    default: mappedAudioSource = AS_AUDIO_SOLID; break; // Fallback
+}
+
+// Then use the mapped constant with the AS_getAudioSource function
+float audioVal = AS_getAudioSource(mappedAudioSource);
 ```
 
 ### Audio Source Constants
@@ -218,3 +245,132 @@ float sineWave = sin(time * AS_TWO_PI);  // GOOD: Named constant
 - Ensures consistent precision across all shaders
 - Centralizes values so they can be updated in one place
 - Makes mathematical operations more explicit and understandable
+
+## Code Optimization
+
+### DRY (Don't Repeat Yourself) Principles
+When implementing shaders with repetitive elements or multiple instances (layers, lights, etc.):
+
+1. **Use UI Definition Macros**:
+   ```hlsl
+   // Define a macro for repetitive UI controls
+   #define MY_LAYER_UI(index, defaultValue, category) \
+   uniform float Layer##index##_Parameter < \
+       ui_label = "Layer " #index " Parameter"; \
+       ui_tooltip = "Controls something for layer " #index; \
+       ui_category = category; \
+   > = defaultValue;
+   
+   // Use the macro to create multiple instances
+   MY_LAYER_UI(1, 0.5, "Layer 1 Settings")
+   MY_LAYER_UI(2, 0.7, "Layer 2 Settings")
+   ```
+
+2. **Use Parameter Structures**:
+   ```hlsl
+   // Define a structure to hold related parameters
+   struct LayerParams {
+       bool enable;
+       float intensity;
+       float3 color;
+       int blendMode;
+   };
+   
+   // Use a helper function to retrieve parameters
+   LayerParams GetLayerParams(int layerIndex) {
+       LayerParams params;
+       if (layerIndex == 0) {
+           params.enable = Layer1_Enable;
+           params.intensity = Layer1_Intensity;
+           // ...other parameters...
+       }
+       else if (layerIndex == 1) {
+           // ...parameters for layer 2...
+       }
+       return params;
+   }
+   
+   // Use in shader with a loop
+   for (int i = 0; i < LayerCount; i++) {
+       LayerParams params = GetLayerParams(i);
+       if (params.enable) {
+           // Process with params...
+       }
+   }
+   ```
+
+3. **Extract Reusable Functions**:
+   - Break down complex algorithms into modular functions
+   - Centralize common calculations (pattern generation, isolation logic, etc.)
+   - Use functions for clarity even if only called once
+
+4. **Use Loop-Based Processing**:
+   ```hlsl
+   // Instead of repeating similar blocks of code
+   float4 PS_Main(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target {
+       float4 color = tex2D(BackBuffer, texcoord);
+       
+       // Process each layer sequentially 
+       for (int i = 0; i < LayerCount; i++) {
+           // Get parameters for this layer
+           LayerParams params = GetLayerParams(i);
+           
+           // Process layer
+           color = ProcessLayer(color, texcoord, params);
+       }
+       
+       return color;
+   }
+   ```
+
+### Performance Considerations
+
+1. **Layer-Based Activation**:
+   - For multi-layered effects, use individual enable flags rather than global layer count parameters
+   - Allow each layer to be independently enabled/disabled for maximum flexibility
+   - Always check the enable flag at the beginning of layer processing
+   - Only the first layer should be enabled by default to provide a clean starting point
+   
+   ```hlsl
+   // Recommended approach: individual enable flags
+   uniform bool Layer1_Enable <
+       ui_label = "Enable Layer 1";
+       ui_tooltip = "Toggle this layer on or off.";
+   > = true;
+   
+   uniform bool Layer2_Enable <
+       ui_label = "Enable Layer 2";
+       ui_tooltip = "Toggle this layer on or off.";
+       ui_category_closed = true;
+   > = false;
+   
+   // In shader code - early return if disabled
+   if (!params.enable) return currentColor;
+   
+   // Process layers with a simple loop
+   for (int i = 0; i < LAYER_COUNT; i++) {
+       LayerParams params = GetLayerParams(i);
+       color = ProcessLayer(color, texcoord, params);
+       // The enable check happens inside ProcessLayer
+   }
+   ```
+
+2. **UI Organization**:
+   - Use `ui_category_closed` for less frequently used settings
+   - Group related parameters together for easier navigation
+   
+   ```hlsl
+   uniform float Parameter <
+       ui_category = "Advanced Settings";
+       ui_category_closed = true; // Collapsed by default
+       // Other UI attributes...
+   > = 1.0;
+   ```
+
+3. **Early Returns**:
+   - Skip unnecessary calculations when possible
+   - Use if statements to bypass inactive features
+   
+   ```hlsl
+   if (!params.enable) return currentColor;
+   ```

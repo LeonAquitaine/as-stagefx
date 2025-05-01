@@ -14,12 +14,12 @@
  * FEATURES:
  * - Four independently configurable halftone layers
  * - Multiple pattern types (dots, lines, crosshatch)
- * - Various isolation methods (brightness, RGB, hue)
+ * - Various isolation methods (brightness, RGB, hue, depth)
  * - Customizable colors, densities, scales, and angles
  * - Layer blending with transparency support
  *
  * IMPLEMENTATION OVERVIEW:
- * 1. Each layer isolates pixel regions based on brightness, RGB intensity, or hue
+ * 1. Each layer isolates pixel regions based on brightness, RGB intensity, hue, or depth
  * 2. Procedural pattern generation creates dots, lines, or crosshatch effects
  * 3. Pattern colors are applied to the isolated regions
  * 4. Layers are blended sequentially based on their background transparency
@@ -41,392 +41,133 @@
 
 #define ISOLATE_BRIGHTNESS 0
 #define ISOLATE_RGB        1
-#define ISOLATE_HUE         2
-#define ISOLATE_DEPTH       3
+#define ISOLATE_HUE        2
+#define ISOLATE_DEPTH      3
+
+// Number of halftone layers
+#define HALFTONE_LAYER_COUNT 4
 
 // ============================================================================
-// LAYER 1 CONTROLS
+// LAYER UI MACRO
 // ============================================================================
 
-uniform bool Layer1_Enable <
-    ui_label = "Enable Layer 1";
-    ui_tooltip = "Toggle this entire halftone layer on or off.";
-    ui_category = "Layer 1 Settings";
-> = true;
-
-// Isolation Method & Thresholds
-uniform int Layer1_IsolationMethod <
-    ui_type = "combo";
-    ui_label = "Isolation Method";
-    ui_tooltip = "Choose metric to isolate pixels (Brightness, RGB intensity, Hue, or Depth).";
-    ui_items = "Brightness\0Composite RGB\0Hue\0Depth\0";
-    ui_category = "Layer 1 Settings";
-> = 0;
-
-uniform float Layer1_ThresholdMin <
-    ui_type = "slider"; 
-    ui_min = 1.0; 
-    ui_max = 100.0; 
-    ui_step = 1.0;
-    ui_label = "Range Min (1-100)";
-    ui_tooltip = "Start of selection range (1-100). Mapped to 0-1 or 0-360 based on Method. Swapped internally with Max if needed.";
-    ui_category = "Layer 1 Settings";
-> = 1.0;
-
-uniform float Layer1_ThresholdMax <
-    ui_type = "slider"; 
-    ui_min = 1.0; 
-    ui_max = 100.0; 
-    ui_step = 1.0;
-    ui_label = "Range Max (1-100)";
-    ui_tooltip = "End of selection range (1-100). Mapped to 0-1 or 0-360 based on Method. Swapped internally with Min if needed.";
-    ui_category = "Layer 1 Settings";
-> = 50.0;
-
-uniform bool Layer1_InvertRange <
-    ui_label = "Invert Selection Range";
-    ui_tooltip = "Check to apply pattern OUTSIDE the defined Min/Max range.";
-    ui_category = "Layer 1 Settings";
-> = false;
-
-// Pattern Type & Parameters
-uniform int Layer1_PatternType <
-    ui_type = "combo";
-    ui_label = "Pattern Type";
-    ui_tooltip = "Select the halftone pattern shape/style.";
-    ui_items = "Dots (Round)\0Dots (Square)\0Lines\0Crosshatch\0";
-    ui_category = "Layer 1 Settings";
-> = 0;
-
-uniform float Layer1_PatternScale <
-    ui_type = "slider"; 
-    ui_min = 1.0; 
-    ui_max = 200.0;
-    ui_label = "Pattern Scale/Size";
-    ui_tooltip = "Controls the size of dots or thickness/frequency of lines.";
-    ui_category = "Layer 1 Settings";
-> = 50.0;
-
-uniform float Layer1_PatternDensity <
-    ui_type = "slider"; 
-    ui_min = 0.1; 
-    ui_max = 10.0;
-    ui_label = "Pattern Density/Spacing";
-    ui_tooltip = "Controls the spacing or coverage of the pattern elements.";
-    ui_category = "Layer 1 Settings";
-> = 1.0;
-
-uniform float Layer1_PatternAngle <
-    ui_type = "drag"; 
-    ui_min = 0.0; 
-    ui_max = 360.0;
-    ui_label = "Pattern Angle";
-    ui_tooltip = "Rotation angle for Lines, Crosshatch, or potentially other patterns.";
-    ui_category = "Layer 1 Settings";
-> = 45.0;
-
-// Color Parameters
-uniform float4 Layer1_PatternColor <
-    ui_type = "color";
-    ui_label = "Pattern Color (RGBA)";
-    ui_tooltip = "The color of the dots or lines themselves.";
-    ui_category = "Layer 1 Settings";
-> = float4(0.0, 0.0, 0.0, 1.0);
-
-uniform float4 Layer1_BackgroundColor <
-    ui_type = "color";
-    ui_label = "Background Color (RGBA)";
-    ui_tooltip = "Color between pattern elements in the isolated area. Alpha=0 means transparent (shows layers below), Alpha=1 means opaque.";
-    ui_category = "Layer 1 Settings";
-> = float4(1.0, 1.0, 1.0, 0.0);
-
-// ============================================================================
-// LAYER 2 CONTROLS
-// ============================================================================
-
-uniform bool Layer2_Enable <
-    ui_label = "Enable Layer 2";
-    ui_tooltip = "Toggle this entire halftone layer on or off.";
-    ui_category = "Layer 2 Settings";
-> = false;
-
-// Isolation Method & Thresholds
-uniform int Layer2_IsolationMethod <
-    ui_type = "combo";
-    ui_label = "Isolation Method";
-    ui_tooltip = "Choose metric to isolate pixels (Brightness, RGB intensity, Hue, or Depth).";
-    ui_items = "Brightness\0Composite RGB\0Hue\0Depth\0";
-    ui_category = "Layer 2 Settings";
-> = 0;
-
-uniform float Layer2_ThresholdMin <
-    ui_type = "slider"; 
-    ui_min = 1.0; 
-    ui_max = 100.0; 
-    ui_step = 1.0;
-    ui_label = "Range Min (1-100)";
-    ui_tooltip = "Start of selection range (1-100). Mapped to 0-1 or 0-360 based on Method. Swapped internally with Max if needed.";
-    ui_category = "Layer 2 Settings";
-> = 50.0;
-
-uniform float Layer2_ThresholdMax <
-    ui_type = "slider"; 
-    ui_min = 1.0; 
-    ui_max = 100.0; 
-    ui_step = 1.0;
-    ui_label = "Range Max (1-100)";
-    ui_tooltip = "End of selection range (1-100). Mapped to 0-1 or 0-360 based on Method. Swapped internally with Min if needed.";
-    ui_category = "Layer 2 Settings";
-> = 75.0;
-
-uniform bool Layer2_InvertRange <
-    ui_label = "Invert Selection Range";
-    ui_tooltip = "Check to apply pattern OUTSIDE the defined Min/Max range.";
-    ui_category = "Layer 2 Settings";
-> = false;
-
-// Pattern Type & Parameters
-uniform int Layer2_PatternType <
-    ui_type = "combo";
-    ui_label = "Pattern Type";
-    ui_tooltip = "Select the halftone pattern shape/style.";
-    ui_items = "Dots (Round)\0Dots (Square)\0Lines\0Crosshatch\0";
-    ui_category = "Layer 2 Settings";
-> = 2;
-
-uniform float Layer2_PatternScale <
-    ui_type = "slider"; 
-    ui_min = 1.0; 
-    ui_max = 200.0;
-    ui_label = "Pattern Scale/Size";
-    ui_tooltip = "Controls the size of dots or thickness/frequency of lines.";
-    ui_category = "Layer 2 Settings";
-> = 60.0;
-
-uniform float Layer2_PatternDensity <
-    ui_type = "slider"; 
-    ui_min = 0.1; 
-    ui_max = 10.0;
-    ui_label = "Pattern Density/Spacing";
-    ui_tooltip = "Controls the spacing or coverage of the pattern elements.";
-    ui_category = "Layer 2 Settings";
-> = 1.0;
-
-uniform float Layer2_PatternAngle <
-    ui_type = "drag"; 
-    ui_min = 0.0; 
-    ui_max = 360.0;
-    ui_label = "Pattern Angle";
-    ui_tooltip = "Rotation angle for Lines, Crosshatch, or potentially other patterns.";
-    ui_category = "Layer 2 Settings";
-> = 90.0;
-
-// Color Parameters
-uniform float4 Layer2_PatternColor <
-    ui_type = "color";
-    ui_label = "Pattern Color (RGBA)";
-    ui_tooltip = "The color of the dots or lines themselves.";
-    ui_category = "Layer 2 Settings";
-> = float4(0.0, 0.0, 0.0, 1.0);
-
-uniform float4 Layer2_BackgroundColor <
-    ui_type = "color";
-    ui_label = "Background Color (RGBA)";
-    ui_tooltip = "Color between pattern elements in the isolated area. Alpha=0 means transparent (shows layers below), Alpha=1 means opaque.";
-    ui_category = "Layer 2 Settings";
-> = float4(1.0, 1.0, 1.0, 0.0);
+// Define a macro for the UI controls of each layer to avoid repetition
+#define HALFTONE_LAYER_UI(index, defaultEnable, defaultIsolation, defaultMinThreshold, defaultMaxThreshold, \
+                          defaultPattern, defaultScale, defaultDensity, defaultAngle, \
+                          defaultPatternColor, defaultBgColor) \
+uniform bool Layer##index##_Enable < \
+    ui_label = "Enable Layer " #index; \
+    ui_tooltip = "Toggle this entire halftone layer on or off."; \
+    ui_category = "Layer " #index " Settings"; \
+    ui_category_closed = index > 1; \
+> = defaultEnable; \
+\
+uniform int Layer##index##_IsolationMethod < \
+    ui_type = "combo"; \
+    ui_label = "Isolation Method"; \
+    ui_tooltip = "Choose metric to isolate pixels (Brightness, RGB intensity, Hue, or Depth)."; \
+    ui_items = "Brightness\0Composite RGB\0Hue\0Depth\0"; \
+    ui_category = "Layer " #index " Settings"; \
+> = defaultIsolation; \
+\
+uniform float Layer##index##_ThresholdMin < \
+    ui_type = "slider"; \
+    ui_min = 1.0; \
+    ui_max = 100.0; \
+    ui_step = 1.0; \
+    ui_label = "Range Min (1-100)"; \
+    ui_tooltip = "Start of selection range (1-100). Mapped to 0-1 or 0-360 based on Method. Swapped internally with Min if needed."; \
+    ui_category = "Layer " #index " Settings"; \
+> = defaultMinThreshold; \
+\
+uniform float Layer##index##_ThresholdMax < \
+    ui_type = "slider"; \
+    ui_min = 1.0; \
+    ui_max = 100.0; \
+    ui_step = 1.0; \
+    ui_label = "Range Max (1-100)"; \
+    ui_tooltip = "End of selection range (1-100). Mapped to 0-1 or 0-360 based on Method. Swapped internally with Max if needed."; \
+    ui_category = "Layer " #index " Settings"; \
+> = defaultMaxThreshold; \
+\
+uniform bool Layer##index##_InvertRange < \
+    ui_label = "Invert Selection Range"; \
+    ui_tooltip = "Check to apply pattern OUTSIDE the defined Min/Max range."; \
+    ui_category = "Layer " #index " Settings"; \
+> = false; \
+\
+uniform int Layer##index##_PatternType < \
+    ui_type = "combo"; \
+    ui_label = "Pattern Type"; \
+    ui_tooltip = "Select the halftone pattern shape/style."; \
+    ui_items = "Dots (Round)\0Dots (Square)\0Lines\0Crosshatch\0"; \
+    ui_category = "Layer " #index " Settings"; \
+> = defaultPattern; \
+\
+uniform float Layer##index##_PatternScale < \
+    ui_type = "slider"; \
+    ui_min = 1.0; \
+    ui_max = 200.0; \
+    ui_label = "Pattern Scale/Size"; \
+    ui_tooltip = "Controls the size of dots or thickness/frequency of lines."; \
+    ui_category = "Layer " #index " Settings"; \
+> = defaultScale; \
+\
+uniform float Layer##index##_PatternDensity < \
+    ui_type = "slider"; \
+    ui_min = 0.1; \
+    ui_max = 10.0; \
+    ui_label = "Pattern Density/Spacing"; \
+    ui_tooltip = "Controls the spacing or coverage of the pattern elements."; \
+    ui_category = "Layer " #index " Settings"; \
+> = defaultDensity; \
+\
+uniform float Layer##index##_PatternAngle < \
+    ui_type = "drag"; \
+    ui_min = 0.0; \
+    ui_max = 360.0; \
+    ui_label = "Pattern Angle"; \
+    ui_tooltip = "Rotation angle for Lines, Crosshatch, or potentially other patterns."; \
+    ui_category = "Layer " #index " Settings"; \
+> = defaultAngle; \
+\
+uniform float4 Layer##index##_PatternColor < \
+    ui_type = "color"; \
+    ui_label = "Pattern Color (RGBA)"; \
+    ui_tooltip = "The color of the dots or lines themselves."; \
+    ui_category = "Layer " #index " Settings"; \
+> = defaultPatternColor; \
+\
+uniform float4 Layer##index##_BackgroundColor < \
+    ui_type = "color"; \
+    ui_label = "Background Color (RGBA)"; \
+    ui_tooltip = "Color between pattern elements in the isolated area. Alpha=0 means transparent (shows layers below), Alpha=1 means opaque."; \
+    ui_category = "Layer " #index " Settings"; \
+> = defaultBgColor;
 
 // ============================================================================
-// LAYER 3 CONTROLS
+// LAYER CONTROLS (Using the macro)
 // ============================================================================
 
-uniform bool Layer3_Enable <
-    ui_label = "Enable Layer 3";
-    ui_tooltip = "Toggle this entire halftone layer on or off.";
-    ui_category = "Layer 3 Settings";
-> = false;
+// Layer 1 controls
+HALFTONE_LAYER_UI(1, true, ISOLATE_BRIGHTNESS, 1.0, 50.0, 
+                 PATTERN_DOT_ROUND, 50.0, 1.0, 45.0,
+                 float4(0.0, 0.0, 0.0, 1.0), float4(1.0, 1.0, 1.0, 0.0))
 
-// Isolation Method & Thresholds
-uniform int Layer3_IsolationMethod <
-    ui_type = "combo";
-    ui_label = "Isolation Method";
-    ui_tooltip = "Choose metric to isolate pixels (Brightness, RGB intensity, Hue, or Depth).";
-    ui_items = "Brightness\0Composite RGB\0Hue\0Depth\0";
-    ui_category = "Layer 3 Settings";
-> = 2;
+// Layer 2 controls                 
+HALFTONE_LAYER_UI(2, false, ISOLATE_BRIGHTNESS, 50.0, 75.0, 
+                 PATTERN_LINE, 60.0, 1.0, 90.0,
+                 float4(0.0, 0.0, 0.0, 1.0), float4(1.0, 1.0, 1.0, 0.0))
 
-uniform float Layer3_ThresholdMin <
-    ui_type = "slider"; 
-    ui_min = 1.0; 
-    ui_max = 100.0; 
-    ui_step = 1.0;
-    ui_label = "Range Min (1-100)";
-    ui_tooltip = "Start of selection range (1-100). Mapped to 0-1 or 0-360 based on Method. Swapped internally with Min if needed.";
-    ui_category = "Layer 3 Settings";
-> = 10.0;
+// Layer 3 controls
+HALFTONE_LAYER_UI(3, false, ISOLATE_HUE, 10.0, 40.0, 
+                 PATTERN_CROSSHATCH, 40.0, 1.0, 30.0,
+                 float4(0.0, 0.0, 0.0, 1.0), float4(1.0, 1.0, 1.0, 0.0))
 
-uniform float Layer3_ThresholdMax <
-    ui_type = "slider"; 
-    ui_min = 1.0; 
-    ui_max = 100.0; 
-    ui_step = 1.0;
-    ui_label = "Range Max (1-100)";
-    ui_tooltip = "End of selection range (1-100). Mapped to 0-1 or 0-360 based on Method. Swapped internally with Max if needed.";
-    ui_category = "Layer 3 Settings";
-> = 40.0;
-
-uniform bool Layer3_InvertRange <
-    ui_label = "Invert Selection Range";
-    ui_tooltip = "Check to apply pattern OUTSIDE the defined Min/Max range.";
-    ui_category = "Layer 3 Settings";
-> = false;
-
-// Pattern Type & Parameters
-uniform int Layer3_PatternType <
-    ui_type = "combo";
-    ui_label = "Pattern Type";
-    ui_tooltip = "Select the halftone pattern shape/style.";
-    ui_items = "Dots (Round)\0Dots (Square)\0Lines\0Crosshatch\0";
-    ui_category = "Layer 3 Settings";
-> = 3;
-
-uniform float Layer3_PatternScale <
-    ui_type = "slider"; 
-    ui_min = 1.0; 
-    ui_max = 200.0;
-    ui_label = "Pattern Scale/Size";
-    ui_tooltip = "Controls the size of dots or thickness/frequency of lines.";
-    ui_category = "Layer 3 Settings";
-> = 40.0;
-
-uniform float Layer3_PatternDensity <
-    ui_type = "slider"; 
-    ui_min = 0.1; 
-    ui_max = 10.0;
-    ui_label = "Pattern Density/Spacing";
-    ui_tooltip = "Controls the spacing or coverage of the pattern elements.";
-    ui_category = "Layer 3 Settings";
-> = 1.0;
-
-uniform float Layer3_PatternAngle <
-    ui_type = "drag"; 
-    ui_min = 0.0; 
-    ui_max = 360.0;
-    ui_label = "Pattern Angle";
-    ui_tooltip = "Rotation angle for Lines, Crosshatch, or potentially other patterns.";
-    ui_category = "Layer 3 Settings";
-> = 30.0;
-
-// Color Parameters
-uniform float4 Layer3_PatternColor <
-    ui_type = "color";
-    ui_label = "Pattern Color (RGBA)";
-    ui_tooltip = "The color of the dots or lines themselves.";
-    ui_category = "Layer 3 Settings";
-> = float4(0.0, 0.0, 0.0, 1.0);
-
-uniform float4 Layer3_BackgroundColor <
-    ui_type = "color";
-    ui_label = "Background Color (RGBA)";
-    ui_tooltip = "Color between pattern elements in the isolated area. Alpha=0 means transparent (shows layers below), Alpha=1 means opaque.";
-    ui_category = "Layer 3 Settings";
-> = float4(1.0, 1.0, 1.0, 0.0);
-
-// ============================================================================
-// LAYER 4 CONTROLS
-// ============================================================================
-
-uniform bool Layer4_Enable <
-    ui_label = "Enable Layer 4";
-    ui_tooltip = "Toggle this entire halftone layer on or off.";
-    ui_category = "Layer 4 Settings";
-> = false;
-
-// Isolation Method & Thresholds
-uniform int Layer4_IsolationMethod <
-    ui_type = "combo";
-    ui_label = "Isolation Method";
-    ui_tooltip = "Choose metric to isolate pixels (Brightness, RGB intensity, Hue, or Depth).";
-    ui_items = "Brightness\0Composite RGB\0Hue\0Depth\0";
-    ui_category = "Layer 4 Settings";
-> = 0;
-
-uniform float Layer4_ThresholdMin <
-    ui_type = "slider"; 
-    ui_min = 1.0; 
-    ui_max = 100.0; 
-    ui_step = 1.0;
-    ui_label = "Range Min (1-100)";
-    ui_tooltip = "Start of selection range (1-100). Mapped to 0-1 or 0-360 based on Method. Swapped internally with Min if needed.";
-    ui_category = "Layer 4 Settings";
-> = 75.0;
-
-uniform float Layer4_ThresholdMax <
-    ui_type = "slider"; 
-    ui_min = 1.0; 
-    ui_max = 100.0; 
-    ui_step = 1.0;
-    ui_label = "Range Max (1-100)";
-    ui_tooltip = "End of selection range (1-100). Mapped to 0-1 or 0-360 based on Method. Swapped internally with Max if needed.";
-    ui_category = "Layer 4 Settings";
-> = 100.0;
-
-uniform bool Layer4_InvertRange <
-    ui_label = "Invert Selection Range";
-    ui_tooltip = "Check to apply pattern OUTSIDE the defined Min/Max range.";
-    ui_category = "Layer 4 Settings";
-> = false;
-
-// Pattern Type & Parameters
-uniform int Layer4_PatternType <
-    ui_type = "combo";
-    ui_label = "Pattern Type";
-    ui_tooltip = "Select the halftone pattern shape/style.";
-    ui_items = "Dots (Round)\0Dots (Square)\0Lines\0Crosshatch\0";
-    ui_category = "Layer 4 Settings";
-> = 1;
-
-uniform float Layer4_PatternScale <
-    ui_type = "slider"; 
-    ui_min = 1.0; 
-    ui_max = 200.0;
-    ui_label = "Pattern Scale/Size";
-    ui_tooltip = "Controls the size of dots or thickness/frequency of lines.";
-    ui_category = "Layer 4 Settings";
-> = 30.0;
-
-uniform float Layer4_PatternDensity <
-    ui_type = "slider"; 
-    ui_min = 0.1; 
-    ui_max = 10.0;
-    ui_label = "Pattern Density/Spacing";
-    ui_tooltip = "Controls the spacing or coverage of the pattern elements.";
-    ui_category = "Layer 4 Settings";
-> = 1.0;
-
-uniform float Layer4_PatternAngle <
-    ui_type = "drag"; 
-    ui_min = 0.0; 
-    ui_max = 360.0;
-    ui_label = "Pattern Angle";
-    ui_tooltip = "Rotation angle for Lines, Crosshatch, or potentially other patterns.";
-    ui_category = "Layer 4 Settings";
-> = 60.0;
-
-// Color Parameters
-uniform float4 Layer4_PatternColor <
-    ui_type = "color";
-    ui_label = "Pattern Color (RGBA)";
-    ui_tooltip = "The color of the dots or lines themselves.";
-    ui_category = "Layer 4 Settings";
-> = float4(0.0, 0.0, 0.0, 1.0);
-
-uniform float4 Layer4_BackgroundColor <
-    ui_type = "color";
-    ui_label = "Background Color (RGBA)";
-    ui_tooltip = "Color between pattern elements in the isolated area. Alpha=0 means transparent (shows layers below), Alpha=1 means opaque.";
-    ui_category = "Layer 4 Settings";
-> = float4(1.0, 1.0, 1.0, 0.0);
+// Layer 4 controls
+HALFTONE_LAYER_UI(4, false, ISOLATE_BRIGHTNESS, 75.0, 100.0, 
+                 PATTERN_DOT_SQUARE, 30.0, 1.0, 60.0,
+                 float4(0.0, 0.0, 0.0, 1.0), float4(1.0, 1.0, 1.0, 0.0))
 
 // ============================================================================
 // HELPER FUNCTIONS
@@ -472,6 +213,38 @@ float2 RotatePoint(float2 p, float angle, float2 center) {
     
     // Translate back
     return rotated + center;
+}
+
+// Get the pixel metric based on isolation method
+float GetPixelMetric(float4 color, float2 texcoord, int isolationMethod) {
+    if (isolationMethod == ISOLATE_BRIGHTNESS) {
+        return GetLuminance(color.rgb);
+    } else if (isolationMethod == ISOLATE_RGB) {
+        return GetRGBIntensity(color.rgb);
+    } else if (isolationMethod == ISOLATE_HUE) {
+        return RGBtoHue(color.rgb);
+    } else if (isolationMethod == ISOLATE_DEPTH) {
+        return ReShade::GetLinearizedDepth(texcoord);
+    }
+    
+    // Default fallback
+    return GetLuminance(color.rgb);
+}
+
+// Check if a pixel is in the specified range
+bool IsInRange(float pixelMetric, float mappedMin, float mappedMax, int isolationMethod) {
+    if (isolationMethod == ISOLATE_HUE) {
+        // Special handling for hue which is circular (0-360)
+        if (mappedMin <= mappedMax) {
+            return (pixelMetric >= mappedMin && pixelMetric <= mappedMax);
+        } else {
+            // Handle wrap-around case (e.g., 330° to 30°)
+            return (pixelMetric >= mappedMin || pixelMetric <= mappedMax);
+        }
+    } else {
+        // Standard range check for brightness, RGB, and depth
+        return (pixelMetric >= mappedMin && pixelMetric <= mappedMax);
+    }
 }
 
 // Generate pattern value based on pattern type and parameters
@@ -548,70 +321,119 @@ float GeneratePattern(float2 uv, int patternType, float scale, float density, fl
     return pattern;
 }
 
-// Process a single halftone layer
-float4 ProcessLayer(float4 currentColor, float2 texcoord, 
-                    bool enable, int isolationMethod, 
-                    float thresholdMin, float thresholdMax, bool invertRange,
-                    int patternType, float patternScale, float patternDensity, float patternAngle,
-                    float4 patternColor, float4 backgroundColor) {
+// Structure to hold layer parameters for easier handling
+struct HalftoneLayerParams {
+    bool enable;
+    int isolationMethod;
+    float thresholdMin;
+    float thresholdMax;
+    bool invertRange;
+    int patternType;
+    float patternScale;
+    float patternDensity;
+    float patternAngle;
+    float4 patternColor;
+    float4 backgroundColor;
+};
+
+// Helper function to get layer parameters for a given layer index
+HalftoneLayerParams GetLayerParams(int layerIndex) {
+    HalftoneLayerParams params;
     
+    if (layerIndex == 0) {
+        params.enable = Layer1_Enable;
+        params.isolationMethod = Layer1_IsolationMethod;
+        params.thresholdMin = Layer1_ThresholdMin;
+        params.thresholdMax = Layer1_ThresholdMax;
+        params.invertRange = Layer1_InvertRange;
+        params.patternType = Layer1_PatternType;
+        params.patternScale = Layer1_PatternScale;
+        params.patternDensity = Layer1_PatternDensity;
+        params.patternAngle = Layer1_PatternAngle;
+        params.patternColor = Layer1_PatternColor;
+        params.backgroundColor = Layer1_BackgroundColor;
+    }
+    else if (layerIndex == 1) {
+        params.enable = Layer2_Enable;
+        params.isolationMethod = Layer2_IsolationMethod;
+        params.thresholdMin = Layer2_ThresholdMin;
+        params.thresholdMax = Layer2_ThresholdMax;
+        params.invertRange = Layer2_InvertRange;
+        params.patternType = Layer2_PatternType;
+        params.patternScale = Layer2_PatternScale;
+        params.patternDensity = Layer2_PatternDensity;
+        params.patternAngle = Layer2_PatternAngle;
+        params.patternColor = Layer2_PatternColor;
+        params.backgroundColor = Layer2_BackgroundColor;
+    }
+    else if (layerIndex == 2) {
+        params.enable = Layer3_Enable;
+        params.isolationMethod = Layer3_IsolationMethod;
+        params.thresholdMin = Layer3_ThresholdMin;
+        params.thresholdMax = Layer3_ThresholdMax;
+        params.invertRange = Layer3_InvertRange;
+        params.patternType = Layer3_PatternType;
+        params.patternScale = Layer3_PatternScale;
+        params.patternDensity = Layer3_PatternDensity;
+        params.patternAngle = Layer3_PatternAngle;
+        params.patternColor = Layer3_PatternColor;
+        params.backgroundColor = Layer3_BackgroundColor;
+    }
+    else { // layerIndex == 3
+        params.enable = Layer4_Enable;
+        params.isolationMethod = Layer4_IsolationMethod;
+        params.thresholdMin = Layer4_ThresholdMin;
+        params.thresholdMax = Layer4_ThresholdMax;
+        params.invertRange = Layer4_InvertRange;
+        params.patternType = Layer4_PatternType;
+        params.patternScale = Layer4_PatternScale;
+        params.patternDensity = Layer4_PatternDensity;
+        params.patternAngle = Layer4_PatternAngle;
+        params.patternColor = Layer4_PatternColor;
+        params.backgroundColor = Layer4_BackgroundColor;
+    }
+    
+    return params;
+}
+
+// Process a single halftone layer
+float4 ProcessLayer(float4 currentColor, float2 texcoord, HalftoneLayerParams params) {
     // Return current color if layer is disabled
-    if (!enable) return currentColor;
+    if (!params.enable) return currentColor;
     
     // Ensure proper min/max order
-    float actualMin = min(thresholdMin, thresholdMax);
-    float actualMax = max(thresholdMin, thresholdMax);
+    float actualMin = min(params.thresholdMin, params.thresholdMax);
+    float actualMax = max(params.thresholdMin, params.thresholdMax);
     
     // Map thresholds based on isolation method
     float mappedMin, mappedMax;
-    if (isolationMethod == ISOLATE_HUE) {
+    if (params.isolationMethod == ISOLATE_HUE) {
         // Map to 0-360 range for hue
         mappedMin = actualMin * 3.6;
         mappedMax = actualMax * 3.6;
     } else {
-        // Map to 0-1 range for brightness and RGB
+        // Map to 0-1 range for brightness, RGB, and depth
         mappedMin = actualMin * 0.01;
         mappedMax = actualMax * 0.01;
     }
     
     // Calculate pixel metric based on isolation method
-    float pixelMetric;
-    if (isolationMethod == ISOLATE_BRIGHTNESS) {
-        pixelMetric = GetLuminance(currentColor.rgb);
-    } else if (isolationMethod == ISOLATE_RGB) {
-        pixelMetric = GetRGBIntensity(currentColor.rgb);
-    } else if (isolationMethod == ISOLATE_HUE) {
-        pixelMetric = RGBtoHue(currentColor.rgb);
-    } else if (isolationMethod == ISOLATE_DEPTH) {
-        // Get linearized depth from depth buffer
-        pixelMetric = ReShade::GetLinearizedDepth(texcoord);
-    }
+    float pixelMetric = GetPixelMetric(currentColor, texcoord, params.isolationMethod);
     
     // Check if pixel is in range
-    bool isInRange;
-    if (isolationMethod == ISOLATE_HUE) {
-        // Special handling for hue which is circular (0-360)
-        if (mappedMin <= mappedMax) {
-            isInRange = (pixelMetric >= mappedMin && pixelMetric <= mappedMax);
-        } else {
-            // Handle wrap-around case (e.g., 330° to 30°)
-            isInRange = (pixelMetric >= mappedMin || pixelMetric <= mappedMax);
-        }
-    } else {
-        // Standard range check for brightness and RGB
-        isInRange = (pixelMetric >= mappedMin && pixelMetric <= mappedMax);
-    }
+    bool isInRange = IsInRange(pixelMetric, mappedMin, mappedMax, params.isolationMethod);
     
     // Apply inversion if requested
-    bool applyPattern = (isInRange != invertRange);
+    bool applyPattern = (isInRange != params.invertRange);
     
     // If we should apply the pattern to this pixel
     if (applyPattern) {
         // Generate pattern value at this pixel
-        float patternValue = GeneratePattern(texcoord, patternType, patternScale, patternDensity, patternAngle);
+        float patternValue = GeneratePattern(texcoord, params.patternType, params.patternScale, 
+                                            params.patternDensity, params.patternAngle);
         
         // Select color based on pattern value
-        float4 layerColor = (patternValue > 0.5) ? patternColor : backgroundColor;
+        float4 layerColor = (patternValue > 0.5) ? params.patternColor : params.backgroundColor;
         
         // Blend with current color using the layer's alpha
         return float4(
@@ -632,38 +454,14 @@ float4 PS_MultiLayerHalftone(float4 pos : SV_Position, float2 texcoord : TEXCOOR
     // Sample input texture
     float4 finalColor = tex2D(ReShade::BackBuffer, texcoord);
     
-    // Process each layer sequentially
-    finalColor = ProcessLayer(
-        finalColor, texcoord,
-        Layer1_Enable, Layer1_IsolationMethod,
-        Layer1_ThresholdMin, Layer1_ThresholdMax, Layer1_InvertRange,
-        Layer1_PatternType, Layer1_PatternScale, Layer1_PatternDensity, Layer1_PatternAngle,
-        Layer1_PatternColor, Layer1_BackgroundColor
-    );
-    
-    finalColor = ProcessLayer(
-        finalColor, texcoord,
-        Layer2_Enable, Layer2_IsolationMethod,
-        Layer2_ThresholdMin, Layer2_ThresholdMax, Layer2_InvertRange,
-        Layer2_PatternType, Layer2_PatternScale, Layer2_PatternDensity, Layer2_PatternAngle,
-        Layer2_PatternColor, Layer2_BackgroundColor
-    );
-    
-    finalColor = ProcessLayer(
-        finalColor, texcoord,
-        Layer3_Enable, Layer3_IsolationMethod,
-        Layer3_ThresholdMin, Layer3_ThresholdMax, Layer3_InvertRange,
-        Layer3_PatternType, Layer3_PatternScale, Layer3_PatternDensity, Layer3_PatternAngle,
-        Layer3_PatternColor, Layer3_BackgroundColor
-    );
-    
-    finalColor = ProcessLayer(
-        finalColor, texcoord,
-        Layer4_Enable, Layer4_IsolationMethod,
-        Layer4_ThresholdMin, Layer4_ThresholdMax, Layer4_InvertRange,
-        Layer4_PatternType, Layer4_PatternScale, Layer4_PatternDensity, Layer4_PatternAngle,
-        Layer4_PatternColor, Layer4_BackgroundColor
-    );
+    // Process each layer sequentially, using their individual enable flags
+    for (int i = 0; i < HALFTONE_LAYER_COUNT; i++) {
+        // Get layer parameters
+        HalftoneLayerParams params = GetLayerParams(i);
+        
+        // Process the layer (the enable check is inside ProcessLayer)
+        finalColor = ProcessLayer(finalColor, texcoord, params);
+    }
     
     return finalColor;
 }

@@ -113,7 +113,7 @@ static const float AS_GOLDEN_RATIO = 1.61803398875;
 #define AS_AUDIO_MID     6  // Mid frequency band
 
 // Default number of frequency bands (matches Listeningway's default)
-#define AS_DEFAULT_NUM_BANDS 8
+#define AS_DEFAULT_NUM_BANDS 32
 
 // --- Standard UI Strings ---
 #define AS_AUDIO_SOURCE_ITEMS "Off\0Solid\0Volume\0Beat\0Bass\0Treble\0Mid\0"
@@ -283,8 +283,8 @@ float AS_getVUMeterValue(int source) {
     if (source == 0) return Listeningway_Volume;
     if (source == 1) return Listeningway_Beat;
     if (source == 2) return Listeningway_FreqBands[0]; // Bass
-    if (source == 3) return Listeningway_FreqBands[3]; // Mid
-    if (source == 4) return Listeningway_FreqBands[7]; // Treble
+    if (source == 3) return Listeningway_FreqBands[14]; // Mid
+    if (source == 4) return Listeningway_FreqBands[28]; // Treble
 #endif
     return 0.0;
 }
