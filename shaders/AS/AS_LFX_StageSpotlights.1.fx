@@ -92,8 +92,8 @@ uniform float3 Spot##index##_Color < \
 uniform float2 Spot##index##_Position < \
     ui_type = "drag"; \
     ui_label = "Position"; \
-    ui_min = 0.0; \
-    ui_max = 1.0; \
+    ui_min = -0.2; \
+    ui_max = 1.2; \
     ui_category = "Light Beam " #index; \
 > = defaultPosition; \
 \
