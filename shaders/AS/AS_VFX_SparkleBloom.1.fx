@@ -30,7 +30,11 @@
  * ===================================================================================
  */
 
-
+// ============================================================================
+// TECHNIQUE GUARD - Prevents duplicate loading of the same shader
+// ============================================================================
+#ifndef __AS_VFX_SparkleBloom_1_fx
+#define __AS_VFX_SparkleBloom_1_fx
 
 #include "AS_Utils.1.fxh"
 #include "AS_Palettes.1.fxh"
@@ -640,3 +644,5 @@ technique AS_Glitter < ui_label = "[AS] VFX: Sparkle Bloom"; ui_tooltip = "Adds 
         PixelShader = PS_BloomV; 
     }
 }
+
+#endif // __AS_VFX_SparkleBloom_1_fx

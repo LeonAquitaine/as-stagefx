@@ -28,7 +28,11 @@
  * ===================================================================================
  */
 
-
+// ============================================================================
+// TECHNIQUE GUARD - Prevents duplicate loading of the same shader
+// ============================================================================
+#ifndef __AS_VFX_MotionTrails_1_fx
+#define __AS_VFX_MotionTrails_1_fx
 
 #include "AS_Utils.1.fxh"
 
@@ -335,3 +339,5 @@ technique AS_MotionTrails_1 <
         ClearRenderTargets = false;
     }
 }
+
+#endif // __AS_VFX_MotionTrails_1_fx

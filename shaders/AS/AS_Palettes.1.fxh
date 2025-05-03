@@ -1,11 +1,21 @@
 /**
+ * AS_Palettes.1.fxh - Color palette system for AstrayFX shaders
+ * Author: Leon Aquitaine
+ * License: Creative Commons Attribution 4.0 International
+ * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
+ */
+
+// ============================================================================
+// TECHNIQUE GUARD - Prevents duplicate loading of the same shader
+// ============================================================================
+#ifndef __AS_Palettes_1_fxh
+#define __AS_Palettes_1_fxh
+
+/**
  * AS_Palettes.1.fxh - Palette Definitions for AS StageFX Shader Collection
  * Author: Leon Aquitaine
  * License: Creative Commons Attribution 4.0 International
  */
-
-#ifndef __AS_PALETTES_INCLUDED
-#define __AS_PALETTES_INCLUDED
 
 // --- Palette Constants ---
 // Standard palette size
@@ -222,8 +232,6 @@ static const float3 AS_PALETTES[AS_PALETTE_COUNT * AS_PALETTE_COLORS] = {
     float3(0.11, 0.11, 0.11)  // Near Black
 };
 
-
-
 // Get palette color by index from the array
 float3 AS_getPaletteColor(int paletteIdx, int colorIdx) {
     // Clamp palette and color indices to valid ranges
@@ -297,4 +305,4 @@ uniform float3 prefix##CustomPaletteColor4 < ui_type = "color"; ui_label = "Cust
         frac(saturate(t)*(AS_PALETTE_COLORS-1)) \
     )
 
-#endif // __AS_PALETTES_INCLUDED
+#endif // __AS_Palettes_1_fxh

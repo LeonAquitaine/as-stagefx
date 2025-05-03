@@ -27,7 +27,11 @@
  * ===================================================================================
  */
 
-
+// ============================================================================
+// TECHNIQUE GUARD - Prevents duplicate loading of the same shader
+// ============================================================================
+#ifndef __AS_VFX_WarpDistort_1_fx
+#define __AS_VFX_WarpDistort_1_fx
 
 #include "AS_Utils.1.fxh"
 
@@ -111,3 +115,5 @@ technique AS_Warp < ui_label = "[AS] VFX: Warp Distort"; ui_tooltip = "Circular 
         PixelShader = PS_AudioMirror;
     }
 }
+
+#endif // __AS_VFX_WarpDistort_1_fx

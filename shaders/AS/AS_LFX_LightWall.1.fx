@@ -29,7 +29,11 @@
  * ===================================================================================
  */
 
-
+// ============================================================================
+// TECHNIQUE GUARD - Prevents duplicate loading of the same shader
+// ============================================================================
+#ifndef __AS_LFX_LightWall_1_fx
+#define __AS_LFX_LightWall_1_fx
 
 #include "AS_Utils.1.fxh"
 #include "AS_Palettes.1.fxh"
@@ -559,3 +563,5 @@ technique AS_LightWall < ui_label = "[AS] LFX: Light Wall"; ui_tooltip = "Soft g
         PixelShader = PS_StageGrid;
     }
 }
+
+#endif // __AS_LFX_LightWall_1_fx

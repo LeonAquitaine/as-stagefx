@@ -1,7 +1,7 @@
 /**
  * AS_CodeStandards.md - Coding Standards for AS StageFX Shaders
  * Author: Leon Aquitaine
- * Updated: May 1, 2025
+ * Updated: May 2, 2025
  */
 
 # AS StageFX Code Standards
@@ -9,6 +9,22 @@
 ## File Organization
 
 - **Naming**: Use `AS_TypeCode_EffectName.Version.fx` (e.g., `AS_LFX_LaserShow.1.fx`)
+- **Preprocessor Guards**: Always include technique guards at the top of each file:
+  ```hlsl
+  // ============================================================================
+  // TECHNIQUE GUARD - Prevents duplicate loading of the same shader
+  // ============================================================================
+  #ifndef __AS_LFX_ShaderName_1_fx
+  #define __AS_LFX_ShaderName_1_fx
+  
+  // ...shader code...
+  
+  #endif // __AS_LFX_ShaderName_1_fx
+  ```
+  - Guard names must start with `__` (double underscore)
+  - Follow with the exact filename, replacing invalid characters with `_`
+  - This prevents techniques from being loaded multiple times if duplicate files exist in different folders
+  
 - **Required Headers**:
   ```hlsl
   

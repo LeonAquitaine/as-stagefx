@@ -27,7 +27,11 @@
  * ===================================================================================
  */
 
-
+// ============================================================================
+// TECHNIQUE GUARD - Prevents duplicate loading of the same shader
+// ============================================================================
+#ifndef __AS_VFX_DigitalArtifacts_1_fx
+#define __AS_VFX_DigitalArtifacts_1_fx
 
 #include "AS_Utils.1.fxh"
 
@@ -355,3 +359,5 @@ technique AS_DigitalArtifacts < ui_label = "[AS] VFX: Digital Artifacts"; ui_too
         PixelShader = PS_DigitalArtifacts;
     }
 }
+
+#endif // __AS_VFX_DigitalArtifacts_1_fx

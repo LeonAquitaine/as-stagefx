@@ -27,7 +27,11 @@
  * ===================================================================================
  */
 
-
+// ============================================================================
+// TECHNIQUE GUARD - Prevents duplicate loading of the same shader
+// ============================================================================
+#ifndef __AS_VFX_SpectrumRing_1_fx
+#define __AS_VFX_SpectrumRing_1_fx
 
 #include "AS_Utils.1.fxh"
 #include "AS_Palettes.1.fxh"
@@ -232,3 +236,5 @@ technique AS_SpectrumRing < ui_label = "[AS] VFX: Spectrum Ring"; ui_tooltip = "
         PixelShader = PS_SpectrumRing;
     }
 }
+
+#endif // __AS_VFX_SpectrumRing_1_fx

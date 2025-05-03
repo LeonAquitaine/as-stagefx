@@ -27,6 +27,12 @@
  */
 
 // ============================================================================
+// TECHNIQUE GUARD - Prevents duplicate loading of the same shader
+// ============================================================================
+#ifndef __AS_LFX_LaserShow_1_fx
+#define __AS_LFX_LaserShow_1_fx
+
+// ============================================================================
 // INCLUDES
 // ============================================================================
 #include "AS_Utils.1.fxh"
@@ -389,3 +395,5 @@ technique AS_LaserShow < ui_label = "[AS] LFX: Laser Show"; ui_tooltip = "Audio-
         PixelShader = PS_LaserShow;
     }
 }
+
+#endif // __AS_LFX_LaserShow_1_fx

@@ -1,4 +1,17 @@
 /**
+ * AS_Utils.1.fxh - General utility and helper functions for AstrayFX shaders
+ * Author: Leon Aquitaine
+ * License: Creative Commons Attribution 4.0 International
+ * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
+ */
+
+// ============================================================================
+// TECHNIQUE GUARD - Prevents duplicate loading of the same shader
+// ============================================================================
+#ifndef __AS_Utils_1_fxh
+#define __AS_Utils_1_fxh
+
+/**
  * AS_Utils.1.fxh - Common Utility Functions for AS StageFX Shader Collection
  * Author: Leon Aquitaine
  * License: Creative Commons Attribution 4.0 International
@@ -494,3 +507,5 @@ uniform int name < ui_type = "combo"; ui_label = "Mode"; ui_items = "Normal\0Lig
 uniform float name < ui_type = "slider"; ui_label = "Strength"; ui_min = 0.0; ui_max = 1.0; ui_category = category; > = 1.0;
 
 #endif // __AS_BLEND_UI_INCLUDED
+
+#endif // __AS_Utils_1_fxh

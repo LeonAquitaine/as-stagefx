@@ -28,6 +28,9 @@
  * ===================================================================================
  */
 
+#ifndef __AS_LFX_StageSpotlights_1_fx
+#define __AS_LFX_StageSpotlights_1_fx
+
 #include "AS_Utils.1.fxh"
 
 // ============================================================================
@@ -364,3 +367,5 @@ technique AS_StageSpotlights < ui_label = "[AS] LFX: Stage Spotlights"; ui_toolt
         PixelShader = PS_Spotlights;
     }
 }
+
+#endif // __AS_LFX_StageSpotlights_1_fx

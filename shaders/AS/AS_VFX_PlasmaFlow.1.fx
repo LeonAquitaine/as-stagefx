@@ -25,7 +25,11 @@
  * ===================================================================================
  */
 
-
+// ============================================================================
+// TECHNIQUE GUARD - Prevents duplicate loading of the same shader
+// ============================================================================
+#ifndef __AS_VFX_PlasmaFlow_1_fx
+#define __AS_VFX_PlasmaFlow_1_fx
 
 #include "AS_Utils.1.fxh"
 #include "AS_Palettes.1.fxh"
@@ -227,3 +231,5 @@ technique AS_PlasmaFlow_1 < ui_label = "[AS] VFX: Plasma Flow"; ui_tooltip = "Au
         PixelShader = PS_PlasmaFlow;
     }
 }
+
+#endif // __AS_VFX_PlasmaFlow_1_fx

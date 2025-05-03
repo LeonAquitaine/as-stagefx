@@ -27,6 +27,12 @@
  * ===================================================================================
  */
 
+// ============================================================================
+// TECHNIQUE GUARD - Prevents duplicate loading of the same shader
+// ============================================================================
+#ifndef __AS_VFX_MultiLayerHalftone_1_fx
+#define __AS_VFX_MultiLayerHalftone_1_fx
+
 #include "ReShade.fxh"
 #include "AS_Utils.1.fxh"
 
@@ -476,3 +482,5 @@ technique AS_MultiLayerHalftone <
         PixelShader = PS_MultiLayerHalftone;
     }
 }
+
+#endif // __AS_VFX_MultiLayerHalftone_1_fx

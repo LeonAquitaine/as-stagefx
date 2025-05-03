@@ -26,7 +26,11 @@
  * ===================================================================================
  */
 
-
+// ============================================================================
+// TECHNIQUE GUARD - Prevents duplicate loading of the same shader
+// ============================================================================
+#ifndef __AS_VFX_VUMeter_1_fx
+#define __AS_VFX_VUMeter_1_fx
 
 #include "AS_Utils.1.fxh"
 #include "AS_Palettes.1.fxh"
@@ -282,3 +286,5 @@ technique AS_VUMeterBG < ui_label = "[AS] VFX: VU Meter"; ui_tooltip = "Audio-re
         PixelShader = PS_VUMeterBG;
     }
 }
+
+#endif // __AS_VFX_VUMeter_1_fx

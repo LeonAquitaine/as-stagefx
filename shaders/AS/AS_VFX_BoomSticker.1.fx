@@ -24,6 +24,12 @@
  * ===================================================================================
  */
 
+// ============================================================================
+// TECHNIQUE GUARD - Prevents duplicate loading of the same shader
+// ============================================================================
+#ifndef __AS_VFX_BoomSticker_1_fx
+#define __AS_VFX_BoomSticker_1_fx
+
 // Default texture if not defined by the user
 #ifndef BoomSticker1_FileName
     #define BoomSticker1_FileName "LayerStage.png"
@@ -207,3 +213,5 @@ technique AS_BoomSticker <
         PixelShader = PS_BoomSticker;
     }
 }
+
+#endif // __AS_VFX_BoomSticker_1_fx
