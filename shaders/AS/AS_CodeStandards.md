@@ -1,7 +1,7 @@
 /**
  * AS_CodeStandards.md - Coding Standards for AS StageFX Shaders
  * Author: Leon Aquitaine
- * Updated: May 2, 2025
+ * Updated: May 3, 2025
  */
 
 # AS StageFX Code Standards
@@ -72,15 +72,8 @@ Organize uniforms in this order:
 ### UI Standardization
 ```hlsl
 // Use consistent naming conventions across all shaders
-uniform float MyParameter <
-    ui_type = "slider";
-    ui_label = "Clear Label";
-    ui_tooltip = "Concise explanation";
-    ui_min = MYPARAM_MIN;
-    ui_max = MYPARAM_MAX;
-    ui_step = 0.01;
-    ui_category = "Standard Category";
-> = MYPARAM_DEFAULT;
+// IMPORTANT: All uniform declarations MUST be one-liners for better readability and consistent formatting
+uniform float MyParameter < ui_type = "slider"; ui_label = "Clear Label"; ui_tooltip = "Concise explanation"; ui_min = MYPARAM_MIN; ui_max = MYPARAM_MAX; ui_step = 0.01; ui_category = "Standard Category"; > = MYPARAM_DEFAULT;
 ```
 
 ### Pixel Shader Structure
@@ -389,4 +382,36 @@ When implementing shaders with repetitive elements or multiple instances (layers
    
    ```hlsl
    if (!params.enable) return currentColor;
+   ```
+
+## Resolution Independence
+
+All shaders MUST implement resolution-independent rendering to ensure consistent appearance across different screen resolutions and aspect ratios:
+
+1. **Mandatory Requirements**:
+   - Size and position parameters should be specified in normalized coordinates (0.0-1.0)
+   - All horizontal dimensions must be corrected for aspect ratio
+   - Effects should appear visually identical regardless of screen resolution
+
+2. **Standard Implementation**:
+   ```hlsl
+   // Correcting for aspect ratio in UV calculations
+   float2 aspect_corrected_size = float2(EffectWidth / ReShade::AspectRatio, EffectHeight);
+   
+   // For position-based effects (correct placement on any resolution)
+   float2 rel_uv = (texcoord - EffectPosition) / aspect_corrected_size;
+   ```
+
+3. **Position Controls**:
+   - Position controls should always appear at the top of the UI in their own "Position" category
+   - Primary positioning should use a drag control for intuitive visual placement
+   - When precision is needed, provide slider controls as well
+   
+   ```hlsl
+   // ============================================================================
+   // POSITION
+   // ============================================================================
+   uniform float2 EffectPosition < ui_type = "drag"; ui_label = "Effect Position"; 
+       ui_tooltip = "Screen position (0-1) for the effect."; 
+       ui_category = "Position"; > = float2(0.5, 0.5);
    ```
