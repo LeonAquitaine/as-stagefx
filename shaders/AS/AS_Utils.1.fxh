@@ -59,48 +59,32 @@ static const float AS_GOLDEN_RATIO = 1.61803398875;
 
 // --- Listeningway Integration ---
 // These macros help with consistent Listeningway integration across all shaders
-
-// Use a special naming convention that ReShade doesn't expose in the UI
 #ifndef __AS_LISTENINGWAY_INCLUDED
 #define __AS_LISTENINGWAY_INCLUDED
 
-// Define a macro to check for Listeningway availability
-#ifndef __LISTENINGWAY_AVAILABLE
-    #if __RESHADE__ >= 40800 // Version check for ReShade 4.8+
-        #define __LISTENINGWAY_AVAILABLE 1
-        
-        // Try to include Listeningway, but don't error if it's not found
-        
-        // Check if Listeningway is already defined/installed
-        #ifndef LISTENINGWAY_INSTALLED
-            // Try to include the file - this will define LISTENINGWAY_INSTALLED if present
-             // Make sure this is included first
-            
-            // Use try/catch equivalent with preprocessor
-            #ifndef LISTENINGWAY_INCLUDE_ATTEMPTED
-                #define LISTENINGWAY_INCLUDE_ATTEMPTED
-                #include "ListeningwayUniforms.fxh" 
-            #endif
-        #endif
-        
-        // If Listeningway wasn't found, provide fallback implementations
-        #ifndef LISTENINGWAY_INSTALLED
-            // Define fallback variables used by the rest of the code
-            static const float Listeningway_Volume = 0.0;
-            static const float Listeningway_Beat = 0.0;
-            static const float Listeningway_FreqBands[8] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-            static const float Listeningway_TotalPhases120Hz = 0.0;
-        #else
-            // #pragma message "Note: Listeningway found and enabled."
-        #endif
-    #else
-        #pragma message "Note: ReShade version too old for Listeningway, using fallback."
-        // Fallbacks for older ReShade versions
-        static const float Listeningway_Volume = 0.0;
-        static const float Listeningway_Beat = 0.0;
-        static const float Listeningway_FreqBands[8] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-        static const float Listeningway_TotalPhases120Hz = 0.0;
-    #endif
+// Define a complete fallback implementation for Listeningway
+#ifndef LISTENINGWAY_INSTALLED
+    // Since we're not including ListeningwayUniforms.fxh anymore,
+    // provide a complete compatible implementation directly here
+    #define LISTENINGWAY_NUM_BANDS 32
+    #define LISTENINGWAY_INSTALLED 1
+    
+    // Create fallback uniforms with the same interface as the real Listeningway
+    uniform float Listeningway_Volume < source = "listeningway_volume"; > = 0.0;
+    uniform float Listeningway_FreqBands[LISTENINGWAY_NUM_BANDS] < source = "listeningway_freqbands"; > = {
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
+    };
+    uniform float Listeningway_Beat < source = "listeningway_beat"; > = 0.0;
+    
+    // Time uniforms
+    uniform float Listeningway_TimeSeconds < source = "listeningway_timeseconds"; > = 0.0;
+    uniform float Listeningway_TimePhase60Hz < source = "listeningway_timephase60hz"; > = 0.0;
+    uniform float Listeningway_TimePhase120Hz < source = "listeningway_timephase120hz"; > = 0.0;
+    uniform float Listeningway_TotalPhases60Hz < source = "listeningway_totalphases60hz"; > = 0.0;
+    uniform float Listeningway_TotalPhases120Hz < source = "listeningway_totalphases120hz"; > = 0.0;
 #endif
 
 // --- Audio Constants ---
@@ -112,8 +96,11 @@ static const float AS_GOLDEN_RATIO = 1.61803398875;
 #define AS_AUDIO_TREBLE  5  // High frequency band
 #define AS_AUDIO_MID     6  // Mid frequency band
 
-// Default number of frequency bands (matches Listeningway's default)
-#define AS_DEFAULT_NUM_BANDS 32
+// Default number of frequency bands
+#ifndef LISTENINGWAY_NUM_BANDS
+    #define LISTENINGWAY_NUM_BANDS 32
+#endif
+#define AS_DEFAULT_NUM_BANDS LISTENINGWAY_NUM_BANDS
 
 // --- Standard UI Strings ---
 #define AS_AUDIO_SOURCE_ITEMS "Off\0Solid\0Volume\0Beat\0Bass\0Treble\0Mid\0"
@@ -139,7 +126,6 @@ uniform float name < \
 > = defaultValue;
 
 #endif // __AS_LISTENINGWAY_INCLUDED
-
 
 // --- Debug Mode Standardization ---
 #ifndef __AS_DEBUG_MODE_INCLUDED
