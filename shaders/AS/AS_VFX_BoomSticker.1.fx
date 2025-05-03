@@ -55,41 +55,10 @@ texture BoomSticker_Texture <source=BoomSticker1_FileName;> { Width = BoomSticke
 sampler BoomSticker_Sampler { Texture = BoomSticker_Texture; };
 
 // Appearance Controls
-uniform float BoomSticker_Opacity < 
-    ui_category = "Appearance";
-    ui_label = "Opacity";
-    ui_type = "slider";
-    ui_min = 0.0;
-    ui_max = 1.0;
-    ui_step = 0.002;
-> = 1.0;
-
-uniform float BoomSticker_Scale < 
-    ui_category = "Appearance";
-    ui_label = "Scale";
-    ui_type = "slider";
-    ui_min = 0.001;
-    ui_max = 5.0;
-    ui_step = 0.001;
-> = 0.5;
-
-uniform float2 BoomSticker_ScaleXY < 
-    ui_category = "Appearance";
-    ui_label = "Scale X/Y";
-    ui_type = "slider";
-    ui_min = 0.001;
-    ui_max = 5.0;
-    ui_step = 0.001;
-> = float2(1.0, 1.0);
-
-uniform float2 BoomSticker_PosXY < 
-    ui_category = "Appearance";
-    ui_label = "Position";
-    ui_type = "slider";
-    ui_min = -2.0;
-    ui_max = 2.0;
-    ui_step = 0.001;
-> = float2(0.5, 0.5);
+uniform float BoomSticker_Opacity < ui_category = "Appearance"; ui_label = "Opacity"; ui_type = "slider"; ui_min = 0.0; ui_max = 1.0; ui_step = 0.002; > = 1.0;
+uniform float BoomSticker_Scale < ui_category = "Appearance"; ui_label = "Scale"; ui_type = "slider"; ui_min = 0.001; ui_max = 5.0; ui_step = 0.001; > = 0.5;
+uniform float2 BoomSticker_ScaleXY < ui_category = "Appearance"; ui_label = "Scale X/Y"; ui_type = "slider"; ui_min = 0.001; ui_max = 5.0; ui_step = 0.001; > = float2(1.0, 1.0);
+uniform float2 BoomSticker_PosXY < ui_category = "Appearance"; ui_label = "Position"; ui_type = "slider"; ui_min = -2.0; ui_max = 2.0; ui_step = 0.001; > = float2(0.5, 0.5);
 
 // Use standard rotation controls from AS_Utils
 AS_ROTATION_UI(BoomSticker_SnapRotate, BoomSticker_Rotate, "Appearance")
@@ -102,24 +71,14 @@ AS_SWAYSPEED_UI(BoomSticker_SwaySpeed, "Animation")
 AS_SWAYANGLE_UI(BoomSticker_SwayAngle, "Animation")
 
 // Audio Reactivity Controls
-uniform int BoomSticker_AudioAffect < 
-    ui_type = "combo";
-    ui_label = "Audio Affects";
-    ui_items = "Opacity\0Scale\0";
-    ui_category = "Audio Reactivity";
-> = 1;
+uniform int BoomSticker_AudioAffect < ui_type = "combo"; ui_label = "Audio Affects"; ui_items = "Opacity\0Scale\0"; ui_category = "Audio Reactivity"; > = 1;
 
 // Use the standard AS_AUDIO_SOURCE_UI macro to select audio source
 AS_AUDIO_SOURCE_UI(BoomSticker_AudioSource, "Audio Source", AS_AUDIO_VOLUME, "Audio Reactivity")
 AS_AUDIO_MULTIPLIER_UI(BoomSticker_AudioIntensity, "Audio Intensity", 0.5, 2.0, "Audio Reactivity")
 
 // Debug Controls
-uniform int DebugMode < 
-    ui_type = "combo";
-    ui_label = "Debug View";
-    ui_items = "Off\0Beat\0Depth\0Audio Source\0";
-    ui_category = "Debug";
-> = 0;
+uniform int DebugMode < ui_type = "combo"; ui_label = "Debug View"; ui_items = "Off\0Beat\0Depth\0Audio Source\0"; ui_category = "Debug"; > = 0;
 
 //--------------------------------------------------------------------------
 // Main pixel shader implementation

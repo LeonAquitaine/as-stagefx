@@ -108,22 +108,11 @@ static const float AS_GOLDEN_RATIO = 1.61803398875;
 // --- UI Control Macros ---
 // Define standard audio source control (reuse this macro for each audio reactive parameter)
 #define AS_AUDIO_SOURCE_UI(name, label, defaultSource, category) \
-uniform int name < \
-    ui_type = "combo"; \
-    ui_label = label; \
-    ui_items = AS_AUDIO_SOURCE_ITEMS; \
-    ui_category = category; \
-> = defaultSource;
+uniform int name < ui_type = "combo"; ui_label = label; ui_items = AS_AUDIO_SOURCE_ITEMS; ui_category = category; > = defaultSource;
 
 // Define standard multiplier control for audio reactivity
 #define AS_AUDIO_MULTIPLIER_UI(name, label, defaultValue, maxValue, category) \
-uniform float name < \
-    ui_type = "slider"; \
-    ui_label = label; \
-    ui_tooltip = "Controls how much the selected audio source affects this parameter."; \
-    ui_min = 0.0; ui_max = maxValue; ui_step = 0.05; \
-    ui_category = category; \
-> = defaultValue;
+uniform float name < ui_type = "slider"; ui_label = label; ui_tooltip = "Controls how much the selected audio source affects this parameter."; ui_min = 0.0; ui_max = maxValue; ui_step = 0.05; ui_category = category; > = defaultValue;
 
 #endif // __AS_LISTENINGWAY_INCLUDED
 
@@ -133,13 +122,7 @@ uniform float name < \
 
 // --- Debug UI Macro ---
 #define AS_DEBUG_MODE_UI(items) \
-uniform int DebugMode < \
-    ui_type = "combo"; \
-    ui_label = "Debug View"; \
-    ui_tooltip = "Show various visualization modes for debugging."; \
-    ui_items = items; \
-    ui_category = "Debug"; \
-> = 0;
+uniform int DebugMode < ui_type = "combo"; ui_label = "Debug View"; ui_tooltip = "Show various visualization modes for debugging."; ui_items = items; ui_category = "Debug"; > = 0;
 
 // --- Debug Helper Functions ---
 bool AS_isDebugMode(int currentMode, int targetMode) {
@@ -157,23 +140,10 @@ bool AS_isDebugMode(int currentMode, int targetMode) {
 
 // --- Sway UI Macros ---
 #define AS_SWAYSPEED_UI(name, category) \
-uniform float name < \
-    ui_type = "slider"; \
-    ui_label = "Sway Speed"; \
-    ui_tooltip = "Controls the speed of the swaying animation"; \
-    ui_min = 0.0; ui_max = 5.0; ui_step = 0.01; \
-    ui_category = category; \
-> = 1.0;
+uniform float name < ui_type = "slider"; ui_label = "Sway Speed"; ui_tooltip = "Controls the speed of the swaying animation"; ui_min = 0.0; ui_max = 5.0; ui_step = 0.01; ui_category = category; > = 1.0;
 
 #define AS_SWAYANGLE_UI(name, category) \
-uniform float name < \
-    ui_type = "slider"; \
-    ui_label = "Sway Angle"; \
-    ui_tooltip = "Maximum angle of the swaying in degrees"; \
-    ui_min = 0.0; ui_max = 180.0; \
-    ui_step = 1.0; \
-    ui_category = category; \
-> = 15.0;
+uniform float name < ui_type = "slider"; ui_label = "Sway Angle"; ui_tooltip = "Maximum angle of the swaying in degrees"; ui_min = 0.0; ui_max = 180.0; ui_step = 1.0; ui_category = category; > = 15.0;
 
 #endif // __AS_SWAY_UI_INCLUDED
 
@@ -337,26 +307,8 @@ float AS_applyAudioReactivityEx(float baseValue, int audioSource, float multipli
 // --- Rotation UI Macro ---
 // Creates a standardized pair of rotation controls (snap + fine) that appear on the same line
 #define AS_ROTATION_UI(snapName, fineName, category) \
-uniform int snapName < \
-    ui_category = category; \
-    ui_label = "Snap Rotation"; \
-    ui_type = "slider"; \
-    ui_min = -4; \
-    ui_max = 4; \
-    ui_step = 1; \
-    ui_tooltip = "Snap rotation in 45° steps (-180° to +180°)"; \
-    ui_spacing = 0; \
-> = 0; \
-uniform float fineName < \
-    ui_category = category; \
-    ui_label = "Fine Rotation"; \
-    ui_type = "slider"; \
-    ui_min = -45.0; \
-    ui_max = 45.0; \
-    ui_step = 0.1; \
-    ui_tooltip = "Fine rotation adjustment in degrees"; \
-    ui_same_line = true; \
-> = 0.0;
+uniform int snapName < ui_category = category; ui_label = "Snap Rotation"; ui_type = "slider"; ui_min = -4; ui_max = 4; ui_step = 1; ui_tooltip = "Snap rotation in 45° steps (-180° to +180°)"; ui_spacing = 0; > = 0; \
+uniform float fineName < ui_category = category; ui_label = "Fine Rotation"; ui_type = "slider"; ui_min = -45.0; ui_max = 45.0; ui_step = 0.1; ui_tooltip = "Fine rotation adjustment in degrees"; ui_same_line = true; > = 0.0;
 
 // --- Rotation Helper Function ---
 // Combines snap and fine rotation values and converts to radians
@@ -520,17 +472,8 @@ float AS_starMask(float2 p, float size, float points, float angle) {
 #ifndef __AS_STAGEDEPTH_UI_INCLUDED
 #define __AS_STAGEDEPTH_UI_INCLUDED
 
-// --- Stage Depth UI Macro ---
 #define AS_STAGEDEPTH_UI(name, label, category) \
-uniform float name < \
-    ui_type = "slider"; \
-    ui_label = label; \
-    ui_tooltip = "Controls how far back the stage effect appears."; \
-    ui_min = 0.0; \
-    ui_max = 1.0; \
-    ui_step = 0.01; \
-    ui_category = category; \
-> = 0.05;
+uniform float name < ui_type = "slider"; ui_label = label; ui_tooltip = "Controls how far back the stage effect appears."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = category; > = 0.05;
 
 #endif // __AS_STAGEDEPTH_UI_INCLUDED
 
@@ -540,12 +483,7 @@ uniform float name < \
 
 // --- Blend Mode UI Macro with default value ---
 #define AS_BLENDMODE_UI_DEFAULT(name, category, defaultMode) \
-uniform int name < \
-    ui_type = "combo"; \
-    ui_label = "Mode"; \
-    ui_items = "Normal\0Lighter Only\0Darker Only\0Additive\0Multiply\0Screen\0"; \
-    ui_category = category; \
-> = defaultMode;
+uniform int name < ui_type = "combo"; ui_label = "Mode"; ui_items = "Normal\0Lighter Only\0Darker Only\0Additive\0Multiply\0Screen\0"; ui_category = category; > = defaultMode;
 
 // --- Blend Mode UI Macro (defaults to Normal) ---
 #define AS_BLENDMODE_UI(name, category) \
@@ -553,12 +491,6 @@ uniform int name < \
 
 // --- Blend Amount UI Macro ---
 #define AS_BLENDAMOUNT_UI(name, category) \
-uniform float name < \
-    ui_type = "slider"; \
-    ui_label = "Strength"; \
-    ui_min = 0.0; \
-    ui_max = 1.0; \
-    ui_category = category; \
-> = 1.0;
+uniform float name < ui_type = "slider"; ui_label = "Strength"; ui_min = 0.0; ui_max = 1.0; ui_category = category; > = 1.0;
 
 #endif // __AS_BLEND_UI_INCLUDED

@@ -130,21 +130,13 @@ static const float COLOR_CYCLE_SPEED_DEFAULT = 0.0;
 AS_PALETTE_SELECTION_UI(PalettePreset, "Palette", AS_PALETTE_NEON, "Palette & Style")
 AS_DECLARE_CUSTOM_PALETTE(LaserShow_, "Palette & Style")
 
-uniform float ColorCycleSpeed < 
-    ui_type = "slider"; 
-    ui_label = "Color Cycle Speed";
-    ui_tooltip = "Controls how fast the beam colors cycle. 0 = static, negative = counter-clockwise, positive = clockwise";
-    ui_min = COLOR_CYCLE_SPEED_MIN;
-    ui_max = COLOR_CYCLE_SPEED_MAX;
-    ui_step = 0.1;
-    ui_category = "Palette & Style";
-> = COLOR_CYCLE_SPEED_DEFAULT;
+uniform float ColorCycleSpeed < ui_type = "slider"; ui_label = "Color Cycle Speed"; ui_tooltip = "Controls how fast the beam colors cycle. 0 = static, negative = counter-clockwise, positive = clockwise"; ui_min = COLOR_CYCLE_SPEED_MIN; ui_max = COLOR_CYCLE_SPEED_MAX; ui_step = 0.1; ui_category = "Palette & Style"; > = COLOR_CYCLE_SPEED_DEFAULT;
 
 // ============================================================================
 // EFFECT-SPECIFIC APPEARANCE
 // ============================================================================
 uniform float2 LaserOrigin < ui_type = "slider"; ui_label = "Laser Origin (X,Y)"; ui_min = -0.2; ui_max = 1.2; ui_category = "Laser Appearance"; ui_tooltip = "Position of the laser source. Values outside 0-1 range place the origin off-screen."; > = float2(0.5, 0.5);
-uniform float Angle < ui_type = "slider"; ui_label = "Base Angle (deg)"; ui_min = -180.0; ui_max = 180.0; ui_step = 0.1; ui_category = "Laser Appearance"; > = 0.0;
+uniform float Angle < ui_type = "slider"; ui_label = "Base Angle (deg)"; ui_min = LASER_ANGLE_MIN; ui_max = LASER_ANGLE_MAX; ui_step = 0.1; ui_category = "Laser Appearance"; > = LASER_ANGLE_DEFAULT;
 uniform float LaserWidth < ui_type = "slider"; ui_label = "Laser Width"; ui_min = LASER_WIDTH_MIN; ui_max = LASER_WIDTH_MAX; ui_step = 0.001; ui_category = "Laser Appearance"; > = LASER_WIDTH_DEFAULT;
 uniform float LaserIntensity < ui_type = "slider"; ui_label = "Laser Intensity"; ui_min = LASER_INTENSITY_MIN; ui_max = LASER_INTENSITY_MAX; ui_step = 0.01; ui_category = "Laser Appearance"; > = LASER_INTENSITY_DEFAULT;
 uniform float LaserCore < ui_type = "slider"; ui_label = "Laser Core Intensity"; ui_tooltip = "Controls how much the center of the laser beam maintains its intensity over distance"; ui_min = LASER_CORE_MIN; ui_max = LASER_CORE_MAX; ui_step = 0.01; ui_category = "Laser Appearance"; > = LASER_CORE_DEFAULT;

@@ -76,90 +76,17 @@ static const float BOKEH_STRENGTH_DEFAULT = 0.7;
 #define SPOTLIGHT_UI(index, defaultEnable, defaultColor, defaultPosition, \
                     defaultRadius, defaultIntensity, defaultAngle, defaultDirection, \
                     defaultSwaySpeed, defaultSwayAngle, defaultAudioSource, defaultAudioMult) \
-uniform bool Spot##index##_Enable < \
-    ui_label = "Enable Spotlight " #index; \
-    ui_tooltip = "Toggle this spotlight on or off."; \
-    ui_category = "Light Beam " #index; \
-    ui_category_closed = index > 2; \
-> = defaultEnable; \
-\
-uniform float3 Spot##index##_Color < \
-    ui_type = "color"; \
-    ui_label = "Color"; \
-    ui_category = "Light Beam " #index; \
-> = defaultColor; \
-\
-uniform float2 Spot##index##_Position < \
-    ui_type = "drag"; \
-    ui_label = "Position"; \
-    ui_min = -0.2; \
-    ui_max = 1.2; \
-    ui_category = "Light Beam " #index; \
-> = defaultPosition; \
-\
-uniform float Spot##index##_Radius < \
-    ui_type = "slider"; \
-    ui_label = "Size"; \
-    ui_min = SPOT_RADIUS_MIN; \
-    ui_max = SPOT_RADIUS_MAX; \
-    ui_category = "Light Beam " #index; \
-> = defaultRadius; \
-\
-uniform float Spot##index##_Intensity < \
-    ui_type = "slider"; \
-    ui_label = "Intensity"; \
-    ui_min = SPOT_INTENSITY_MIN; \
-    ui_max = SPOT_INTENSITY_MAX; \
-    ui_category = "Light Beam " #index; \
-> = defaultIntensity; \
-\
-uniform float Spot##index##_Angle < \
-    ui_type = "slider"; \
-    ui_label = "Opening"; \
-    ui_min = SPOT_ANGLE_MIN; \
-    ui_max = SPOT_ANGLE_MAX; \
-    ui_category = "Light Beam " #index; \
-> = defaultAngle; \
-\
-uniform float Spot##index##_Direction < \
-    ui_type = "slider"; \
-    ui_label = "Direction"; \
-    ui_min = SPOT_DIRECTION_MIN; \
-    ui_max = SPOT_DIRECTION_MAX; \
-    ui_category = "Light Beam " #index; \
-> = defaultDirection; \
-\
-uniform float Spot##index##_SwaySpeed < \
-    ui_type = "slider"; \
-    ui_label = "Speed"; \
-    ui_min = SPOT_SWAYSPEED_MIN; \
-    ui_max = SPOT_SWAYSPEED_MAX; \
-    ui_category = "Light Beam " #index; \
-> = defaultSwaySpeed; \
-\
-uniform float Spot##index##_SwayAngle < \
-    ui_type = "slider"; \
-    ui_label = "Sway"; \
-    ui_min = SPOT_SWAYANGLE_MIN; \
-    ui_max = SPOT_SWAYANGLE_MAX; \
-    ui_category = "Light Beam " #index; \
-> = defaultSwayAngle; \
-\
-uniform int Spot##index##_AudioSource < \
-    ui_type = "combo"; \
-    ui_label = "Source"; \
-    ui_items = "Volume\0Beat\0Bass\0Mid\0Treble\0"; \
-    ui_category = "Light Beam " #index; \
-> = defaultAudioSource; \
-\
-uniform float Spot##index##_AudioMult < \
-    ui_type = "slider"; \
-    ui_label = "Source Intensity"; \
-    ui_tooltip = "Multiplier for the spotlight intensity"; \
-    ui_min = SPOT_AUDIOMULT_MIN; \
-    ui_max = SPOT_AUDIOMULT_MAX; \
-    ui_category = "Light Beam " #index; \
-> = defaultAudioMult;
+uniform bool Spot##index##_Enable < ui_label = "Enable Spotlight " #index; ui_tooltip = "Toggle this spotlight on or off."; ui_category = "Light Beam " #index; ui_category_closed = index > 2; > = defaultEnable; \
+uniform float3 Spot##index##_Color < ui_type = "color"; ui_label = "Color"; ui_category = "Light Beam " #index; > = defaultColor; \
+uniform float2 Spot##index##_Position < ui_type = "drag"; ui_label = "Position"; ui_min = -0.2; ui_max = 1.2; ui_category = "Light Beam " #index; > = defaultPosition; \
+uniform float Spot##index##_Radius < ui_type = "slider"; ui_label = "Size"; ui_min = SPOT_RADIUS_MIN; ui_max = SPOT_RADIUS_MAX; ui_category = "Light Beam " #index; > = defaultRadius; \
+uniform float Spot##index##_Intensity < ui_type = "slider"; ui_label = "Intensity"; ui_min = SPOT_INTENSITY_MIN; ui_max = SPOT_INTENSITY_MAX; ui_category = "Light Beam " #index; > = defaultIntensity; \
+uniform float Spot##index##_Angle < ui_type = "slider"; ui_label = "Opening"; ui_min = SPOT_ANGLE_MIN; ui_max = SPOT_ANGLE_MAX; ui_category = "Light Beam " #index; > = defaultAngle; \
+uniform float Spot##index##_Direction < ui_type = "slider"; ui_label = "Direction"; ui_min = SPOT_DIRECTION_MIN; ui_max = SPOT_DIRECTION_MAX; ui_category = "Light Beam " #index; > = defaultDirection; \
+uniform float Spot##index##_SwaySpeed < ui_type = "slider"; ui_label = "Speed"; ui_min = SPOT_SWAYSPEED_MIN; ui_max = SPOT_SWAYSPEED_MAX; ui_category = "Light Beam " #index; > = defaultSwaySpeed; \
+uniform float Spot##index##_SwayAngle < ui_type = "slider"; ui_label = "Sway"; ui_min = SPOT_SWAYANGLE_MIN; ui_max = SPOT_SWAYANGLE_MAX; ui_category = "Light Beam " #index; > = defaultSwayAngle; \
+uniform int Spot##index##_AudioSource < ui_type = "combo"; ui_label = "Source"; ui_items = "Volume\0Beat\0Bass\0Mid\0Treble\0"; ui_category = "Light Beam " #index; > = defaultAudioSource; \
+uniform float Spot##index##_AudioMult < ui_type = "slider"; ui_label = "Source Intensity"; ui_tooltip = "Multiplier for the spotlight intensity"; ui_min = SPOT_AUDIOMULT_MIN; ui_max = SPOT_AUDIOMULT_MAX; ui_category = "Light Beam " #index; > = defaultAudioMult;
 
 // ============================================================================
 // SPOTLIGHT CONTROLS (Using the macro)

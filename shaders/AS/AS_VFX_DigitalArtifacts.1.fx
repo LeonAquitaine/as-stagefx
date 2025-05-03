@@ -56,23 +56,23 @@ namespace AS_DigitalArtifacts {
     AS_AUDIO_MULTIPLIER_UI(ParameterMult, "Parameter Impact", 1.0, 3.0, "Audio Reactivity")
 
     // --- Audio Reactivity: Hologram Specific ---
-    AS_AUDIO_SOURCE_UI(ScanlineSource, "Scanline Source", AS_AUDIO_BEAT, "Audio Reactivity") // Category updated
-    AS_AUDIO_MULTIPLIER_UI(ScanlineIntensity, "Scanline Intensity", 0.35, 1.0, "Audio Reactivity") // Category updated
+    AS_AUDIO_SOURCE_UI(ScanlineSource, "Scanline Source", AS_AUDIO_BEAT, "Audio Reactivity") 
+    AS_AUDIO_MULTIPLIER_UI(ScanlineIntensity, "Scanline Intensity", 0.35, 1.0, "Audio Reactivity") 
 
-    AS_AUDIO_SOURCE_UI(RGBSplitSource, "RGB Split Source", AS_AUDIO_BEAT, "Audio Reactivity") // Category updated
-    AS_AUDIO_MULTIPLIER_UI(RGBSplitMult, "RGB Split Intensity", 1.0, 3.0, "Audio Reactivity") // Category updated
+    AS_AUDIO_SOURCE_UI(RGBSplitSource, "RGB Split Source", AS_AUDIO_BEAT, "Audio Reactivity") 
+    AS_AUDIO_MULTIPLIER_UI(RGBSplitMult, "RGB Split Intensity", 1.0, 3.0, "Audio Reactivity") 
 
     // Define these variables before they're used in the hologramEffect function
-    uniform float ScanlineFrequency < ui_type = "slider"; ui_label = "Scanline Frequency"; ui_tooltip = "Controls the frequency of scanlines in hologram effect."; ui_min = 10.0; ui_max = 100.0; ui_step = 1.0; ui_category = "Audio Reactivity"; > = 50.0; // Category updated
-    uniform float RGBSplitAmount < ui_type = "slider"; ui_label = "RGB Split Amount"; ui_tooltip = "Controls the amount of RGB channel separation."; ui_min = 0.0; ui_max = 0.05; ui_step = 0.001; ui_category = "Audio Reactivity"; > = 0.01; // Category updated
+    uniform float ScanlineFrequency < ui_type = "slider"; ui_label = "Scanline Frequency"; ui_tooltip = "Controls the frequency of scanlines in hologram effect."; ui_min = 10.0; ui_max = 100.0; ui_step = 1.0; ui_category = "Audio Reactivity"; > = 50.0; 
+    uniform float RGBSplitAmount < ui_type = "slider"; ui_label = "RGB Split Amount"; ui_tooltip = "Controls the amount of RGB channel separation."; ui_min = 0.0; ui_max = 0.05; ui_step = 0.001; ui_category = "Audio Reactivity"; > = 0.01; 
 
     // --- Audio Reactivity: Block Density ---
-    AS_AUDIO_SOURCE_UI(BlockDensitySource, "Block Density Source", AS_AUDIO_MID, "Audio Reactivity") // Category updated
-    AS_AUDIO_MULTIPLIER_UI(BlockDensityMult, "Block Density Impact", 1.0, 3.0, "Audio Reactivity") // Category updated
+    AS_AUDIO_SOURCE_UI(BlockDensitySource, "Block Density Source", AS_AUDIO_MID, "Audio Reactivity") 
+    AS_AUDIO_MULTIPLIER_UI(BlockDensityMult, "Block Density Impact", 1.0, 3.0, "Audio Reactivity") 
 
     // --- Effect-Specific Appearance ---
-    uniform float3 EffectColor < ui_type = "color"; ui_label = "Effect Color"; ui_category = "Effect-Specific Appearance"; > = float3(1.0, 0.2, 0.2); // Category updated
-    uniform float ColorInfluence < ui_type = "slider"; ui_label = "Color Influence"; ui_tooltip = "How much the tint color affects the effect appearance."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Effect-Specific Appearance"; > = 0.3; // Category updated
+    uniform float3 EffectColor < ui_type = "color"; ui_label = "Effect Color"; ui_category = "Effect-Specific Appearance"; > = float3(1.0, 0.2, 0.2); 
+    uniform float ColorInfluence < ui_type = "slider"; ui_label = "Color Influence"; ui_tooltip = "How much the tint color affects the effect appearance."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Effect-Specific Appearance"; > = 0.3; 
 
     // --- Final Mix ---
     uniform int BlendMode < ui_type = "combo"; ui_label = "Blend Mode"; ui_items = "Normal\0Lighter Only\0Darker Only\0Additive\0Multiply\0Screen\0"; ui_category = "Final Mix"; > = 0;
