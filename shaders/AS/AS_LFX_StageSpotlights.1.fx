@@ -38,25 +38,25 @@
 static const int SPOTLIGHT_COUNT = 4;
 static const float SPOT_RADIUS_MIN = 0.05;
 static const float SPOT_RADIUS_MAX = 1.5;
-static const float SPOT_RADIUS_DEFAULT = 0.18;
+static const float SPOT_RADIUS_DEFAULT = 0.5;
 static const float SPOT_INTENSITY_MIN = 0.0;
 static const float SPOT_INTENSITY_MAX = 2.0;
-static const float SPOT_INTENSITY_DEFAULT = 1.0;
+static const float SPOT_INTENSITY_DEFAULT = 0.5;
 static const float SPOT_ANGLE_MIN = 10.0;
 static const float SPOT_ANGLE_MAX = 160.0;
-static const float SPOT_ANGLE_DEFAULT = 90.0;
+static const float SPOT_ANGLE_DEFAULT = 35.0;
 static const float SPOT_DIRECTION_MIN = -190.0;
 static const float SPOT_DIRECTION_MAX = 180.0;
 static const float SPOT_DIRECTION_DEFAULT = 0.0;
 static const float SPOT_AUDIOMULT_MIN = 0.5;
 static const float SPOT_AUDIOMULT_MAX = 5.0;
-static const float SPOT_AUDIOMULT_DEFAULT = 0.15;
+static const float SPOT_AUDIOMULT_DEFAULT = 1.00;
 static const float SPOT_SWAYSPEED_MIN = 0.0;
 static const float SPOT_SWAYSPEED_MAX = 5.0;
-static const float SPOT_SWAYSPEED_DEFAULT = 0.0;
+static const float SPOT_SWAYSPEED_DEFAULT = 0.5;
 static const float SPOT_SWAYANGLE_MIN = 0.0;
 static const float SPOT_SWAYANGLE_MAX = 180.0;
-static const float SPOT_SWAYANGLE_DEFAULT = 0.0;
+static const float SPOT_SWAYANGLE_DEFAULT = 15.0;
 
 static const float BOKEH_DENSITY_MIN = 0.0;
 static const float BOKEH_DENSITY_MAX = 1.0;
@@ -166,8 +166,8 @@ uniform float Spot##index##_AudioMult < \
 // ============================================================================
 
 // Spotlight A controls
-SPOTLIGHT_UI(1, true, float3(0.3, 0.6, 1.0), float2(0.3, 0.35), 
-            SPOT_RADIUS_DEFAULT, SPOT_INTENSITY_DEFAULT, SPOT_ANGLE_DEFAULT, SPOT_DIRECTION_DEFAULT,
+SPOTLIGHT_UI(1, true, float3(0.3, 0.6, 1.0), float2(0.2, 0.17), 
+            SPOT_RADIUS_DEFAULT, SPOT_INTENSITY_DEFAULT, SPOT_ANGLE_DEFAULT, 30.0,
             SPOT_SWAYSPEED_DEFAULT, SPOT_SWAYANGLE_DEFAULT, 1, SPOT_AUDIOMULT_DEFAULT)
 
 // Spotlight B controls

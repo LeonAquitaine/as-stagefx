@@ -260,7 +260,7 @@ namespace AS_DigitalArtifacts {
 }
 
 // --- Stage Distance ---
-uniform float EffectDepth < ui_type = "slider"; ui_label = "Effect Depth"; ui_tooltip = "Adjusts where effects appear in relation to scene depth. Lower values = closer to camera."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Stage Distance"; > = 0.2;
+uniform float EffectDepth < ui_type = "slider"; ui_label = "Effect Depth"; ui_tooltip = "Adjusts where effects appear in relation to scene depth. Lower values = closer to camera."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Stage Distance"; > = 0.05;
 uniform float DepthFalloff < ui_type = "slider"; ui_label = "Depth Falloff"; ui_tooltip = "Controls how quickly the effect fades with distance."; ui_min = 0.5; ui_max = 5.0; ui_step = 0.1; ui_category = "Stage Distance"; > = 2.0;
 
 // --- Main Effect ---

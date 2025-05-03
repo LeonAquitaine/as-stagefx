@@ -71,7 +71,7 @@ uniform float BoomSticker_Scale <
     ui_min = 0.001;
     ui_max = 5.0;
     ui_step = 0.001;
-> = 1.0;
+> = 0.5;
 
 uniform float2 BoomSticker_ScaleXY < 
     ui_category = "Appearance";
@@ -107,10 +107,10 @@ uniform int BoomSticker_AudioAffect <
     ui_label = "Audio Affects";
     ui_items = "Opacity\0Scale\0";
     ui_category = "Audio Reactivity";
-> = 0;
+> = 1;
 
 // Use the standard AS_AUDIO_SOURCE_UI macro to select audio source
-AS_AUDIO_SOURCE_UI(BoomSticker_AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
+AS_AUDIO_SOURCE_UI(BoomSticker_AudioSource, "Audio Source", AS_AUDIO_VOLUME, "Audio Reactivity")
 AS_AUDIO_MULTIPLIER_UI(BoomSticker_AudioIntensity, "Audio Intensity", 0.5, 2.0, "Audio Reactivity")
 
 // Debug Controls

@@ -35,7 +35,7 @@
 // --- Tunable Constants ---
 static const int REPETITIONS_MIN = 1;
 static const int REPETITIONS_MAX = 8;
-static const int REPETITIONS_DEFAULT = 3;
+static const int REPETITIONS_DEFAULT = 5;
 static const float RADIUS_MIN = 0.1;
 static const float RADIUS_MAX = 0.5;
 static const float RADIUS_DEFAULT = 0.25;
@@ -64,11 +64,11 @@ uniform bool InvertColors < ui_label = "Invert Colors"; ui_tooltip = "Invert the
 
 // --- Effect-Specific Appearance ---
 uniform int Repetitions < ui_type = "slider"; ui_label = "Repetitions"; ui_tooltip = "Number of spectrum repetitions (actual repetitions = 2^value)."; ui_min = REPETITIONS_MIN; ui_max = REPETITIONS_MAX; ui_step = 1; ui_category = "Effect-Specific Appearance"; > = REPETITIONS_DEFAULT;
-uniform int PatternStyle < ui_type = "combo"; ui_label = "Pattern Style"; ui_items = "Linear\0Mirrored\0"; ui_category = "Effect-Specific Appearance"; > = 0;
+uniform int PatternStyle < ui_type = "combo"; ui_label = "Pattern Style"; ui_items = "Linear\0Mirrored\0"; ui_category = "Effect-Specific Appearance"; > = 1;
 uniform float Radius < ui_type = "slider"; ui_label = "Radius"; ui_tooltip = "Base radius of the spectrum ring."; ui_min = RADIUS_MIN; ui_max = RADIUS_MAX; ui_step = 0.01; ui_category = "Effect-Specific Appearance"; > = RADIUS_DEFAULT;
 uniform float Thickness < ui_type = "slider"; ui_label = "Thickness"; ui_tooltip = "Thickness of the spectrum ring pattern."; ui_min = THICKNESS_MIN; ui_max = THICKNESS_MAX; ui_step = 0.005; ui_category = "Effect-Specific Appearance"; > = THICKNESS_DEFAULT;
 uniform float Fade < ui_type = "slider"; ui_label = "Fade"; ui_tooltip = "Edge fade for the spectrum ring pattern."; ui_min = FADE_MIN; ui_max = FADE_MAX; ui_step = 0.01; ui_category = "Effect-Specific Appearance"; > = FADE_DEFAULT;
-uniform int Shape < ui_type = "combo"; ui_label = "Shape"; ui_items = "Screen-Relative\0Circular\0"; ui_category = "Effect-Specific Appearance"; > = 0;
+uniform int Shape < ui_type = "combo"; ui_label = "Shape"; ui_items = "Screen-Relative\0Circular\0"; ui_category = "Effect-Specific Appearance"; > = 1;
 
 // --- Audio Reactivity ---
 AS_AUDIO_SOURCE_UI(AlphaSource, "Transparency Source", AS_AUDIO_BEAT, "Audio Reactivity")
