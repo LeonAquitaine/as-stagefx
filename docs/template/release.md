@@ -30,6 +30,7 @@ This package includes the following shaders:
 - **AS_LFX_LightWall** - Generates configurable grids of light panels with diverse patterns
 - **AS_LFX_StageSpotlights** - Adds up to 3 customizable directional stage lights
 - **AS_LFX_LaserShow** - Creates multiple colored laser beams with animated smoke effects
+- **AS_LFX_CandleFlame** - Creates procedural candle flames with support for multiple instances
 
 **Visual Effects (VFX):**
 - **AS_VFX_BoomSticker** - Displays a texture overlay with audio-reactive positioning

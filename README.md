@@ -14,11 +14,12 @@
 
 Most shaders feature seamless integration with **[Listeningway](https://github.com/gposingway/Listeningway)** for audio reactivity.
 
-### Latest Updates (April 30, 2025)
+### Latest Updates (May 3, 2025)
+- Implemented Multi-Instance Effects Pattern, allowing some shaders to support multiple independent effect instances
+- Added AS_LFX_CandleFlame shader with support for up to 4 independent, customizable flame instances
+- Fixed Listeningway integration guard syntax in AS_Utils.1.fxh
 - Added standardized rotation controls to VUMeter and BoomSticker shaders
 - Fixed aspect ratio handling in VUMeter shader for proper display on all screen ratios
-- Fixed BloomQuality parameter in SparkleBloom shader
-- Code optimization and cleanup across multiple shaders
 
 ---
 
@@ -67,6 +68,13 @@ AS-StageFX includes a variety of distinct visual effects:
       Renders multiple colored laser beams emanating from a user-defined origin, illuminating a swirling, animated smoke field. Features audio-reactive fanning, blinking, and vortex effects.<br><em>Technique: [AS] Laser Show</em></td>
     <td width="50%"><div style="text-align:center">
       <img src="https://github.com/user-attachments/assets/555b32cd-be6f-47c2-92a6-39994e861637" alt="Laser Show Effect" style="max-width:100%;">
+    </div></td>
+  </tr>
+  <tr>
+    <td width="50%"><strong>LFX: Candle Flame</strong> (<code>AS_LFX_CandleFlame.1.fx</code>)<br>
+      Creates procedural candle flames with realistic animation, color gradients, and audio reactivity. Supports multiple flame instances with individual controls for position, size, and appearance.<br><em>Technique: [AS] LFX: Candle Flame</em></td>
+    <td width="50%"><div style="text-align:center">
+      <img src="https://placeholder-for-candle-flame-image" alt="Candle Flame Effect" style="max-width:100%;">
     </div></td>
   </tr>
   
