@@ -76,11 +76,11 @@ static const float AS_GOLDEN_RATIO = 1.61803398875;
 #define __AS_LISTENINGWAY_INCLUDED
 
 // Define a complete fallback implementation for Listeningway
-#ifndef LISTENINGWAY_INSTALLED
+#ifndef __LISTENINGWAY_INSTALLED
     // Since we're not including ListeningwayUniforms.fxh anymore,
     // provide a complete compatible implementation directly here
     #define LISTENINGWAY_NUM_BANDS 32
-    #define LISTENINGWAY_INSTALLED 1
+    #define __LISTENINGWAY_INSTALLED 1
     
     // Create fallback uniforms with the same interface as the real Listeningway
     uniform float Listeningway_Volume < source = "listeningway_volume"; > = 0.0;

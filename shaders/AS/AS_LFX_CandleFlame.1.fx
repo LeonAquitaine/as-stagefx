@@ -41,6 +41,9 @@
 // ============================================================================
 // TUNABLE CONSTANTS (Defaults and Ranges)
 // ============================================================================
+// --- Global Constants ---
+static const int FLAME_COUNT = 4;  // Number of flame instances supported
+
 static const float FLAME_HEIGHT_MIN = 0.01;
 static const float FLAME_HEIGHT_MAX = 0.5;
 static const float FLAME_HEIGHT_DEFAULT = 0.2;
@@ -82,10 +85,39 @@ static const float FLAME_ZOOM_MAX = 5.0;
 static const float FLAME_ZOOM_DEFAULT = 1.0;
 
 // ============================================================================
-// POSITION & SCALE
+// FLAME UI MACRO
 // ============================================================================
-uniform float2 FlameScreenPos < ui_type = "drag"; ui_label = "Flame Position"; ui_tooltip = "Screen position (0-1) for the base of the flame. Drag to position."; ui_category = "Position & Scale"; > = float2(0.5, 0.5); // Center of the screen
-uniform float FlameZoom < ui_type = "slider"; ui_min = FLAME_ZOOM_MIN; ui_max = FLAME_ZOOM_MAX; ui_step = 0.05; ui_label = "Zoom"; ui_tooltip = "Overall zoom factor for the flame effect."; ui_category = "Position & Scale"; > = FLAME_ZOOM_DEFAULT;
+
+// Define a macro for the UI controls of each flame to avoid repetition
+#define FLAME_UI(index, defaultEnable, defaultPosition, defaultZoom, \
+                defaultHeight, defaultWidth, defaultCurve, defaultPower) \
+uniform bool Flame##index##_Enable < ui_label = "Enable Flame " #index; ui_tooltip = "Toggle this flame on or off."; ui_category = "Flame " #index; ui_category_closed = index > 1; > = defaultEnable; \
+uniform float2 Flame##index##_Position < ui_type = "drag"; ui_label = "Position"; ui_tooltip = "Screen position (0-1) for the base of the flame."; ui_category = "Flame " #index; > = defaultPosition; \
+uniform float Flame##index##_Zoom < ui_type = "slider"; ui_min = FLAME_ZOOM_MIN; ui_max = FLAME_ZOOM_MAX; ui_step = 0.05; ui_label = "Zoom"; ui_tooltip = "Overall zoom factor for the flame."; ui_category = "Flame " #index; > = defaultZoom; \
+uniform float Flame##index##_Height < ui_type = "slider"; ui_min = FLAME_HEIGHT_MIN; ui_max = FLAME_HEIGHT_MAX; ui_label = "Height"; ui_tooltip = "Overall height scale of the flame."; ui_category = "Flame " #index; > = defaultHeight; \
+uniform float Flame##index##_Width < ui_type = "slider"; ui_min = FLAME_WIDTH_MIN; ui_max = FLAME_WIDTH_MAX; ui_label = "Width"; ui_tooltip = "Overall width scale of the flame."; ui_category = "Flame " #index; > = defaultWidth; \
+uniform float Flame##index##_Curve < ui_type = "slider"; ui_min = FLAME_CURVE_MIN; ui_max = FLAME_CURVE_MAX; ui_step = 0.05; ui_label = "Tip Shape"; ui_tooltip = "Controls the flame tip shape (0.5=round, >1=pointy)."; ui_category = "Flame " #index; > = defaultCurve; \
+uniform float Flame##index##_Power < ui_type = "slider"; ui_min = FLAME_POWER_MIN; ui_max = FLAME_POWER_MAX; ui_step = 0.01; ui_label = "Brightness"; ui_tooltip = "Overall brightness / intensity multiplier."; ui_category = "Flame " #index; > = defaultPower;
+
+// ============================================================================
+// FLAME CONTROLS (Using the macro)
+// ============================================================================
+
+// Flame 1 controls (enabled by default)
+FLAME_UI(1, true, float2(0.5, 0.5), FLAME_ZOOM_DEFAULT, 
+        FLAME_HEIGHT_DEFAULT, FLAME_WIDTH_DEFAULT, FLAME_CURVE_DEFAULT, FLAME_POWER_DEFAULT)
+
+// Flame 2 controls (disabled by default)
+FLAME_UI(2, false, float2(0.4, 0.4), 0.9, 
+        FLAME_HEIGHT_DEFAULT * 0.8, FLAME_WIDTH_DEFAULT * 0.8, FLAME_CURVE_DEFAULT, FLAME_POWER_DEFAULT)
+
+// Flame 3 controls (disabled by default)
+FLAME_UI(3, false, float2(0.6, 0.4), 1.1, 
+        FLAME_HEIGHT_DEFAULT * 0.7, FLAME_WIDTH_DEFAULT * 0.9, FLAME_CURVE_DEFAULT * 1.2, FLAME_POWER_DEFAULT)
+
+// Flame 4 controls (disabled by default)
+FLAME_UI(4, false, float2(0.5, 0.3), 0.8, 
+        FLAME_HEIGHT_DEFAULT * 0.5, FLAME_WIDTH_DEFAULT * 0.6, FLAME_CURVE_DEFAULT * 1.5, FLAME_POWER_DEFAULT)
 
 // ============================================================================
 // PALETTE & STYLE
@@ -98,11 +130,8 @@ uniform float ColorCycleSpeed < ui_type = "slider"; ui_label = "Color Cycle Spee
 // ============================================================================
 // FLAME APPEARANCE
 // ============================================================================
-uniform float FlameHeight < ui_type = "slider"; ui_min = FLAME_HEIGHT_MIN; ui_max = FLAME_HEIGHT_MAX; ui_label = "Height"; ui_tooltip = "Overall height scale of the flame."; ui_category = "Flame Appearance"; > = FLAME_HEIGHT_DEFAULT;
-uniform float FlameWidth < ui_type = "slider"; ui_min = FLAME_WIDTH_MIN; ui_max = FLAME_WIDTH_MAX; ui_label = "Width"; ui_tooltip = "Overall width scale of the flame."; ui_category = "Flame Appearance"; > = FLAME_WIDTH_DEFAULT;
 uniform float FlameCurve < ui_type = "slider"; ui_min = FLAME_CURVE_MIN; ui_max = FLAME_CURVE_MAX; ui_step = 0.05; ui_label = "Tip Shape"; ui_tooltip = "Controls the flame tip shape (0.5=round, >1=pointy)."; ui_category = "Flame Appearance"; > = FLAME_CURVE_DEFAULT;
 uniform float FlameSharpness < ui_type = "slider"; ui_min = FLAME_SHARPNESS_MIN; ui_max = FLAME_SHARPNESS_MAX; ui_step = 0.05; ui_label = "Edge Sharpness"; ui_tooltip = "Controls the horizontal edge sharpness/thickness."; ui_category = "Flame Appearance"; > = FLAME_SHARPNESS_DEFAULT;
-uniform float FlamePower < ui_type = "slider"; ui_min = FLAME_POWER_MIN; ui_max = FLAME_POWER_MAX; ui_step = 0.01; ui_label = "Brightness"; ui_tooltip = "Overall brightness / intensity multiplier."; ui_category = "Flame Appearance"; > = FLAME_POWER_DEFAULT;
 uniform float FlameBottomHeight < ui_type = "slider"; ui_min = FLAME_BOTTOM_HEIGHT_MIN; ui_max = FLAME_BOTTOM_HEIGHT_MAX; ui_step = 0.01; ui_label = "Base Height"; ui_tooltip = "Relative height of flame base color transition. Affects bottom fade."; ui_category = "Flame Appearance"; > = FLAME_BOTTOM_HEIGHT_DEFAULT;
 uniform float FlameGradientSteepness < ui_type = "slider"; ui_min = FLAME_GRADIENT_MIN; ui_max = FLAME_GRADIENT_MAX; ui_step = 0.01; ui_label = "Color Transition"; ui_tooltip = "How sharply colors transition along the flame height."; ui_category = "Flame Appearance"; > = FLAME_GRADIENT_DEFAULT;
 uniform float FlameRedBrightness < ui_type = "slider"; ui_min = FLAME_RED_BRIGHTNESS_MIN; ui_max = FLAME_RED_BRIGHTNESS_MAX; ui_step = 0.01; ui_label = "Red Glow"; ui_tooltip = "Adds brightness based on red channel (creates bloom effect)."; ui_category = "Flame Appearance"; > = FLAME_RED_BRIGHTNESS_DEFAULT;
@@ -146,6 +175,73 @@ AS_DEBUG_MODE_UI("Off\0Shape\0Audio\0Color\0")
 // NAMESPACE & HELPERS
 // ============================================================================
 namespace AS_CandleFlame {
+
+// Structure to hold flame parameters
+struct FlameParams {
+    bool enable;
+    float2 position;
+    float zoom;
+    float height;
+    float width;
+    float curve;
+    float power;
+    // Global parameters shared by all flames
+    float sharpness;
+    float bottomHeight;
+    float gradientSteepness;
+    float redBrightness;
+};
+
+// Helper function to get flame parameters for a given index
+FlameParams GetFlameParams(int flameIndex) {
+    FlameParams params;
+    
+    // Set shared parameters first
+    params.sharpness = FlameSharpness;
+    params.bottomHeight = FlameBottomHeight;
+    params.gradientSteepness = FlameGradientSteepness;
+    params.redBrightness = FlameRedBrightness;
+    
+    // Set flame-specific parameters based on index
+    if (flameIndex == 0) {
+        params.enable = Flame1_Enable;
+        params.position = Flame1_Position;
+        params.zoom = Flame1_Zoom;
+        params.height = Flame1_Height;
+        params.width = Flame1_Width;
+        params.curve = Flame1_Curve;
+        params.power = Flame1_Power;
+    }
+    else if (flameIndex == 1) {
+        params.enable = Flame2_Enable;
+        params.position = Flame2_Position;
+        params.zoom = Flame2_Zoom;
+        params.height = Flame2_Height;
+        params.width = Flame2_Width;
+        params.curve = Flame2_Curve;
+        params.power = Flame2_Power;
+    }
+    else if (flameIndex == 2) {
+        params.enable = Flame3_Enable;
+        params.position = Flame3_Position;
+        params.zoom = Flame3_Zoom;
+        params.height = Flame3_Height;
+        params.width = Flame3_Width;
+        params.curve = Flame3_Curve;
+        params.power = Flame3_Power;
+    }
+    else { // flameIndex == 3
+        params.enable = Flame4_Enable;
+        params.position = Flame4_Position;
+        params.zoom = Flame4_Zoom;
+        params.height = Flame4_Height;
+        params.width = Flame4_Width;
+        params.curve = Flame4_Curve;
+        params.power = Flame4_Power;
+    }
+    
+    return params;
+}
 
 // --- Improved Noise Functions (Perlin-like) ---
 // (Using provided improved noise functions)
@@ -303,58 +399,81 @@ float4 PS_ProceduralDepthPlaneFlame(float4 pos : SV_Position, float2 uv : TEXCOO
     float timer = AS_getTime();
     float audioIntensity = AS_applyAudioReactivity(1.0, Flame_AudioSource, Flame_AudioMultiplier, true);
     
-    // Determine potentially audio-modified parameters
-    float currentFlameHeight = FlameHeight;
-    float currentFlamePower = FlamePower;
+    // Get audio-modified global parameters
     float currentSwayAngle = SwayAngle; 
     const float audioResponseFactor = 0.5; 
-    switch(AudioTarget) {
-        case 0: currentFlameHeight = lerp(FlameHeight, FlameHeight * (1.0 + (audioIntensity - 1.0) * 0.8), audioResponseFactor); break;
-        case 1: currentFlamePower = lerp(FlamePower, FlamePower * audioIntensity, audioResponseFactor); break;
-        case 2: currentSwayAngle = lerp(SwayAngle, SwayAngle * audioIntensity, audioResponseFactor); break;
-        case 3: 
-            currentFlameHeight = lerp(FlameHeight, FlameHeight * (1.0 + (audioIntensity - 1.0) * 0.5), audioResponseFactor);
-            currentFlamePower = lerp(FlamePower, FlamePower * (1.0 + (audioIntensity - 1.0) * 0.5), audioResponseFactor);
-            currentSwayAngle = lerp(SwayAngle, SwayAngle * (1.0 + (audioIntensity - 1.0) * 1.0), audioResponseFactor);
-            break;
+    
+    if (AudioTarget == 2 || AudioTarget == 3) {
+        currentSwayAngle = lerp(SwayAngle, SwayAngle * audioIntensity, audioResponseFactor);
     }
-    currentFlamePower = max(0.0, currentFlamePower);
-    currentFlameHeight = max(FLAME_HEIGHT_MIN, currentFlameHeight);
 
-    // --- Calculate Relative UVs (Base = 0,0, Y increases UPWARDS) --- CORRECTED
-    float2 flame_size_aspect_corrected = float2(FlameWidth / ReShade::AspectRatio, currentFlameHeight);
+    // Initialize output color (will accumulate the flames)
+    float4 finalResult = orig;
+    float4 debugResult = float4(0, 0, 0, 0);
+    bool hasDebugData = false;
     
-    // Apply zoom by scaling the effective size (multiplying by zoom value)
-    flame_size_aspect_corrected *= FlameZoom;
-    
-    float2 rel_uv;
-    rel_uv.x = (uv.x - FlameScreenPos.x) / flame_size_aspect_corrected.x;
-    rel_uv.y = (FlameScreenPos.y - uv.y) / flame_size_aspect_corrected.y; // Corrected Y calculation
-    
-    // --- Bounding Box Check ---
-    if (rel_uv.y >= -0.1 && rel_uv.y < 1.1 && abs(rel_uv.x) < 1.5) {
-        // --- Calculate Flame Appearance ---
-        float4 flame = AS_CandleFlame::proceduralFlame(
-            rel_uv, timer, currentFlamePower, currentSwayAngle, audioIntensity
-        );
-
-        // --- Debug Output ---
-        if (DebugMode != AS_DEBUG_OFF) {
-             float4 shapeMask = float4(flame.aaa, 1.0);
-             float4 audioDbg = float4(audioIntensity.xxx, 1.0);
-             float4 colorDbg = float4(flame.rgb, 1.0);
-             return AS_debugOutput(DebugMode, orig, shapeMask, audioDbg, colorDbg);
+    // Process each flame
+    for (int i = 0; i < FLAME_COUNT; i++) {
+        AS_CandleFlame::FlameParams params = AS_CandleFlame::GetFlameParams(i);
+        
+        // Skip disabled flames
+        if (!params.enable) continue;
+        
+        // Apply audio reactivity to flame parameters
+        float currentFlamePower = params.power;
+        float effectiveHeight = params.height;
+        
+        // Apply audio reactivity based on selected target
+        if (AudioTarget == 0 || AudioTarget == 3) {
+            effectiveHeight = lerp(params.height, params.height * (1.0 + (audioIntensity - 1.0) * 0.8), audioResponseFactor);
+            effectiveHeight = max(FLAME_HEIGHT_MIN, effectiveHeight);
         }
         
-        // --- Apply Effect ---
-        if (flame.a > 0.0) {
-            float3 blended = AS_blendResult(orig.rgb, flame.rgb * flame.a, BlendMode); 
-            return float4(lerp(orig.rgb, blended, BlendAmount), orig.a);
+        if (AudioTarget == 1 || AudioTarget == 3) {
+            currentFlamePower = lerp(params.power, params.power * audioIntensity, audioResponseFactor);
+            currentFlamePower = max(0.0, currentFlamePower);
+        }
+        
+        // --- Calculate Relative UVs (Base = 0,0, Y increases UPWARDS) ---
+        float2 flame_size_aspect_corrected = float2(params.width / ReShade::AspectRatio, effectiveHeight);
+        
+        // Apply zoom by scaling the effective size
+        flame_size_aspect_corrected *= params.zoom;
+        
+        float2 rel_uv;
+        rel_uv.x = (uv.x - params.position.x) / flame_size_aspect_corrected.x;
+        rel_uv.y = (params.position.y - uv.y) / flame_size_aspect_corrected.y; // Y calculation for base-anchored flame
+        
+        // --- Bounding Box Check --- Avoid unnecessary calculations
+        if (rel_uv.y >= -0.1 && rel_uv.y < 1.1 && abs(rel_uv.x) < 1.5) {
+            // --- Calculate Flame Appearance ---
+            float4 flame = AS_CandleFlame::proceduralFlame(
+                rel_uv, timer, currentFlamePower, currentSwayAngle, audioIntensity
+            );
+            
+            // --- Debug Output (for first active flame) ---
+            if (DebugMode != AS_DEBUG_OFF && !hasDebugData && flame.a > 0.0) {
+                debugResult = flame;
+                hasDebugData = true;
+            }
+            
+            // --- Apply Effect ---
+            if (flame.a > 0.0) {
+                float3 blended = AS_blendResult(finalResult.rgb, flame.rgb * flame.a, BlendMode); 
+                finalResult = float4(lerp(finalResult.rgb, blended, BlendAmount), orig.a);
+            }
         }
     }
-
-    // Return original if outside bounds or flame alpha is zero
-    return orig;
+    
+    // Handle debug mode
+    if (DebugMode != AS_DEBUG_OFF && hasDebugData) {
+        float4 shapeMask = float4(debugResult.aaa, 1.0);
+        float4 audioDbg = float4(audioIntensity.xxx, 1.0);
+        float4 colorDbg = float4(debugResult.rgb, 1.0);
+        return AS_debugOutput(DebugMode, orig, shapeMask, audioDbg, colorDbg);
+    }
+    
+    return finalResult;
 }
 
 // ============================================================================

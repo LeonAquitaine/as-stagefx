@@ -201,20 +201,95 @@ When implementing shaders with repetitive elements or multiple instances (layers
 3. **Extract Reusable Functions**
 4. **Use Loop-Based Processing**
 
+### Multi-Instance Effects Pattern
+For effects that support multiple copies (spotlights, flames, etc.), follow this standard pattern:
+
+1. **Define a Count Constant**:
+   ```hlsl
+   static const int EFFECT_COUNT = 4;  // Number of instances supported
+   ```
+
+2. **Create a UI Definition Macro**:
+   ```hlsl
+   #define EFFECT_UI(index, defaultEnable, defaultParams...) \
+   uniform bool Effect##index##_Enable < ui_label = "Enable " #index; ui_category = "Effect " #index; ui_category_closed = index > 1; > = defaultEnable; \
+   uniform float Effect##index##_Param1 < /* parameter UI definition */ > = defaultParam1; \
+   // ...more parameters
+   ```
+
+3. **Use the Macro to Create Controls**:
+   ```hlsl
+   // First instance (enabled by default, standard positioning)
+   EFFECT_UI(1, true, standardParams...)
+   
+   // Additional instances (disabled by default, varied positions)
+   EFFECT_UI(2, false, variedParams...)
+   ```
+
+4. **Define Parameter Structure**:
+   ```hlsl
+   struct EffectParams {
+       bool enable;
+       float param1;
+       float param2;
+       // ...more parameters
+   };
+   ```
+
+5. **Create Getter Function**:
+   ```hlsl
+   EffectParams GetEffectParams(int index) {
+       EffectParams params;
+       
+       // Set shared parameters first
+       params.sharedParam = GlobalSharedParam;
+       
+       // Set instance-specific parameters
+       if (index == 0) {
+           params.enable = Effect1_Enable;
+           params.param1 = Effect1_Param1;
+           // ...
+       }
+       else if (index == 1) {
+           // ...parameters for second instance
+       }
+       // ...handle remaining instances
+       
+       return params;
+   }
+   ```
+
+6. **Process Instances in Loop**:
+   ```hlsl
+   // In pixel shader
+   float4 result = orig;
+   
+   for (int i = 0; i < EFFECT_COUNT; i++) {
+       EffectParams params = GetEffectParams(i);
+       
+       // Skip disabled instances
+       if (!params.enable) continue;
+       
+       // Process this instance using structure parameters
+       float4 effectResult = ProcessEffect(params, uv, timer);
+       
+       // Blend with accumulated result
+       result = BlendEffectWithResult(result, effectResult);
+   }
+   ```
+
+7. **Best Practices**:
+   - Only the first instance should be enabled by default
+   - Use `ui_category_closed = true` for all but the first instance
+   - Use slightly varied parameters for each instance for visual interest
+   - Keep core processing functions isolated from UI parameters by using the parameter structure
+
 ### Performance Considerations
 
 1. **Layer-Based Activation**:
    - Use individual enable flags rather than global layer count parameters
    - Always check the enable flag at the beginning of layer processing
    - Only the first layer should be enabled by default to provide a clean starting point
-   
-2. **UI Organization**:
-   - Use `ui_category_closed` for less frequently used settings
-   - Group related parameters together for easier navigation
-
-3. **Early Returns**:
-   - Skip unnecessary calculations when possible
-   - Use if statements to bypass inactive features
 
 ## Resolution Independence
 
