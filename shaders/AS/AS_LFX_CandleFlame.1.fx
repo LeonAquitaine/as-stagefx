@@ -39,11 +39,6 @@
 #include "AS_Palettes.1.fxh" // Color palette support
 
 // ============================================================================
-// POSITION
-// ============================================================================
-uniform float2 FlameScreenPos < ui_type = "drag"; ui_label = "Flame Position"; ui_tooltip = "Screen position (0-1) for the base of the flame. Drag to position."; ui_category = "Position"; > = float2(0.5, 0.5); // Center of the screen
-
-// ============================================================================
 // TUNABLE CONSTANTS (Defaults and Ranges)
 // ============================================================================
 static const float FLAME_HEIGHT_MIN = 0.01;
@@ -81,6 +76,16 @@ static const float FLAME_RED_BRIGHTNESS_DEFAULT = 1.0;
 static const float NOISE_SCALE_MIN = 1.0;
 static const float NOISE_SCALE_MAX = 50.0;
 static const float NOISE_SCALE_DEFAULT = 15.0;
+
+static const float FLAME_ZOOM_MIN = 0.1;
+static const float FLAME_ZOOM_MAX = 5.0;
+static const float FLAME_ZOOM_DEFAULT = 1.0;
+
+// ============================================================================
+// POSITION & SCALE
+// ============================================================================
+uniform float2 FlameScreenPos < ui_type = "drag"; ui_label = "Flame Position"; ui_tooltip = "Screen position (0-1) for the base of the flame. Drag to position."; ui_category = "Position & Scale"; > = float2(0.5, 0.5); // Center of the screen
+uniform float FlameZoom < ui_type = "slider"; ui_min = FLAME_ZOOM_MIN; ui_max = FLAME_ZOOM_MAX; ui_step = 0.05; ui_label = "Zoom"; ui_tooltip = "Overall zoom factor for the flame effect."; ui_category = "Position & Scale"; > = FLAME_ZOOM_DEFAULT;
 
 // ============================================================================
 // PALETTE & STYLE
@@ -318,6 +323,10 @@ float4 PS_ProceduralDepthPlaneFlame(float4 pos : SV_Position, float2 uv : TEXCOO
 
     // --- Calculate Relative UVs (Base = 0,0, Y increases UPWARDS) --- CORRECTED
     float2 flame_size_aspect_corrected = float2(FlameWidth / ReShade::AspectRatio, currentFlameHeight);
+    
+    // Apply zoom by scaling the effective size (multiplying by zoom value)
+    flame_size_aspect_corrected *= FlameZoom;
+    
     float2 rel_uv;
     rel_uv.x = (uv.x - FlameScreenPos.x) / flame_size_aspect_corrected.x;
     rel_uv.y = (FlameScreenPos.y - uv.y) / flame_size_aspect_corrected.y; // Corrected Y calculation
