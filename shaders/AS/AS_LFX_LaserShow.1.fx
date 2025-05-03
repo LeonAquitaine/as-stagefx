@@ -35,9 +35,11 @@
 // ============================================================================
 // TUNABLE CONSTANTS
 // ============================================================================
-static const int LASER_MAX_BEAMS = 12;
-static const int LASER_MIN_BEAMS = 1;
-static const int LASER_DEFAULT_BEAMS = 4;
+// --- Laser Appearance ---
+// Origin doesn't have min/max constants since it's a float2 with different ranges
+static const float LASER_ANGLE_MIN = -180.0;
+static const float LASER_ANGLE_MAX = 180.0;
+static const float LASER_ANGLE_DEFAULT = 0.0;
 
 static const float LASER_WIDTH_MIN = 0.001;
 static const float LASER_WIDTH_MAX = 0.1;
@@ -45,12 +47,21 @@ static const float LASER_WIDTH_DEFAULT = 0.02;
 
 static const float LASER_INTENSITY_MIN = 0.0;
 static const float LASER_INTENSITY_MAX = 5.0;
-static const float LASER_INTENSITY_DEFAULT = 1.0;
+static const float LASER_INTENSITY_DEFAULT = 2.50;
+
+static const float LASER_CORE_MIN = 0.0;
+static const float LASER_CORE_MAX = 1.0;
+static const float LASER_CORE_DEFAULT = 0.5;
+
+static const int LASER_MIN_BEAMS = 1;
+static const int LASER_MAX_BEAMS = 24;
+static const int LASER_DEFAULT_BEAMS = 6;
 
 static const float LASER_SPREAD_MIN = 5.0;
-static const float LASER_SPREAD_MAX = 90.0;
+static const float LASER_SPREAD_MAX = 180.0;
 static const float LASER_SPREAD_DEFAULT = 30.0;
 
+// --- Animation ---
 static const float FAN_MAG_MIN = 0.0;
 static const float FAN_MAG_MAX = 1.0;
 static const float FAN_MAG_DEFAULT = 0.5;
@@ -63,6 +74,15 @@ static const float BLINK_SPEED_MIN = 0.0;
 static const float BLINK_SPEED_MAX = 8.0;
 static const float BLINK_SPEED_DEFAULT = 2.0;
 
+static const float SWAY_SPEED_MIN = 0.0;
+static const float SWAY_SPEED_MAX = 5.0;
+static const float SWAY_SPEED_DEFAULT = 1.0;
+
+static const float SWAY_ANGLE_MIN = 0.0;
+static const float SWAY_ANGLE_MAX = 360.0;
+static const float SWAY_ANGLE_DEFAULT = 60.0;
+
+// --- Smoke ---
 static const float NOISE_SCALE_MIN = 0.1;
 static const float NOISE_SCALE_MAX = 4.0;
 static const float NOISE_SCALE_DEFAULT = 1.0;
@@ -75,15 +95,7 @@ static const float SMOKE_DENSITY_MIN = 0.0;
 static const float SMOKE_DENSITY_MAX = 2.0;
 static const float SMOKE_DENSITY_DEFAULT = 1.0;
 
-static const float SWAY_SPEED_MIN = 0.0;
-static const float SWAY_SPEED_MAX = 5.0;
-static const float SWAY_SPEED_DEFAULT = 1.0;
-
-static const float SWAY_ANGLE_MIN = 0.0;
-static const float SWAY_ANGLE_MAX = 180.0;
-static const float SWAY_ANGLE_DEFAULT = 15.0;
-
-// Vortex controls constants
+// --- Vortex Controls ---
 static const float VORTEX_STRENGTH_MIN = 0.0;
 static const float VORTEX_STRENGTH_MAX = 5.0;
 static const float VORTEX_STRENGTH_DEFAULT = 1.0;
@@ -104,12 +116,29 @@ static const int VORTEX_COUNT_MIN = 1;
 static const int VORTEX_COUNT_MAX = 5;
 static const int VORTEX_COUNT_DEFAULT = 2;
 
+// Vortex Direction doesn't have min/max constants since it's a float2
+
+// --- Palette & Style ---
+static const float COLOR_CYCLE_SPEED_MIN = -10.0;
+static const float COLOR_CYCLE_SPEED_MAX = 10.0;
+static const float COLOR_CYCLE_SPEED_DEFAULT = 0.0;
+
 // ============================================================================
 // PALETTE & STYLE
 // ============================================================================
 // Using standardized AS_Utils palette selection
 AS_PALETTE_SELECTION_UI(PalettePreset, "Palette", AS_PALETTE_NEON, "Palette & Style")
 AS_DECLARE_CUSTOM_PALETTE(LaserShow_, "Palette & Style")
+
+uniform float ColorCycleSpeed < 
+    ui_type = "slider"; 
+    ui_label = "Color Cycle Speed";
+    ui_tooltip = "Controls how fast the beam colors cycle. 0 = static, negative = counter-clockwise, positive = clockwise";
+    ui_min = COLOR_CYCLE_SPEED_MIN;
+    ui_max = COLOR_CYCLE_SPEED_MAX;
+    ui_step = 0.1;
+    ui_category = "Palette & Style";
+> = COLOR_CYCLE_SPEED_DEFAULT;
 
 // ============================================================================
 // EFFECT-SPECIFIC APPEARANCE
@@ -118,7 +147,7 @@ uniform float2 LaserOrigin < ui_type = "slider"; ui_label = "Laser Origin (X,Y)"
 uniform float Angle < ui_type = "slider"; ui_label = "Base Angle (deg)"; ui_min = -180.0; ui_max = 180.0; ui_step = 0.1; ui_category = "Laser Appearance"; > = 0.0;
 uniform float LaserWidth < ui_type = "slider"; ui_label = "Laser Width"; ui_min = LASER_WIDTH_MIN; ui_max = LASER_WIDTH_MAX; ui_step = 0.001; ui_category = "Laser Appearance"; > = LASER_WIDTH_DEFAULT;
 uniform float LaserIntensity < ui_type = "slider"; ui_label = "Laser Intensity"; ui_min = LASER_INTENSITY_MIN; ui_max = LASER_INTENSITY_MAX; ui_step = 0.01; ui_category = "Laser Appearance"; > = LASER_INTENSITY_DEFAULT;
-uniform float LaserCore < ui_type = "slider"; ui_label = "Laser Core Intensity"; ui_tooltip = "Controls how much the center of the laser beam maintains its intensity over distance"; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Laser Appearance"; > = 0.5;
+uniform float LaserCore < ui_type = "slider"; ui_label = "Laser Core Intensity"; ui_tooltip = "Controls how much the center of the laser beam maintains its intensity over distance"; ui_min = LASER_CORE_MIN; ui_max = LASER_CORE_MAX; ui_step = 0.01; ui_category = "Laser Appearance"; > = LASER_CORE_DEFAULT;
 uniform int NumBeams < ui_type = "slider"; ui_label = "Active Beams"; ui_min = LASER_MIN_BEAMS; ui_max = LASER_MAX_BEAMS; ui_category = "Laser Appearance"; > = LASER_DEFAULT_BEAMS;
 uniform float BeamSpread < ui_type = "slider"; ui_label = "Base Spread Angle (deg)"; ui_min = LASER_SPREAD_MIN; ui_max = LASER_SPREAD_MAX; ui_step = 0.1; ui_category = "Laser Appearance"; > = LASER_SPREAD_DEFAULT;
 
@@ -135,7 +164,7 @@ AS_SWAYANGLE_UI(SwayAngle, "Animation")
 // ============================================================================
 // AUDIO REACTIVITY
 // ============================================================================
-AS_AUDIO_SOURCE_UI(FanAudioSource, "Fanning Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
+AS_AUDIO_SOURCE_UI(FanAudioSource, "Fanning Audio Source", AS_AUDIO_OFF, "Audio Reactivity")
 AS_AUDIO_MULTIPLIER_UI(FanAudioMult, "Fanning Audio Multiplier", 1.0, 2.0, "Audio Reactivity")
 AS_AUDIO_SOURCE_UI(BlinkAudioSource, "Blinking Audio Source", AS_AUDIO_VOLUME, "Audio Reactivity")
 AS_AUDIO_MULTIPLIER_UI(BlinkAudioMult, "Blinking Audio Multiplier", 1.0, 2.0, "Audio Reactivity")
@@ -190,7 +219,18 @@ AS_DEBUG_MODE_UI("Off\0Smoke\0Audio\0Laser\0")
 namespace AS_LaserShow {
 
 // Get color from the currently selected palette using standardized AS_Utils functions
-float3 LaserShow_getPaletteColor(float t) {
+float3 LaserShow_getPaletteColor(float t, float time) {
+    // Apply time-based color cycling if enabled
+    if (ColorCycleSpeed != 0.0) {
+        // Calculate the cycle rate - positive is clockwise, negative is counter-clockwise
+        // Scale by 0.1 to match the requirement (|10| = 10 cycles per second)
+        float cycleRate = ColorCycleSpeed * 0.1;
+        
+        // Apply cycling offset to the palette index
+        t = frac(t + cycleRate * time);
+    }
+    
+    // Return the color from the selected palette
     if (PalettePreset == AS_PALETTE_COUNT) {
         return AS_GET_INTERPOLATED_CUSTOM_COLOR(LaserShow_, t);
     }
@@ -313,7 +353,7 @@ float4 PS_LaserShow(float4 pos : SV_Position, float2 texcoord : TexCoord) : SV_T
         float beamIntensity = AS_LaserShow::BeamIntensity(aspectUV, aspectOrigin, angle, LaserWidth, LaserCore);
         
         // Get the color for this specific beam from our palette
-        float3 beamColor = AS_LaserShow::LaserShow_getPaletteColor(float(i) / float(LASER_MAX_BEAMS));
+        float3 beamColor = AS_LaserShow::LaserShow_getPaletteColor(float(i) / float(LASER_MAX_BEAMS), time);
         
         // Add this beam's contribution to the cumulative color
         cumulativeColor += beamColor * beamIntensity;
