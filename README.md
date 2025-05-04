@@ -14,7 +14,8 @@
 
 Most shaders feature seamless integration with **[Listeningway](https://github.com/gposingway/Listeningway)** for audio reactivity.
 
-### Latest Updates (May 3, 2025)
+### Latest Updates (May 4, 2025)
+- Renamed TiltedPixelGrid shader to TiltedGrid and added attribution to FencerDevLog's tutorial
 - Implemented Multi-Instance Effects Pattern, allowing some shaders to support multiple independent effect instances
 - Added AS_LFX_CandleFlame shader with support for up to 4 independent, customizable flame instances
 - Fixed Listeningway integration guard syntax in AS_Utils.1.fxh
@@ -145,6 +146,13 @@ AS-StageFX includes a variety of distinct visual effects:
     </div></td>
   </tr>
   <tr>
+    <td width="50%"><strong>VFX: Tilted Grid</strong> (<code>AS_VFX_TiltedGrid.1.fx</code>)<br>
+      Creates a rotatable grid that pixelates the image and adds adjustable borders between grid cells with customizable chamfered corners. Features audio reactivity for cell size, border thickness, and chamfer size parameters.<br><em>Technique: [AS] VFX: Tilted Grid</em></td>
+    <td width="50%"><div style="text-align:center">
+      <img src="https://placeholder-for-tiltedgrid-image" alt="Tilted Grid Effect" style="max-width:100%;">
+    </div></td>
+  </tr>
+  <tr>
     <td width="50%"><strong>VFX: Rainy Window</strong> (<code>AS_VFX_RainyWindow.1.fx</code>)<br>
       Creates a realistic rainy window effect with multi-layered droplets that distort the scene behind them. Features adjustable rain density, glass roughness, and audio-reactive parameters that can be rotated to match any orientation.<br><em>Technique: [AS] VFX: Rainy Window</em></td>
     <td width="50%"><div style="text-align:center">
@@ -192,6 +200,7 @@ Most shaders in the AS_StageFX collection are conversions and adaptations from o
 - **FencerDevLog** - Creator of the original Godot shader tutorials that inspired multiple effects in this collection:
   - Rainy Window shader: [Godot 4: Rainy Window Shader](https://www.youtube.com/watch?v=QAOt24qV98c)
   - Candle Flame shader: [Godot 4: Candle Flame Shader](https://www.youtube.com/watch?v=6ZZVwbzE8cw)
+  - Tilted Grid shader: [Godot 4: Tilted Grid Effect Tutorial](https://www.youtube.com/watch?v=Tfj6RDqXEHM)
   - Support his work: [FencerDevLog Patreon](https://www.patreon.com/c/FencerDevLog/posts)
 
 - **Listeningway** - Core audio integration by [gposingway](https://github.com/gposingway/Listeningway)

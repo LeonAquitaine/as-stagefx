@@ -37,8 +37,11 @@ This package includes the following shaders:
 - **AS_VFX_DigitalArtifacts** - Applies audio-driven digital artifacts and hologram effects
 - **AS_VFX_SparkleBloom** - Creates a realistic, dynamic sparkle effect on surfaces
 - **AS_VFX_MotionTrails** - Creates music-reactive, depth-based motion trails
+- **AS_VFX_MultiLayerHalftone** - Applies halftone patterns with separate control over shadows, midtones and highlights
 - **AS_VFX_PlasmaFlow** - Generates smooth, swirling, organic plasma-like patterns
+- **AS_VFX_RainyWindow** - Simulates raindrops sliding down a window with dynamic trails
 - **AS_VFX_SpectrumRing** - Generates a stylized, circular audio visualizer
 - **AS_VFX_StencilMask** - Isolates foreground subjects with customizable borders
+- **AS_VFX_TiltedGrid** - Creates a rotatable grid with adjustable borders and chamfered corners
 - **AS_VFX_VUMeter** - Visualizes audio frequency bands as a VU meter background
 - **AS_VFX_WarpDistort** - Creates a circular mirrored or wavy region that reacts to audio

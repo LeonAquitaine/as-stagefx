@@ -37,9 +37,9 @@ jobs:
           mkdir -p /tmp/release
           cat docs/template/release.md | sed "s/\${VERSION}/${{ env.VERSION }}/g" > /tmp/release/release.md
           
-      - name: Zip shaders folder
+      - name: Zip shaders and textures folders
         run: |
-          zip -r as-stagefx-${{ env.VERSION }}.zip shaders/ -x "shaders/*.md" -x "shaders/AS/*.md"
+          zip -r as-stagefx-${{ env.VERSION }}.zip shaders/ textures/ -x "shaders/*.md" -x "shaders/AS/*.md"
 
       - name: Create tag if it doesn't exist
         id: create_tag
