@@ -118,3 +118,11 @@ float2 scaledCoord = texcoord * resolutionScale;
 - Flowing effects → `AS_Fbm2D_Animated`
 - Cell/voronoi → `AS_VoronoiNoise2D`
 - Complex fluids → `AS_DomainWarp2D`
+
+## Commit and Documentation Guidelines
+
+### Documentation Updates
+- When preparing to commit, check all documentation (.md and .txt files, like readme.md and docs/template/release.md) for necessary changes and additions
+- Update docs to reflect new features, parameters, or behavior changes
+- Modify documentation files to maintain consistency with code
+- Commit all pending changes with meaningful commit messages that describe the changes in detail
