@@ -313,3 +313,65 @@ All shaders MUST implement resolution-independent rendering:
    - Position controls should always appear at the top of the UI in their own "Position" category
    - Primary positioning should use a drag control for intuitive visual placement
    - When precision is needed, provide slider controls as well
+
+## Full-Screen Rotation and Coordinate System
+
+When implementing effects that support full-screen rotation (controlled via standard rotation UI like `AS_ROTATION_UI`), use the following coordinate system and transformation logic to ensure correct placement and aspect ratio handling:
+
+1. **UI Coordinate System**:
+   - Position controls (e.g., `float2 EffectPosition`) should use a centered coordinate system.
+   - `(0,0)` represents the exact center of the screen.
+   - The range `[-1, 1]` in both X and Y maps to the largest square that fits within the screen boundaries (the "central square").
+   - UI sliders should typically range beyond `[-1, 1]` (e.g., `[-1.5, 1.5]`) to allow placement in areas outside the central square on non-square aspect ratios.
+
+2. **Shader Coordinate Transformation**:
+   - **Step 1: Center Screen Coordinates:** Transform screen UVs (`uv`) into a centered coordinate system (`screen_coords`) where the *shortest* screen dimension spans `[-0.5, 0.5]`. The longer dimension scales proportionally with the aspect ratio.
+     ```hlsl
+     float aspectRatio = ReShade::AspectRatio; // BUFFER_WIDTH / BUFFER_HEIGHT
+     float2 screen_coords;
+     if (aspectRatio >= 1.0) { // Wider or square
+         screen_coords.x = (uv.x - 0.5) * aspectRatio;
+         screen_coords.y = uv.y - 0.5;
+     } else { // Taller
+         screen_coords.x = uv.x - 0.5;
+         screen_coords.y = (uv.y - 0.5) / aspectRatio;
+     }
+     // Note: screen_coords.y typically increases downwards at this stage.
+     ```
+   - **Step 2: Apply Inverse Rotation:** Apply the inverse of the global rotation to `screen_coords` to get `rotated_screen_coords`.
+     ```hlsl
+     float globalRotation = AS_getRotationRadians(EffectSnapRotation, EffectFineRotation);
+     float sinRot = sin(-globalRotation);
+     float cosRot = cos(-globalRotation);
+     float2 rotated_screen_coords;
+     rotated_screen_coords.x = screen_coords.x * cosRot - screen_coords.y * sinRot;
+     rotated_screen_coords.y = screen_coords.x * sinRot + screen_coords.y * cosRot;
+     ```
+   - **Step 3: Map UI Position:** Convert the UI position parameter (`EffectPosition`, which is in the `[-1.5, 1.5]` range) into the same `screen_coords` system. The `[-1, 1]` range maps to `[-0.5, 0.5]`.
+     ```hlsl
+     float2 effect_screen_coords = EffectPosition * 0.5;
+     ```
+   - **Step 4: Calculate Relative Difference:** Find the difference between the pixel's rotated coordinate and the effect's base coordinate.
+     ```hlsl
+     float2 diff = rotated_screen_coords - effect_screen_coords;
+     ```
+   - **Step 5: Normalize:** Normalize `diff` using the effect's dimensions (width, height, zoom), ensuring these dimensions are correctly scaled to match the `screen_coords` system.
+     ```hlsl
+     // Example for flame-like effect where dimensions are relative to screen height
+     float normWidth = EffectWidth * EffectZoom;
+     float normHeight = EffectHeight * EffectZoom;
+     float2 effectDimInScreenCoords;
+     if (aspectRatio >= 1.0) { // Wide
+         effectDimInScreenCoords.x = normWidth * aspectRatio;
+         effectDimInScreenCoords.y = normHeight;
+     } else { // Tall
+         effectDimInScreenCoords.x = normWidth;
+         effectDimInScreenCoords.y = normHeight / aspectRatio;
+     }
+     float2 rel_uv;
+     rel_uv.x = (effectDimInScreenCoords.x > 1e-5) ? diff.x / effectDimInScreenCoords.x : 0.0;
+     // Adjust Y direction if needed by the effect's internal logic (e.g., negate if Y should increase upwards)
+     rel_uv.y = (effectDimInScreenCoords.y > 1e-5) ? -diff.y / effectDimInScreenCoords.y : 0.0;
+     ```
+
+This approach ensures effects are placed correctly and maintain their aspect ratio regardless of screen dimensions or global rotation.

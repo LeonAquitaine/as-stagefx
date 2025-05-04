@@ -203,7 +203,7 @@ uniform int frameCount < source = "framecount"; >; // Frame count from ReShade
 // Returns consistent time value in seconds, using Listeningway if available
 
 float AS_getTime() {
-#if defined(LISTENINGWAY_INSTALLED)
+#if defined(__LISTENINGWAY_INSTALLED)
     return Listeningway_TotalPhases120Hz * 0.016;
 #else
     return frameCount * 0.016;
@@ -213,7 +213,7 @@ float AS_getTime() {
 // --- Listeningway Helpers ---
 // Returns number of available frequency bands
 int AS_getNumFrequencyBands() {
-#if defined(LISTENINGWAY_INSTALLED) && defined(LISTENINGWAY_NUM_BANDS)
+#if defined(__LISTENINGWAY_INSTALLED) && defined(LISTENINGWAY_NUM_BANDS)
     return LISTENINGWAY_NUM_BANDS;
 #else
     return AS_DEFAULT_NUM_BANDS;
@@ -222,7 +222,7 @@ int AS_getNumFrequencyBands() {
 
 // Get frequency band value safely with bounds checking
 float AS_getFrequencyBand(int index) {
-#if defined(LISTENINGWAY_INSTALLED)
+#if defined(__LISTENINGWAY_INSTALLED)
     int numBands = AS_getNumFrequencyBands();
     // Safely clamp the index to valid range
     int safeIndex = clamp(index, 0, numBands - 1);
@@ -248,7 +248,7 @@ int AS_mapAngleToBand(float angleRadians, int repetitions) {
 
 // Returns VU meter value from specified source
 float AS_getVUMeterValue(int source) {
-#if defined(LISTENINGWAY_INSTALLED)
+#if defined(__LISTENINGWAY_INSTALLED)
     if (source == 0) return Listeningway_Volume;
     if (source == 1) return Listeningway_Beat;
     if (source == 2) return Listeningway_FreqBands[0]; // Bass
@@ -262,6 +262,7 @@ float AS_getVUMeterValue(int source) {
 float AS_getAudioSource(int source) {
     if (source == AS_AUDIO_OFF)    return 0.0;                // Off
     if (source == AS_AUDIO_SOLID)  return 1.0;                // Solid
+#if defined(__LISTENINGWAY_INSTALLED)
     if (source == AS_AUDIO_VOLUME) return Listeningway_Volume; // Volume
     if (source == AS_AUDIO_BEAT)   return Listeningway_Beat;   // Beat
     
@@ -281,6 +282,7 @@ float AS_getAudioSource(int source) {
         // Treble is the last 20% of bands, use last band
         return Listeningway_FreqBands[numBands - 1]; 
     }
+#endif
     
     return 0.0;
 }

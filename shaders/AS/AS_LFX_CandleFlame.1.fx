@@ -92,7 +92,7 @@ static const float FLAME_ZOOM_DEFAULT = 1.0;
 #define FLAME_UI(index, defaultEnable, defaultPosition, defaultZoom, \
                 defaultHeight, defaultWidth, defaultCurve, defaultPower) \
 uniform bool Flame##index##_Enable < ui_label = "Enable Flame " #index; ui_tooltip = "Toggle this flame on or off."; ui_category = "Flame " #index; ui_category_closed = index > 1; > = defaultEnable; \
-uniform float2 Flame##index##_Position < ui_type = "drag"; ui_label = "Position"; ui_tooltip = "Screen position (0-1) for the base of the flame."; ui_category = "Flame " #index; > = defaultPosition; \
+uniform float2 Flame##index##_Position < ui_type = "slider"; ui_label = "Position (X, Y)"; ui_tooltip = "Screen position for the flame base. (0,0) is center, [-1, 1] covers the central square."; ui_min = -1.5; ui_max = 1.5; ui_step = 0.01; ui_category = "Flame " #index; > = defaultPosition; \
 uniform float Flame##index##_Zoom < ui_type = "slider"; ui_min = FLAME_ZOOM_MIN; ui_max = FLAME_ZOOM_MAX; ui_step = 0.05; ui_label = "Zoom"; ui_tooltip = "Overall zoom factor for the flame."; ui_category = "Flame " #index; > = defaultZoom; \
 uniform float Flame##index##_Height < ui_type = "slider"; ui_min = FLAME_HEIGHT_MIN; ui_max = FLAME_HEIGHT_MAX; ui_label = "Height"; ui_tooltip = "Overall height scale of the flame."; ui_category = "Flame " #index; > = defaultHeight; \
 uniform float Flame##index##_Width < ui_type = "slider"; ui_min = FLAME_WIDTH_MIN; ui_max = FLAME_WIDTH_MAX; ui_label = "Width"; ui_tooltip = "Overall width scale of the flame."; ui_category = "Flame " #index; > = defaultWidth; \
@@ -103,20 +103,20 @@ uniform float Flame##index##_Power < ui_type = "slider"; ui_min = FLAME_POWER_MI
 // FLAME CONTROLS (Using the macro)
 // ============================================================================
 
-// Flame 1 controls (enabled by default)
-FLAME_UI(1, true, float2(0.5, 0.5), FLAME_ZOOM_DEFAULT, 
+// Flame 1 controls (enabled by default, centered)
+FLAME_UI(1, true, float2(0.0, 0.0), FLAME_ZOOM_DEFAULT, 
         FLAME_HEIGHT_DEFAULT, FLAME_WIDTH_DEFAULT, FLAME_CURVE_DEFAULT, FLAME_POWER_DEFAULT)
 
-// Flame 2 controls (disabled by default)
-FLAME_UI(2, false, float2(0.4, 0.4), 0.9, 
+// Flame 2 controls (disabled by default, slightly offset)
+FLAME_UI(2, false, float2(-0.2, -0.2), 0.9, 
         FLAME_HEIGHT_DEFAULT * 0.8, FLAME_WIDTH_DEFAULT * 0.8, FLAME_CURVE_DEFAULT, FLAME_POWER_DEFAULT)
 
-// Flame 3 controls (disabled by default)
-FLAME_UI(3, false, float2(0.6, 0.4), 1.1, 
+// Flame 3 controls (disabled by default, slightly offset)
+FLAME_UI(3, false, float2(0.2, -0.2), 1.1, 
         FLAME_HEIGHT_DEFAULT * 0.7, FLAME_WIDTH_DEFAULT * 0.9, FLAME_CURVE_DEFAULT * 1.2, FLAME_POWER_DEFAULT)
 
-// Flame 4 controls (disabled by default)
-FLAME_UI(4, false, float2(0.5, 0.3), 0.8, 
+// Flame 4 controls (disabled by default, slightly offset)
+FLAME_UI(4, false, float2(0.0, -0.4), 0.8, 
         FLAME_HEIGHT_DEFAULT * 0.5, FLAME_WIDTH_DEFAULT * 0.6, FLAME_CURVE_DEFAULT * 1.5, FLAME_POWER_DEFAULT)
 
 // ============================================================================
@@ -141,6 +141,7 @@ uniform float FlameRedBrightness < ui_type = "slider"; ui_min = FLAME_RED_BRIGHT
 // ============================================================================
 AS_SWAYSPEED_UI(SwaySpeed, "Animation")
 AS_SWAYANGLE_UI(SwayAngle, "Animation")
+AS_ROTATION_UI(FlameSnapRotation, FlameFineRotation, "Animation")
 uniform float HorizontalSpeed < ui_type = "slider"; ui_min = 0.0; ui_max = 5.0; ui_step = 0.01; ui_label = "Horizontal Noise Speed"; ui_tooltip = "Speed of side-to-side movement."; ui_category = "Animation"; > = 0.1;
 uniform float HorizontalSway < ui_type = "slider"; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_label = "Horizontal Sway Amount"; ui_tooltip = "Amplitude of side-to-side movement."; ui_category = "Animation"; > = 0.1;
 uniform float VerticalSpeed < ui_type = "slider"; ui_min = 0.0; ui_max = 5.0; ui_step = 0.01; ui_label = "Vertical Noise Speed"; ui_tooltip = "Speed of upward 'licking' / vertical distortion."; ui_category = "Animation"; > = 0.4;
@@ -393,78 +394,111 @@ float4 PS_ProceduralDepthPlaneFlame(float4 pos : SV_Position, float2 uv : TEXCOO
 {
     float4 orig = tex2D(ReShade::BackBuffer, uv);
     float pixel_scene_depth = ReShade::GetLinearizedDepth(uv);
-    
+
     if (pixel_scene_depth < StageDepth) return orig; // Depth cutoff
-    
+
     float timer = AS_getTime();
     float audioIntensity = AS_applyAudioReactivity(1.0, Flame_AudioSource, Flame_AudioMultiplier, true);
-    
+
     // Get audio-modified global parameters
-    float currentSwayAngle = SwayAngle; 
-    const float audioResponseFactor = 0.5; 
-    
+    float currentSwayAngle = SwayAngle;
+    const float audioResponseFactor = 0.5;
+
     if (AudioTarget == 2 || AudioTarget == 3) {
         currentSwayAngle = lerp(SwayAngle, SwayAngle * audioIntensity, audioResponseFactor);
     }
 
-    // Initialize output color (will accumulate the flames)
+    // --- Coordinate System Setup ---
+    float aspectRatio = ReShade::AspectRatio; // BUFFER_WIDTH / BUFFER_HEIGHT
+    float2 screen_coords; // Centered coords, shortest dimension spans [-0.5, 0.5]
+
+    if (aspectRatio >= 1.0) { // Wider than tall, or square
+        screen_coords.x = (uv.x - 0.5) * aspectRatio; // Spans [-0.5*AR, 0.5*AR]
+        screen_coords.y = uv.y - 0.5;                 // Spans [-0.5, 0.5] (Shortest)
+    } else { // Taller than wide
+        screen_coords.x = uv.x - 0.5;                 // Spans [-0.5, 0.5] (Shortest)
+        screen_coords.y = (uv.y - 0.5) / aspectRatio; // Spans [-0.5/AR, 0.5/AR]
+    }
+    // Note: Y still increases downwards here.
+
+    // 2. Apply inverse global rotation
+    float globalRotation = AS_getRotationRadians(FlameSnapRotation, FlameFineRotation);
+    float sinRot = sin(-globalRotation); // Inverse rotation
+    float cosRot = cos(-globalRotation);
+    float2 rotated_screen_coords;
+    rotated_screen_coords.x = screen_coords.x * cosRot - screen_coords.y * sinRot;
+    rotated_screen_coords.y = screen_coords.x * sinRot + screen_coords.y * cosRot;
+
+    // Initialize output color
     float4 finalResult = orig;
     float4 debugResult = float4(0, 0, 0, 0);
     bool hasDebugData = false;
-    
+
     // Process each flame
     for (int i = 0; i < FLAME_COUNT; i++) {
         AS_CandleFlame::FlameParams params = AS_CandleFlame::GetFlameParams(i);
-        
-        // Skip disabled flames
+
         if (!params.enable) continue;
-        
+
         // Apply audio reactivity to flame parameters
         float currentFlamePower = params.power;
         float effectiveHeight = params.height;
-        
-        // Apply audio reactivity based on selected target
         if (AudioTarget == 0 || AudioTarget == 3) {
             effectiveHeight = lerp(params.height, params.height * (1.0 + (audioIntensity - 1.0) * 0.8), audioResponseFactor);
             effectiveHeight = max(FLAME_HEIGHT_MIN, effectiveHeight);
         }
-        
         if (AudioTarget == 1 || AudioTarget == 3) {
             currentFlamePower = lerp(params.power, params.power * audioIntensity, audioResponseFactor);
             currentFlamePower = max(0.0, currentFlamePower);
         }
-        
-        // --- Calculate Relative UVs (Base = 0,0, Y increases UPWARDS) ---
-        float2 flame_size_aspect_corrected = float2(params.width / ReShade::AspectRatio, effectiveHeight);
-        
-        // Apply zoom by scaling the effective size
-        flame_size_aspect_corrected *= params.zoom;
-        
+
+        // 3. Calculate flame base position in the *same* centered coordinate system
+        //    params.position is in [-1.5, 1.5]. Map [-1, 1] to the central square's [-0.5, 0.5] range.
+        float2 flame_screen_coords = params.position * 0.5;
+
+        // 4. Calculate pixel's position relative to the flame base in the rotated system
+        float2 diff = rotated_screen_coords - flame_screen_coords;
+
+        // 5. Normalize the relative position using flame dimensions expressed in screen_coords units
+        float normWidth = params.width * params.zoom; // Relative to screen height
+        float normHeight = effectiveHeight * params.zoom; // Relative to screen height
+
+        float2 flameDimInScreenCoords;
+        if (aspectRatio >= 1.0) { // Wide
+            flameDimInScreenCoords.x = normWidth * aspectRatio; // Width relative to Y span=1.0
+            flameDimInScreenCoords.y = normHeight;             // Height relative to Y span=1.0
+        } else { // Tall
+            flameDimInScreenCoords.x = normWidth;             // Width relative to X span=1.0
+            flameDimInScreenCoords.y = normHeight / aspectRatio; // Height relative to X span=1.0
+        }
+
         float2 rel_uv;
-        rel_uv.x = (uv.x - params.position.x) / flame_size_aspect_corrected.x;
-        rel_uv.y = (params.position.y - uv.y) / flame_size_aspect_corrected.y; // Y calculation for base-anchored flame
-        
-        // --- Bounding Box Check --- Avoid unnecessary calculations
+        // Avoid division by zero
+        rel_uv.x = (flameDimInScreenCoords.x > 1e-5) ? diff.x / flameDimInScreenCoords.x : 0.0;
+        // Negate diff.y because screen_coords.y increases downwards, but rel_uv.y increases upwards
+        rel_uv.y = (flameDimInScreenCoords.y > 1e-5) ? -diff.y / flameDimInScreenCoords.y : 0.0;
+
+        // --- Bounding Box Check --- Keep bounds slightly generous
         if (rel_uv.y >= -0.1 && rel_uv.y < 1.1 && abs(rel_uv.x) < 1.5) {
             // --- Calculate Flame Appearance ---
             float4 flame = AS_CandleFlame::proceduralFlame(
                 rel_uv, timer, currentFlamePower, currentSwayAngle, audioIntensity
             );
-            
-            // --- Debug Output (for first active flame) ---
+
+            // --- Debug Output ---
             if (DebugMode != AS_DEBUG_OFF && !hasDebugData && flame.a > 0.0) {
                 debugResult = flame;
                 hasDebugData = true;
             }
-            
+
             // --- Apply Effect ---
             if (flame.a > 0.0) {
-                float3 blended = AS_blendResult(finalResult.rgb, flame.rgb * flame.a, BlendMode); 
+                float3 blended = AS_blendResult(finalResult.rgb, flame.rgb * flame.a, BlendMode);
                 finalResult = float4(lerp(finalResult.rgb, blended, BlendAmount), orig.a);
             }
         }
     }
-    
+
     // Handle debug mode
     if (DebugMode != AS_DEBUG_OFF && hasDebugData) {
         float4 shapeMask = float4(debugResult.aaa, 1.0);
@@ -472,7 +506,7 @@ float4 PS_ProceduralDepthPlaneFlame(float4 pos : SV_Position, float2 uv : TEXCOO
         float4 colorDbg = float4(debugResult.rgb, 1.0);
         return AS_debugOutput(DebugMode, orig, shapeMask, audioDbg, colorDbg);
     }
-    
+
     return finalResult;
 }
 
