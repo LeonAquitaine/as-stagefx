@@ -144,6 +144,20 @@ AS-StageFX includes a variety of distinct visual effects:
       <img src="https://github.com/user-attachments/assets/c707583a-99a1-4463-a02f-cdefd2db3e6a" alt="Warp Distort Effect" style="max-width:100%;">
     </div></td>
   </tr>
+  <tr>
+    <td width="50%"><strong>VFX: Rainy Window</strong> (<code>AS_VFX_RainyWindow.1.fx</code>)<br>
+      Creates a realistic rainy window effect with multi-layered droplets that distort the scene behind them. Features adjustable rain density, glass roughness, and audio-reactive parameters that can be rotated to match any orientation.<br><em>Technique: [AS] VFX: Rainy Window</em></td>
+    <td width="50%"><div style="text-align:center">
+      <img src="https://placeholder-for-rainywindow-image" alt="Rainy Window Effect" style="max-width:100%;">
+    </div></td>
+  </tr>
+  <tr>
+    <td width="50%"><strong>VFX: Multi-Layer Halftone</strong> (<code>AS_VFX_MultiLayerHalftone.1.fx</code>)<br>
+      Applies customizable halftone screen patterns with multiple layers, varying dot sizes, and color controls. Provides classic comic/print style effects with options for blending and audio reactivity.<br><em>Technique: [AS] Multi-Layer Halftone</em></td>
+    <td width="50%"><div style="text-align:center">
+      <img src="https://placeholder-for-halftone-image" alt="Multi-Layer Halftone Effect" style="max-width:100%;">
+    </div></td>
+  </tr>
 </table>
 
 <table>
@@ -168,3 +182,19 @@ AS-StageFX includes a variety of distinct visual effects:
 The sample images used in this repository contain characters and stickers from Final Fantasy XIV. These elements are the intellectual property of Square Enix Co., Ltd. and are used here solely for demonstration purposes. All Final Fantasy XIV content is © SQUARE ENIX CO., LTD. All Rights Reserved.
 
 This shader collection is a fan-made project and is not affiliated with, endorsed by, or supported by Square Enix.
+
+---
+
+## Credits and Attributions
+
+Most shaders in the AS_StageFX collection are conversions and adaptations from original effects implemented for other engines, reimagined and enhanced for ReShade. We'd like to acknowledge the following contributors and inspirations:
+
+- **FencerDevLog** - Creator of the original Godot "Rainy Window" shader tutorial that inspired the `AS_VFX_RainyWindow` effect. Check out his work:
+  - Tutorial: [Godot 4: Rainy Window Shader](https://www.youtube.com/watch?v=QAOt24qV98c)
+  - Support his work: [FencerDevLog Patreon](https://www.patreon.com/c/FencerDevLog/posts)
+
+- **Listeningway** - Core audio integration by [gposingway](https://github.com/gposingway/Listeningway)
+
+- **ReShade Team** - For creating and maintaining the framework that makes these effects possible
+
+Many visual techniques in these shaders draw inspiration from classic demoscene effects, procedural texture generation methods, and various graphics programming resources. Each shader includes appropriate attributions in its header documentation.
