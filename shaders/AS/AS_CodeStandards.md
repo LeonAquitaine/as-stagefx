@@ -96,9 +96,15 @@ Organize uniforms in this exact order:
 3. **Effect-Specific Appearance** - Core parameters for the specific effect
 4. **Animation** - Time-based animation parameters 
 5. **Audio Reactivity** - Audio-reactive controls using standard macros
-6. **Stage Distance** - Depth parameters for positioning the effect
+6. **Stage** - Depth, rotation, and global positioning parameters
 7. **Final Mix** - Blend mode and strength settings
 8. **Debug** - Debug visualization options
+
+**UI Grouping:**
+- Use `ui_category = "Category Name";` consistently to group related parameters.
+- Follow the standard category order listed above.
+- For multi-instance effects (e.g., using `EFFECT_UI` macro), each instance should have its own category (e.g., `ui_category = "Effect " #index;`).
+- Use `ui_category_closed = true;` for categories that are less frequently accessed or for instances beyond the first one (e.g., `ui_category_closed = index > 1;`) to keep the UI cleaner by default.
 
 ### Tunable Constants
 ```hlsl
@@ -375,3 +381,61 @@ When implementing effects that support full-screen rotation (controlled via stan
      ```
 
 This approach ensures effects are placed correctly and maintain their aspect ratio regardless of screen dimensions or global rotation.
+
+## Lessons Learned from Implementation
+
+### Resolution-Independent Effect Rendering
+1. **Coordinate Space Transformations**: Always transform coordinates to a uniform space before effect calculations - use the central square (-1,-1) to (1,1) as a reference for all placement and calculations.
+
+2. **Normalize Before Rotating**: For rotation operations, always convert coordinates to normalized space first, then apply rotation. This prevents distortion in non-square resolutions.
+
+3. **Two-Phase Coordinate Handling**: 
+   - Use normalized coordinates for positional calculations (like relative positioning and angle calculations)
+   - Use screen-space coordinates for resolution-dependent calculations (like size relative to display dimensions)
+
+4. **Avoid Aspect Ratio Distortion**: When checking angles/directions, counteract aspect ratio distortion by applying the inverse of aspect ratio scaling to direction calculations:
+   ```hlsl
+   // Correct for aspect ratio distortion when checking angles
+   if (aspectRatio >= 1.0) { // Wide screen
+       dirVec.x /= aspectRatio; // Undo horizontal stretching
+   } else { // Tall screen
+       dirVec.y *= aspectRatio; // Undo vertical stretching
+   }
+   ```
+
+### Light Beam Rendering Guidelines
+1. **Multi-Component Falloff**: When rendering light beams or similar gradient effects, use multiple falloff components:
+   ```hlsl
+   // Central axis falloff
+   float radialFalloff = 1.0 - smoothstep(0.0, 0.9, normalizedPerpDist);
+   
+   // Length-based falloff
+   float distanceFalloff = 1.0 - smoothstep(0.0, radius, distance);
+   
+   // Combine falloffs with proper weighting
+   float finalIntensity = radialFalloff * distanceFalloff * baseIntensity;
+   ```
+
+2. **Avoid Hotspots & Artifacts**: For natural-looking light:
+   - Use non-linear falloff (pow, exp) with gentle exponents (0.5-1.5) for soft gradients
+   - Apply special case treatment for endpoints (source and termination points)
+   - Combine multiple falloff curves with different characteristics
+   - Avoid sharp transitions by using smoothstep with appropriate range values
+
+3. **Physically-Based Beam Shapes**: Use trigonometry to model light behavior:
+   ```hlsl
+   // Calculate cone width at different distances from source
+   float halfAngleRad = angleInDegrees * 0.5 * (AS_PI / 180.0);
+   float beamWidthAtDist = projectedDist * tan(halfAngleRad);
+   
+   // Calculate perpendicular distance from beam center axis
+   float perpDist = sqrt(1.0 - pow(dot(normalize(dirVec), spotDir), 2)) * dist;
+   
+   // Calculate normalized position within cone
+   float normalizedPerpDist = perpDist / beamWidthAtDist;
+   ```
+
+### Noise Function Usage
+When generating procedural effects, use the appropriate noise functions based on need:
+
+// ...existing code...
