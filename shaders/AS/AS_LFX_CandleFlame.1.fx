@@ -141,7 +141,6 @@ uniform float FlameRedBrightness < ui_type = "slider"; ui_min = FLAME_RED_BRIGHT
 // ============================================================================
 AS_SWAYSPEED_UI(SwaySpeed, "Animation")
 AS_SWAYANGLE_UI(SwayAngle, "Animation")
-AS_ROTATION_UI(FlameSnapRotation, FlameFineRotation, "Animation")
 uniform float HorizontalSpeed < ui_type = "slider"; ui_min = 0.0; ui_max = 5.0; ui_step = 0.01; ui_label = "Horizontal Noise Speed"; ui_tooltip = "Speed of side-to-side movement."; ui_category = "Animation"; > = 0.1;
 uniform float HorizontalSway < ui_type = "slider"; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_label = "Horizontal Sway Amount"; ui_tooltip = "Amplitude of side-to-side movement."; ui_category = "Animation"; > = 0.1;
 uniform float VerticalSpeed < ui_type = "slider"; ui_min = 0.0; ui_max = 5.0; ui_step = 0.01; ui_label = "Vertical Noise Speed"; ui_tooltip = "Speed of upward 'licking' / vertical distortion."; ui_category = "Animation"; > = 0.4;
@@ -157,9 +156,10 @@ AS_AUDIO_MULTIPLIER_UI(Flame_AudioMultiplier, "Intensity", 1.0, 2.0, "Audio Reac
 uniform int AudioTarget < ui_type = "combo"; ui_label = "Audio Target Parameter"; ui_tooltip = "Select which parameter will be affected by audio reactivity"; ui_items = "Flame Height\0Flame Power\0Sway Angle\0All Parameters\0"; ui_category = "Audio Reactivity"; > = 0; // Default to Flame Height
 
 // ============================================================================
-// STAGE DISTANCE
+// STAGE
 // ============================================================================
-AS_STAGEDEPTH_UI(StageDepth, "Distance", "Stage Distance")
+AS_STAGEDEPTH_UI(StageDepth, "Stage", "Stage")
+AS_ROTATION_UI(FlameSnapRotation, FlameFineRotation, "Stage")
 
 // ============================================================================
 // FINAL MIX
