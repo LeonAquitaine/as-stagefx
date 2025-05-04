@@ -79,13 +79,13 @@ static const float BOKEH_STRENGTH_DEFAULT = 0.7;
 #define SPOTLIGHT_UI(index, defaultEnable, defaultColor, defaultPosition, \
                     defaultRadius, defaultIntensity, defaultAngle, defaultDirection, \
                     defaultSwaySpeed, defaultSwayAngle, defaultAudioSource, defaultAudioMult) \
-uniform bool Spot##index##_Enable < ui_label = "Enable Spotlight " #index; ui_tooltip = "Toggle this spotlight on or off."; ui_category = "Light Beam " #index; ui_category_closed = index > 2; > = defaultEnable; \
+uniform bool Spot##index##_Enable < ui_label = "Enable Spotlight " #index; ui_tooltip = "Toggle this spotlight on or off."; ui_category = "Light Beam " #index; ui_category_closed = index > 1; > = defaultEnable; \
 uniform float3 Spot##index##_Color < ui_type = "color"; ui_label = "Color"; ui_category = "Light Beam " #index; > = defaultColor; \
-uniform float2 Spot##index##_Position < ui_type = "drag"; ui_label = "Position"; ui_min = -0.2; ui_max = 1.2; ui_category = "Light Beam " #index; > = defaultPosition; \
-uniform float Spot##index##_Radius < ui_type = "slider"; ui_label = "Size"; ui_min = SPOT_RADIUS_MIN; ui_max = SPOT_RADIUS_MAX; ui_category = "Light Beam " #index; > = defaultRadius; \
+uniform float2 Spot##index##_Position < ui_type = "slider"; ui_label = "Position (X, Y)"; ui_tooltip = "Screen position for the spotlight source. (0,0) is center, [-1, 1] covers the central square."; ui_min = -1.5; ui_max = 1.5; ui_step = 0.01; ui_category = "Light Beam " #index; > = defaultPosition; /* Updated range and tooltip */ \
+uniform float Spot##index##_Radius < ui_type = "slider"; ui_label = "Size"; ui_tooltip = "Radius of the spotlight cone relative to screen height."; ui_min = SPOT_RADIUS_MIN; ui_max = SPOT_RADIUS_MAX; ui_category = "Light Beam " #index; > = defaultRadius; /* Updated tooltip */ \
 uniform float Spot##index##_Intensity < ui_type = "slider"; ui_label = "Intensity"; ui_min = SPOT_INTENSITY_MIN; ui_max = SPOT_INTENSITY_MAX; ui_category = "Light Beam " #index; > = defaultIntensity; \
 uniform float Spot##index##_Angle < ui_type = "slider"; ui_label = "Opening"; ui_min = SPOT_ANGLE_MIN; ui_max = SPOT_ANGLE_MAX; ui_category = "Light Beam " #index; > = defaultAngle; \
-uniform float Spot##index##_Direction < ui_type = "slider"; ui_label = "Direction"; ui_min = SPOT_DIRECTION_MIN; ui_max = SPOT_DIRECTION_MAX; ui_category = "Light Beam " #index; > = defaultDirection; \
+uniform float Spot##index##_Direction < ui_type = "slider"; ui_label = "Direction"; ui_tooltip = "Base direction angle in degrees (0=down, 90=right, -90=left)."; ui_min = SPOT_DIRECTION_MIN; ui_max = SPOT_DIRECTION_MAX; ui_category = "Light Beam " #index; > = defaultDirection; /* Updated tooltip */ \
 uniform float Spot##index##_SwaySpeed < ui_type = "slider"; ui_label = "Speed"; ui_min = SPOT_SWAYSPEED_MIN; ui_max = SPOT_SWAYSPEED_MAX; ui_category = "Light Beam " #index; > = defaultSwaySpeed; \
 uniform float Spot##index##_SwayAngle < ui_type = "slider"; ui_label = "Sway"; ui_min = SPOT_SWAYANGLE_MIN; ui_max = SPOT_SWAYANGLE_MAX; ui_category = "Light Beam " #index; > = defaultSwayAngle; \
 uniform int Spot##index##_AudioSource < ui_type = "combo"; ui_label = "Source"; ui_items = "Volume\0Beat\0Bass\0Mid\0Treble\0"; ui_category = "Light Beam " #index; > = defaultAudioSource; \
@@ -95,24 +95,24 @@ uniform float Spot##index##_AudioMult < ui_type = "slider"; ui_label = "Source I
 // SPOTLIGHT CONTROLS (Using the macro)
 // ============================================================================
 
-// Spotlight A controls
-SPOTLIGHT_UI(1, true, float3(0.3, 0.6, 1.0), float2(0.2, 0.17), 
-            SPOT_RADIUS_DEFAULT, SPOT_INTENSITY_DEFAULT, SPOT_ANGLE_DEFAULT, 30.0,
+// Spotlight A controls - Centered top
+SPOTLIGHT_UI(1, true, float3(0.3, 0.6, 1.0), float2(0.0, -1.0), 
+            SPOT_RADIUS_DEFAULT, SPOT_INTENSITY_DEFAULT, SPOT_ANGLE_DEFAULT, 0.0, /* Pointing down */
             SPOT_SWAYSPEED_DEFAULT, SPOT_SWAYANGLE_DEFAULT, 1, SPOT_AUDIOMULT_DEFAULT)
 
-// Spotlight B controls
-SPOTLIGHT_UI(2, false, float3(1.0, 0.5, 0.2), float2(0.7, 0.35), 
-            SPOT_RADIUS_DEFAULT, SPOT_INTENSITY_DEFAULT, SPOT_ANGLE_DEFAULT, SPOT_DIRECTION_DEFAULT,
+// Spotlight B controls - Left side
+SPOTLIGHT_UI(2, false, float3(1.0, 0.5, 0.2), float2(-1.0, 0.0),
+            SPOT_RADIUS_DEFAULT, SPOT_INTENSITY_DEFAULT, SPOT_ANGLE_DEFAULT, 90.0, /* Pointing right */
             SPOT_SWAYSPEED_DEFAULT, SPOT_SWAYANGLE_DEFAULT, 1, SPOT_AUDIOMULT_DEFAULT)
 
-// Spotlight C controls
-SPOTLIGHT_UI(3, false, float3(0.8, 0.3, 1.0), float2(0.5, 0.22), 
-            SPOT_RADIUS_DEFAULT, SPOT_INTENSITY_DEFAULT, SPOT_ANGLE_DEFAULT, SPOT_DIRECTION_DEFAULT,
+// Spotlight C controls - Right side
+SPOTLIGHT_UI(3, false, float3(0.8, 0.3, 1.0), float2(1.0, 0.0),
+            SPOT_RADIUS_DEFAULT, SPOT_INTENSITY_DEFAULT, SPOT_ANGLE_DEFAULT, -90.0, /* Pointing left */
             SPOT_SWAYSPEED_DEFAULT, SPOT_SWAYANGLE_DEFAULT, 1, SPOT_AUDIOMULT_DEFAULT)
 
-// Spotlight D controls
-SPOTLIGHT_UI(4, false, float3(0.2, 1.0, 0.5), float2(0.5, 0.5), 
-            SPOT_RADIUS_DEFAULT, SPOT_INTENSITY_DEFAULT, SPOT_ANGLE_DEFAULT, SPOT_DIRECTION_DEFAULT,
+// Spotlight D controls - Bottom center
+SPOTLIGHT_UI(4, false, float3(0.2, 1.0, 0.5), float2(0.0, 1.0),
+            SPOT_RADIUS_DEFAULT, SPOT_INTENSITY_DEFAULT, SPOT_ANGLE_DEFAULT, 180.0, /* Pointing up */
             SPOT_SWAYSPEED_DEFAULT, SPOT_SWAYANGLE_DEFAULT, 1, SPOT_AUDIOMULT_DEFAULT)
 
 // --- Bokeh Settings ---
@@ -120,9 +120,9 @@ uniform float BokehDensity < ui_type = "slider"; ui_label = "Density"; ui_min = 
 uniform float BokehSize < ui_type = "slider"; ui_label = "Size"; ui_min = BOKEH_SIZE_MIN; ui_max = BOKEH_SIZE_MAX; ui_category = "Stage Effects"; > = BOKEH_SIZE_DEFAULT;
 uniform float BokehStrength < ui_type = "slider"; ui_label = "Strength"; ui_min = BOKEH_STRENGTH_MIN; ui_max = BOKEH_STRENGTH_MAX; ui_category = "Stage Effects"; > = BOKEH_STRENGTH_DEFAULT;
 
-// --- Stage Depth Control ---
-// Standardized stage depth control
-AS_STAGEDEPTH_UI(StageDepth, "Distance", "Stage Distance")
+// --- Stage Settings ---
+AS_STAGEDEPTH_UI(StageDepth, "Distance", "Stage") // Renamed category
+AS_ROTATION_UI(GlobalSnapRotation, GlobalFineRotation, "Stage") // Added global rotation
 
 // --- Blend Settings ---
 // Using the new macro with Additive (3) as the default blend mode
@@ -211,102 +211,167 @@ SpotlightParams GetSpotlightParams(int spotIndex) {
     return params;
 }
 
-// Process a single spotlight
-float3 ProcessSpotlight(float2 uv, SpotlightParams params, out float maskValue) {
+// Process a single spotlight in the normalized central square space
+float3 ProcessSpotlight(float2 diff, SpotlightParams params, out float maskValue) { 
     // Skip processing if spotlight is disabled
     maskValue = 0.0;
     if (!params.enable) return float3(0, 0, 0);
     
-    float coneLength = 0.7;
-    float coneSoft = 0.18;
+    // --- Initial setup ---
     float time = AS_getTime();
+    float dist = length(diff);
     
-    // Use only standard non-audio-reactive sway
+    // Skip early if we're far beyond the maximum radius (optimization)
+    if (dist > params.radius * 1.2) return float3(0, 0, 0);
+    
+    // Calculate sway
     float sway = 0.0;
     if (params.swaySpeed > 0.0 && params.swayAngle > 0.0) {
         sway = AS_applySway(params.swayAngle, params.swaySpeed);
     }
     
+    // Final direction angle including sway
     float dirAngle = AS_radians(params.direction) + sway;
+    float2 spotDir = float2(sin(dirAngle), -cos(dirAngle)); // Y negated for downwards convention
     
-    // Map the UI audio source value to the correct AS_AUDIO constants
+    // --- Audio Reactivity ---
+    // Map UI audio source value to the correct AS_AUDIO constants
     int mappedAudioSource;
     switch(params.audioSource) {
-        case 0: mappedAudioSource = AS_AUDIO_VOLUME; break; // Volume
-        case 1: mappedAudioSource = AS_AUDIO_BEAT; break;   // Beat
-        case 2: mappedAudioSource = AS_AUDIO_BASS; break;   // Bass
-        case 3: mappedAudioSource = AS_AUDIO_MID; break;    // Mid
-        case 4: mappedAudioSource = AS_AUDIO_TREBLE; break; // Treble
-        default: mappedAudioSource = AS_AUDIO_SOLID; break; // Fallback to solid
+        case 0: mappedAudioSource = AS_AUDIO_VOLUME; break;
+        case 1: mappedAudioSource = AS_AUDIO_BEAT; break;
+        case 2: mappedAudioSource = AS_AUDIO_BASS; break;
+        case 3: mappedAudioSource = AS_AUDIO_MID; break;
+        case 4: mappedAudioSource = AS_AUDIO_TREBLE; break;
+        default: mappedAudioSource = AS_AUDIO_SOLID; break;
     }
     
-    // Get audio value using standardized function with corrected mapping
+    // Get audio value and calculate intensity
     float audioVal = AS_getAudioSource(mappedAudioSource);
-    
-    float2 uv_screen = AS_rescaleToScreen(uv);
-    float2 pos_screen = AS_rescaleToScreen(params.position);
-    float2 rel = uv_screen - pos_screen;
-    float dist = length(rel) / (coneLength * BUFFER_HEIGHT);
-    float2 spotDir = float2(sin(dirAngle), cos(dirAngle));
-    float dirDot = clamp(dot(normalize(rel), spotDir), -1.0, 1.0);
-    float coneCos = cos(AS_radians(clamp(params.angle, 10.0, 160.0)) * 0.5);
-    float angleMask = (dirDot >= coneCos && dist <= 1.0) ? smoothstep(coneCos, 1.0, dirDot) : 0.0;
-    float edge = smoothstep(params.radius, params.radius + coneSoft, dist);
-    
-    // Apply Source Intensity correctly
-    // New formula: (User-selected baseline Intensity) + (Source * Source Intensity)
     float sourceIntensity = params.audioMult * audioVal;
     float intensity = params.intensity + sourceIntensity;
     
-    float val = (1.0 - edge) * angleMask * intensity * (1.0 - dist);
-    maskValue = val;
+    // --- Core Light Beam Calculation ---
+    // 1. Calculate angle to light direction
+    float dirDot = 0.0;
+    if (dist > 1e-5) {
+        // For normal pixels: calculate projection onto light direction
+        dirDot = dot(normalize(-diff), spotDir);
+    } else {
+        // For pixels at origin: use full intensity
+        dirDot = 1.0;
+    }
     
-    // Return the spotlight color contribution
-    return params.color * val;
+    // 2. Calculate cone angle parameters
+    float halfAngleRad = AS_radians(clamp(params.angle, SPOT_ANGLE_MIN, SPOT_ANGLE_MAX)) * 0.5;
+    float coneCos = cos(halfAngleRad);
+    float tanHalfAngle = tan(halfAngleRad);
+    
+    // 3. Calculate angular mask with smooth falloff at cone edges
+    float edgeSoftness = 0.1;
+    float angleFactor = smoothstep(coneCos - edgeSoftness, coneCos + edgeSoftness * 0.5, dirDot);
+    
+    // Early exit if outside the cone angle
+    if (angleFactor <= 0.001) {
+        maskValue = 0.0;
+        return float3(0, 0, 0);
+    }
+    
+    // 4. Calculate beam shape parameters
+    float projectedDist = dist * dirDot; // Distance along beam axis
+    float perpDist = dist * sqrt(1.0 - dirDot * dirDot); // Distance perpendicular to beam axis
+    
+    // 5. Calculate the expected beam width at this distance
+    float beamWidthAtDist = max(projectedDist * tanHalfAngle, 0.001);
+    
+    // 6. Calculate normalized position within the cone
+    float normalizedPerpDist = perpDist / beamWidthAtDist;
+    
+    // 7. Apply radial falloff from center beam axis with:
+    //    - Smoother gradient near center
+    //    - Stronger falloff near edges
+    float radialFalloff = 1.0 - smoothstep(0.0, 0.9, pow(normalizedPerpDist, 0.8));
+    
+    // 8. Apply length-based falloff with multiple components
+    
+    // Primary falloff: stronger at the far end of beam
+    float primaryFalloff = 1.0 - smoothstep(0.0, params.radius, projectedDist);
+    
+    // Secondary falloff: to create more natural long-distance attenuation
+    float secondaryFalloff = 1.0 - smoothstep(0.0, params.radius * 0.7, projectedDist);
+    secondaryFalloff = pow(secondaryFalloff, 0.7); // Power < 1 creates gentler gradient
+    
+    // Distance falloff: prevents the spear artifact by ensuring smooth transition at beam end
+    float distanceFalloff = lerp(secondaryFalloff, primaryFalloff, 0.7);
+    
+    // 9. Apply special treatment for the beam tip to eliminate "spear" artifact
+    // Calculate how close we are to the beam's maximum extent
+    float beamEndFactor = smoothstep(params.radius * 0.6, params.radius, projectedDist);
+    
+    // Apply extra radial falloff near the beam end to soften the tip
+    radialFalloff *= 1.0 - (beamEndFactor * normalizedPerpDist * 0.7);
+    
+    // 10. Combine all factors for final mask
+    float beamIntensity = radialFalloff * angleFactor * distanceFalloff * intensity;
+    
+    // Apply extra dampening at the very tip of the beam
+    beamIntensity *= 1.0 - (beamEndFactor * beamEndFactor * 0.5);
+    
+    maskValue = saturate(beamIntensity);
+    return params.color * maskValue;
 }
 
 // ============================================================================
 // MAIN SHADER FUNCTIONS
 // ============================================================================
 
-float3 renderSpotlights(float2 uv, float audioPulse, out float3 spotSum, out float3 spotMask) {
+// Updated renderSpotlights to use the centered 1:1 aspect ratio central square space
+float3 renderSpotlights(float2 texcoord, float audioPulse, out float3 spotSum, out float3 spotMask) {
     float3 color = 0;
     float3 mask = 0;
     float3 sum = 0;
+    float aspectRatio = ReShade::AspectRatio;
     
-    // Process each spotlight using the parameter structure
+    // Step 1: Convert texcoord [0,1] to normalized central square space [-1,1]
+    // This creates the uniform coordinate space where the central square is exactly [-1,1]²
+    float2 uv_norm;
+    if (aspectRatio >= 1.0) { // Wider or square
+        uv_norm.x = (texcoord.x - 0.5) * 2.0 * aspectRatio;
+        uv_norm.y = (texcoord.y - 0.5) * 2.0;
+    } else { // Taller
+        uv_norm.x = (texcoord.x - 0.5) * 2.0;
+        uv_norm.y = (texcoord.y - 0.5) * 2.0 / aspectRatio;
+    }
+    // uv_norm is now in a system where the central square is exactly [-1,1]² regardless of aspect ratio
+    
+    // Step 2: Apply inverse global rotation
+    float globalRotation = AS_getRotationRadians(GlobalSnapRotation, GlobalFineRotation);
+    float sinRot = sin(-globalRotation);
+    float cosRot = cos(-globalRotation);
+    float2 rotated_uv;
+    rotated_uv.x = uv_norm.x * cosRot - uv_norm.y * sinRot;
+    rotated_uv.y = uv_norm.x * sinRot + uv_norm.y * cosRot;
+    
+    // Process each spotlight
     for (int i = 0; i < SPOTLIGHT_COUNT; i++) {
         SpotlightParams params = GetSpotlightParams(i);
-        float maskValue;
+        if (!params.enable) continue; // Skip disabled
         
-        // Process this spotlight
-        float3 spotColor = ProcessSpotlight(uv, params, maskValue);
+        // Spotlight positions are already in [-1.5, 1.5] range where [-1,1] is the central square
+        // Note: No need to scale position by 0.5 since we're using a [-1,1] system, not [-0.5,0.5]
+        float2 effect_pos = params.position;
+        
+        // Calculate difference in the rotated uniform space
+        float2 diff = rotated_uv - effect_pos;
+        
+        // Process spotlight in uniform space
+        float maskValue;
+        float3 spotColor = ProcessSpotlight(diff, params, maskValue);
         
         // Accumulate results
         color += spotColor;
         mask += maskValue;
-        
-        // For bokeh, we want a sum of colors even without considering intensity
-        float edge = 0.0;
-        if (params.enable) {
-            float2 uv_screen = AS_rescaleToScreen(uv);
-            float2 pos_screen = AS_rescaleToScreen(params.position);
-            float2 rel = uv_screen - pos_screen;
-            float dist = length(rel) / (0.7 * BUFFER_HEIGHT);
-            edge = smoothstep(params.radius, params.radius + 0.18, dist);
-            
-            float dirAngle = AS_radians(params.direction);
-            if (params.swaySpeed > 0.0 && params.swayAngle > 0.0) {
-                dirAngle += AS_applySway(params.swayAngle, params.swaySpeed);
-            }
-            
-            float2 spotDir = float2(sin(dirAngle), cos(dirAngle));
-            float dirDot = clamp(dot(normalize(rel), spotDir), -1.0, 1.0);
-            float coneCos = cos(AS_radians(clamp(params.angle, 10.0, 160.0)) * 0.5);
-            float angleMask = (dirDot >= coneCos && dist <= 1.0) ? smoothstep(coneCos, 1.0, dirDot) : 0.0;
-            
-            sum += params.color * (1.0 - edge) * angleMask;
-        }
+        sum += params.color * maskValue;
     }
     
     spotSum = sum;
@@ -314,18 +379,27 @@ float3 renderSpotlights(float2 uv, float audioPulse, out float3 spotSum, out flo
     return color;
 }
 
-float3 renderBokeh(float2 uv, float3 spotSum) {
+float3 renderBokeh(float2 uv, float3 spotSum) { 
     float3 bokeh = 0;
-    float2 uv_screen = AS_rescaleToScreen(uv);
-    float2 seed = uv_screen * 0.1 + frameCount * 0.01;
-    for (int i = 0; i < 8; ++i) {
+    float2 uv_screen = uv * float2(BUFFER_WIDTH, BUFFER_HEIGHT);
+    float2 seed = uv_screen * 0.1 + AS_getTime() * 10.0;
+    
+    const int BOKEH_SAMPLES = 8;
+    for (int i = 0; i < BOKEH_SAMPLES; ++i) {
         float2 rnd = AS_hash21(seed + i * 12.9898);
-        float2 pos = rnd * float2(BUFFER_WIDTH, BUFFER_HEIGHT);
-        float size = BokehSize * (0.7 + rnd.x * 0.6) * BUFFER_HEIGHT;
-        float fade = exp(-dot(uv_screen - pos, uv_screen - pos) / (size * size));
-        bokeh += spotSum * fade * BokehStrength * BokehDensity;
+        
+        // Place bokeh relative to screen center
+        float screenMinDim = min(BUFFER_WIDTH, BUFFER_HEIGHT);
+        float2 pos_offset = (rnd * 2.0 - 1.0) * screenMinDim * 0.5;
+        float2 pos = float2(BUFFER_WIDTH, BUFFER_HEIGHT) * 0.5 + pos_offset;
+        
+        float size = BokehSize * (0.7 + rnd.x * 0.6) * screenMinDim * 0.1;
+        float dist_sq = dot(uv_screen - pos, uv_screen - pos);
+        float fade = exp(-dist_sq / max(size * size, 1e-5));
+        
+        bokeh += spotSum * fade;
     }
-    return bokeh;
+    return bokeh * BokehStrength * BokehDensity / BOKEH_SAMPLES;
 }
 
 float4 PS_Spotlights(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target {
@@ -340,10 +414,10 @@ float4 PS_Spotlights(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_
         return orig;
     
     // Calculate spotlight and bokeh effects
-    float2 uv = texcoord;
+    // Note: The coordinate transformation now happens inside renderSpotlights
     float3 spotSum, spotMask;
-    float3 spotlights = renderSpotlights(uv, 0.0, spotSum, spotMask); // Using 0.0 as we don't need global audio pulse
-    float3 bokeh = renderBokeh(uv, spotSum);
+    float3 spotlights = renderSpotlights(texcoord, 0.0, spotSum, spotMask);
+    float3 bokeh = renderBokeh(texcoord, spotSum);
     
     // Handle debug modes
     if (DebugMode == 1) return float4(spotlights, 1.0);
@@ -354,7 +428,6 @@ float4 PS_Spotlights(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_
     fx = saturate(fx);
     
     // Apply appropriate blend mode
-    // For lighting effects, Screen or Additive blend mode works best
     float3 blended = AS_blendResult(orig.rgb, fx, BlendMode);
     float3 result = lerp(orig.rgb, blended, BlendAmount);
     
