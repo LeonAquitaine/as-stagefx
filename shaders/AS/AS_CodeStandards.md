@@ -438,4 +438,79 @@ This approach ensures effects are placed correctly and maintain their aspect rat
 ### Noise Function Usage
 When generating procedural effects, use the appropriate noise functions based on need:
 
-// ...existing code...
+### Texture-Based Effects
+1. **Preprocessor-Based Texture UI**: For texture resources that need to appear in the UI, use preprocessor definitions:
+   ```hlsl
+   #ifndef TEXTURE_PATH
+   #define TEXTURE_PATH "default.png" // Default texture path
+   #endif
+
+   texture EffectTexture < source = TEXTURE_PATH; ui_label = "Effect Texture"; > 
+   { Width = 256; Height = 256; Format = RGBA8; };
+   ```
+
+2. **Texture UI Visibility Helpers**: Add UI elements to ensure texture selection is visible:
+   ```hlsl
+   uniform bool RefreshUI < source = "key"; keycode = 13; mode = "toggle"; 
+      ui_label = " "; ui_text = "Press Enter to refresh UI"; 
+      ui_category = "Texture Settings"; > = false;
+   ```
+
+3. **Multiple Resolution Handling**: For repeated texture patterns, scale sampling based on resolution:
+   ```hlsl
+   float resolutionScale = (float)BUFFER_HEIGHT / 1080.0;
+   float2 scaledUV = uv * resolutionScale; // Larger screens = denser patterns
+   float noiseValue = tex2D(NoiseSampler, scaledUV).r;
+   ```
+
+### Rotated Distortion Effects
+1. **Separation of Rotation and Sampling**: When implementing rotated distortion effects:
+   - Calculate the distortion vectors using the rotated coordinates
+   - Apply the resulting distortion to the original (non-rotated) texture coordinates
+   ```hlsl
+   // Calculate distortion in rotated space
+   float2 rotatedUV = ApplyRotationTransform(texcoord, rotation);
+   float2 distortionVector = CalculateDistortion(rotatedUV);
+   
+   // Apply distortion to original texcoord (not rotated texcoord)
+   float2 distortedUV = texcoord + distortionVector;
+   float4 result = tex2D(ReShade::BackBuffer, distortedUV);
+   ```
+
+2. **Aspect Ratio Correction for Distortion Vectors**: When applying distortion calculated in a rotated/normalized space:
+   ```hlsl
+   // Calculate distortion in normalized/rotated space
+   float2 distortion = CalculateDistortion(normalizedUV);
+   
+   // Correct the distortion vector for aspect ratio before applying
+   distortion.x /= ReShade::AspectRatio;
+   
+   // Apply the corrected distortion to the original coordinates
+   float2 finalUV = texcoord + distortion * intensity;
+   ```
+
+3. **Safe Texture Sampling**: Always clamp distorted texture coordinates to prevent sampling outside valid range:
+   ```hlsl
+   distortedUV = clamp(distortedUV, 0.0, 1.0);
+   float4 result = tex2D(ReShade::BackBuffer, distortedUV);
+   ```
+
+### Audio Reactivity for Visual Parameters
+1. **Parameter-Specific Audio Targeting**: Instead of applying audio to all parameters, let users select which parameter to affect:
+   ```hlsl
+   uniform int AudioTarget < ui_type = "combo"; ui_label = "Audio Target Parameter";
+      ui_items = "None\0Parameter A\0Parameter B\0"; > = 0;
+      
+   // In pixel shader
+   if (AudioTarget == 1) { // Parameter A
+       paramA = baseParamA + (baseParamA * audioValue * scaleFactor);
+   } else if (AudioTarget == 2) { // Parameter B
+       paramB = saturate(baseParamB + (baseParamB * audioValue * scaleFactor));
+   }
+   ```
+
+2. **Multiple Parameter Types**: Include parameters that affect different aspects of the visual effect:
+   - Size/scale parameters (droplet size, pattern density)
+   - Intensity/strength parameters (distortion amount, effect opacity)
+   - Texture/roughness parameters (surface details, noise intensity)
+   - Speed/animation parameters (movement rate, oscillation frequency)
