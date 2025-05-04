@@ -1,19 +1,23 @@
 /**
  * AS_VFX_RainyWindow.1.fx - Dynamic rain droplet distortion effect for windows
- * Author: Leon Aquitaine (Adapted from Godot shader, modified with Gemini's help)
+ * Author: Leon Aquitaine (Adapted from Godot shader by FencerDevLog)
  * License: Creative Commons Attribution 4.0 International
+ * 
+ * Original inspiration: "Godot 4: Rainy window shader (tutorial)" by FencerDevLog
+ * Source: https://www.youtube.com/watch?v=QAOt24qV98c
+ * FencerDevLog's Patreon: https://www.patreon.com/c/FencerDevLog/posts
  *
  * DESCRIPTION: Creates a realistic rainy window effect with multi-layered droplets that
  * distort the scene behind them. Includes customizable rain density, speed, and droplet size.
  * Attempts to closely match the logic of a specific Godot CanvasItem shader.
  *
  * FEATURES:
- * - Multi-layered raindrops with variable scale and speed (from Godot)
- * - Texture-based noise for droplet pattern (matches Godot)
- * - Sharp droplet shape (matches Godot)
+ * - Multi-layered raindrops with variable scale and speed
+ * - Texture-based noise for droplet pattern
+ * - Sharp droplet shape
  * - Adjustable rain density and droplet grid size
- * - Audio reactivity for dynamic rain intensity (ReShade addition)
- * - Aspect ratio independent rendering (corrected logic)
+ * - Audio reactivity for dynamic rain intensity
+ * - Aspect ratio independent rendering
  * - Resolution scaling to maintain consistent appearance across displays
  *
  * IMPLEMENTATION:
@@ -206,17 +210,18 @@ float4 PS_RainyWindow(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV
 
     if (AudioTarget > 0) {
         float audioValue = AS_applyAudioReactivity(1.0, Rain_AudioSource, Rain_AudioMultiplier, true) - 1.0;
-        if (AudioTarget == 1) {
-            dropSizeFinal = DropSize + (DropSize * audioValue * 0.5);
-        } else if (AudioTarget == 2) {
-            float roughnessChange = GlassRoughness * audioValue * 0.8;
-            glassRoughnessFinal = saturate(GlassRoughness + roughnessChange);
+        if (AudioTarget == 1) { // Drop Size
+            dropSizeFinal = saturate(DropSize + (DropSize * audioValue * 0.5));
+        } else if (AudioTarget == 2) { // Glass Roughness
+            glassRoughnessFinal = saturate(GlassRoughness + (GlassRoughness * audioValue * 0.8));
         }
     }
 
     // --- Calculate rain distortion vector ---
     float2 gridSize = float2(GridSizeX, GridSizeY) * resolutionScale;
     float2 drops = float2(0.0, 0.0);
+    
+    // Multi-layer approach with scaling factors
     drops =  AS_RainyWindow::drop_layer(calc_uv,       time,         gridSize, dropSizeFinal, glassRoughnessFinal);
     drops += AS_RainyWindow::drop_layer(calc_uv * 2.0, time * 1.5,   gridSize, dropSizeFinal, glassRoughnessFinal) * 0.5;
     drops += AS_RainyWindow::drop_layer(calc_uv * 4.0, time * 2.0,   gridSize, dropSizeFinal, glassRoughnessFinal) * 0.25;
@@ -224,7 +229,7 @@ float4 PS_RainyWindow(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV
     // Correct aspect ratio of the distortion vector
     drops.x /= aspectRatio;
 
-    // --- Key change: Apply the distortion to the original texcoord, not the rotated one ---
+    // --- Apply the distortion to the original texcoord, not the rotated one ---
     // This ensures we sample from the non-rotated backbuffer
     float2 distortedUV = texcoord + drops * dropImpactFinal;
     
@@ -235,9 +240,8 @@ float4 PS_RainyWindow(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV
     float4 result = tex2D(ReShade::BackBuffer, distortedUV);
 
     // --- Debug visualization ---
-    float4 debugDropsViz = float4(0.5 + drops * 10.0, 0.5, 1.0);
     if (DebugMode == 1) {
-        return debugDropsViz;
+        return float4(0.5 + drops * 10.0, 0.5, 1.0); // Visualization of displacement vectors
     }
 
     // --- Final blend ---

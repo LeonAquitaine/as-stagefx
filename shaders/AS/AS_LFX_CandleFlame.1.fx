@@ -1,7 +1,11 @@
 /**
  * AS_LFX_CandleFlame.1.fx - Procedural Candle Flame Effect
- * Author: Leon Aquitaine
+ * Author: Leon Aquitaine (Adapted from Godot shader by FencerDevLog)
  * License: Creative Commons Attribution 4.0 International
+ * 
+ * Original inspiration: "Godot 4: Candle flame shader (tutorial)" by FencerDevLog
+ * Source: https://www.youtube.com/watch?v=6ZZVwbzE8cw
+ * FencerDevLog's Patreon: https://www.patreon.com/c/FencerDevLog/posts
  * 
  * DESCRIPTION:
  * Generates an animated procedural candle flame effect, rendered as if existing
@@ -94,8 +98,8 @@ static const float FLAME_ZOOM_DEFAULT = 1.0;
 uniform bool Flame##index##_Enable < ui_label = "Enable Flame " #index; ui_tooltip = "Toggle this flame on or off."; ui_category = "Flame " #index; ui_category_closed = index > 1; > = defaultEnable; \
 uniform float2 Flame##index##_Position < ui_type = "slider"; ui_label = "Position (X, Y)"; ui_tooltip = "Screen position for the flame base. (0,0) is center, [-1, 1] covers the central square."; ui_min = -1.5; ui_max = 1.5; ui_step = 0.01; ui_category = "Flame " #index; > = defaultPosition; \
 uniform float Flame##index##_Zoom < ui_type = "slider"; ui_min = FLAME_ZOOM_MIN; ui_max = FLAME_ZOOM_MAX; ui_step = 0.05; ui_label = "Zoom"; ui_tooltip = "Overall zoom factor for the flame."; ui_category = "Flame " #index; > = defaultZoom; \
-uniform float Flame##index##_Height < ui_type = "slider"; ui_min = FLAME_HEIGHT_MIN; ui_max = FLAME_HEIGHT_MAX; ui_label = "Height"; ui_tooltip = "Overall height scale of the flame."; ui_category = "Flame " #index; > = defaultHeight; \
-uniform float Flame##index##_Width < ui_type = "slider"; ui_min = FLAME_WIDTH_MIN; ui_max = FLAME_WIDTH_MAX; ui_label = "Width"; ui_tooltip = "Overall width scale of the flame."; ui_category = "Flame " #index; > = defaultWidth; \
+uniform float Flame##index##_Height < ui_type = "slider"; ui_min = FLAME_HEIGHT_MIN; ui_max = FLAME_HEIGHT_MAX; ui_step = 0.01; ui_label = "Height"; ui_tooltip = "Overall height scale of the flame."; ui_category = "Flame " #index; > = defaultHeight; \
+uniform float Flame##index##_Width < ui_type = "slider"; ui_min = FLAME_WIDTH_MIN; ui_max = FLAME_WIDTH_MAX; ui_step = 0.01; ui_label = "Width"; ui_tooltip = "Overall width scale of the flame."; ui_category = "Flame " #index; > = defaultWidth; \
 uniform float Flame##index##_Curve < ui_type = "slider"; ui_min = FLAME_CURVE_MIN; ui_max = FLAME_CURVE_MAX; ui_step = 0.05; ui_label = "Tip Shape"; ui_tooltip = "Controls the flame tip shape (0.5=round, >1=pointy)."; ui_category = "Flame " #index; > = defaultCurve; \
 uniform float Flame##index##_Power < ui_type = "slider"; ui_min = FLAME_POWER_MIN; ui_max = FLAME_POWER_MAX; ui_step = 0.01; ui_label = "Brightness"; ui_tooltip = "Overall brightness / intensity multiplier."; ui_category = "Flame " #index; > = defaultPower;
 

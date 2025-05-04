@@ -189,8 +189,9 @@ This shader collection is a fan-made project and is not affiliated with, endorse
 
 Most shaders in the AS_StageFX collection are conversions and adaptations from original effects implemented for other engines, reimagined and enhanced for ReShade. We'd like to acknowledge the following contributors and inspirations:
 
-- **FencerDevLog** - Creator of the original Godot "Rainy Window" shader tutorial that inspired the `AS_VFX_RainyWindow` effect. Check out his work:
-  - Tutorial: [Godot 4: Rainy Window Shader](https://www.youtube.com/watch?v=QAOt24qV98c)
+- **FencerDevLog** - Creator of the original Godot shader tutorials that inspired multiple effects in this collection:
+  - Rainy Window shader: [Godot 4: Rainy Window Shader](https://www.youtube.com/watch?v=QAOt24qV98c)
+  - Candle Flame shader: [Godot 4: Candle Flame Shader](https://www.youtube.com/watch?v=6ZZVwbzE8cw)
   - Support his work: [FencerDevLog Patreon](https://www.patreon.com/c/FencerDevLog/posts)
 
 - **Listeningway** - Core audio integration by [gposingway](https://github.com/gposingway/Listeningway)
