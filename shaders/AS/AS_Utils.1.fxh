@@ -1,22 +1,9 @@
 /**
- * AS_Utils.1.fxh - General utility and helper functions for AstrayFX shaders
- * Author: Leon Aquitaine
- * License: Creative Commons Attribution 4.0 International
- * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
- */
-
-// ============================================================================
-// TECHNIQUE GUARD - Prevents duplicate loading of the same shader
-// ============================================================================
-#ifndef __AS_Utils_1_fxh
-#define __AS_Utils_1_fxh
-
-/**
  * AS_Utils.1.fxh - Common Utility Functions for AS StageFX Shader Collection
  * Author: Leon Aquitaine
  * License: Creative Commons Attribution 4.0 International
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
- * 
+ *
  * ===================================================================================
  *
  * DESCRIPTION:
@@ -29,7 +16,7 @@
  * - Listeningway audio integration with standard sources and controls
  * - Debug visualization tools and helpers
  * - Common blend modes and mixing functions
- * - Procedural noise generation with various hash functions
+ * - Procedural noise generation with various hash functions and Voronoi noise
  * - Mathematical and coordinate transformation helpers
  * - Depth, normal reconstruction, and surface effects functions
  *
@@ -38,11 +25,17 @@
  * 1. UI standardization macros for consistent parameter layouts
  * 2. Audio integration and Listeningway support
  * 3. Visual effect helpers (blend modes, color operations)
- * 4. Mathematical functions (hash, coordinate transforms)
+ * 4. Mathematical functions (hash, coordinate transforms, noise)
  * 5. Advanced rendering helpers (depth, normals, etc.)
- * 
+ *
  * ===================================================================================
  */
+ 
+// ============================================================================
+// TECHNIQUE GUARD - Prevents duplicate loading of the same shader
+// ============================================================================
+#ifndef __AS_Utils_1_fxh
+#define __AS_Utils_1_fxh
 
 // ============================================================================
 // INCLUDES
@@ -81,7 +74,7 @@ static const float AS_GOLDEN_RATIO = 1.61803398875;
     // provide a complete compatible implementation directly here
     #define LISTENINGWAY_NUM_BANDS 32
     #define __LISTENINGWAY_INSTALLED 1
-    
+
     // Create fallback uniforms with the same interface as the real Listeningway
     uniform float Listeningway_Volume < source = "listeningway_volume"; > = 0.0;
     uniform float Listeningway_FreqBands[LISTENINGWAY_NUM_BANDS] < source = "listeningway_freqbands"; > = {
@@ -91,7 +84,7 @@ static const float AS_GOLDEN_RATIO = 1.61803398875;
         0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
     };
     uniform float Listeningway_Beat < source = "listeningway_beat"; > = 0.0;
-    
+
     // Time uniforms
     uniform float Listeningway_TimeSeconds < source = "listeningway_timeseconds"; > = 0.0;
     uniform float Listeningway_TimePhase60Hz < source = "listeningway_timephase60hz"; > = 0.0;
@@ -168,8 +161,10 @@ uniform float name < ui_type = "slider"; ui_label = "Sway Angle"; ui_tooltip = "
 // - The name avoids confusion with built-in mod/fmod, which can behave inconsistently across shader languages/APIs.
 // - The AS_ prefix marks it as part of the Aquitaine Studio utility set.
 // - This implementation provides consistent, predictable modulo behavior for all AS shaders.
-float AS_mod(float x, float y) { 
-    return x - y * floor(x / y); 
+float AS_mod(float x, float y) {
+    // Ensure y is not zero to avoid division by zero
+    if (abs(y) < 1e-6) return x;
+    return x - y * floor(x / y);
 }
 
 // ============================================================================
@@ -184,8 +179,10 @@ float3 AS_blendResult(float3 orig, float3 fx, int mode) {
     if (mode == 2) return min(orig, fx);                      // Darker Only
     if (mode == 3) return orig + fx;                          // Additive
     if (mode == 4) return orig * fx;                          // Multiply
-    if (mode == 5) return 1.0 - (1.0 - orig) * (1.0 - fx);    // Screen 
-    return lerp(orig, fx, 1.0);                               // Normal (full replace by mask)
+    if (mode == 5) return 1.0 - (1.0 - orig) * (1.0 - fx);    // Screen
+    // Default: Normal blend (replace original with effect)
+    // Note: Lerping with 1.0 is equivalent to just returning fx, but lerp is explicit
+    return lerp(orig, fx, 1.0);
 }
 
 // Linearly interpolates between two colors for palette generation
@@ -201,12 +198,14 @@ float3 AS_paletteLerp(float3 c0, float3 c1, float t) {
 uniform int frameCount < source = "framecount"; >; // Frame count from ReShade
 
 // Returns consistent time value in seconds, using Listeningway if available
-
+// Approximates time based on frame count if Listeningway is not available
 float AS_getTime() {
-#if defined(__LISTENINGWAY_INSTALLED)
-    return Listeningway_TotalPhases120Hz * 0.016;
+#if defined(__LISTENINGWAY_INSTALLED) && defined(Listeningway_TotalPhases120Hz)
+    // Use Listeningway's high-precision timer if available
+    return Listeningway_TotalPhases120Hz * (1.0 / 120.0); // Assuming 120Hz phase counter
 #else
-    return frameCount * 0.016;
+    // Fallback to frame count approximation (assumes ~60 FPS)
+    return float(frameCount) * (1.0 / 60.0);
 #endif
 }
 
@@ -235,12 +234,13 @@ float AS_getFrequencyBand(int index) {
 // Map circular angle to frequency band index
 int AS_mapAngleToBand(float angleRadians, int repetitions) {
     // Normalize angle to 0-1 range (0 to 2π)
-    float normalizedAngle = AS_mod(angleRadians, 6.2831853) / 6.2831853;
-    
+    float normalizedAngle = AS_mod(angleRadians, AS_TWO_PI) / AS_TWO_PI;
+
     // Scale by number of bands and repetitions
     int numBands = AS_getNumFrequencyBands();
-    int totalBands = numBands * repetitions;
-    
+    if (numBands <= 0) return 0; // Avoid division by zero if no bands
+    int totalBands = numBands * max(1, repetitions); // Ensure at least 1 repetition
+
     // Map to band index
     int bandIdx = int(floor(normalizedAngle * totalBands)) % numBands;
     return bandIdx;
@@ -251,46 +251,47 @@ float AS_getVUMeterValue(int source) {
 #if defined(__LISTENINGWAY_INSTALLED)
     if (source == 0) return Listeningway_Volume;
     if (source == 1) return Listeningway_Beat;
-    if (source == 2) return Listeningway_FreqBands[0]; // Bass
-    if (source == 3) return Listeningway_FreqBands[14]; // Mid
-    if (source == 4) return Listeningway_FreqBands[28]; // Treble
+    // Assuming 32 bands for these indices
+    if (source == 2) return Listeningway_FreqBands[min(0, LISTENINGWAY_NUM_BANDS - 1)]; // Bass (first band)
+    if (source == 3) return Listeningway_FreqBands[min(14, LISTENINGWAY_NUM_BANDS - 1)]; // Mid (approx middle)
+    if (source == 4) return Listeningway_FreqBands[min(28, LISTENINGWAY_NUM_BANDS - 1)]; // Treble (near end)
 #endif
     return 0.0;
 }
 
 // Returns normalized audio value from specified source
 float AS_getAudioSource(int source) {
-    if (source == AS_AUDIO_OFF)    return 0.0;                // Off
+    if (source == AS_AUDIO_OFF)   return 0.0;                // Off
     if (source == AS_AUDIO_SOLID)  return 1.0;                // Solid
 #if defined(__LISTENINGWAY_INSTALLED)
     if (source == AS_AUDIO_VOLUME) return Listeningway_Volume; // Volume
     if (source == AS_AUDIO_BEAT)   return Listeningway_Beat;   // Beat
-    
-    // Updated frequency band indices to work with the new band size
+
     int numBands = AS_getNumFrequencyBands();
     if (numBands <= 1) return 0.0; // Safety check
-    
+
     if (source == AS_AUDIO_BASS) {
-        // Bass is the first 20% of bands, use first band
-        return Listeningway_FreqBands[0]; 
+        // Bass is the first band
+        return Listeningway_FreqBands[0];
     }
     if (source == AS_AUDIO_MID) {
-        // Mid is the middle of the spectrum, use center band
-        return Listeningway_FreqBands[numBands / 2]; 
+        // Mid is the middle band
+        return Listeningway_FreqBands[numBands / 2];
     }
     if (source == AS_AUDIO_TREBLE) {
-        // Treble is the last 20% of bands, use last band
-        return Listeningway_FreqBands[numBands - 1]; 
+        // Treble is the last band
+        return Listeningway_FreqBands[numBands - 1];
     }
 #endif
-    
-    return 0.0;
+
+    return 0.0; // Return 0 if source is invalid or Listeningway unavailable
 }
 
 // Applies audio reactivity to a parameter (multiplicative)
+// Base value is multiplied by (1.0 + audioLevel * multiplier)
 float AS_applyAudioReactivity(float baseValue, int audioSource, float multiplier, bool enableFlag) {
-    if (!enableFlag) return baseValue;
-    
+    if (!enableFlag || audioSource == AS_AUDIO_OFF) return baseValue;
+
     float audioLevel = AS_getAudioSource(audioSource);
     return baseValue * (1.0 + audioLevel * multiplier);
 }
@@ -298,15 +299,13 @@ float AS_applyAudioReactivity(float baseValue, int audioSource, float multiplier
 // Advanced version that can add or multiply the effect
 // mode: 0=Multiplicative, 1=Additive
 float AS_applyAudioReactivityEx(float baseValue, int audioSource, float multiplier, bool enableFlag, int mode) {
-    if (!enableFlag) return baseValue;
-    
+    if (!enableFlag || audioSource == AS_AUDIO_OFF) return baseValue;
+
     float audioLevel = AS_getAudioSource(audioSource);
-    
-    if (mode == 1) {
-        // Additive mode
+
+    if (mode == 1) { // Additive mode
         return baseValue + (audioLevel * multiplier);
-    } else {
-        // Multiplicative mode (default)
+    } else { // Multiplicative mode (default)
         return baseValue * (1.0 + audioLevel * multiplier);
     }
 }
@@ -336,61 +335,111 @@ float AS_getRotationRadians(int snapRotation, float fineRotation) {
 
 // --- Math Helpers ---
 // Corrects UV coordinates for non-square aspect ratios
+// Corrects UV coordinates for non-square aspect ratios
 float2 AS_aspectCorrect(float2 uv, float width, float height) { 
     float aspect = width / height; 
     return float2((uv.x - 0.5) * aspect + 0.5, uv.y); 
 }
+    // Transforms uv so that a distance calculation results in a circle on screen
+float2 AS_aspectCorrectUV(float2 uv, float aspectRatio) {
+    float2 centered_uv = uv - 0.5;
+    centered_uv.x *= aspectRatio;
+    return centered_uv + 0.5; // Return corrected UV in 0-1 range
+}
 
 // Converts degrees to radians
-float AS_radians(float deg) { 
-    return deg * 0.01745329252; 
+float AS_radians(float deg) {
+    return deg * (AS_PI / 180.0);
 }
 
 // Converts radians to degrees
-float AS_degrees(float rad) { 
-    return rad * 57.2957795131; 
+float AS_degrees(float rad) {
+    return rad * (180.0 / AS_PI);
 }
 
 // Converts normalized UV coordinates to pixel positions
-float2 AS_rescaleToScreen(float2 uv) { 
-    return uv * float2(BUFFER_WIDTH, BUFFER_HEIGHT); 
+float2 AS_rescaleToScreen(float2 uv) {
+    return uv * ReShade::ScreenSize.xy;
 }
 
-// --- Procedural Functions ---
+// --- Procedural Functions (Hashes) ---
 // 1D->1D hash: Returns pseudo-random float from 0-1 based on input float
-float AS_hash11(float n) { 
-    return frac(sin(n) * 43758.5453); 
+float AS_hash11(float n) {
+    return frac(sin(n) * 43758.5453);
 }
 
 // 2D->1D hash: Returns pseudo-random float from 0-1 based on 2D input
 float AS_hash12(float2 p) {
+    // Simple dot product version
     return frac(sin(dot(p, float2(127.1, 311.7))) * 43758.5453);
 }
 
 // 1D->2D hash: Returns pseudo-random 2D vector with components from 0-1
-float2 AS_hash21(float n) { 
-    float x = frac(sin(n) * 43758.5453); 
-    float y = frac(cos(n) * 12345.6789); 
-    return float2(x, y); 
+float2 AS_hash21(float n) {
+    // Combine two 1D hashes
+    return float2(AS_hash11(n), AS_hash11(n + 7.13)); // Offset second hash input
 }
 
 // 2D->2D hash: Returns pseudo-random 2D vector from 2D input
-float2 AS_hash21(float2 n) { 
-    float x = frac(sin(dot(n, float2(12.9898, 78.233))) * 43758.5453); 
-    float y = frac(cos(dot(n, float2(39.3468, 11.1351))) * 24634.6345); 
-    return float2(x, y); 
+float2 AS_hash22(float2 p) { // Renamed from AS_hash21(float2) to avoid overload confusion
+    // Combine two 2D->1D hashes
+    return float2(AS_hash12(p), AS_hash12(p + float2(7.13, 11.71))); // Offset second hash input
 }
 
 // 3D->3D hash: Returns pseudo-random 3D vector from -1 to 1 from 3D input
-float3 AS_hash33(float3 p3) { 
-    p3 = frac(p3 * float3(0.1031, 0.11369, 0.13787)); 
-    p3 += dot(p3, p3.yxz + 19.19); 
-    return -1.0 + 2.0 * frac(float3(
-        (p3.x + p3.y) * p3.z, 
-        (p3.x + p3.z) * p3.y, 
-        (p3.y + p3.z) * p3.x
-    )); 
+// (IQ's hash function - good quality)
+float3 AS_hash33(float3 p3) {
+    p3 = frac(p3 * float3(0.1031, 0.11369, 0.13787)); // Magic numbers from Inigo Quilez
+    p3 += dot(p3, p3.yxz + 19.19);
+    return -1.0 + 2.0 * frac(float3((p3.x + p3.y) * p3.z, (p3.x + p3.z) * p3.y, (p3.y + p3.z) * p3.x));
 }
+
+// --- Procedural Functions (Voronoi Noise) ---
+// Calculates Voronoi (Worley/Cellular) noise.
+// Based on the implementation in AS_VFX_SparkleBloom.1.fx.
+// Input:
+//   x: 2D coordinate (e.g., texcoord * scale)
+//   offset: A value to vary the pattern (e.g., based on time)
+// Returns:
+//   float2:
+//     .x = Distance to the nearest feature point (F1)
+//     .y = A random value (0-1) associated with the nearest cell (e.g., cell ID hash)
+float2 AS_voronoi_F1_ID(float2 x, float offset) {
+    float2 n = floor(x); // Integer part (cell index)
+    float2 f = frac(x);  // Fractional part (position within cell)
+
+    float2 mg, mr;      // Best grid offset, best relative position vector
+    float md = 8.0;     // Minimum distance found so far (squared), init to large value
+
+    // Check 3x3 grid neighborhood around the current cell (n)
+    [unroll] // Loop hint for compiler
+    for(int j = -1; j <= 1; j++) {
+        [unroll]
+        for(int i = -1; i <= 1; i++) {
+            float2 g = float2(float(i), float(j)); // Neighbor cell grid offset (-1,0,1)
+            // Calculate a pseudo-random feature point position 'o' within the neighbor cell (n+g)
+            // Uses a 3D hash based on grid cell index and the offset parameter.
+            // AS_hash21 is used to get a preliminary hash for the 3D hash input.
+            float2 o = AS_hash33(float3(n + g, AS_hash21(n + g).x * 10.0 + offset)).xy;
+            // Scale point position from [-1, 1] to [0, 1] range
+            o = o * 0.5 + 0.5;
+            // Vector from the current fractional position 'f' to the feature point 'o' in the neighbor cell (g+o)
+            float2 r = g + o - f;
+            // Calculate squared distance
+            float d = dot(r, r);
+            // If this distance is the smallest found so far...
+            if(d < md) {
+                md = d; // Store minimum squared distance
+                mr = r; // Store vector to nearest point
+                mg = g; // Store grid offset of the cell containing the nearest point
+            }
+        }
+    }
+    // Calculate the actual distance (sqrt) and return it along with
+    // a random value associated with the nearest cell (hash of its grid index).
+    return float2(sqrt(md), AS_hash12(n + mg)); // Using AS_hash12 for the ID now
+}
+
 
 // ============================================================================
 // DEPTH, SURFACE & VISUAL EFFECTS
@@ -399,43 +448,68 @@ float3 AS_hash33(float3 p3) {
 // --- Depth and Surface Functions ---
 // Returns a fade mask based on scene depth, near/far planes, and curve
 float AS_depthMask(float depth, float nearPlane, float farPlane, float curve) {
+    // Ensure nearPlane is less than farPlane to avoid issues
+    farPlane = max(nearPlane + 1e-5, farPlane);
+    // Calculate mask using smoothstep for range [nearPlane, farPlane]
     float mask = smoothstep(nearPlane, farPlane, depth);
-    return 1.0 - pow(mask, curve);
+    // Apply curve and invert (1 near, 0 far)
+    return 1.0 - pow(mask, max(0.1, curve)); // Ensure curve is positive
 }
 
 // Reconstructs normal from depth buffer using screen-space derivatives
+// Note: Quality depends heavily on depth buffer precision and linearity.
 float3 AS_reconstructNormal(float2 texcoord) {
-    float3 offset = float3(ReShade::PixelSize.xy, 0.0);
-    
-    // Sample depth at 5 points (center + cardinal directions)
-    float depthCenter = ReShade::GetLinearizedDepth(texcoord);
-    float depthLeft = ReShade::GetLinearizedDepth(texcoord - offset.xz * 2.0);
-    float depthRight = ReShade::GetLinearizedDepth(texcoord + offset.xz * 2.0);
-    float depthTop = ReShade::GetLinearizedDepth(texcoord - offset.zy * 2.0);
-    float depthBottom = ReShade::GetLinearizedDepth(texcoord + offset.zy * 2.0);
-    
-    // Calculate derivatives for cross product
-    float3 dx = float3(offset.x * 4.0, 0.0, depthRight - depthLeft);
-    float3 dy = float3(0.0, offset.y * 4.0, depthBottom - depthTop);
-    
-    // Normal is cross product of the derivative vectors
-    float3 normal = normalize(cross(dx, dy));
+    // Sample depth in a 2x2 neighborhood for central differencing
+    float depth = ReShade::GetLinearizedDepth(texcoord);
+    float depthX1 = ReShade::GetLinearizedDepth(texcoord + float2(ReShade::PixelSize.x, 0.0));
+    float depthY1 = ReShade::GetLinearizedDepth(texcoord + float2(0.0, ReShade::PixelSize.y));
+
+    // Estimate view-space position derivatives using depth differences
+    // This assumes a perspective projection and requires knowledge of projection params for accuracy,
+    // but provides a reasonable approximation for screen-space effects.
+    float3 dx = float3(ReShade::PixelSize.x, 0.0, depthX1 - depth);
+    float3 dy = float3(0.0, ReShade::PixelSize.y, depthY1 - depth);
+
+    // Calculate normal using cross product (ensure correct handedness)
+    // Cross product direction depends on coordinate system; assuming standard right-handed view space
+    float3 normal = normalize(cross(dy, dx)); // Swapped order might be needed depending on depth direction
+
     return normal;
 }
 
+
 // Returns fresnel term for a given normal and view direction
+// Assumes viewDir points from surface towards camera (e.g., viewDir = normalize(-viewSpacePos))
+// A common approximation in screen space is viewDir = (0, 0, 1) or (0, 0, -1)
 float AS_fresnel(float3 normal, float3 viewDir, float power) {
-    return pow(1.0 - saturate(dot(normal, viewDir)), power);
+    // Ensure vectors are normalized
+    normal = normalize(normal);
+    viewDir = normalize(viewDir);
+    // Calculate Fresnel term: (1 - dot(N, V))^power
+    return pow(1.0 - saturate(dot(normal, viewDir)), max(0.1, power)); // Ensure power is positive
 }
 
 // --- Animation Helpers ---
+// Simple fade-in / fade-out function based on a cycle value (0 to 1)
 float AS_fadeInOut(float cycle, float fadeInEnd, float fadeOutStart) {
-    if (cycle < fadeInEnd)
-        return smoothstep(0.0, fadeInEnd, cycle) / fadeInEnd;
-    else if (cycle > fadeOutStart)
-        return 1.0 - smoothstep(fadeOutStart, 1.0, cycle) / (1.0 - fadeOutStart);
-    return 1.0;
+    // Ensure valid ranges
+    fadeInEnd = saturate(fadeInEnd);
+    fadeOutStart = saturate(fadeOutStart);
+    if (fadeInEnd >= fadeOutStart) return (cycle < 0.5) ? smoothstep(0.0, 0.5, cycle) * 2.0 : (1.0 - smoothstep(0.5, 1.0, cycle)) * 2.0; // Simple triangle if invalid
+
+    float brightness = 1.0;
+    if (cycle < fadeInEnd) {
+        // Fade in from 0 to fadeInEnd
+        brightness = smoothstep(0.0, fadeInEnd, cycle);
+    } else if (cycle > fadeOutStart) {
+        // Fade out from fadeOutStart to 1.0
+        brightness = 1.0 - smoothstep(fadeOutStart, 1.0, cycle);
+    }
+    // else: brightness remains 1.0 between fadeInEnd and fadeOutStart
+
+    return brightness;
 }
+
 
 // --- Sway Animation Helpers ---
 // Applies sinusoidal sway effect based on time
@@ -457,28 +531,41 @@ float AS_applySway(float swayAngle, float swaySpeed) {
 float AS_applyAudioSway(float swayAngle, float swaySpeed, int audioSource, float audioMult) {
     float time = AS_getTime();
     float audioLevel = AS_getAudioSource(audioSource);
+    // Modulate the angle based on audio
     float reactiveAngle = swayAngle * (1.0 + audioLevel * audioMult);
     float swayPhase = time * swaySpeed;
     return AS_radians(reactiveAngle) * sin(swayPhase);
- }
+}
 
 // --- Visualization Helpers ---
-// Returns a debug color based on mode and value
-float4 AS_debugOutput(int mode, float4 orig, float4 mask, float4 audio, float4 effect) {
-    if (mode == 1) return mask;
-    if (mode == 2) return audio;
-    if (mode == 3) return effect;
-    return orig;
+// Returns a debug color based on mode and value (simplified)
+float4 AS_debugOutput(int mode, float4 orig, float4 value1, float4 value2, float4 value3) {
+    if (mode == 1) return value1; // Show first debug value
+    if (mode == 2) return value2; // Show second debug value
+    if (mode == 3) return value3; // Show third debug value
+    // Add more modes as needed
+    return orig; // Default: return original color
 }
 
 // Returns a star-shaped mask for sparkle effects
+// p: coordinate relative to star center
+// size: overall size of the star
+// points: number of points on the star
+// angle: rotation angle offset
 float AS_starMask(float2 p, float size, float points, float angle) {
-    float2 uv = p;
-    float a = atan2(uv.y, uv.x) + angle;
-    float r = length(uv);
-    float f = cos(a * points) * 0.5 + 0.5;
-    return 1.0 - smoothstep(f * size, f * size + 0.01, r);
+    float2 uv = p / max(size, 1e-5); // Normalize coords by size
+    float a = atan2(uv.y, uv.x) + AS_radians(angle); // Angle + offset
+    float r = length(uv); // Distance from center
+
+    // Modulate radius based on angle and number of points
+    float f = cos(a * points); // Creates lobes
+    f = f * 0.5 + 0.5; // Map from [-1, 1] to [0, 1] range
+
+    // Use smoothstep to create the shape based on distance and modulated radius 'f'
+    // The inner edge is f, outer edge slightly larger for anti-aliasing
+    return 1.0 - smoothstep(f, f + 0.05, r); // Adjust 0.05 for sharpness
 }
+
 
 // ============================================================================
 // STAGE DEPTH & BLEND UI HELPERS
@@ -488,7 +575,7 @@ float AS_starMask(float2 p, float size, float points, float angle) {
 #define __AS_STAGEDEPTH_UI_INCLUDED
 
 #define AS_STAGEDEPTH_UI(name, label, category) \
-uniform float name < ui_type = "slider"; ui_label = label; ui_tooltip = "Controls how far back the stage effect appears."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = category; > = 0.05;
+uniform float name < ui_type = "slider"; ui_label = label; ui_tooltip = "Controls how far back the stage effect appears (Linear Depth 0-1)."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = category; > = 0.05;
 
 #endif // __AS_STAGEDEPTH_UI_INCLUDED
 
@@ -502,11 +589,11 @@ uniform int name < ui_type = "combo"; ui_label = "Mode"; ui_items = "Normal\0Lig
 
 // --- Blend Mode UI Macro (defaults to Normal) ---
 #define AS_BLENDMODE_UI(name, category) \
-    AS_BLENDMODE_UI_DEFAULT(name, category, 0)
+    AS_BLENDMODE_UI_DEFAULT(name, category, 0) // Default to Normal (index 0)
 
 // --- Blend Amount UI Macro ---
 #define AS_BLENDAMOUNT_UI(name, category) \
-uniform float name < ui_type = "slider"; ui_label = "Strength"; ui_min = 0.0; ui_max = 1.0; ui_category = category; > = 1.0;
+uniform float name < ui_type = "slider"; ui_label = "Strength"; ui_tooltip = "Controls the overall intensity/opacity of the effect blend."; ui_min = 0.0; ui_max = 1.0; ui_category = category; > = 1.0;
 
 #endif // __AS_BLEND_UI_INCLUDED
 

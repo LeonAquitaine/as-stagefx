@@ -18,4 +18,32 @@ This release includes the AS-StageFX shader collection for ReShade.
 
 ---
 
+## New Shader: AS_VFX_WaterSurface.1.fx
+
+**AS_VFX_WaterSurface.1.fx** simulates a realistic water surface with a depth-based reflection horizon, perspective-correct wave compression, and customizable water color, transparency, and reflection. This effect is ideal for scenes with water, pools, or reflective floors.
+
+**Key Features:**
+- Depth-aware reflection horizon that shifts based on scene geometry
+- Perspective-correct wave scaling and compression
+- Customizable water color, transparency, and reflection intensity
+- Dynamic wave direction, speed, and distortion controls
+- Full resolution independence and proper UI grouping
+- Debug modes for visualizing distortion, depth, and reflection horizon
+
+**Parameters:**
+- Water Color, Transparency, Reflection Intensity
+- Wave Direction, Speed, Scale, Distortion, Scale Curve
+- Water Level, Edge Fade
+- Depth Scale, Falloff, Perspective
+- Blend Mode, Blend Amount
+- Debug Mode
+
+**Implementation:**
+1. Calculates a perspective-correct reflection horizon using scene depth and user controls
+2. Applies dynamic wave distortion, scaling with distance from the horizon
+3. Blends the reflected scene with water color and transparency
+4. Supports debug visualization for tuning and troubleshooting
+
+See the main README.md for a full feature table and usage notes.
+
 *For detailed descriptions, usage notes (including audio reactivity with Listeningway), and license information, please refer to the main [README.md](https://github.com/LeonAquitaine/as-stagefx/blob/main/README.md).*

@@ -166,6 +166,13 @@ AS-StageFX includes a variety of distinct visual effects:
       <img src="https://placeholder-for-halftone-image" alt="Multi-Layer Halftone Effect" style="max-width:100%;">
     </div></td>
   </tr>
+  <tr>
+    <td width="50%"><strong>VFX: Water Surface</strong> (<code>AS_VFX_WaterSurface.1.fx</code>)<br>
+      Simulates a realistic water surface with depth-based reflection horizon, perspective-correct wave compression, and customizable water color, transparency, and reflection. Features include dynamic wave scaling, vertical reflection compression, and full resolution independence. Ideal for scenes with water, pools, or reflective floors.<br><em>Technique: [AS] VFX: Water Surface</em></td>
+    <td width="50%"><div style="text-align:center">
+      <img src="https://placeholder-for-watersurface-image" alt="Water Surface Effect" style="max-width:100%;">
+    </div></td>
+  </tr>
 </table>
 
 <table>

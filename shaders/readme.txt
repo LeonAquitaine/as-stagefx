@@ -13,5 +13,9 @@ Installation Instructions:
 
 For more details and advanced usage, see the main README.md in the repository.
 
+New Shaders in this version:
+- AS_VFX_WaterSurface.1.fx: Realistic water surface with depth-based reflection, perspective-correct waves, and customizable color/transparency.
+- AS_VFX_BrokenGlass.1.fx: Simulates broken glass overlay with customizable cracks, distortion, and color.
+
 Repository:
 https://github.com/LeonAquitaine/as-stagefx

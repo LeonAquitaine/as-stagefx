@@ -1,295 +1,226 @@
 /**
- * AS_VFX_ScreenRing.1.fx - Screen-space textured ring with depth occlusion
- * Author: Leon Aquitaine
+ * AS_VFX_WaterSurface.1.fx - Screen-space water surface with adjustable horizon and perspective reflection
+ * Author: Leon Aquitaine (Refined based on user request, Gemini assistance)
  * Date: 2025-05-05
  * License: Creative Commons Attribution 4.0 International
+ * Version: 1.7.5 (Clamped reflection sample UV to prevent sampling below horizon)
  *
  * DESCRIPTION:
- * Draws a textured ring/band on the screen at a specified screen position and depth.
- * The ring is occluded by scene geometry closer than the specified depth.
+ * Simulates a water surface below a defined horizon line. Reflections are mirrored
+ * across the horizon. The vertical stretch/position of the reflection is adjusted
+ * based on the depth of the reflected object, influenced by 'DepthInfluence' and
+ * scaled by the 'WaterLevel' parameter. Ensures reflections only sample above horizon.
  *
  * FEATURES:
- * - Textured ring rendering in screen space.
- * - User-defined target position (Screen XY) and depth (Z).
- * - User-defined radius and thickness.
- * - Texture mapping around the ring circumference with rotation.
- * - Depth buffer occlusion.
- * - Blending modes and intensity control.
- * - Debug visualization modes.
- *
- * IMPLEMENTATION:
- * 1. Calculate pixel's angle and distance from the target screen position, correcting for aspect ratio.
- * 2. Apply rotation animation to the angle based on RotationSpeed and AS_getTime().
- * 3. Determine if the pixel falls within the ring's radius and thickness band.
- * 4. Check depth buffer: If scene depth is closer than target depth, discard.
- * 5. Calculate texture UVs: U based on animated angle, V based on distance within the thickness band (flipped).
- * 6. Sample the ring texture.
- * 7. Apply color tint and intensity.
- * 8. Blend the result with the backbuffer using the selected blend mode and amount.
+ * - Configurable Horizon line position.
+ * - Configurable Water Level parameter influencing reflection perspective strength.
+ * - Perspective-approximated reflections based on reflected object depth.
+ * - Texture-based wave animation and reflection distortion.
+ * - Configurable water color and reflection intensity.
  */
 
-#ifndef __AS_VFX_ScreenRing_1_fx
-#define __AS_VFX_ScreenRing_1_fx
+#ifndef __AS_VFX_WaterSurface_1_fx
+#define __AS_VFX_WaterSurface_1_fx
 
 #include "ReShade.fxh"
-#include "AS_Utils.1.fxh" // Includes ReShadeUI.fxh, provides UI macros, helpers
+#include "AS_Utils.1.fxh"
 
 // ============================================================================
-// TEXTURES
+// TEXTURES AND SAMPLERS
 // ============================================================================
-#ifndef RING_TEXTURE_FILENAME
-#define RING_TEXTURE_FILENAME "Copyright4kH.png" // Default texture path
+#ifndef WAVE_TEXTURE
+#define WAVE_TEXTURE "perlin512x8Noise.png"
 #endif
 
-#ifndef RING_TEXTURE_SIZE_WIDTH
-#define RING_TEXTURE_SIZE_WIDTH 1450
-#endif
-
-#ifndef RING_TEXTURE_SIZE_HEIGHT
-#define RING_TEXTURE_SIZE_HEIGHT 100
-#endif
-
-#include "ReShadeUI.fxh" // Needed for texture UI element
-
-texture RingTexture < source = RING_TEXTURE_FILENAME; ui_label="Ring Texture"; ui_tooltip="Wide, short texture (e.g., 2048x60) to wrap around the ring."; > { Width=RING_TEXTURE_SIZE_WIDTH; Height=RING_TEXTURE_SIZE_HEIGHT; Format=RGBA8; };
-sampler RingSampler { Texture = RingTexture; AddressU = WRAP; AddressV = CLAMP; MagFilter = LINEAR; MinFilter = LINEAR; MipFilter = LINEAR; };
+texture WaveTexture < source = WAVE_TEXTURE; > { Width = 512; Height = 512; Format = RGBA8; };
+sampler WaveSampler { Texture = WaveTexture; AddressU = WRAP; AddressV = WRAP; MipFilter = LINEAR; MinFilter = LINEAR; MagFilter = LINEAR; };
 
 // ============================================================================
 // TUNABLE CONSTANTS
 // ============================================================================
-// Target Position Z (Depth) Range
-static const float TARGET_DEPTH_MIN = 0.0; // Closest possible depth
-static const float TARGET_DEPTH_MAX = 1.0; // Farthest possible depth (assuming linearized 0-1)
-static const float TARGET_DEPTH_DEFAULT = 0.1; // Default relatively close
+static const float HORIZON_Y_MIN = 0.0; // Screen Y position
+static const float HORIZON_Y_MAX = 1.0;
+static const float HORIZON_Y_DEFAULT = 0.5; // Mid-screen horizon
 
-// Ring Geometry Range
-static const float RING_RADIUS_MIN = 0.001; // 0.1% of screen height
-static const float RING_RADIUS_MAX = 0.5;   // 50% of screen height
-static const float RING_RADIUS_DEFAULT = 0.1;  // 10% of screen height
+static const float WATER_LEVEL_MIN = 0.0; // 0 = Simple Mirror, 1 = Full Perspective Effect
+static const float WATER_LEVEL_MAX = 1.0;
+static const float WATER_LEVEL_DEFAULT = 1.0; // Default: Full perspective effect
 
-static const float RING_THICKNESS_MIN = 0.0;   // 0% of radius (invisible)
-static const float RING_THICKNESS_MAX = 1.0;   // 100% of radius (filled circle)
-static const float RING_THICKNESS_DEFAULT = 0.2;  // 20% of radius
+static const float EDGE_TRANSITION_MIN = 0.0001; // Width of smooth edge transition
+static const float EDGE_TRANSITION_MAX = 0.05;
+static const float EDGE_TRANSITION_DEFAULT = 0.001;
 
-// Internal Constants
-static const float ROTATION_SPEED_SCALE = 0.1; // Multiplier for RotationSpeed UI value
-static const float DEPTH_EPSILON = 0.0001;     // Small offset for depth checks and division
+static const float WAVE_SPEED_MIN = 0.01;
+static const float WAVE_SPEED_MAX = 1.0;
+static const float WAVE_SPEED_DEFAULT = 0.1;
+
+static const float WAVE_SCALE_MIN = 1.0;
+static const float WAVE_SCALE_MAX = 50.0;
+static const float WAVE_SCALE_DEFAULT = 10.0;
+
+static const float DISTORTION_MIN = 0.0;
+static const float DISTORTION_MAX = 0.1;
+static const float DISTORTION_DEFAULT = 0.02;
+
+static const float DEPTH_INFLUENCE_MIN = 0.0;
+static const float DEPTH_INFLUENCE_MAX = 2.0; // Allow > 1 for stronger effect
+static const float DEPTH_INFLUENCE_DEFAULT = 1.0; // Default to linear influence
+
+// Removed DepthFalloff constant
+// static const float DEPTH_FALLOFF_MIN = 0.1;
+// static const float DEPTH_FALLOFF_MAX = 10.0;
+// static const float DEPTH_FALLOFF_DEFAULT = 1.0;
 
 // ============================================================================
 // EFFECT-SPECIFIC PARAMETERS
 // ============================================================================
+// --- Water Properties ---
+uniform float3 WaterColor < ui_type = "color"; ui_label = "Water Color"; ui_tooltip = "Base color blended with reflections."; ui_category = "Water Properties"; > = float3(0.1, 0.35, 0.5);
+uniform float ReflectionIntensity < ui_type = "slider"; ui_label = "Reflection Intensity"; ui_tooltip = "Strength of the reflection effect."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Water Properties"; > = 0.8;
 
-// --- Ring Appearance ---
-uniform float RingRadius < ui_type = "slider"; ui_label = "Ring Radius"; ui_tooltip = "Radius as percentage of screen height."; ui_min = RING_RADIUS_MIN; ui_max = RING_RADIUS_MAX; ui_step = 0.001; ui_category = "Ring Appearance"; > = RING_RADIUS_DEFAULT;
-uniform float RingThickness < ui_type = "slider"; ui_label = "Ring Thickness"; ui_tooltip = "Thickness as percentage of Radius (0=thin, 1=filled)."; ui_min = RING_THICKNESS_MIN; ui_max = RING_THICKNESS_MAX; ui_step = 0.01; ui_category = "Ring Appearance"; > = RING_THICKNESS_DEFAULT;
-uniform float4 RingColor < ui_type = "color"; ui_label = "Ring Tint & Intensity"; ui_tooltip = "RGB: Color Tint.\nA: Intensity Multiplier."; ui_category = "Ring Appearance"; > = float4(1.0, 1.0, 1.0, 1.0);
+// --- Water Position & Perspective ---
+uniform float HorizonY < ui_type = "slider"; ui_label = "Horizon Line Position"; ui_tooltip = "Visual water line Y position (0=Top, 1=Bottom)."; ui_min = HORIZON_Y_MIN; ui_max = HORIZON_Y_MAX; ui_step = 0.001; ui_category = "Water Position"; > = HORIZON_Y_DEFAULT;
+uniform float WaterLevel < ui_type = "slider"; ui_label = "Perspective Amount"; ui_tooltip = "Controls how much perspective affects reflections (0=Simple Mirror, 1=Full Effect)."; ui_min = WATER_LEVEL_MIN; ui_max = WATER_LEVEL_MAX; ui_step = 0.01; ui_category = "Water Position"; > = WATER_LEVEL_DEFAULT; // Renamed tooltip
+uniform float EdgeTransition < ui_type = "slider"; ui_label = "Edge Transition Width"; ui_tooltip = "Width of the smooth transition at the Horizon line."; ui_min = EDGE_TRANSITION_MIN; ui_max = EDGE_TRANSITION_MAX; ui_step = 0.0001; ui_category = "Water Position"; > = EDGE_TRANSITION_DEFAULT;
 
-// ============================================================================
-// ANIMATION CONTROLS
-// ============================================================================
-uniform float RotationSpeed < ui_type = "slider"; ui_label = "Rotation Speed"; ui_tooltip = "Speed and direction of texture rotation (-10 to +10)."; ui_min = -10.0; ui_max = 10.0; ui_step = 0.1; ui_category = "Animation Controls"; > = 0.0;
+// --- Depth Settings ---
+uniform float DepthInfluence < ui_type = "slider"; ui_label = "Depth Influence"; ui_tooltip = "Strength of depth effect on perspective (Higher = more stretch for close objects)."; ui_min = DEPTH_INFLUENCE_MIN; ui_max = DEPTH_INFLUENCE_MAX; ui_step = 0.01; ui_category = "Depth Settings"; > = DEPTH_INFLUENCE_DEFAULT;
+// Removed DepthFalloff parameter
+uniform bool FlipDepthMode < ui_type = "checkbox"; ui_label = "Flip Depth Influence"; ui_tooltip = "Invert the depth influence behavior (close objects reflect near horizon)."; ui_category = "Depth Settings"; > = false;
 
-// ============================================================================
-// AUDIO REACTIVITY (Example Setup)
-// ============================================================================
-AS_AUDIO_SOURCE_UI(Ring_AudioSource, "Audio Source", AS_AUDIO_OFF, "Audio Reactivity") // Removed extra 'true' argument
-AS_AUDIO_MULTIPLIER_UI(Ring_AudioMultiplier, "Intensity", 1.0, 2.0, "Audio Reactivity")
-uniform int AudioTarget < ui_type = "combo"; ui_label = "Audio Target Parameter"; ui_tooltip = "Select parameter affected by audio"; ui_items = "None\0Radius\0Thickness\0Color Intensity\0"; ui_category = "Audio Reactivity"; > = 0;
+// --- Wave Settings ---
+uniform float2 WaveDirection < ui_type = "slider"; ui_label = "Wave Direction"; ui_tooltip = "Direction of wave movement."; ui_min = -1.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Wave Settings"; > = float2(1.0, 0.0);
+uniform float WaveSpeed < ui_type = "slider"; ui_label = "Wave Speed"; ui_tooltip = "Speed of wave animation."; ui_min = WAVE_SPEED_MIN; ui_max = WAVE_SPEED_MAX; ui_step = 0.01; ui_category = "Wave Settings"; > = WAVE_SPEED_DEFAULT;
+uniform float WaveScale < ui_type = "slider"; ui_label = "Wave Scale"; ui_tooltip = "Scale of wave pattern."; ui_min = WAVE_SCALE_MIN; ui_max = WAVE_SCALE_MAX; ui_step = 0.1; ui_category = "Wave Settings"; > = WAVE_SCALE_DEFAULT;
+uniform float WaveDistortion < ui_type = "slider"; ui_label = "Wave Distortion"; ui_tooltip = "Amount of distortion applied to reflection."; ui_min = DISTORTION_MIN; ui_max = DISTORTION_MAX; ui_step = 0.001; ui_category = "Wave Settings"; > = DISTORTION_DEFAULT;
 
-// ============================================================================
-// STAGE CONTROLS
-// ============================================================================
-uniform float TargetDepth < ui_type = "slider"; ui_label = "Target Depth"; ui_tooltip = "Depth in scene (0=Near, 1=Far)."; ui_min = TARGET_DEPTH_MIN; ui_max = TARGET_DEPTH_MAX; ui_step = 0.001; ui_category = "Stage"; > = TARGET_DEPTH_DEFAULT;
-AS_ROTATION_UI(SnapRotation, FineRotation, "Stage") // Add standard rotation controls
-
-// ============================================================================
-// POSITION CONTROLS
-// ============================================================================
-// Use centered coordinate system (-1.5 to 1.5 range, [-1,1] maps to central square)
-uniform float2 TargetScreenXY < ui_type = "drag"; ui_label = "Target Position (XY)"; ui_tooltip = "Screen position (-1.5 to 1.5 range, 0,0 is center, [-1,1] maps to central square)."; ui_min = -1.5; ui_max = 1.5; ui_step = 0.001; ui_category = "Position"; > = float2(0.0, 0.0);
-
-// ============================================================================
-// FINAL MIX
-// ============================================================================
+// --- Final Mix ---
 AS_BLENDMODE_UI(BlendMode, "Final Mix")
 AS_BLENDAMOUNT_UI(BlendAmount, "Final Mix")
 
+// --- Debug ---
+AS_DEBUG_MODE_UI("Normal\0Wave Distortion\0Reflected Obj Depth\0Depth Offset Factor\0Final Reflection UVs\0Water Mask\0Perspective Shift\0Clamped Reflection UVs\0") // Added Debug Mode
+
 // ============================================================================
-// DEBUG
+// HELPER FUNCTIONS
 // ============================================================================
-AS_DEBUG_MODE_UI("Normal\0Screen Distance\0Angle\0Texture UVs\0Depth Check\0Ring Alpha\0") // Removed extra 'true' argument
+// Calculate distortion based on wave texture
+float2 GetWaveDistortion(float2 texcoord, float time)
+{
+    float2 waveUV = texcoord * WaveScale + (normalize(WaveDirection + float2(0.001, 0.001)) * time * WaveSpeed);
+    float2 waveValue = tex2D(WaveSampler, waveUV).rg;
+    waveValue = waveValue * 2.0 - 1.0;
+    return waveValue * WaveDistortion;
+}
+
+// Calculate depth-based vertical offset scaling factor (0 to DepthInfluence range) - Simplified
+float GetDepthBasedOffsetFactor(float reflectedObjectDepth)
+{
+    // Use linear depth directly (0=near, 1=far)
+    float normalizedDepth = saturate(reflectedObjectDepth);
+    // Calculate offset factor: If not flipped, close objects (depth=0 -> factor=1), far objects (depth=1 -> factor=0)
+    // This factor represents the *potential strength* of the perspective shift.
+    float offsetFactor = FlipDepthMode ? normalizedDepth : (1.0 - normalizedDepth);
+    // Scale by influence parameter
+    return offsetFactor * DepthInfluence; // Range [0, DepthInfluence]
+}
 
 // ============================================================================
 // MAIN PIXEL SHADER
 // ============================================================================
-float4 PS_ScreenRing(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target
+float4 PS_WaterSurface(float4 vpos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target
 {
     // --- Initial Setup ---
-    float4 orig = tex2D(ReShade::BackBuffer, texcoord);
-    float sceneDepth = ReShade::GetLinearizedDepth(texcoord);
-    float aspectRatio = ReShade::AspectRatio;
-    float timer = AS_getTime();
+    float4 originalColor = tex2D(ReShade::BackBuffer, texcoord);
+    float time = AS_getTime();
+    float horizonYFinal = saturate(HorizonY);
+    float waterLevelFinal = saturate(WaterLevel); // How much perspective effect to apply (0 to 1)
 
-    // --- Get Target Info & Apply Audio Reactivity ---
-    float radiusInput = RingRadius;
-    float thicknessInput = RingThickness;
-    float4 ringColorInput = RingColor;
+    // --- Water Surface Mask ---
+    // Effect applies below the horizon line
+    float waterMask = smoothstep(horizonYFinal - EdgeTransition, horizonYFinal + EdgeTransition, texcoord.y);
 
-    if (AudioTarget > 0) {
-        float audioLevel = AS_getAudioSource(Ring_AudioSource);
-        float multiplier = Ring_AudioMultiplier;
-        float audioFactor = (1.0 + audioLevel * multiplier);
-
-        if      (AudioTarget == 1) radiusInput *= audioFactor;
-        else if (AudioTarget == 2) thicknessInput = saturate(thicknessInput * audioFactor); // Clamp thickness
-        else if (AudioTarget == 3) ringColorInput.a *= audioFactor; // Modify intensity (alpha channel)
-        radiusInput = max(radiusInput, RING_RADIUS_MIN);
+    // If pixel is fully above the water line, return original color
+    if (waterMask < 0.01 && DebugMode == 0) {
+        return originalColor;
     }
 
-    // --- Get Stage/Position Info ---
-    float targetDepthZ = TargetDepth;
-    // UI Position [-1.5, 1.5] -> effect_screen_coords [-0.75, 0.75]
-    float2 effect_screen_coords = TargetScreenXY * 0.5;
-    float globalRotation = AS_getRotationRadians(SnapRotation, FineRotation); // Get rotation angle
+    // --- Calculate Reflection Coordinates ---
+    // 1. Calculate distance below horizon for the current pixel
+    float distBelowHorizon = texcoord.y - horizonYFinal;
 
-    // --- Calculate Screen Geometry (Following AS Standards) ---
-    // 1. Map texcoord [0,1] to centered_uv [-0.5, 0.5]
-    float2 centered_uv = texcoord - 0.5;
+    // 2. Calculate the basic mirrored Y position above the horizon
+    float baseReflectionY = horizonYFinal - distBelowHorizon;
+    float2 baseReflectionCoord = float2(texcoord.x, baseReflectionY);
 
-    // 2. Apply aspect ratio correction to centered_uv
-    float2 aspect_corrected_uv = centered_uv;
-    if (aspectRatio >= 1.0) { // Wide screen
-         aspect_corrected_uv.x *= aspectRatio;
-    } else { // Tall screen
-         aspect_corrected_uv.y /= aspectRatio;
-    }
+    // 3. Sample the depth of the object at the base mirror position (saturate UVs for safety here)
+    float reflectedObjectDepth = ReShade::GetLinearizedDepth(saturate(baseReflectionCoord));
 
-    // 3. Apply inverse global rotation to aspect_corrected_uv
-    float sinRot = sin(-globalRotation);
-    float cosRot = cos(-globalRotation);
-    float2 rotated_uv;
-    rotated_uv.x = aspect_corrected_uv.x * cosRot - aspect_corrected_uv.y * sinRot;
-    rotated_uv.y = aspect_corrected_uv.x * sinRot + aspect_corrected_uv.y * cosRot;
+    // 4. Calculate the perspective offset factor based on reflected depth
+    // This determines the *maximum potential* perspective shift (range 0 to DepthInfluence)
+    float depthOffsetFactor = GetDepthBasedOffsetFactor(reflectedObjectDepth);
 
-    // 4. Calculate difference vector relative to the target position in the rotated, aspect-corrected space
-    float2 diff = rotated_uv - effect_screen_coords;
+    // 5. Calculate the actual perspective shift amount to apply based on WaterLevel
+    // This scales how much the reflection is stretched vertically based on depth.
+    // perspectiveShift = 0 when WaterLevel=0 (no effect), perspectiveShift = depthOffsetFactor when WaterLevel=1
+    float perspectiveShift = depthOffsetFactor * waterLevelFinal;
 
-    // 5. Calculate distance and base angle using the difference vector
-    // Distance is now normalized relative to screen height
-    float screenDistNorm = length(diff);
-    // Angle is relative to the target position in the rotated, aspect-corrected space
-    float baseAngle = atan2(diff.y, diff.x);
+    // 6. Calculate the final reflection Y coordinate
+    // Start at the horizon and move upwards by the base distance scaled by (1 + perspective shift)
+    // Multiplying by (1 + perspectiveShift) stretches the reflection downwards for closer objects (when perspectiveShift > 0)
+    float finalDistAboveHorizon = distBelowHorizon * (1.0 + perspectiveShift);
+    float adjustedReflectionY = horizonYFinal - finalDistAboveHorizon; // Corrected calculation
 
-    // --- Apply Animation ---
-    float rotationOffset = timer * (-RotationSpeed) * ROTATION_SPEED_SCALE; // Use constant
-    float angle = baseAngle + rotationOffset;
+    float2 reflectionCoord = float2(texcoord.x, adjustedReflectionY);
 
-    // --- Apply Radius/Thickness ---
-    float radiusNorm = radiusInput;
-    float thicknessNorm = radiusNorm * saturate(thicknessInput);
 
-    float effectiveRadiusNorm = max(0.0001, radiusNorm);
-    float effectiveThicknessNorm = max(0.0001, thicknessNorm);
+    // --- Apply Wave Distortion ---
+    float2 distortion = GetWaveDistortion(texcoord, time);
+    float2 distortedReflectionCoord = reflectionCoord + distortion;
 
-    // --- Check if Pixel is on the Ring ---
-    float distDelta = abs(screenDistNorm - effectiveRadiusNorm);
-    float halfThicknessNorm = effectiveThicknessNorm * 0.5;
+    // --- Sample Reflection & Combine ---
+    // Clamp the Y coordinate to prevent sampling below the horizon line
+    // Add a tiny epsilon to avoid sampling exactly ON the line if precision issues occur
+    distortedReflectionCoord.y = min(distortedReflectionCoord.y, horizonYFinal - 0.0001);
+    // Use saturate on the X coordinate and the now-clamped Y coordinate
+    float2 finalSampleCoord = saturate(distortedReflectionCoord);
 
-    float aa = ReShade::PixelSize.y;
+    float3 reflectionColor = tex2D(ReShade::BackBuffer, finalSampleCoord).rgb;
 
-    float ringFactor = smoothstep(halfThicknessNorm + aa, halfThicknessNorm - aa, distDelta);
+    // Blend reflection with water color based on intensity
+    float3 waterWithReflection = lerp(WaterColor.rgb, reflectionColor, ReflectionIntensity); // Use WaterColor as base
 
-    float4 finalResult = orig;
+    // --- Final Blend ---
+    // Blend the water effect onto the original pixel based on the water line transition (edgeFade)
+    float3 blendedColor = AS_blendResult(originalColor.rgb, waterWithReflection, BlendMode);
+    float3 result = lerp(originalColor.rgb, blendedColor, waterMask * BlendAmount);
 
-    if (ringFactor > 0.0)
-    {
-        // Check depth using targetDepthZ (from TargetDepth uniform)
-        bool visible = targetDepthZ <= sceneDepth + DEPTH_EPSILON;
-
-        if (visible)
-        {
-            // --- Texture Mapping ---
-            // Use the calculated angle and screenDistNorm
-            float texU = frac(angle / AS_TWO_PI + 0.5);
-            float texV = 1.0 - saturate(0.5 + (screenDistNorm - effectiveRadiusNorm) / (effectiveThicknessNorm + DEPTH_EPSILON));
-
-            float4 texColor = tex2D(RingSampler, float2(texU, texV));
-            float3 ringColor = texColor.rgb * ringColorInput.rgb * ringColorInput.a;
-
-            float finalAlpha = ringFactor * BlendAmount;
-
-            float3 blendedColor = AS_blendResult(orig.rgb, ringColor, BlendMode);
-
-            finalResult = float4(lerp(orig.rgb, blendedColor, finalAlpha), orig.a);
-        }
-    }
-
+    // --- Debug Modes ---
     if (DebugMode > 0) {
-        // Recalculate values using the new method for debug views
-        float2 effect_screen_coords = TargetScreenXY * 0.5;
-        float globalRotation = AS_getRotationRadians(SnapRotation, FineRotation);
-        float2 centered_uv = texcoord - 0.5;
-        float2 aspect_corrected_uv = centered_uv;
-        if (aspectRatio >= 1.0) aspect_corrected_uv.x *= aspectRatio;
-        else aspect_corrected_uv.y /= aspectRatio;
-        float sinRot = sin(-globalRotation);
-        float cosRot = cos(-globalRotation);
-        float2 rotated_uv;
-        rotated_uv.x = aspect_corrected_uv.x * cosRot - aspect_corrected_uv.y * sinRot;
-        rotated_uv.y = aspect_corrected_uv.x * sinRot + aspect_corrected_uv.y * cosRot;
-        float2 diff = rotated_uv - effect_screen_coords;
-
-        if (DebugMode == 1) { // Screen Distance
-             float screenDistNorm = length(diff);
-             return float4(screenDistNorm.xxx * 2.0, 1.0); // Scale for visibility
-        }
-        if (DebugMode == 2) { // Angle
-             float baseAngle = atan2(diff.y, diff.x);
-             float rotationOffset = timer * (-RotationSpeed) * ROTATION_SPEED_SCALE;
-             float angle = baseAngle + rotationOffset;
-             return float4(frac(angle/AS_TWO_PI + 0.5).xxx, 1.0);
-        }
-        if (DebugMode == 3) { // Texture UVs
-             float screenDistNorm = length(diff);
-             float baseAngle = atan2(diff.y, diff.x);
-             float rotationOffset = timer * (-RotationSpeed) * ROTATION_SPEED_SCALE;
-             float angle = baseAngle + rotationOffset;
-             float texU = frac(angle / AS_TWO_PI + 0.5);
-
-             // Recalculate effective radius/thickness based on inputs
-             float radiusNorm = radiusInput;
-             float thicknessNorm = radiusNorm * saturate(thicknessInput);
-             float effectiveRadiusNorm = max(0.0001, radiusNorm);
-             float effectiveThicknessNorm = max(0.0001, thicknessNorm);
-
-             float texV = 1.0 - saturate(0.5 + (screenDistNorm - effectiveRadiusNorm) / (effectiveThicknessNorm + DEPTH_EPSILON));
-             return float4(texU, texV, 0.0, 1.0);
-        }
-        if (DebugMode == 4) {
-             // Check depth using targetDepthZ (from TargetDepth uniform)
-             bool visible = targetDepthZ <= sceneDepth + DEPTH_EPSILON;
-             float debugVal = visible ? 1.0 : 0.0;
-             return float4(debugVal, debugVal, debugVal, 1.0);
-        }
-         if (DebugMode == 5) {
-             float finalAlpha = ringFactor * BlendAmount;
-             return float4(finalAlpha.xxx, 1.0);
-         }
+        if (DebugMode == 1) return float4(distortion * 0.5 + 0.5, 0.0, 1.0); // Wave Distortion
+        if (DebugMode == 2) return float4(reflectedObjectDepth.xxx, 1.0); // Reflected Object Depth
+        if (DebugMode == 3) return float4(saturate(depthOffsetFactor / max(DepthInfluence, 0.01)).xxx, 1.0); // Depth Offset Factor (normalized)
+        if (DebugMode == 4) return float4(saturate(reflectionCoord), 0.0, 1.0); // Reflection UVs (Before Distortion, Before Clamp)
+        if (DebugMode == 5) return float4(waterMask.xxx, 1.0); // Water Mask
+        if (DebugMode == 6) return float4(saturate(perspectiveShift).xxx, 1.0); // Perspective Shift amount applied
+        if (DebugMode == 7) return float4(finalSampleCoord, 0.0, 1.0); // Final Clamped Reflection UVs (R=U, G=V)
+        return float4(1.0, 0.0, 1.0, 1.0); // Magenta error
     }
 
-    return finalResult;
+    // --- Final Output ---
+    return float4(result, originalColor.a);
 }
 
 // ============================================================================
 // TECHNIQUE DEFINITION
 // ============================================================================
-technique AS_VFX_ScreenRing < ui_label = "[AS] VFX: Screen Ring"; ui_tooltip = "Draws a textured ring in screen space with depth occlusion and artistic controls."; >
+technique AS_VFX_WaterSurface < ui_label = "[AS] VFX: Water Surface (Horizon/Level)"; ui_tooltip = "Water surface with separate horizon line and water level controls for reflection."; >
 {
     pass
     {
         VertexShader = PostProcessVS;
-        PixelShader = PS_ScreenRing;
+        PixelShader = PS_WaterSurface;
     }
 }
 
-#endif // __AS_VFX_ScreenRing_1_fx
+#endif // __AS_VFX_WaterSurface_1_fx
