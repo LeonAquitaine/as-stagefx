@@ -12,10 +12,20 @@
  * - Textured ring rendering in screen space.
  * - User-defined target position (Screen XY) and depth (Z).
  * - User-defined radius and thickness.
- * - Texture mapping around the ring circumference.
+ * - Texture mapping around the ring circumference with rotation.
  * - Depth buffer occlusion.
  * - Blending modes and intensity control.
  * - Debug visualization modes.
+ *
+ * IMPLEMENTATION:
+ * 1. Calculate pixel's angle and distance from the target screen position, correcting for aspect ratio.
+ * 2. Apply rotation animation to the angle based on RotationSpeed and AS_getTime().
+ * 3. Determine if the pixel falls within the ring's radius and thickness band.
+ * 4. Check depth buffer: If scene depth is closer than target depth, discard.
+ * 5. Calculate texture UVs: U based on animated angle, V based on distance within the thickness band (flipped).
+ * 6. Sample the ring texture.
+ * 7. Apply color tint and intensity.
+ * 8. Blend the result with the backbuffer using the selected blend mode and amount.
  */
 
 #ifndef __AS_VFX_ScreenRing_1_fx
@@ -53,16 +63,13 @@ static const float RING_THICKNESS_MIN = 0.0;   // 0% of radius (invisible)
 static const float RING_THICKNESS_MAX = 1.0;   // 100% of radius (filled circle)
 static const float RING_THICKNESS_DEFAULT = 0.2;  // 20% of radius
 
+// Internal Constants
+static const float ROTATION_SPEED_SCALE = 0.1; // Multiplier for RotationSpeed UI value
+static const float DEPTH_EPSILON = 0.0001;     // Small offset for depth checks and division
+
 // ============================================================================
 // EFFECT-SPECIFIC PARAMETERS
 // ============================================================================
-// --- Target ---
-uniform float3 TargetPosition < // XY = Screen Coord (0-1), Z = Linear Depth (0-1)
-    ui_type = "drag"; ui_label = "Target Position (XY) & Depth (Z)";
-    ui_tooltip = "Drag XY handles for Screen Position.\nUse Z slider for Depth (0=Near, 1=Far).";
-    ui_min = 0.0; ui_max = 1.0; ui_step = 0.001; ui_category = "Target";
-> = float3(0.5, 0.5, TARGET_DEPTH_DEFAULT);
-
 // --- Ring Appearance ---
 uniform float RingRadius < ui_type = "slider"; ui_label = "Ring Radius"; ui_tooltip = "Radius as percentage of screen height."; ui_min = RING_RADIUS_MIN; ui_max = RING_RADIUS_MAX; ui_step = 0.001; ui_category = "Ring Appearance"; > = RING_RADIUS_DEFAULT;
 uniform float RingThickness < ui_type = "slider"; ui_label = "Ring Thickness"; ui_tooltip = "Thickness as percentage of Radius (0=thin, 1=filled)."; ui_min = RING_THICKNESS_MIN; ui_max = RING_THICKNESS_MAX; ui_step = 0.01; ui_category = "Ring Appearance"; > = RING_THICKNESS_DEFAULT;
@@ -76,9 +83,21 @@ uniform float RotationSpeed < ui_type = "slider"; ui_label = "Rotation Speed"; u
 // ============================================================================
 // AUDIO REACTIVITY (Example Setup)
 // ============================================================================
-AS_AUDIO_SOURCE_UI(Ring_AudioSource, "Audio Source", AS_AUDIO_OFF, "Audio Reactivity")
+AS_AUDIO_SOURCE_UI(Ring_AudioSource, "Audio Source", AS_AUDIO_OFF, "Audio Reactivity") // Removed extra 'true' argument
 AS_AUDIO_MULTIPLIER_UI(Ring_AudioMultiplier, "Intensity", 1.0, 2.0, "Audio Reactivity")
 uniform int AudioTarget < ui_type = "combo"; ui_label = "Audio Target Parameter"; ui_tooltip = "Select parameter affected by audio"; ui_items = "None\0Radius\0Thickness\0Color Intensity\0"; ui_category = "Audio Reactivity"; > = 0;
+
+// ============================================================================
+// STAGE CONTROLS
+// ============================================================================
+uniform float TargetDepth < ui_type = "slider"; ui_label = "Target Depth"; ui_tooltip = "Depth in scene (0=Near, 1=Far)."; ui_min = TARGET_DEPTH_MIN; ui_max = TARGET_DEPTH_MAX; ui_step = 0.001; ui_category = "Stage"; > = TARGET_DEPTH_DEFAULT;
+AS_ROTATION_UI(SnapRotation, FineRotation, "Stage") // Add standard rotation controls
+
+// ============================================================================
+// POSITION CONTROLS
+// ============================================================================
+// Use centered coordinate system (-1.5 to 1.5 range, [-1,1] maps to central square)
+uniform float2 TargetScreenXY < ui_type = "drag"; ui_label = "Target Position (XY)"; ui_tooltip = "Screen position (-1.5 to 1.5 range, 0,0 is center, [-1,1] maps to central square)."; ui_min = -1.5; ui_max = 1.5; ui_step = 0.001; ui_category = "Position"; > = float2(0.0, 0.0);
 
 // ============================================================================
 // FINAL MIX
@@ -89,7 +108,7 @@ AS_BLENDAMOUNT_UI(BlendAmount, "Final Mix")
 // ============================================================================
 // DEBUG
 // ============================================================================
-AS_DEBUG_MODE_UI("Normal\0Screen Distance\0Angle\0Texture UVs\0Depth Check\0Ring Alpha\0")
+AS_DEBUG_MODE_UI("Normal\0Screen Distance\0Angle\0Texture UVs\0Depth Check\0Ring Alpha\0") // Removed extra 'true' argument
 
 // ============================================================================
 // MAIN PIXEL SHADER
@@ -100,7 +119,6 @@ float4 PS_ScreenRing(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_
     float4 orig = tex2D(ReShade::BackBuffer, texcoord);
     float sceneDepth = ReShade::GetLinearizedDepth(texcoord);
     float aspectRatio = ReShade::AspectRatio;
-    // Use AS_getTime() from AS_Utils.1.fxh for consistent animation timing
     float timer = AS_getTime();
 
     // --- Get Target Info & Apply Audio Reactivity ---
@@ -119,19 +137,42 @@ float4 PS_ScreenRing(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_
         radiusInput = max(radiusInput, RING_RADIUS_MIN);
     }
 
-    float targetDepthZ = TargetPosition.z;
-    float2 targetScreenXY = TargetPosition.xy;
+    // --- Get Stage/Position Info ---
+    float targetDepthZ = TargetDepth;
+    // UI Position [-1.5, 1.5] -> effect_screen_coords [-0.75, 0.75]
+    float2 effect_screen_coords = TargetScreenXY * 0.5;
+    float globalRotation = AS_getRotationRadians(SnapRotation, FineRotation); // Get rotation angle
 
-    // --- Calculate Screen Geometry ---
-    float2 screenVec = texcoord - targetScreenXY;
-    screenVec.x *= aspectRatio;
-    float screenDistNorm = length(screenVec);
-    float baseAngle = atan2(screenVec.y, screenVec.x); // Base angle from center
+    // --- Calculate Screen Geometry (Following AS Standards) ---
+    // 1. Map texcoord [0,1] to centered_uv [-0.5, 0.5]
+    float2 centered_uv = texcoord - 0.5;
+
+    // 2. Apply aspect ratio correction to centered_uv
+    float2 aspect_corrected_uv = centered_uv;
+    if (aspectRatio >= 1.0) { // Wide screen
+         aspect_corrected_uv.x *= aspectRatio;
+    } else { // Tall screen
+         aspect_corrected_uv.y /= aspectRatio;
+    }
+
+    // 3. Apply inverse global rotation to aspect_corrected_uv
+    float sinRot = sin(-globalRotation);
+    float cosRot = cos(-globalRotation);
+    float2 rotated_uv;
+    rotated_uv.x = aspect_corrected_uv.x * cosRot - aspect_corrected_uv.y * sinRot;
+    rotated_uv.y = aspect_corrected_uv.x * sinRot + aspect_corrected_uv.y * cosRot;
+
+    // 4. Calculate difference vector relative to the target position in the rotated, aspect-corrected space
+    float2 diff = rotated_uv - effect_screen_coords;
+
+    // 5. Calculate distance and base angle using the difference vector
+    // Distance is now normalized relative to screen height
+    float screenDistNorm = length(diff);
+    // Angle is relative to the target position in the rotated, aspect-corrected space
+    float baseAngle = atan2(diff.y, diff.x);
 
     // --- Apply Animation ---
-    // Use AS_getTime directly (already in seconds)
-    // Negate RotationSpeed to invert direction (positive = right/clockwise)
-    float rotationOffset = timer * (-RotationSpeed) * 0.1; // Scale speed for reasonable rotation
+    float rotationOffset = timer * (-RotationSpeed) * ROTATION_SPEED_SCALE; // Use constant
     float angle = baseAngle + rotationOffset;
 
     // --- Apply Radius/Thickness ---
@@ -153,15 +194,15 @@ float4 PS_ScreenRing(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_
 
     if (ringFactor > 0.0)
     {
-        bool visible = targetDepthZ <= sceneDepth + 0.0001;
+        // Check depth using targetDepthZ (from TargetDepth uniform)
+        bool visible = targetDepthZ <= sceneDepth + DEPTH_EPSILON;
 
         if (visible)
         {
             // --- Texture Mapping ---
-            // Map angle (-PI to PI) to texture U coord (0 to 1)
-            // Use the animated angle
+            // Use the calculated angle and screenDistNorm
             float texU = frac(angle / AS_TWO_PI + 0.5);
-            float texV = 1.0 - saturate(0.5 + (screenDistNorm - effectiveRadiusNorm) / (effectiveThicknessNorm + 0.0001));
+            float texV = 1.0 - saturate(0.5 + (screenDistNorm - effectiveRadiusNorm) / (effectiveThicknessNorm + DEPTH_EPSILON));
 
             float4 texColor = tex2D(RingSampler, float2(texU, texV));
             float3 ringColor = texColor.rgb * ringColorInput.rgb * ringColorInput.a;
@@ -175,23 +216,49 @@ float4 PS_ScreenRing(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_
     }
 
     if (DebugMode > 0) {
-        if (DebugMode == 1) return float4(screenDistNorm.xxx * 2.0, 1.0);
-        if (DebugMode == 2) { // Angle (now includes rotation)
-             // Use inverted rotation for debug
-             float rotationOffset = timer * (-RotationSpeed) * 0.1;
-             float angle = baseAngle + rotationOffset; // Recalculate for debug
+        // Recalculate values using the new method for debug views
+        float2 effect_screen_coords = TargetScreenXY * 0.5;
+        float globalRotation = AS_getRotationRadians(SnapRotation, FineRotation);
+        float2 centered_uv = texcoord - 0.5;
+        float2 aspect_corrected_uv = centered_uv;
+        if (aspectRatio >= 1.0) aspect_corrected_uv.x *= aspectRatio;
+        else aspect_corrected_uv.y /= aspectRatio;
+        float sinRot = sin(-globalRotation);
+        float cosRot = cos(-globalRotation);
+        float2 rotated_uv;
+        rotated_uv.x = aspect_corrected_uv.x * cosRot - aspect_corrected_uv.y * sinRot;
+        rotated_uv.y = aspect_corrected_uv.x * sinRot + aspect_corrected_uv.y * cosRot;
+        float2 diff = rotated_uv - effect_screen_coords;
+
+        if (DebugMode == 1) { // Screen Distance
+             float screenDistNorm = length(diff);
+             return float4(screenDistNorm.xxx * 2.0, 1.0); // Scale for visibility
+        }
+        if (DebugMode == 2) { // Angle
+             float baseAngle = atan2(diff.y, diff.x);
+             float rotationOffset = timer * (-RotationSpeed) * ROTATION_SPEED_SCALE;
+             float angle = baseAngle + rotationOffset;
              return float4(frac(angle/AS_TWO_PI + 0.5).xxx, 1.0);
         }
         if (DebugMode == 3) { // Texture UVs
-             // Use inverted rotation for debug
-             float rotationOffset = timer * (-RotationSpeed) * 0.1;
-             float angle = baseAngle + rotationOffset; // Recalculate for debug
+             float screenDistNorm = length(diff);
+             float baseAngle = atan2(diff.y, diff.x);
+             float rotationOffset = timer * (-RotationSpeed) * ROTATION_SPEED_SCALE;
+             float angle = baseAngle + rotationOffset;
              float texU = frac(angle / AS_TWO_PI + 0.5);
-             float texV = 1.0 - saturate(0.5 + (screenDistNorm - effectiveRadiusNorm) / (effectiveThicknessNorm + 0.0001));
+
+             // Recalculate effective radius/thickness based on inputs
+             float radiusNorm = radiusInput;
+             float thicknessNorm = radiusNorm * saturate(thicknessInput);
+             float effectiveRadiusNorm = max(0.0001, radiusNorm);
+             float effectiveThicknessNorm = max(0.0001, thicknessNorm);
+
+             float texV = 1.0 - saturate(0.5 + (screenDistNorm - effectiveRadiusNorm) / (effectiveThicknessNorm + DEPTH_EPSILON));
              return float4(texU, texV, 0.0, 1.0);
         }
         if (DebugMode == 4) {
-             bool visible = targetDepthZ <= sceneDepth + 0.0001;
+             // Check depth using targetDepthZ (from TargetDepth uniform)
+             bool visible = targetDepthZ <= sceneDepth + DEPTH_EPSILON;
              float debugVal = visible ? 1.0 : 0.0;
              return float4(debugVal, debugVal, debugVal, 1.0);
         }
