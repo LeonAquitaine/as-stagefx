@@ -37,13 +37,21 @@
 // ============================================================================
 // TEXTURES
 // ============================================================================
-#ifndef RING_TEXTURE_PATH
-#define RING_TEXTURE_PATH "Copyright4kH.png" // Default texture path
+#ifndef RING_TEXTURE_FILENAME
+#define RING_TEXTURE_FILENAME "Copyright4kH.png" // Default texture path
+#endif
+
+#ifndef RING_TEXTURE_SIZE_WIDTH
+#define RING_TEXTURE_SIZE_WIDTH 1450
+#endif
+
+#ifndef RING_TEXTURE_SIZE_HEIGHT
+#define RING_TEXTURE_SIZE_HEIGHT 100
 #endif
 
 #include "ReShadeUI.fxh" // Needed for texture UI element
 
-texture RingTexture < source = RING_TEXTURE_PATH; ui_label="Ring Texture"; ui_tooltip="Wide, short texture (e.g., 2048x60) to wrap around the ring."; > { Width=1450; Height=100; Format=RGBA8; };
+texture RingTexture < source = RING_TEXTURE_FILENAME; ui_label="Ring Texture"; ui_tooltip="Wide, short texture (e.g., 2048x60) to wrap around the ring."; > { Width=RING_TEXTURE_SIZE_WIDTH; Height=RING_TEXTURE_SIZE_HEIGHT; Format=RGBA8; };
 sampler RingSampler { Texture = RingTexture; AddressU = WRAP; AddressV = CLAMP; MagFilter = LINEAR; MinFilter = LINEAR; MipFilter = LINEAR; };
 
 // ============================================================================
@@ -70,6 +78,7 @@ static const float DEPTH_EPSILON = 0.0001;     // Small offset for depth checks 
 // ============================================================================
 // EFFECT-SPECIFIC PARAMETERS
 // ============================================================================
+
 // --- Ring Appearance ---
 uniform float RingRadius < ui_type = "slider"; ui_label = "Ring Radius"; ui_tooltip = "Radius as percentage of screen height."; ui_min = RING_RADIUS_MIN; ui_max = RING_RADIUS_MAX; ui_step = 0.001; ui_category = "Ring Appearance"; > = RING_RADIUS_DEFAULT;
 uniform float RingThickness < ui_type = "slider"; ui_label = "Ring Thickness"; ui_tooltip = "Thickness as percentage of Radius (0=thin, 1=filled)."; ui_min = RING_THICKNESS_MIN; ui_max = RING_THICKNESS_MAX; ui_step = 0.01; ui_category = "Ring Appearance"; > = RING_THICKNESS_DEFAULT;
