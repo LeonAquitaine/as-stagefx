@@ -18,6 +18,29 @@ This release includes the AS-StageFX shader collection for ReShade.
 
 ---
 
+## Bug Fixes in v1.0.5.0
+
+This release includes several important bug fixes and code quality improvements:
+
+1. **Fixed AS_getTime() function in AS_Utils.1.fxh**
+   - Now properly detects when Listeningway is active vs. just present but not running
+   - Implements proper fallback mechanism for more reliable timing with or without Listeningway
+   - Improves animation consistency across all effects that use time-based animations
+
+2. **Improved SparkleBloom Shader**
+   - Added "Edge Power" user parameter for precise control of edge emphasis
+   - Replaced magic numbers with named constants for better code maintainability
+   - Fixed edge detection to ensure sparkles appear properly at object boundaries
+
+3. **Code Quality Improvements**
+   - Enhanced adherence to AS StageFX Shader Development standards
+   - Improved naming consistency across constants and parameters
+   - Better documentation of intended behavior
+
+For the full changelog and documentation, please refer to the main README.md.
+
+---
+
 ## New Shader: AS_VFX_WaterSurface.1.fx
 
 **AS_VFX_WaterSurface.1.fx** simulates a realistic water surface with a depth-based reflection horizon, perspective-correct wave compression, and customizable water color, transparency, and reflection. This effect is ideal for scenes with water, pools, or reflective floors.

@@ -2,10 +2,7 @@
  * AS_VFX_SparkleBloom.1.fx - Dynamic Sparkle Effect Shader Version 1.0
  * Author: Leon Aquitaine
  * License: Creative Commons Attribution 4.0 International
- * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
  * 
- * ===================================================================================
- *
  * DESCRIPTION:
  * This shader creates a realistic glitter/sparkle effect that dynamically responds to scene
  * lighting, depth, and camera movement. It simulates tiny reflective particles that pop in,
@@ -20,68 +17,110 @@
  * - Multiple blend modes and color options
  * - Audio-reactive sparkle intensity and animation via Listeningway
  *
- * IMPLEMENTATION OVERVIEW:
+ * IMPLEMENTATION:
  * 1. The shader uses multiple layers of Voronoi noise at different scales to generate the base sparkle pattern
  * 2. Each sparkle has its own lifecycle (fade in, sustain, fade out) based on its position and the animation time
  * 3. Surface normals are reconstructed from the depth buffer to apply fresnel effects, making sparkles appear more prominently at glancing angles
  * 4. A two-pass gaussian bloom is applied for a soft, natural glow effect
  * 5. Multiple blend modes allow for different integration with the scene
- * 
- * ===================================================================================
  */
 
 // ============================================================================
-// TECHNIQUE GUARD - Prevents duplicate loading of the same shader
+// TECHNIQUE GUARD
 // ============================================================================
 #ifndef __AS_VFX_SparkleBloom_1_fx
 #define __AS_VFX_SparkleBloom_1_fx
 
+// ============================================================================
+// INCLUDES
+// ============================================================================
+#include "ReShade.fxh"
+#include "ReShadeUI.fxh"
 #include "AS_Utils.1.fxh"
-#include "AS_Palettes.1.fxh"
 
-// --- Tunable Constants ---
+// ============================================================================
+// TUNABLE CONSTANTS
+// ============================================================================
 static const float GLITTERDENSITY_MIN = 0.1;
 static const float GLITTERDENSITY_MAX = 20.0;
 static const float GLITTERDENSITY_DEFAULT = 10.0;
+
 static const float GLITTERSIZE_MIN = 0.1;
 static const float GLITTERSIZE_MAX = 10.0;
 static const float GLITTERSIZE_DEFAULT = 5.0;
+
 static const float GLITTERBRIGHTNESS_MIN = 0.1;
 static const float GLITTERBRIGHTNESS_MAX = 12.0;
 static const float GLITTERBRIGHTNESS_DEFAULT = 6.0;
+
 static const float GLITTERSHARPNESS_MIN = 0.1;
 static const float GLITTERSHARPNESS_MAX = 2.1;
 static const float GLITTERSHARPNESS_DEFAULT = 1.1;
+
 static const float GLITTERSPEED_MIN = 0.1;
 static const float GLITTERSPEED_MAX = 1.5;
 static const float GLITTERSPEED_DEFAULT = 0.8;
+
 static const float GLITTERLIFETIME_MIN = 1.0;
 static const float GLITTERLIFETIME_MAX = 20.0;
 static const float GLITTERLIFETIME_DEFAULT = 10.0;
+
 static const float BLOOMINTENSITY_MIN = 0.1;
 static const float BLOOMINTENSITY_MAX = 3.1;
 static const float BLOOMINTENSITY_DEFAULT = 1.6;
+
 static const float BLOOMRADIUS_MIN = 1.0;
 static const float BLOOMRADIUS_MAX = 10.2;
 static const float BLOOMRADIUS_DEFAULT = 5.6;
+
 static const float BLOOMDISPERSION_MIN = 1.0;
 static const float BLOOMDISPERSION_MAX = 3.0;
 static const float BLOOMDISPERSION_DEFAULT = 2.0;
+
 static const float NEARPLANE_MIN = 0.0;
 static const float NEARPLANE_MAX = 1.0;
 static const float NEARPLANE_DEFAULT = 0.0;
+
 static const float FARPLANE_MIN = 0.0;
 static const float FARPLANE_MAX = 1.0;
 static const float FARPLANE_DEFAULT = 1.0;
+
 static const float DEPTHCURVE_MIN = 0.1;
 static const float DEPTHCURVE_MAX = 10.0;
 static const float DEPTHCURVE_DEFAULT = 1.0;
+
 static const float BLENDAMOUNT_MIN = 0.0;
 static const float BLENDAMOUNT_MAX = 1.0;
 static const float BLENDAMOUNT_DEFAULT = 1.0;
+
 static const float TIMESCALE_MIN = 1.0;
+static const float TIMESCALE_MAX = 17.0;
 static const float TIMESCALE_DEFAULT = 9.0;
-static const float TIMESCALE_MAX = 20.0;
+
+// Normal reconstruction constants
+static const float NORMAL_SAMPLE_DISTANCE = 2.0;    // Distance multiplier for sampling depth
+static const float NORMAL_GRADIENT_SCALE = 4.0;     // Scale for computing depth gradients
+
+// Fresnel constants
+static const float FRESNEL_POWER_MIN = 1.0;
+static const float FRESNEL_POWER_MAX = 10.0;
+static const float FRESNEL_POWER_DEFAULT = 5.0;
+
+// Time scale constants
+static const float TIME_DIVISOR = 333.33;           // Divisor to normalize time scale
+
+// Sparkle constants
+static const float SPARKLE_THRESHOLD = 0.05;        // Alpha threshold for sparkle visibility
+static const float SPARKLE_CONTRIBUTION_MULT = 5.0; // Multiplier for sparkle brightness
+static const float SPARKLE_COORD_SCALE = 0.005;     // Scale for noise coordinate sampling
+static const float SPARKLE_STAR_POINTS = 4.0;       // Number of points on star-shaped sparkles
+
+// Bloom constants
+static const float BLOOM_DITHER_SCALE = 0.001;      // Scale for dithering offset
+
+// ============================================================================
+// EFFECT-SPECIFIC PARAMETERS
+// ============================================================================
 
 // --- Sparkle Appearance ---
 uniform float GlitterDensity < ui_type = "slider"; ui_label = "Density"; ui_tooltip = "Controls how many sparkles are generated on the screen. Higher values increase the number of sparkles."; ui_min = GLITTERDENSITY_MIN; ui_max = GLITTERDENSITY_MAX; ui_step = 0.1; ui_category = "Sparkle Appearance"; > = GLITTERDENSITY_DEFAULT;
@@ -89,27 +128,31 @@ uniform float GlitterSize < ui_type = "slider"; ui_label = "Size"; ui_tooltip = 
 uniform float GlitterBrightness < ui_type = "slider"; ui_label = "Brightness"; ui_tooltip = "Sets the overall brightness of the sparkles. Higher values make sparkles more intense and visible."; ui_min = GLITTERBRIGHTNESS_MIN; ui_max = GLITTERBRIGHTNESS_MAX; ui_step = 0.1; ui_category = "Sparkle Appearance"; > = GLITTERBRIGHTNESS_DEFAULT;
 uniform float GlitterSharpness < ui_type = "slider"; ui_label = "Sharpness"; ui_tooltip = "Controls how crisp or soft the edges of sparkles appear. Higher values make sparkles more defined."; ui_min = GLITTERSHARPNESS_MIN; ui_max = GLITTERSHARPNESS_MAX; ui_step = 0.05; ui_category = "Sparkle Appearance"; > = GLITTERSHARPNESS_DEFAULT;
 
-// --- Animation ---
-uniform float GlitterSpeed < ui_type = "slider"; ui_label = "Speed"; ui_tooltip = "Sets how quickly sparkles animate and move. Higher values increase animation speed."; ui_min = GLITTERSPEED_MIN; ui_max = GLITTERSPEED_MAX; ui_step = 0.05; ui_category = "Animation"; > = GLITTERSPEED_DEFAULT;
-uniform float GlitterLifetime < ui_type = "slider"; ui_label = "Lifetime"; ui_tooltip = "Determines how long each sparkle remains visible before fading out."; ui_min = GLITTERLIFETIME_MIN; ui_max = GLITTERLIFETIME_MAX; ui_step = 0.1; ui_category = "Animation"; > = GLITTERLIFETIME_DEFAULT;
-uniform float TimeScale < ui_type = "slider"; ui_label = "Time Scale"; ui_tooltip = "Scales the overall animation timing for all sparkles. Use to speed up or slow down the effect globally."; ui_min = TIMESCALE_MIN; ui_max = TIMESCALE_MAX; ui_step = 0.5; ui_category = "Animation"; > = TIMESCALE_DEFAULT;
+// ============================================================================
+// FRESNEL CONTROLS
+// ============================================================================
+uniform float FresnelPower < ui_type = "slider"; ui_label = "Edge Power"; ui_tooltip = "Controls how strongly edges are emphasized. Higher values make sparkles appear more prominently on edges."; ui_min = FRESNEL_POWER_MIN; ui_max = FRESNEL_POWER_MAX; ui_step = 0.1; ui_category = "Sparkle Appearance"; > = FRESNEL_POWER_DEFAULT;
 
-// --- Bloom Effect ---
-uniform bool EnableBloom < ui_label = "Bloom"; ui_tooltip = "Enables or disables the bloom (glow) effect around sparkles for a softer, more radiant look."; ui_category = "Bloom Effect"; > = true;
+// ============================================================================
+// ANIMATION CONTROLS
+// ============================================================================
+uniform float GlitterSpeed < ui_type = "slider"; ui_label = "Speed"; ui_tooltip = "Sets how quickly sparkles animate and move. Higher values increase animation speed."; ui_min = GLITTERSPEED_MIN; ui_max = GLITTERSPEED_MAX; ui_step = 0.05; ui_category = "Animation Controls"; > = GLITTERSPEED_DEFAULT;
+uniform float GlitterLifetime < ui_type = "slider"; ui_label = "Lifetime"; ui_tooltip = "Determines how long each sparkle remains visible before fading out."; ui_min = GLITTERLIFETIME_MIN; ui_max = GLITTERLIFETIME_MAX; ui_step = 0.1; ui_category = "Animation Controls"; > = GLITTERLIFETIME_DEFAULT;
+uniform float TimeScale < ui_type = "slider"; ui_label = "Time Scale"; ui_tooltip = "Scales the overall animation timing for all sparkles. Use to speed up or slow down the effect globally."; ui_min = TIMESCALE_MIN; ui_max = TIMESCALE_MAX; ui_step = 0.5; ui_category = "Animation Controls"; > = TIMESCALE_DEFAULT;
+
+// ============================================================================
+// BLOOM EFFECT CONTROLS
+// ============================================================================
+uniform bool EnableBloom < ui_label = "Enable Bloom"; ui_tooltip = "Enables or disables the bloom (glow) effect around sparkles for a softer, more radiant look."; ui_category = "Bloom Effect"; > = true;
 uniform float BloomIntensity < ui_type = "slider"; ui_label = "Intensity"; ui_tooltip = "Controls how strong the bloom (glow) effect appears around sparkles."; ui_min = BLOOMINTENSITY_MIN; ui_max = BLOOMINTENSITY_MAX; ui_step = 0.05; ui_category = "Bloom Effect"; ui_spacing = 1; ui_bind = "EnableBloom"; > = BLOOMINTENSITY_DEFAULT;
 uniform float BloomRadius < ui_type = "slider"; ui_label = "Radius"; ui_tooltip = "Sets how far the bloom effect extends from each sparkle. Larger values create a wider glow."; ui_min = BLOOMRADIUS_MIN; ui_max = BLOOMRADIUS_MAX; ui_step = 0.2; ui_category = "Bloom Effect"; ui_bind = "EnableBloom"; > = BLOOMRADIUS_DEFAULT;
 uniform float BloomDispersion < ui_type = "slider"; ui_label = "Dispersion"; ui_tooltip = "Adjusts how quickly the bloom fades at the edges. Higher values make the glow softer and more gradual."; ui_min = BLOOMDISPERSION_MIN; ui_max = BLOOMDISPERSION_MAX; ui_step = 0.05; ui_category = "Bloom Effect"; ui_bind = "EnableBloom"; > = BLOOMDISPERSION_DEFAULT;
 uniform int BloomQuality < ui_type = "combo"; ui_label = "Quality"; ui_tooltip = "Selects the quality level for the bloom effect. Higher quality reduces artifacts but may impact performance."; ui_items = "Potato\0Low\0Medium\0High\0Ultra\0AI Overlord\0"; ui_category = "Bloom Effect"; ui_bind = "EnableBloom"; > = 2;
 uniform bool BloomDither < ui_label = "Dither"; ui_tooltip = "Adds subtle noise to the bloom to reduce color banding and grid patterns."; ui_category = "Bloom Effect"; ui_bind = "EnableBloom"; > = true;
 
-// --- Color Settings ---
-uniform float3 GlitterColor < ui_type = "color"; ui_label = "Color"; ui_tooltip = "Sets the base color of all sparkles."; ui_category = "Color Settings"; > = float3(1.0, 1.0, 1.0);
-uniform bool DepthColoringEnable < ui_label = "Depth Color"; ui_tooltip = "If enabled, sparkles will change color based on their distance from the camera."; ui_category = "Color Settings"; > = true;
-uniform float3 NearColor < ui_type = "color"; ui_label = "Near Color"; ui_tooltip = "Color for sparkles close to the camera."; ui_category = "Color Settings"; > = float3(1.0, 204/255.0, 153/255.0);
-uniform float3 FarColor < ui_type = "color"; ui_label = "Far Color"; ui_tooltip = "Color for sparkles far from the camera."; ui_category = "Color Settings"; > = float3(153/255.0, 204/255.0, 1.0);
-
-// --- Audio Reactivity ---
-
+// ============================================================================
+// AUDIO REACTIVITY
+// ============================================================================
 AS_AUDIO_SOURCE_UI(Listeningway_SparkleSource, "Sparkle Source", AS_AUDIO_BEAT, "Audio Reactivity")
 AS_AUDIO_MULTIPLIER_UI(Listeningway_SparkleMultiplier, "Sparkle Intensity", 1.5, 5.0, "Audio Reactivity")
 AS_AUDIO_SOURCE_UI(Listeningway_BloomSource, "Bloom Source", AS_AUDIO_BEAT, "Audio Reactivity")
@@ -117,65 +160,57 @@ AS_AUDIO_MULTIPLIER_UI(Listeningway_BloomMultiplier, "Bloom Intensity", 10.0, 10
 AS_AUDIO_SOURCE_UI(Listeningway_TimeScaleSource, "Time Source", AS_AUDIO_BEAT, "Audio Reactivity")
 AS_AUDIO_MULTIPLIER_UI(Listeningway_TimeScaleBand1Multiplier, "Time Intensity", 1.0, 5.0, "Audio Reactivity")
 
-// --- Depth Masking ---
+// ============================================================================
+// COLOR SETTINGS
+// ============================================================================
+uniform float3 GlitterColor < ui_type = "color"; ui_label = "Color"; ui_tooltip = "Sets the base color of all sparkles."; ui_category = "Color Settings"; > = float3(1.0, 1.0, 1.0);
+uniform bool DepthColoringEnable < ui_label = "Depth Color"; ui_tooltip = "If enabled, sparkles will change color based on their distance from the camera."; ui_category = "Color Settings"; > = true;
+uniform float3 NearColor < ui_type = "color"; ui_label = "Near Color"; ui_tooltip = "Color for sparkles close to the camera."; ui_category = "Color Settings"; > = float3(1.0, 204/255.0, 153/255.0);
+uniform float3 FarColor < ui_type = "color"; ui_label = "Far Color"; ui_tooltip = "Color for sparkles far from the camera."; ui_category = "Color Settings"; > = float3(153/255.0, 204/255.0, 1.0);
+
+// ============================================================================
+// DEPTH MASKING
+// ============================================================================
 uniform float NearPlane < ui_type = "slider"; ui_label = "Near"; ui_tooltip = "Controls the minimum distance from the camera where sparkles can appear. Lower values allow sparkles closer to the camera."; ui_min = NEARPLANE_MIN; ui_max = NEARPLANE_MAX; ui_step = 0.01; ui_category = "Depth Masking"; > = NEARPLANE_DEFAULT;
 uniform float FarPlane < ui_type = "slider"; ui_label = "Far"; ui_tooltip = "Controls the maximum distance from the camera where sparkles can appear. Lower values bring the cutoff closer."; ui_min = FARPLANE_MIN; ui_max = FARPLANE_MAX; ui_step = 0.01; ui_category = "Depth Masking"; > = FARPLANE_DEFAULT;
 uniform float DepthCurve < ui_type = "slider"; ui_label = "Curve"; ui_tooltip = "Adjusts how quickly sparkles fade out with distance. Higher values make the fade sharper."; ui_min = DEPTHCURVE_MIN; ui_max = DEPTHCURVE_MAX; ui_step = 0.1; ui_category = "Depth Masking"; > = DEPTHCURVE_DEFAULT;
 uniform bool AllowInfiniteCutoff < ui_label = "Infinite Cutoff"; ui_tooltip = "If enabled, sparkles can appear all the way to the horizon. If disabled, sparkles beyond the cutoff distance are hidden."; ui_category = "Depth Masking"; > = true;
+uniform bool ObeyOcclusion < ui_label = "Occlusion"; ui_tooltip = "If enabled, sparkles and bloom will be masked by scene depth, so they do not appear through objects."; ui_category = "Depth Masking"; > = true;
 
-// --- Occlusion Control ---
-uniform bool ObeyOcclusion < ui_label = "Occlusion"; ui_tooltip = "If enabled, sparkles and bloom will be masked by scene depth, so they do not appear through objects."; ui_category = "Effect Control"; > = true;
+// ============================================================================
+// FINAL MIX
+// ============================================================================
+AS_BLENDMODE_UI(BlendMode, "Final Mix")
+AS_BLENDAMOUNT_UI(BlendAmount, "Final Mix")
 
-// --- Performance ---
-uniform int PerformancePreset < ui_type = "combo"; ui_label = "Performance Mode"; ui_tooltip = "Preset that balances quality and performance. Lower settings improve FPS at the cost of visual quality."; ui_items = "Ultra (Best Quality)\0High\0Medium\0Low\0Potato (Best Performance)\0"; ui_category = "Performance"; > = 2; // Medium default
+// ============================================================================
+// DEBUG
+// ============================================================================
+AS_DEBUG_MODE_UI("Off\0Depth\0Normal\0Sparkle\0Mask\0Force On\0")
 
-uniform bool UseAdvancedPerformanceOptions < ui_label = "Show Advanced Options"; ui_tooltip = "Enable to fine-tune individual performance settings"; ui_category = "Performance"; > = false;
+// ============================================================================
+// TEXTURES AND SAMPLERS
+// ============================================================================
+texture SparkleRT { Width = BUFFER_WIDTH; Height = BUFFER_HEIGHT; Format = RGBA16F; };
+sampler SparkleSampler { Texture = SparkleRT; };
 
-uniform int SparkleQuality < ui_type = "combo"; ui_label = " Sparkle Quality"; ui_tooltip = "Controls the complexity of sparkle generation. Lower settings reduce the number of calculation layers."; ui_items = "High (3 layers)\0Medium (2 layers)\0Low (1 layer)\0"; ui_category = "Performance"; ui_bind = "UseAdvancedPerformanceOptions"; > = 0;
-
-uniform int BloomBufferQuality < ui_type = "combo"; ui_label = " Bloom Resolution"; ui_tooltip = "Controls the resolution of bloom buffers. Lower settings increase performance by reducing pixel count."; ui_items = "Full\0Half\0Quarter\0Eighth\0"; ui_category = "Performance"; ui_bind = "UseAdvancedPerformanceOptions"; > = 1; // Half resolution by default
-
-uniform int SamplingQuality < ui_type = "combo"; ui_label = " Sampling Detail"; ui_tooltip = "Controls the number of samples for bloom calculations. Lower settings greatly improve performance by taking fewer samples."; ui_items = "Ultra\0High\0Medium\0Low\0Minimum\0"; ui_category = "Performance"; ui_bind = "UseAdvancedPerformanceOptions"; > = 2;
-
-uniform bool EnableDither < ui_label = " Dithering"; ui_tooltip = "Adds subtle noise to reduce banding. Small performance cost but improves visual quality."; ui_category = "Performance"; ui_bind = "UseAdvancedPerformanceOptions"; > = true;
-
-uniform bool EnableStarSparkles < ui_label = " Star Sparkles"; ui_tooltip = "When enabled, adds special star-shaped sparkles. Disable for better performance."; ui_category = "Performance"; ui_bind = "UseAdvancedPerformanceOptions"; > = true;
-
-uniform bool SkipFresnel < ui_label = " Skip Normal Reconstruction"; ui_tooltip = "When enabled, skips normal reconstruction and fresnel calculations for a significant performance boost."; ui_category = "Performance"; ui_bind = "UseAdvancedPerformanceOptions"; > = false;
-
-// --- Final Mix ---
-uniform int BlendMode < ui_type = "combo"; ui_label = "Mode"; ui_items = "Normal\0Lighter Only\0Darker Only\0Additive\0Multiply\0Screen\0"; ui_category = "Final Mix"; > = 0;
-uniform float BlendAmount < ui_type = "slider"; ui_label = "Strength"; ui_tooltip = "How strongly the effect is blended with the scene."; ui_min = BLENDAMOUNT_MIN; ui_max = BLENDAMOUNT_MAX; ui_step = 0.01; ui_category = "Final Mix"; > = BLENDAMOUNT_DEFAULT;
-
-// --- Debug ---
-AS_DEBUG_MODE_UI("Off\0Depth\0Normals\0Sparkle Intensity\0Depth Mask\0Force Enable\0")
-
-// --- System Uniforms ---
-
-
-// --- Textures and Samplers ---
-texture GlitterRT { 
-    Width = BUFFER_WIDTH; 
-    Height = BUFFER_HEIGHT; 
-    Format = RGBA16F; 
-};
-sampler GlitterSampler { Texture = GlitterRT; };
-
-texture GlitterBloomRT { 
-    Width = BUFFER_WIDTH * 0.5; 
-    Height = BUFFER_HEIGHT * 0.5; 
-    Format = RGBA16F; 
-};
-sampler GlitterBloomSampler { 
-    Texture = GlitterBloomRT; 
+texture SparkleBloomRT { Width = BUFFER_WIDTH / 2; Height = BUFFER_HEIGHT / 2; Format = RGBA16F; };
+sampler SparkleBloomSampler { 
+    Texture = SparkleBloomRT;
     MagFilter = LINEAR;
     MinFilter = LINEAR;
     MipFilter = LINEAR;
 };
 
-// --- Helper Functions ---
-namespace AS_Glitter {
-    // Layer properties
+/*-----------------------------.
+| :: Helper Functions and Constants |
+'-----------------------------*/
+
+// ============================================================================
+// HELPER FUNCTIONS
+// ============================================================================
+namespace AS_SparkleBloom {
+    // Layer properties for multi-layered sparkle effect
     static const float SPARKLE_LAYER_SIZES[3]   = {0.05, 0.03, 0.02};
     static const float SPARKLE_LAYER_WEIGHTS[3] = {1.0, 0.7, 0.3};
     static const float SPARKLE_LAYER_SPEEDS[3]  = {1.0, 1.2, 0.8};
@@ -189,38 +224,17 @@ namespace AS_Glitter {
     // Get bloom step size based on quality setting
     float getBloomStepSize(int quality) {
         switch(quality) {
-            case 0: return 4.0;
-            case 1: return 2.0;
-            case 2: return 1.0;
-            case 3: return 0.5;
-            case 4: return 0.25;
-            case 5: return 0.125;
-            default: return 1.0;
+            case 0: return 4.0;  // Potato
+            case 1: return 2.0;  // Low
+            case 2: return 1.0;  // Medium
+            case 3: return 0.5;  // High
+            case 4: return 0.25; // Ultra
+            case 5: return 0.125; // AI Overlord
+            default: return 1.0; // Default to Medium
         }
     }
 
-    // Get number of layers based on performance setting
-    int getVoronoiLayers(int perf) {
-        if (perf >= 3) return 1; // Low/Potato: 1 layer
-        if (perf == 2) return 2; // Medium: 2 layers
-        return 3; // High/Ultra: 3 layers
-    }
-    
-    // Get bloom buffer scale factor based on performance setting
-    float getBloomBufferScale(int perf) {
-        if (perf >= 3) return 0.25; // Low/Potato: quarter res
-        if (perf == 2) return 0.5; // Medium: half res
-        return 1.0; // High/Ultra: full res
-    }
-    
-    // Adjust bloom step size based on performance preset
-    float getBloomStepSizePerf(int perf, int quality) {
-        float base = getBloomStepSize(quality);
-        if (perf >= 3) return base * 2.0; // Fewer samples for low
-        return base;
-    }
-
-    // Dither noise calculation for bloom
+    // Calculate dither noise for bloom to reduce banding
     float2 calculateDitherNoise(float2 texcoord, float2 seeds, float stepSize) {
         float2 noise = frac(sin(dot(texcoord, seeds)) * 43758.5453);
         noise = noise * 2.0 - 1.0;
@@ -255,167 +269,77 @@ namespace AS_Glitter {
         float fadeInEnd = 0.2;
         float fadeOutStart = 0.8;
         float brightness = 1.0;
+        
         if (cycle < fadeInEnd) {
             brightness = smoothstep(0.0, fadeInEnd, cycle) / fadeInEnd;
         } else if (cycle > fadeOutStart) {
             brightness = 1.0 - smoothstep(fadeOutStart, 1.0, cycle) / (1.0 - fadeOutStart);
         }
+        
         return brightness;
     }
     
-    // Star shape generator for high-quality sparkles
+    // Star shape generator for star-shaped sparkles
     float star(float2 p, float size, float points, float angle) {
-        float2 uv = p; float a = atan2(uv.y, uv.x) + angle; float r = length(uv);
+        float2 uv = p;
+        float a = atan2(uv.y, uv.x) + angle;
+        float r = length(uv);
         float f = cos(a * points) * 0.5 + 0.5;
         return 1.0 - smoothstep(f * size, f * size + 0.01, r);
     }
     
-    // Get effective sparkle quality based on preset or manual setting
-    int getEffectiveSparkleQuality() {
-        if (!UseAdvancedPerformanceOptions) {
-            // Map from performance preset to sparkle quality
-            if (PerformancePreset <= 1) return 0; // Ultra/High → 3 layers
-            if (PerformancePreset == 2) return 1; // Medium → 2 layers
-            return 2; // Low/Potato → 1 layer
-        }
-        return SparkleQuality;
-    }
-    
-    // Get the effective bloom buffer scale factor
-    float getEffectiveBloomBufferScale() {
-        if (!UseAdvancedPerformanceOptions) {
-            // Map from performance preset to bloom buffer scale
-            if (PerformancePreset <= 1) return 1.0; // Ultra/High → Full res
-            if (PerformancePreset == 2) return 0.5; // Medium → Half res
-            if (PerformancePreset == 3) return 0.25; // Low → Quarter res
-            return 0.125; // Potato → Eighth res
-        }
-        
-        // Use the user-selected value from the advanced options
-        switch (BloomBufferQuality) {
-            case 0: return 1.0;   // Full
-            case 1: return 0.5;   // Half
-            case 2: return 0.25;  // Quarter
-            case 3: return 0.125; // Eighth
-            default: return 0.5;  // Default to half res
-        }
-    }
-    
-    // Get effective sampling quality
-    float getEffectiveSamplingStep() {
-        if (!UseAdvancedPerformanceOptions) {
-            // Map from performance preset to sampling quality
-            if (PerformancePreset == 0) return 0.125; // Ultra → Very dense sampling (8 samples per unit)
-            if (PerformancePreset == 1) return 0.25;  // High → Dense sampling (4 samples per unit)
-            if (PerformancePreset == 2) return 0.5;   // Medium → Normal sampling (2 samples per unit)
-            if (PerformancePreset == 3) return 1.0;   // Low → Sparse sampling (1 sample per unit)
-            return 2.0;  // Potato → Very sparse sampling (1 sample per 2 units)
-        }
-        
-        // Use the user-selected value
-        switch (SamplingQuality) {
-            case 0: return 0.125; // Ultra
-            case 1: return 0.25;  // High
-            case 2: return 0.5;   // Medium
-            case 3: return 1.0;   // Low
-            case 4: return 2.0;   // Minimum
-            default: return 0.5;  // Default
-        }
-    }
-    
-    // Get whether to use star-shaped sparkles
-    bool getUseStarSparkles() {
-        if (!UseAdvancedPerformanceOptions) {
-            // Only use stars in Ultra and High quality
-            return PerformancePreset <= 1;
-        }
-        return EnableStarSparkles;
-    }
-    
-    // Get whether to skip fresnel/normal calculations
-    bool getShouldSkipFresnel() {
-        if (!UseAdvancedPerformanceOptions) {
-            // Skip in low and potato modes
-            return PerformancePreset >= 3;
-        }
-        return SkipFresnel;
-    }
-    
-    // Get whether to use dithering
-    bool getShouldUseDither() {
-        if (!UseAdvancedPerformanceOptions) {
-            // Use dither in all but potato mode
-            return PerformancePreset < 4;
-        }
-        return EnableDither;
-    }
-    
-    // Get number of voronoi layers to use
-    int getVoronoiLayers() {
-        int quality = getEffectiveSparkleQuality();
-        return 3 - quality; // 3 layers for High, 2 for Medium, 1 for Low
-    }
-    
-    // Simplified version of sparkle calculation for low-end devices
-    float simpleSparkle(float2 uv, float time) {
-        float2 n = floor(uv * GlitterDensity);
-        float id = AS_hash21(n).x;
-        float phase = frac(time * 0.5 + id * 10.0);
-        float brightness = 1.0;
-        
-        // Simple fade-in/fade-out
-        if (phase < 0.2) {
-            brightness = phase / 0.2;
-        } else if (phase > 0.8) {
-            brightness = (1.0 - phase) / 0.2;
-        }
-        
-        float2 f = frac(uv * GlitterDensity) - 0.5;
-        float sparkle = (1.0 - smoothstep(0.0, 0.05 * GlitterSize, dot(f, f))) * brightness;
-        return sparkle * GlitterDensity * 0.1;
-    }
-    
-    // Choose which sparkle algorithm to use based on quality
+    // Main sparkle generation function
     float sparkle(float2 uv, float time) {
-        // For lowest quality setting, use the simplified algorithm
-        if (PerformancePreset >= 4 && !UseAdvancedPerformanceOptions) {
-            return simpleSparkle(uv, time);
-        }
-        
         float sparkleSum = 0.0;
         float2 voronoiResult;
         float sparkleScale = GlitterSize * 0.4;
         float sharpnessFactor = GlitterSharpness;
         float lifeDuration = 1.0 + GlitterLifetime * 0.2;
         
-        // Use the effective layer count
-        int layers = getVoronoiLayers();
-        
-        for (int layer = 0; layer < layers; ++layer) {
-            voronoiResult = voronoi(uv * GlitterDensity * (layer == 0 ? 0.5 : (layer == 1 ? 1.0 : 2.0)), time * (0.1 + 0.05 * layer));
+        for (int layer = 0; layer < 3; ++layer) {
+            // Scale density by layer (more detail in higher layers)
+            float layerDensity = GlitterDensity * (layer == 0 ? 0.5 : (layer == 1 ? 1.0 : 2.0));
+            
+            // Get voronoi points, animated over time
+            voronoiResult = voronoi(uv * layerDensity, time * (0.1 + 0.05 * layer));
+            
             float sparkleID = voronoiResult.y;
             float dist = voronoiResult.x;
+            
+            // Calculate brightness based on lifecycle
             float brightness = calculateSparkleLifecycle(time, sparkleID, SPARKLE_LAYER_SPEEDS[layer], lifeDuration);
             brightness = pow(brightness, SPARKLE_LAYER_POWS[layer]);
+            
+            // Basic sparkle shape based on distance
             float sparkleShape = (1.0 - smoothstep(0.0, SPARKLE_LAYER_SIZES[layer] * sparkleScale / sharpnessFactor, dist)) * brightness;
             
-            // Only add star shapes in higher quality modes
-            if (layer == 0 && getUseStarSparkles() && dist < SPARKLE_LAYER_SIZES[0] * sparkleScale / sharpnessFactor) {
-                float starMask = star(uv - (uv - voronoiResult.xy), SPARKLE_LAYER_SIZES[0] * sparkleScale / sharpnessFactor, 4.0, sparkleID * 6.28);
+            // Add star shape for the first layer
+            if (layer == 0 && dist < SPARKLE_LAYER_SIZES[0] * sparkleScale / sharpnessFactor) {
+                float starMask = star(uv - (uv - voronoiResult.xy), SPARKLE_LAYER_SIZES[0] * sparkleScale / sharpnessFactor, SPARKLE_STAR_POINTS, sparkleID * AS_TWO_PI);
                 sparkleShape = max(sparkleShape, starMask * brightness * 2.0);
             }
             
+            // Add this layer's contribution
             sparkleSum += sparkleShape * SPARKLE_LAYER_WEIGHTS[layer];
         }
         
+        // Scale by density to allow more control
         sparkleSum *= GlitterDensity * 0.1;
         return saturate(sparkleSum);
     }
-} // end namespace AS_Glitter
+} // end namespace AS_SparkleBloom
 
-// --- Main Effects ---
-// First pass: Sparkle generation
-float4 PS_RenderSparkles(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target {
+// --- Audio Source Helper ---
+float GetAudioSource(int source) {
+    return AS_getAudioSource(source);
+}
+
+/*-----------------------------------.
+| :: First Pass - Sparkle Generation |
+'-----------------------------------*/
+
+float4 PS_RenderSparkles(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target
+{
     // Get background color and depth
     float4 color = tex2D(ReShade::BackBuffer, texcoord);
     float depth = ReShade::GetLinearizedDepth(texcoord);
@@ -433,37 +357,57 @@ float4 PS_RenderSparkles(float4 pos : SV_Position, float2 texcoord : TEXCOORD) :
         return float4(0.0, 0.0, 0.0, 0.0);
     }
     
-    // Calculate normals and fresnel if needed
+    // Calculate normals and fresnel
     float3 normal = float3(0, 0, 1);
     float fresnel = 1.0;
-    if (!forceEnable && !AS_Glitter::getShouldSkipFresnel()) {
-        normal = AS_reconstructNormal(texcoord);
-        float3 viewDir = float3(0.0, 0.0, 1.0);
-        fresnel = AS_fresnel(normal, viewDir, 5.0);
+    
+    if (!forceEnable) {
+        // Reconstruct normal from depth
+        float3 offset = float3(ReShade::PixelSize.xy, 0.0);
+        float2 posCenter = texcoord;
+        
+        // Sample depth in a cross pattern
+        float depthCenter = ReShade::GetLinearizedDepth(posCenter);
+        float depthLeft = ReShade::GetLinearizedDepth(posCenter - offset.xz * NORMAL_SAMPLE_DISTANCE);
+        float depthRight = ReShade::GetLinearizedDepth(posCenter + offset.xz * NORMAL_SAMPLE_DISTANCE);
+        float depthTop = ReShade::GetLinearizedDepth(posCenter - offset.zy * NORMAL_SAMPLE_DISTANCE);
+        float depthBottom = ReShade::GetLinearizedDepth(posCenter + offset.zy * NORMAL_SAMPLE_DISTANCE);
+        
+        // Calculate normal from depth differences
+        float3 dx = float3(offset.x * NORMAL_GRADIENT_SCALE, 0.0, depthRight - depthLeft);
+        float3 dy = float3(0.0, offset.y * NORMAL_GRADIENT_SCALE, depthBottom - depthTop);
+        normal = normalize(cross(dx, dy));
+        
+        // Remap normal from [-1,1] to [0,1] and back for consistent processing
+        normal = normal * 0.5 + 0.5;
+        normal = normal * 2.0 - 1.0;
     }
     
     // Calculate time with audio reactivity
-    float actualTimeScale = TimeScale / 333.33;
-    actualTimeScale = AS_applyAudioReactivityEx(TimeScale / 333.33, Listeningway_TimeScaleSource, 
-                                             Listeningway_TimeScaleBand1Multiplier / 333.33, 
-                                             true, 1); // Additive mode, always enable audio
+    float actualTimeScale = TimeScale / TIME_DIVISOR;
+    actualTimeScale += GetAudioSource(Listeningway_TimeScaleSource) * 
+                        Listeningway_TimeScaleBand1Multiplier / TIME_DIVISOR;
     float time = AS_getTime() * actualTimeScale;
     
     // Generate sparkles
     float positionHash = AS_hash21(floor(texcoord * 10.0)).x * 10.0;
-    float2 noiseCoord = texcoord * ReShade::ScreenSize * 0.005;
-    float sparkleIntensity = AS_Glitter::sparkle(noiseCoord, positionHash + time);
+    float2 noiseCoord = texcoord * ReShade::ScreenSize * SPARKLE_COORD_SCALE;
+    float sparkleIntensity = AS_SparkleBloom::sparkle(noiseCoord, positionHash + time);
     
     // Apply audio reactivity to sparkle intensity
-    sparkleIntensity = AS_applyAudioReactivity(sparkleIntensity, Listeningway_SparkleSource, 
-                                            Listeningway_SparkleMultiplier, true); // Always enable audio
+    sparkleIntensity *= (1.0 + GetAudioSource(Listeningway_SparkleSource) * 
+                        Listeningway_SparkleMultiplier);
+    
+    // Apply fresnel effect for edge highlighting
+    float3 viewDir = float3(0.0, 0.0, 1.0);
+    fresnel = pow(1.0 - saturate(dot(normal, viewDir)), FresnelPower);
     
     // Apply masking based on occlusion settings
-    if (!forceEnable && ObeyOcclusion) { 
-        sparkleIntensity *= fresnel * depthMask; 
+    if (!forceEnable && ObeyOcclusion) {
+        sparkleIntensity *= fresnel * depthMask;
     }
-    else if (!forceEnable && !ObeyOcclusion) { 
-        sparkleIntensity *= fresnel; 
+    else if (!forceEnable && !ObeyOcclusion) {
+        sparkleIntensity *= fresnel;
     }
     
     // Apply brightness
@@ -483,15 +427,21 @@ float4 PS_RenderSparkles(float4 pos : SV_Position, float2 texcoord : TEXCOORD) :
     }
     
     // Prepare final sparkle contribution
-    float3 sparkleContribution = finalGlitterColor * sparkleIntensity * 5.0;
-    return float4(sparkleContribution, sparkleIntensity > 0.05 ? 1.0 : 0.0);
+    float3 sparkleContribution = finalGlitterColor * sparkleIntensity * SPARKLE_CONTRIBUTION_MULT;
+    
+    // Output only the sparkles (on black), alpha as mask
+    return float4(sparkleContribution, sparkleIntensity > SPARKLE_THRESHOLD ? 1.0 : 0.0);
 }
 
-// Second pass: Horizontal bloom
-float4 PS_BloomH(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target {
-    // Early return for debug mode
-    if (DebugMode > 0 && DebugMode < 5) { 
-        return tex2D(GlitterSampler, texcoord); 
+/*-----------------------------------.
+| :: Second Pass - Horizontal Bloom |
+'-----------------------------------*/
+
+float4 PS_BloomH(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target
+{
+    // Early return for debug modes
+    if (DebugMode > 0 && DebugMode < 5) {
+        return tex2D(SparkleSampler, texcoord);
     }
     
     // Skip bloom calculation if disabled
@@ -503,47 +453,32 @@ float4 PS_BloomH(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Targ
     float4 color = float4(0.0, 0.0, 0.0, 0.0);
     float weightSum = 0.0;
     float sigma = BloomRadius / BloomDispersion;
-    float bufferScale = AS_Glitter::getEffectiveBloomBufferScale();
     
-    // Calculate the number of samples based on bloom quality setting
-    int sampleCount;
-    switch(BloomQuality) {
-        case 0: sampleCount = 5;  break; // Potato
-        case 1: sampleCount = 7;  break; // Low
-        case 2: sampleCount = 9;  break; // Medium (default)
-        case 3: sampleCount = 12; break; // High
-        case 4: sampleCount = 16; break; // Ultra
-        case 5: sampleCount = 24; break; // AI Overlord
-        default: sampleCount = 9; break; // Fallback to Medium
-    }
+    // Calculate Gaussian blur parameters
+    float range = ceil(BloomRadius * 2.0);
+    float stepSize = AS_SparkleBloom::getBloomStepSize(BloomQuality);
     
-    float sampleStep = max(1.0, floor(BloomRadius * 2.0 / float(sampleCount * 2 + 1)));
-    
-    // Determine if we should use dithering
+    // Calculate dither noise if enabled
     float2 noise = float2(1.0, 1.0);
-    if (AS_Glitter::getShouldUseDither()) {
-        noise = AS_Glitter::calculateDitherNoise(texcoord, float2(12.9898, 78.233), sampleStep);
+    if (BloomDither) {
+        noise = AS_SparkleBloom::calculateDitherNoise(texcoord, float2(12.9898, 78.233), stepSize);
     }
     
-    // Calculate audio-reactive bloom intensity
+    // Apply audio reactivity to bloom intensity
     float bloomIntensity = BloomIntensity;
-    bloomIntensity = AS_applyAudioReactivity(BloomIntensity, Listeningway_BloomSource, 
-                                          Listeningway_BloomMultiplier, true); // Always enable audio
+    bloomIntensity += (GetAudioSource(Listeningway_BloomSource) * Listeningway_BloomMultiplier);
     
-    // Sample in horizontal direction for Gaussian blur
-    for(int i = -sampleCount; i <= sampleCount; i++) {
-        float x = float(i) * sampleStep;
-        
-        float weight = AS_Glitter::Gaussian(x, sigma);
+    // Horizontal Gaussian blur
+    for (float x = -range; x <= range; x += stepSize) {
+        float weight = AS_SparkleBloom::Gaussian(x, sigma);
         weightSum += weight;
         
-        float2 sampleOffset = float2(x / (BUFFER_WIDTH * bufferScale), 0.0) * BloomRadius;
-        
-        if (AS_Glitter::getShouldUseDither()) {
-            sampleOffset += float2(noise.x * 0.001, 0.0);
+        float2 sampleOffset = float2(x / BUFFER_WIDTH, 0.0) * BloomRadius;
+        if (BloomDither) {
+            sampleOffset += float2(noise.x * BLOOM_DITHER_SCALE, 0.0);
         }
         
-        color += tex2D(GlitterSampler, texcoord + sampleOffset) * weight;
+        color += tex2D(SparkleSampler, texcoord + sampleOffset) * weight;
     }
     
     // Normalize and apply intensity
@@ -553,18 +488,22 @@ float4 PS_BloomH(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Targ
     return color;
 }
 
-// Third pass: Vertical bloom and final blend
-float4 PS_BloomV(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target {
+/*-----------------------------------.
+| :: Third Pass - Vertical Bloom and Final Blend |
+'-----------------------------------*/
+
+float4 PS_BloomV(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target
+{
     // Get original scene color
     float4 originalColor = tex2D(ReShade::BackBuffer, texcoord);
     
-    // Early return for debug mode
-    if (DebugMode > 0 && DebugMode < 5) { 
-        return tex2D(GlitterSampler, texcoord); 
+    // Early return for debug modes
+    if (DebugMode > 0 && DebugMode < 5) {
+        return tex2D(SparkleSampler, texcoord);
     }
     
     // Get sparkles from the first pass
-    float3 sparkles = tex2D(GlitterSampler, texcoord).rgb;
+    float3 sparkles = tex2D(SparkleSampler, texcoord).rgb;
     float3 bloom = float3(0.0, 0.0, 0.0);
     
     // Only process bloom if enabled
@@ -573,75 +512,69 @@ float4 PS_BloomV(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Targ
         float4 bloomColor = float4(0.0, 0.0, 0.0, 0.0);
         float weightSum = 0.0;
         float sigma = BloomRadius / BloomDispersion;
-        float bufferScale = AS_Glitter::getEffectiveBloomBufferScale();
         
-        // Calculate the number of samples based on bloom quality setting
-        int sampleCount;
-        switch(BloomQuality) {
-            case 0: sampleCount = 5;  break; // Potato
-            case 1: sampleCount = 7;  break; // Low
-            case 2: sampleCount = 9;  break; // Medium (default)
-            case 3: sampleCount = 12; break; // High
-            case 4: sampleCount = 16; break; // Ultra
-            case 5: sampleCount = 24; break; // AI Overlord
-            default: sampleCount = 9; break; // Fallback to Medium
-        }
+        // Calculate Gaussian blur parameters
+        float range = ceil(BloomRadius * 2.0);
+        float stepSize = AS_SparkleBloom::getBloomStepSize(BloomQuality);
         
-        float sampleStep = max(1.0, floor(BloomRadius * 2.0 / float(sampleCount * 2 + 1)));
-        
-        // Determine if we should use dithering
+        // Calculate dither noise if enabled
         float2 noise = float2(1.0, 1.0);
-        if (AS_Glitter::getShouldUseDither()) {
-            noise = AS_Glitter::calculateDitherNoise(texcoord, float2(78.233, 12.9898), sampleStep);
+        if (BloomDither) {
+            noise = AS_SparkleBloom::calculateDitherNoise(texcoord, float2(78.233, 12.9898), stepSize);
         }
         
-        // Sample in vertical direction for Gaussian blur
-        for(int i = -sampleCount; i <= sampleCount; i++) {
-            float y = float(i) * sampleStep;
-            
-            float weight = AS_Glitter::Gaussian(y, sigma);
+        // Vertical Gaussian blur
+        for (float y = -range; y <= range; y += stepSize) {
+            float weight = AS_SparkleBloom::Gaussian(y, sigma);
             weightSum += weight;
             
-            float2 sampleOffset = float2(0.0, y / (BUFFER_HEIGHT * bufferScale)) * BloomRadius;
-            
-            if (AS_Glitter::getShouldUseDither()) {
-                sampleOffset += float2(0.0, noise.y * 0.001);
+            float2 sampleOffset = float2(0.0, y / BUFFER_HEIGHT) * BloomRadius;
+            if (BloomDither) {
+                sampleOffset += float2(0.0, noise.y * BLOOM_DITHER_SCALE);
             }
             
-            bloomColor += tex2D(GlitterBloomSampler, texcoord + sampleOffset) * weight;
+            bloomColor += tex2D(SparkleBloomSampler, texcoord + sampleOffset) * weight;
         }
         
-        // Normalize bloom contribution
+        // Normalize
         bloomColor /= max(weightSum, 1e-6);
         bloom = bloomColor.rgb;
     }
     
     // Composite sparkles and bloom over the original scene
-    float3 result = originalColor.rgb + sparkles + bloom;
+    float3 result = originalColor.rgb;
     
-    // Apply blend amount
-    result = lerp(originalColor.rgb, result, DebugMode == 5 ? 1.0 : BlendAmount);
+    // Add sparkles and bloom
+    result += sparkles + bloom;
+    
+    // Apply blend mode and amount
+    float3 blendedColor = AS_blendResult(originalColor.rgb, result, BlendMode);
+    result = lerp(originalColor.rgb, blendedColor, DebugMode == 5 ? 1.0 : BlendAmount);
     
     return float4(result, originalColor.a);
 }
 
-// --- Technique Definition ---
-technique AS_Glitter < ui_label = "[AS] VFX: Sparkle Bloom"; ui_tooltip = "Adds dynamic sparkles that pop in, glow, and fade out"; > {
-    pass RenderSparkles { 
-        VertexShader = PostProcessVS; 
-        PixelShader = PS_RenderSparkles; 
-        RenderTarget = GlitterRT; 
+/*-------------------------.
+| :: Technique Definition |
+'-------------------------*/
+
+technique AS_VFX_SparkleBloom < ui_label = "[AS] VFX: Sparkle Bloom"; ui_tooltip = "Adds dynamic sparkles that respond to scene edges and depth"; >
+{
+    pass RenderSparkles {
+        VertexShader = PostProcessVS;
+        PixelShader = PS_RenderSparkles;
+        RenderTarget = SparkleRT;
     }
     
-    pass BloomH { 
-        VertexShader = PostProcessVS; 
-        PixelShader = PS_BloomH; 
-        RenderTarget = GlitterBloomRT; 
+    pass BloomH {
+        VertexShader = PostProcessVS;
+        PixelShader = PS_BloomH;
+        RenderTarget = SparkleBloomRT;
     }
     
-    pass BloomV { 
-        VertexShader = PostProcessVS; 
-        PixelShader = PS_BloomV; 
+    pass BloomV {
+        VertexShader = PostProcessVS;
+        PixelShader = PS_BloomV;
     }
 }
 

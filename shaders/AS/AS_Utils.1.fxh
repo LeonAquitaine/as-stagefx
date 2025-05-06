@@ -200,13 +200,19 @@ uniform int frameCount < source = "framecount"; >; // Frame count from ReShade
 // Returns consistent time value in seconds, using Listeningway if available
 // Approximates time based on frame count if Listeningway is not available
 float AS_getTime() {
-#if defined(__LISTENINGWAY_INSTALLED) && defined(Listeningway_TotalPhases120Hz)
-    // Use Listeningway's high-precision timer if available
-    return Listeningway_TotalPhases120Hz * (1.0 / 120.0); // Assuming 120Hz phase counter
-#else
+#if defined(__LISTENINGWAY_INSTALLED)
+    // Check if Listeningway appears to be actively running by checking if totalphases is non-zero
+    if (Listeningway_TotalPhases120Hz > 0.0001) {
+        // Use Listeningway's high-precision timer when available and active
+        return Listeningway_TotalPhases120Hz * (1.0 / 120.0); // 120Hz phase counter
+    }
+    else if (Listeningway_TimeSeconds > 0.0001) {
+        // Alternative fallback to direct time seconds if available
+        return Listeningway_TimeSeconds;
+    }
+#endif
     // Fallback to frame count approximation (assumes ~60 FPS)
     return float(frameCount) * (1.0 / 60.0);
-#endif
 }
 
 // --- Listeningway Helpers ---

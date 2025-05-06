@@ -14,7 +14,13 @@
 
 Most shaders feature seamless integration with **[Listeningway](https://github.com/gposingway/Listeningway)** for audio reactivity.
 
-### Latest Updates (May 4, 2025)
+### Latest Updates (May 5, 2025)
+- Fixed AS_getTime() function in AS_Utils.1.fxh to properly detect when Listeningway is active
+- Improved SparkleBloom shader with edge control parameter and better code standards compliance
+- Replaced magic numbers with named constants in various shaders for better maintainability
+- Updated version to 1.0.5.0
+
+### Previous Updates (May 4, 2025)
 - Renamed TiltedPixelGrid shader to TiltedGrid and added attribution to FencerDevLog's tutorial
 - Implemented Multi-Instance Effects Pattern, allowing some shaders to support multiple independent effect instances
 - Added AS_LFX_CandleFlame shader with support for up to 4 independent, customizable flame instances
