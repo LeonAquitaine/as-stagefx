@@ -161,7 +161,7 @@ AS-StageFX includes a variety of distinct visual effects:
     <td width="50%"><strong>VFX: Rainy Window</strong> (<code>AS_VFX_RainyWindow.1.fx</code>)<br>
       Creates a realistic rainy window effect with multi-layered droplets that distort the scene behind them. Features adjustable rain density, glass roughness, and audio-reactive parameters that can be rotated to match any orientation.<br><em>Technique: [AS] VFX: Rainy Window</em></td>
     <td width="50%"><div style="text-align:center">
-      <img src="https://placeholder-for-rainywindow-image" alt="Rainy Window Effect" style="max-width:100%;">
+      <img src="https://github.com/user-attachments/assets/94601169-e214-4a45-8879-444b64c65d33" alt="Rainy Window Effect" style="max-width:100%;">
     </div></td>
   </tr>
   <tr>
