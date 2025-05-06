@@ -81,10 +81,9 @@ AS-StageFX includes a variety of distinct visual effects:
     <td width="50%"><strong>LFX: Candle Flame</strong> (<code>AS_LFX_CandleFlame.1.fx</code>)<br>
       Creates procedural candle flames with realistic animation, color gradients, and audio reactivity. Supports multiple flame instances with individual controls for position, size, and appearance.<br><em>Technique: [AS] LFX: Candle Flame</em></td>
     <td width="50%"><div style="text-align:center">
-      <img src="https://placeholder-for-candle-flame-image" alt="Candle Flame Effect" style="max-width:100%;">
+      <img src="https://github.com/user-attachments/assets/e4ad780c-dd65-4684-b052-20acf4626ac3" alt="Candle Flame Effect" style="max-width:100%;">
     </div></td>
   </tr>
-  
   <tr>
     <th colspan="2"><strong>Visual Effects (VFX)</strong></th>
   </tr>
