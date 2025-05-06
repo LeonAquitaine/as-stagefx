@@ -154,7 +154,7 @@ AS-StageFX includes a variety of distinct visual effects:
     <td width="50%"><strong>VFX: Tilted Grid</strong> (<code>AS_VFX_TiltedGrid.1.fx</code>)<br>
       Creates a rotatable grid that pixelates the image and adds adjustable borders between grid cells with customizable chamfered corners. Features audio reactivity for cell size, border thickness, and chamfer size parameters.<br><em>Technique: [AS] VFX: Tilted Grid</em></td>
     <td width="50%"><div style="text-align:center">
-      <img src="https://placeholder-for-tiltedgrid-image" alt="Tilted Grid Effect" style="max-width:100%;">
+      <img src="https://github.com/user-attachments/assets/2e1a68d0-7ba8-4ea3-a572-9108c5030b44" alt="Tilted Grid Effect" style="max-width:100%;">
     </div></td>
   </tr>
   <tr>
