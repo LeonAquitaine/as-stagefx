@@ -33,6 +33,7 @@
 
 #include "ReShade.fxh"
 #include "AS_Utils.1.fxh" // Includes ReShadeUI.fxh, provides UI macros, helpers
+#include "AS_Palettes.1.fxh" // Color palette support
 
 // ============================================================================
 // TEXTURES
@@ -60,12 +61,12 @@ sampler RingSampler { Texture = RingTexture; AddressU = WRAP; AddressV = CLAMP; 
 // Target Position Z (Depth) Range
 static const float TARGET_DEPTH_MIN = 0.0; // Closest possible depth
 static const float TARGET_DEPTH_MAX = 1.0; // Farthest possible depth (assuming linearized 0-1)
-static const float TARGET_DEPTH_DEFAULT = 0.1; // Default relatively close
+static const float TARGET_DEPTH_DEFAULT = 0.05; // Default relatively close
 
 // Ring Geometry Range
 static const float RING_RADIUS_MIN = 0.001; // 0.1% of screen height
 static const float RING_RADIUS_MAX = 0.5;   // 50% of screen height
-static const float RING_RADIUS_DEFAULT = 0.1;  // 10% of screen height
+static const float RING_RADIUS_DEFAULT = 0.2;  // 20% of screen height
 
 static const float RING_THICKNESS_MIN = 0.0;   // 0% of radius (invisible)
 static const float RING_THICKNESS_MAX = 1.0;   // 100% of radius (filled circle)
@@ -85,16 +86,28 @@ uniform float RingThickness < ui_type = "slider"; ui_label = "Ring Thickness"; u
 uniform float4 RingColor < ui_type = "color"; ui_label = "Ring Tint & Intensity"; ui_tooltip = "RGB: Color Tint.\nA: Intensity Multiplier."; ui_category = "Ring Appearance"; > = float4(1.0, 1.0, 1.0, 1.0);
 
 // ============================================================================
+// PALETTE & STYLE
+// ============================================================================
+AS_PALETTE_SELECTION_UI(PalettePreset, "Palette", AS_PALETTE_RAINBOW, "Palette Controls")
+AS_DECLARE_CUSTOM_PALETTE(Ring_, "Palette Controls")
+
+uniform float ColorCycleSpeed < ui_type = "slider"; ui_label = "Color Cycle Speed"; ui_tooltip = "Controls how fast ring colors cycle. 0 = static"; ui_min = -5.0; ui_max = 5.0; ui_step = 0.1; ui_category = "Palette Controls"; > = 1.0;
+uniform int CycleMode < ui_type = "combo"; ui_label = "Cycle Mode"; ui_tooltip = "How colors cycle through the palette"; ui_items = "Sweep\0Wave\0Full\0"; ui_category = "Palette Controls"; > = 0;
+uniform float PaletteSaturation < ui_type = "slider"; ui_label = "Saturation"; ui_tooltip = "Palette color saturation"; ui_min = 0.0; ui_max = 2.0; ui_step = 0.01; ui_category = "Palette Controls"; > = 1.0;
+uniform float PaletteBrightness < ui_type = "slider"; ui_label = "Brightness"; ui_tooltip = "Palette color brightness"; ui_min = 0.0; ui_max = 2.0; ui_step = 0.01; ui_category = "Palette Controls"; > = 1.0;
+uniform int PaletteColorTarget < ui_type = "combo"; ui_label = "Target Colors"; ui_tooltip = "Which colors to replace with palette"; ui_items = "Black\0White\0All Non-transparent\0"; ui_category = "Palette Controls"; > = 1;
+
+// ============================================================================
 // ANIMATION CONTROLS
 // ============================================================================
-uniform float RotationSpeed < ui_type = "slider"; ui_label = "Rotation Speed"; ui_tooltip = "Speed and direction of texture rotation (-10 to +10)."; ui_min = -10.0; ui_max = 10.0; ui_step = 0.1; ui_category = "Animation Controls"; > = 0.0;
+uniform float RotationSpeed < ui_type = "slider"; ui_label = "Rotation Speed"; ui_tooltip = "Speed and direction of texture rotation (-10 to +10)."; ui_min = -10.0; ui_max = 10.0; ui_step = 0.1; ui_category = "Animation Controls"; > = -2.0;
 
 // ============================================================================
 // AUDIO REACTIVITY (Example Setup)
 // ============================================================================
-AS_AUDIO_SOURCE_UI(Ring_AudioSource, "Audio Source", AS_AUDIO_OFF, "Audio Reactivity") // Removed extra 'true' argument
-AS_AUDIO_MULTIPLIER_UI(Ring_AudioMultiplier, "Intensity", 1.0, 2.0, "Audio Reactivity")
-uniform int AudioTarget < ui_type = "combo"; ui_label = "Audio Target Parameter"; ui_tooltip = "Select parameter affected by audio"; ui_items = "None\0Radius\0Thickness\0Color Intensity\0"; ui_category = "Audio Reactivity"; > = 0;
+AS_AUDIO_SOURCE_UI(Ring_AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity") // Removed extra 'true' argument
+AS_AUDIO_MULTIPLIER_UI(Ring_AudioMultiplier, "Intensity", 0.1, 2.0, "Audio Reactivity")
+uniform int AudioTarget < ui_type = "combo"; ui_label = "Audio Target Parameter"; ui_tooltip = "Select parameter affected by audio"; ui_items = "None\0Radius\0Thickness\0Color Intensity\0"; ui_category = "Audio Reactivity"; > = 1;
 
 // ============================================================================
 // STAGE CONTROLS
@@ -106,7 +119,7 @@ AS_ROTATION_UI(SnapRotation, FineRotation, "Stage") // Add standard rotation con
 // POSITION CONTROLS
 // ============================================================================
 // Use centered coordinate system (-1.5 to 1.5 range, [-1,1] maps to central square)
-uniform float2 TargetScreenXY < ui_type = "drag"; ui_label = "Target Position (XY)"; ui_tooltip = "Screen position (-1.5 to 1.5 range, 0,0 is center, [-1,1] maps to central square)."; ui_min = -1.5; ui_max = 1.5; ui_step = 0.001; ui_category = "Position"; > = float2(0.0, 0.0);
+uniform float2 TargetScreenXY < ui_type = "drag"; ui_label = "Position"; ui_tooltip = "Screen position (-1.5 to 1.5 range, 0,0 is center, [-1,1] maps to central square)."; ui_min = -1.5; ui_max = 1.5; ui_step = 0.001; ui_category = "Position"; > = float2(0.0, 0.0);
 
 // ============================================================================
 // FINAL MIX
@@ -118,6 +131,41 @@ AS_BLENDAMOUNT_UI(BlendAmount, "Final Mix")
 // DEBUG
 // ============================================================================
 AS_DEBUG_MODE_UI("Normal\0Screen Distance\0Angle\0Texture UVs\0Depth Check\0Ring Alpha\0") // Removed extra 'true' argument
+
+// ============================================================================
+// HELPER FUNCTIONS
+// ============================================================================
+// Get color from the currently selected palette
+float3 getScreenRingPaletteColor(float t, float timer) {
+    float cycleRate = ColorCycleSpeed * 0.1;
+    
+    if (ColorCycleSpeed != 0.0) {
+        // Apply the appropriate cycling mode
+        if (CycleMode == 0) { 
+            // Sweep mode (the original mode) - colors cycle 1→2→3→4→5→1→...
+            t = frac(t + cycleRate * timer);
+        }
+        else if (CycleMode == 1) {
+            // Wave mode - colors cycle 1→2→3→4→5→4→3→2→1→...
+            float cyclePos = frac(cycleRate * timer * 0.5); // Half speed for ping-pong
+            // Convert cyclePos to ping-pong pattern between 0-1
+            cyclePos = cyclePos < 0.5 ? cyclePos * 2.0 : 2.0 - cyclePos * 2.0;
+            t = lerp(t, cyclePos, saturate(abs(cycleRate) * 2.0)); // Blend toward current cycle position
+        }
+        else if (CycleMode == 2) {
+            // Full mode - all mapped points change to the same color
+            float cyclePos = frac(cycleRate * timer);
+            t = cyclePos; // Override t completely with current cycle position
+        }
+    }
+    
+    t = saturate(t); // Ensure t is within valid range [0, 1]
+    
+    if (PalettePreset == AS_PALETTE_COUNT) { // Use custom palette
+        return AS_GET_INTERPOLATED_CUSTOM_COLOR(Ring_, t);
+    }
+    return AS_getInterpolatedColor(PalettePreset, t); // Use preset palette
+}
 
 // ============================================================================
 // MAIN PIXEL SHADER
@@ -214,13 +262,41 @@ float4 PS_ScreenRing(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_
             float texV = 1.0 - saturate(0.5 + (screenDistNorm - effectiveRadiusNorm) / (effectiveThicknessNorm + DEPTH_EPSILON));
 
             float4 texColor = tex2D(RingSampler, float2(texU, texV));
-            float3 ringColor = texColor.rgb * ringColorInput.rgb * ringColorInput.a;
+            
+            // Skip processing for fully transparent pixels in the texture
+            if (texColor.a > 0.0)
+            {
+                float3 ringColor = texColor.rgb * ringColorInput.rgb * ringColorInput.a;
+                
+                // Apply palette colors if enabled
+                // Get the palette color based on the texture coordinate
+                // Use U coordinate (angle) as a good parameter for palette interpolation
+                float3 paletteColor = getScreenRingPaletteColor(texU, timer);
+                
+                // Apply saturation and brightness adjustments
+                float luminance = dot(paletteColor, float3(0.299, 0.587, 0.114));
+                paletteColor = lerp(luminance.xxx, paletteColor, PaletteSaturation) * PaletteBrightness;
+                
+                // Apply palette based on target mode
+                if (PaletteColorTarget == 0) { // Black
+                    float blackness = 1.0 - max(max(texColor.r, texColor.g), texColor.b);
+                    ringColor = lerp(ringColor, paletteColor * ringColorInput.a, blackness);
+                }
+                else if (PaletteColorTarget == 1) { // White
+                    float whiteness = min(min(texColor.r, texColor.g), texColor.b);
+                    ringColor = lerp(ringColor, paletteColor * ringColorInput.a, whiteness);
+                }
+                else if (PaletteColorTarget == 2) { // All Non-transparent
+                    ringColor = paletteColor * ringColorInput.a;
+                }
 
-            float finalAlpha = ringFactor * BlendAmount;
+                // Incorporate the texture's alpha channel into the final alpha calculation
+                float finalAlpha = ringFactor * texColor.a * BlendAmount;
 
-            float3 blendedColor = AS_blendResult(orig.rgb, ringColor, BlendMode);
+                float3 blendedColor = AS_blendResult(orig.rgb, ringColor, BlendMode);
 
-            finalResult = float4(lerp(orig.rgb, blendedColor, finalAlpha), orig.a);
+                finalResult = float4(lerp(orig.rgb, blendedColor, finalAlpha), orig.a);
+            }
         }
     }
 
