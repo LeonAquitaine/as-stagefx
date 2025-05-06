@@ -168,7 +168,7 @@ AS-StageFX includes a variety of distinct visual effects:
     <td width="50%"><strong>VFX: Multi-Layer Halftone</strong> (<code>AS_VFX_MultiLayerHalftone.1.fx</code>)<br>
       Applies customizable halftone screen patterns with multiple layers, varying dot sizes, and color controls. Provides classic comic/print style effects with options for blending and audio reactivity.<br><em>Technique: [AS] Multi-Layer Halftone</em></td>
     <td width="50%"><div style="text-align:center">
-      <img src="https://placeholder-for-halftone-image" alt="Multi-Layer Halftone Effect" style="max-width:100%;">
+      <img src="https://github.com/user-attachments/assets/b93c9d03-5d23-4b32-aa3e-f2b6a9736c70" alt="Multi-Layer Halftone Effect" style="max-width:100%;">
     </div></td>
   </tr>
   <tr>
