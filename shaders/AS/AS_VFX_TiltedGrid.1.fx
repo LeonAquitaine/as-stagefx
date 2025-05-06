@@ -46,7 +46,7 @@ static const float BORDER_THICKNESS_DEFAULT = 0.1; // 10% of cell size
 
 static const float CHAMFER_SIZE_MIN = 0.0;
 static const float CHAMFER_SIZE_MAX = 0.5; // Max 50% of cell size (relative to cell dimensions)
-static const float CHAMFER_SIZE_DEFAULT = 0.05; // 5% of cell size
+static const float CHAMFER_SIZE_DEFAULT = 0.2; // 20% of cell size
 
 // ============================================================================
 // EFFECT-SPECIFIC PARAMETERS
@@ -62,10 +62,10 @@ uniform float3 BorderColor < ui_type = "color"; ui_label = "Border Color"; ui_to
 // ============================================================================
 // AUDIO REACTIVITY
 // ============================================================================
-AS_AUDIO_SOURCE_UI(Grid_AudioSource, "Audio Source", AS_AUDIO_OFF, "Audio Reactivity")
-AS_AUDIO_MULTIPLIER_UI(Grid_AudioMultiplier, "Intensity", 1.0, 4.0, "Audio Reactivity")
+AS_AUDIO_SOURCE_UI(Grid_AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
+AS_AUDIO_MULTIPLIER_UI(Grid_AudioMultiplier, "Intensity", 0.1, 4.0, "Audio Reactivity")
 
-uniform int AudioTarget < ui_type = "combo"; ui_label = "Audio Target Parameter"; ui_tooltip = "Select which parameter will be affected by audio reactivity"; ui_items = "None\0Cell Size\0Border Thickness\0Chamfer Size\0Border + Chamfer\0"; ui_category = "Audio Reactivity"; > = 0;
+uniform int AudioTarget < ui_type = "combo"; ui_label = "Audio Target Parameter"; ui_tooltip = "Select which parameter will be affected by audio reactivity"; ui_items = "None\0Cell Size\0Border Thickness\0Chamfer Size\0Border + Chamfer\0"; ui_category = "Audio Reactivity"; > = 1;
 
 // ============================================================================
 // STAGE DISTANCE
