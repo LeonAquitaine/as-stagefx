@@ -599,3 +599,67 @@ When generating procedural effects, use the appropriate noise functions based on
    - Intensity/strength parameters (distortion amount, effect opacity)
    - Texture/roughness parameters (surface details, noise intensity)
    - Speed/animation parameters (movement rate, oscillation frequency)
+
+## Animation Control Standards
+
+### Animation Speed and Keyframe Pattern
+
+For shaders that include time-based animation, use the following pattern to allow users to either enjoy animated results or select specific static frames:
+
+1. **Standard Animation Controls**:
+   ```hlsl
+   // Animation constants
+   static const float ANIMATION_SPEED_MIN = 0.0;
+   static const float ANIMATION_SPEED_MAX = 5.0;
+   static const float ANIMATION_SPEED_STEP = 0.01;
+   static const float ANIMATION_SPEED_DEFAULT = 1.0;
+   
+   static const float ANIMATION_KEYFRAME_MIN = 0.0;
+   static const float ANIMATION_KEYFRAME_MAX = 100.0;
+   static const float ANIMATION_KEYFRAME_STEP = 0.1;
+   static const float ANIMATION_KEYFRAME_DEFAULT = 0.0;
+   
+   // Animation UI controls
+   uniform float AnimationKeyframe < ui_type = "slider"; ui_label = "Animation Keyframe"; ui_tooltip = "Sets a specific point in time for the animation. Useful for finding and saving specific patterns."; ui_min = ANIMATION_KEYFRAME_MIN; ui_max = ANIMATION_KEYFRAME_MAX; ui_step = ANIMATION_KEYFRAME_STEP; ui_category = "Animation"; > = ANIMATION_KEYFRAME_DEFAULT;
+   uniform float AnimationSpeed < ui_type = "slider"; ui_label = "Animation Speed"; ui_tooltip = "Controls the overall animation speed of the effect. Set to 0 to pause animation and use keyframe only."; ui_min = ANIMATION_SPEED_MIN; ui_max = ANIMATION_SPEED_MAX; ui_step = ANIMATION_SPEED_STEP; ui_category = "Animation"; > = ANIMATION_SPEED_DEFAULT;
+   ```
+
+2. **Time Calculation in Pixel Shader**:
+   ```hlsl
+   // Get time and calculate animation
+   float time;
+   if (AnimationSpeed <= 0.0001) {
+       // When animation speed is effectively zero, use keyframe directly
+       time = AnimationKeyframe;
+   } else {
+       // Otherwise use animated time plus keyframe offset
+       time = (AS_getTime() * AnimationSpeed) + AnimationKeyframe;
+   }
+   ```
+
+3. **Audio-Reactive Animation**:
+   If implementing audio reactivity for animation speed, include the audio application before the time calculation:
+   ```hlsl
+   float animSpeed = AnimationSpeed;
+   
+   // Apply audio reactivity if animation speed is the target
+   if (AudioTarget == 1) {
+       animSpeed *= AS_applyAudioReactivity(1.0, AudioSource, AudioMultiplier, true);
+   }
+   
+   // Time calculation
+   float time;
+   if (animSpeed <= 0.0001) {
+       time = AnimationKeyframe;
+   } else {
+       time = (AS_getTime() * animSpeed) + AnimationKeyframe;
+   }
+   ```
+
+4. **Important Implementation Notes**:
+   - Always check for effectively zero speed (`<= 0.0001`) rather than exact zero to account for floating-point imprecision
+   - When animation is paused (speed = 0), the keyframe value should be used directly
+   - When animation is running, the keyframe value should still be applied as an offset
+   - This approach simplifies the UI by avoiding redundant "Enable Animation" checkboxes
+   - Place the Keyframe control before the Speed control in the UI for logical user flow
+````
