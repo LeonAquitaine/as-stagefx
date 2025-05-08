@@ -62,6 +62,7 @@ static const float DISTFADING_MIN = 0.5; static const float DISTFADING_MAX = 1.0
 static const float SATURATION_MIN = 0.0; static const float SATURATION_MAX = 2.0; static const float SATURATION_STEP = 0.05; static const float SATURATION_DEFAULT = 0.850;
 // --- Animation ---
 static const float ANIMATION_SPEED_MIN = 0.0; static const float ANIMATION_SPEED_MAX = 5.0; static const float ANIMATION_SPEED_STEP = 0.01; static const float ANIMATION_SPEED_DEFAULT = 1.0;
+static const float ANIMATION_KEYFRAME_MIN = 0.0; static const float ANIMATION_KEYFRAME_MAX = 100.0; static const float ANIMATION_KEYFRAME_STEP = 0.1; static const float ANIMATION_KEYFRAME_DEFAULT = 0.0;
 static const float CAMERA_MOVE_SPEED_MIN = 0.0; static const float CAMERA_MOVE_SPEED_MAX = 0.5; static const float CAMERA_MOVE_SPEED_STEP = 0.001; static const float CAMERA_MOVE_SPEED_DEFAULT = 0.01; 
 static const float FRACTAL_ROTATION_SPEED_MIN = 0.0; static const float FRACTAL_ROTATION_SPEED_MAX = 0.1; static const float FRACTAL_ROTATION_SPEED_STEP = 0.001; static const float FRACTAL_ROTATION_SPEED_DEFAULT = 0.01; 
 // Audio 
@@ -91,6 +92,7 @@ AS_PALETTE_SELECTION_UI(PalettePreset, "Color Palette", AS_PALETTE_NEON, "Colori
 AS_DECLARE_CUSTOM_PALETTE(CosmosCrystal_, "Coloring & Appearance") 
 uniform float ColorCycleSpeed < ui_type = "slider"; ui_label = "Palette Color Cycle Speed"; ui_min = -COLOR_CYCLE_SPEED_MAX; ui_max = COLOR_CYCLE_SPEED_MAX; ui_step = 0.1; ui_category = "Coloring & Appearance"; > = COLOR_CYCLE_SPEED_DEFAULT;
 uniform float ColorIntensity < ui_type = "slider"; ui_label = "Palette Color Intensity"; ui_min = 0.1; ui_max = COLOR_INTENSITY_MAX; ui_step = 0.01; ui_category = "Coloring & Appearance"; > = COLOR_INTENSITY_DEFAULT;
+uniform float AnimationKeyframe < ui_type = "slider"; ui_label = "Animation Keyframe"; ui_tooltip = "Sets a specific point in time for the animation. Useful for finding and saving specific patterns."; ui_min = ANIMATION_KEYFRAME_MIN; ui_max = ANIMATION_KEYFRAME_MAX; ui_step = ANIMATION_KEYFRAME_STEP; ui_category = "Animation"; > = ANIMATION_KEYFRAME_DEFAULT;
 uniform float AnimationSpeed < ui_type = "slider"; ui_label = "Time Speed (Evolution)"; ui_min = ANIMATION_SPEED_MIN; ui_max = ANIMATION_SPEED_MAX; ui_step = ANIMATION_SPEED_STEP; ui_category = "Animation"; > = ANIMATION_SPEED_DEFAULT;
 uniform float CameraMoveSpeed < ui_type = "slider"; ui_label = "Camera Movement Speed"; ui_min = CAMERA_MOVE_SPEED_MIN; ui_max = CAMERA_MOVE_SPEED_MAX; ui_step = CAMERA_MOVE_SPEED_STEP; ui_category = "Animation"; > = CAMERA_MOVE_SPEED_DEFAULT;
 uniform float FractalRotationSpeed < ui_type = "slider"; ui_label = "Fractal XY Rotation Speed"; ui_tooltip = "Speed of the internal XY rotation applied during raymarching."; ui_min = FRACTAL_ROTATION_SPEED_MIN; ui_max = FRACTAL_ROTATION_SPEED_MAX; ui_step = FRACTAL_ROTATION_SPEED_STEP; ui_category = "Animation"; > = FRACTAL_ROTATION_SPEED_DEFAULT; 
@@ -223,7 +225,15 @@ float4 ASCosmicKaleidoscopePS(float4 vpos : SV_POSITION, float2 texcoord : TEXCO
 
 
     // --- Time and Resolution ---
-    float iTime = AS_getTime() * AnimationSpeed;
+    // Calculate animation time with keyframe handling
+    float iTime;
+    if (AnimationSpeed <= 0.0001) {
+        // When animation speed is effectively zero, use keyframe directly
+        iTime = AnimationKeyframe;
+    } else {
+        // Otherwise use animated time plus keyframe offset
+        iTime = (AS_getTime() * AnimationSpeed) + AnimationKeyframe;
+    }
     float2 iResolution = ReShade::ScreenSize;
 
     // --- Camera Setup ---

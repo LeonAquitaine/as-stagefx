@@ -53,7 +53,6 @@ Most shaders feature seamless integration with **[Listeningway](https://github.c
 AS-StageFX includes a variety of distinct visual effects organized into categories:
 
 ### Lighting Effects (LFX)
-- **Light Wall** - Configurable grids of light panels with patterns, 3D perspective, and audio reactivity
 - **Stage Spotlights** - Up to 3 customizable directional stage lights with beam/glow effects
 - **Laser Show** - Multiple colored laser beams emanating from a user-defined origin
 - **Candle Flame** - Procedural candle flames with realistic animation and color gradients
@@ -70,7 +69,6 @@ AS-StageFX includes a variety of distinct visual effects organized into categori
 - **Warp Distort** - Circular mirrored/wavy region that pulses and ripples in sync with audio
 - **Tilted Grid** - Rotatable pixelating grid with adjustable borders and chamfered corners
 - **Rainy Window** - Realistic rainy window effect with multi-layered droplets
-- **Multi-Layer Halftone** - Customizable halftone screen patterns with multiple layers
 - **Water Surface** - Realistic water surface with depth-based reflection horizon
 - **Screen Ring** - Customizable circular rings for framing subjects
 - **Broken Glass** - Broken glass/mirror effect with customizable crack patterns
@@ -78,8 +76,14 @@ AS-StageFX includes a variety of distinct visual effects organized into categori
 ### Background Effects (BGX)
 - **Cosmic Kaleidoscope** - Kaleidoscopic star field with dynamic symmetry and rotation
 - **Infinite Zoom** - Infinitely zooming fractal pattern creating a tunnel/vortex effect
+- **Light Wall** - Configurable grids of light panels with patterns, 3D perspective, and audio reactivity
 - **Shine On** - Dynamic light ray backgrounds for dreamy or celestial atmospheres
+- **Stained Lights** - Colorful stained glass light patterns with customizable design
+- **Time Crystal** - Crystal-like temporal distortion effects with configurable patterns
 - **Zippy Zaps** - Electric arc/lightning effects with audio reactivity
+
+### Graphic Effects (GFX)
+- **Multi-Layer Halftone** - Customizable halftone screen patterns with multiple layers
 
 **Detailed descriptions and visual examples of each shader can be found in the [Shader Gallery](docs/GALLERY.md).**
 

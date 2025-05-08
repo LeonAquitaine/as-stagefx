@@ -8,13 +8,6 @@ This gallery provides detailed descriptions and visual examples of all shaders i
 
 <table>
   <tr>
-    <td width="50%"><strong>LFX: Light Wall</strong> (<code>AS_LFX_LightWall.1.fx</code>)<br>
-      Generate configurable grids of light panels with diverse patterns, 3D perspective, audio reactivity, and customizable color palettes. Perfect for backdrops.</td>
-    <td width="50%"><div style="text-align:center">
-      <img src="https://github.com/user-attachments/assets/ece86ab7-36f1-459c-8c83-31414c3b5cc3" alt="Light Wall Effect" style="max-width:100%;">
-    </div></td>
-  </tr>
-  <tr>
     <td width="50%"><strong>LFX: Stage Spotlights</strong> (<code>AS_LFX_StageSpotlights.1.fx</code>)<br>
       Add up to 3 customizable directional stage lights with realistic beam/glow effects, depth masking, and audio-reactive intensity and movement.<br><em>Technique: [AS] Stage Spotlights</em></td>
     <td width="50%"><div style="text-align:center">
@@ -120,13 +113,6 @@ This gallery provides detailed descriptions and visual examples of all shaders i
     </div></td>
   </tr>
   <tr>
-    <td width="50%"><strong>VFX: Multi-Layer Halftone</strong> (<code>AS_VFX_MultiLayerHalftone.1.fx</code>)<br>
-      Applies customizable halftone screen patterns with multiple layers, varying dot sizes, and color controls. Provides classic comic/print style effects with options for blending and audio reactivity.<br><em>Technique: [AS] Multi-Layer Halftone</em></td>
-    <td width="50%"><div style="text-align:center">
-      <img src="https://github.com/user-attachments/assets/b93c9d03-5d23-4b32-aa3e-f2b6a9736c70" alt="Multi-Layer Halftone Effect" style="max-width:100%;">
-    </div></td>
-  </tr>
-  <tr>
     <td width="50%"><strong>VFX: Water Surface</strong> (<code>AS_VFX_WaterSurface.1.fx</code>)<br>
       Simulates a realistic water surface with depth-based reflection horizon, perspective-correct wave compression, and customizable water color, transparency, and reflection. Features include dynamic wave scaling, vertical reflection compression, and full resolution independence. Ideal for scenes with water, pools, or reflective floors.<br><em>Technique: [AS] VFX: Water Surface</em></td>
     <td width="50%"><div style="text-align:center">
@@ -169,6 +155,13 @@ This gallery provides detailed descriptions and visual examples of all shaders i
     </div></td>
   </tr>
   <tr>
+    <td width="50%"><strong>BGX: Light Wall</strong> (<code>AS_BGX_LightWall.1.fx</code>)<br>
+      Generate configurable grids of light panels with diverse patterns, 3D perspective, audio reactivity, and customizable color palettes. Perfect for backdrops.</td>
+    <td width="50%"><div style="text-align:center">
+      <img src="https://github.com/user-attachments/assets/ece86ab7-36f1-459c-8c83-31414c3b5cc3" alt="Light Wall Effect" style="max-width:100%;">
+    </div></td>
+  </tr>
+  <tr>
     <td width="50%"><strong>BGX: Shine On</strong> (<code>AS_BGX_ShineOn.1.fx</code>)<br>
       Creates dynamic light ray backgrounds with customizable color, intensity, and motion. Perfect for dreamy or celestial atmospheres with audio-reactive brightness and movement.<br><em>Technique: [AS] BGX: Shine On</em></td>
     <td width="50%"><div style="text-align:center">
@@ -176,10 +169,38 @@ This gallery provides detailed descriptions and visual examples of all shaders i
     </div></td>
   </tr>
   <tr>
-    <td width="50%"><strong>BGX: Zippy Zaps</strong> (<code>AS_BGX_ZippyZaps.fx</code>)<br>
+    <td width="50%"><strong>BGX: Stained Lights</strong> (<code>AS_BGX_StainedLights.1.fx</code>)<br>
+      Creates colorful stained glass light patterns with customizable design, colors, and animation. Provides a beautiful backdrop with audio-reactive brightness and pattern complexity.<br><em>Technique: [AS] BGX: Stained Lights</em></td>
+    <td width="50%"><div style="text-align:center">
+      <!-- Placeholder for future image -->
+    </div></td>
+  </tr>
+  <tr>
+    <td width="50%"><strong>BGX: Time Crystal</strong> (<code>AS_BGX_TimeCrystal.1.fx</code>)<br>
+      Generates crystal-like temporal distortion effects with configurable patterns, colors, and animation. Features audio reactivity and customizable fractal-based designs.<br><em>Technique: [AS] BGX: Time Crystal</em></td>
+    <td width="50%"><div style="text-align:center">
+      <!-- Placeholder for future image -->
+    </div></td>
+  </tr>
+  <tr>
+    <td width="50%"><strong>BGX: Zippy Zaps</strong> (<code>AS_BGX_ZippyZaps.1.fx</code>)<br>
       Generates dynamic electric arc/lightning effects with configurable parameters for arc thickness, color, noise, and audio reactivity. Creates energetic visual accents that pulse and flow with music.<br><em>Technique: [AS] BGX: Zippy Zaps</em></td>
     <td width="50%"><div style="text-align:center">
       <!-- Placeholder for future image -->
+    </div></td>
+  </tr>
+</table>
+
+---
+
+## Graphic Effects (GFX)
+
+<table>
+  <tr>
+    <td width="50%"><strong>GFX: Multi-Layer Halftone</strong> (<code>AS_GFX_MultiLayerHalftone.1.fx</code>)<br>
+      Applies customizable halftone screen patterns with multiple layers, varying dot sizes, and color controls. Provides classic comic/print style effects with options for blending and audio reactivity.<br><em>Technique: [AS] Multi-Layer Halftone</em></td>
+    <td width="50%"><div style="text-align:center">
+      <img src="https://github.com/user-attachments/assets/b93c9d03-5d23-4b32-aa3e-f2b6a9736c70" alt="Multi-Layer Halftone Effect" style="max-width:100%;">
     </div></td>
   </tr>
 </table>

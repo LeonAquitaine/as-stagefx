@@ -90,6 +90,10 @@ static const float ANIMATION_SPEED_MIN = 0.0;
 static const float ANIMATION_SPEED_MAX = 5.0;
 static const float ANIMATION_SPEED_STEP = 0.01;
 static const float ANIMATION_SPEED_DEFAULT = 1.0;
+static const float ANIMATION_KEYFRAME_MIN = 0.0;
+static const float ANIMATION_KEYFRAME_MAX = 100.0;
+static const float ANIMATION_KEYFRAME_STEP = 0.1;
+static const float ANIMATION_KEYFRAME_DEFAULT = 0.0;
 
 // Audio (Defaults assumed, adjust as needed)
 static const int AUDIO_TARGET_DEFAULT = 1; // e.g., Target Animation Speed
@@ -117,7 +121,8 @@ uniform float UI_ChannelIntensityNumerator < ui_type = "slider"; ui_label = "Lin
 uniform float UI_FinalDistanceFadeFactor < ui_type = "slider"; ui_label = "Center Fade Strength"; ui_tooltip = "Multiplier for fading effect towards the center (Mult / distance_from_center)."; ui_min = FINAL_DISTANCE_FADE_FACTOR_MIN; ui_max = FINAL_DISTANCE_FADE_FACTOR_MAX; ui_step = FINAL_DISTANCE_FADE_FACTOR_STEP; ui_category = "Pattern/Distortion"; > = FINAL_DISTANCE_FADE_FACTOR_DEFAULT;
 
 // --- Animation ---
-uniform float AnimationSpeed < ui_type = "slider"; ui_label = "Animation Speed"; ui_tooltip = "Controls the overall animation speed of the effect."; ui_min = ANIMATION_SPEED_MIN; ui_max = ANIMATION_SPEED_MAX; ui_step = ANIMATION_SPEED_STEP; ui_category = "Animation"; > = ANIMATION_SPEED_DEFAULT;
+uniform float AnimationKeyframe < ui_type = "slider"; ui_label = "Animation Keyframe"; ui_tooltip = "Sets a specific point in time for the animation. Useful for finding and saving specific patterns."; ui_min = ANIMATION_KEYFRAME_MIN; ui_max = ANIMATION_KEYFRAME_MAX; ui_step = ANIMATION_KEYFRAME_STEP; ui_category = "Animation"; > = ANIMATION_KEYFRAME_DEFAULT;
+uniform float AnimationSpeed < ui_type = "slider"; ui_label = "Animation Speed"; ui_tooltip = "Controls the overall animation speed of the effect. Set to 0 to pause animation and use keyframe only."; ui_min = ANIMATION_SPEED_MIN; ui_max = ANIMATION_SPEED_MAX; ui_step = ANIMATION_SPEED_STEP; ui_category = "Animation"; > = ANIMATION_SPEED_DEFAULT;
 
 // --- Audio Reactivity ---
 AS_AUDIO_SOURCE_UI(InfZoom_AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity") // Changed prefix
@@ -197,7 +202,16 @@ float4 InfiniteZoomPS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD0) : 
     // Get time, resolution, aspect ratio
     float2 iResolution = float2(BUFFER_WIDTH, BUFFER_HEIGHT);
     float aspectRatio = iResolution.x / iResolution.y;
-    float iTime = AS_getTime() * animSpeed; 
+    
+    // Calculate animation time with keyframe handling
+    float iTime;
+    if (animSpeed <= 0.0001) {
+        // When animation speed is effectively zero, use keyframe directly
+        iTime = AnimationKeyframe;
+    } else {
+        // Otherwise use animated time plus keyframe offset
+        iTime = (AS_getTime() * animSpeed) + AnimationKeyframe;
+    }
 
     // Calculate base coordinates (centered, aspect-corrected, rotated)
     float2 centeredCoord;
