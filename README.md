@@ -14,20 +14,6 @@
 
 Most shaders feature seamless integration with **[Listeningway](https://github.com/gposingway/Listeningway)** for audio reactivity.
 
-### Latest Updates (May 8, 2025)
-- Split documentation for better readability - detailed shader gallery now in [GALLERY.md](docs/GALLERY.md)
-- Added new `stanh()` function to AS_Utils.1.fxh for improved hyperbolic tangent calculation stability
-- Enhanced AS_BGX_ZippyZaps with original color mode, inverted Arc Flow Factor, and improved audio reactivity targets
-- Fixed audio reactivity for Arc Flow Factor to correctly respond to audio intensity
-- Updated default values in ZippyZaps for better visual quality
-- Updated version to 1.0.4.2
-
-### Previous Updates (May 5, 2025)
-- Fixed AS_getTime() function in AS_Utils.1.fxh to properly detect when Listeningway is active
-- Improved SparkleBloom shader with edge control parameter and better code standards compliance
-- Replaced magic numbers with named constants in various shaders for better maintainability
-- Updated version to 1.0.4.1
-
 ---
 
 ## Installation
@@ -53,9 +39,9 @@ Most shaders feature seamless integration with **[Listeningway](https://github.c
 AS-StageFX includes a variety of distinct visual effects organized into categories:
 
 ### Lighting Effects (LFX)
-- **Stage Spotlights** - Up to 3 customizable directional stage lights with beam/glow effects
+- **Stage Spotlights** - Up to 4 customizable directional stage lights with beam/glow effects
 - **Laser Show** - Multiple colored laser beams emanating from a user-defined origin
-- **Candle Flame** - Procedural candle flames with realistic animation and color gradients
+- **Candle Flame** - Up to 4 Procedural candle flames with realistic animation and color gradients
 
 ### Visual Effects (VFX)
 - **Digital Artifacts** - Audio-driven digital artifacts, glitches and hologram effects
@@ -133,8 +119,6 @@ Most shaders in the AS_StageFX collection are conversions and adaptations from o
   - Plasma Flow: Inspired by classic demoscene plasma effects like [this implementation](https://www.shadertoy.com/view/XsVSzW)
   - Cosmic Kaleidoscope: Draws from techniques in [Kaleidoscope Toy](https://www.shadertoy.com/view/XtK3Dt) by mindlord
   - Broken Glass: References elements from [Glass Shatter](https://www.shadertoy.com/view/ltffzl) by exoticorn
-
-- **Listeningway** - Core audio integration by [gposingway](https://github.com/gposingway/Listeningway)
 
 - **ReShade Team** - For creating and maintaining the framework that makes these effects possible
 
