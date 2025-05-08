@@ -14,11 +14,18 @@
 
 Most shaders feature seamless integration with **[Listeningway](https://github.com/gposingway/Listeningway)** for audio reactivity.
 
-### Latest Updates (May 5, 2025)
+### Latest Updates (May 7, 2025)
+- Added new `stanh()` function to AS_Utils.1.fxh for improved hyperbolic tangent calculation stability
+- Enhanced AS_BGX_ZippyZaps with original color mode, inverted Arc Flow Factor, and improved audio reactivity targets
+- Fixed audio reactivity for Arc Flow Factor to correctly respond to audio intensity
+- Updated default values in ZippyZaps for better visual quality
+- Updated version to 1.0.4.2
+
+### Previous Updates (May 5, 2025)
 - Fixed AS_getTime() function in AS_Utils.1.fxh to properly detect when Listeningway is active
 - Improved SparkleBloom shader with edge control parameter and better code standards compliance
 - Replaced magic numbers with named constants in various shaders for better maintainability
-- Updated version to 1.0.5.0
+- Updated version to 1.0.4.1
 
 ### Previous Updates (May 4, 2025)
 - Renamed TiltedPixelGrid shader to TiltedGrid and added attribution to FencerDevLog's tutorial
