@@ -18,6 +18,33 @@ This release includes the AS-StageFX shader collection for ReShade.
 
 ---
 
+## Updates in v1.0.4.2
+
+This release includes important enhancements and improvements:
+
+1. **New `stanh()` Function in AS_Utils.1.fxh**
+   - Added safe hyperbolic tangent function to prevent NaN/infinity for extreme inputs
+   - Provides vectorized versions for float2, float3, and float4 types
+   - Improves mathematical stability in shaders using hyperbolic tangent functions
+
+2. **Enhanced ZippyZaps Shader**
+   - Added option to use original mathematical colors with adjustable intensity and saturation
+   - Inverted Arc Flow Factor behavior for more intuitive control (higher values = more chaotic patterns)
+   - Improved audio reactivity options:
+     - Added Arc Flow Factor as an audio reactivity target
+     - Added Main Color Numerator as an audio reactivity target
+     - Removed less effective Animation Speed and Arc Sharpness options
+   - Updated default values for improved visual quality
+
+3. **Code Quality Improvements**
+   - Enhanced adherence to AS StageFX Shader Development standards
+   - Better documentation of functions and parameters
+   - Fixed audio reactivity application for Arc Flow Factor
+
+For the full changelog and documentation, please refer to the main README.md.
+
+---
+
 ## Bug Fixes in v1.0.5.0
 
 This release includes several important bug fixes and code quality improvements:
