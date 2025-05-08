@@ -33,62 +33,111 @@
 #ifndef __AS_VFX_DigitalArtifacts_1_fx
 #define __AS_VFX_DigitalArtifacts_1_fx
 
+// ============================================================================
+// INCLUDES
+// ============================================================================
 #include "AS_Utils.1.fxh"
 
-// --- Namespace for Helpers and Constants ---
+// ============================================================================
+// TUNABLE CONSTANTS
+// ============================================================================
+static const int MAX_GLITCH_TYPES = 5;
+
+static const float EFFECT_INTENSITY_MIN = 0.0;
+static const float EFFECT_INTENSITY_MAX = 1.0;
+static const float EFFECT_INTENSITY_DEFAULT = 0.5;
+
+static const float EFFECT_SPEED_MIN = 0.0;
+static const float EFFECT_SPEED_MAX = 5.0;
+static const float EFFECT_SPEED_DEFAULT = 1.0;
+
+static const float BLOCK_SIZE_MIN = 1.0;
+static const float BLOCK_SIZE_MAX = 50.0;
+static const float BLOCK_SIZE_DEFAULT = 10.0;
+
+static const float BLOCK_DENSITY_MIN = 0.0;
+static const float BLOCK_DENSITY_MAX = 1.0;
+static const float BLOCK_DENSITY_DEFAULT = 0.5;
+
+static const float SCANLINE_FREQ_MIN = 10.0;
+static const float SCANLINE_FREQ_MAX = 100.0;
+static const float SCANLINE_FREQ_DEFAULT = 50.0;
+
+static const float RGB_SPLIT_MIN = 0.0;
+static const float RGB_SPLIT_MAX = 0.05;
+static const float RGB_SPLIT_DEFAULT = 0.01;
+
+static const float COLOR_INFLUENCE_MIN = 0.0;
+static const float COLOR_INFLUENCE_MAX = 1.0;
+static const float COLOR_INFLUENCE_DEFAULT = 0.3;
+
+static const float EFFECT_DEPTH_MIN = 0.0;
+static const float EFFECT_DEPTH_MAX = 1.0;
+static const float EFFECT_DEPTH_DEFAULT = 0.05;
+
+static const float DEPTH_FALLOFF_MIN = 0.5;
+static const float DEPTH_FALLOFF_MAX = 5.0;
+static const float DEPTH_FALLOFF_DEFAULT = 2.0;
+
+static const float BLEND_AMOUNT_MIN = 0.0;
+static const float BLEND_AMOUNT_MAX = 1.0;
+static const float BLEND_AMOUNT_DEFAULT = 1.0;
+
+// ============================================================================
+// UI DECLARATIONS
+// ============================================================================
+// --- Main Effect Type ---
+uniform int EffectType < ui_type = "combo"; ui_label = "Effect Type"; ui_items = "Hologram\0RGB Shift\0Block Corruption\0Scanlines\0Noise & Static\0"; ui_category = "Main"; > = 0;
+
+// --- Effect-Specific Appearance ---
+uniform float EffectIntensity < ui_type = "slider"; ui_label = "Effect Intensity"; ui_tooltip = "Overall strength of the visual effect."; ui_min = EFFECT_INTENSITY_MIN; ui_max = EFFECT_INTENSITY_MAX; ui_step = 0.01; ui_category = "Effect-Specific Appearance"; > = EFFECT_INTENSITY_DEFAULT;
+uniform float EffectSpeed < ui_type = "slider"; ui_label = "Animation Speed"; ui_tooltip = "Speed of effect animations and transitions."; ui_min = EFFECT_SPEED_MIN; ui_max = EFFECT_SPEED_MAX; ui_step = 0.1; ui_category = "Effect-Specific Appearance"; > = EFFECT_SPEED_DEFAULT;
+uniform float BlockSize < ui_type = "slider"; ui_label = "Block/Line Size"; ui_tooltip = "Size of blocks, scanlines, or pattern elements."; ui_min = BLOCK_SIZE_MIN; ui_max = BLOCK_SIZE_MAX; ui_step = 1.0; ui_category = "Effect-Specific Appearance"; > = BLOCK_SIZE_DEFAULT;
+uniform float BlockDensity < ui_type = "slider"; ui_label = "Block Density"; ui_tooltip = "Controls how many glitch blocks/elements appear. Higher values = more glitches."; ui_min = BLOCK_DENSITY_MIN; ui_max = BLOCK_DENSITY_MAX; ui_step = 0.01; ui_category = "Effect-Specific Appearance"; > = BLOCK_DENSITY_DEFAULT;
+uniform float3 EffectColor < ui_type = "color"; ui_label = "Effect Color"; ui_category = "Effect-Specific Appearance"; > = float3(1.0, 0.2, 0.2);
+uniform float ColorInfluence < ui_type = "slider"; ui_label = "Color Influence"; ui_tooltip = "How much the tint color affects the effect appearance."; ui_min = COLOR_INFLUENCE_MIN; ui_max = COLOR_INFLUENCE_MAX; ui_step = 0.01; ui_category = "Effect-Specific Appearance"; > = COLOR_INFLUENCE_DEFAULT;
+
+// --- Hologram-Specific Parameters ---
+uniform float ScanlineFrequency < ui_type = "slider"; ui_label = "Scanline Frequency"; ui_tooltip = "Controls the frequency of scanlines in hologram effect."; ui_min = SCANLINE_FREQ_MIN; ui_max = SCANLINE_FREQ_MAX; ui_step = 1.0; ui_category = "Hologram Parameters"; ui_category_closed = true; > = SCANLINE_FREQ_DEFAULT;
+uniform float RGBSplitAmount < ui_type = "slider"; ui_label = "RGB Split Amount"; ui_tooltip = "Controls the amount of RGB channel separation."; ui_min = RGB_SPLIT_MIN; ui_max = RGB_SPLIT_MAX; ui_step = 0.001; ui_category = "Hologram Parameters"; ui_category_closed = true; > = RGB_SPLIT_DEFAULT;
+
+// --- Audio Reactivity: General ---
+AS_AUDIO_SOURCE_UI(IntensitySource, "Intensity Source", AS_AUDIO_BEAT, "Audio Reactivity")
+AS_AUDIO_MULTIPLIER_UI(IntensityMult, "Intensity Impact", 2.0, 5.0, "Audio Reactivity")
+
+// --- Audio Reactivity: Parameters ---
+AS_AUDIO_SOURCE_UI(ParameterSource, "Parameter Source", AS_AUDIO_BASS, "Audio Reactivity")
+AS_AUDIO_MULTIPLIER_UI(ParameterMult, "Parameter Impact", 1.0, 3.0, "Audio Reactivity")
+
+// --- Audio Reactivity: Hologram Specific ---
+AS_AUDIO_SOURCE_UI(ScanlineSource, "Scanline Source", AS_AUDIO_BEAT, "Audio Reactivity") 
+AS_AUDIO_MULTIPLIER_UI(ScanlineIntensity, "Scanline Intensity", 0.35, 1.0, "Audio Reactivity") 
+
+AS_AUDIO_SOURCE_UI(RGBSplitSource, "RGB Split Source", AS_AUDIO_BEAT, "Audio Reactivity") 
+AS_AUDIO_MULTIPLIER_UI(RGBSplitMult, "RGB Split Intensity", 1.0, 3.0, "Audio Reactivity") 
+
+// --- Audio Reactivity: Block Density ---
+AS_AUDIO_SOURCE_UI(BlockDensitySource, "Block Density Source", AS_AUDIO_MID, "Audio Reactivity") 
+AS_AUDIO_MULTIPLIER_UI(BlockDensityMult, "Block Density Impact", 1.0, 3.0, "Audio Reactivity") 
+
+// --- Stage Distance ---
+uniform float EffectDepth < ui_type = "slider"; ui_label = "Effect Depth"; ui_tooltip = "Adjusts where effects appear in relation to scene depth. Lower values = closer to camera."; ui_min = EFFECT_DEPTH_MIN; ui_max = EFFECT_DEPTH_MAX; ui_step = 0.01; ui_category = "Stage Distance"; > = EFFECT_DEPTH_DEFAULT;
+uniform float DepthFalloff < ui_type = "slider"; ui_label = "Depth Falloff"; ui_tooltip = "Controls how quickly the effect fades with distance."; ui_min = DEPTH_FALLOFF_MIN; ui_max = DEPTH_FALLOFF_MAX; ui_step = 0.1; ui_category = "Stage Distance"; > = DEPTH_FALLOFF_DEFAULT;
+
+// --- Final Mix ---
+AS_BLENDMODE_UI(BlendMode, "Final Mix")
+uniform float BlendAmount < ui_type = "slider"; ui_label = "Blend Strength"; ui_tooltip = "How strongly the effect is blended with the scene."; ui_min = BLEND_AMOUNT_MIN; ui_max = BLEND_AMOUNT_MAX; ui_step = 0.01; ui_category = "Final Mix"; > = BLEND_AMOUNT_DEFAULT;
+
+// --- Debug ---
+AS_DEBUG_MODE_UI("Off\0Depth Mask\0Effect Only\0Audio\0")
+
+// --- System Uniforms ---
+uniform float2 mousePosition < source = "mousepoint"; >;
+
+// ============================================================================
+// HELPER FUNCTIONS
+// ============================================================================
 namespace AS_DigitalArtifacts {
-    // --- Tunable Constants ---
-    static const int MAX_GLITCH_TYPES = 5;
-
-    // --- Main Effect Type ---
-    uniform int EffectType < ui_type = "combo"; ui_label = "Effect Type"; ui_items = "Hologram\0RGB Shift\0Block Corruption\0Scanlines\0Noise & Static\0"; ui_category = "Main"; > = 0;
-
-    // --- Basic Effect Settings ---
-    uniform float EffectIntensity < ui_type = "slider"; ui_label = "Effect Intensity"; ui_tooltip = "Overall strength of the visual effect."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Effect Settings"; > = 0.5;
-    uniform float EffectSpeed < ui_type = "slider"; ui_label = "Animation Speed"; ui_tooltip = "Speed of effect animations and transitions."; ui_min = 0.0; ui_max = 5.0; ui_step = 0.1; ui_category = "Effect Settings"; > = 1.0;
-
-    // --- Glitch Block Settings (for Glitch modes) ---
-    uniform float BlockSize < ui_type = "slider"; ui_label = "Block/Line Size"; ui_tooltip = "Size of blocks, scanlines, or pattern elements."; ui_min = 1.0; ui_max = 50.0; ui_step = 1.0; ui_category = "Effect Settings"; > = 10.0;
-    uniform float BlockDensity < ui_type = "slider"; ui_label = "Block Density"; ui_tooltip = "Controls how many glitch blocks/elements appear. Higher values = more glitches."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Effect Settings"; > = 0.5;
-
-    // --- Audio Reactivity: General ---
-    AS_AUDIO_SOURCE_UI(IntensitySource, "Intensity Source", AS_AUDIO_BEAT, "Audio Reactivity")
-    AS_AUDIO_MULTIPLIER_UI(IntensityMult, "Intensity Impact", 2.0, 5.0, "Audio Reactivity")
-
-    // --- Audio Reactivity: Parameters ---
-    AS_AUDIO_SOURCE_UI(ParameterSource, "Parameter Source", AS_AUDIO_BASS, "Audio Reactivity")
-    AS_AUDIO_MULTIPLIER_UI(ParameterMult, "Parameter Impact", 1.0, 3.0, "Audio Reactivity")
-
-    // --- Audio Reactivity: Hologram Specific ---
-    AS_AUDIO_SOURCE_UI(ScanlineSource, "Scanline Source", AS_AUDIO_BEAT, "Audio Reactivity") 
-    AS_AUDIO_MULTIPLIER_UI(ScanlineIntensity, "Scanline Intensity", 0.35, 1.0, "Audio Reactivity") 
-
-    AS_AUDIO_SOURCE_UI(RGBSplitSource, "RGB Split Source", AS_AUDIO_BEAT, "Audio Reactivity") 
-    AS_AUDIO_MULTIPLIER_UI(RGBSplitMult, "RGB Split Intensity", 1.0, 3.0, "Audio Reactivity") 
-
-    // Define these variables before they're used in the hologramEffect function
-    uniform float ScanlineFrequency < ui_type = "slider"; ui_label = "Scanline Frequency"; ui_tooltip = "Controls the frequency of scanlines in hologram effect."; ui_min = 10.0; ui_max = 100.0; ui_step = 1.0; ui_category = "Audio Reactivity"; > = 50.0; 
-    uniform float RGBSplitAmount < ui_type = "slider"; ui_label = "RGB Split Amount"; ui_tooltip = "Controls the amount of RGB channel separation."; ui_min = 0.0; ui_max = 0.05; ui_step = 0.001; ui_category = "Audio Reactivity"; > = 0.01; 
-
-    // --- Audio Reactivity: Block Density ---
-    AS_AUDIO_SOURCE_UI(BlockDensitySource, "Block Density Source", AS_AUDIO_MID, "Audio Reactivity") 
-    AS_AUDIO_MULTIPLIER_UI(BlockDensityMult, "Block Density Impact", 1.0, 3.0, "Audio Reactivity") 
-
-    // --- Effect-Specific Appearance ---
-    uniform float3 EffectColor < ui_type = "color"; ui_label = "Effect Color"; ui_category = "Effect-Specific Appearance"; > = float3(1.0, 0.2, 0.2); 
-    uniform float ColorInfluence < ui_type = "slider"; ui_label = "Color Influence"; ui_tooltip = "How much the tint color affects the effect appearance."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Effect-Specific Appearance"; > = 0.3; 
-
-    // --- Final Mix ---
-    uniform int BlendMode < ui_type = "combo"; ui_label = "Blend Mode"; ui_items = "Normal\0Lighter Only\0Darker Only\0Additive\0Multiply\0Screen\0"; ui_category = "Final Mix"; > = 0;
-    uniform float BlendAmount < ui_type = "slider"; ui_label = "Blend Strength"; ui_tooltip = "How strongly the effect is blended with the scene."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Final Mix"; > = 1.0;
-
-    // --- Debug ---
-    AS_DEBUG_MODE_UI("Off\0Depth Mask\0Effect Only\0Audio\0")
-
-    // --- System Uniforms ---
-    uniform float2 mousePosition < source = "mousepoint"; >;
-
-    // --- Helper Functions ---
     // Block corruption glitch effect
     float3 blockCorruption(float2 uv, float time, float intensity, float blockSize, float blockDensity) {
         float2 block = floor(uv * blockSize) / blockSize;
@@ -251,7 +300,7 @@ namespace AS_DigitalArtifacts {
         float2 gCoord = uv + jitter;
         float2 bCoord = uv - rgbOffset + jitter;
         
-        float3 color;
+        float3 color = float3(0, 0, 0);
         color.r = tex2D(ReShade::BackBuffer, rCoord).r;
         color.g = tex2D(ReShade::BackBuffer, gCoord).g;
         color.b = tex2D(ReShade::BackBuffer, bCoord).b;
@@ -263,10 +312,6 @@ namespace AS_DigitalArtifacts {
     }
 }
 
-// --- Stage Distance ---
-uniform float EffectDepth < ui_type = "slider"; ui_label = "Effect Depth"; ui_tooltip = "Adjusts where effects appear in relation to scene depth. Lower values = closer to camera."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Stage Distance"; > = 0.05;
-uniform float DepthFalloff < ui_type = "slider"; ui_label = "Depth Falloff"; ui_tooltip = "Controls how quickly the effect fades with distance."; ui_min = 0.5; ui_max = 5.0; ui_step = 0.1; ui_category = "Stage Distance"; > = 2.0;
-
 // --- Main Effect ---
 float4 PS_DigitalArtifacts(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target {
     // Get original color
@@ -274,7 +319,7 @@ float4 PS_DigitalArtifacts(float4 pos : SV_Position, float2 texcoord : TEXCOORD)
     
     // Calculate depth mask
     float depth = ReShade::GetLinearizedDepth(texcoord);
-    float depthMask = smoothstep(EffectDepth - 0.05, EffectDepth + 0.05, depth); // Updated uniform name
+    float depthMask = smoothstep(EffectDepth - 0.05, EffectDepth + 0.05, depth);
     depthMask = pow(depthMask, DepthFalloff);
     
     // Early return if outside the depth range
@@ -284,42 +329,42 @@ float4 PS_DigitalArtifacts(float4 pos : SV_Position, float2 texcoord : TEXCOORD)
     
     // Audio-reactive parameters
     float time = AS_getTime();
-    float audioIntensity = AS_getAudioSource(AS_DigitalArtifacts::IntensitySource) * AS_DigitalArtifacts::IntensityMult;
-    float audioParameter = AS_getAudioSource(AS_DigitalArtifacts::ParameterSource) * AS_DigitalArtifacts::ParameterMult;
+    float audioIntensity = AS_getAudioSource(IntensitySource) * IntensityMult;
+    float audioParameter = AS_getAudioSource(ParameterSource) * ParameterMult;
     
     // Hologram-specific audio parameters
-    float scanlineAudio = AS_getAudioSource(AS_DigitalArtifacts::ScanlineSource) * AS_DigitalArtifacts::ScanlineIntensity;
-    float rgbSplitAudio = AS_getAudioSource(AS_DigitalArtifacts::RGBSplitSource) * AS_DigitalArtifacts::RGBSplitMult;
+    float scanlineAudio = AS_getAudioSource(ScanlineSource) * ScanlineIntensity;
+    float rgbSplitAudio = AS_getAudioSource(RGBSplitSource) * RGBSplitMult;
     
     // Apply audio reactivity to effect parameters
-    float intensity = AS_DigitalArtifacts::EffectIntensity * (1.0 + audioIntensity);
-    float speed = AS_DigitalArtifacts::EffectSpeed * (1.0 + audioParameter * 0.2);
-    float blockSizeValue = AS_DigitalArtifacts::BlockSize * (1.0 + audioParameter * 0.3);
+    float intensity = EffectIntensity * (1.0 + audioIntensity);
+    float speed = EffectSpeed * (1.0 + audioParameter * 0.2);
+    float blockSizeValue = BlockSize * (1.0 + audioParameter * 0.3);
     
     // Add audio reactivity to block density
-    float blockDensityAudio = AS_getAudioSource(AS_DigitalArtifacts::BlockDensitySource) * AS_DigitalArtifacts::BlockDensityMult;
-    float blockDensityValue = AS_DigitalArtifacts::BlockDensity * (1.0 + blockDensityAudio);
+    float blockDensityAudio = AS_getAudioSource(BlockDensitySource) * BlockDensityMult;
+    float blockDensityValue = BlockDensity * (1.0 + blockDensityAudio);
     blockDensityValue = clamp(blockDensityValue, 0.0, 1.0); // Keep within valid range
     
     // Apply selected effect
     float3 effectColor;
     
-    if (AS_DigitalArtifacts::EffectType == 0) {
+    if (EffectType == 0) {
         // Hologram effect
         effectColor = AS_DigitalArtifacts::hologramEffect(
-            texcoord, time, intensity, AS_DigitalArtifacts::ScanlineFrequency, AS_DigitalArtifacts::RGBSplitAmount, 
+            texcoord, time, intensity, ScanlineFrequency, RGBSplitAmount, 
             scanlineAudio, rgbSplitAudio, speed
         );
     }
-    else if (AS_DigitalArtifacts::EffectType == 1) {
+    else if (EffectType == 1) {
         // RGB Shift
         effectColor = AS_DigitalArtifacts::rgbShift(texcoord, time, intensity, speed);
     }
-    else if (AS_DigitalArtifacts::EffectType == 2) {
+    else if (EffectType == 2) {
         // Block Corruption
         effectColor = AS_DigitalArtifacts::blockCorruption(texcoord, time, intensity, blockSizeValue, blockDensityValue);
     }
-    else if (AS_DigitalArtifacts::EffectType == 3) {
+    else if (EffectType == 3) {
         // Scanlines
         effectColor = AS_DigitalArtifacts::scanlineGlitch(texcoord, time, intensity, blockSizeValue);
     }
@@ -329,18 +374,18 @@ float4 PS_DigitalArtifacts(float4 pos : SV_Position, float2 texcoord : TEXCOORD)
     }
     
     // Apply color tint
-    effectColor = lerp(effectColor, effectColor * AS_DigitalArtifacts::EffectColor, AS_DigitalArtifacts::ColorInfluence);
+    effectColor = lerp(effectColor, effectColor * EffectColor, ColorInfluence);
     
     // Debug modes
-    if (AS_DigitalArtifacts::DebugMode == 1) {
+    if (DebugMode == 1) {
         return float4(depthMask.xxx, 1.0); // Show depth mask
     }
-    else if (AS_DigitalArtifacts::DebugMode == 2) {
+    else if (DebugMode == 2) {
         return float4(effectColor, 1.0); // Show effect only
     }
-    else if (AS_DigitalArtifacts::DebugMode == 3) {
+    else if (DebugMode == 3) {
         // Show audio values
-        if (AS_DigitalArtifacts::EffectType == 0) { // Hologram
+        if (EffectType == 0) { // Hologram
             return float4(audioIntensity, scanlineAudio, rgbSplitAudio, 1.0);
         }
         else {
@@ -349,8 +394,8 @@ float4 PS_DigitalArtifacts(float4 pos : SV_Position, float2 texcoord : TEXCOORD)
     }
     
     // Apply blend mode and depth mask
-    float3 result = AS_blendResult(originalColor.rgb, effectColor, AS_DigitalArtifacts::BlendMode);
-    return float4(lerp(originalColor.rgb, result, depthMask * AS_DigitalArtifacts::BlendAmount), originalColor.a);
+    float3 result = AS_blendResult(originalColor.rgb, effectColor, BlendMode);
+    return float4(lerp(originalColor.rgb, result, depthMask * BlendAmount), originalColor.a);
 }
 
 technique AS_DigitalArtifacts < ui_label = "[AS] VFX: Digital Artifacts"; ui_tooltip = "Creates digital artifacts, glitches, and holographic effects that can be positioned in 3D space."; > {

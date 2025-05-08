@@ -1,9 +1,10 @@
 /**
  * AS_VFX_WaterSurface.1.fx - Depth-based water reflection horizon
  * Author: Leon Aquitaine (Adapted from Godot shader)
- * Date: 2025-05-05
  * License: Creative Commons Attribution 4.0 International
- * Version: 1.9 (Added Reflection Compression)
+ * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
+ * 
+ * ===================================================================================
  *
  * DESCRIPTION:
  * Creates a water surface where reflection start points are based on object depth,
@@ -16,11 +17,13 @@
  * - Simple wave animation for water surface with perspective scaling
  * - Adjustable reflection parameters including vertical compression
  *
- * IMPLEMENTATION:
+ * IMPLEMENTATION OVERVIEW:
  * 1. Uses depth buffer to determine reflection start points per pixel
  * 2. Applies wave distortion with scale varying based on distance from horizon
  * 3. Compresses reflection vertically based on user parameter
  * 4. Applies water color blending
+ *
+ * ===================================================================================
  */
 
 #ifndef __AS_VFX_WaterSurface_1_fx

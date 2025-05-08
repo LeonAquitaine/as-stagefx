@@ -2,12 +2,16 @@
  * AS_VFX_RainyWindow.1.fx - Dynamic rain droplet distortion effect for windows
  * Author: Leon Aquitaine (Adapted from Godot shader by FencerDevLog)
  * License: Creative Commons Attribution 4.0 International
+ * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
  * 
  * Original inspiration: "Godot 4: Rainy window shader (tutorial)" by FencerDevLog
  * Source: https://www.youtube.com/watch?v=QAOt24qV98c
  * FencerDevLog's Patreon: https://www.patreon.com/c/FencerDevLog/posts
+ * 
+ * ===================================================================================
  *
- * DESCRIPTION: Creates a realistic rainy window effect with multi-layered droplets that
+ * DESCRIPTION:
+ * Creates a realistic rainy window effect with multi-layered droplets that
  * distort the scene behind them. Includes customizable rain density, speed, and droplet size.
  * Attempts to closely match the logic of a specific Godot CanvasItem shader.
  *
@@ -20,11 +24,13 @@
  * - Aspect ratio independent rendering
  * - Resolution scaling to maintain consistent appearance across displays
  *
- * IMPLEMENTATION:
+ * IMPLEMENTATION OVERVIEW:
  * 1. Generates a raindrop grid pattern using hash functions and texture noise
  * 2. Applies multi-scale layers with different speeds and sizes
  * 3. Uses uv displacement calculated from aspect-corrected coordinates to create the distortion effect
  * 4. Blends with the original image using configurable blend mode
+ * 
+ * ===================================================================================
  */
 
 #ifndef __AS_VFX_RainyWindow_1_fx
@@ -48,8 +54,6 @@ uniform int NoiseTextureWarning < ui_type = "radio"; ui_label = " "; ui_text = "
 #endif
 
 uniform bool NeedTexture < source = "key"; keycode = 13; mode = "toggle"; ui_label = " "; ui_text = "If texture not showing: Press Enter!"; ui_tooltip = "If you don't see a texture path option below, press Enter key to refresh UI"; ui_category = "Texture Settings"; ui_category_closed = false; >;
-
-#include "ReShadeUI.fxh"
 
 texture NoiseTex < source = NOISE_TEXTURE_PATH; ui_label = "Noise Texture"; ui_tooltip = NOISE_TEXTURE_HELP; > { Width = 256; Height = 256; Format = R8; };
 sampler NoiseSampler { Texture = NoiseTex; AddressU = REPEAT; AddressV = REPEAT; MagFilter = LINEAR; MinFilter = LINEAR; MipFilter = LINEAR; };
@@ -169,33 +173,19 @@ float4 PS_RainyWindow(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV
     float globalRotation = AS_getRotationRadians(GlobalSnapRotation, GlobalFineRotation);
     
     // --- Step 1: Transform screen UVs to centered coordinate system for rotation ---
-    // This is for positioning the rain effect itself, not for sampling the backbuffer
-    float2 screen_coords;
-    if (aspectRatio >= 1.0) { // Wider or square
-        screen_coords.x = (texcoord.x - 0.5) * aspectRatio;
-        screen_coords.y = texcoord.y - 0.5;
-    } else { // Taller
-        screen_coords.x = texcoord.x - 0.5;
-        screen_coords.y = (texcoord.y - 0.5) / aspectRatio;
-    }
-
-    // --- Step 2: Apply inverse rotation to get rotated rain pattern coordinates ---
+    // Use AS_Utils aspectCorrect for proper aspect ratio handling
+    float2 centered_uv = texcoord - 0.5;
+    float2 screen_coords = AS_aspectCorrect(centered_uv, BUFFER_WIDTH, BUFFER_HEIGHT);
+    
+    // --- Step 2: Apply inverse rotation using standard rotation matrix ---
+    float2 rotated_coords;
     float sinRot = sin(-globalRotation);
     float cosRot = cos(-globalRotation);
-    float2 rotated_coords;
     rotated_coords.x = screen_coords.x * cosRot - screen_coords.y * sinRot;
     rotated_coords.y = screen_coords.x * sinRot + screen_coords.y * cosRot;
-
+    
     // --- Step 3: Convert back to UV space for rain calculation ---
-    // This determines where in the rain pattern each screen pixel maps to
-    float2 rotated_uv;
-    if (aspectRatio >= 1.0) { // Wider or square
-        rotated_uv.x = (rotated_coords.x / aspectRatio) + 0.5;
-        rotated_uv.y = rotated_coords.y + 0.5;
-    } else { // Taller
-        rotated_uv.x = rotated_coords.x + 0.5;
-        rotated_uv.y = (rotated_coords.y * aspectRatio) + 0.5;
-    }
+    float2 rotated_uv = rotated_coords + 0.5;
 
     // --- Create calculation UVs for rain pattern ---
     float2 calc_uv = rotated_uv;

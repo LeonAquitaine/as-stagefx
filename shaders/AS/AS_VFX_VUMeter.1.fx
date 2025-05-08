@@ -1,8 +1,9 @@
-/*
+/**
  * AS_VFX_VUMeter.1.fx - Audio-reactive VU Meter Background Shader
  * Author: Leon Aquitaine
  * License: Creative Commons Attribution 4.0 International
- *
+ * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
+ * 
  * ===================================================================================
  *
  * DESCRIPTION:

@@ -1,8 +1,10 @@
 /**
  * AS_VFX_ScreenRing.1.fx - Screen-space textured ring with depth occlusion
  * Author: Leon Aquitaine
- * Date: 2025-05-05
  * License: Creative Commons Attribution 4.0 International
+ * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
+ * 
+ * ===================================================================================
  *
  * DESCRIPTION:
  * Draws a textured ring/band on the screen at a specified screen position and depth.
@@ -17,7 +19,7 @@
  * - Blending modes and intensity control.
  * - Debug visualization modes.
  *
- * IMPLEMENTATION:
+ * IMPLEMENTATION OVERVIEW:
  * 1. Calculate pixel's angle and distance from the target screen position, correcting for aspect ratio.
  * 2. Apply rotation animation to the angle based on RotationSpeed and AS_getTime().
  * 3. Determine if the pixel falls within the ring's radius and thickness band.
@@ -26,6 +28,8 @@
  * 6. Sample the ring texture.
  * 7. Apply color tint and intensity.
  * 8. Blend the result with the backbuffer using the selected blend mode and amount.
+ * 
+ * ===================================================================================
  */
 
 #ifndef __AS_VFX_ScreenRing_1_fx

@@ -13,17 +13,20 @@
  *
  * FEATURES:
  * - Depth-based subject tracking for dynamic trail effects
+ * - Multiple capture modes: tempo-based, frame-based, audio beat, or manual trigger
  * - User-definable trail color, strength, and persistence
- * - Audio-reactive trail timing, intensity and colors through AS_Utils audio integration
+ * - Audio-reactive trail timing, intensity and colors through AS_Utils integration
  * - Multiple blend modes for scene integration
- * - Optional real-time subject highlight for better visualization
+ * - Optional subject highlight modes: normal, pulse, or silhouette
  * - Precise depth control for targeting specific scene elements
  *
  * IMPLEMENTATION OVERVIEW:
- * 1. The shader uses AS_Utils timing system to capture scene snapshots at regular intervals
- * 2. Objects within a customizable depth threshold are isolated and stored
- * 3. These captured images are accumulated over time with a controllable fade rate
- * 4. Audio can modulate capture timing, trail intensity and colors for dynamic effects
+ * 1. Uses multi-pass rendering with ping-pong buffers for accumulation and timing
+ * 2. Pass 1: Updates timing and determines when to capture based on selected mode
+ * 3. Pass 2: Accumulates trail information with fading for persistence
+ * 4. Pass 3 & 5: Copy buffer contents for next frame processing
+ * 5. Pass 4: Composites trails with original scene and applies subject overlay
+ * 6. Audio reactivity can modulate timing intervals and trail intensity
  * 
  * ===================================================================================
  */
@@ -94,10 +97,8 @@ uniform float BlendAmount < ui_type = "slider"; ui_label = "Effect Opacity"; ui_
 AS_DEBUG_MODE_UI("Off\0Depth Mask\0Echo Buffer\0Linear Depth\0")
 
 // Add frame counter for frame-based capture mode
-
-
 // --- Variables to track beat detection ---
-uniform float PrevBeatValue < source = "frametime"; >;
+uniform float TimeBeatValue < source = "listeningway"; listeningway_property = "beat"; >;
 
 // --- Textures and Samplers ---
 texture EchoAccumBuffer { Width = BUFFER_WIDTH; Height = BUFFER_HEIGHT; Format = RGBA8; };
@@ -168,7 +169,7 @@ void PS_TimingCaptureUpdate(
             
         case 2: // On Audio Beat Mode
             // Use AS_getAudioSource for better compatibility
-            float beatValue = AS_getAudioSource(AS_AUDIO_BEAT);
+            float beatValue = TimeBeatValue;
             
             // Use a static variable to track the on-beat flag
             static bool onBeat = false;

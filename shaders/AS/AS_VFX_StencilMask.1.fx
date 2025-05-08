@@ -38,7 +38,9 @@
 
 #include "AS_Utils.1.fxh"
 
-// --- Tunable Constants ---
+// ============================================================================
+// TUNABLE CONSTANTS
+// ============================================================================
 // Using AS_PI from AS_Utils instead of local PI definition
 static const int MAX_SHADOW_SAMPLES = 16; // Note: Not currently used, consider removing if final
 static const float MAX_EDGE_BIAS = 10.0; // Note: Not currently used, consider removing if final

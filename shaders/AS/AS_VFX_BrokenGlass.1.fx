@@ -1,8 +1,10 @@
 /**
  * AS_VFX_BrokenGlass.1.fx - Floating broken glass shards effect
  * Author: Leon Aquitaine (Concept by user, Gemini assistance)
- * Date: 2025-05-05
  * License: Creative Commons Attribution 4.0 International
+ * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
+ * 
+ * ===================================================================================
  *
  * DESCRIPTION:
  * Creates an effect simulating floating shards of broken glass using Voronoi noise.
@@ -10,12 +12,21 @@
  * and feature glints/sparkles along their edges.
  *
  * FEATURES:
- * - Voronoi noise for shard pattern generation.
- * - Pseudo-random depth assigned per shard for floating effect & occlusion.
- * - Screen-space distortion (refraction simulation) through shards.
- * - Edge detection with animated glints/sparkles.
- * - Optional parallax effect to enhance floating appearance.
- * - Standard AS framework integration (UI, Blending, Audio, Debug).
+ * - Voronoi noise for shard pattern generation
+ * - Pseudo-random depth assigned per shard for floating effect & occlusion
+ * - Screen-space distortion (refraction simulation) through shards
+ * - Edge detection with animated glints/sparkles
+ * - Optional parallax effect to enhance floating appearance
+ * - Standard AS framework integration (UI, Blending, Audio, Debug)
+ *
+ * IMPLEMENTATION OVERVIEW:
+ * 1. Generates Voronoi noise pattern to create distinct glass shard cells
+ * 2. Assigns pseudo-random depth values to each shard for layering
+ * 3. Calculates edge proximity for glint and thickness effects
+ * 4. Applies distortion based on light direction and fake normals
+ * 5. Adds animated sparkles and chromatic aberration for realistic glass appearance
+ * 
+ * ===================================================================================
  */
 
 #ifndef __AS_VFX_BrokenGlass_1_fx

@@ -13,7 +13,7 @@
  *
  * FEATURES:
  * - Up to 4 independently controllable spotlights with customizable properties
- * - Audio-reactive light intensity, automated sway, and pulsing via Listeningway
+ * - Audio-reactive light intensity, automated sway, and pulsing via AS_Utils integration
  * - Adjustable position, size, color, angle, and direction for each spotlight
  * - Beautiful bokeh glow effects that inherit spotlight colors
  * - Depth-based masking for scene integration
@@ -28,9 +28,15 @@
  * ===================================================================================
  */
 
+// ============================================================================
+// TECHNIQUE GUARD - Prevents duplicate loading of the same shader
+// ============================================================================
 #ifndef __AS_LFX_StageSpotlights_1_fx
 #define __AS_LFX_StageSpotlights_1_fx
 
+// ============================================================================
+// INCLUDES
+// ============================================================================
 #include "AS_Utils.1.fxh"
 
 // ============================================================================

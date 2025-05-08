@@ -94,14 +94,41 @@ float2 scaledCoord = texcoord * resolutionScale;
 ### Documentation Header Template
 ```hlsl
 /**
- * AS_TypeCode_Name.Version.fx - Brief description
- * Author: Name
+ * AS_TypeCode_Name.Version.fx - Brief Description
+ * Author: Author Name
  * License: Creative Commons Attribution 4.0 International
+ * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
  * 
- * DESCRIPTION: 2-3 sentence overview of what the shader does
- * FEATURES: Bullet list of key capabilities
- * IMPLEMENTATION: Brief numbered steps of how it works
+ * ===================================================================================
+ *
+ * DESCRIPTION:
+ * 2-3 sentence overview of what the shader does and its primary purpose.
+ * This should clearly explain the visual effect and when it would be used.
+ *
+ * FEATURES:
+ * - Bullet point list of key capabilities
+ * - Each point should highlight a distinct feature
+ * - Include audio reactivity, customization options, etc.
+ * - Focus on user-facing features
+ *
+ * IMPLEMENTATION OVERVIEW:
+ * 1. Numbered steps explaining how the effect works technically
+ * 2. Brief explanation of the algorithm or approach
+ * 3. Mention key techniques or optimizations
+ * 4. Keep technical but understandable
+ *
+ * ===================================================================================
  */
+
+// ============================================================================
+// TECHNIQUE GUARD - Prevents duplicate loading of the same shader
+// ============================================================================
+#ifndef __SHADER_IDENTIFIER_fx
+#define __SHADER_IDENTIFIER_fx
+
+// Rest of shader code...
+
+#endif // __SHADER_IDENTIFIER_fx
 ```
 
 ## Quick Reference

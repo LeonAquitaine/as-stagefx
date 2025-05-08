@@ -1,4 +1,4 @@
-/*
+/**
  * AS_VFX_BoomSticker.1.fx - Simple sticker texture overlay with audio reactivity
  * Author: Leon Aquitaine
  * License: Creative Commons Attribution 4.0 International
@@ -15,6 +15,12 @@
  * - Customizable depth masking
  * - Support for custom texture via preprocessor definition
  *
+ * IMPLEMENTATION OVERVIEW:
+ * 1. Applies transformation matrix to screen coordinates
+ * 2. Samples from specified texture at transformed coordinates
+ * 3. Applies audio reactivity to selected parameter (opacity or scale)
+ * 4. Blends with scene based on texture alpha and opacity
+ * 
  * USAGE:
  * To use a custom texture, add these lines to your "PreprocessorDefinitions.h" file:
  * #define BoomSticker1_FileName "path/to/your/texture.png"
@@ -30,6 +36,14 @@
 #ifndef __AS_VFX_BoomSticker_1_fx
 #define __AS_VFX_BoomSticker_1_fx
 
+// ============================================================================
+// INCLUDES
+// ============================================================================
+#include "AS_Utils.1.fxh"
+
+// ============================================================================
+// TEXTURE DEFINITIONS
+// ============================================================================
 // Default texture if not defined by the user
 #ifndef BoomSticker1_FileName
     #define BoomSticker1_FileName "LayerStage.png"
@@ -44,9 +58,68 @@
     #define BoomSticker1_Height BUFFER_HEIGHT
 #endif
 
-#include "AS_Utils.1.fxh"
+// Main sticker texture and sampler
+texture BoomSticker_Texture <source=BoomSticker1_FileName;> { Width = BoomSticker1_Width; Height = BoomSticker1_Height; Format=RGBA8; };
+sampler BoomSticker_Sampler { Texture = BoomSticker_Texture; };
 
-// --- Helper Functions ---
+// ============================================================================
+// TUNABLE CONSTANTS
+// ============================================================================
+static const float OPACITY_MIN = 0.0;
+static const float OPACITY_MAX = 1.0;
+static const float OPACITY_DEFAULT = 1.0;
+
+static const float SCALE_MIN = 0.001;
+static const float SCALE_MAX = 5.0;
+static const float SCALE_DEFAULT = 0.5;
+
+static const float POSITION_MIN = -2.0;
+static const float POSITION_MAX = 2.0;
+static const float POSITION_DEFAULT = 0.5;
+
+static const float AUDIO_INTENSITY_MIN = 0.0;
+static const float AUDIO_INTENSITY_MAX = 2.0;
+static const float AUDIO_INTENSITY_DEFAULT = 0.5;
+
+// ============================================================================
+// EFFECT-SPECIFIC PARAMETERS
+// ============================================================================
+uniform float BoomSticker_Opacity < ui_category = "Appearance"; ui_label = "Opacity"; ui_type = "slider"; ui_min = OPACITY_MIN; ui_max = OPACITY_MAX; ui_step = 0.002; > = OPACITY_DEFAULT;
+uniform float BoomSticker_Scale < ui_category = "Appearance"; ui_label = "Scale"; ui_type = "slider"; ui_min = SCALE_MIN; ui_max = SCALE_MAX; ui_step = 0.001; > = SCALE_DEFAULT;
+uniform float2 BoomSticker_ScaleXY < ui_category = "Appearance"; ui_label = "Scale X/Y"; ui_type = "slider"; ui_min = SCALE_MIN; ui_max = SCALE_MAX; ui_step = 0.001; > = float2(1.0, 1.0);
+uniform float2 BoomSticker_PosXY < ui_category = "Appearance"; ui_label = "Position"; ui_type = "slider"; ui_min = POSITION_MIN; ui_max = POSITION_MAX; ui_step = 0.001; > = float2(POSITION_DEFAULT, POSITION_DEFAULT);
+
+// Use standard rotation controls from AS_Utils
+AS_ROTATION_UI(BoomSticker_SnapRotate, BoomSticker_Rotate, "Appearance")
+
+// ============================================================================
+// ANIMATION
+// ============================================================================
+AS_SWAYSPEED_UI(BoomSticker_SwaySpeed, "Animation")
+AS_SWAYANGLE_UI(BoomSticker_SwayAngle, "Animation")
+
+// ============================================================================
+// AUDIO REACTIVITY
+// ============================================================================
+uniform int BoomSticker_AudioAffect < ui_type = "combo"; ui_label = "Audio Affects"; ui_items = "Opacity\0Scale\0"; ui_category = "Audio Reactivity"; > = 1;
+
+// Use the standard AS_AUDIO_SOURCE_UI macro to select audio source
+AS_AUDIO_SOURCE_UI(BoomSticker_AudioSource, "Audio Source", AS_AUDIO_VOLUME, "Audio Reactivity")
+AS_AUDIO_MULTIPLIER_UI(BoomSticker_AudioIntensity, "Audio Intensity", AUDIO_INTENSITY_DEFAULT, AUDIO_INTENSITY_MAX, "Audio Reactivity")
+
+// ============================================================================
+// STAGE DISTANCE
+// ============================================================================
+AS_STAGEDEPTH_UI(BoomSticker_Depth, "Effect Depth", "Stage Distance")
+
+// ============================================================================
+// DEBUG
+// ============================================================================
+AS_DEBUG_MODE_UI("Off\0Beat\0Depth\0Audio Source\0")
+
+// ============================================================================
+// HELPER FUNCTIONS
+// ============================================================================
 float2 rotateUV(float2 uv, float angle) {
     float s = sin(angle);
     float c = cos(angle);
@@ -56,39 +129,9 @@ float2 rotateUV(float2 uv, float angle) {
     return rotated + center;
 }
 
-// Main sticker texture and sampler
-texture BoomSticker_Texture <source=BoomSticker1_FileName;> { Width = BoomSticker1_Width; Height = BoomSticker1_Height; Format=RGBA8; };
-sampler BoomSticker_Sampler { Texture = BoomSticker_Texture; };
-
-// Appearance Controls
-uniform float BoomSticker_Opacity < ui_category = "Appearance"; ui_label = "Opacity"; ui_type = "slider"; ui_min = 0.0; ui_max = 1.0; ui_step = 0.002; > = 1.0;
-uniform float BoomSticker_Scale < ui_category = "Appearance"; ui_label = "Scale"; ui_type = "slider"; ui_min = 0.001; ui_max = 5.0; ui_step = 0.001; > = 0.5;
-uniform float2 BoomSticker_ScaleXY < ui_category = "Appearance"; ui_label = "Scale X/Y"; ui_type = "slider"; ui_min = 0.001; ui_max = 5.0; ui_step = 0.001; > = float2(1.0, 1.0);
-uniform float2 BoomSticker_PosXY < ui_category = "Appearance"; ui_label = "Position"; ui_type = "slider"; ui_min = -2.0; ui_max = 2.0; ui_step = 0.001; > = float2(0.5, 0.5);
-
-// Use standard rotation controls from AS_Utils
-AS_ROTATION_UI(BoomSticker_SnapRotate, BoomSticker_Rotate, "Appearance")
-
-// Position Controls
-AS_STAGEDEPTH_UI(BoomSticker_Depth, "Effect Depth", "Stage Distance")
-
-// Animation Controls
-AS_SWAYSPEED_UI(BoomSticker_SwaySpeed, "Animation")
-AS_SWAYANGLE_UI(BoomSticker_SwayAngle, "Animation")
-
-// Audio Reactivity Controls
-uniform int BoomSticker_AudioAffect < ui_type = "combo"; ui_label = "Audio Affects"; ui_items = "Opacity\0Scale\0"; ui_category = "Audio Reactivity"; > = 1;
-
-// Use the standard AS_AUDIO_SOURCE_UI macro to select audio source
-AS_AUDIO_SOURCE_UI(BoomSticker_AudioSource, "Audio Source", AS_AUDIO_VOLUME, "Audio Reactivity")
-AS_AUDIO_MULTIPLIER_UI(BoomSticker_AudioIntensity, "Audio Intensity", 0.5, 2.0, "Audio Reactivity")
-
-// Debug Controls
-uniform int DebugMode < ui_type = "combo"; ui_label = "Debug View"; ui_items = "Off\0Beat\0Depth\0Audio Source\0"; ui_category = "Debug"; > = 0;
-
-//--------------------------------------------------------------------------
-// Main pixel shader implementation
-//--------------------------------------------------------------------------
+// ============================================================================
+// MAIN PIXEL SHADER
+// ============================================================================
 void PS_BoomSticker(in float4 position : SV_Position, in float2 texCoord : TEXCOORD, out float4 passColor : SV_Target) {
     // Get original pixel color first
     float4 originalColor = tex2D(ReShade::BackBuffer, texCoord);
@@ -202,11 +245,10 @@ void PS_BoomSticker(in float4 position : SV_Position, in float2 texCoord : TEXCO
     passColor.a = originalColor.a;
 }
 
-// Technique definition
-technique AS_BoomSticker <
-    ui_label = "[AS] VFX: BoomSticker";
-    ui_tooltip = "Simple overlay sticker with audio reactivity";
->
+// ============================================================================
+// TECHNIQUE
+// ============================================================================
+technique AS_BoomSticker < ui_label = "[AS] VFX: BoomSticker"; ui_tooltip = "Simple overlay sticker with audio reactivity"; >
 {
     pass {
         VertexShader = PostProcessVS;

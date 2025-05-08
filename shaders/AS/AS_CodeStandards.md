@@ -64,6 +64,91 @@ These requirements are non-negotiable for all AS StageFX shaders:
    */
   ```
 
+## Comment Header Standards
+
+All shader files in the AS StageFX collection must follow this standardized comment header format:
+
+```hlsl
+/**
+ * Filename.fx - Brief Description
+ * Author: Author Name
+ * License: Creative Commons Attribution 4.0 International
+ * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
+ * 
+ * ===================================================================================
+ *
+ * DESCRIPTION:
+ * 2-3 sentence overview of what the shader does and its primary purpose.
+ * This should clearly explain the visual effect and when it would be used.
+ *
+ * FEATURES:
+ * - Bullet point list of key capabilities
+ * - Each point should highlight a distinct feature
+ * - Include audio reactivity, customization options, etc.
+ * - Focus on user-facing features
+ *
+ * IMPLEMENTATION OVERVIEW:
+ * 1. Numbered steps explaining how the effect works technically
+ * 2. Brief explanation of the algorithm or approach
+ * 3. Mention key techniques or optimizations
+ * 4. Keep technical but understandable
+ *
+ * ===================================================================================
+ */
+
+// ============================================================================
+// TECHNIQUE GUARD - Prevents duplicate loading of the same shader
+// ============================================================================
+#ifndef __SHADER_IDENTIFIER_fx
+#define __SHADER_IDENTIFIER_fx
+
+// Rest of shader code...
+
+#endif // __SHADER_IDENTIFIER_fx
+```
+
+### Required Sections
+
+1. **File and Author Information**
+   - Filename with brief description
+   - Author name
+   - License with full rights statement
+
+2. **Description Section**
+   - 2-3 sentence overview of the shader's purpose
+   - Should explain what the effect looks like and when it would be used
+
+3. **Features Section**
+   - Bullet point list of key capabilities
+   - Should focus on user-facing features
+   - Include audio reactivity if present
+
+4. **Implementation Overview**
+   - Numbered steps explaining the technical approach
+   - Brief but informative explanation of how the shader works
+
+5. **Separator Lines**
+   - Use `===================================================================================` for major sections
+   - Place before and after the main description block
+
+6. **Technique Guard**
+   - Must include the standardized comment block:
+   ```hlsl
+   // ============================================================================
+   // TECHNIQUE GUARD - Prevents duplicate loading of the same shader
+   // ============================================================================
+   ```
+   - Guard macro name must match filename: `__AS_TypeCode_ShaderName_Version_fx`
+   - Close with matching comment: `#endif // __SHADER_IDENTIFIER_fx`
+
+7. **Section Headers**
+   - Use consistent formatting for all section headers:
+   ```hlsl
+   // ============================================================================
+   // SECTION NAME
+   // ============================================================================
+   ```
+
 ## Versioning
 
 Major version numbers (`.1.fx`, `.2.fx`) indicate compatibility-breaking changes. Use when uniforms or functions change in ways that break existing presets.

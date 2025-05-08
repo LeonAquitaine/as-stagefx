@@ -103,11 +103,11 @@ AS_AUDIO_SOURCE_UI(AudioComplexitySource, "Complexity Source", AS_AUDIO_TREBLE, 
 AS_AUDIO_MULTIPLIER_UI(AudioComplexityMult, "Complexity Strength", 1.0, 4.0, "Audio Reactivity")
 
 // --- Stage Distance ---
-uniform float EffectDepth < ui_type = "slider"; ui_label = "Distance"; ui_tooltip = "Reference depth for the effect. Lower = closer, higher = further."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Stage Distance"; > = 0.05;
+AS_STAGEDEPTH_UI(EffectDepth, "Distance", "Stage Distance")
 
 // --- Final Mix ---
-uniform int BlendMode < ui_type = "combo"; ui_label = "Mode"; ui_items = "Normal\0Lighter Only\0Darker Only\0Additive\0Multiply\0Screen\0"; ui_category = "Final Mix"; > = 0;
-uniform float BlendAmount < ui_type = "slider"; ui_label = "Strength"; ui_tooltip = "How strongly the plasma effect is blended with the scene."; ui_min = BLEND_AMOUNT_MIN; ui_max = BLEND_AMOUNT_MAX; ui_step = 0.01; ui_category = "Final Mix"; > = BLEND_AMOUNT_DEFAULT;
+AS_BLENDMODE_UI(BlendMode, "Final Mix")
+AS_BLENDAMOUNT_UI(BlendAmount, "Final Mix")
 
 // --- Debug ---
 AS_DEBUG_MODE_UI("Off\0Noise\0DomainWarp\0Audio\0")
@@ -140,7 +140,7 @@ namespace AS_PlasmaFlow {
             float n = valueNoise(q + warpAccum);
             sum += n * amp;
             // Domain warp: accumulate offset for next octave
-            float angle = n * 6.2831 + time * 0.2;
+            float angle = n * AS_TWO_PI + time * 0.2;
             float2 offset = float2(cos(angle), sin(angle)) * warp * amp;
             warpAccum += offset;
             q = float2(q.x * stretch, q.y);
@@ -149,13 +149,6 @@ namespace AS_PlasmaFlow {
             q *= 2.0;
         }
         return sum;
-    }
-
-    // Map normalized noise value to color gradient using centralized palette system
-    float3 plasmaGradient(float t) {
-        t = saturate(t);
-        // Use standardized palette color interpolation
-        return AS_getInterpolatedColor(PalettePreset, t);
     }
 }
 

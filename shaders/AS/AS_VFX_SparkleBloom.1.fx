@@ -1,8 +1,11 @@
 /**
- * AS_VFX_SparkleBloom.1.fx - Dynamic Sparkle Effect Shader Version 1.0
+ * AS_VFX_SparkleBloom.1.fx - Dynamic Sparkle Effect Shader
  * Author: Leon Aquitaine
  * License: Creative Commons Attribution 4.0 International
+ * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
  * 
+ * ===================================================================================
+ *
  * DESCRIPTION:
  * This shader creates a realistic glitter/sparkle effect that dynamically responds to scene
  * lighting, depth, and camera movement. It simulates tiny reflective particles that pop in,
@@ -17,16 +20,18 @@
  * - Multiple blend modes and color options
  * - Audio-reactive sparkle intensity and animation via Listeningway
  *
- * IMPLEMENTATION:
+ * IMPLEMENTATION OVERVIEW:
  * 1. The shader uses multiple layers of Voronoi noise at different scales to generate the base sparkle pattern
  * 2. Each sparkle has its own lifecycle (fade in, sustain, fade out) based on its position and the animation time
  * 3. Surface normals are reconstructed from the depth buffer to apply fresnel effects, making sparkles appear more prominently at glancing angles
  * 4. A two-pass gaussian bloom is applied for a soft, natural glow effect
  * 5. Multiple blend modes allow for different integration with the scene
+ *
+ * ===================================================================================
  */
 
 // ============================================================================
-// TECHNIQUE GUARD
+// TECHNIQUE GUARD - Prevents duplicate loading of the same shader
 // ============================================================================
 #ifndef __AS_VFX_SparkleBloom_1_fx
 #define __AS_VFX_SparkleBloom_1_fx
