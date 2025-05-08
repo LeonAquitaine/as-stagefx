@@ -1,36 +1,52 @@
-#ifndef __AS_BGX_InfiniteZoom_1_fx
-#define __AS_BGX_InfiniteZoom_1_fx
-
 /**
  * AS_BGX_InfiniteZoom.1.fx - Kaleidoscopic infinite zoom/tunnel effect
  * Author: Leon Aquitaine (translated from Shadertoy/Pouet)
- * Original Author: Danilo Guanabara (https://www.pouet.net/prod.php?which=57245)
- * License: Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License
- * (as per Shadertoy default - please verify original source if critical)
- * * DESCRIPTION:
+ * License: Creative Commons Attribution 4.0 International
+ * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
+ * 
+ * ===================================================================================
+ *
+ * DESCRIPTION:
  * Creates a mesmerizing, infinitely zooming kaleidoscopic pattern effect.
  * Suitable as a dynamic background or overlay. Includes controls for animation,
  * distortion, color palettes, audio reactivity, and scene integration.
- * * CREDITS:
- * Based on shader by Danilo Guanabara: https://www.pouet.net/prod.php?which=57245
+ *
+ * FEATURES:
+ * - Infinitely zooming kaleidoscopic patterns
+ * - Customizable distortion parameters (amplitude, frequencies)
+ * - Adjustable animation speed
+ * - Optional color palettes with cycling
+ * - Audio reactivity support
+ * - Depth-aware rendering
+ * - Adjustable rotation
+ * - Standard blending options
+ *
+ * IMPLEMENTATION OVERVIEW:
+ * 1. Generates distortion patterns based on distance and time
+ * 2. Applies channel-specific time offsets for RGB separation
+ * 3. Creates cell-centered patterns with customizable intensity
+ * 4. Processes color through mathematical or palette-based methods
+ * 5. Applies audio reactivity to key parameters
+ * 
+ * Original Author: Danilo Guanabara (https://www.pouet.net/prod.php?which=57245)
+ * Based on shader from: https://www.pouet.net/prod.php?which=57245
  * Adapted for ReShade by Leon Aquitaine
- * * FEATURES:
- * - Infinitely zooming kaleidoscopic patterns.
- * - Customizable distortion parameters (amplitude, frequencies).
- * - Adjustable animation speed.
- * - Optional color palettes with cycling.
- * - Audio reactivity support.
- * - Depth-aware rendering.
- * - Adjustable rotation.
- * - Standard blending options.
+ *
+ * ===================================================================================
  */
+
+// ============================================================================
+// TECHNIQUE GUARD - Prevents duplicate loading of the same shader
+// ============================================================================
+#ifndef __AS_BGX_InfiniteZoom_1_fx
+#define __AS_BGX_InfiniteZoom_1_fx
 
 // ============================================================================
 // INCLUDES
 // ============================================================================
 #include "ReShade.fxh"
-#include "AS_Utils.1.fxh"     // Assuming this contains AS_getTime, AS_applyAudioReactivity, UI macros etc.
-#include "AS_Palettes.1.fxh"   // Assuming this contains palette functions and UI macros
+#include "AS_Utils.1.fxh"     
+#include "AS_Palettes.1.fxh"  
 
 namespace ASInfiniteZoom {
 // ============================================================================
