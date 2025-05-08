@@ -425,8 +425,8 @@ float2 AS_voronoi_F1_ID(float2 x, float offset) {
             float2 g = float2(float(i), float(j)); // Neighbor cell grid offset (-1,0,1)
             // Calculate a pseudo-random feature point position 'o' within the neighbor cell (n+g)
             // Uses a 3D hash based on grid cell index and the offset parameter.
-            // AS_hash21 is used to get a preliminary hash for the 3D hash input.
-            float2 o = AS_hash33(float3(n + g, AS_hash21(n + g).x * 10.0 + offset)).xy;
+            // AS_hash22 is used to get a preliminary hash for the 3D hash input.
+            float2 o = AS_hash33(float3(n + g, AS_hash22(n + g).x * 10.0 + offset)).xy;
             // Scale point position from [-1, 1] to [0, 1] range
             o = o * 0.5 + 0.5;
             // Vector from the current fractional position 'f' to the feature point 'o' in the neighbor cell (g+o)
@@ -483,7 +483,6 @@ float3 AS_reconstructNormal(float2 texcoord) {
     return normal;
 }
 
-
 // Returns fresnel term for a given normal and view direction
 // Assumes viewDir points from surface towards camera (e.g., viewDir = normalize(-viewSpacePos))
 // A common approximation in screen space is viewDir = (0, 0, 1) or (0, 0, -1)
@@ -493,6 +492,52 @@ float AS_fresnel(float3 normal, float3 viewDir, float power) {
     viewDir = normalize(viewDir);
     // Calculate Fresnel term: (1 - dot(N, V))^power
     return pow(1.0 - saturate(dot(normal, viewDir)), max(0.1, power)); // Ensure power is positive
+}
+
+// --- Safe Hyperbolic Tangent ---
+// Provides a safer implementation of hyperbolic tangent that:
+// 1. Prevents infinity/NaN for extremely large inputs
+// 2. Normalizes output to strict [-1, 1] range
+// 3. Maintains the same behavior as regular tanh for normal inputs
+// Parameters:
+//   x: Input value to compute tanh for
+//   safetyThreshold: (Optional) Maximum absolute value to apply standard tanh to (default: 12.0)
+float stanh(float x, float safetyThreshold = 12.0) {
+    // For regular range inputs, use normal tanh
+    if (abs(x) <= safetyThreshold) {
+        return tanh(x);
+    }
+    
+    // For extreme values, asymptotically approach +/-1 without risk of precision issues
+    // When |x| > threshold, we know tanh(x) is very close to sign(x)
+    return sign(x) * (1.0 - exp(-abs(x - sign(x) * safetyThreshold)) * (1.0 - tanh(safetyThreshold * sign(x))));
+}
+
+// Vectorized version of stanh (for float2)
+float2 stanh(float2 x, float safetyThreshold = 12.0) {
+    return float2(
+        stanh(x.x, safetyThreshold),
+        stanh(x.y, safetyThreshold)
+    );
+}
+
+// Vectorized version of stanh (for float3)
+float3 stanh(float3 x, float safetyThreshold = 12.0) {
+    return float3(
+        stanh(x.x, safetyThreshold),
+        stanh(x.y, safetyThreshold),
+        stanh(x.z, safetyThreshold)
+    );
+}
+
+// Vectorized version of stanh (for float4)
+float4 stanh(float4 x, float safetyThreshold = 12.0) {
+    return float4(
+        stanh(x.x, safetyThreshold),
+        stanh(x.y, safetyThreshold),
+        stanh(x.z, safetyThreshold),
+        stanh(x.w, safetyThreshold)
+    );
 }
 
 // --- Animation Helpers ---
