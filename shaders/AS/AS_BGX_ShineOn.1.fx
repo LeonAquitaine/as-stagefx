@@ -59,6 +59,10 @@ static const float ANIM_SPEED_MIN = 0.0f;
 static const float ANIM_SPEED_MAX = 2.0f;
 static const float ANIM_SPEED_STEP = 0.01f;
 static const float ANIM_SPEED_DEFAULT = 0.5f;
+static const float ANIM_KEYFRAME_MIN = 0.0f;
+static const float ANIM_KEYFRAME_MAX = 100.0f;
+static const float ANIM_KEYFRAME_STEP = 0.1f;
+static const float ANIM_KEYFRAME_DEFAULT = 0.0f;
 
 // Crystal Parameters
 static const int CRYSTAL_ITERATIONS_MIN = 1; 
@@ -196,7 +200,8 @@ AS_ROTATION_UI(EffectSnapRotation, EffectFineRotation, "Stage")
 
 // --- Main Parameters ---
 uniform float Zoom < ui_type = "slider"; ui_label = "Zoom"; ui_tooltip = "Zoom factor for the noise pattern. >1 zooms in, <1 zooms out."; ui_min = ZOOM_MIN; ui_max = ZOOM_MAX; ui_step = ZOOM_STEP; ui_category = "Main Parameters"; > = ZOOM_DEFAULT;
-uniform float AnimSpeed < ui_type = "slider"; ui_label = "Animation Speed"; ui_tooltip = "Controls the overall speed of the animation."; ui_min = ANIM_SPEED_MIN; ui_max = ANIM_SPEED_MAX; ui_step = ANIM_SPEED_STEP; ui_category = "Main Parameters"; > = ANIM_SPEED_DEFAULT;
+uniform float AnimationKeyframe < ui_type = "slider"; ui_label = "Animation Keyframe"; ui_tooltip = "Sets a specific point in time for the animation. Useful for finding and saving specific patterns."; ui_min = ANIM_KEYFRAME_MIN; ui_max = ANIM_KEYFRAME_MAX; ui_step = ANIM_KEYFRAME_STEP; ui_category = "Main Parameters"; > = ANIM_KEYFRAME_DEFAULT;
+uniform float AnimSpeed < ui_type = "slider"; ui_label = "Animation Speed"; ui_tooltip = "Controls the overall speed of the animation. Set to 0 to pause animation and use keyframe only."; ui_min = ANIM_SPEED_MIN; ui_max = ANIM_SPEED_MAX; ui_step = ANIM_SPEED_STEP; ui_category = "Main Parameters"; > = ANIM_SPEED_DEFAULT;
 
 // --- Crystal Parameters ---
 uniform int CrystalIterations < ui_type = "slider"; ui_label = "Crystal Iterations"; ui_tooltip = "Number of crystal points to render. Higher values create more highlights."; ui_min = CRYSTAL_ITERATIONS_MIN; ui_max = CRYSTAL_ITERATIONS_MAX; ui_category = "Crystal Parameters"; > = CRYSTAL_ITERATIONS_DEFAULT;
@@ -323,8 +328,16 @@ float4 ASShineOnPS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD0) : SV_
         currentCrystalTimeFactor *= audioReactivity;
     }
 
-    // Setup time and resolution
-    float iTime = AS_getTime() * currentAnimSpeed; 
+    // Setup time with keyframe handling
+    float iTime;
+    if (currentAnimSpeed <= 0.0001f) {
+        // When animation speed is effectively zero, use keyframe directly
+        iTime = AnimationKeyframe;
+    } else {
+        // Otherwise use animated time plus keyframe offset
+        iTime = (AS_getTime() * currentAnimSpeed) + AnimationKeyframe;
+    }
+    
     float2 iResolution = ReShade::ScreenSize;
     float2 fragCoord = vpos.xy;
 
