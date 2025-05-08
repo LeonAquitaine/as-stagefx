@@ -2,7 +2,7 @@
 
 [![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)
 
-![Listeningway7c](https://github.com/user-attachments/assets/e8b32c91-071d-490c-8c07-903738a8d3a0)
+![Listeningway](https://github.com/user-attachments/assets/e8b32c91-071d-490c-8c07-903738a8d3a0)
 
 **A suite of dynamic, audio-reactive visual effect shaders for ReShade, with a focus on video production and virtual performance art.**
 
@@ -14,7 +14,8 @@
 
 Most shaders feature seamless integration with **[Listeningway](https://github.com/gposingway/Listeningway)** for audio reactivity.
 
-### Latest Updates (May 7, 2025)
+### Latest Updates (May 8, 2025)
+- Split documentation for better readability - detailed shader gallery now in [GALLERY.md](docs/GALLERY.md)
 - Added new `stanh()` function to AS_Utils.1.fxh for improved hyperbolic tangent calculation stability
 - Enhanced AS_BGX_ZippyZaps with original color mode, inverted Arc Flow Factor, and improved audio reactivity targets
 - Fixed audio reactivity for Arc Flow Factor to correctly respond to audio intensity
@@ -26,14 +27,6 @@ Most shaders feature seamless integration with **[Listeningway](https://github.c
 - Improved SparkleBloom shader with edge control parameter and better code standards compliance
 - Replaced magic numbers with named constants in various shaders for better maintainability
 - Updated version to 1.0.4.1
-
-### Previous Updates (May 4, 2025)
-- Renamed TiltedPixelGrid shader to TiltedGrid and added attribution to FencerDevLog's tutorial
-- Implemented Multi-Instance Effects Pattern, allowing some shaders to support multiple independent effect instances
-- Added AS_LFX_CandleFlame shader with support for up to 4 independent, customizable flame instances
-- Fixed Listeningway integration guard syntax in AS_Utils.1.fxh
-- Added standardized rotation controls to VUMeter and BoomSticker shaders
-- Fixed aspect ratio handling in VUMeter shader for proper display on all screen ratios
 
 ---
 
@@ -55,152 +48,48 @@ Most shaders feature seamless integration with **[Listeningway](https://github.c
 
 ---
 
-## Features
+## Available Shaders
 
-AS-StageFX includes a variety of distinct visual effects:
+AS-StageFX includes a variety of distinct visual effects organized into categories:
 
-<table>
-  <tr>
-    <th colspan="2"><strong>Lighting Effects (LFX)</strong></th>
-  </tr>
-  <tr>
-    <td width="50%"><strong>LFX: Light Wall</strong> (<code>AS_LFX_LightWall.1.fx</code>)<br>
-      Generate configurable grids of light panels with diverse patterns, 3D perspective, audio reactivity, and customizable color palettes. Perfect for backdrops.</td>
-    <td width="50%"><div style="text-align:center">
-      <img src="https://github.com/user-attachments/assets/ece86ab7-36f1-459c-8c83-31414c3b5cc3" alt="Light Wall Effect" style="max-width:100%;">
-    </div></td>
-  </tr>
-  <tr>
-    <td width="50%"><strong>LFX: Stage Spotlights</strong> (<code>AS_LFX_StageSpotlights.1.fx</code>)<br>
-      Add up to 3 customizable directional stage lights with realistic beam/glow effects, depth masking, and audio-reactive intensity and movement.<br><em>Technique: [AS] Stage Spotlights</em></td>
-    <td width="50%"><div style="text-align:center">
-      <img src="https://github.com/user-attachments/assets/73e1081b-147e-4355-b867-d4964238245b" alt="Spotlights Effect" style="max-width:100%;">
-    </div></td>
-  </tr>
-  <tr>
-    <td width="50%"><strong>LFX: Laser Show</strong> (<code>AS_LFX_LaserShow.1.fx</code>)<br>
-      Renders multiple colored laser beams emanating from a user-defined origin, illuminating a swirling, animated smoke field. Features audio-reactive fanning, blinking, and vortex effects.<br><em>Technique: [AS] Laser Show</em></td>
-    <td width="50%"><div style="text-align:center">
-      <img src="https://github.com/user-attachments/assets/555b32cd-be6f-47c2-92a6-39994e861637" alt="Laser Show Effect" style="max-width:100%;">
-    </div></td>
-  </tr>
-  <tr>
-    <td width="50%"><strong>LFX: Candle Flame</strong> (<code>AS_LFX_CandleFlame.1.fx</code>)<br>
-      Creates procedural candle flames with realistic animation, color gradients, and audio reactivity. Supports multiple flame instances with individual controls for position, size, and appearance.<br><em>Technique: [AS] LFX: Candle Flame</em></td>
-    <td width="50%"><div style="text-align:center">
-      <img src="https://github.com/user-attachments/assets/e4ad780c-dd65-4684-b052-20acf4626ac3" alt="Candle Flame Effect" style="max-width:100%;">
-    </div></td>
-  </tr>
-  <tr>
-    <th colspan="2"><strong>Visual Effects (VFX)</strong></th>
-  </tr>
-  <tr>
-    <td width="50%"><strong>VFX: Digital Artifacts</strong> (<code>AS_VFX_DigitalArtifacts.1.fx</code>)<br>
-      Applies audio-driven digital artifacts, glitches and hologram effects, including scanlines, RGB split, jitter, and pulsing synced to music.</td>
-    <td width="50%"><div style="text-align:center">
-      <img src="https://github.com/user-attachments/assets/6786cb0a-f2c7-4d82-8584-1c669c7513ea" alt="Digital Artifacts Effect" style="max-width:100%;">
-    </div></td>
-  </tr>
-  <tr>
-    <td width="50%"><strong>VFX: Sparkle Bloom</strong> (<code>AS_VFX_SparkleBloom.1.fx</code>)<br>
-      Creates a realistic, dynamic sparkle effect on surfaces that responds to scene lighting, depth, camera movement, and audio. Includes bloom and fresnel effects.</td>
-    <td width="50%"><div style="text-align:center">
-      <img src="https://github.com/user-attachments/assets/a0998834-4795-414e-a685-9c7ab685a515" alt="Sparkle Bloom Effect" style="max-width:100%;">
-    </div></td>
-  </tr>
-  <tr>
-    <td width="50%"><strong>VFX: Motion Trails</strong> (<code>AS_VFX_MotionTrails.1.fx</code>)<br>
-      Creates music-reactive, depth-based motion trails for dramatic visual effects in videos and screenshots.<br><em>Technique: [AS] Motion Trails</em></td>
-    <td width="50%"><div style="text-align:center">
-      <img src="https://github.com/user-attachments/assets/1b7a2750-89be-424b-b149-4d850692d9f8" alt="Motion Trails Effect" style="max-width:100%;">
-    </div></td>
-  </tr>
-  <tr>
-    <td width="50%"><strong>VFX: Plasma Flow</strong> (<code>AS_VFX_PlasmaFlow.1.fx</code>)<br>
-      Generates smooth, swirling, organic plasma-like patterns with enhanced palette options, domain warping, and strong audio reactivity. Ideal for music video backgrounds and atmospheric visuals.</td>
-    <td width="50%"><div style="text-align:center">
-      <img src="https://github.com/user-attachments/assets/ba95325d-eff0-439e-a452-567675da84fe" alt="Plasma Flow Effect" style="max-width:100%;">
-    </div></td>
-  </tr>
-  <tr>
-    <td width="50%"><strong>VFX: Spectrum Ring</strong> (<code>AS_VFX_SpectrumRing.1.fx</code>)<br>
-      Generates a stylized, circular audio visualizer that displays all Listeningway frequency bands, with repetitions and mirroring options.</td>
-    <td width="50%"><div style="text-align:center">
-      <img src="https://github.com/user-attachments/assets/e193b002-d3aa-4d86-8584-7eb667f6ff6c" alt="Spectrum Ring Effect" style="max-width:100%;">
-    </div></td>
-  </tr>
-  <tr>
-    <td width="50%"><strong>VFX: Stencil Mask</strong> (<code>AS_VFX_StencilMask.1.fx</code>)<br>
-      Isolates foreground subjects based on depth and applies customizable borders and projected shadows, with options for border styles and audio reactivity.</td>
-    <td width="50%"><div style="text-align:center">
-      <img src="https://github.com/user-attachments/assets/98097147-0a9e-40ac-ae21-0b19e5241c91" alt="Stencil Mask Effect" style="max-width:100%;">
-    </div></td>
-  </tr>
-  <tr>
-    <td width="50%"><strong>VFX: VU Meter</strong> (<code>AS_VFX_VUMeter.1.fx</code>)<br>
-      Visualizes Listeningway frequency bands as a VU meter background with multiple presentation modes (bars, line, dots), color palettes, and customizable appearance options.<br><em>Technique: [AS] VU Meter Background</em></td>
-    <td width="50%"><div style="text-align:center">
-      <img src="https://github.com/user-attachments/assets/1b83d29c-a838-492e-82c8-4c503a6867a5" alt="VU Meter Effect" style="max-width:100%;">
-    </div></td>
-  </tr>
-  <tr>
-    <td width="50%"><strong>VFX: Boom Sticker</strong> (<code>AS_VFX_BoomSticker.1.fx</code>)<br>
-      Displays a texture overlay ("sticker") with controls for placement, scale, rotation, and audio reactivity. Perfect for adding overlays that react to music.<br><em>Technique: [AS] Boom Sticker</em></td>
-    <td width="50%"><div style="text-align:center">
-      <img src="https://github.com/user-attachments/assets/ee8e98b8-198b-4a65-a40d-032eca60dcc5" alt="Boom Sticker Effect" style="max-width:100%;">
-    </div></td>
-  </tr>
-  <tr>
-    <td width="50%"><strong>VFX: Warp Distort</strong> (<code>AS_VFX_WarpDistort.1.fx</code>)<br>
-      Creates a circular mirrored or wavy region (often behind a character) that pulses, changes radius, and ripples/warps in sync with audio.</td>
-    <td width="50%"><div style="text-align:center">
-      <img src="https://github.com/user-attachments/assets/c707583a-99a1-4463-a02f-cdefd2db3e6a" alt="Warp Distort Effect" style="max-width:100%;">
-    </div></td>
-  </tr>
-  <tr>
-    <td width="50%"><strong>VFX: Tilted Grid</strong> (<code>AS_VFX_TiltedGrid.1.fx</code>)<br>
-      Creates a rotatable grid that pixelates the image and adds adjustable borders between grid cells with customizable chamfered corners. Features audio reactivity for cell size, border thickness, and chamfer size parameters.<br><em>Technique: [AS] VFX: Tilted Grid</em></td>
-    <td width="50%"><div style="text-align:center">
-      <img src="https://github.com/user-attachments/assets/2e1a68d0-7ba8-4ea3-a572-9108c5030b44" alt="Tilted Grid Effect" style="max-width:100%;">
-    </div></td>
-  </tr>
-  <tr>
-    <td width="50%"><strong>VFX: Rainy Window</strong> (<code>AS_VFX_RainyWindow.1.fx</code>)<br>
-      Creates a realistic rainy window effect with multi-layered droplets that distort the scene behind them. Features adjustable rain density, glass roughness, and audio-reactive parameters that can be rotated to match any orientation.<br><em>Technique: [AS] VFX: Rainy Window</em></td>
-    <td width="50%"><div style="text-align:center">
-      <img src="https://github.com/user-attachments/assets/94601169-e214-4a45-8879-444b64c65d33" alt="Rainy Window Effect" style="max-width:100%;">
-    </div></td>
-  </tr>
-  <tr>
-    <td width="50%"><strong>VFX: Multi-Layer Halftone</strong> (<code>AS_VFX_MultiLayerHalftone.1.fx</code>)<br>
-      Applies customizable halftone screen patterns with multiple layers, varying dot sizes, and color controls. Provides classic comic/print style effects with options for blending and audio reactivity.<br><em>Technique: [AS] Multi-Layer Halftone</em></td>
-    <td width="50%"><div style="text-align:center">
-      <img src="https://github.com/user-attachments/assets/b93c9d03-5d23-4b32-aa3e-f2b6a9736c70" alt="Multi-Layer Halftone Effect" style="max-width:100%;">
-    </div></td>
-  </tr>
-  <tr>
-    <td width="50%"><strong>VFX: Water Surface</strong> (<code>AS_VFX_WaterSurface.1.fx</code>)<br>
-      Simulates a realistic water surface with depth-based reflection horizon, perspective-correct wave compression, and customizable water color, transparency, and reflection. Features include dynamic wave scaling, vertical reflection compression, and full resolution independence. Ideal for scenes with water, pools, or reflective floors.<br><em>Technique: [AS] VFX: Water Surface</em></td>
-    <td width="50%"><div style="text-align:center">
-      <img src="https://github.com/user-attachments/assets/c2a21149-3914-4133-9834-12a3c02b9e29" alt="Water Surface Effect" style="max-width:100%;">
-    </div></td>
-  </tr>
-</table>
+### Lighting Effects (LFX)
+- **Light Wall** - Configurable grids of light panels with patterns, 3D perspective, and audio reactivity
+- **Stage Spotlights** - Up to 3 customizable directional stage lights with beam/glow effects
+- **Laser Show** - Multiple colored laser beams emanating from a user-defined origin
+- **Candle Flame** - Procedural candle flames with realistic animation and color gradients
 
-<table>
-  <tr>
-    <th><strong>Core Capabilities</strong></th>
-  </tr>
-  <tr>
-    <td>
-      <ul>
-        <li><strong>Deep Audio Integration:</strong> Most effects leverage <strong><a href="https://github.com/gposingway/Listeningway">Listeningway</a></strong>, allowing various parameters (intensity, speed, size, color, etc.) to react dynamically to volume, beat, bass, treble, or specific frequency bands.</li>
-        <li><strong>Depth-Aware Effects:</strong> Many shaders intelligently interact with scene geometry (using the depth buffer) for natural integration, masking, and occlusion.</li>
-        <li><strong>Customization:</strong> Offers extensive controls for colors, intensity, speed, positioning, blend modes, and audio source selection per effect.</li>
-      </ul>
-    </td>
-  </tr>
-</table>
+### Visual Effects (VFX)
+- **Digital Artifacts** - Audio-driven digital artifacts, glitches and hologram effects
+- **Sparkle Bloom** - Dynamic sparkle effect responding to scene lighting and camera movement
+- **Motion Trails** - Music-reactive, depth-based motion trails for dramatic visual effects
+- **Plasma Flow** - Smooth, swirling, organic plasma-like patterns with audio reactivity
+- **Spectrum Ring** - Circular audio visualizer displaying Listeningway frequency bands
+- **Stencil Mask** - Isolates foreground subjects with customizable borders and projected shadows
+- **VU Meter** - Background VU meter with multiple presentation modes
+- **Boom Sticker** - Texture overlay with placement, scale, rotation, and audio reactivity
+- **Warp Distort** - Circular mirrored/wavy region that pulses and ripples in sync with audio
+- **Tilted Grid** - Rotatable pixelating grid with adjustable borders and chamfered corners
+- **Rainy Window** - Realistic rainy window effect with multi-layered droplets
+- **Multi-Layer Halftone** - Customizable halftone screen patterns with multiple layers
+- **Water Surface** - Realistic water surface with depth-based reflection horizon
+- **Screen Ring** - Customizable circular rings for framing subjects
+- **Broken Glass** - Broken glass/mirror effect with customizable crack patterns
+
+### Background Effects (BGX)
+- **Cosmic Kaleidoscope** - Kaleidoscopic star field with dynamic symmetry and rotation
+- **Infinite Zoom** - Infinitely zooming fractal pattern creating a tunnel/vortex effect
+- **Shine On** - Dynamic light ray backgrounds for dreamy or celestial atmospheres
+- **Zippy Zaps** - Electric arc/lightning effects with audio reactivity
+
+**Detailed descriptions and visual examples of each shader can be found in the [Shader Gallery](docs/GALLERY.md).**
+
+---
+
+## Core Capabilities
+
+- **Deep Audio Integration:** Most effects leverage [Listeningway](https://github.com/gposingway/Listeningway), allowing various parameters to react dynamically to volume, beat, bass, treble, or specific frequency bands.
+- **Depth-Aware Effects:** Many shaders intelligently interact with scene geometry (using the depth buffer) for natural integration, masking, and occlusion.
+- **Customization:** Offers extensive controls for colors, intensity, speed, positioning, blend modes, and audio source selection per effect.
 
 ---
 
@@ -222,8 +111,27 @@ Most shaders in the AS_StageFX collection are conversions and adaptations from o
   - Tilted Grid shader: [Godot 4: Tilted Grid Effect Tutorial](https://www.youtube.com/watch?v=Tfj6RDqXEHM)
   - Support his work: [FencerDevLog Patreon](https://www.patreon.com/c/FencerDevLog/posts)
 
+- **Inigo Quilez** - Pioneering work in procedural graphics whose articles inspired:
+  - Cosmic Kaleidoscope: Based on "Domain Warping" and "Kaleidoscopic IFS" techniques
+  - Infinite Zoom: Adapted from "Distance Functions" and "Fractal Brownian Motion" principles
+  - ZippyZaps: Electric arc simulation based on "2D SDF" principles
+  - Visit his website: [https://iquilezles.org](https://iquilezles.org) 
+
+- **The Book of Shaders** - Open educational resource that influenced:
+  - Shine On: Adapted from ray-marching techniques 
+  - Broken Glass: Inspired by cellular noise and fracture patterns
+  - Screen Ring: Based on SDF (Signed Distance Field) rendering concepts
+  - Resource available at: [https://thebookofshaders.com](https://thebookofshaders.com)
+
+- **ShaderToy Community** - Various creators whose works inspired:
+  - Water Surface: Informed by multiple water simulation techniques from [ShaderToy Water Collection](https://www.shadertoy.com/results?query=water)
+  - Multi-Layer Halftone: Adapted from ["Halftone Shader"](https://www.shadertoy.com/view/XdcGzn) by Patricio Gonzalez Vivo
+  - Plasma Flow: Inspired by classic demoscene plasma effects like [this implementation](https://www.shadertoy.com/view/XsVSzW)
+  - Cosmic Kaleidoscope: Draws from techniques in [Kaleidoscope Toy](https://www.shadertoy.com/view/XtK3Dt) by mindlord
+  - Broken Glass: References elements from [Glass Shatter](https://www.shadertoy.com/view/ltffzl) by exoticorn
+
 - **Listeningway** - Core audio integration by [gposingway](https://github.com/gposingway/Listeningway)
 
 - **ReShade Team** - For creating and maintaining the framework that makes these effects possible
 
-Many visual techniques in these shaders draw inspiration from classic demoscene effects, procedural texture generation methods, and various graphics programming resources. Each shader includes appropriate attributions in its header documentation.
+Each shader includes appropriate attributions in its header documentation.
