@@ -141,15 +141,8 @@ This gallery provides detailed descriptions and visual examples of all shaders i
     </div></td>
   </tr>
   <tr>
-    <td width="50%"><strong>BGX: Home Computer</strong> (<code>AS_BGX_HomeComputer.1.fx</code>)<br>
-      Simulates a retro computer terminal with customizable text effects, scan lines, and CRT-like distortions. Features audio-reactive glitches and visual noise for an authentic vintage computing aesthetic.<br><em>Technique: [AS] BGX: Home Computer</em></td>
-    <td width="50%"><div style="text-align:center">
-      <!-- Placeholder for future image -->
-    </div></td>
-  </tr>
-  <tr>
     <td width="50%"><strong>BGX: Light Ripples</strong> (<code>AS_BGX_LightRipples.1.fx</code>)<br>
-      Creates animated light ripple effects that spread across the screen like waves on water. Includes controls for ripple speed, intensity, color, and audio reactivity for dynamic lighting effects.<br><em>Technique: [AS] BGX: Light Ripples</em></td>
+      Creates animated light ripple effects that spread across the screen. Includes controls for ripple speed, intensity, color, and audio reactivity for dynamic lighting effects.<br><em>Technique: [AS] BGX: Light Ripples</em></td>
     <td width="50%"><div style="text-align:center">
       <!-- Placeholder for future image -->
     </div></td>
@@ -163,7 +156,7 @@ This gallery provides detailed descriptions and visual examples of all shaders i
   </tr>
   <tr>
     <td width="50%"><strong>BGX: Melt Wave</strong> (<code>AS_BGX_MeltWave.1.fx</code>)<br>
-      Creates a customizable melting/warping effect that can be positioned and rotated freely. Features resolution-independent coordinate transformation, consistent rotation behavior, and standardized position controls in the -1.5 to 1.5 range. Includes audio-reactive controls for wave intensity and animation speed.<br><em>Technique: [AS] VFX: Melt Wave</em></td>
+      Creates a customizable melting/warping color effect that can be positioned and rotated freely. Features resolution-independent coordinate transformation, consistent rotation behavior, and standardized position controls in the -1.5 to 1.5 range. Includes audio-reactive controls for wave intensity and animation speed.<br><em>Technique: [AS] VFX: Melt Wave</em></td>
     <td width="50%"><div style="text-align:center">
       <!-- Placeholder for future image -->
     </div></td>
