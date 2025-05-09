@@ -75,14 +75,14 @@ uniform int AudioTarget < ui_type = "combo"; ui_label = "Audio Target Parameter"
 // ============================================================================
 // STAGE DISTANCE
 // ============================================================================
-AS_STAGEDEPTH_UI(EffectDepth, "Effect Depth", "Stage")
-AS_ROTATION_UI(GlobalSnapRotation, GlobalFineRotation, "Stage")
+AS_STAGEDEPTH_UI(EffectDepth)
+AS_ROTATION_UI(GlobalSnapRotation, GlobalFineRotation)
 
 // ============================================================================
 // FINAL MIX
 // ============================================================================
-AS_BLENDMODE_UI(BlendMode, "Final Mix")
-AS_BLENDAMOUNT_UI(BlendAmount, "Final Mix")
+AS_BLENDMODE_UI_DEFAULT(BlendMode, 0)
+AS_BLENDAMOUNT_UI(BlendAmount)
 
 // ============================================================================
 // DEBUG

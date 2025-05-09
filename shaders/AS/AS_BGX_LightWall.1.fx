@@ -35,8 +35,8 @@
 #ifndef __AS_BGX_LightWall_1_fx
 #define __AS_BGX_LightWall_1_fx
 
-#include "AS_Utils.1.fxh"
 #include "AS_Palettes.1.fxh"
+#include "AS_Noise.1.fxh"
 
 // --- Tunable Constants ---
 static const float MIN_MARGIN = 0.10; // Minimum margin as a fraction of cell size (10%)

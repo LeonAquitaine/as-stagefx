@@ -107,7 +107,7 @@ This gallery provides detailed descriptions and visual examples of all shaders i
   </tr>
   <tr>
     <td width="50%"><strong>VFX: Rainy Window</strong> (<code>AS_VFX_RainyWindow.1.fx</code>)<br>
-      Creates a realistic rainy window effect with multi-layered droplets that distort the scene behind them. Features adjustable rain density, glass roughness, and audio-reactive parameters that can be rotated to match any orientation.<br><em>Technique: [AS] VFX: Rainy Window</em></td>
+      Creates a realistic rainy window effect with multi-layered droplets that distort the scene behind them. Features adjustable rain density, glass roughness for creating textured glass effects with irregular droplet shapes, and audio-reactive parameters. Supports rotation and resolution scaling for consistent appearance across displays.<br><em>Technique: [AS] VFX: Rainy Window</em></td>
     <td width="50%"><div style="text-align:center">
       <img src="https://github.com/user-attachments/assets/94601169-e214-4a45-8879-444b64c65d33" alt="Rainy Window Effect" style="max-width:100%;">
     </div></td>
@@ -129,6 +129,13 @@ This gallery provides detailed descriptions and visual examples of all shaders i
   <tr>
     <td width="50%"><strong>VFX: Broken Glass</strong> (<code>AS_VFX_BrokenGlass.1.fx</code>)<br>
       Simulates a broken glass or mirror effect with customizable crack patterns, distortion, and audio reactivity for dynamic shattering visualization.<br><em>Technique: [AS] VFX: Broken Glass</em></td>
+    <td width="50%"><div style="text-align:center">
+      <!-- Placeholder for future image -->
+    </div></td>
+  </tr>
+  <tr>
+    <td width="50%"><strong>VFX: Melt Wave</strong> (<code>AS_VFX_MeltWave.1.fx</code>)<br>
+      Creates a customizable melting/warping effect that can be positioned and rotated freely. Features resolution-independent coordinate transformation, consistent rotation behavior, and standardized position controls in the -1.5 to 1.5 range. Includes audio-reactive controls for wave intensity and animation speed.<br><em>Technique: [AS] VFX: Melt Wave</em></td>
     <td width="50%"><div style="text-align:center">
       <!-- Placeholder for future image -->
     </div></td>

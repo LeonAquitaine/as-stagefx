@@ -66,7 +66,7 @@ uniform float Zoom < ui_type = "slider"; ui_label = "Zoom"; ui_min = ZOOM_MIN; u
 uniform float2 Pan < ui_type = "slider"; ui_label = "Position"; ui_min = PAN_MIN; ui_max = PAN_MAX; ui_step = 0.01; ui_category = "Transform"; > = PAN_DEFAULT;
 
 // Use standard rotation controls from AS_Utils
-AS_ROTATION_UI(SnapRotate, FineRotate, "Transform")
+AS_ROTATION_UI(SnapRotate, FineRotate)
 
 // --- Appearance ---
 uniform bool MirrorBars < ui_type = "checkbox"; ui_label = "Mirrored"; ui_category = "Appearance"; > = false;
@@ -89,11 +89,11 @@ AS_PALETTE_SELECTION_UI(PaletteMode, "Palette", AS_PALETTE_NEON, "Appearance")
 AS_DECLARE_CUSTOM_PALETTE(VUMeter_, "Appearance")
 
 // --- Stage Depth Controls ---
-AS_STAGEDEPTH_UI(StageDepth, "Stage Depth", "Stage")
+AS_STAGEDEPTH_UI(StageDepth)
 
 // --- Final Mix ---
-uniform int BlendMode < ui_type = "combo"; ui_label = "Mode"; ui_items = "Normal\0Lighter Only\0Darker Only\0Additive\0Multiply\0Screen\0"; ui_category = "Final Mix"; > = 0;
-uniform float BlendAmount < ui_type = "slider"; ui_label = "Strength"; ui_tooltip = "How strongly the VU meter is blended with the scene."; ui_min = BLENDAMOUNT_MIN; ui_max = BLENDAMOUNT_MAX; ui_step = 0.01; ui_category = "Final Mix"; > = BLENDAMOUNT_DEFAULT;
+AS_BLENDMODE_UI_DEFAULT(BlendMode, 0)
+AS_BLENDAMOUNT_UI(BlendAmount)
 
 // --- Helper Functions ---
 namespace AS_VUMeterBG {

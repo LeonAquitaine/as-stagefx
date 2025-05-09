@@ -8,6 +8,22 @@
 
 ---
 
+## AS StageFX - Shader Collection for ReShade
+
+AS StageFX is a collection of high-quality visual effects shaders for ReShade, designed with performance, customization, and audio reactivity in mind. These shaders are perfect for screenshots, videos, streaming, and virtual photography.
+
+### Latest Updates
+
+**2025-05-08: Maintenance Update**
+- Added robust Perlin Noise functions to AS_Utils.1.fxh
+- Fixed Glass Roughness in AS_VFX_RainyWindow.1.fx to properly affect droplet shapes
+- Improved resolution independence in AS_VFX_MeltWave.1.fx
+- Fixed rotation direction consistency in AS_VFX_MeltWave.1.fx
+- Removed deprecated Border Intensity parameter from AS_VFX_MeltWave.1.fx
+- Standardized magic number handling across shaders
+
+---
+
 ## Overview
 
 **AS-StageFX** is a set of dynamic lighting, audio visualizers, and special effects. Initially focused on stage lighting, the collection also includes glitter, glitch, warp, and other creative effects. Whether you're capturing gpose shots, creating machinima, setting the scene for a virtual concert, or adding unique flair to your visuals, these shaders provide customizable tools.

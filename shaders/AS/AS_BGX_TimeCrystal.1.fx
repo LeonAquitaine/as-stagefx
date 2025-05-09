@@ -113,9 +113,6 @@ static const float COLOR_CYCLE_SPEED_DEFAULT = 0.5;
 static const float COLOR_CYCLE_SPEED_MAX = 2.0;
 
 // UI Declarations
-// --- Stage ---
-AS_STAGEDEPTH_UI(EffectDepth, "Effect Depth", "Stage")
-AS_ROTATION_UI(EffectSnapRotation, EffectFineRotation, "Stage")
 
 // --- Pattern ---
 uniform float UI_Iterations < ui_type = "slider"; ui_label = "Pattern Iterations"; ui_tooltip = "Number of fractal iterations. Higher values create more detailed patterns."; ui_min = ITERATIONS_MIN; ui_max = ITERATIONS_MAX; ui_step = ITERATIONS_STEP; ui_category = "Pattern"; > = ITERATIONS_DEFAULT;
@@ -148,9 +145,13 @@ AS_PALETTE_SELECTION_UI(PalettePreset, "Color Palette", AS_PALETTE_NEON, "Palett
 AS_DECLARE_CUSTOM_PALETTE(TimeCrystal_, "Palette & Style")
 uniform float ColorCycleSpeed < ui_type = "slider"; ui_label = "Color Cycle Speed"; ui_tooltip = "Controls how fast palette colors cycle. 0 = static."; ui_min = -COLOR_CYCLE_SPEED_MAX; ui_max = COLOR_CYCLE_SPEED_MAX; ui_step = 0.1; ui_category = "Palette & Style"; > = COLOR_CYCLE_SPEED_DEFAULT;
 
+// --- Stage ---
+AS_STAGEDEPTH_UI(EffectDepth)
+AS_ROTATION_UI(EffectSnapRotation, EffectFineRotation)
+
 // --- Final Mix ---
-AS_BLENDMODE_UI(BlendMode, "Final Mix")
-AS_BLENDAMOUNT_UI(BlendStrength, "Final Mix")
+AS_BLENDMODE_UI(BlendMode)
+AS_BLENDAMOUNT_UI(BlendStrength)
 
 // --- Debug ---
 AS_DEBUG_MODE_UI("Off\0Show Audio Reactivity\0")

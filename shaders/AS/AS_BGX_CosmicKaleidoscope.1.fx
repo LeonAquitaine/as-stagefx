@@ -70,11 +70,11 @@ static const int AUDIO_TARGET_DEFAULT = 1; static const float AUDIO_MULTIPLIER_D
 // Palette & Style
 static const float COLOR_INTENSITY_DEFAULT = 1.0; static const float COLOR_INTENSITY_MAX = 3.0; static const float COLOR_CYCLE_SPEED_DEFAULT = 0.1; static const float COLOR_CYCLE_SPEED_MAX = 2.0;
 // --- Internal Constants ---
-static const float EPSILON = 1e-5f; static const float HALF_POINT = 0.5f; static const float PI = 3.14159265f; static const float TWOPI = 6.2831853f;
+static const float EPSILON = 1e-5f; static const float HALF_POINT = 0.5f; // Removed PI and TWOPI, use AS_PI and AS_TWO_PI from AS_Utils
 
 // --- UI Uniform Definitions ---
-AS_STAGEDEPTH_UI(EffectDepth, "Effect Depth", "Stage")
-AS_ROTATION_UI(EffectSnapRotation, EffectFineRotation, "Stage")
+AS_STAGEDEPTH_UI(EffectDepth)
+AS_ROTATION_UI(EffectSnapRotation, EffectFineRotation)
 uniform float3 CameraPositionOffset < ui_type = "drag"; ui_label = "Camera Position Offset"; ui_min = -5.0; ui_max = 5.0; ui_step = 0.05; ui_category = "Stage"; > = float3(0.0, 0.0, 0.0);
 uniform int UI_Iterations < ui_type = "slider"; ui_label = "Fractal Iterations"; ui_min = ITERATIONS_MIN; ui_max = ITERATIONS_MAX; ui_category = "Fractal Parameters"; > = ITERATIONS_DEFAULT;
 uniform float UI_Formuparam < ui_type = "slider"; ui_label = "Fractal Parameter"; ui_min = FORMUPARAM_MIN; ui_max = FORMUPARAM_MAX; ui_step = FORMUPARAM_STEP; ui_category = "Fractal Parameters"; > = FORMUPARAM_DEFAULT;
@@ -99,8 +99,8 @@ uniform float FractalRotationSpeed < ui_type = "slider"; ui_label = "Fractal XY 
 AS_AUDIO_SOURCE_UI(Cosmos_AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity") 
 AS_AUDIO_MULTIPLIER_UI(Cosmos_AudioMultiplier, "Audio Intensity", AUDIO_MULTIPLIER_DEFAULT, AUDIO_MULTIPLIER_MAX, "Audio Reactivity") 
 uniform int Cosmos_AudioTarget < ui_type = "combo"; ui_label = "Audio Target Parameter"; ui_items = "None\0Fractal Parameter\0Brightness\0Dark Matter\0Saturation\0Camera Move Speed\0Fractal Rotation Speed\0"; ui_category = "Audio Reactivity"; > = AUDIO_TARGET_DEFAULT;
-AS_BLENDMODE_UI(BlendMode, "Final Mix")
-AS_BLENDAMOUNT_UI(BlendStrength, "Final Mix")
+AS_BLENDMODE_UI(BlendMode)
+AS_BLENDAMOUNT_UI(BlendStrength)
 AS_DEBUG_MODE_UI("Off\0Show Audio Reactivity\0")
 
 // ============================================================================
@@ -244,8 +244,6 @@ float4 ASCosmicKaleidoscopePS(float4 vpos : SV_POSITION, float2 texcoord : TEXCO
     float3 rd = normalize(float3(uv * UI_Zoom, 1.0f)); 
 
     float rotationRadians = AS_getRotationRadians(EffectSnapRotation, EffectFineRotation);
-    float s = sin(rotationRadians);
-    float c = cos(rotationRadians);
     rd.xy = mul(rd.xy, rotMat(rotationRadians)); // Apply screen-space rotation to direction
 
     // --- Render the effect ---

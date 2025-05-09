@@ -35,7 +35,7 @@
 // ============================================================================
 // INCLUDES
 // ============================================================================
-#include "AS_Utils.1.fxh"
+#include "AS_Noise.1.fxh"
 #include "AS_Palettes.1.fxh"
 
 // ============================================================================
@@ -171,7 +171,7 @@ AS_AUDIO_MULTIPLIER_UI(BlinkAudioMult, "Blinking Audio Multiplier", 1.0, 2.0, "A
 // STAGE DISTANCE (DEPTH)
 // ============================================================================
 // Using standardized stage depth control
-AS_STAGEDEPTH_UI(StageDepth, "Stage Distance", "Stage Distance")
+AS_STAGEDEPTH_UI(StageDepth)
 
 // ============================================================================
 // NOISE (SMOKE)
@@ -198,8 +198,8 @@ AS_AUDIO_MULTIPLIER_UI(VortexAudioMult, "Vortex Audio Multiplier", 1.0, 5.0, "Vo
 // FINAL MIX
 // ============================================================================
 // Using standardized blend mode controls
-AS_BLENDMODE_UI_DEFAULT(BlendMode, "Final Mix", 3)
-AS_BLENDAMOUNT_UI(BlendAmount, "Final Mix")
+AS_BLENDMODE_UI_DEFAULT(BlendMode, 0)
+AS_BLENDAMOUNT_UI(BlendAmount)
 
 // ============================================================================
 // DEBUG

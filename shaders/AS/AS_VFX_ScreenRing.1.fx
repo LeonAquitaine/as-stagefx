@@ -117,7 +117,7 @@ uniform int AudioTarget < ui_type = "combo"; ui_label = "Audio Target Parameter"
 // STAGE CONTROLS
 // ============================================================================
 uniform float TargetDepth < ui_type = "slider"; ui_label = "Target Depth"; ui_tooltip = "Depth in scene (0=Near, 1=Far)."; ui_min = TARGET_DEPTH_MIN; ui_max = TARGET_DEPTH_MAX; ui_step = 0.001; ui_category = "Stage"; > = TARGET_DEPTH_DEFAULT;
-AS_ROTATION_UI(SnapRotation, FineRotation, "Stage") // Add standard rotation controls
+AS_ROTATION_UI(SnapRotation, FineRotation) // Add standard rotation controls
 
 // ============================================================================
 // POSITION CONTROLS
@@ -128,8 +128,8 @@ uniform float2 TargetScreenXY < ui_type = "drag"; ui_label = "Position"; ui_tool
 // ============================================================================
 // FINAL MIX
 // ============================================================================
-AS_BLENDMODE_UI(BlendMode, "Final Mix")
-AS_BLENDAMOUNT_UI(BlendAmount, "Final Mix")
+AS_BLENDMODE_UI_DEFAULT(BlendMode, 0)
+AS_BLENDAMOUNT_UI(BlendAmount)
 
 // ============================================================================
 // DEBUG

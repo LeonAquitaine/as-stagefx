@@ -41,7 +41,7 @@
 // ============================================================================
 #include "ReShade.fxh"
 #include "ReShadeUI.fxh"
-#include "AS_Utils.1.fxh"
+#include "AS_Noise.1.fxh"
 
 // ============================================================================
 // TUNABLE CONSTANTS
@@ -185,8 +185,8 @@ uniform bool ObeyOcclusion < ui_label = "Occlusion"; ui_tooltip = "If enabled, s
 // ============================================================================
 // FINAL MIX
 // ============================================================================
-AS_BLENDMODE_UI(BlendMode, "Final Mix")
-AS_BLENDAMOUNT_UI(BlendAmount, "Final Mix")
+AS_BLENDMODE_UI_DEFAULT(BlendMode, 0)
+AS_BLENDAMOUNT_UI(BlendAmount)
 
 // ============================================================================
 // DEBUG

@@ -36,7 +36,7 @@
 // ============================================================================
 // INCLUDES
 // ============================================================================
-#include "AS_Utils.1.fxh"
+#include "AS_Noise.1.fxh"
 
 // ============================================================================
 // TUNABLE CONSTANTS
@@ -125,8 +125,8 @@ uniform float EffectDepth < ui_type = "slider"; ui_label = "Effect Depth"; ui_to
 uniform float DepthFalloff < ui_type = "slider"; ui_label = "Depth Falloff"; ui_tooltip = "Controls how quickly the effect fades with distance."; ui_min = DEPTH_FALLOFF_MIN; ui_max = DEPTH_FALLOFF_MAX; ui_step = 0.1; ui_category = "Stage Distance"; > = DEPTH_FALLOFF_DEFAULT;
 
 // --- Final Mix ---
-AS_BLENDMODE_UI(BlendMode, "Final Mix")
-uniform float BlendAmount < ui_type = "slider"; ui_label = "Blend Strength"; ui_tooltip = "How strongly the effect is blended with the scene."; ui_min = BLEND_AMOUNT_MIN; ui_max = BLEND_AMOUNT_MAX; ui_step = 0.01; ui_category = "Final Mix"; > = BLEND_AMOUNT_DEFAULT;
+AS_BLENDMODE_UI_DEFAULT(BlendMode, 0)
+AS_BLENDAMOUNT_UI(BlendAmount)
 
 // --- Debug ---
 AS_DEBUG_MODE_UI("Off\0Depth Mask\0Effect Only\0Audio\0")

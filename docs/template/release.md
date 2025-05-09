@@ -96,4 +96,32 @@ For the full changelog and documentation, please refer to the main README.md.
 
 See the main README.md for a full feature table and usage notes.
 
-*For detailed descriptions, usage notes (including audio reactivity with Listeningway), and license information, please refer to the main [README.md](https://github.com/LeonAquitaine/as-stagefx/blob/main/README.md).*
+---
+
+## Maintenance Update v1.5.3
+
+This release includes important fixes and improvements:
+
+1. **Added Robust Perlin Noise Functions to AS_Utils.1.fxh**
+   - Implemented `AS_PerlinNoise2D` and `AS_PerlinNoise3D` with proper gradient interpolation
+   - Added `AS_Fbm2D` for Fractal Brownian Motion multi-octave noise
+   - Added `AS_Fbm2D_Animated` for time-based animation effects
+   - Added `AS_DomainWarp2D` for fluid-like distortion patterns
+   - All functions follow consistent documentation and parameter naming standards
+
+2. **Fixed Glass Roughness in AS_VFX_RainyWindow.1.fx**
+   - Glass Roughness parameter now properly affects droplet shape using noise-based distortion
+   - Implemented non-circular droplet shapes with angle-dependent distortion
+   - Moved all magic numbers to properly named constants in the tunable constants section
+   - Improved resolution independence and aspect ratio correction
+
+3. **Improved AS_VFX_MeltWave.1.fx**
+   - Fixed rotation direction to ensure negative values rotate counterclockwise
+   - Implemented proper resolution-independent coordinate transformation
+   - Updated position controls to use the standard -1.5 to 1.5 range
+   - Removed deprecated Border Intensity parameter
+   - Updated documentation header to accurately reflect current features
+
+For the full changelog and documentation, please refer to the main README.md.
+
+---

@@ -257,4 +257,7 @@ technique AS_StencilMask < ui_label = "[AS] VFX: Stencil Mask"; ui_tooltip = "Cr
     }
 }
 
+AS_BLENDMODE_UI_DEFAULT(BlendMode, 0)
+AS_BLENDAMOUNT_UI(BlendAmount)
+
 #endif // __AS_VFX_StencilMask_1_fx

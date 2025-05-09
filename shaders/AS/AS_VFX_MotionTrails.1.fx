@@ -90,8 +90,8 @@ AS_AUDIO_SOURCE_UI(Echo_IntensitySource, "Energy Source", AS_AUDIO_BEAT, "Beat S
 AS_AUDIO_MULTIPLIER_UI(Echo_IntensityMult, "Energy Boost", 0.5, 2.0, "Beat Synchronization")
 
 // --- Final Composition and Debug (moved to end) ---
-uniform int BlendMode < ui_type = "combo"; ui_label = "Mix Style"; ui_tooltip = "How the trail effect blends with the original scene."; ui_items = "Normal\0Lighter Only\0Darker Only\0Additive\0Multiply\0Screen\0"; ui_category = "Final Composition"; > = 0;
-uniform float BlendAmount < ui_type = "slider"; ui_label = "Effect Opacity"; ui_tooltip = "How strongly the effect is blended with the scene."; ui_min = BLENDAMOUNT_MIN; ui_max = BLENDAMOUNT_MAX; ui_step = 0.01; ui_category = "Final Composition"; > = BLENDAMOUNT_DEFAULT;
+AS_BLENDMODE_UI_DEFAULT(BlendMode, 0)
+AS_BLENDAMOUNT_UI(BlendAmount)
 
 // --- Debug Mode Uniform ---
 AS_DEBUG_MODE_UI("Off\0Depth Mask\0Echo Buffer\0Linear Depth\0")

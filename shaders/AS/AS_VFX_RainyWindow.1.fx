@@ -18,7 +18,7 @@
  * FEATURES:
  * - Multi-layered raindrops with variable scale and speed
  * - Texture-based noise for droplet pattern
- * - Sharp droplet shape
+ * - Glass roughness for realistic texture variation
  * - Adjustable rain density and droplet grid size
  * - Audio reactivity for dynamic rain intensity
  * - Aspect ratio independent rendering
@@ -33,11 +33,18 @@
  * ===================================================================================
  */
 
+// ============================================================================
+// TECHNIQUE GUARD - Prevents duplicate loading of the same shader
+// ============================================================================
 #ifndef __AS_VFX_RainyWindow_1_fx
 #define __AS_VFX_RainyWindow_1_fx
 
+// ============================================================================
+// INCLUDES
+// ============================================================================
 #include "ReShade.fxh"
-#include "AS_Utils.1.fxh" // Assumes AS_hash11, AS_getTime, audio/blend/UI helpers are here
+#include "ReShadeUI.fxh"
+#include "AS_Noise.1.fxh"
 
 // ============================================================================
 // TEXTURES
@@ -46,17 +53,8 @@
 #define NOISE_TEXTURE_PATH "perlin512x8Noise.png" // Default texture if none specified
 #endif
 
-uniform int ___ < ui_type = "radio"; ui_label = " "; ui_text = "== Noise Texture Settings =="; ui_category = "Texture Settings"; >;
-uniform int NoiseTextureWarning < ui_type = "radio"; ui_label = " "; ui_text = "You need to set a noise texture below:"; ui_category = "Texture Settings"; >;
-
-#ifndef NOISE_TEXTURE_HELP
-#define NOISE_TEXTURE_HELP "Grayscale noise texture for randomized droplet pattern. R/G/B channel used as noise source."
-#endif
-
-uniform bool NeedTexture < source = "key"; keycode = 13; mode = "toggle"; ui_label = " "; ui_text = "If texture not showing: Press Enter!"; ui_tooltip = "If you don't see a texture path option below, press Enter key to refresh UI"; ui_category = "Texture Settings"; ui_category_closed = false; >;
-
-texture NoiseTex < source = NOISE_TEXTURE_PATH; ui_label = "Noise Texture"; ui_tooltip = NOISE_TEXTURE_HELP; > { Width = 256; Height = 256; Format = R8; };
-sampler NoiseSampler { Texture = NoiseTex; AddressU = REPEAT; AddressV = REPEAT; MagFilter = LINEAR; MinFilter = LINEAR; MipFilter = LINEAR; };
+texture RainNoiseTex < source = NOISE_TEXTURE_PATH; ui_label = "Noise Texture"; ui_tooltip = "Grayscale noise texture for randomized droplet pattern. R channel used as noise source."; > { Width = 512; Height = 512; Format = R8; };
+sampler RainNoiseSampler { Texture = RainNoiseTex; AddressU = REPEAT; AddressV = REPEAT; MagFilter = LINEAR; MinFilter = LINEAR; MipFilter = LINEAR; };
 
 // ============================================================================
 // TUNABLE CONSTANTS
@@ -83,49 +81,75 @@ static const float GLASS_ROUGHNESS_MIN = 0.0;
 static const float GLASS_ROUGHNESS_MAX = 1.0;
 static const float GLASS_ROUGHNESS_DEFAULT = 0.5;
 
-// ============================================================================
-// EFFECT-SPECIFIC APPEARANCE
-// ============================================================================
-uniform float GridSizeX < ui_type = "slider"; ui_label = "Rain Grid X"; ui_tooltip = "Controls how many raindrops appear horizontally."; ui_min = GRID_X_MIN; ui_max = GRID_X_MAX; ui_step = 1.0; ui_category = "Rain Pattern"; > = GRID_X_DEFAULT;
+// Rain layer constants
+static const float LAYER2_SCALE = 2.0;     // Scale factor for second layer
+static const float LAYER3_SCALE = 4.0;     // Scale factor for third layer
+static const float LAYER2_ALPHA = 0.5;     // Alpha multiplier for second layer
+static const float LAYER3_ALPHA = 0.25;    // Alpha multiplier for third layer
+static const float LAYER2_TIME_SCALE = 1.5; // Time multiplier for second layer
+static const float LAYER3_TIME_SCALE = 2.0; // Time multiplier for third layer
 
+// Noise sampling constants
+static const float HIGH_FREQ_NOISE_SCALE = 2.5;  // Scale for higher frequency noise sampling
+static const float SHAPE_NOISE_SCALE = 3.0;      // Scale for shape-specific noise
+static const float SHAPE_NOISE_OFFSET = 0.5;     // Offset for shape noise sampling
+static const float EDGE_NOISE_SCALE = 8.0;       // Scale for edge noise sampling
+
+// Fall speed constants
+static const float FALL_SPEED_MULTIPLIER = 0.1;  // Base fall speed multiplier
+
+// Edge transition constants
+static const float SMOOTH_EDGE_SHARPNESS = 0.98; // Edge sharpness for smooth glass
+static const float ROUGH_EDGE_SHARPNESS = 0.8;   // Edge sharpness for rough glass
+
+// Roughness threshold constants
+static const float MIN_ROUGHNESS_THRESHOLD = 0.001; // Minimum roughness to apply effects
+static const float SHAPE_ROUGHNESS_THRESHOLD = 0.1; // Threshold for shape distortion
+static const float EDGE_ROUGHNESS_THRESHOLD = 0.3;  // Threshold for edge noise
+static const float ASYM_ROUGHNESS_THRESHOLD = 0.5;  // Threshold for asymmetric distortion
+
+// Distortion strength constants
+static const float POS_DISTORT_X = 0.5;     // X position distortion factor
+static const float POS_DISTORT_Y = 0.4;     // Y position distortion factor
+static const float CENTER_DISTORT_X = 0.4;  // X center distortion factor
+static const float CENTER_DISTORT_Y = 0.5;  // Y center distortion factor
+static const float STRETCH_FACTOR = 0.7;    // X stretch factor
+static const float COMPRESS_FACTOR = 0.3;   // Y compression factor
+static const float SIZE_VARIATION = 0.75;   // Size variation factor
+static const float EDGE_NOISE_STRENGTH = 0.4; // Edge noise strength
+static const float ASYM_DISTORT_STRENGTH = 0.2; // Asymmetric distortion strength
+
+// ============================================================================
+// UI DECLARATIONS
+// ============================================================================
+
+// --- Effect Settings ---
+uniform float DropSize < ui_type = "slider"; ui_label = "Drop Size"; ui_tooltip = "Controls the size of individual rain droplets."; ui_min = DROP_SIZE_MIN; ui_max = DROP_SIZE_MAX; ui_step = 0.001; ui_category = "Effect Settings"; > = DROP_SIZE_DEFAULT;
+uniform float DropImpact < ui_type = "slider"; ui_label = "Distortion Strength"; ui_tooltip = "Controls how much the raindrops distort the image behind them."; ui_min = IMPACT_MIN; ui_max = IMPACT_MAX; ui_step = 0.05; ui_category = "Effect Settings"; > = IMPACT_DEFAULT;
+uniform float ResolutionScale < ui_type = "slider"; ui_label = "Resolution Scale"; ui_tooltip = "Adjusts the scale of the effect grid relative to resolution."; ui_min = RESOLUTION_SCALE_MIN; ui_max = RESOLUTION_SCALE_MAX; ui_step = 0.05; ui_category = "Effect Settings"; > = RESOLUTION_SCALE_DEFAULT;
+uniform float GlassRoughness < ui_type = "slider"; ui_label = "Glass Roughness"; ui_tooltip = "Controls the surface texture of the glass (0=smooth glass, 1=rough glass)."; ui_min = GLASS_ROUGHNESS_MIN; ui_max = GLASS_ROUGHNESS_MAX; ui_step = 0.01; ui_category = "Effect Settings"; > = GLASS_ROUGHNESS_DEFAULT;
+
+// --- Rain Pattern ---
+uniform float GridSizeX < ui_type = "slider"; ui_label = "Rain Grid X"; ui_tooltip = "Controls how many raindrops appear horizontally."; ui_min = GRID_X_MIN; ui_max = GRID_X_MAX; ui_step = 1.0; ui_category = "Rain Pattern"; > = GRID_X_DEFAULT;
 uniform float GridSizeY < ui_type = "slider"; ui_label = "Rain Grid Y"; ui_tooltip = "Controls how many raindrops appear vertically."; ui_min = GRID_Y_MIN; ui_max = GRID_Y_MAX; ui_step = 1.0; ui_category = "Rain Pattern"; > = GRID_Y_DEFAULT;
 
-uniform float DropSize < ui_type = "slider"; ui_label = "Drop Size"; ui_tooltip = "Controls the size of individual rain droplets."; ui_min = DROP_SIZE_MIN; ui_max = DROP_SIZE_MAX; ui_step = 0.001; ui_category = "Rain Pattern"; > = DROP_SIZE_DEFAULT;
-
-uniform float DropImpact < ui_type = "slider"; ui_label = "Distortion Strength"; ui_tooltip = "Controls how much the raindrops distort the image behind them."; ui_min = IMPACT_MIN; ui_max = IMPACT_MAX; ui_step = 0.05; ui_category = "Rain Pattern"; > = IMPACT_DEFAULT;
-
-uniform float ResolutionScale < ui_type = "slider"; ui_label = "Resolution Scale"; ui_tooltip = "Adjusts the scale of the effect grid relative to resolution."; ui_min = RESOLUTION_SCALE_MIN; ui_max = RESOLUTION_SCALE_MAX; ui_step = 0.05; ui_category = "Rain Pattern"; > = RESOLUTION_SCALE_DEFAULT;
-
-uniform float GlassRoughness < ui_type = "slider"; ui_label = "Glass Roughness"; ui_tooltip = "Controls the surface texture of the glass (0=smooth glass, 1=rough glass)."; ui_min = GLASS_ROUGHNESS_MIN; ui_max = GLASS_ROUGHNESS_MAX; ui_step = 0.01; ui_category = "Rain Pattern"; > = GLASS_ROUGHNESS_DEFAULT;
-
-// ============================================================================
-// ANIMATION
-// ============================================================================
+// --- Animation Controls ---
 uniform float RainSpeed < ui_type = "slider"; ui_label = "Rain Speed"; ui_tooltip = "Controls the speed of the falling rain."; ui_min = SPEED_MIN; ui_max = SPEED_MAX; ui_step = 0.05; ui_category = "Animation"; > = SPEED_DEFAULT;
 
-// ============================================================================
-// AUDIO REACTIVITY
-// ============================================================================
+// --- Audio Reactivity ---
 AS_AUDIO_SOURCE_UI(Rain_AudioSource, "Audio Source", AS_AUDIO_OFF, "Audio Reactivity")
 AS_AUDIO_MULTIPLIER_UI(Rain_AudioMultiplier, "Intensity", 1.0, 2.0, "Audio Reactivity")
-
 uniform int AudioTarget < ui_type = "combo"; ui_label = "Audio Target Parameter"; ui_tooltip = "Select which parameter will be affected by audio reactivity"; ui_items = "None\0Drop Size\0Glass Roughness\0"; ui_category = "Audio Reactivity"; > = 0;
 
-// ============================================================================
-// STAGE DISTANCE
-// ============================================================================
-AS_STAGEDEPTH_UI(EffectDepth, "Effect Depth", "Stage")
-AS_ROTATION_UI(GlobalSnapRotation, GlobalFineRotation, "Stage")  // Added rotation controls
+// --- Stage Controls ---
+AS_STAGEDEPTH_UI(EffectDepth)
+AS_ROTATION_UI(GlobalSnapRotation, GlobalFineRotation)
 
-// ============================================================================
-// FINAL MIX
-// ============================================================================
-AS_BLENDMODE_UI(BlendMode, "Final Mix")
-AS_BLENDAMOUNT_UI(BlendAmount, "Final Mix")
+// --- Final Mix ---
+AS_BLENDMODE_UI_DEFAULT(BlendMode, 0)
+AS_BLENDAMOUNT_UI(BlendAmount)
 
-// ============================================================================
-// DEBUG
-// ============================================================================
+// --- Debug ---
 AS_DEBUG_MODE_UI("Normal\0Raindrops Offset Viz\0")
 
 // ============================================================================
@@ -134,31 +158,113 @@ AS_DEBUG_MODE_UI("Normal\0Raindrops Offset Viz\0")
 namespace AS_RainyWindow {
 
 float2 drop_layer(float2 uv, float time, float2 grid, float dropSizeRef, float roughness) {
-    float noise = tex2D(NoiseSampler, uv).r;
-
-    float noiseInfluence = lerp(0.1, 1.0, roughness);
+    // Sample noise texture at two different scales for more variation
+    float noise1 = tex2D(RainNoiseSampler, uv).r;
+    float noise2 = tex2D(RainNoiseSampler, uv * HIGH_FREQ_NOISE_SCALE).r; // Higher frequency noise
     
-    float fallSpeed = (AS_hash11(floor(uv.x * grid.x)) + 1.0) * 0.1;
-
+    // Blend noises based on roughness for more organic variation
+    float noise = lerp(noise1, noise2, roughness * 0.5);
+    
+    // Calculate fall speed with slight randomization
+    float fallSpeed = (AS_hash11(floor(uv.x * grid.x)) + 1.0) * FALL_SPEED_MULTIPLIER;
     uv.y += fallSpeed * time;
 
-    float2 drop_uv = frac(uv * grid + float2(noise * 0.5 * noiseInfluence, noise * 0.1 * noiseInfluence));
+    // Calculate base drop UV (grid cell position)
+    float2 drop_uv = frac(uv * grid);
+    
+    // Apply rough glass distortion to the droplet position
+    if (roughness > MIN_ROUGHNESS_THRESHOLD) {
+        drop_uv = frac(uv * grid + float2(
+            noise * roughness * POS_DISTORT_X, 
+            noise * roughness * POS_DISTORT_Y
+        ));
+    }
+    
+    // Convert to [-1, 1] space for droplet shape calculation
     drop_uv = 2.0 * drop_uv - 1.0;
-
-    float2 drop_size = drop_uv / grid;
-
-    float outerEdge = dropSizeRef;
-    float innerEdge = dropSizeRef * (2.0/3.0);
-
-    float drop_shape = smoothstep(outerEdge, innerEdge, length(drop_size));
-
-    return drop_size * drop_shape;
+    
+    // Generate shape-specific noise for this droplet cell
+    // This creates unique distortion for each droplet
+    float2 drop_center = float2(0.0, 0.0);
+    float2 cell_uv = frac(uv * grid);
+    float shape_noise = tex2D(RainNoiseSampler, cell_uv * SHAPE_NOISE_SCALE + SHAPE_NOISE_OFFSET).r;
+    
+    // Create non-circular shape when roughness is applied
+    if (roughness > MIN_ROUGHNESS_THRESHOLD) {
+        // Apply noise-based distortion to the droplet center point
+        // This creates irregular, non-circular droplets
+        drop_center = float2(
+            (shape_noise - 0.5) * roughness * CENTER_DISTORT_X,
+            (noise2 - 0.5) * roughness * CENTER_DISTORT_Y
+        );
+    }
+    
+    // Calculate distance from distorted center for shape determination
+    float2 drop_size = (drop_uv - drop_center) / grid;
+    
+    // For rough glass, create non-circular droplet shapes
+    float dist;
+    if (roughness > SHAPE_ROUGHNESS_THRESHOLD) {
+        // Create elongated droplet using a custom distance function
+        // Distorts the circular shape into more of an ellipse or irregular blob
+        float angle = shape_noise * AS_TWO_PI; // Random angle based on noise
+        float2 stretch = float2(
+            1.0 + roughness * shape_noise * STRETCH_FACTOR,  // X stretch
+            1.0 - roughness * noise2 * COMPRESS_FACTOR       // Y compress
+        );
+        
+        // Create a rotated, stretched coordinate space
+        float sinA = sin(angle);
+        float cosA = cos(angle);
+        float2 rotated = float2(
+            drop_size.x * cosA - drop_size.y * sinA,
+            drop_size.x * sinA + drop_size.y * cosA
+        );
+        
+        // Apply stretch in the rotated space
+        rotated /= stretch;
+        
+        // Use this stretched distance for the droplet shape
+        dist = length(rotated);
+    }
+    else {
+        // Use regular circular distance when roughness is low
+        dist = length(drop_size);
+    }
+    
+    // Modify the droplet radius based on noise and roughness
+    float droplet_radius = dropSizeRef;
+    if (roughness > MIN_ROUGHNESS_THRESHOLD) {
+        // Vary the droplet size based on noise
+        droplet_radius *= (1.0 + (noise - 0.5) * roughness * SIZE_VARIATION);
+    }
+    
+    // Calculate edge transition parameters - vary the sharpness with roughness
+    float edgeSharpness = lerp(SMOOTH_EDGE_SHARPNESS, ROUGH_EDGE_SHARPNESS, roughness * 0.5);
+    
+    // Create droplet with smoothstep for soft edges
+    float drop_shape = smoothstep(droplet_radius, droplet_radius * edgeSharpness, dist);
+    
+    // Add subtle noise to the edge for rough glass
+    if (roughness > EDGE_ROUGHNESS_THRESHOLD) {
+        float edge_noise = (tex2D(RainNoiseSampler, cell_uv * EDGE_NOISE_SCALE).r - 0.5) * roughness * EDGE_NOISE_STRENGTH;
+        drop_shape = saturate(drop_shape + edge_noise);
+    }
+    
+    // Final displacement scaled by drop shape with slight roughness-based variation
+    float2 displacement = drop_size * drop_shape;
+    if (roughness > ASYM_ROUGHNESS_THRESHOLD) {
+        // Add subtle asymmetric distortion for very rough glass
+        displacement *= float2(1.0 + roughness * (noise - 0.5) * ASYM_DISTORT_STRENGTH, 1.0);
+    }
+    
+    return displacement;
 }
 
 } // namespace AS_RainyWindow
 
 // ============================================================================
-// MAIN PIXEL SHADER
+// PIXEL SHADER
 // ============================================================================
 float4 PS_RainyWindow(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target {
     // Get original pixel and check depth
@@ -173,19 +279,27 @@ float4 PS_RainyWindow(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV
     float globalRotation = AS_getRotationRadians(GlobalSnapRotation, GlobalFineRotation);
     
     // --- Step 1: Transform screen UVs to centered coordinate system for rotation ---
-    // Use AS_Utils aspectCorrect for proper aspect ratio handling
     float2 centered_uv = texcoord - 0.5;
-    float2 screen_coords = AS_aspectCorrect(centered_uv, BUFFER_WIDTH, BUFFER_HEIGHT);
     
-    // --- Step 2: Apply inverse rotation using standard rotation matrix ---
-    float2 rotated_coords;
+    // --- Step 2: Apply aspect ratio correction ---
+    centered_uv.x *= aspectRatio;
+    
+    // --- Step 3: Apply inverse rotation using standard rotation matrix ---
     float sinRot = sin(-globalRotation);
     float cosRot = cos(-globalRotation);
-    rotated_coords.x = screen_coords.x * cosRot - screen_coords.y * sinRot;
-    rotated_coords.y = screen_coords.x * sinRot + screen_coords.y * cosRot;
+    float2 rotated_coords = float2(
+        centered_uv.x * cosRot - centered_uv.y * sinRot,
+        centered_uv.x * sinRot + centered_uv.y * cosRot
+    );
     
-    // --- Step 3: Convert back to UV space for rain calculation ---
-    float2 rotated_uv = rotated_coords + 0.5;
+    // --- Step 4: Convert back to UV space for rain calculation ---
+    float2 rotated_uv = rotated_coords;
+    
+    // --- Step 5: Undo aspect ratio correction for proper circular droplets ---
+    rotated_uv.x /= aspectRatio;
+    
+    // --- Step 6: Convert back to 0-1 UV space ---
+    rotated_uv += 0.5;
 
     // --- Create calculation UVs for rain pattern ---
     float2 calc_uv = rotated_uv;
@@ -195,10 +309,9 @@ float4 PS_RainyWindow(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV
     // --- Audio Reactivity ---
     float time = AS_getTime() * RainSpeed;
     float dropSizeFinal = DropSize;
-    float dropImpactFinal = DropImpact;
     float glassRoughnessFinal = GlassRoughness;
 
-    if (AudioTarget > 0) {
+    if (AudioTarget > 0 && Rain_AudioSource != AS_AUDIO_OFF) {
         float audioValue = AS_applyAudioReactivity(1.0, Rain_AudioSource, Rain_AudioMultiplier, true) - 1.0;
         if (AudioTarget == 1) { // Drop Size
             dropSizeFinal = saturate(DropSize + (DropSize * audioValue * 0.5));
@@ -213,15 +326,14 @@ float4 PS_RainyWindow(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV
     
     // Multi-layer approach with scaling factors
     drops =  AS_RainyWindow::drop_layer(calc_uv,       time,         gridSize, dropSizeFinal, glassRoughnessFinal);
-    drops += AS_RainyWindow::drop_layer(calc_uv * 2.0, time * 1.5,   gridSize, dropSizeFinal, glassRoughnessFinal) * 0.5;
-    drops += AS_RainyWindow::drop_layer(calc_uv * 4.0, time * 2.0,   gridSize, dropSizeFinal, glassRoughnessFinal) * 0.25;
+    drops += AS_RainyWindow::drop_layer(calc_uv * LAYER2_SCALE, time * LAYER2_TIME_SCALE,   gridSize, dropSizeFinal, glassRoughnessFinal) * LAYER2_ALPHA;
+    drops += AS_RainyWindow::drop_layer(calc_uv * LAYER3_SCALE, time * LAYER3_TIME_SCALE,   gridSize, dropSizeFinal, glassRoughnessFinal) * LAYER3_ALPHA;
 
     // Correct aspect ratio of the distortion vector
     drops.x /= aspectRatio;
 
     // --- Apply the distortion to the original texcoord, not the rotated one ---
-    // This ensures we sample from the non-rotated backbuffer
-    float2 distortedUV = texcoord + drops * dropImpactFinal;
+    float2 distortedUV = texcoord + drops * DropImpact;
     
     // Ensure distortedUV stays within bounds
     distortedUV = clamp(distortedUV, 0.0, 1.0);
@@ -242,7 +354,10 @@ float4 PS_RainyWindow(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV
 // ============================================================================
 // TECHNIQUE
 // ============================================================================
-technique AS_VFX_RainyWindow < ui_label = "[AS] VFX: Rainy Window"; ui_tooltip = "Realistic rainy window distortion effect (Godot Port Attempt). Requires noise texture."; > {
+technique AS_VFX_RainyWindow <
+    ui_tooltip = "Realistic rainy window distortion effect with customizable droplet patterns and Glass Roughness controls.";
+>
+{
     pass {
         VertexShader = PostProcessVS;
         PixelShader = PS_RainyWindow;

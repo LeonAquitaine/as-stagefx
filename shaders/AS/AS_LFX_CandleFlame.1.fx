@@ -167,14 +167,14 @@ uniform int AudioTarget < ui_type = "combo"; ui_label = "Audio Target Parameter"
 // ============================================================================
 // STAGE
 // ============================================================================
-AS_STAGEDEPTH_UI(StageDepth, "Stage", "Stage")
-AS_ROTATION_UI(FlameSnapRotation, FlameFineRotation, "Stage")
+AS_STAGEDEPTH_UI(StageDepth)
+AS_ROTATION_UI(FlameSnapRotation, FlameFineRotation)
 
 // ============================================================================
 // FINAL MIX
 // ============================================================================
-AS_BLENDMODE_UI_DEFAULT(BlendMode, "Final Mix", 3) // Default to Additive for fire
-AS_BLENDAMOUNT_UI(BlendAmount, "Final Mix")
+AS_BLENDMODE_UI_DEFAULT(BlendMode, 0)
+AS_BLENDAMOUNT_UI(BlendAmount)
 
 // ============================================================================
 // DEBUG

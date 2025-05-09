@@ -85,8 +85,8 @@ uniform float BandMult < ui_type = "slider"; ui_label = "Band Impact"; ui_toolti
 uniform float EffectDepth < ui_type = "slider"; ui_label = "Effect Depth"; ui_tooltip = "Controls the reference depth for the spectrum ring effect. Lower values bring the effect closer to the camera, higher values push it further back."; ui_min = EFFECTDEPTH_MIN; ui_max = EFFECTDEPTH_MAX; ui_step = 0.01; ui_category = "Stage Distance"; > = EFFECTDEPTH_DEFAULT;
 
 // --- Final Mix ---
-uniform int BlendMode < ui_type = "combo"; ui_label = "Blend Mode"; ui_items = "Normal\0Lighter Only\0Darker Only\0Additive\0Multiply\0Screen\0"; ui_category = "Final Mix"; > = 0;
-uniform float BlendStrength < ui_type = "slider"; ui_label = "Blend Strength"; ui_tooltip = "How strongly the spectrum ring effect is blended with the scene."; ui_min = BLENDSTRENGTH_MIN; ui_max = BLENDSTRENGTH_MAX; ui_step = 0.01; ui_category = "Final Mix"; > = BLENDSTRENGTH_DEFAULT;
+AS_BLENDMODE_UI_DEFAULT(BlendMode, 0)
+AS_BLENDAMOUNT_UI(BlendAmount)
 
 // --- Debug ---
 AS_DEBUG_MODE_UI("Off\0Bands\0")
@@ -225,7 +225,7 @@ float4 PS_SpectrumRing(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : S
     
     // Apply blend mode and blend amount
     float3 blended = AS_blendResult(orig.rgb, color, BlendMode);
-    float blendAlpha = edge * mask * alpha * BlendStrength;
+    float blendAlpha = edge * mask * alpha * BlendAmount;
     
     return float4(lerp(orig.rgb, blended, blendAlpha), 1.0);
 }

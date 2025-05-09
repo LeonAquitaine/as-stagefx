@@ -195,8 +195,8 @@ static const float NOISE_P_Z_FACTOR = 113.0f;
 // ============================================================================
 
 // --- Stage ---
-AS_STAGEDEPTH_UI(EffectDepth, "Effect Depth", "Stage")
-AS_ROTATION_UI(EffectSnapRotation, EffectFineRotation, "Stage")
+AS_STAGEDEPTH_UI(EffectDepth)
+AS_ROTATION_UI(EffectSnapRotation, EffectFineRotation)
 
 // --- Main Parameters ---
 uniform float Zoom < ui_type = "slider"; ui_label = "Zoom"; ui_tooltip = "Zoom factor for the noise pattern. >1 zooms in, <1 zooms out."; ui_min = ZOOM_MIN; ui_max = ZOOM_MAX; ui_step = ZOOM_STEP; ui_category = "Main Parameters"; > = ZOOM_DEFAULT;
@@ -239,8 +239,8 @@ AS_AUDIO_MULTIPLIER_UI(ShineOn_AudioMultiplier, "Audio Intensity", AUDIO_MULTIPL
 uniform int ShineOn_AudioTarget < ui_type = "combo"; ui_label = "Audio Target Parameter"; ui_items = "None\0Animation Speed\0Crystal Size\0Crystal Color Amp\0Crystal Time Factor\0"; ui_tooltip = "Which parameter should respond to audio"; ui_category = "Audio Reactivity"; > = AUDIO_TARGET_DEFAULT;
 
 // --- Final Mix ---
-AS_BLENDMODE_UI(BlendMode, "Final Mix")
-AS_BLENDAMOUNT_UI(BlendStrength, "Final Mix")
+AS_BLENDMODE_UI(BlendMode)
+AS_BLENDAMOUNT_UI(BlendStrength)
 
 // --- Debug ---
 AS_DEBUG_MODE_UI("Off\0Show Audio Reactivity\0")

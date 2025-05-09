@@ -16,7 +16,6 @@
  * - Listeningway audio integration with standard sources and controls
  * - Debug visualization tools and helpers
  * - Common blend modes and mixing functions
- * - Procedural noise generation with various hash functions and Voronoi noise
  * - Mathematical and coordinate transformation helpers
  * - Depth, normal reconstruction, and surface effects functions
  *
@@ -25,8 +24,10 @@
  * 1. UI standardization macros for consistent parameter layouts
  * 2. Audio integration and Listeningway support
  * 3. Visual effect helpers (blend modes, color operations)
- * 4. Mathematical functions (hash, coordinate transforms, noise)
+ * 4. Mathematical functions (coordinate transforms)
  * 5. Advanced rendering helpers (depth, normals, etc.)
+ *
+ * Note: For procedural noise functions, see AS_Noise.1.fxh
  *
  * ===================================================================================
  */
@@ -152,6 +153,103 @@ uniform float name < ui_type = "slider"; ui_label = "Sway Speed"; ui_tooltip = "
 uniform float name < ui_type = "slider"; ui_label = "Sway Angle"; ui_tooltip = "Maximum angle of the swaying in degrees"; ui_min = 0.0; ui_max = 180.0; ui_step = 1.0; ui_category = category; > = 15.0;
 
 #endif // __AS_SWAY_UI_INCLUDED
+
+// --- Position and Scale UI Standardization ---
+#ifndef __AS_POSITION_UI_INCLUDED
+#define __AS_POSITION_UI_INCLUDED
+
+// --- Position Constants ---
+#define AS_POSITION_MIN -1.5
+#define AS_POSITION_MAX 1.5
+#define AS_POSITION_STEP 0.01
+#define AS_POSITION_DEFAULT 0.0
+
+#define AS_SCALE_MIN 0.1
+#define AS_SCALE_MAX 5.0
+#define AS_SCALE_STEP 0.01
+#define AS_SCALE_DEFAULT 1.0
+
+// --- Position UI Macros ---
+// Creates a standardized position control (as float2)
+#define AS_POSITION_UI(name) \
+uniform float2 name < ui_type = "drag"; ui_label = "Position"; ui_tooltip = "Position of the effect center (X,Y)."; ui_min = AS_POSITION_MIN; ui_max = AS_POSITION_MAX; ui_step = AS_POSITION_STEP; ui_category = "Position"; > = float2(AS_POSITION_DEFAULT, AS_POSITION_DEFAULT);
+
+// Creates a standardized scale control
+#define AS_SCALE_UI(name) \
+uniform float name < ui_type = "slider"; ui_label = "Scale"; ui_tooltip = "Size of the effect. Higher values zoom out, lower values zoom in."; ui_min = AS_SCALE_MIN; ui_max = AS_SCALE_MAX; ui_step = AS_SCALE_STEP; ui_category = "Position"; > = AS_SCALE_DEFAULT;
+
+// Combined position and scale UI for convenience
+#define AS_POSITION_SCALE_UI(posName, scaleName) \
+uniform float2 posName < ui_type = "drag"; ui_label = "Position"; ui_tooltip = "Position of the effect center (X,Y)."; ui_min = AS_POSITION_MIN; ui_max = AS_POSITION_MAX; ui_step = AS_POSITION_STEP; ui_category = "Position"; > = float2(AS_POSITION_DEFAULT, AS_POSITION_DEFAULT); \
+uniform float scaleName < ui_type = "slider"; ui_label = "Scale"; ui_tooltip = "Size of the effect. Higher values zoom out, lower values zoom in."; ui_min = AS_SCALE_MIN; ui_max = AS_SCALE_MAX; ui_step = AS_SCALE_STEP; ui_category = "Position"; > = AS_SCALE_DEFAULT;
+
+// --- Position Helper Functions ---
+// Applies position offset and scaling to centered coordinates
+// Parameters:
+//   coord: Centered coordinates from texcoord (already corrected for aspect ratio)
+//   pos: Position offset as float2(x, y) with range (-1.5 to 1.5)
+//   scale: Scaling factor (0.1 to 5.0)
+// Returns: Transformed coordinates
+float2 AS_applyPositionAndScale(float2 coord, float2 pos, float scale) {
+    // Apply position offset (Y is inverted in screen space)
+    coord.x -= pos.x;
+    coord.y += pos.y;
+    
+    // Apply scale (higher value = zoomed out)
+    return coord / max(scale, 0.001); // Prevent division by zero
+}
+
+// Converts normalized texcoord to centered, aspect-corrected coordinates
+// Parameters:
+//   texcoord: Original normalized texcoord (0-1 range)
+//   aspectRatio: Width/height ratio of the screen
+// Returns: Centered coordinates corrected for aspect ratio
+float2 AS_getCenteredCoord(float2 texcoord, float aspectRatio) {
+    float2 centered = texcoord - 0.5;
+    
+    // Apply aspect ratio correction
+    if (aspectRatio >= 1.0) {
+        // Landscape or square
+        centered.x *= aspectRatio;
+    } else {
+        // Portrait
+        centered.y /= aspectRatio;
+    }
+    
+    return centered;
+}
+
+// All-in-one function that handles the common position/scale pattern
+// Parameters:
+//   texcoord: Original normalized texcoord (0-1 range)
+//   pos: Position as float2(x,y) with range (-1.5 to 1.5)
+//   scale: Scale factor (0.1 to 5.0)
+//   rotation: Rotation in radians
+// Returns: Transformed coordinates ready for sampling or calculations
+float2 AS_transformCoord(float2 texcoord, float2 pos, float scale, float rotation) {
+    // Get aspect ratio
+    float aspectRatio = ReShade::AspectRatio;
+    
+    // Center and apply aspect ratio correction
+    float2 centered = AS_getCenteredCoord(texcoord, aspectRatio);
+    
+    // Apply position and scale
+    float2 positioned = AS_applyPositionAndScale(centered, pos, scale);
+    
+    // Apply rotation if needed
+    if (abs(rotation) > 0.0001) {
+        float s = sin(rotation);
+        float c = cos(rotation);
+        positioned = float2(
+            positioned.x * c - positioned.y * s,
+            positioned.x * s + positioned.y * c
+        );
+    }
+    
+    return positioned;
+}
+
+#endif // __AS_POSITION_UI_INCLUDED
 
 // --- Math Helpers ---
 // NOTE: AS_mod must be defined before any function that uses it (such as AS_mapAngleToBand)
@@ -317,7 +415,7 @@ float AS_applyAudioReactivityEx(float baseValue, int audioSource, float multipli
 }
 
 // ============================================================================
-// MATH & PROCEDURAL GENERATION
+// MATH & COORDINATE HELPERS 
 // ============================================================================
 
 // --- Rotation UI Standardization ---
@@ -326,9 +424,9 @@ float AS_applyAudioReactivityEx(float baseValue, int audioSource, float multipli
 
 // --- Rotation UI Macro ---
 // Creates a standardized pair of rotation controls (snap + fine) that appear on the same line
-#define AS_ROTATION_UI(snapName, fineName, category) \
-uniform int snapName < ui_category = category; ui_label = "Snap Rotation"; ui_type = "slider"; ui_min = -4; ui_max = 4; ui_step = 1; ui_tooltip = "Snap rotation in 45° steps (-180° to +180°)"; ui_spacing = 0; > = 0; \
-uniform float fineName < ui_category = category; ui_label = "Fine Rotation"; ui_type = "slider"; ui_min = -45.0; ui_max = 45.0; ui_step = 0.1; ui_tooltip = "Fine rotation adjustment in degrees"; ui_same_line = true; > = 0.0;
+#define AS_ROTATION_UI(snapName, fineName) \
+uniform int snapName < ui_category = "Stage"; ui_label = "Snap Rotation"; ui_type = "slider"; ui_min = -4; ui_max = 4; ui_step = 1; ui_tooltip = "Snap rotation in 45° steps (-180° to +180°)"; ui_spacing = 0; > = 0; \
+uniform float fineName < ui_category = "Stage"; ui_label = "Fine Rotation"; ui_type = "slider"; ui_min = -45.0; ui_max = 45.0; ui_step = 0.1; ui_tooltip = "Fine rotation adjustment in degrees"; ui_same_line = true; > = 0.0;
 
 // --- Rotation Helper Function ---
 // Combines snap and fine rotation values and converts to radians
@@ -339,14 +437,61 @@ float AS_getRotationRadians(int snapRotation, float fineRotation) {
 
 #endif // __AS_ROTATION_UI_INCLUDED
 
+// --- Animation UI Standardization ---
+#ifndef __AS_ANIMATION_UI_INCLUDED
+#define __AS_ANIMATION_UI_INCLUDED
+
+// --- Animation Constants ---
+#define AS_ANIMATION_SPEED_MIN 0.0
+#define AS_ANIMATION_SPEED_MAX 5.0
+#define AS_ANIMATION_SPEED_STEP 0.01
+#define AS_ANIMATION_SPEED_DEFAULT 1.0
+
+#define AS_ANIMATION_KEYFRAME_MIN 0.0
+#define AS_ANIMATION_KEYFRAME_MAX 100.0
+#define AS_ANIMATION_KEYFRAME_STEP 0.1
+#define AS_ANIMATION_KEYFRAME_DEFAULT 0.0
+
+// --- Animation UI Macros ---
+// Creates a standardized animation speed control
+#define AS_ANIMATION_SPEED_UI(name, category) \
+uniform float name < ui_type = "slider"; ui_label = "Animation Speed"; ui_tooltip = "Controls the overall animation speed of the effect. Set to 0 to pause animation."; ui_min = AS_ANIMATION_SPEED_MIN; ui_max = AS_ANIMATION_SPEED_MAX; ui_step = AS_ANIMATION_SPEED_STEP; ui_category = category; > = AS_ANIMATION_SPEED_DEFAULT;
+
+// Creates a standardized animation keyframe control
+#define AS_ANIMATION_KEYFRAME_UI(name, category) \
+uniform float name < ui_type = "slider"; ui_label = "Animation Keyframe"; ui_tooltip = "Sets a specific point in time for the animation. Useful for finding and saving specific patterns."; ui_min = AS_ANIMATION_KEYFRAME_MIN; ui_max = AS_ANIMATION_KEYFRAME_MAX; ui_step = AS_ANIMATION_KEYFRAME_STEP; ui_category = category; > = AS_ANIMATION_KEYFRAME_DEFAULT;
+
+// Combined animation UI for convenience (both speed and keyframe)
+#define AS_ANIMATION_UI(speedName, keyframeName, category) \
+uniform float speedName < ui_type = "slider"; ui_label = "Animation Speed"; ui_tooltip = "Controls the overall animation speed of the effect. Set to 0 to pause animation."; ui_min = AS_ANIMATION_SPEED_MIN; ui_max = AS_ANIMATION_SPEED_MAX; ui_step = AS_ANIMATION_SPEED_STEP; ui_category = category; > = AS_ANIMATION_SPEED_DEFAULT; \
+uniform float keyframeName < ui_type = "slider"; ui_label = "Animation Keyframe"; ui_tooltip = "Sets a specific point in time for the animation. Useful for finding and saving specific patterns."; ui_min = AS_ANIMATION_KEYFRAME_MIN; ui_max = AS_ANIMATION_KEYFRAME_MAX; ui_step = AS_ANIMATION_KEYFRAME_STEP; ui_category = category; > = AS_ANIMATION_KEYFRAME_DEFAULT;
+
+// --- Animation Helper Functions ---
+// Calculates animation time based on speed, keyframe, and AS_getTime()
+// Parameters:
+//   speed: Animation speed (0.0 = paused)
+//   keyframe: Animation keyframe/starting point
+// Returns: Animation time value
+float AS_getAnimationTime(float speed, float keyframe) {
+    // When animation speed is effectively zero, use keyframe directly
+    if (speed <= 0.0001) {
+        return keyframe;
+    }
+    
+    // Otherwise use animated time plus keyframe offset
+    return (AS_getTime() * speed) + keyframe;
+}
+
+#endif // __AS_ANIMATION_UI_INCLUDED
+
 // --- Math Helpers ---
-// Corrects UV coordinates for non-square aspect ratios
 // Corrects UV coordinates for non-square aspect ratios
 float2 AS_aspectCorrect(float2 uv, float width, float height) { 
     float aspect = width / height; 
     return float2((uv.x - 0.5) * aspect + 0.5, uv.y); 
 }
-    // Transforms uv so that a distance calculation results in a circle on screen
+
+// Transforms uv so that a distance calculation results in a circle on screen
 float2 AS_aspectCorrectUV(float2 uv, float aspectRatio) {
     float2 centered_uv = uv - 0.5;
     centered_uv.x *= aspectRatio;
@@ -367,85 +512,6 @@ float AS_degrees(float rad) {
 float2 AS_rescaleToScreen(float2 uv) {
     return uv * ReShade::ScreenSize.xy;
 }
-
-// --- Procedural Functions (Hashes) ---
-// 1D->1D hash: Returns pseudo-random float from 0-1 based on input float
-float AS_hash11(float n) {
-    return frac(sin(n) * 43758.5453);
-}
-
-// 2D->1D hash: Returns pseudo-random float from 0-1 based on 2D input
-float AS_hash12(float2 p) {
-    // Simple dot product version
-    return frac(sin(dot(p, float2(127.1, 311.7))) * 43758.5453);
-}
-
-// 1D->2D hash: Returns pseudo-random 2D vector with components from 0-1
-float2 AS_hash21(float n) {
-    // Combine two 1D hashes
-    return float2(AS_hash11(n), AS_hash11(n + 7.13)); // Offset second hash input
-}
-
-// 2D->2D hash: Returns pseudo-random 2D vector from 2D input
-float2 AS_hash22(float2 p) { // Renamed from AS_hash21(float2) to avoid overload confusion
-    // Combine two 2D->1D hashes
-    return float2(AS_hash12(p), AS_hash12(p + float2(7.13, 11.71))); // Offset second hash input
-}
-
-// 3D->3D hash: Returns pseudo-random 3D vector from -1 to 1 from 3D input
-// (IQ's hash function - good quality)
-float3 AS_hash33(float3 p3) {
-    p3 = frac(p3 * float3(0.1031, 0.11369, 0.13787)); // Magic numbers from Inigo Quilez
-    p3 += dot(p3, p3.yxz + 19.19);
-    return -1.0 + 2.0 * frac(float3((p3.x + p3.y) * p3.z, (p3.x + p3.z) * p3.y, (p3.y + p3.z) * p3.x));
-}
-
-// --- Procedural Functions (Voronoi Noise) ---
-// Calculates Voronoi (Worley/Cellular) noise.
-// Based on the implementation in AS_VFX_SparkleBloom.1.fx.
-// Input:
-//   x: 2D coordinate (e.g., texcoord * scale)
-//   offset: A value to vary the pattern (e.g., based on time)
-// Returns:
-//   float2:
-//     .x = Distance to the nearest feature point (F1)
-//     .y = A random value (0-1) associated with the nearest cell (e.g., cell ID hash)
-float2 AS_voronoi_F1_ID(float2 x, float offset) {
-    float2 n = floor(x); // Integer part (cell index)
-    float2 f = frac(x);  // Fractional part (position within cell)
-
-    float2 mg, mr;      // Best grid offset, best relative position vector
-    float md = 8.0;     // Minimum distance found so far (squared), init to large value
-
-    // Check 3x3 grid neighborhood around the current cell (n)
-    [unroll] // Loop hint for compiler
-    for(int j = -1; j <= 1; j++) {
-        [unroll]
-        for(int i = -1; i <= 1; i++) {
-            float2 g = float2(float(i), float(j)); // Neighbor cell grid offset (-1,0,1)
-            // Calculate a pseudo-random feature point position 'o' within the neighbor cell (n+g)
-            // Uses a 3D hash based on grid cell index and the offset parameter.
-            // AS_hash22 is used to get a preliminary hash for the 3D hash input.
-            float2 o = AS_hash33(float3(n + g, AS_hash22(n + g).x * 10.0 + offset)).xy;
-            // Scale point position from [-1, 1] to [0, 1] range
-            o = o * 0.5 + 0.5;
-            // Vector from the current fractional position 'f' to the feature point 'o' in the neighbor cell (g+o)
-            float2 r = g + o - f;
-            // Calculate squared distance
-            float d = dot(r, r);
-            // If this distance is the smallest found so far...
-            if(d < md) {
-                md = d; // Store minimum squared distance
-                mr = r; // Store vector to nearest point
-                mg = g; // Store grid offset of the cell containing the nearest point
-            }
-        }
-    }
-    // Calculate the actual distance (sqrt) and return it along with
-    // a random value associated with the nearest cell (hash of its grid index).
-    return float2(sqrt(md), AS_hash12(n + mg)); // Using AS_hash12 for the ID now
-}
-
 
 // ============================================================================
 // DEPTH, SURFACE & VISUAL EFFECTS
@@ -485,7 +551,6 @@ float3 AS_reconstructNormal(float2 texcoord) {
 
 // Returns fresnel term for a given normal and view direction
 // Assumes viewDir points from surface towards camera (e.g., viewDir = normalize(-viewSpacePos))
-// A common approximation in screen space is viewDir = (0, 0, 1) or (0, 0, -1)
 float AS_fresnel(float3 normal, float3 viewDir, float power) {
     // Ensure vectors are normalized
     normal = normalize(normal);
@@ -625,8 +690,8 @@ float AS_starMask(float2 p, float size, float points, float angle) {
 #ifndef __AS_STAGEDEPTH_UI_INCLUDED
 #define __AS_STAGEDEPTH_UI_INCLUDED
 
-#define AS_STAGEDEPTH_UI(name, label, category) \
-uniform float name < ui_type = "slider"; ui_label = label; ui_tooltip = "Controls how far back the stage effect appears (Linear Depth 0-1)."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = category; > = 0.05;
+#define AS_STAGEDEPTH_UI(name) \
+uniform float name < ui_type = "slider"; ui_label = "Effect Depth"; ui_tooltip = "Controls how far back the stage effect appears (Linear Depth 0-1)."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Stage"; > = 0.05;
 
 #endif // __AS_STAGEDEPTH_UI_INCLUDED
 
@@ -635,16 +700,16 @@ uniform float name < ui_type = "slider"; ui_label = label; ui_tooltip = "Control
 #define __AS_BLEND_UI_INCLUDED
 
 // --- Blend Mode UI Macro with default value ---
-#define AS_BLENDMODE_UI_DEFAULT(name, category, defaultMode) \
-uniform int name < ui_type = "combo"; ui_label = "Mode"; ui_items = "Normal\0Lighter Only\0Darker Only\0Additive\0Multiply\0Screen\0"; ui_category = category; > = defaultMode;
+#define AS_BLENDMODE_UI_DEFAULT(name, defaultMode) \
+uniform int name < ui_type = "combo"; ui_label = "Mode"; ui_items = "Normal\0Lighter Only\0Darker Only\0Additive\0Multiply\0Screen\0"; ui_category = "Final Mix"; > = defaultMode;
 
 // --- Blend Mode UI Macro (defaults to Normal) ---
-#define AS_BLENDMODE_UI(name, category) \
-    AS_BLENDMODE_UI_DEFAULT(name, category, 0) // Default to Normal (index 0)
+#define AS_BLENDMODE_UI(name) \
+    AS_BLENDMODE_UI_DEFAULT(name, 0) // Default to Normal (index 0)
 
 // --- Blend Amount UI Macro ---
-#define AS_BLENDAMOUNT_UI(name, category) \
-uniform float name < ui_type = "slider"; ui_label = "Strength"; ui_tooltip = "Controls the overall intensity/opacity of the effect blend."; ui_min = 0.0; ui_max = 1.0; ui_category = category; > = 1.0;
+#define AS_BLENDAMOUNT_UI(name) \
+uniform float name < ui_type = "slider"; ui_label = "Strength"; ui_tooltip = "Controls the overall intensity/opacity of the effect blend."; ui_min = 0.0; ui_max = 1.0; ui_category = "Final Mix"; > = 1.0;
 
 #endif // __AS_BLEND_UI_INCLUDED
 

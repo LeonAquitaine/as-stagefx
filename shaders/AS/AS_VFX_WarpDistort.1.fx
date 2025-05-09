@@ -65,14 +65,8 @@ AS_AUDIO_MULTIPLIER_UI(MirrorWaveAudioMult, "Wave Strength", 0.3, 1.0, "Audio Re
 // ============================================================================
 // FINAL MIX
 // ============================================================================
-uniform float BlendAmount < ui_type = "slider"; ui_label = "Amount"; ui_tooltip = "How strongly the effect is blended with the scene."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Blend"; > = 1.0;
-
-uniform int BlendMode <
-    ui_type = "combo";
-    ui_label = "Mode";
-    ui_items = "Normal\0Lighter Only\0Darker Only\0Additive\0Multiply\0Screen\0";
-    ui_category = "Final Mix";
-> = 0;
+AS_BLENDMODE_UI_DEFAULT(BlendMode, 0)
+AS_BLENDAMOUNT_UI(BlendAmount)
 
 // ============================================================================
 // DEBUG

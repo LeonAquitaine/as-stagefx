@@ -115,8 +115,8 @@ static const float AUDIO_MULTIPLIER_MAX = 3.0;
 // ============================================================================
 
 // --- Stage ---
-AS_STAGEDEPTH_UI(EffectDepth, "Effect Depth", "Stage")
-AS_ROTATION_UI(EffectSnapRotation, EffectFineRotation, "Stage")
+AS_STAGEDEPTH_UI(EffectDepth)
+AS_ROTATION_UI(EffectSnapRotation, EffectFineRotation)
 
 // --- Pattern ---
 uniform float PatternScale < ui_type = "slider"; ui_label = "Pattern Scale"; ui_tooltip = "Overall scale of the stained glass pattern."; ui_min = PATTERN_SCALE_MIN; ui_max = PATTERN_SCALE_MAX; ui_step = PATTERN_SCALE_STEP; ui_category = "Pattern"; > = PATTERN_SCALE_DEFAULT;
@@ -140,8 +140,8 @@ uniform float VignetteAmount < ui_type = "slider"; ui_label = "Vignette Amount";
 uniform float VignetteSmoothness < ui_type = "slider"; ui_label = "Vignette Smoothness"; ui_tooltip = "Adjusts the falloff of the vignette effect."; ui_min = VIGNETTE_SMOOTHNESS_MIN; ui_max = VIGNETTE_SMOOTHNESS_MAX; ui_step = VIGNETTE_SMOOTHNESS_STEP; ui_category = "Post Processing"; > = VIGNETTE_SMOOTHNESS_DEFAULT;
 
 // --- Final Mix ---
-AS_BLENDMODE_UI(BlendMode, "Final Mix")
-AS_BLENDAMOUNT_UI(BlendStrength, "Final Mix")
+AS_BLENDMODE_UI(BlendMode)
+AS_BLENDAMOUNT_UI(BlendStrength)
 
 // --- Debug ---
 AS_DEBUG_MODE_UI("Off\0Show Audio Reactivity\0")

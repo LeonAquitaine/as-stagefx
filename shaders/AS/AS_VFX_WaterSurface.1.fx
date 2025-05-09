@@ -96,8 +96,8 @@ uniform float WaterLevel < ui_type = "slider"; ui_label = "Water Level"; ui_tool
 uniform float WaterFadeSize < ui_type = "slider"; ui_label = "Water Edge Fade"; ui_tooltip = "Size of the fade at the water's edge."; ui_min = 0.0; ui_max = 0.1; ui_step = 0.001; ui_category = "Stage"; > = 0.005;
 
 // --- Final Mix ---
-AS_BLENDMODE_UI(BlendMode, "Final Mix")
-AS_BLENDAMOUNT_UI(BlendAmount, "Final Mix")
+AS_BLENDMODE_UI_DEFAULT(BlendMode, 0)
+AS_BLENDAMOUNT_UI(BlendAmount)
 
 // --- Debug ---
 AS_DEBUG_MODE_UI("Normal\0Wave Distortion\0Depth Map\0Reflection Horizon\0Wave Scale Factor\0Reflection Coord Y\0") // Updated Debug Mode

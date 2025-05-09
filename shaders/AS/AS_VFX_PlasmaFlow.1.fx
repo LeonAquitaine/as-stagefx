@@ -31,7 +31,7 @@
 #ifndef __AS_VFX_PlasmaFlow_1_fx
 #define __AS_VFX_PlasmaFlow_1_fx
 
-#include "AS_Utils.1.fxh"
+#include "AS_Noise.1.fxh"
 #include "AS_Palettes.1.fxh"
 
 // --- Tunable Constants ---
@@ -103,11 +103,11 @@ AS_AUDIO_SOURCE_UI(AudioComplexitySource, "Complexity Source", AS_AUDIO_TREBLE, 
 AS_AUDIO_MULTIPLIER_UI(AudioComplexityMult, "Complexity Strength", 1.0, 4.0, "Audio Reactivity")
 
 // --- Stage Distance ---
-AS_STAGEDEPTH_UI(EffectDepth, "Distance", "Stage Distance")
+AS_STAGEDEPTH_UI(EffectDepth)
 
 // --- Final Mix ---
-AS_BLENDMODE_UI(BlendMode, "Final Mix")
-AS_BLENDAMOUNT_UI(BlendAmount, "Final Mix")
+AS_BLENDMODE_UI_DEFAULT(BlendMode, 0)
+AS_BLENDAMOUNT_UI(BlendAmount)
 
 // --- Debug ---
 AS_DEBUG_MODE_UI("Off\0Noise\0DomainWarp\0Audio\0")

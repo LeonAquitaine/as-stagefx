@@ -37,7 +37,7 @@
 // ============================================================================
 // INCLUDES
 // ============================================================================
-#include "AS_Utils.1.fxh"
+#include "AS_Noise.1.fxh"
 
 // ============================================================================
 // HELPER MACROS & CONSTANTS
@@ -127,13 +127,13 @@ uniform float BokehSize < ui_type = "slider"; ui_label = "Size"; ui_min = BOKEH_
 uniform float BokehStrength < ui_type = "slider"; ui_label = "Strength"; ui_min = BOKEH_STRENGTH_MIN; ui_max = BOKEH_STRENGTH_MAX; ui_category = "Stage Effects"; > = BOKEH_STRENGTH_DEFAULT;
 
 // --- Stage Settings ---
-AS_STAGEDEPTH_UI(StageDepth, "Distance", "Stage") // Renamed category
-AS_ROTATION_UI(GlobalSnapRotation, GlobalFineRotation, "Stage") // Added global rotation
+AS_STAGEDEPTH_UI(StageDepth) // Renamed category
+AS_ROTATION_UI(GlobalSnapRotation, GlobalFineRotation) // Added global rotation
 
 // --- Blend Settings ---
 // Using the new macro with Additive (3) as the default blend mode
-AS_BLENDMODE_UI_DEFAULT(BlendMode, "Final Mix", 3)
-AS_BLENDAMOUNT_UI(BlendAmount, "Final Mix")
+AS_BLENDMODE_UI_DEFAULT(BlendMode, 0)
+AS_BLENDAMOUNT_UI(BlendAmount)
 
 // --- Debug Settings ---
 AS_DEBUG_MODE_UI("Off\0Spotlights\0Bokeh\0")

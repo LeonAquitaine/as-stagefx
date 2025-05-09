@@ -131,8 +131,9 @@ static const float FINAL_O_U_DOT_DIVISOR_STEP = 10.0;
 static const float FINAL_O_U_DOT_DIVISOR_DEFAULT = 250.0;
 
 // --- Stage ---
-AS_STAGEDEPTH_UI(EffectDepth, "Effect Depth", "Stage")
-AS_ROTATION_UI(EffectSnapRotation, EffectFineRotation, "Stage")
+AS_STAGEDEPTH_UI(EffectDepth)
+AS_ROTATION_UI(EffectSnapRotation, EffectFineRotation)
+AS_POSITION_SCALE_UI(Position, Scale)
 
 // --- Appearance ---
 uniform float U_CoordScalingFactor < ui_type = "slider"; ui_label = "Scaling Factor"; ui_tooltip = "Controls the initial zoom/scale of the effect. Smaller values zoom in (effect appears larger)."; ui_min = U_COORD_SCALING_MIN; ui_max = U_COORD_SCALING_MAX; ui_step = U_COORD_SCALING_STEP; ui_category = "Appearance"; > = U_COORD_SCALING_DEFAULT;
@@ -166,8 +167,8 @@ AS_DECLARE_CUSTOM_PALETTE(ZippyZaps_, "Palette & Style")
 uniform float ColorCycleSpeed < ui_type = "slider"; ui_label = "Color Cycle Speed"; ui_tooltip = "Controls how fast colors cycle. 0 = static"; ui_min = -5.0; ui_max = 5.0; ui_step = 0.1; ui_category = "Palette & Style"; > = 0.0;
 
 // --- Final Mix ---
-AS_BLENDMODE_UI(BlendMode, "Final Mix")
-AS_BLENDAMOUNT_UI(BlendStrength, "Final Mix")
+AS_BLENDMODE_UI(BlendMode)
+AS_BLENDAMOUNT_UI(BlendStrength)
 
 // --- Debug ---
 AS_DEBUG_MODE_UI("Off\0Show Audio Reactivity\0")

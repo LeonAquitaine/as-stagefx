@@ -90,7 +90,7 @@ uniform float2 BoomSticker_ScaleXY < ui_category = "Appearance"; ui_label = "Sca
 uniform float2 BoomSticker_PosXY < ui_category = "Appearance"; ui_label = "Position"; ui_type = "slider"; ui_min = POSITION_MIN; ui_max = POSITION_MAX; ui_step = 0.001; > = float2(POSITION_DEFAULT, POSITION_DEFAULT);
 
 // Use standard rotation controls from AS_Utils
-AS_ROTATION_UI(BoomSticker_SnapRotate, BoomSticker_Rotate, "Appearance")
+AS_ROTATION_UI(BoomSticker_SnapRotate, BoomSticker_Rotate)
 
 // ============================================================================
 // ANIMATION
@@ -110,12 +110,18 @@ AS_AUDIO_MULTIPLIER_UI(BoomSticker_AudioIntensity, "Audio Intensity", AUDIO_INTE
 // ============================================================================
 // STAGE DISTANCE
 // ============================================================================
-AS_STAGEDEPTH_UI(BoomSticker_Depth, "Effect Depth", "Stage Distance")
+AS_STAGEDEPTH_UI(BoomSticker_Depth)
 
 // ============================================================================
 // DEBUG
 // ============================================================================
 AS_DEBUG_MODE_UI("Off\0Beat\0Depth\0Audio Source\0")
+
+// ============================================================================
+// BLENDING
+// ============================================================================
+AS_BLENDMODE_UI_DEFAULT(BlendMode, 0)
+AS_BLENDAMOUNT_UI(BlendAmount)
 
 // ============================================================================
 // HELPER FUNCTIONS
