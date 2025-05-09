@@ -115,7 +115,7 @@ This release includes important fixes and improvements:
    - Moved all magic numbers to properly named constants in the tunable constants section
    - Improved resolution independence and aspect ratio correction
 
-3. **Improved AS_VFX_MeltWave.1.fx**
+3. **Improved AS_BGX_MeltWave.1.fx**
    - Fixed rotation direction to ensure negative values rotate counterclockwise
    - Implemented proper resolution-independent coordinate transformation
    - Updated position controls to use the standard -1.5 to 1.5 range
@@ -123,5 +123,3 @@ This release includes important fixes and improvements:
    - Updated documentation header to accurately reflect current features
 
 For the full changelog and documentation, please refer to the main README.md.
-
----
