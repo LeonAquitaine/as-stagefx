@@ -1,5 +1,5 @@
 /**
- * AS_VFX_PlasmaFlow.1.fx - Audio-Reactive Plasma/Flow Field Shader
+ * AS_BGX_PlasmaFlow.1.fx - Audio-Reactive Plasma/Flow Field Shader
  * Author: Leon Aquitaine
  * License: Creative Commons Attribution 4.0 International
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
@@ -28,8 +28,8 @@
 // ============================================================================
 // TECHNIQUE GUARD - Prevents duplicate loading of the same shader
 // ============================================================================
-#ifndef __AS_VFX_PlasmaFlow_1_fx
-#define __AS_VFX_PlasmaFlow_1_fx
+#ifndef __AS_BGX_PlasmaFlow_1_fx
+#define __AS_BGX_PlasmaFlow_1_fx
 
 #include "AS_Noise.1.fxh"
 #include "AS_Palette.1.fxh"
@@ -221,11 +221,11 @@ float4 PS_PlasmaFlow(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_
     return float4(finalColor, 1.0);
 }
 
-technique AS_PlasmaFlow_1 < ui_label = "[AS] VFX: Plasma Flow"; ui_tooltip = "Audio-reactive plasma/flow field for groovy, atmospheric visuals."; > {
+technique AS_PlasmaFlow_1 < ui_label = "[AS] BGX: Plasma Flow"; ui_tooltip = "Audio-reactive plasma/flow field for groovy, atmospheric visuals."; > {
     pass {
         VertexShader = PostProcessVS;
         PixelShader = PS_PlasmaFlow;
     }
 }
 
-#endif // __AS_VFX_PlasmaFlow_1_fx
+#endif // __AS_BGX_PlasmaFlow_1_fx
