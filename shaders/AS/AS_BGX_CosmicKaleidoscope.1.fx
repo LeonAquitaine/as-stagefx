@@ -42,7 +42,7 @@
 // ============================================================================
 #include "ReShade.fxh"
 #include "AS_Utils.1.fxh"
-#include "AS_Palettes.1.fxh"
+#include "AS_Palette.1.fxh"
 
 namespace ASCosmicKaleidoscope {
 // ============================================================================
@@ -75,7 +75,7 @@ static const float EPSILON = 1e-5f; static const float HALF_POINT = 0.5f; // Rem
 // --- UI Uniform Definitions ---
 AS_STAGEDEPTH_UI(EffectDepth)
 AS_ROTATION_UI(EffectSnapRotation, EffectFineRotation)
-uniform float3 CameraPositionOffset < ui_type = "drag"; ui_label = "Camera Position Offset"; ui_min = -5.0; ui_max = 5.0; ui_step = 0.05; ui_category = "Stage"; > = float3(0.0, 0.0, 0.0);
+AS_POSITION_SCALE_UI(Position, Scale)
 uniform int UI_Iterations < ui_type = "slider"; ui_label = "Fractal Iterations"; ui_min = ITERATIONS_MIN; ui_max = ITERATIONS_MAX; ui_category = "Fractal Parameters"; > = ITERATIONS_DEFAULT;
 uniform float UI_Formuparam < ui_type = "slider"; ui_label = "Fractal Parameter"; ui_min = FORMUPARAM_MIN; ui_max = FORMUPARAM_MAX; ui_step = FORMUPARAM_STEP; ui_category = "Fractal Parameters"; > = FORMUPARAM_DEFAULT;
 uniform float UI_Tile < ui_type = "slider"; ui_label = "Tiling / Domain Repetition"; ui_min = TILE_MIN; ui_max = TILE_MAX; ui_step = TILE_STEP; ui_category = "Fractal Parameters"; > = TILE_DEFAULT;
@@ -240,9 +240,13 @@ float4 ASCosmicKaleidoscopePS(float4 vpos : SV_POSITION, float2 texcoord : TEXCO
     float2 uv = texcoord * 2.0f - 1.0f; 
     uv.x *= iResolution.x / iResolution.y; 
 
-    float3 ro = float3(0.0f, 0.0f, iTime * CameraMoveSpeed * audio_CamMove) + CameraPositionOffset; 
-    float3 rd = normalize(float3(uv * UI_Zoom, 1.0f)); 
-
+    // Use Position and Scale from the AS_POSITION_SCALE_UI macro
+    float3 ro = float3(0.0f, 0.0f, 1.0f); // Base camera position
+    ro.z *= Scale; // Apply Z scaling from the Scale uniform
+    ro.z += iTime * CameraMoveSpeed * audio_CamMove; // Add time-based movement
+    ro.xy -= Position; // FIXED: Invert Position for correct movement direction
+    
+    float3 rd = normalize(float3(uv * UI_Zoom, 1.0f));
     float rotationRadians = AS_getRotationRadians(EffectSnapRotation, EffectFineRotation);
     rd.xy = mul(rd.xy, rotMat(rotationRadians)); // Apply screen-space rotation to direction
 

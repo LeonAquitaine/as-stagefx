@@ -45,7 +45,7 @@
 // ============================================================================
 #include "ReShade.fxh" // Standard ReShade functions and uniforms
 #include "AS_Utils.1.fxh"  // Utilities and audio reactivity
-#include "AS_Palettes.1.fxh" // Color palette support
+#include "AS_Palette.1.fxh" // Color palette support
 
 // ============================================================================
 // TUNABLE CONSTANTS (Defaults and Ranges)

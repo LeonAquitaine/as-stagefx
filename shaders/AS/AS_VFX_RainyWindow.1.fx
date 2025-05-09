@@ -354,8 +354,7 @@ float4 PS_RainyWindow(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV
 // ============================================================================
 // TECHNIQUE
 // ============================================================================
-technique AS_VFX_RainyWindow <
-    ui_tooltip = "Realistic rainy window distortion effect with customizable droplet patterns and Glass Roughness controls.";
+technique AS_VFX_RainyWindow <ui_label="[AS] VFX: Rainy Window"; ui_tooltip = "Realistic rainy window distortion effect with customizable droplet patterns and Glass Roughness controls.";
 >
 {
     pass {

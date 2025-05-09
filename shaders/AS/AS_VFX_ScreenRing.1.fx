@@ -37,7 +37,7 @@
 
 #include "ReShade.fxh"
 #include "AS_Utils.1.fxh" // Includes ReShadeUI.fxh, provides UI macros, helpers
-#include "AS_Palettes.1.fxh" // Color palette support
+#include "AS_Palette.1.fxh" // Color palette support
 
 // ============================================================================
 // TEXTURES

@@ -32,7 +32,7 @@
 #define __AS_VFX_PlasmaFlow_1_fx
 
 #include "AS_Noise.1.fxh"
-#include "AS_Palettes.1.fxh"
+#include "AS_Palette.1.fxh"
 
 // --- Tunable Constants ---
 static const int PLASMA_COLORS = 6;
@@ -101,6 +101,9 @@ AS_AUDIO_SOURCE_UI(AudioColorSource, "Color Source", AS_AUDIO_BASS, "Audio React
 AS_AUDIO_MULTIPLIER_UI(AudioColorMult, "Color Strength", 1.0, 4.0, "Audio Reactivity")
 AS_AUDIO_SOURCE_UI(AudioComplexitySource, "Complexity Source", AS_AUDIO_TREBLE, "Audio Reactivity")
 AS_AUDIO_MULTIPLIER_UI(AudioComplexityMult, "Complexity Strength", 1.0, 4.0, "Audio Reactivity")
+
+// --- Color & Style ---
+uniform float ColorCycleSpeed < ui_type = "slider"; ui_label = "Color Cycle Speed"; ui_tooltip = "Controls how fast colors cycle when using palette colors. 0 = static"; ui_min = -1.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Color & Style"; ui_spacing = 1; > = 0.05;
 
 // --- Stage Distance ---
 AS_STAGEDEPTH_UI(EffectDepth)

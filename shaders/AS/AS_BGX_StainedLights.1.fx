@@ -46,7 +46,7 @@
 // ============================================================================
 #include "ReShade.fxh"
 #include "AS_Utils.1.fxh"
-#include "AS_Palettes.1.fxh"
+#include "AS_Palette.1.fxh"
 
 namespace ASStainedLights {
 // ============================================================================

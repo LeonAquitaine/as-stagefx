@@ -34,7 +34,7 @@
 #define __AS_VFX_SpectrumRing_1_fx
 
 #include "AS_Utils.1.fxh"
-#include "AS_Palettes.1.fxh"
+#include "AS_Palette.1.fxh"
 
 // --- Tunable Constants ---
 static const int REPETITIONS_MIN = 1;

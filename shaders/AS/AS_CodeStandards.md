@@ -10,7 +10,9 @@
 
 These requirements are non-negotiable for all AS StageFX shaders:
 
-1. **One-Line Uniform Declarations**: All uniform declarations MUST be one-liners. Multi-line uniform declarations break parsing tools and make code harder to maintain.
+1. **Resolution Independence**: All effects must render consistently across different resolutions and aspect ratios.
+
+2. **One-Line Uniform Declarations**: All uniform declarations MUST be one-liners. Multi-line uniform declarations break parsing tools and make code harder to maintain.
    ```hlsl
    // CORRECT ✓
    uniform float MyParameter < ui_type = "slider"; ui_label = "Clear Label"; ui_tooltip = "Concise explanation"; ui_min = MYPARAM_MIN; ui_max = MYPARAM_MAX; ui_step = 0.01; ui_category = "Standard Category"; > = MYPARAM_DEFAULT;
@@ -25,7 +27,7 @@ These requirements are non-negotiable for all AS StageFX shaders:
    > = MYPARAM_DEFAULT;
    ```
 
-2. **Technique Guards**: Every shader must use proper technique guards to prevent duplicate loading.
+3. **Technique Guards**: Every shader must use proper technique guards to prevent duplicate loading.
    ```hlsl
    #ifndef __AS_LFX_ShaderName_1_fx
    #define __AS_LFX_ShaderName_1_fx
@@ -35,11 +37,9 @@ These requirements are non-negotiable for all AS StageFX shaders:
    #endif // __AS_LFX_ShaderName_1_fx
    ```
 
-3. **Mathematical Constants**: Always use AS_Utils constants (AS_PI, AS_TWO_PI, etc.) instead of magic numbers.
+4. **Mathematical Constants**: Always use AS_Utils constants (AS_PI, AS_TWO_PI, etc.) instead of magic numbers.
 
-4. **Standardized UI Macros**: Use the predefined macros from AS_Utils.1.fxh for common parameters.
-
-5. **Resolution Independence**: All effects must render consistently across different resolutions and aspect ratios.
+5. **Standardized UI Macros**: Use the predefined macros from AS_Utils.1.fxh for common parameters.
 
 ## File Organization
 
