@@ -14,12 +14,20 @@ AS StageFX is a collection of high-quality visual effects shaders for ReShade, d
 
 ### Latest Updates
 
+**2025-05-09: Shader Updates & Fixes (v1.6.1)**
+- **AS_VFX_WarpDistort.1.fx**:
+    - Removed rotation controls; effect is now screen-aligned.
+    - Standardized position controls (`WarpCenter`): default (0,0) is screen center, UI range +/-1 maps to the central screen square.
+    - Clarified `MirrorShape` behavior: "Circular" (default, value 0) applies aspect correction for a true circle; "Resolution-Relative" (value 1) does not, allowing shape to conform to screen aspect.
+    - Updated documentation header to reflect these changes.
+- General review and updates to other shader names and descriptions for consistency and clarity.
+
 **2025-05-08: Maintenance Update**
 - Added robust Perlin Noise functions to AS_Utils.1.fxh
 - Fixed Glass Roughness in AS_VFX_RainyWindow.1.fx to properly affect droplet shapes
-- Improved resolution independence in AS_VFX_MeltWave.1.fx
-- Fixed rotation direction consistency in AS_VFX_MeltWave.1.fx
-- Removed deprecated Border Intensity parameter from AS_VFX_MeltWave.1.fx
+- Improved resolution independence in AS_BGX_MeltWave.1.fx
+- Fixed rotation direction consistency in AS_BGX_MeltWave.1.fx
+- Removed deprecated Border Intensity parameter from AS_BGX_MeltWave.1.fx
 - Standardized magic number handling across shaders
 
 ---
@@ -54,31 +62,12 @@ Most shaders feature seamless integration with **[Listeningway](https://github.c
 
 AS-StageFX includes a variety of distinct visual effects organized into categories:
 
-### Lighting Effects (LFX)
-- **Stage Spotlights** - Up to 4 customizable directional stage lights with beam/glow effects
-- **Laser Show** - Multiple colored laser beams emanating from a user-defined origin
-- **Candle Flame** - Up to 4 Procedural candle flames with realistic animation and color gradients
-
-### Visual Effects (VFX)
-- **Digital Artifacts** - Audio-driven digital artifacts, glitches and hologram effects
-- **Sparkle Bloom** - Dynamic sparkle effect responding to scene lighting and camera movement
-- **Motion Trails** - Music-reactive, depth-based motion trails for dramatic visual effects
-- **Plasma Flow** - Smooth, swirling, organic plasma-like patterns with audio reactivity
-- **Spectrum Ring** - Circular audio visualizer displaying Listeningway frequency bands
-- **Stencil Mask** - Isolates foreground subjects with customizable borders and projected shadows
-- **VU Meter** - Background VU meter with multiple presentation modes
-- **Boom Sticker** - Texture overlay with placement, scale, rotation, and audio reactivity
-- **Warp Distort** - Circular mirrored/wavy region that pulses and ripples in sync with audio
-- **Tilted Grid** - Rotatable pixelating grid with adjustable borders and chamfered corners
-- **Rainy Window** - Realistic rainy window effect with multi-layered droplets
-- **Water Surface** - Realistic water surface with depth-based reflection horizon
-- **Screen Ring** - Customizable circular rings for framing subjects
-- **Broken Glass** - Broken glass/mirror effect with customizable crack patterns
-
 ### Background Effects (BGX)
 - **Cosmic Kaleidoscope** - Kaleidoscopic star field with dynamic symmetry and rotation
-- **Infinite Zoom** - Infinitely zooming fractal pattern creating a tunnel/vortex effect
+- **Light Ripples** - Animated light ripple effects like waves spreading across the screen
 - **Light Wall** - Configurable grids of light panels with patterns, 3D perspective, and audio reactivity
+- **Melt Wave** - Customizable melting/warping effect with resolution-independent positioning
+- **Plasma Flow** - Smooth, swirling, organic plasma-like patterns with audio reactivity
 - **Shine On** - Dynamic light ray backgrounds for dreamy or celestial atmospheres
 - **Stained Lights** - Colorful stained glass light patterns with customizable design
 - **Time Crystal** - Crystal-like temporal distortion effects with configurable patterns
@@ -86,6 +75,26 @@ AS-StageFX includes a variety of distinct visual effects organized into categori
 
 ### Graphic Effects (GFX)
 - **Multi-Layer Halftone** - Customizable halftone screen patterns with multiple layers
+
+### Lighting Effects (LFX)
+- **Candle Flame** - Up to 4 Procedural candle flames with realistic animation and color gradients
+- **Laser Show** - Multiple colored laser beams emanating from a user-defined origin
+- **Stage Spotlights** - Up to 4 customizable directional stage lights with beam/glow effects
+
+### Visual Effects (VFX)
+- **Boom Sticker** - Texture overlay with placement, scale, rotation, and audio reactivity
+- **Broken Glass** - Broken glass/mirror effect with customizable crack patterns
+- **Digital Artifacts** - Audio-driven digital artifacts, glitches and hologram effects
+- **Motion Trails** - Music-reactive, depth-based motion trails for dramatic visual effects
+- **Rainy Window** - Realistic rainy window effect with multi-layered droplets
+- **Screen Ring** - Customizable circular rings for framing subjects
+- **Sparkle Bloom** - Dynamic sparkle effect responding to scene lighting and camera movement
+- **Spectrum Ring** - Circular audio visualizer displaying Listeningway frequency bands
+- **Stencil Mask** - Isolates foreground subjects with customizable borders and projected shadows
+- **Tilted Grid** - Rotatable pixelating grid with adjustable borders and chamfered corners
+- **VU Meter** - Background VU meter with multiple presentation modes
+- **Warp Distort** - Audio-reactive warp effect with pulsing radius and wave effects
+- **Water Surface** - Realistic water surface with depth-based reflection horizon
 
 **Detailed descriptions and visual examples of each shader can be found in the [Shader Gallery](docs/GALLERY.md).**
 
@@ -119,7 +128,6 @@ Most shaders in the AS_StageFX collection are conversions and adaptations from o
 
 - **Inigo Quilez** - Pioneering work in procedural graphics whose articles inspired:
   - Cosmic Kaleidoscope: Based on "Domain Warping" and "Kaleidoscopic IFS" techniques
-  - Infinite Zoom: Adapted from "Distance Functions" and "Fractal Brownian Motion" principles
   - ZippyZaps: Electric arc simulation based on "2D SDF" principles
   - Visit his website: [https://iquilezles.org](https://iquilezles.org) 
 
