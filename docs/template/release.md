@@ -4,7 +4,7 @@ This release includes the AS-StageFX shader collection for ReShade.
 
 ## Installation
 
-1.  **Download:** Get the [`as-stagefx-${VERSION}.zip` file](as-stagefx-${VERSION}.zip)
+1.  **Download:** Get the [`as-stagefx-${VERSION}.zip`](https://github.com/LeonAquitaine/as-stagefx/releases/download/${VERSION}/as-stagefx-${VERSION}.zip) file.
 2.  **Extract:** Unzip the archive. You will find `shaders` and `textures` folders.
 3.  **Copy Files:**
     *   Copy the `AS` folder (from the extracted `shaders` folder) into your game's `reshade-shaders\Shaders\` directory.
