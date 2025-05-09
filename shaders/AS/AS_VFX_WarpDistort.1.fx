@@ -1,5 +1,5 @@
 /**
- * AS_VFX_WarpDistort.1.fx - Audio-Reactive Circular Mirror Effect
+ * AS_VFX_WarpDistort.1.fx - Audio-Reactive Warp Effect
  * Author: Leon Aquitaine
  * License: Creative Commons Attribution 4.0 International
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
@@ -7,22 +7,29 @@
  * ===================================================================================
  *
  * DESCRIPTION:
- * This shader creates a circular mirrored (or wavy) region behind the character that pulses
- * and warps in sync with music using Listeningway audio data. The effect is highly customizable
- * and designed for impactful, professional-grade visuals.
+ * This shader creates a customizable mirrored or wavy warp effect that pulses
+ * and distorts in sync with audio. The effect's position and depth are adjustable using
+ * standardized controls.
  *
  * FEATURES:
- * - Circular or elliptical mirror region with soft edge
- * - Audio-reactive pulsing, radius, and wave/ripple effects
- * - User-selectable audio source (volume, beat, bass, treble)
- * - Adjustable mirror strength, wave frequency, and edge softness
- * - Debug visualizations for mask and audio
+ * - Warp shape can be truly circular or relative to screen resolution (potentially elliptical).
+ * - Audio-reactive pulsing for radius and wave/ripple effects.
+ * - User-selectable audio source (e.g., volume, beat).
+ * - Adjustable mirror strength, wave frequency, and edge softness.
+ * - Standardized position controls (WarpCenter for X/Y) and depth control (WarpDepth).
+ * - Position control (WarpCenter) default (0,0) is screen center; UI range +/-1 maps to the central screen square.
+ * - No rotation controls; effect is screen-aligned.
+ * - Debug visualizations for mask and audio levels.
  *
  * IMPLEMENTATION OVERVIEW:
- * 1. The shader computes the distance from each pixel to the user-defined center.
- * 2. If within the (audio-reactive) radius, the scene is mirrored or warped.
- * 3. The radius, wave, and mirror strength are modulated by the selected Listeningway source.
- * 4. The effect fades out at the edge for a natural look.
+ * 1. The shader calculates pixel distances from a user-defined center point (WarpCenter).
+ *    WarpCenter coordinates are scaled (x0.5) to map UI range of +/-1 to +/-0.5 in centered, aspect-corrected space.
+ * 2. The 'MirrorShape' parameter (UI: "Circular" / "Resolution-Relative") determines how distances are treated for aspect ratio:
+ *    - "Circular" (UI option 0, default): Renders an effect shaped by the screen's aspect ratio (e.g., elliptical on widescreen displays if not corrected by user). This mode applies internal aspect correction to the distance calculation.
+ *    - "Resolution-Relative" (UI option 1): Does not apply internal aspect correction to the distance calculation, making the effect relative to screen resolution.
+ * 3. Within an audio-modulated radius, the scene is distorted based on wave and mirror strength parameters.
+ * 4. The radius, wave intensity, and mirror strength can be modulated by selected audio sources.
+ * 5. The effect has a soft fade at its edges. Effect is depth-tested using WarpDepth.
  *
  * ===================================================================================
  */
@@ -108,11 +115,12 @@ float4 PS_AudioMirror(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV
 
     // --- Distance and Direction in Effect Space --- 
     float2 uv_for_calc = vec_pixel_from_center_local;
-    if (MirrorShape == 1) { // Circular shape: correct for aspect ratio distortion for distance/direction calc
+    if (MirrorShape == 0) { // UI "Circular" (default): Correct for aspect ratio to make it truly circular.
         if (aspect_ratio != 0.0) {
             uv_for_calc.x /= aspect_ratio;
         }
     }
+    // else MirrorShape == 1 (UI "Resolution-Relative"): No correction, shape is relative to resolution aspect.
 
     float dist = length(uv_for_calc);
     float2 dir = float2(0.0, 0.0);
@@ -130,7 +138,7 @@ float4 PS_AudioMirror(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV
     float wave = sin(dist * MirrorWaveFreq * AS_TWO_PI + time * 2.0) * (MirrorWaveStrength + waveAudio * MirrorWaveAudioMult);
 
     // --- Source Coordinate Calculation in Effect Space --- 
-    // uv_for_calc is the current pixel's position in local (circularized if MirrorShape==1) effect space.
+    // uv_for_calc is the current pixel's position in local (circularized if MirrorShape==0) effect space.
     float2 mirrorCoord_source_local_circular = dir * (radius - (dist - wave)); // Warped source
     float2 reflected_source_local_circular = uv_for_calc * -1.0 + 2.0 * (dir * radius); // Mirrored source
     
@@ -139,9 +147,9 @@ float4 PS_AudioMirror(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV
                                                 mask);
 
     // --- Transform Source Coordinate back to Screen Texcoord Space ---
-    // 1. Un-circularize (if MirrorShape==1) to get back to aspected local space (relative to effect center)
+    // 1. Un-circularize (if MirrorShape==0) to get back to aspected local space (relative to effect center)
     float2 final_sample_vec_local_aspected = final_sample_vec_local_circular;
-    if (MirrorShape == 1) {
+    if (MirrorShape == 0) { // If it was made circular, revert the aspect correction for screen mapping.
         final_sample_vec_local_aspected.x *= aspect_ratio;
     }
 
