@@ -8,10 +8,10 @@ This gallery provides detailed descriptions and visual examples of all shaders i
 
 <table>
   <tr>
-    <td width="50%"><strong>LFX: Stage Spotlights</strong> (<code>AS_LFX_StageSpotlights.1.fx</code>)<br>
-      Add up to 3 customizable directional stage lights with realistic beam/glow effects, depth masking, and audio-reactive intensity and movement.<br><em>Technique: [AS] Stage Spotlights</em></td>
+    <td width="50%"><strong>LFX: Candle Flame</strong> (<code>AS_LFX_CandleFlame.1.fx</code>)<br>
+      Creates procedural candle flames with realistic animation, color gradients, and audio reactivity. Supports multiple flame instances with individual controls for position, size, and appearance.<br><em>Technique: [AS] LFX: Candle Flame</em></td>
     <td width="50%"><div style="text-align:center">
-      <img src="https://github.com/user-attachments/assets/73e1081b-147e-4355-b867-d4964238245b" alt="Spotlights Effect" style="max-width:100%;">
+      <img src="https://github.com/user-attachments/assets/e4ad780c-dd65-4684-b052-20acf4626ac3" alt="Candle Flame Effect" style="max-width:100%;">
     </div></td>
   </tr>
   <tr>
@@ -22,10 +22,10 @@ This gallery provides detailed descriptions and visual examples of all shaders i
     </div></td>
   </tr>
   <tr>
-    <td width="50%"><strong>LFX: Candle Flame</strong> (<code>AS_LFX_CandleFlame.1.fx</code>)<br>
-      Creates procedural candle flames with realistic animation, color gradients, and audio reactivity. Supports multiple flame instances with individual controls for position, size, and appearance.<br><em>Technique: [AS] LFX: Candle Flame</em></td>
+    <td width="50%"><strong>LFX: Stage Spotlights</strong> (<code>AS_LFX_StageSpotlights.1.fx</code>)<br>
+      Add up to 3 customizable directional stage lights with realistic beam/glow effects, depth masking, and audio-reactive intensity and movement.<br><em>Technique: [AS] Stage Spotlights</em></td>
     <td width="50%"><div style="text-align:center">
-      <img src="https://github.com/user-attachments/assets/e4ad780c-dd65-4684-b052-20acf4626ac3" alt="Candle Flame Effect" style="max-width:100%;">
+      <img src="https://github.com/user-attachments/assets/73e1081b-147e-4355-b867-d4964238245b" alt="Spotlights Effect" style="max-width:100%;">
     </div></td>
   </tr>
 </table>
@@ -36,17 +36,24 @@ This gallery provides detailed descriptions and visual examples of all shaders i
 
 <table>
   <tr>
+    <td width="50%"><strong>VFX: Boom Sticker</strong> (<code>AS_VFX_BoomSticker.1.fx</code>)<br>
+      Displays a texture overlay ("sticker") with controls for placement, scale, rotation, and audio reactivity. Perfect for adding overlays that react to music.<br><em>Technique: [AS] Boom Sticker</em></td>
+    <td width="50%"><div style="text-align:center">
+      <img src="https://github.com/user-attachments/assets/ee8e98b8-198b-4a65-a40d-032eca60dcc5" alt="Boom Sticker Effect" style="max-width:100%;">
+    </div></td>
+  </tr>
+  <tr>
+    <td width="50%"><strong>VFX: Broken Glass</strong> (<code>AS_VFX_BrokenGlass.1.fx</code>)<br>
+      Simulates a broken glass or mirror effect with customizable crack patterns, distortion, and audio reactivity for dynamic shattering visualization.<br><em>Technique: [AS] VFX: Broken Glass</em></td>
+    <td width="50%"><div style="text-align:center">
+      <!-- Placeholder for future image -->
+    </div></td>
+  </tr>
+  <tr>
     <td width="50%"><strong>VFX: Digital Artifacts</strong> (<code>AS_VFX_DigitalArtifacts.1.fx</code>)<br>
       Applies audio-driven digital artifacts, glitches and hologram effects, including scanlines, RGB split, jitter, and pulsing synced to music.</td>
     <td width="50%"><div style="text-align:center">
       <img src="https://github.com/user-attachments/assets/6786cb0a-f2c7-4d82-8584-1c669c7513ea" alt="Digital Artifacts Effect" style="max-width:100%;">
-    </div></td>
-  </tr>
-  <tr>
-    <td width="50%"><strong>VFX: Sparkle Bloom</strong> (<code>AS_VFX_SparkleBloom.1.fx</code>)<br>
-      Creates a realistic, dynamic sparkle effect on surfaces that responds to scene lighting, depth, camera movement, and audio. Includes bloom and fresnel effects.</td>
-    <td width="50%"><div style="text-align:center">
-      <img src="https://github.com/user-attachments/assets/a0998834-4795-414e-a685-9c7ab685a515" alt="Sparkle Bloom Effect" style="max-width:100%;">
     </div></td>
   </tr>
   <tr>
@@ -57,10 +64,24 @@ This gallery provides detailed descriptions and visual examples of all shaders i
     </div></td>
   </tr>
   <tr>
-    <td width="50%"><strong>VFX: Plasma Flow</strong> (<code>AS_VFX_PlasmaFlow.1.fx</code>)<br>
-      Generates smooth, swirling, organic plasma-like patterns with enhanced palette options, domain warping, and strong audio reactivity. Ideal for music video backgrounds and atmospheric visuals.</td>
+    <td width="50%"><strong>VFX: Rainy Window</strong> (<code>AS_VFX_RainyWindow.1.fx</code>)<br>
+      Creates a realistic rainy window effect with multi-layered droplets that distort the scene behind them. Features adjustable rain density, glass roughness for creating textured glass effects with irregular droplet shapes, and audio-reactive parameters. Supports rotation and resolution scaling for consistent appearance across displays.<br><em>Technique: [AS] VFX: Rainy Window</em></td>
     <td width="50%"><div style="text-align:center">
-      <img src="https://github.com/user-attachments/assets/ba95325d-eff0-439e-a452-567675da84fe" alt="Plasma Flow Effect" style="max-width:100%;">
+      <img src="https://github.com/user-attachments/assets/94601169-e214-4a45-8879-444b64c65d33" alt="Rainy Window Effect" style="max-width:100%;">
+    </div></td>
+  </tr>
+  <tr>
+    <td width="50%"><strong>VFX: Screen Ring</strong> (<code>AS_VFX_ScreenRing.1.fx</code>)<br>
+      Creates customizable circular rings that can be positioned anywhere on the screen with control over ring width, color, and audio reactivity. Perfect for framing subjects or creating visual accents.<br><em>Technique: [AS] VFX: Screen Ring</em></td>
+    <td width="50%"><div style="text-align:center">
+      <!-- Placeholder for future image -->
+    </div></td>
+  </tr>
+  <tr>
+    <td width="50%"><strong>VFX: Sparkle Bloom</strong> (<code>AS_VFX_SparkleBloom.1.fx</code>)<br>
+      Creates a realistic, dynamic sparkle effect on surfaces that responds to scene lighting, depth, camera movement, and audio. Includes bloom and fresnel effects.</td>
+    <td width="50%"><div style="text-align:center">
+      <img src="https://github.com/user-attachments/assets/a0998834-4795-414e-a685-9c7ab685a515" alt="Sparkle Bloom Effect" style="max-width:100%;">
     </div></td>
   </tr>
   <tr>
@@ -78,27 +99,6 @@ This gallery provides detailed descriptions and visual examples of all shaders i
     </div></td>
   </tr>
   <tr>
-    <td width="50%"><strong>VFX: VU Meter</strong> (<code>AS_VFX_VUMeter.1.fx</code>)<br>
-      Visualizes Listeningway frequency bands as a VU meter background with multiple presentation modes (bars, line, dots), color palettes, and customizable appearance options.<br><em>Technique: [AS] VU Meter Background</em></td>
-    <td width="50%"><div style="text-align:center">
-      <img src="https://github.com/user-attachments/assets/1b83d29c-a838-492e-82c8-4c503a6867a5" alt="VU Meter Effect" style="max-width:100%;">
-    </div></td>
-  </tr>
-  <tr>
-    <td width="50%"><strong>VFX: Boom Sticker</strong> (<code>AS_VFX_BoomSticker.1.fx</code>)<br>
-      Displays a texture overlay ("sticker") with controls for placement, scale, rotation, and audio reactivity. Perfect for adding overlays that react to music.<br><em>Technique: [AS] Boom Sticker</em></td>
-    <td width="50%"><div style="text-align:center">
-      <img src="https://github.com/user-attachments/assets/ee8e98b8-198b-4a65-a40d-032eca60dcc5" alt="Boom Sticker Effect" style="max-width:100%;">
-    </div></td>
-  </tr>
-  <tr>
-    <td width="50%"><strong>VFX: Warp Distort</strong> (<code>AS_VFX_WarpDistort.1.fx</code>)<br>
-      Creates a circular mirrored or wavy region (often behind a character) that pulses, changes radius, and ripples/warps in sync with audio.</td>
-    <td width="50%"><div style="text-align:center">
-      <img src="https://github.com/user-attachments/assets/c707583a-99a1-4463-a02f-cdefd2db3e6a" alt="Warp Distort Effect" style="max-width:100%;">
-    </div></td>
-  </tr>
-  <tr>
     <td width="50%"><strong>VFX: Tilted Grid</strong> (<code>AS_VFX_TiltedGrid.1.fx</code>)<br>
       Creates a rotatable grid that pixelates the image and adds adjustable borders between grid cells with customizable chamfered corners. Features audio reactivity for cell size, border thickness, and chamfer size parameters.<br><em>Technique: [AS] VFX: Tilted Grid</em></td>
     <td width="50%"><div style="text-align:center">
@@ -106,10 +106,17 @@ This gallery provides detailed descriptions and visual examples of all shaders i
     </div></td>
   </tr>
   <tr>
-    <td width="50%"><strong>VFX: Rainy Window</strong> (<code>AS_VFX_RainyWindow.1.fx</code>)<br>
-      Creates a realistic rainy window effect with multi-layered droplets that distort the scene behind them. Features adjustable rain density, glass roughness for creating textured glass effects with irregular droplet shapes, and audio-reactive parameters. Supports rotation and resolution scaling for consistent appearance across displays.<br><em>Technique: [AS] VFX: Rainy Window</em></td>
+    <td width="50%"><strong>VFX: VU Meter</strong> (<code>AS_VFX_VUMeter.1.fx</code>)<br>
+      Visualizes Listeningway frequency bands as a VU meter background with multiple presentation modes (bars, line, dots), color palettes, and customizable appearance options.<br><em>Technique: [AS] VU Meter Background</em></td>
     <td width="50%"><div style="text-align:center">
-      <img src="https://github.com/user-attachments/assets/94601169-e214-4a45-8879-444b64c65d33" alt="Rainy Window Effect" style="max-width:100%;">
+      <img src="https://github.com/user-attachments/assets/1b83d29c-a838-492e-82c8-4c503a6867a5" alt="VU Meter Effect" style="max-width:100%;">
+    </div></td>
+  </tr>
+  <tr>
+    <td width="50%"><strong>VFX: Warp Distort</strong> (<code>AS_VFX_WarpDistort.1.fx</code>)<br>
+      Creates an audio-reactive warp effect that can be truly circular or relative to screen resolution. Features pulsing radius and wave effects. Position and depth are adjustable using standardized controls (rotation has been removed).</td>
+    <td width="50%"><div style="text-align:center">
+      <img src="https://github.com/user-attachments/assets/c707583a-99a1-4463-a02f-cdefd2db3e6a" alt="Warp Distort Effect" style="max-width:100%;">
     </div></td>
   </tr>
   <tr>
@@ -117,27 +124,6 @@ This gallery provides detailed descriptions and visual examples of all shaders i
       Simulates a realistic water surface with depth-based reflection horizon, perspective-correct wave compression, and customizable water color, transparency, and reflection. Features include dynamic wave scaling, vertical reflection compression, and full resolution independence. Ideal for scenes with water, pools, or reflective floors.<br><em>Technique: [AS] VFX: Water Surface</em></td>
     <td width="50%"><div style="text-align:center">
       <img src="https://github.com/user-attachments/assets/c2a21149-3914-4133-9834-12a3c02b9e29" alt="Water Surface Effect" style="max-width:100%;">
-    </div></td>
-  </tr>
-  <tr>
-    <td width="50%"><strong>VFX: Screen Ring</strong> (<code>AS_VFX_ScreenRing.1.fx</code>)<br>
-      Creates customizable circular rings that can be positioned anywhere on the screen with control over ring width, color, and audio reactivity. Perfect for framing subjects or creating visual accents.<br><em>Technique: [AS] VFX: Screen Ring</em></td>
-    <td width="50%"><div style="text-align:center">
-      <!-- Placeholder for future image -->
-    </div></td>
-  </tr>
-  <tr>
-    <td width="50%"><strong>VFX: Broken Glass</strong> (<code>AS_VFX_BrokenGlass.1.fx</code>)<br>
-      Simulates a broken glass or mirror effect with customizable crack patterns, distortion, and audio reactivity for dynamic shattering visualization.<br><em>Technique: [AS] VFX: Broken Glass</em></td>
-    <td width="50%"><div style="text-align:center">
-      <!-- Placeholder for future image -->
-    </div></td>
-  </tr>
-  <tr>
-    <td width="50%"><strong>VFX: Melt Wave</strong> (<code>AS_VFX_MeltWave.1.fx</code>)<br>
-      Creates a customizable melting/warping effect that can be positioned and rotated freely. Features resolution-independent coordinate transformation, consistent rotation behavior, and standardized position controls in the -1.5 to 1.5 range. Includes audio-reactive controls for wave intensity and animation speed.<br><em>Technique: [AS] VFX: Melt Wave</em></td>
-    <td width="50%"><div style="text-align:center">
-      <!-- Placeholder for future image -->
     </div></td>
   </tr>
 </table>
@@ -155,8 +141,15 @@ This gallery provides detailed descriptions and visual examples of all shaders i
     </div></td>
   </tr>
   <tr>
-    <td width="50%"><strong>BGX: Infinite Zoom</strong> (<code>AS_BGX_InfiniteZoom.1.fx</code>)<br>
-      Generates an infinitely zooming fractal pattern that creates a mesmerizing tunnel or vortex effect. Includes customizable pattern types, colors, speed, and audio-reactive controls.<br><em>Technique: [AS] BGX: Infinite Zoom</em></td>
+    <td width="50%"><strong>BGX: Home Computer</strong> (<code>AS_BGX_HomeComputer.1.fx</code>)<br>
+      Simulates a retro computer terminal with customizable text effects, scan lines, and CRT-like distortions. Features audio-reactive glitches and visual noise for an authentic vintage computing aesthetic.<br><em>Technique: [AS] BGX: Home Computer</em></td>
+    <td width="50%"><div style="text-align:center">
+      <!-- Placeholder for future image -->
+    </div></td>
+  </tr>
+  <tr>
+    <td width="50%"><strong>BGX: Light Ripples</strong> (<code>AS_BGX_LightRipples.1.fx</code>)<br>
+      Creates animated light ripple effects that spread across the screen like waves on water. Includes controls for ripple speed, intensity, color, and audio reactivity for dynamic lighting effects.<br><em>Technique: [AS] BGX: Light Ripples</em></td>
     <td width="50%"><div style="text-align:center">
       <!-- Placeholder for future image -->
     </div></td>
@@ -166,6 +159,20 @@ This gallery provides detailed descriptions and visual examples of all shaders i
       Generate configurable grids of light panels with diverse patterns, 3D perspective, audio reactivity, and customizable color palettes. Perfect for backdrops.</td>
     <td width="50%"><div style="text-align:center">
       <img src="https://github.com/user-attachments/assets/ece86ab7-36f1-459c-8c83-31414c3b5cc3" alt="Light Wall Effect" style="max-width:100%;">
+    </div></td>
+  </tr>
+  <tr>
+    <td width="50%"><strong>BGX: Melt Wave</strong> (<code>AS_BGX_MeltWave.1.fx</code>)<br>
+      Creates a customizable melting/warping effect that can be positioned and rotated freely. Features resolution-independent coordinate transformation, consistent rotation behavior, and standardized position controls in the -1.5 to 1.5 range. Includes audio-reactive controls for wave intensity and animation speed.<br><em>Technique: [AS] VFX: Melt Wave</em></td>
+    <td width="50%"><div style="text-align:center">
+      <!-- Placeholder for future image -->
+    </div></td>
+  </tr>
+  <tr>
+    <td width="50%"><strong>BGX: Plasma Flow</strong> (<code>AS_BGX_PlasmaFlow.1.fx</code>)<br>
+      Generates smooth, swirling, organic plasma-like patterns with enhanced palette options, domain warping, and strong audio reactivity. Ideal for music video backgrounds and atmospheric visuals.<br><em>Technique: [AS] BGX: Plasma Flow</em></td>
+    <td width="50%"><div style="text-align:center">
+      <img src="https://github.com/user-attachments/assets/ba95325d-eff0-439e-a452-567675da84fe" alt="Plasma Flow Effect" style="max-width:100%;">
     </div></td>
   </tr>
   <tr>
