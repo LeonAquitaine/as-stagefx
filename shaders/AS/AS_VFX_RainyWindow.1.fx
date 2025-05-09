@@ -124,17 +124,17 @@ static const float ASYM_DISTORT_STRENGTH = 0.2; // Asymmetric distortion strengt
 // ============================================================================
 
 // --- Effect Settings ---
-uniform float DropSize < ui_type = "slider"; ui_label = "Drop Size"; ui_tooltip = "Controls the size of individual rain droplets."; ui_min = DROP_SIZE_MIN; ui_max = DROP_SIZE_MAX; ui_step = 0.001; ui_category = "Effect Settings"; > = DROP_SIZE_DEFAULT;
-uniform float DropImpact < ui_type = "slider"; ui_label = "Distortion Strength"; ui_tooltip = "Controls how much the raindrops distort the image behind them."; ui_min = IMPACT_MIN; ui_max = IMPACT_MAX; ui_step = 0.05; ui_category = "Effect Settings"; > = IMPACT_DEFAULT;
-uniform float ResolutionScale < ui_type = "slider"; ui_label = "Resolution Scale"; ui_tooltip = "Adjusts the scale of the effect grid relative to resolution."; ui_min = RESOLUTION_SCALE_MIN; ui_max = RESOLUTION_SCALE_MAX; ui_step = 0.05; ui_category = "Effect Settings"; > = RESOLUTION_SCALE_DEFAULT;
-uniform float GlassRoughness < ui_type = "slider"; ui_label = "Glass Roughness"; ui_tooltip = "Controls the surface texture of the glass (0=smooth glass, 1=rough glass)."; ui_min = GLASS_ROUGHNESS_MIN; ui_max = GLASS_ROUGHNESS_MAX; ui_step = 0.01; ui_category = "Effect Settings"; > = GLASS_ROUGHNESS_DEFAULT;
+uniform float DropSize < ui_type = "slider"; ui_label = "Drop Size"; ui_tooltip = "Controls the size of individual rain droplets."; ui_min = DROP_SIZE_MIN; ui_max = DROP_SIZE_MAX; ui_step = 0.001; ui_category = "Effect Settings"; > = 0.022;
+uniform float DropImpact < ui_type = "slider"; ui_label = "Distortion Strength"; ui_tooltip = "Controls how much the raindrops distort the image behind them."; ui_min = IMPACT_MIN; ui_max = IMPACT_MAX; ui_step = 0.05; ui_category = "Effect Settings"; > = 1.02;
+uniform float ResolutionScale < ui_type = "slider"; ui_label = "Resolution Scale"; ui_tooltip = "Adjusts the scale of the effect grid relative to resolution."; ui_min = RESOLUTION_SCALE_MIN; ui_max = RESOLUTION_SCALE_MAX; ui_step = 0.05; ui_category = "Effect Settings"; > = 0.46;
+uniform float GlassRoughness < ui_type = "slider"; ui_label = "Glass Roughness"; ui_tooltip = "Controls the surface texture of the glass (0=smooth glass, 1=rough glass)."; ui_min = GLASS_ROUGHNESS_MIN; ui_max = GLASS_ROUGHNESS_MAX; ui_step = 0.01; ui_category = "Effect Settings"; > = 0.34;
 
 // --- Rain Pattern ---
-uniform float GridSizeX < ui_type = "slider"; ui_label = "Rain Grid X"; ui_tooltip = "Controls how many raindrops appear horizontally."; ui_min = GRID_X_MIN; ui_max = GRID_X_MAX; ui_step = 1.0; ui_category = "Rain Pattern"; > = GRID_X_DEFAULT;
-uniform float GridSizeY < ui_type = "slider"; ui_label = "Rain Grid Y"; ui_tooltip = "Controls how many raindrops appear vertically."; ui_min = GRID_Y_MIN; ui_max = GRID_Y_MAX; ui_step = 1.0; ui_category = "Rain Pattern"; > = GRID_Y_DEFAULT;
+uniform float GridSizeX < ui_type = "slider"; ui_label = "Rain Grid X"; ui_tooltip = "Controls how many raindrops appear horizontally."; ui_min = GRID_X_MIN; ui_max = GRID_X_MAX; ui_step = 1.0; ui_category = "Rain Pattern"; > = 22.0;
+uniform float GridSizeY < ui_type = "slider"; ui_label = "Rain Grid Y"; ui_tooltip = "Controls how many raindrops appear vertically."; ui_min = GRID_Y_MIN; ui_max = GRID_Y_MAX; ui_step = 1.0; ui_category = "Rain Pattern"; > = 5.0;
 
 // --- Animation Controls ---
-uniform float RainSpeed < ui_type = "slider"; ui_label = "Rain Speed"; ui_tooltip = "Controls the speed of the falling rain."; ui_min = SPEED_MIN; ui_max = SPEED_MAX; ui_step = 0.05; ui_category = "Animation"; > = SPEED_DEFAULT;
+uniform float RainSpeed < ui_type = "slider"; ui_label = "Rain Speed"; ui_tooltip = "Controls the speed of the falling rain."; ui_min = SPEED_MIN; ui_max = SPEED_MAX; ui_step = 0.05; ui_category = "Animation"; > = 1.0;
 
 // --- Audio Reactivity ---
 AS_AUDIO_SOURCE_UI(Rain_AudioSource, "Audio Source", AS_AUDIO_OFF, "Audio Reactivity")

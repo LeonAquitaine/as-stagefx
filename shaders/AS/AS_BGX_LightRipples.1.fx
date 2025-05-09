@@ -106,7 +106,7 @@ static const float SCALE_STEP = 0.01;
 static const float SCALE_DEFAULT = 1.0;
 
 // --- Audio ---
-static const int AUDIO_TARGET_DEFAULT = 1; // Target Animation Speed by default
+static const int AUDIO_TARGET_DEFAULT = 4;
 static const float AUDIO_MULTIPLIER_DEFAULT = 1.0;
 static const float AUDIO_MULTIPLIER_MAX = 2.0;
 

@@ -72,15 +72,15 @@ static const float GLITTERLIFETIME_DEFAULT = 10.0;
 
 static const float BLOOMINTENSITY_MIN = 0.1;
 static const float BLOOMINTENSITY_MAX = 3.1;
-static const float BLOOMINTENSITY_DEFAULT = 1.6;
+static const float BLOOMINTENSITY_DEFAULT = 0.3;
 
 static const float BLOOMRADIUS_MIN = 1.0;
 static const float BLOOMRADIUS_MAX = 10.2;
-static const float BLOOMRADIUS_DEFAULT = 5.6;
+static const float BLOOMRADIUS_DEFAULT = 3.6;
 
 static const float BLOOMDISPERSION_MIN = 1.0;
 static const float BLOOMDISPERSION_MAX = 3.0;
-static const float BLOOMDISPERSION_DEFAULT = 2.0;
+static const float BLOOMDISPERSION_DEFAULT = 1.2;
 
 static const float NEARPLANE_MIN = 0.0;
 static const float NEARPLANE_MAX = 1.0;
@@ -152,7 +152,7 @@ uniform bool EnableBloom < ui_label = "Enable Bloom"; ui_tooltip = "Enables or d
 uniform float BloomIntensity < ui_type = "slider"; ui_label = "Intensity"; ui_tooltip = "Controls how strong the bloom (glow) effect appears around sparkles."; ui_min = BLOOMINTENSITY_MIN; ui_max = BLOOMINTENSITY_MAX; ui_step = 0.05; ui_category = "Bloom Effect"; ui_spacing = 1; ui_bind = "EnableBloom"; > = BLOOMINTENSITY_DEFAULT;
 uniform float BloomRadius < ui_type = "slider"; ui_label = "Radius"; ui_tooltip = "Sets how far the bloom effect extends from each sparkle. Larger values create a wider glow."; ui_min = BLOOMRADIUS_MIN; ui_max = BLOOMRADIUS_MAX; ui_step = 0.2; ui_category = "Bloom Effect"; ui_bind = "EnableBloom"; > = BLOOMRADIUS_DEFAULT;
 uniform float BloomDispersion < ui_type = "slider"; ui_label = "Dispersion"; ui_tooltip = "Adjusts how quickly the bloom fades at the edges. Higher values make the glow softer and more gradual."; ui_min = BLOOMDISPERSION_MIN; ui_max = BLOOMDISPERSION_MAX; ui_step = 0.05; ui_category = "Bloom Effect"; ui_bind = "EnableBloom"; > = BLOOMDISPERSION_DEFAULT;
-uniform int BloomQuality < ui_type = "combo"; ui_label = "Quality"; ui_tooltip = "Selects the quality level for the bloom effect. Higher quality reduces artifacts but may impact performance."; ui_items = "Potato\0Low\0Medium\0High\0Ultra\0AI Overlord\0"; ui_category = "Bloom Effect"; ui_bind = "EnableBloom"; > = 2;
+uniform int BloomQuality < ui_type = "combo"; ui_label = "Quality"; ui_tooltip = "Selects the quality level for the bloom effect. Higher quality reduces artifacts but may impact performance."; ui_items = "Potato\0Low\0Medium\0High\0Ultra\0AI Overlord\0"; ui_category = "Bloom Effect"; ui_bind = "EnableBloom"; > = 3;
 uniform bool BloomDither < ui_label = "Dither"; ui_tooltip = "Adds subtle noise to the bloom to reduce color banding and grid patterns."; ui_category = "Bloom Effect"; ui_bind = "EnableBloom"; > = true;
 
 // ============================================================================
@@ -160,9 +160,9 @@ uniform bool BloomDither < ui_label = "Dither"; ui_tooltip = "Adds subtle noise 
 // ============================================================================
 AS_AUDIO_SOURCE_UI(Listeningway_SparkleSource, "Sparkle Source", AS_AUDIO_BEAT, "Audio Reactivity")
 AS_AUDIO_MULTIPLIER_UI(Listeningway_SparkleMultiplier, "Sparkle Intensity", 1.5, 5.0, "Audio Reactivity")
-AS_AUDIO_SOURCE_UI(Listeningway_BloomSource, "Bloom Source", AS_AUDIO_BEAT, "Audio Reactivity")
+AS_AUDIO_SOURCE_UI(Listeningway_BloomSource, "Bloom Source", AS_AUDIO_OFF, "Audio Reactivity")
 AS_AUDIO_MULTIPLIER_UI(Listeningway_BloomMultiplier, "Bloom Intensity", 10.0, 10.0, "Audio Reactivity")
-AS_AUDIO_SOURCE_UI(Listeningway_TimeScaleSource, "Time Source", AS_AUDIO_BEAT, "Audio Reactivity")
+AS_AUDIO_SOURCE_UI(Listeningway_TimeScaleSource, "Time Source", AS_AUDIO_OFF, "Audio Reactivity")
 AS_AUDIO_MULTIPLIER_UI(Listeningway_TimeScaleBand1Multiplier, "Time Intensity", 1.0, 5.0, "Audio Reactivity")
 
 // ============================================================================

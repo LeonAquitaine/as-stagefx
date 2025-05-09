@@ -70,7 +70,7 @@ static const float TARGET_DEPTH_DEFAULT = 0.05; // Default relatively close
 // Ring Geometry Range
 static const float RING_RADIUS_MIN = 0.001; // 0.1% of screen height
 static const float RING_RADIUS_MAX = 0.5;   // 50% of screen height
-static const float RING_RADIUS_DEFAULT = 0.2;  // 20% of screen height
+static const float RING_RADIUS_DEFAULT = 0.3;  // 20% of screen height
 
 static const float RING_THICKNESS_MIN = 0.0;   // 0% of radius (invisible)
 static const float RING_THICKNESS_MAX = 1.0;   // 100% of radius (filled circle)

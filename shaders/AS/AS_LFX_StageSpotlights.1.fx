@@ -85,31 +85,31 @@ static const float BOKEH_STRENGTH_DEFAULT = 0.7;
 #define SPOTLIGHT_UI(index, defaultEnable, defaultColor, defaultPosition, \
                     defaultRadius, defaultIntensity, defaultAngle, defaultDirection, \
                     defaultSwaySpeed, defaultSwayAngle, defaultAudioSource, defaultAudioMult) \
-uniform bool Spot##index##_Enable < ui_label = "Enable Spotlight " #index; ui_tooltip = "Toggle this spotlight on or off."; ui_category = "Light Beam " #index; ui_category_closed = index > 1; > = defaultEnable; \
-uniform float3 Spot##index##_Color < ui_type = "color"; ui_label = "Color"; ui_category = "Light Beam " #index; > = defaultColor; \
-uniform float2 Spot##index##_Position < ui_type = "slider"; ui_label = "Position (X, Y)"; ui_tooltip = "Screen position for the spotlight source. (0,0) is center, [-1, 1] covers the central square."; ui_min = -1.5; ui_max = 1.5; ui_step = 0.01; ui_category = "Light Beam " #index; > = defaultPosition; /* Updated range and tooltip */ \
-uniform float Spot##index##_Radius < ui_type = "slider"; ui_label = "Size"; ui_tooltip = "Radius of the spotlight cone relative to screen height."; ui_min = SPOT_RADIUS_MIN; ui_max = SPOT_RADIUS_MAX; ui_category = "Light Beam " #index; > = defaultRadius; /* Updated tooltip */ \
-uniform float Spot##index##_Intensity < ui_type = "slider"; ui_label = "Intensity"; ui_min = SPOT_INTENSITY_MIN; ui_max = SPOT_INTENSITY_MAX; ui_category = "Light Beam " #index; > = defaultIntensity; \
-uniform float Spot##index##_Angle < ui_type = "slider"; ui_label = "Opening"; ui_min = SPOT_ANGLE_MIN; ui_max = SPOT_ANGLE_MAX; ui_category = "Light Beam " #index; > = defaultAngle; \
-uniform float Spot##index##_Direction < ui_type = "slider"; ui_label = "Direction"; ui_tooltip = "Base direction angle in degrees (0=down, 90=right, -90=left)."; ui_min = SPOT_DIRECTION_MIN; ui_max = SPOT_DIRECTION_MAX; ui_category = "Light Beam " #index; > = defaultDirection; /* Updated tooltip */ \
-uniform float Spot##index##_SwaySpeed < ui_type = "slider"; ui_label = "Speed"; ui_min = SPOT_SWAYSPEED_MIN; ui_max = SPOT_SWAYSPEED_MAX; ui_category = "Light Beam " #index; > = defaultSwaySpeed; \
-uniform float Spot##index##_SwayAngle < ui_type = "slider"; ui_label = "Sway"; ui_min = SPOT_SWAYANGLE_MIN; ui_max = SPOT_SWAYANGLE_MAX; ui_category = "Light Beam " #index; > = defaultSwayAngle; \
-uniform int Spot##index##_AudioSource < ui_type = "combo"; ui_label = "Source"; ui_items = "Volume\0Beat\0Bass\0Mid\0Treble\0"; ui_category = "Light Beam " #index; > = defaultAudioSource; \
-uniform float Spot##index##_AudioMult < ui_type = "slider"; ui_label = "Source Intensity"; ui_tooltip = "Multiplier for the spotlight intensity"; ui_min = SPOT_AUDIOMULT_MIN; ui_max = SPOT_AUDIOMULT_MAX; ui_category = "Light Beam " #index; > = defaultAudioMult;
+uniform bool Spot##index##_Enable < ui_label = "Enable Spotlight " #index; ui_tooltip = "Toggle this spotlight on or off."; ui_category = "Spotlight " #index; ui_category_closed = index > 1; > = defaultEnable; \
+uniform float3 Spot##index##_Color < ui_type = "color"; ui_label = "Color"; ui_category = "Spotlight " #index; > = defaultColor; \
+uniform float2 Spot##index##_Position < ui_type = "slider"; ui_label = "Position (X, Y)"; ui_tooltip = "Screen position for the spotlight source. (0,0) is center, [-1, 1] covers the central square."; ui_min = -1.5; ui_max = 1.5; ui_step = 0.01; ui_category = "Spotlight " #index; > = defaultPosition; /* Updated range and tooltip */ \
+uniform float Spot##index##_Radius < ui_type = "slider"; ui_label = "Size"; ui_tooltip = "Radius of the spotlight cone relative to screen height."; ui_min = SPOT_RADIUS_MIN; ui_max = SPOT_RADIUS_MAX; ui_category = "Spotlight " #index; > = defaultRadius; /* Updated tooltip */ \
+uniform float Spot##index##_Intensity < ui_type = "slider"; ui_label = "Intensity"; ui_min = SPOT_INTENSITY_MIN; ui_max = SPOT_INTENSITY_MAX; ui_category = "Spotlight " #index; > = defaultIntensity; \
+uniform float Spot##index##_Angle < ui_type = "slider"; ui_label = "Opening"; ui_min = SPOT_ANGLE_MIN; ui_max = SPOT_ANGLE_MAX; ui_category = "Spotlight " #index; > = defaultAngle; \
+uniform float Spot##index##_Direction < ui_type = "slider"; ui_label = "Direction"; ui_tooltip = "Base direction angle in degrees (0=down, 90=right, -90=left)."; ui_min = SPOT_DIRECTION_MIN; ui_max = SPOT_DIRECTION_MAX; ui_category = "Spotlight " #index; > = defaultDirection; /* Updated tooltip */ \
+uniform float Spot##index##_SwaySpeed < ui_type = "slider"; ui_label = "Speed"; ui_min = SPOT_SWAYSPEED_MIN; ui_max = SPOT_SWAYSPEED_MAX; ui_category = "Spotlight " #index; > = defaultSwaySpeed; \
+uniform float Spot##index##_SwayAngle < ui_type = "slider"; ui_label = "Sway"; ui_min = SPOT_SWAYANGLE_MIN; ui_max = SPOT_SWAYANGLE_MAX; ui_category = "Spotlight " #index; > = defaultSwayAngle; \
+uniform int Spot##index##_AudioSource < ui_type = "combo"; ui_label = "Source"; ui_items = "Volume\0Beat\0Bass\0Mid\0Treble\0"; ui_category = "Spotlight " #index; > = defaultAudioSource; \
+uniform float Spot##index##_AudioMult < ui_type = "slider"; ui_label = "Source Intensity"; ui_tooltip = "Multiplier for the spotlight intensity"; ui_min = SPOT_AUDIOMULT_MIN; ui_max = SPOT_AUDIOMULT_MAX; ui_category = "Spotlight " #index; > = defaultAudioMult;
 
 // ============================================================================
 // SPOTLIGHT CONTROLS (Using the macro)
 // ============================================================================
 
 // Spotlight A controls - Centered top
-SPOTLIGHT_UI(1, true, float3(0.3, 0.6, 1.0), float2(0.0, -1.0), 
-            SPOT_RADIUS_DEFAULT, SPOT_INTENSITY_DEFAULT, SPOT_ANGLE_DEFAULT, 0.0, /* Pointing down */
-            SPOT_SWAYSPEED_DEFAULT, SPOT_SWAYANGLE_DEFAULT, 1, SPOT_AUDIOMULT_DEFAULT)
+SPOTLIGHT_UI(1, true, float3(0.30196, 0.60000, 1.00000), float2(0.0, -1.0), 
+            1.359, 0.496, 87.225, 11.451, 
+            0.500, 15.000, 1, 1.000)
 
 // Spotlight B controls - Left side
-SPOTLIGHT_UI(2, false, float3(1.0, 0.5, 0.2), float2(-1.0, 0.0),
-            SPOT_RADIUS_DEFAULT, SPOT_INTENSITY_DEFAULT, SPOT_ANGLE_DEFAULT, 90.0, /* Pointing right */
-            SPOT_SWAYSPEED_DEFAULT, SPOT_SWAYANGLE_DEFAULT, 1, SPOT_AUDIOMULT_DEFAULT)
+SPOTLIGHT_UI(2, true, float3(1.00000, 0.50196, 0.20000), float2(-1.0, 0.0),
+            0.931, 0.259, 75.280, -59.574, 
+            0.500, 15.000, 1, 1.000)
 
 // Spotlight C controls - Right side
 SPOTLIGHT_UI(3, false, float3(0.8, 0.3, 1.0), float2(1.0, 0.0),
@@ -131,8 +131,7 @@ AS_STAGEDEPTH_UI(StageDepth) // Renamed category
 AS_ROTATION_UI(GlobalSnapRotation, GlobalFineRotation) // Added global rotation
 
 // --- Blend Settings ---
-// Using the new macro with Additive (3) as the default blend mode
-AS_BLENDMODE_UI_DEFAULT(BlendMode, 0)
+AS_BLENDMODE_UI_DEFAULT(BlendMode, 3)
 AS_BLENDAMOUNT_UI(BlendAmount)
 
 // --- Debug Settings ---

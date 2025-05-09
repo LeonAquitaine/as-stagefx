@@ -99,14 +99,15 @@ static const float FLAME_ZOOM_DEFAULT = 1.0;
 
 // Define a macro for the UI controls of each flame to avoid repetition
 #define FLAME_UI(index, defaultEnable, defaultPosition, defaultZoom, \
-                defaultHeight, defaultWidth, defaultCurve, defaultPower) \
+                defaultHeight, defaultWidth, defaultCurve, defaultPower, defaultDepth) \
 uniform bool Flame##index##_Enable < ui_label = "Enable Flame " #index; ui_tooltip = "Toggle this flame on or off."; ui_category = "Flame " #index; ui_category_closed = index > 1; > = defaultEnable; \
 uniform float2 Flame##index##_Position < ui_type = "slider"; ui_label = "Position (X, Y)"; ui_tooltip = "Screen position for the flame base. (0,0) is center, [-1, 1] covers the central square."; ui_min = -1.5; ui_max = 1.5; ui_step = 0.01; ui_category = "Flame " #index; > = defaultPosition; \
 uniform float Flame##index##_Zoom < ui_type = "slider"; ui_min = FLAME_ZOOM_MIN; ui_max = FLAME_ZOOM_MAX; ui_step = 0.05; ui_label = "Zoom"; ui_tooltip = "Overall zoom factor for the flame."; ui_category = "Flame " #index; > = defaultZoom; \
 uniform float Flame##index##_Height < ui_type = "slider"; ui_min = FLAME_HEIGHT_MIN; ui_max = FLAME_HEIGHT_MAX; ui_step = 0.01; ui_label = "Height"; ui_tooltip = "Overall height scale of the flame."; ui_category = "Flame " #index; > = defaultHeight; \
 uniform float Flame##index##_Width < ui_type = "slider"; ui_min = FLAME_WIDTH_MIN; ui_max = FLAME_WIDTH_MAX; ui_step = 0.01; ui_label = "Width"; ui_tooltip = "Overall width scale of the flame."; ui_category = "Flame " #index; > = defaultWidth; \
 uniform float Flame##index##_Curve < ui_type = "slider"; ui_min = FLAME_CURVE_MIN; ui_max = FLAME_CURVE_MAX; ui_step = 0.05; ui_label = "Tip Shape"; ui_tooltip = "Controls the flame tip shape (0.5=round, >1=pointy)."; ui_category = "Flame " #index; > = defaultCurve; \
-uniform float Flame##index##_Power < ui_type = "slider"; ui_min = FLAME_POWER_MIN; ui_max = FLAME_POWER_MAX; ui_step = 0.01; ui_label = "Brightness"; ui_tooltip = "Overall brightness / intensity multiplier."; ui_category = "Flame " #index; > = defaultPower;
+uniform float Flame##index##_Power < ui_type = "slider"; ui_min = FLAME_POWER_MIN; ui_max = FLAME_POWER_MAX; ui_step = 0.01; ui_label = "Brightness"; ui_tooltip = "Overall brightness / intensity multiplier."; ui_category = "Flame " #index; > = defaultPower; \
+uniform float Flame##index##_StageDepth < ui_type = "slider"; ui_label = "Depth"; ui_tooltip = "Depth plane for this flame (0.0-1.0). Lower values are closer to the camera."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Flame " #index; > = defaultDepth;
 
 // ============================================================================
 // FLAME CONTROLS (Using the macro)
@@ -114,19 +115,19 @@ uniform float Flame##index##_Power < ui_type = "slider"; ui_min = FLAME_POWER_MI
 
 // Flame 1 controls (enabled by default, centered)
 FLAME_UI(1, true, float2(0.0, 0.0), FLAME_ZOOM_DEFAULT, 
-        FLAME_HEIGHT_DEFAULT, FLAME_WIDTH_DEFAULT, FLAME_CURVE_DEFAULT, FLAME_POWER_DEFAULT)
+        FLAME_HEIGHT_DEFAULT, FLAME_WIDTH_DEFAULT, FLAME_CURVE_DEFAULT, FLAME_POWER_DEFAULT, 0.05)
 
 // Flame 2 controls (disabled by default, slightly offset)
 FLAME_UI(2, false, float2(-0.2, -0.2), 0.9, 
-        FLAME_HEIGHT_DEFAULT * 0.8, FLAME_WIDTH_DEFAULT * 0.8, FLAME_CURVE_DEFAULT, FLAME_POWER_DEFAULT)
+        FLAME_HEIGHT_DEFAULT * 0.8, FLAME_WIDTH_DEFAULT * 0.8, FLAME_CURVE_DEFAULT, FLAME_POWER_DEFAULT, 0.1)
 
 // Flame 3 controls (disabled by default, slightly offset)
 FLAME_UI(3, false, float2(0.2, -0.2), 1.1, 
-        FLAME_HEIGHT_DEFAULT * 0.7, FLAME_WIDTH_DEFAULT * 0.9, FLAME_CURVE_DEFAULT * 1.2, FLAME_POWER_DEFAULT)
+        FLAME_HEIGHT_DEFAULT * 0.7, FLAME_WIDTH_DEFAULT * 0.9, FLAME_CURVE_DEFAULT * 1.2, FLAME_POWER_DEFAULT, 0.15)
 
 // Flame 4 controls (disabled by default, slightly offset)
 FLAME_UI(4, false, float2(0.0, -0.4), 0.8, 
-        FLAME_HEIGHT_DEFAULT * 0.5, FLAME_WIDTH_DEFAULT * 0.6, FLAME_CURVE_DEFAULT * 1.5, FLAME_POWER_DEFAULT)
+        FLAME_HEIGHT_DEFAULT * 0.5, FLAME_WIDTH_DEFAULT * 0.6, FLAME_CURVE_DEFAULT * 1.5, FLAME_POWER_DEFAULT, 0.2)
 
 // ============================================================================
 // PALETTE & STYLE
@@ -167,13 +168,12 @@ uniform int AudioTarget < ui_type = "combo"; ui_label = "Audio Target Parameter"
 // ============================================================================
 // STAGE
 // ============================================================================
-AS_STAGEDEPTH_UI(StageDepth)
 AS_ROTATION_UI(FlameSnapRotation, FlameFineRotation)
 
 // ============================================================================
 // FINAL MIX
 // ============================================================================
-AS_BLENDMODE_UI_DEFAULT(BlendMode, 0)
+AS_BLENDMODE_UI_DEFAULT(BlendMode, 1)
 AS_BLENDAMOUNT_UI(BlendAmount)
 
 // ============================================================================
@@ -195,6 +195,7 @@ struct FlameParams {
     float width;
     float curve;
     float power;
+    float stageDepth; // Added for individual flame depth
     // Global parameters shared by all flames
     float sharpness;
     float bottomHeight;
@@ -221,6 +222,7 @@ FlameParams GetFlameParams(int flameIndex) {
         params.width = Flame1_Width;
         params.curve = Flame1_Curve;
         params.power = Flame1_Power;
+        params.stageDepth = Flame1_StageDepth;
     }
     else if (flameIndex == 1) {
         params.enable = Flame2_Enable;
@@ -230,6 +232,7 @@ FlameParams GetFlameParams(int flameIndex) {
         params.width = Flame2_Width;
         params.curve = Flame2_Curve;
         params.power = Flame2_Power;
+        params.stageDepth = Flame2_StageDepth;
     }
     else if (flameIndex == 2) {
         params.enable = Flame3_Enable;
@@ -239,6 +242,7 @@ FlameParams GetFlameParams(int flameIndex) {
         params.width = Flame3_Width;
         params.curve = Flame3_Curve;
         params.power = Flame3_Power;
+        params.stageDepth = Flame3_StageDepth;
     }
     else { // flameIndex == 3
         params.enable = Flame4_Enable;
@@ -248,6 +252,7 @@ FlameParams GetFlameParams(int flameIndex) {
         params.width = Flame4_Width;
         params.curve = Flame4_Curve;
         params.power = Flame4_Power;
+        params.stageDepth = Flame4_StageDepth;
     }
     
     return params;
@@ -404,8 +409,6 @@ float4 PS_ProceduralDepthPlaneFlame(float4 pos : SV_Position, float2 uv : TEXCOO
     float4 orig = tex2D(ReShade::BackBuffer, uv);
     float pixel_scene_depth = ReShade::GetLinearizedDepth(uv);
 
-    if (pixel_scene_depth < StageDepth) return orig; // Depth cutoff
-
     float timer = AS_getTime();
     float audioIntensity = AS_applyAudioReactivity(1.0, Flame_AudioSource, Flame_AudioMultiplier, true);
 
@@ -448,6 +451,7 @@ float4 PS_ProceduralDepthPlaneFlame(float4 pos : SV_Position, float2 uv : TEXCOO
         AS_CandleFlame::FlameParams params = AS_CandleFlame::GetFlameParams(i);
 
         if (!params.enable) continue;
+        if (pixel_scene_depth < params.stageDepth) continue; // Per-flame depth test
 
         // Apply audio reactivity to flame parameters
         float currentFlamePower = params.power;

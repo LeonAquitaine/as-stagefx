@@ -95,11 +95,11 @@ uniform float PlasmaSpeed < ui_type = "slider"; ui_label = "Speed"; ui_tooltip =
 
 // --- Audio Reactivity ---
 
-AS_AUDIO_SOURCE_UI(AudioMoveSource, "Movement Source", AS_AUDIO_VOLUME, "Audio Reactivity")
+AS_AUDIO_SOURCE_UI(AudioMoveSource, "Movement Source", AS_AUDIO_OFF, "Audio Reactivity")
 AS_AUDIO_MULTIPLIER_UI(AudioMoveMult, "Movement Strength", 1.0, 4.0, "Audio Reactivity")
 AS_AUDIO_SOURCE_UI(AudioColorSource, "Color Source", AS_AUDIO_BASS, "Audio Reactivity")
 AS_AUDIO_MULTIPLIER_UI(AudioColorMult, "Color Strength", 1.0, 4.0, "Audio Reactivity")
-AS_AUDIO_SOURCE_UI(AudioComplexitySource, "Complexity Source", AS_AUDIO_TREBLE, "Audio Reactivity")
+AS_AUDIO_SOURCE_UI(AudioComplexitySource, "Complexity Source", AS_AUDIO_VOLUME, "Audio Reactivity")
 AS_AUDIO_MULTIPLIER_UI(AudioComplexityMult, "Complexity Strength", 1.0, 4.0, "Audio Reactivity")
 
 // --- Color & Style ---

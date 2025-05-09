@@ -66,7 +66,7 @@ static const float ANIMATION_KEYFRAME_MIN = 0.0; static const float ANIMATION_KE
 static const float CAMERA_MOVE_SPEED_MIN = 0.0; static const float CAMERA_MOVE_SPEED_MAX = 0.5; static const float CAMERA_MOVE_SPEED_STEP = 0.001; static const float CAMERA_MOVE_SPEED_DEFAULT = 0.01; 
 static const float FRACTAL_ROTATION_SPEED_MIN = 0.0; static const float FRACTAL_ROTATION_SPEED_MAX = 0.1; static const float FRACTAL_ROTATION_SPEED_STEP = 0.001; static const float FRACTAL_ROTATION_SPEED_DEFAULT = 0.01; 
 // Audio 
-static const int AUDIO_TARGET_DEFAULT = 1; static const float AUDIO_MULTIPLIER_DEFAULT = 1.0; static const float AUDIO_MULTIPLIER_MAX = 2.0;
+static const int AUDIO_TARGET_DEFAULT = 2; static const float AUDIO_MULTIPLIER_DEFAULT = 1.0; static const float AUDIO_MULTIPLIER_MAX = 2.0;
 // Palette & Style
 static const float COLOR_INTENSITY_DEFAULT = 1.0; static const float COLOR_INTENSITY_MAX = 3.0; static const float COLOR_CYCLE_SPEED_DEFAULT = 0.1; static const float COLOR_CYCLE_SPEED_MAX = 2.0;
 // --- Internal Constants ---

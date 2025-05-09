@@ -53,7 +53,7 @@ static const float WAVE_SPEED_DEFAULT = 0.1;
 
 static const float WAVE_SCALE_MIN = 1.0; // Minimum scale factor (applied furthest from horizon)
 static const float WAVE_SCALE_MAX = 50.0; // Maximum scale factor (applied nearest to horizon)
-static const float WAVE_SCALE_DEFAULT = 10.0; // Base scale factor
+static const float WAVE_SCALE_DEFAULT = 5.0; // Base scale factor
 
 static const float DISTORTION_MIN = 0.0;
 static const float DISTORTION_MAX = 0.1;
@@ -61,11 +61,11 @@ static const float DISTORTION_DEFAULT = 0.02;
 
 static const float DEPTH_SCALE_MIN = 0.0;
 static const float DEPTH_SCALE_MAX = 1.0;
-static const float DEPTH_SCALE_DEFAULT = 0.5;
+static const float DEPTH_SCALE_DEFAULT = 0.27;
 
-static const float REFLECT_COMPRESS_MIN = 1.0; // New Constant
-static const float REFLECT_COMPRESS_MAX = 10.0; // New Constant
-static const float REFLECT_COMPRESS_DEFAULT = 1.0; // New Constant
+static const float REFLECT_COMPRESS_MIN = 1.0; 
+static const float REFLECT_COMPRESS_MAX = 10.0; 
+static const float REFLECT_COMPRESS_DEFAULT = 0.4; 
 
 static const float AS_RESOLUTION_BASE_HEIGHT = 1080.0;
 static const float AS_EPSILON = 1e-6;
@@ -75,8 +75,8 @@ static const float AS_EPSILON = 1e-6;
 // ============================================================================
 // --- Water Properties ---
 uniform float3 WaterColor < ui_type = "color"; ui_label = "Water Color"; ui_tooltip = "Base color of the water."; ui_category = "Water"; > = float3(0.1, 0.35, 0.5);
-uniform float WaterTransparency < ui_type = "slider"; ui_label = "Water Transparency"; ui_tooltip = "How transparent the water appears."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Water"; > = 0.7;
-uniform float ReflectionIntensity < ui_type = "slider"; ui_label = "Reflection Intensity"; ui_tooltip = "Strength of the reflection effect."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Water"; > = 0.8;
+uniform float WaterTransparency < ui_type = "slider"; ui_label = "Water Transparency"; ui_tooltip = "How transparent the water appears."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Water"; > = 1.0;
+uniform float ReflectionIntensity < ui_type = "slider"; ui_label = "Reflection Intensity"; ui_tooltip = "Strength of the reflection effect."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Water"; > = 1.0;
 uniform float ReflectionCompress < ui_type = "slider"; ui_label = "Reflection Compress"; ui_tooltip = "Compresses the reflection vertically (lower value = shorter reflection)."; ui_min = REFLECT_COMPRESS_MIN; ui_max = REFLECT_COMPRESS_MAX; ui_step = 0.01; ui_category = "Water"; > = REFLECT_COMPRESS_DEFAULT;
 
 // --- Depth Settings ---
@@ -89,7 +89,7 @@ uniform float2 WaveDirection < ui_type = "slider"; ui_label = "Wave Direction"; 
 uniform float WaveSpeed < ui_type = "slider"; ui_label = "Wave Speed"; ui_tooltip = "Speed of wave animation."; ui_min = WAVE_SPEED_MIN; ui_max = WAVE_SPEED_MAX; ui_step = 0.01; ui_category = "Waves"; > = WAVE_SPEED_DEFAULT;
 uniform float WaveScale < ui_type = "slider"; ui_label = "Wave Scale"; ui_tooltip = "Base scale of wave pattern."; ui_min = WAVE_SCALE_MIN; ui_max = WAVE_SCALE_MAX; ui_step = 0.1; ui_category = "Waves"; > = WAVE_SCALE_DEFAULT;
 uniform float WaveDistortion < ui_type = "slider"; ui_label = "Wave Distortion"; ui_tooltip = "Amount of distortion applied to reflection."; ui_min = DISTORTION_MIN; ui_max = DISTORTION_MAX; ui_step = 0.001; ui_category = "Waves"; > = DISTORTION_DEFAULT;
-uniform float WaveScaleCurve < ui_type = "slider"; ui_label = "Wave Scale Curve"; ui_tooltip = "Controls how quickly wave scale increases near the horizon (logarithmic curve)."; ui_min = 0.1; ui_max = 5.0; ui_step = 0.01; ui_category = "Waves"; > = 1.0;
+uniform float WaveScaleCurve < ui_type = "slider"; ui_label = "Wave Scale Curve"; ui_tooltip = "Controls how quickly wave scale increases near the horizon (logarithmic curve)."; ui_min = 0.1; ui_max = 5.0; ui_step = 0.01; ui_category = "Waves"; > = 0.1;
 
 // --- Water Position ---
 uniform float WaterLevel < ui_type = "slider"; ui_label = "Water Level"; ui_tooltip = "Position of the water horizon line (0.5 = middle of screen)."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Stage"; > = 0.5;

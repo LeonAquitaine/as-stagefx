@@ -21,7 +21,7 @@
  * - Dynamic animation with speed control
  * - Customizable pattern scaling and edge highlighting
  * - Audio reactivity for animation and pattern evolution
- * - Post-processing effects including curve adjustments, noise, and vignette
+ * - Post-processing effects including curve adjustments and noise
  * - Implementation of blurred, floating layers for added visual depth
  * - Depth-aware rendering with standard blending options
  *
@@ -29,7 +29,7 @@
  * 1. Implements a pseudo-random number generator for color variation
  * 2. Defines a pattern generation function to create cell-like patterns and edge highlighting
  * 3. Iteratively layers the pattern with scaling and transformations based on time
- * 4. Applies post-processing including clamping, curve adjustments, noise, and a vignette effect
+ * 4. Applies post-processing including clamping, curve adjustments, and noise
  * 5. The iterative layering with varying scales and offsets creates the appearance of floating layers
  *
  * ===================================================================================
@@ -57,7 +57,7 @@ namespace ASStainedLights {
 static const float PATTERN_SCALE_MIN = 1.0;
 static const float PATTERN_SCALE_MAX = 16.0;
 static const float PATTERN_SCALE_STEP = 0.1;
-static const float PATTERN_SCALE_DEFAULT = 8.0;
+static const float PATTERN_SCALE_DEFAULT = 10.1; // Updated from 8.0
 
 static const float EDGE_CURVE_MIN = 0.1;
 static const float EDGE_CURVE_MAX = 1.0;
@@ -67,7 +67,7 @@ static const float EDGE_CURVE_DEFAULT = 0.44;
 static const float EDGE_BIAS_MIN = -1.0;
 static const float EDGE_BIAS_MAX = 1.0;
 static const float EDGE_BIAS_STEP = 0.01;
-static const float EDGE_BIAS_DEFAULT = -0.3;
+static const float EDGE_BIAS_DEFAULT = 0.28; // Updated from -0.3
 
 static const int ITERATIONS_MIN = 1;
 static const int ITERATIONS_MAX = 8;
@@ -77,7 +77,7 @@ static const int ITERATIONS_DEFAULT = 4;
 static const float ANIMATION_SPEED_MIN = 0.0;
 static const float ANIMATION_SPEED_MAX = 2.0;
 static const float ANIMATION_SPEED_STEP = 0.01;
-static const float ANIMATION_SPEED_DEFAULT = 0.6;
+static const float ANIMATION_SPEED_DEFAULT = 0.60; // Updated from 0.6
 
 static const float ANIMATION_KEYFRAME_MIN = 0.0;
 static const float ANIMATION_KEYFRAME_MAX = 100.0;
@@ -93,20 +93,10 @@ static const float CURVE_INTENSITY_DEFAULT = 30.0;
 static const float NOISE_AMOUNT_MIN = 0.0;
 static const float NOISE_AMOUNT_MAX = 0.1;
 static const float NOISE_AMOUNT_STEP = 0.001;
-static const float NOISE_AMOUNT_DEFAULT = 0.07;
-
-static const float VIGNETTE_AMOUNT_MIN = 0.0;
-static const float VIGNETTE_AMOUNT_MAX = 2.0;
-static const float VIGNETTE_AMOUNT_STEP = 0.01;
-static const float VIGNETTE_AMOUNT_DEFAULT = 1.7;
-
-static const float VIGNETTE_SMOOTHNESS_MIN = 0.1;
-static const float VIGNETTE_SMOOTHNESS_MAX = 1.0;
-static const float VIGNETTE_SMOOTHNESS_STEP = 0.005;
-static const float VIGNETTE_SMOOTHNESS_DEFAULT = 0.405;
+static const float NOISE_AMOUNT_DEFAULT = 0.070; // Updated from 0.07
 
 // --- Audio Reactivity ---
-static const int AUDIO_TARGET_DEFAULT = 1; // Animation Speed
+static const int AUDIO_TARGET_DEFAULT = 3; // Animation Speed
 static const float AUDIO_MULTIPLIER_DEFAULT = 1.0;
 static const float AUDIO_MULTIPLIER_MAX = 3.0;
 
@@ -136,8 +126,6 @@ uniform int StainedLights_AudioTarget < ui_type = "combo"; ui_label = "Audio Tar
 // --- Post Processing ---
 uniform float CurveIntensity < ui_type = "slider"; ui_label = "Curve Intensity"; ui_tooltip = "Applies a power curve to the output color for contrast."; ui_min = CURVE_INTENSITY_MIN; ui_max = CURVE_INTENSITY_MAX; ui_step = CURVE_INTENSITY_STEP; ui_category = "Post Processing"; > = CURVE_INTENSITY_DEFAULT;
 uniform float NoiseAmount < ui_type = "slider"; ui_label = "Noise Amount"; ui_tooltip = "Adds a subtle noise texture to the final output."; ui_min = NOISE_AMOUNT_MIN; ui_max = NOISE_AMOUNT_MAX; ui_step = NOISE_AMOUNT_STEP; ui_category = "Post Processing"; > = NOISE_AMOUNT_DEFAULT;
-uniform float VignetteAmount < ui_type = "slider"; ui_label = "Vignette Amount"; ui_tooltip = "Controls the strength of the vignette effect."; ui_min = VIGNETTE_AMOUNT_MIN; ui_max = VIGNETTE_AMOUNT_MAX; ui_step = VIGNETTE_AMOUNT_STEP; ui_category = "Post Processing"; > = VIGNETTE_AMOUNT_DEFAULT;
-uniform float VignetteSmoothness < ui_type = "slider"; ui_label = "Vignette Smoothness"; ui_tooltip = "Adjusts the falloff of the vignette effect."; ui_min = VIGNETTE_SMOOTHNESS_MIN; ui_max = VIGNETTE_SMOOTHNESS_MAX; ui_step = VIGNETTE_SMOOTHNESS_STEP; ui_category = "Post Processing"; > = VIGNETTE_SMOOTHNESS_DEFAULT;
 
 // --- Final Mix ---
 AS_BLENDMODE_UI(BlendMode)
@@ -167,14 +155,6 @@ float4 generatePattern(float2 uv) {
     return float4(cid2, v);
 }
 
-// Apply vignette effect
-float applyVignette(float2 uv, float strength, float smoothness) {
-    float2 coord = uv - 0.5;
-    float vignette = 1.0 - dot(coord, coord * strength);
-    float yFalloff = 1.1 - smoothstep(0.4, smoothness, abs(coord.y));
-    return vignette * yFalloff;
-}
-
 // ============================================================================
 // PIXEL SHADER
 // ============================================================================
@@ -188,23 +168,6 @@ float4 StainedLightsPS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) :
     if (depth < EffectDepth) {
         return originalColor;
     }
-
-    // Apply rotation to coordinates
-    float2 screenCenter = float2(0.5, 0.5);
-    float2 centeredCoord = texcoord - screenCenter;
-    float aspectRatio = ReShade::ScreenSize.x / ReShade::ScreenSize.y;
-    centeredCoord.x *= aspectRatio;
-    
-    float rotationRadians = AS_getRotationRadians(EffectSnapRotation, EffectFineRotation);
-    float s = sin(rotationRadians);
-    float c = cos(rotationRadians);
-    float2 rotatedCoord = float2(
-        centeredCoord.x * c - centeredCoord.y * s,
-        centeredCoord.x * s + centeredCoord.y * c
-    );
-    
-    rotatedCoord.x /= aspectRatio;
-    rotatedCoord += screenCenter;
 
     // Apply audio reactivity
     float audioReactivity = AS_applyAudioReactivity(1.0, StainedLights_AudioSource, StainedLights_AudioMultiplier, true);
@@ -224,24 +187,39 @@ float4 StainedLightsPS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) :
         edgeCurveFinal *= audioReactivity;
     }
 
-    // Setup UV coordinates for pattern
-    float2 uv = rotatedCoord;
-    uv.x *= aspectRatio; // aspect correct
-
     // Get animation time
     float t;
-    if (animSpeedFinal <= 0.0001) {
+    if (animSpeedFinal <= 0.0001f) {
         // When animation speed is effectively zero, use keyframe directly
         t = AnimationKeyframe;
     } else {
         // Otherwise use animated time plus keyframe offset
         t = (AS_getTime() * animSpeedFinal) + AnimationKeyframe;
     }
-    
-    // Apply pattern scale and animation offset
-    uv *= patternScaleFinal;
-    uv -= float2(t * 0.5, -t * 0.3);
 
+    // Setup UV coordinates for pattern generation
+    float2 uv = texcoord - 0.5f; // Center texcoord (becomes -0.5 to 0.5 range)
+    
+    float current_aspectRatio = ReShade::ScreenSize.x / ReShade::ScreenSize.y;
+    uv.x *= current_aspectRatio; // Correct aspect ratio to make coordinates square for pattern logic
+
+    // Apply global rotation (to the square, centered UVs)
+    float current_rotationRadians = AS_getRotationRadians(EffectSnapRotation, EffectFineRotation);
+    if (abs(current_rotationRadians) > 0.001f) { // Apply rotation if significant
+        float s_rot = sin(current_rotationRadians);
+        float c_rot = cos(current_rotationRadians);
+        uv = float2(
+            uv.x * c_rot - uv.y * s_rot,
+            uv.x * s_rot + uv.y * c_rot
+        );
+    }
+
+    // Apply pattern scale (scales the density in the square, rotated space)
+    uv *= patternScaleFinal;
+
+    // Apply base animation offset/pan (in the scaled, rotated, square space)
+    uv -= float2(t * 0.5f, -t * 0.3f);
+    
     // Generate pattern
     float4 o = float4(1.0, 1.0, 1.0, 1.0);
     for (int i = 1; i <= Iterations; ++i) {
@@ -261,10 +239,7 @@ float4 StainedLightsPS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) :
     
     // Add noise
     o.rgb += hash32(texcoord * ReShade::ScreenSize.xy + AS_getTime()).r * NoiseAmount;
-    
-    // Apply vignette
-    o *= applyVignette(texcoord, VignetteAmount, VignetteSmoothness);
-    o.a = 1.0;
+    o.a = 1.0; // Ensure alpha is 1 after all color operations
 
     // Blend with original scene
     float4 finalColor = float4(AS_blendResult(originalColor.rgb, o.rgb, BlendMode), 1.0);

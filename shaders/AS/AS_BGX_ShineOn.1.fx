@@ -53,12 +53,12 @@ namespace ASShineOn {
 static const float ZOOM_MIN = 0.1f;
 static const float ZOOM_MAX = 5.0f;
 static const float ZOOM_STEP = 0.01f;
-static const float ZOOM_DEFAULT = 1.0f;
+static const float ZOOM_DEFAULT = 3.20f;
 
 static const float ANIM_SPEED_MIN = 0.0f;
 static const float ANIM_SPEED_MAX = 2.0f;
 static const float ANIM_SPEED_STEP = 0.01f;
-static const float ANIM_SPEED_DEFAULT = 0.5f;
+static const float ANIM_SPEED_DEFAULT = 0.62f;
 static const float ANIM_KEYFRAME_MIN = 0.0f;
 static const float ANIM_KEYFRAME_MAX = 100.0f;
 static const float ANIM_KEYFRAME_STEP = 0.1f;
@@ -67,56 +67,56 @@ static const float ANIM_KEYFRAME_DEFAULT = 0.0f;
 // Crystal Parameters
 static const int CRYSTAL_ITERATIONS_MIN = 1; 
 static const int CRYSTAL_ITERATIONS_MAX = 30; 
-static const int CRYSTAL_ITERATIONS_DEFAULT = 14;
+static const int CRYSTAL_ITERATIONS_DEFAULT = 12;
 
 static const float CRYSTAL_STEP_MIN = 1.0f;
 static const float CRYSTAL_STEP_MAX = 10.0f;
 static const float CRYSTAL_STEP_STEP = 0.1f;
-static const float CRYSTAL_STEP_DEFAULT = 4.5f;
+static const float CRYSTAL_STEP_DEFAULT = 4.1f;
 
 static const float CRYSTAL_SIZE_FACTOR_MIN = 0.0001f;
 static const float CRYSTAL_SIZE_FACTOR_MAX = 0.01f;
 static const float CRYSTAL_SIZE_FACTOR_STEP = 0.0001f;
-static const float CRYSTAL_SIZE_FACTOR_DEFAULT = 0.003f;
+static const float CRYSTAL_SIZE_FACTOR_DEFAULT = 0.0029f;
 
 static const float CRYSTAL_AMP_MIN = 0.1f;
 static const float CRYSTAL_AMP_MAX = 1.5f;
 static const float CRYSTAL_AMP_STEP = 0.05f;
-static const float CRYSTAL_AMP_DEFAULT = 0.75f;
+static const float CRYSTAL_AMP_DEFAULT = 1.13f;
 
 static const float CRYSTAL_RADIUS_MIN = 0.0f;
 static const float CRYSTAL_RADIUS_MAX = 50.0f;
 static const float CRYSTAL_RADIUS_STEP = 0.5f;
-static const float CRYSTAL_RADIUS_DEFAULT = 5.0f;
+static const float CRYSTAL_RADIUS_DEFAULT = 17.4f;
 
 static const float CRYSTAL_RANGE_OFFSET_MIN = 0.0f;
 static const float CRYSTAL_RANGE_OFFSET_MAX = 300.0f;
 static const float CRYSTAL_RANGE_OFFSET_STEP = 1.0f;
-static const float CRYSTAL_RANGE_OFFSET_DEFAULT = 60.0f;
+static const float CRYSTAL_RANGE_OFFSET_DEFAULT = 63.0f;
 
 static const float CRYSTAL_TIME_FACTOR_MIN = 0.0f;
 static const float CRYSTAL_TIME_FACTOR_MAX = 2.0f;
 static const float CRYSTAL_TIME_FACTOR_STEP = 0.05f;
-static const float CRYSTAL_TIME_FACTOR_DEFAULT = 1.0f;
+static const float CRYSTAL_TIME_FACTOR_DEFAULT = 0.78f;
 
 // FBM Parameters
 static const int FBM_OCTAVES_MIN = 1;
 static const int FBM_OCTAVES_MAX = 28;
-static const int FBM_OCTAVES_DEFAULT = 8;
+static const int FBM_OCTAVES_DEFAULT = 2;
 
 static const float FBM_AMP_DECAY_MIN = 0.5f;
 static const float FBM_AMP_DECAY_MAX = 0.95f;
 static const float FBM_AMP_DECAY_STEP = 0.01f;
-static const float FBM_AMP_DECAY_DEFAULT = 0.80f;
+static const float FBM_AMP_DECAY_DEFAULT = 0.75f;
 
 static const float FBM_FREQ_INC_MIN = 1.0f;
 static const float FBM_FREQ_INC_MAX = 2.0f;
 static const float FBM_FREQ_INC_STEP = 0.01f;
-static const float FBM_FREQ_INC_DEFAULT = 1.20f;
+static const float FBM_FREQ_INC_DEFAULT = 1.43f;
 
 static const int FBM_LOW_OCTAVES_MIN = 1;
 static const int FBM_LOW_OCTAVES_MAX = 8;
-static const int FBM_LOW_OCTAVES_DEFAULT = 4;
+static const int FBM_LOW_OCTAVES_DEFAULT = 3;
 
 // Main Noise Parameters
 static const float MAIN_TIME_SCALE_MIN = 0.0f;
@@ -127,27 +127,27 @@ static const float MAIN_TIME_SCALE_DEFAULT = 0.1f;
 static const float MAIN_UV_SCALE1_MIN = 0.5f;
 static const float MAIN_UV_SCALE1_MAX = 5.0f;
 static const float MAIN_UV_SCALE1_STEP = 0.1f;
-static const float MAIN_UV_SCALE1_DEFAULT = 2.5f;
+static const float MAIN_UV_SCALE1_DEFAULT = 2.0f;
 
 static const float MAIN_UV_SCALE2_MIN = 5.0f;
 static const float MAIN_UV_SCALE2_MAX = 60.0f;
 static const float MAIN_UV_SCALE2_STEP = 1.0f;
-static const float MAIN_UV_SCALE2_DEFAULT = 30.0f;
+static const float MAIN_UV_SCALE2_DEFAULT = 29.0f;
 
 static const float MAIN_UV_SCALE3_MIN = 0.5f;
 static const float MAIN_UV_SCALE3_MAX = 4.0f;
 static const float MAIN_UV_SCALE3_STEP = 0.1f;
-static const float MAIN_UV_SCALE3_DEFAULT = 2.0f;
+static const float MAIN_UV_SCALE3_DEFAULT = 2.6f;
 
 static const float MAIN_UV_SCALE4_MIN = 1.0f;
 static const float MAIN_UV_SCALE4_MAX = 16.0f;
 static const float MAIN_UV_SCALE4_STEP = 0.5f;
-static const float MAIN_UV_SCALE4_DEFAULT = 8.0f;
+static const float MAIN_UV_SCALE4_DEFAULT = 6.3f;
 
 static const float MAIN_RAND_MIX_MIN = 0.0f;
 static const float MAIN_RAND_MIX_MAX = 0.1f;
 static const float MAIN_RAND_MIX_STEP = 0.001f;
-static const float MAIN_RAND_MIX_DEFAULT = 0.02f;
+static const float MAIN_RAND_MIX_DEFAULT = 0.006f;
 
 // Color Parameters
 static const float COLOR_SCALE1_MIN = 0.5f;
@@ -158,25 +158,25 @@ static const float COLOR_SCALE1_DEFAULT = 1.6f;
 static const float COLOR_SCALE2_MIN = 1.0f;
 static const float COLOR_SCALE2_MAX = 6.0f;
 static const float COLOR_SCALE2_STEP = 0.1f;
-static const float COLOR_SCALE2_DEFAULT = 3.8f;
+static const float COLOR_SCALE2_DEFAULT = 3.7f;
 
 static const float SMOOTHSTEP_MIN_MIN = 0.0f;
 static const float SMOOTHSTEP_MIN_MAX = 0.9f;
 static const float SMOOTHSTEP_MIN_STEP = 0.01f;
-static const float SMOOTHSTEP_MIN_DEFAULT = 0.18f;
+static const float SMOOTHSTEP_MIN_DEFAULT = 0.20f;
 
 static const float SMOOTHSTEP_MAX_MIN = 0.1f;
 static const float SMOOTHSTEP_MAX_MAX = 1.0f;
 static const float SMOOTHSTEP_MAX_STEP = 0.01f;
-static const float SMOOTHSTEP_MAX_DEFAULT = 0.88f;
+static const float SMOOTHSTEP_MAX_DEFAULT = 0.67f;
 
 static const float POW_EXPONENT_SCALE_MIN = 0.01f;
 static const float POW_EXPONENT_SCALE_MAX = 5.0f;
 static const float POW_EXPONENT_SCALE_STEP = 0.01f;
-static const float POW_EXPONENT_SCALE_DEFAULT = 1.0f;
+static const float POW_EXPONENT_SCALE_DEFAULT = 1.59f;
 
 // Audio
-static const int AUDIO_TARGET_DEFAULT = 1;
+static const int AUDIO_TARGET_DEFAULT = 2;
 static const float AUDIO_MULTIPLIER_DEFAULT = 1.0f;
 static const float AUDIO_MULTIPLIER_MAX = 2.0f;
 

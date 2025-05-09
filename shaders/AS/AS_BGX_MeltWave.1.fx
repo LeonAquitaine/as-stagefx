@@ -1,5 +1,5 @@
 /**
- * AS_VFX_MeltWave.1.fx - Psychedelic Liquid Distortion Effect
+ * AS_BGX_MeltWave.1.fx - Psychedelic Liquid Distortion Effect
  * Author: Leon Aquitaine
  * License: Creative Commons Attribution 4.0 International
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
@@ -31,8 +31,8 @@
 // ============================================================================
 // TECHNIQUE GUARD - Prevents duplicate loading of the same shader
 // ============================================================================
-#ifndef __AS_VFX_MeltWave_1_fx
-#define __AS_VFX_MeltWave_1_fx
+#ifndef __AS_BGX_MeltWave_1_fx
+#define __AS_BGX_MeltWave_1_fx
 
 // ============================================================================
 // INCLUDES
@@ -293,7 +293,7 @@ float4 PS_MeltWave(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Ta
 // TECHNIQUE
 // ============================================================================
 
-technique AS_VFX_MeltWave < ui_label="[AS] VFX: Melt Wave"; ui_tooltip = "Generates a flowing, liquid-like psychedelic visual effect with customizable parameters and audio reactivity."; >
+technique AS_BGX_MeltWave < ui_label="[AS] BGX: Melt Wave"; ui_tooltip = "Generates a flowing, liquid-like psychedelic visual effect with customizable parameters and audio reactivity."; >
 {
     pass {
         VertexShader = PostProcessVS;
@@ -301,4 +301,4 @@ technique AS_VFX_MeltWave < ui_label="[AS] VFX: Melt Wave"; ui_tooltip = "Genera
     }
 }
 
-#endif // __AS_VFX_MeltWave_1_fx
+#endif // __AS_BGX_MeltWave_1_fx

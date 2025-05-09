@@ -100,7 +100,7 @@ static const float ANIMATION_KEYFRAME_STEP = 0.1;
 static const float ANIMATION_KEYFRAME_DEFAULT = 0.0;
 
 // Audio (Defaults assumed, adjust as needed)
-static const int AUDIO_TARGET_DEFAULT = 1; // e.g., Target Animation Speed
+static const int AUDIO_TARGET_DEFAULT = 4; // Default to Center Fade
 static const float AUDIO_MULTIPLIER_DEFAULT = 1.0;
 static const float AUDIO_MULTIPLIER_MAX = 3.0;
 
