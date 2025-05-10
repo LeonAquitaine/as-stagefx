@@ -177,14 +177,13 @@ namespace AS_DigitalArtifacts {
         
         return color;
     }
-    
-    // RGB shift glitch effect
+      // RGB shift glitch effect
     float3 rgbShift(float2 uv, float time, float intensity, float speed) {
         // Random shifts for R, G, B channels
         float timeShift = time * speed;
-        float randShift = AS_hash11(floor(timeShift * 4.0) * 0.5);
-        float offsetX = (randShift - 0.5) * 0.01 * intensity;
-        float offsetY = (AS_hash11(floor(timeShift * 8.0) * 0.5) - 0.5) * 0.01 * intensity;
+        float randShift = AS_hash11(floor(timeShift * 4.0) * AS_HALF);
+        float offsetX = (randShift - AS_HALF) * 0.01 * intensity;
+        float offsetY = (AS_hash11(floor(timeShift * 8.0) * AS_HALF) - AS_HALF) * 0.01 * intensity;
         
         // Sample channels with offsets
         float r = tex2D(ReShade::BackBuffer, float2(uv.x + offsetX, uv.y)).r;

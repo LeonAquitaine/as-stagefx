@@ -88,26 +88,23 @@ AS_DEBUG_MODE_UI("Off\0Audio Levels\0Warp Pattern\0")
 
 float4 PS_AudioMirror(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target {
     // --- Setup --- 
-    float4 orig = tex2D(ReShade::BackBuffer, texcoord);
-    float sceneDepth = ReShade::GetLinearizedDepth(texcoord);
+    float4 orig = tex2D(ReShade::BackBuffer, texcoord);    float sceneDepth = ReShade::GetLinearizedDepth(texcoord);
     float effectDepth = WarpDepth;
 
-    if (sceneDepth < effectDepth - 0.0005) {
+    if (sceneDepth < effectDepth - AS_DEPTH_EPSILON) {
         return orig;
     }
 
     float aspect_ratio = ReShade::AspectRatio;
-    // float rotation_rad = AS_getRotationRadians(WarpSnapRotation, WarpFineRotation); // Rotation removed
-
-    // --- Calculate Effective WarpCenter Offset ---
+    // float rotation_rad = AS_getRotationRadians(WarpSnapRotation, WarpFineRotation); // Rotation removed    // Compute effective WarpCenter Offset ---
     float2 effective_WarpCenter_offset;
-    effective_WarpCenter_offset.x = WarpCenter.x * 0.5;
-    effective_WarpCenter_offset.y = -WarpCenter.y * 0.5;
+    effective_WarpCenter_offset.x = WarpCenter.x * AS_UI_POSITION_SCALE;
+    effective_WarpCenter_offset.y = -WarpCenter.y * AS_UI_POSITION_SCALE;
 
     // --- Coordinate Transformation --- 
     float2 uv_centered_aspect;
-    uv_centered_aspect.x = (texcoord.x - 0.5) * aspect_ratio;
-    uv_centered_aspect.y = texcoord.y - 0.5;
+    uv_centered_aspect.x = (texcoord.x - AS_HALF) * aspect_ratio;
+    uv_centered_aspect.y = texcoord.y - AS_HALF;
 
     // Vector from the effect's center to the current pixel, in centered aspect-aware space.
     // This is now the effect's local coordinate system as there's no rotation.
@@ -123,8 +120,7 @@ float4 PS_AudioMirror(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV
     // else MirrorShape == 1 (UI "Resolution-Relative"): No correction, shape is relative to resolution aspect.
 
     float dist = length(uv_for_calc);
-    float2 dir = float2(0.0, 0.0);
-    if (dist > 1e-5) {
+    float2 dir = float2(0.0, 0.0);    if (dist > AS_EPSILON) {
         dir = normalize(uv_for_calc);
     }
 

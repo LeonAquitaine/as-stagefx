@@ -37,9 +37,49 @@ These requirements are non-negotiable for all AS StageFX shaders:
    #endif // __AS_LFX_ShaderName_1_fx
    ```
 
-4. **Mathematical Constants**: Always use AS_Utils constants (AS_PI, AS_TWO_PI, etc.) instead of magic numbers.
+4. **Mathematical Constants**: Always use AS_Utils constants (AS_PI, AS_TWO_PI, AS_HALF, etc.) instead of magic numbers.
+   ```hlsl
+   // CORRECT ✓
+   float radius = AS_HALF * (1.0 + sin(time * AS_TWO_PI));
+   if (depth < effectDepth - AS_DEPTH_EPSILON) { return original; }
+   
+   // INCORRECT ✗
+   float radius = 0.5 * (1.0 + sin(time * 6.28));
+   if (depth < effectDepth - 0.0005) { return original; }
+   ```
 
 5. **Standardized UI Macros**: Use the predefined macros from AS_Utils.1.fxh for common parameters.
+
+## Common Constants Reference
+
+The `AS_Utils.1.fxh` file provides standardized constants for various purposes:
+
+### Mathematical Constants
+- `AS_PI`, `AS_TWO_PI`, `AS_HALF_PI` - Mathematical constants
+- `AS_EPSILON`, `AS_EPSILON_SAFE` - Small numbers to prevent division by zero
+- `AS_HALF`, `AS_QUARTER`, `AS_THIRD`, `AS_TWO_THIRDS` - Common fractions
+- `AS_DEPTH_EPSILON` - Value for z-fighting prevention (0.0005)
+- `AS_EDGE_AA` - Edge anti-aliasing size (0.05)
+
+### Display Constants
+- `AS_RESOLUTION_BASE_HEIGHT`, `AS_RESOLUTION_BASE_WIDTH` - Reference resolution (1080p)
+- `AS_UI_POSITION_RANGE` - Standard range for position UI (-1.5 to 1.5)
+- `AS_UI_POSITION_SCALE` - Position scaling factor (0.5)
+- `AS_SCREEN_CENTER_X`, `AS_SCREEN_CENTER_Y` - Screen center coordinates (0.5)
+
+### Animation Constants
+- `AS_ANIMATION_SPEED_SLOW/NORMAL/FAST` - Animation speed multipliers
+- `AS_TIME_1_SECOND`, `AS_TIME_HALF_SECOND`, etc. - Timing constants
+- `AS_PATTERN_FREQ_LOW/MED/HIGH` - Standard pattern frequencies
+
+### UI Value Ranges
+- `AS_RANGE_ZERO_ONE_MIN/MAX` - Standard 0-1 range
+- `AS_RANGE_OPACITY_MIN/MAX/DEFAULT` - Opacity parameter range
+- `AS_RANGE_AUDIO_MULT_MIN/MAX/DEFAULT` - Audio multiplier range
+- `AS_RANGE_SCALE_MIN/MAX/DEFAULT` - Scale parameter range
+
+### Debug Constants
+- `AS_DEBUG_OFF`, `AS_DEBUG_MASK`, `AS_DEBUG_DEPTH`, etc. - Debug mode constants
 
 ## File Organization
 

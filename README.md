@@ -43,6 +43,9 @@ Effects are categorized as Background (BGX), Graphic (GFX), Lighting (LFX), and 
 -   **Shine On**: Dynamic light ray backgrounds.
 -   **Stained Lights**: Colorful stained glass light patterns; customizable.
 -   **Time Crystal**: Crystal-like temporal distortion; configurable patterns.
+-   **Wavy Squares**: Dynamic square grid patterns with undulating animation and tunable parameters.
+-   **Wavy Squiggles**: Mesmerizing wavy line patterns; dynamic positioning and audio reactivity.
+-   **Blue Corona**: Vibrant, abstract plasma-like effect with fluid motion and customizable colors.
 -   **Zippy Zaps**: Electric arc/lightning effects; audio reactivity.
 
 ### Graphic Effects (GFX)

@@ -18,30 +18,34 @@ This release includes the AS-StageFX shader collection for ReShade.
 
 ---
 
-## Updates in v1.0.4.2
+## Updates in v${VERSION}
 
 This release includes important enhancements and improvements:
 
-1. **New `stanh()` Function in AS_Utils.1.fxh**
-   - Added safe hyperbolic tangent function to prevent NaN/infinity for extreme inputs
-   - Provides vectorized versions for float2, float3, and float4 types
-   - Improves mathematical stability in shaders using hyperbolic tangent functions
+1. **Upgraded AS_BGX_BlueCorona.1.fx**
+   - Fixed horizontal squishing issue for more consistent circular patterns
+   - Fixed inverted color controls (higher values now produce stronger colors)
+   - Added customizable background color with color picker
+   - Added inverse audio reactivity for iteration count
+   - Improved aspect ratio handling for better appearance on all resolutions
+   - Enhanced documentation and code structure
+   - Added to standard AS Shader Framework with proper namespacing and organization
 
-2. **Enhanced ZippyZaps Shader**
-   - Added option to use original mathematical colors with adjustable intensity and saturation
-   - Inverted Arc Flow Factor behavior for more intuitive control (higher values = more chaotic patterns)
-   - Improved audio reactivity options:
-     - Added Arc Flow Factor as an audio reactivity target
-     - Added Main Color Numerator as an audio reactivity target
-     - Removed less effective Animation Speed and Arc Sharpness options
-   - Updated default values for improved visual quality
+2. **Upgraded AS_BGX_WavySquares.1.fx**
+   - Added proper documentation and attribution
+   - Improved and standardized helper functions 
+   - Implemented modern pixel shader with depth, audio, and position features
+   - Updated technique name and UI labels
+   - Added to standard AS Shader Framework with proper namespacing and organization
+   - Fixed various display issues across different resolutions
 
 3. **Code Quality Improvements**
    - Enhanced adherence to AS StageFX Shader Development standards
-   - Better documentation of functions and parameters
-   - Fixed audio reactivity application for Arc Flow Factor
+   - Improved namespace isolation for better compatibility
+   - Standardized UI organization for improved user experience
+   - Added proper shader guards to prevent duplicate loading
 
-For the full changelog and documentation, please refer to the main README.md.
+For the full changelog and documentation, please refer to the main README.md and the GALLERY.md for detailed descriptions of each shader.
 
 ---
 
@@ -95,6 +99,20 @@ For the full changelog and documentation, please refer to the main README.md.
 4. Supports debug visualization for tuning and troubleshooting
 
 See the main README.md for a full feature table and usage notes.
+
+---
+
+## New Shader: AS_BGX_WavySquiggles.1.fx
+
+**AS_BGX_WavySquiggles.1.fx** creates a mesmerizing pattern of adaptive wavy lines that form intricate designs around a central point. This effect is ideal for creating dynamic backgrounds with audio reactivity.
+
+**Key Features:**
+- Dynamic wavy line patterns with controls for rotation, distance, thickness, and smoothness
+- Pattern displacement for off-center effects
+- Multiple coloring options with original mathematical colors or standard AS palette system
+- Comprehensive audio reactivity options
+
+The shader is inspired by SnoopethDuckDuck's "Interactive 2.5D Squiggles" on Shadertoy, enhanced with AS StageFX framework integration for consistent positioning, depth awareness, and audio reactivity.
 
 ---
 

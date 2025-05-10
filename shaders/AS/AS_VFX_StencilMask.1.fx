@@ -158,15 +158,13 @@ namespace AS_StencilMask {
             }
         }
         return sum / weightSum;
-    }
-
-    // Animated border styles
+    }    // Animated border styles
     float applyBorderStyle(float borderMask, float time, int style, float audioPulse, float2 texcoord) {
         if (style == 0) return borderMask; // Solid
-        if (style == 1) return borderMask * (0.75 + 0.25 * sin(time * 2.0)); // Glow
+        if (style == 1) return borderMask * (0.75 + AS_QUARTER * sin(time * 2.0)); // Glow
         // style == 2 is now Dash
         if (style == 2) { // Dash
-            float dash = sin(texcoord.x * 50.0 + time * 2.0) * 0.5 + 0.5;
+            float dash = sin(texcoord.x * 50.0 + time * 2.0) * AS_HALF + AS_HALF;
             return borderMask * smoothstep(0.4, 0.6, dash);
         }
         return borderMask;

@@ -51,6 +51,7 @@
 // Standard mathematical constants for consistent use across all shaders
 #ifndef __AS_MATH_CONSTANTS
 #define __AS_MATH_CONSTANTS
+// Core mathematical constants
 static const float AS_PI = 3.14159265359;
 static const float AS_TWO_PI = 6.28318530718;
 static const float AS_HALF_PI = 1.57079632679;
@@ -58,6 +59,22 @@ static const float AS_QUARTER_PI = 0.78539816339;
 static const float AS_INV_PI = 0.31830988618;
 static const float AS_E = 2.71828182846;
 static const float AS_GOLDEN_RATIO = 1.61803398875;
+
+// Physics & graphics constants
+static const float AS_EPSILON = 1e-6;          // Very small number to avoid division by zero
+static const float AS_EPSILON_SAFE = 1e-5;     // Slightly larger epsilon for screen-space operations
+static const float AS_DEGREES_TO_RADIANS = AS_PI / 180.0;
+static const float AS_RADIANS_TO_DEGREES = 180.0 / AS_PI;
+
+// Common numerical constants
+static const float AS_HALF = 0.5;              // 1/2 - useful for centered coordinates
+static const float AS_QUARTER = 0.25;          // 1/4
+static const float AS_THIRD = 0.3333333333;    // 1/3
+static const float AS_TWO_THIRDS = 0.6666666667; // 2/3
+
+// Depth testing constants 
+static const float AS_DEPTH_EPSILON = 0.0005;  // Standard depth epsilon for z-fighting prevention
+static const float AS_EDGE_AA = 0.05;          // Standard anti-aliasing edge size for smoothstep
 #endif // __AS_MATH_CONSTANTS
 
 // ============================================================================
@@ -94,11 +111,91 @@ static const float AS_GOLDEN_RATIO = 1.61803398875;
     uniform float Listeningway_TotalPhases120Hz < source = "listeningway_totalphases120hz"; > = 0.0;
 #endif
 
+#ifndef __AS_ANIMATION_CONSTANTS
+#define __AS_ANIMATION_CONSTANTS
+// Animation timing constants
+static const float AS_ANIMATION_SPEED_SLOW = 0.5;       // Slow animation speed multiplier
+static const float AS_ANIMATION_SPEED_NORMAL = 1.0;     // Normal animation speed multiplier  
+static const float AS_ANIMATION_SPEED_FAST = 2.0;       // Fast animation speed multiplier
+
+// Timing constants
+static const float AS_TIME_1_SECOND = 1.0;              // 1 second of animation time
+static const float AS_TIME_HALF_SECOND = 0.5;           // 0.5 seconds of animation time
+static const float AS_TIME_QUARTER_SECOND = 0.25;       // 0.25 seconds of animation time
+
+// Animation patterns
+static const float AS_PATTERN_FREQ_LOW = 2.0;           // Low frequency for animation patterns
+static const float AS_PATTERN_FREQ_MED = 5.0;           // Medium frequency for animation patterns
+static const float AS_PATTERN_FREQ_HIGH = 10.0;         // High frequency for animation patterns
+#endif // __AS_ANIMATION_CONSTANTS
+
+#ifndef __AS_COMMON_UI_RANGES
+#define __AS_COMMON_UI_RANGES
+
+// Standard UI ranges for commonly used parameters
+static const float AS_RANGE_ZERO_ONE_MIN = 0.0;         // Common minimum for normalized parameters
+static const float AS_RANGE_ZERO_ONE_MAX = 1.0;         // Common maximum for normalized parameters
+
+static const float AS_RANGE_NEG_ONE_ONE_MIN = -1.0;     // Common minimum for bipolar normalized parameters
+static const float AS_RANGE_NEG_ONE_ONE_MAX = 1.0;      // Common maximum for bipolar normalized parameters
+
+static const float AS_RANGE_OPACITY_MIN = 0.0;          // Minimum for opacity parameters
+static const float AS_RANGE_OPACITY_MAX = 1.0;          // Maximum for opacity parameters
+static const float AS_RANGE_OPACITY_DEFAULT = 1.0;      // Default for opacity parameters
+
+static const float AS_RANGE_BLEND_MIN = 0.0;            // Minimum for blend amount parameters
+static const float AS_RANGE_BLEND_MAX = 1.0;            // Maximum for blend amount parameters
+static const float AS_RANGE_BLEND_DEFAULT = 1.0;        // Default for blend amount parameters
+
+static const float AS_RANGE_AUDIO_MULT_MIN = 0.0;       // Minimum for audio multiplier parameters
+static const float AS_RANGE_AUDIO_MULT_MAX = 2.0;       // Maximum for audio multiplier parameters
+static const float AS_RANGE_AUDIO_MULT_DEFAULT = 1.0;   // Default for audio multiplier parameters
+
+// Scale range constants
+static const float AS_RANGE_SCALE_MIN = 0.1;            // Minimum for scale parameters
+static const float AS_RANGE_SCALE_MAX = 5.0;            // Maximum for scale parameters
+static const float AS_RANGE_SCALE_DEFAULT = 1.0;        // Default for scale parameters
+
+// Speed range constants
+static const float AS_RANGE_SPEED_MIN = 0.0;            // Minimum for speed parameters 
+static const float AS_RANGE_SPEED_MAX = 5.0;            // Maximum for speed parameters
+static const float AS_RANGE_SPEED_DEFAULT = 1.0;        // Default for speed parameters
+
+#endif // __AS_COMMON_UI_RANGES
+
+// Debug mode constants
+#ifndef __AS_DEBUG_CONSTANTS
+#define __AS_DEBUG_CONSTANTS
+static const int AS_DEBUG_OFF = 0;                      // Debug mode off
+static const int AS_DEBUG_MASK = 1;                     // Debug mask display
+static const int AS_DEBUG_DEPTH = 2;                    // Debug depth display
+static const int AS_DEBUG_AUDIO = 3;                    // Debug audio display
+static const int AS_DEBUG_PATTERN = 4;                  // Debug pattern display
+#endif // __AS_DEBUG_CONSTANTS
+
 // --- Audio Constants ---
 #define AS_AUDIO_OFF     0  // Audio source disabled
 #define AS_AUDIO_SOLID   1  // Constant value (no audio reactivity)
 #define AS_AUDIO_VOLUME  2  // Overall audio volume
 #define AS_AUDIO_BEAT    3  // Beat detection
+
+// --- Display and Resolution Constants ---
+#ifndef __AS_DISPLAY_CONSTANTS
+#define __AS_DISPLAY_CONSTANTS
+static const float AS_RESOLUTION_BASE_HEIGHT = 1080.0;  // Standard height for scaling calculations
+static const float AS_RESOLUTION_BASE_WIDTH = 1920.0;   // Standard width for scaling calculations
+static const float AS_STANDARD_ASPECT_RATIO = 16.0/9.0; // Standard aspect ratio for reference
+
+// Common UI mapping constants
+static const float AS_UI_POSITION_RANGE = 1.5;  // Standard range for position UI controls (-1.5 to 1.5)
+static const float AS_UI_CENTRAL_SQUARE = 1.0;  // Range mapping to central square (-1.0 to 1.0)
+static const float AS_UI_POSITION_SCALE = 0.5;  // Position scaling factor for centered coordinates
+
+// Common coordinate system values
+static const float AS_SCREEN_CENTER_X = 0.5;    // Screen center X coordinate
+static const float AS_SCREEN_CENTER_Y = 0.5;    // Screen center Y coordinate
+static const float AS_RESOLUTION_SCALE = 1080.0 / BUFFER_HEIGHT; // Resolution scaling factor
+#endif // __AS_DISPLAY_CONSTANTS
 #define AS_AUDIO_BASS    4  // Low frequency band
 #define AS_AUDIO_TREBLE  5  // High frequency band
 #define AS_AUDIO_MID     6  // Mid frequency band
@@ -675,11 +772,9 @@ float AS_starMask(float2 p, float size, float points, float angle) {
 
     // Modulate radius based on angle and number of points
     float f = cos(a * points); // Creates lobes
-    f = f * 0.5 + 0.5; // Map from [-1, 1] to [0, 1] range
-
-    // Use smoothstep to create the shape based on distance and modulated radius 'f'
+    f = f * 0.5 + 0.5; // Map from [-1, 1] to [0, 1] range    // Use smoothstep to create the shape based on distance and modulated radius 'f'
     // The inner edge is f, outer edge slightly larger for anti-aliasing
-    return 1.0 - smoothstep(f, f + 0.05, r); // Adjust 0.05 for sharpness
+    return 1.0 - smoothstep(f, f + AS_EDGE_AA, r); // Using standard anti-aliasing edge size
 }
 
 

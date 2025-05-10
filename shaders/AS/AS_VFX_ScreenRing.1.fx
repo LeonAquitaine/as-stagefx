@@ -148,12 +148,11 @@ float3 getScreenRingPaletteColor(float t, float timer) {
         if (CycleMode == 0) { 
             // Sweep mode (the original mode) - colors cycle 1→2→3→4→5→1→...
             t = frac(t + cycleRate * timer);
-        }
-        else if (CycleMode == 1) {
+        }        else if (CycleMode == 1) {
             // Wave mode - colors cycle 1→2→3→4→5→4→3→2→1→...
-            float cyclePos = frac(cycleRate * timer * 0.5); // Half speed for ping-pong
+            float cyclePos = frac(cycleRate * timer * AS_HALF); // Half speed for ping-pong
             // Convert cyclePos to ping-pong pattern between 0-1
-            cyclePos = cyclePos < 0.5 ? cyclePos * 2.0 : 2.0 - cyclePos * 2.0;
+            cyclePos = cyclePos < AS_HALF ? cyclePos * 2.0 : 2.0 - cyclePos * 2.0;
             t = lerp(t, cyclePos, saturate(abs(cycleRate) * 2.0)); // Blend toward current cycle position
         }
         else if (CycleMode == 2) {
@@ -187,8 +186,7 @@ float4 PS_ScreenRing(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_
     float thicknessInput = RingThickness;
     float4 ringColorInput = RingColor;
 
-    if (AudioTarget > 0) {
-        float audioLevel = AS_getAudioSource(Ring_AudioSource);
+    if (AudioTarget > 0) {        float audioLevel = AS_getAudioSource(Ring_AudioSource);
         float multiplier = Ring_AudioMultiplier;
         float audioFactor = (1.0 + audioLevel * multiplier);
 

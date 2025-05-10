@@ -112,7 +112,7 @@ namespace AS_VUMeterBG {
 float4 PS_VUMeterBG(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target {
     // Stage depth cutoff
     float sceneDepth = ReShade::GetLinearizedDepth(texcoord);
-    if (sceneDepth < StageDepth - 0.0005) {
+    if (sceneDepth < StageDepth - AS_DEPTH_EPSILON) {
         return tex2D(ReShade::BackBuffer, texcoord);
     }
 

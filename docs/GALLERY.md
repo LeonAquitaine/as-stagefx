@@ -181,10 +181,29 @@ This gallery provides detailed descriptions and visual examples of all shaders i
     <td width="50%"><div style="text-align:center">
       <!-- Placeholder for future image -->
     </div></td>
+  </tr>  <tr>
+    <td width="50%"><strong>BGX: Time Crystal</strong> (<code>AS_BGX_TimeCrystal.1.fx</code>)<br>
+      Generates crystal-like temporal distortion effects with configurable patterns, colors, and animation. Features audio reactivity and customizable fractal-based designs.<br><em>Technique: [AS] BGX: Time Crystal</em></td>    <td width="50%"><div style="text-align:center">
+      <!-- Placeholder for future image -->
+    </div></td>
   </tr>
   <tr>
-    <td width="50%"><strong>BGX: Time Crystal</strong> (<code>AS_BGX_TimeCrystal.1.fx</code>)<br>
-      Generates crystal-like temporal distortion effects with configurable patterns, colors, and animation. Features audio reactivity and customizable fractal-based designs.<br><em>Technique: [AS] BGX: Time Crystal</em></td>
+    <td width="50%"><strong>BGX: Wavy Squares</strong> (<code>AS_BGX_WavySquares.1.fx</code>)<br>
+      Creates a dynamic, grid-based pattern of undulating squares that pulse and move. Features customizable parameters for grid density, animation speed and pattern complexity. Includes audio reactivity, position controls, and tunable color options.<br><em>Technique: [AS] BGX: Wavy Squares</em></td>
+    <td width="50%"><div style="text-align:center">
+      <!-- Placeholder for future image -->
+    </div></td>
+  </tr>
+  <tr>
+    <td width="50%"><strong>BGX: Wavy Squiggles</strong> (<code>AS_BGX_WavySquiggles.1.fx</code>)<br>
+      Creates a mesmerizing pattern of adaptive wavy lines that follow a fixed position. Features customizable line parameters (thickness, distance, smoothness), displacement controls for off-center effects, and audio reactivity with multiple target parameters. Supports both mathematical color generation and palette-based coloring.<br><em>Technique: [AS] BGX: Wavy Squiggles</em></td>
+    <td width="50%"><div style="text-align:center">
+      <!-- Placeholder for future image -->
+    </div></td>
+  </tr>
+  <tr>
+    <td width="50%"><strong>BGX: Blue Corona</strong> (<code>AS_BGX_BlueCorona.1.fx</code>)<br>
+      Creates a vibrant, abstract blue corona effect with fluid, dynamic motion. Features customizable iteration count, pattern scale, and a tunable background color. Includes inverse audio reactivity for iteration count and other parameters for dynamic visual effects. Based on SnoopethDuckDuck's original shader, enhanced with additional controls and features.<br><em>Technique: [AS] BGX: Blue Corona</em></td>
     <td width="50%"><div style="text-align:center">
       <!-- Placeholder for future image -->
     </div></td>

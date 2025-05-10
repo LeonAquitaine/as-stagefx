@@ -164,10 +164,9 @@ void PS_BoomSticker(in float4 position : SV_Position, in float2 texCoord : TEXCO
     
     // Standard depth handling as per AS_CodeStandards.md
     float sceneDepth = ReShade::GetLinearizedDepth(texCoord);
-    
-    // If the scene depth is less than the effect depth, return original color
+      // If the scene depth is less than the effect depth, return original color
     // Using a small offset to prevent z-fighting
-    if (sceneDepth < BoomSticker_Depth - 0.0005) {
+    if (sceneDepth < BoomSticker_Depth - AS_DEPTH_EPSILON) {
         passColor = originalColor;
         return;
     }
@@ -209,10 +208,9 @@ void PS_BoomSticker(in float4 position : SV_Position, in float2 texCoord : TEXCO
     ScaleSize.x *= aspectCorrection;
     float ScaleX = ScaleSize.x * AspectX * BoomSticker_ScaleXY.x;
     float ScaleY = ScaleSize.y * AspectY * BoomSticker_ScaleXY.y;
-    
-    // Calculate rotation
+      // Calculate rotation
     float SnapAngle = float(BoomSticker_SnapRotate) * 45.0;
-    float Rotate = (BoomSticker_Rotate + SnapAngle) * (AS_PI / 180.0);
+    float Rotate = (BoomSticker_Rotate + SnapAngle) * AS_DEGREES_TO_RADIANS;
     
     // Apply standard non-audio-reactive sway
     // Note: AS_applySway already returns the angle in radians, no need to convert

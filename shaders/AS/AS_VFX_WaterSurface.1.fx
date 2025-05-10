@@ -67,9 +67,6 @@ static const float REFLECT_COMPRESS_MIN = 1.0;
 static const float REFLECT_COMPRESS_MAX = 10.0; 
 static const float REFLECT_COMPRESS_DEFAULT = 0.4; 
 
-static const float AS_RESOLUTION_BASE_HEIGHT = 1080.0;
-static const float AS_EPSILON = 1e-6;
-
 // ============================================================================
 // EFFECT-SPECIFIC PARAMETERS
 // ============================================================================
@@ -174,9 +171,7 @@ float4 PS_WaterSurface(float4 vpos : SV_Position, float2 texcoord : TEXCOORD) : 
 
     // --- Calculations ---
     float reflectionHorizon = CalculateReflectionHorizon(depth, WaterLevel);
-    bool isWater = texcoord.y > reflectionHorizon;
-
-    // Debug reflection horizon line
+    bool isWater = texcoord.y > reflectionHorizon;    // Debug reflection horizon line
     if (DebugMode == 3) {
         float horizonHighlight = abs(texcoord.y - reflectionHorizon) < 0.002 ? 1.0 : 0.0;
         return float4(horizonHighlight, 0.0, 0.0, 1.0) + originalColor * (1.0 - horizonHighlight);

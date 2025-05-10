@@ -47,6 +47,10 @@
 // ============================================================================
 // CONSTANTS
 // ============================================================================
+#ifndef AS_PI
+    static const float AS_PI = 3.1415926535f;
+#endif
+
 // Blur configurations
 static const float FROST_MIN_BLUR_PIXELS = 0.0f;  // Min blur in pixels
 static const float FROST_MAX_BLUR_PIXELS = 25.0f; // Max blur in pixels
@@ -85,7 +89,8 @@ sampler PureBlurredBackgroundSampler { Texture = PureBlurredBackgroundTarget; };
 
 // Position & Stage Controls
 AS_POSITION_SCALE_UI(PositionOffset, Scale)
-AS_ROTATION_UI(SnapRotation, FineRotation)
+uniform int SnapRotation < ui_category = "Stage"; ui_label = "Snap Rotation"; ui_type = "slider"; ui_min = -4; ui_max = 4; ui_step = 1; ui_tooltip = "Snap rotation in 45° steps (-180° to +180°). Positive values rotate clockwise."; > = 0;
+uniform float FineRotation < ui_category = "Stage"; ui_label = "Fine Rotation"; ui_type = "slider"; ui_min = -45.0; ui_max = 45.0; ui_step = 0.1; ui_tooltip = "Fine rotation adjustment in degrees. Positive values rotate clockwise."; ui_same_line = true; > = 0.0;
 AS_STAGEDEPTH_UI(StageDepth)
 
 // Rain & Droplet Appearance
@@ -115,7 +120,9 @@ AS_BLENDMODE_UI(BlendMode)
 AS_BLENDAMOUNT_UI(BlendStrength)
 
 // Debug Controls
-AS_DEBUG_MODE_UI("Off\0Show Focus Val\0Show Normals\0Show Coverage\0")
+uniform bool Debug_ShowEffectMap_Focus < ui_label = "Debug: Show Focus Val (EffectMap.r)"; ui_tooltip = "Visualizes the blur amount applied to different areas."; ui_category = "Debug"; ui_category_closed = true; > = false;
+uniform bool Debug_ShowEffectMap_Normals < ui_label = "Debug: Show Normals (EffectMap.gb)"; ui_tooltip = "Visualizes the normal maps used for refraction effects."; ui_category = "Debug"; ui_category_closed = true; > = false;
+uniform bool Debug_ShowEffectMap_Coverage < ui_label = "Debug: Show Coverage (EffectMap.a)"; ui_tooltip = "Visualizes the droplet coverage across the window."; ui_category = "Debug"; ui_category_closed = true; > = false;
 
 
 // ============================================================================
@@ -285,10 +292,9 @@ float4 GenerateEffectMapsPS(float4 vpos : SV_Position, float2 texcoord : TEXCOOR
     float focus_val = lerp(blur_target_max_frost, effective_min_blur, drop_influence_for_lerp);
     focus_val = max(0.0f, focus_val);
 
-    // Debug visualizations using standardized debug mode
-    if (DebugMode == 1) return float4(focus_val / FROST_MAX_BLUR_PIXELS, 0, 0, 1); // Show Focus Val
-    if (DebugMode == 2) return float4(original_drop_normals * 0.5 + 0.5, 0, 1);    // Show Normals
-    if (DebugMode == 3) return float4(drop_coverage, drop_coverage, drop_coverage, 1); // Show Coverage
+    if (Debug_ShowEffectMap_Focus) return float4(focus_val / FROST_MAX_BLUR_PIXELS, 0,0,1);
+    if (Debug_ShowEffectMap_Normals) return float4(original_drop_normals * 0.5 + 0.5, 0,1); // Visualize normals
+    if (Debug_ShowEffectMap_Coverage) return float4(drop_coverage, drop_coverage, drop_coverage,1);
 
     // Output: R=focus_val, GB=normal.xy, A=drop_coverage
     return float4(focus_val, original_drop_normals.x, original_drop_normals.y, drop_coverage);
