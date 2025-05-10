@@ -4,6 +4,13 @@
  * License: Creative Commons Attribution 4.0 International
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
  * 
+ * CREDITS:
+ * The core rain droplet logic is inspired by "Heartfelt" by Martijn Steinrucken (BigWings).
+ * ShaderToy: https://www.shadertoy.com/view/ltffzl
+ * Email: countfrolic@gmail.com
+ * Twitter: @The_ArtOfCode
+ * Original License: Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License.
+ * 
  * ===================================================================================
  *
  * DESCRIPTION:
@@ -43,6 +50,7 @@
 // ============================================================================
 #include "ReShade.fxh"
 #include "AS_Utils.1.fxh" 
+#include "AS_Perspective.1.fx" // Added for perspective controls
 
 // ============================================================================
 // CONSTANTS
@@ -69,8 +77,8 @@ static const float LIGHTNING_FREQ_APOCALYPSE = 4.0f;
 // ============================================================================
 // TEXTURES AND SAMPLERS
 // ============================================================================
-texture EffectMapTarget { Width = BUFFER_WIDTH; Height = BUFFER_HEIGHT; Format = RGBA16F; }; // R=focus_val, GB=normal.xy, A=drop_coverage
-sampler EffectMapSampler { Texture = EffectMapTarget; };
+texture RainyWindowEffectMapTarget { Width = BUFFER_WIDTH; Height = BUFFER_HEIGHT; Format = RGBA16F; }; // R=focus_val, GB=normal.xy, A=drop_coverage
+sampler RainyWindowEffectMapSampler { Texture = RainyWindowEffectMapTarget; };
 
 texture PureHorizontalBlurTarget { Width = BUFFER_WIDTH; Height = BUFFER_HEIGHT; Format = RGBA8; };
 sampler PureHorizontalBlurSampler { Texture = PureHorizontalBlurTarget; };
@@ -87,18 +95,19 @@ sampler PureBlurredBackgroundSampler { Texture = PureBlurredBackgroundTarget; };
 AS_POSITION_SCALE_UI(PositionOffset, Scale)
 AS_ROTATION_UI(SnapRotation, FineRotation)
 AS_STAGEDEPTH_UI(StageDepth)
+AS_PERSPECTIVE_UI(PerspectiveAngles, PerspectiveZOffset, PerspectiveFocalLength, "Perspective") // Added Perspective Controls
 
 // Rain & Droplet Appearance
 uniform float RainAmount < ui_type = "slider"; ui_label = "Rain Amount"; ui_tooltip = "Controls overall rain intensity and thus influences blur levels."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Rain Appearance"; > = 0.7;
 uniform float DropAnimationSpeed < ui_type = "slider"; ui_label = "Drop Animation Speed"; ui_tooltip = "Controls how fast the raindrops move and animate."; ui_min = DROPLET_SPEED_MIN; ui_max = DROPLET_SPEED_MAX; ui_step = 0.01; ui_category = "Rain Appearance"; > = 0.2;
 
 // Frosting Effect
-uniform float Frost_MinBlur_Constant < ui_type = "slider"; ui_label = "Frosting: Min Blur (Droplet Areas)"; ui_tooltip = "Blur radius in pixels for droplet areas. 0 for sharp."; ui_min = FROST_MIN_BLUR_PIXELS; ui_max = FROST_MAX_BLUR_PIXELS; ui_step = 0.1; ui_category = "Frosting"; > = 0.0f;
-uniform float Frost_MaxBlur_BaseLowRain < ui_type = "slider"; ui_label = "Frosting: Max Blur (Low Rain)"; ui_tooltip = "Max blur radius in pixels when Rain Amount is low."; ui_min = FROST_MIN_BLUR_PIXELS; ui_max = FROST_MAX_BLUR_PIXELS; ui_step = 0.1; ui_category = "Frosting"; > = 8.0f;
-uniform float Frost_MaxBlur_BaseHighRain < ui_type = "slider"; ui_label = "Frosting: Max Blur (High Rain)"; ui_tooltip = "Max blur radius in pixels when Rain Amount is high."; ui_min = FROST_MIN_BLUR_PIXELS; ui_max = FROST_MAX_BLUR_PIXELS; ui_step = 0.1; ui_category = "Frosting"; > = 12.0f;
-uniform float BlurQuality < ui_type = "slider"; ui_label = "Blur Quality"; ui_tooltip = "Adjusts blur quality (sample count). Lower values improve performance but reduce blur quality."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Frosting"; > = 1.0;
-uniform float FrostThresholdLow < ui_type = "slider"; ui_label = "Frosting: Low Coverage Threshold"; ui_tooltip = "Drop coverage BELOW this results in more frost/blur (towards Max Blur)."; ui_min = THRESHOLD_MIN; ui_max = THRESHOLD_MAX; ui_step = 0.01; ui_category = "Frosting"; > = 0.1f;
-uniform float FrostThresholdHigh < ui_type = "slider"; ui_label = "Frosting: High Coverage Threshold"; ui_tooltip = "Drop coverage ABOVE this results in less frost/blur (towards Min Blur)."; ui_min = THRESHOLD_MIN; ui_max = THRESHOLD_MAX; ui_step = 0.01; ui_category = "Frosting"; > = 0.2f;
+uniform float Frost_MinBlur_Constant < ui_type = "slider"; ui_label = "Min Blur (Droplet Areas)"; ui_tooltip = "Blur radius in pixels for droplet areas. 0 for sharp."; ui_min = FROST_MIN_BLUR_PIXELS; ui_max = FROST_MAX_BLUR_PIXELS; ui_step = 0.1; ui_category = "Frosting"; > = 0.0f;
+uniform float Frost_MaxBlur_BaseLowRain < ui_type = "slider"; ui_label = "Max Blur (Low Rain)"; ui_tooltip = "Max blur radius in pixels when Rain Amount is low."; ui_min = FROST_MIN_BLUR_PIXELS; ui_max = FROST_MAX_BLUR_PIXELS; ui_step = 0.1; ui_category = "Frosting"; > = 8.0f;
+uniform float Frost_MaxBlur_BaseHighRain < ui_type = "slider"; ui_label = "Max Blur (High Rain)"; ui_tooltip = "Max blur radius in pixels when Rain Amount is high."; ui_min = FROST_MIN_BLUR_PIXELS; ui_max = FROST_MAX_BLUR_PIXELS; ui_step = 0.1; ui_category = "Frosting"; > = 12.0f;
+uniform float BlurQuality < ui_type = "slider"; ui_label = "Glass Frosting"; ui_tooltip = "Adjusts blur quality (sample count). Lower values improve performance but reduce blur quality."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Frosting"; > = 1.0;
+uniform float FrostThresholdLow < ui_type = "slider"; ui_label = "Low Coverage Threshold"; ui_tooltip = "Drop coverage BELOW this results in more frost/blur (towards Max Blur)."; ui_min = THRESHOLD_MIN; ui_max = THRESHOLD_MAX; ui_step = 0.01; ui_category = "Frosting"; > = 0.1f;
+uniform float FrostThresholdHigh < ui_type = "slider"; ui_label = "High Coverage Threshold"; ui_tooltip = "Drop coverage ABOVE this results in less frost/blur (towards Min Blur)."; ui_min = THRESHOLD_MIN; ui_max = THRESHOLD_MAX; ui_step = 0.01; ui_category = "Frosting"; > = 0.2f;
 uniform float NormalsCutoffThreshold < ui_type = "slider"; ui_label = "Normals: Min Coverage Cutoff"; ui_tooltip = "Drop coverage BELOW this will have zero normals (no refraction). Helps remove ghosting."; ui_min = 0.00; ui_max = 0.2; ui_step = 0.005; ui_category = "Frosting"; > = 0.05f;
 
 // Special Effects
@@ -250,8 +259,21 @@ float4 GenerateEffectMapsPS(float4 vpos : SV_Position, float2 texcoord : TEXCOOR
 
     float hiddenRotation = AS_PI; 
     float actualRotation = -AS_getRotationRadians(SnapRotation, FineRotation) + hiddenRotation;
-    float2 centered_uv = AS_transformCoord(texcoord, PositionOffset, Scale, actualRotation);
-    float2 uv_for_drops = centered_uv;
+    float2 centered_uv_no_perspective = AS_transformCoord(texcoord, PositionOffset, Scale, actualRotation); // Renamed to clarify
+    
+    // Apply perspective transform
+    float2 aspect_corrected_centered_uv = centered_uv_no_perspective;
+    aspect_corrected_centered_uv.x *= ReShade::AspectRatio; // Correct for aspect ratio for the perspective function
+
+    float2 centered_uv = AS_applyPerspectiveTransform(
+        aspect_corrected_centered_uv, 
+        PerspectiveAngles, 
+        PerspectiveZOffset, 
+        PerspectiveFocalLength
+    );
+    centered_uv.x /= ReShade::AspectRatio; // Scale back if the perspective output is in a space where x was expanded
+
+    float2 uv_for_drops = centered_uv + 0.5; // Uncenter: transform from (-0.5, 0.5) to (0,1) range
     
     float current_rain_amount = RainAmount;
     if (RainAmount_AudioSource != AS_AUDIO_OFF) {
@@ -300,7 +322,7 @@ float4 PureHorizontalBlurPS(float4 vpos : SV_Position, float2 texcoord : TEXCOOR
     if (depth < StageDepth - AS_DEPTH_EPSILON) 
         return tex2D(ReShade::BackBuffer, texcoord);
 
-    float focus_val = tex2D(EffectMapSampler, texcoord).r;
+    float focus_val = tex2D(RainyWindowEffectMapSampler, texcoord).r;
     float2 blur_direction = float2(1.0f, 0.0f);
     
     float3 blurred_color = ApplyGaussianBlur(texcoord, blur_direction, focus_val, float2(0.0f, 0.0f), ReShade::BackBuffer);
@@ -313,7 +335,7 @@ float4 PureVerticalBlurPS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0
     if (depth < StageDepth - AS_DEPTH_EPSILON) 
         return tex2D(PureHorizontalBlurSampler, texcoord); // Pass through already H-blurred if culled
 
-    float focus_val = tex2D(EffectMapSampler, texcoord).r;
+    float focus_val = tex2D(RainyWindowEffectMapSampler, texcoord).r;
     float2 blur_direction = float2(0.0f, 1.0f);
 
     float3 blurred_color = ApplyGaussianBlur(texcoord, blur_direction, focus_val, float2(0.0f, 0.0f), PureHorizontalBlurSampler);
@@ -327,7 +349,7 @@ float4 FinalCompositePS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) 
     
     if (depth < StageDepth - AS_DEPTH_EPSILON) return original_scene_color;
 
-    float4 effect_map_data = tex2D(EffectMapSampler, texcoord);
+    float4 effect_map_data = tex2D(RainyWindowEffectMapSampler, texcoord);
     // float focus_val_from_map = effect_map_data.r; // Not directly used here, but was used for blurring
     float2 original_drop_normals = effect_map_data.gb;
     float drop_coverage = effect_map_data.a;
@@ -381,7 +403,7 @@ technique AS_VFX_RainyWindow <
     pass GenerateMapsPass {
         VertexShader = PostProcessVS;
         PixelShader = GenerateEffectMapsPS;
-        RenderTarget0 = EffectMapTarget;
+        RenderTarget0 = RainyWindowEffectMapTarget;
     }
     pass PureHorizontalBlurPass {
         VertexShader = PostProcessVS;
