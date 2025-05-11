@@ -11,46 +11,54 @@ permissions:
 
 jobs:
   release:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest  # Changed to Windows for PowerShell
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Check for version.txt
+      - name: Check for package-config.json
         id: check_version
+        shell: pwsh
         run: |
-          if [ ! -f version.txt ]; then
-            echo "version.txt not found!"
+          if (-not (Test-Path -Path "config/package-config.json")) {
+            Write-Error "package-config.json not found!"
             exit 1
-          fi
+          }
 
       - name: Get version
         id: get_version
+        shell: pwsh
         run: |
-          VERSION=$(cat version.txt)
-          echo "VERSION=${VERSION}" >> $GITHUB_ENV
+          $configJson = Get-Content -Path "config/package-config.json" -Raw | ConvertFrom-Json
+          $version = $configJson.version
+          echo "VERSION=$version" | Out-File -FilePath $env:GITHUB_ENV -Append
           
       - name: Process release template
+        shell: pwsh
         run: |
-          # Create a temporary file with the version variable replaced
-          mkdir -p /tmp/release
-          cat docs/template/release.md | sed "s/\${VERSION}/${{ env.VERSION }}/g" > /tmp/release/release.md
+          # Create a temporary directory for release notes
+          New-Item -ItemType Directory -Path "temp/release" -Force
+          (Get-Content -Path "docs/template/release.md") -replace '\${VERSION}', "${{ env.VERSION }}" | Set-Content -Path "temp/release/release.md"
           
-      - name: Zip shaders and textures folders
+      - name: Build packages
+        shell: pwsh
         run: |
-          zip -r as-stagefx-${{ env.VERSION }}.zip shaders/ textures/ -x "shaders/*.md" -x "shaders/AS/*.md"
-
+          # Run the package build script
+          .\build-packages.ps1
+          
       - name: Create tag if it doesn't exist
         id: create_tag
+        shell: pwsh
         run: |
           git fetch --tags
-          if git tag -l | grep -q "${{ env.VERSION }}"; then
-            echo "Tag ${{ env.VERSION }} already exists."
-          else
+          $tagExists = git tag -l | Select-String -Pattern "${{ env.VERSION }}"
+          if ($tagExists) {
+            Write-Output "Tag ${{ env.VERSION }} already exists."
+          } else {
             git tag "${{ env.VERSION }}"
             git push origin "${{ env.VERSION }}"
-          fi
+          }
 
       - name: Check for existing release
         id: check_release
@@ -81,11 +89,70 @@ jobs:
               return 'not_found';
             }
 
+      - name: Read package manifest and prepare release
+        id: prepare_release
+        shell: pwsh
+        run: |
+          # Read the package manifest
+          $manifestPath = "packages/package-manifest.json"
+          if (-not (Test-Path -Path $manifestPath)) {
+            Write-Error "Package manifest not found at $manifestPath"
+            exit 1
+          }
+            $manifest = Get-Content -Path $manifestPath -Raw | ConvertFrom-Json
+          
+          # Get all ZIP files in the packages directory
+          $zipFiles = Get-ChildItem -Path "packages" -Filter "*.zip" | Select-Object -ExpandProperty FullName
+          
+          if ($zipFiles.Count -eq 0) {
+            Write-Error "No ZIP files found in packages directory. Build may have failed."
+            exit 1
+          }
+          
+          Write-Output "Found $($zipFiles.Count) ZIP packages for release:"
+          foreach ($zipFile in $zipFiles) {
+            Write-Output "  - $zipFile"
+          }
+          
+          # Create comma-separated list of ZIP files for the release
+          $zipFilesStr = $zipFiles -join ","
+          echo "ZIP_FILES=$zipFilesStr" | Out-File -FilePath $env:GITHUB_ENV -Append          # Add package information to release notes
+          $releaseNotes = Get-Content -Path "temp/release/release.md" -Raw
+          $packageInfo = "`n## Packages`n`n"
+          $packageInfo += "This release includes the following packages:\n\n"
+          
+          foreach ($zipFile in $zipFiles) {
+            $zipFileName = Split-Path $zipFile -Leaf
+            $packageInfo += "* **[$zipFileName](https://github.com/${{ github.repository }}/releases/download/${{ env.VERSION }}/$zipFileName)**\n"
+          }
+          
+          $packageInfo += "\n### Package Contents\n\n"
+          
+          foreach ($packageKey in $manifest.packages.PSObject.Properties.Name) {
+            $package = $manifest.packages.$packageKey
+            $packageName = $package.name
+            $packageDesc = $package.description
+            $fileCount = $package.fileCount
+            
+            # Check if package has textures
+            $textureInfo = ""
+            if ($package.PSObject.Properties.Name -contains "textures" -and $package.textures.fileCount -gt 0) {
+              $textureInfo = " + $($package.textures.fileCount) textures"
+            }
+            
+            $packageInfo += "### $packageName`n"
+            $packageInfo += "$packageDesc`n"
+            $packageInfo += "- **Contents**: $fileCount shader files$textureInfo`n`n"
+          }
+          
+          $releaseNotes += $packageInfo
+          $releaseNotes | Set-Content -Path "temp/release/release.md"
+
       - name: Create release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ env.VERSION }}
-          body_path: /tmp/release/release.md
-          files: as-stagefx-${{ env.VERSION }}.zip
+          body_path: temp/release/release.md
+          files: ${{ env.ZIP_FILES }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
