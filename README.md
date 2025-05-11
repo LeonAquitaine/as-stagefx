@@ -74,7 +74,7 @@ Effects are categorized as Background (BGX), Graphic (GFX), Lighting (LFX), and 
 -   **Warp Distort**: Creates an audio-reactive warp effect with customizable shape (circular or resolution-relative), pulsing radius, and wave/ripple effects. Position and depth are adjustable.
 -   **Water Surface**: Water surface with depth-based reflections, perspective-scaled waves, and customizable appearance.
 
-**Detailed descriptions and examples: [Shader Gallery](docs/GALLERY.md).**
+**Detailed descriptions and examples: [Shader Gallery](docs/gallery.md).**
 
 ---
 
