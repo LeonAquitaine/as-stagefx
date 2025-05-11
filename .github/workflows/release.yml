@@ -174,9 +174,7 @@ jobs:
             }
             $packageInfo += "`n"
           }
-          
-          $packageInfo += "`n### Package Contents`n`n" # Corrected newline characters
-          
+         
           # Iterate based on packageDisplayOrder for the "Package Contents" section
           foreach ($packageKeyInOrder in $packageDisplayOrder) {
             if ($manifest.packages.PSObject.Properties.Name -contains $packageKeyInOrder) {
