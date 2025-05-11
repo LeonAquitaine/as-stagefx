@@ -1,41 +1,86 @@
-/////////////////////////////////////////////////////////////////////////////////////////////////
-// Digital Brain - Translated to ReShade FX
-// Original GLSL by srtuss (2013) - https://www.shadertoy.com/view/4sl3Dr
-// Translated for ReShade.
-//
-// Assumptions:
-//  - AS_Utils.1.fxh (or a similar accessible version) provides:
-//      - float AS_getTime() (returns seconds)
-//  - Uses "perlin512x8Noise.png" for iChannel0.
-/////////////////////////////////////////////////////////////////////////////////////////////////
+/**
+ * AS_BGX_DigitalBrain.1.fx - Abstract digital brain visualization with animated Voronoi patterns
+ * Author: Leon Aquitaine (shader port), Original GLSL by srtuss (2013)
+ * License: Creative Commons Attribution 4.0 International
+ * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
+ * 
+ * ===================================================================================
+ *
+ * DESCRIPTION:
+ * Creates an abstract visualization of a "digital brain" with evolving Voronoi patterns and neural-like
+ * connections. The effect simulates an organic electronic network with dynamic light paths that mimic
+ * neural activity in a stylized, technological manner.
+ *
+ * FEATURES:
+ * - Dynamic Voronoi-based pattern generation that mimics neural networks
+ * - Animated "electrical" pulses that simulate synaptic activity
+ * - Color modulation based on noise texture for organic variation
+ * - Vignetting effect to enhance visual focus
+ * - Customizable noise texture for different pattern styles
+ *
+ * IMPLEMENTATION OVERVIEW:
+ * 1. Generates layered Voronoi patterns with multiple octaves
+ * 2. Applies time-based animation to create "electrical" pulse effects
+ * 3. Uses noise texture to modulate color expression
+ * 4. Combines multiple layers with different frequencies for organic feel
+ * 5. Applies vignetting and intensity modulation for final output
+ *
+ * ===================================================================================
+ */
 
-#include "AS_Utils.1.fxh" // For AS_getTime() and other utilities. Ensure path is correct.
+// ============================================================================
+// TECHNIQUE GUARD - Prevents duplicate loading of the same shader
+// ============================================================================
+#ifndef __AS_BGX_DigitalBrain_1_fx
+#define __AS_BGX_DigitalBrain_1_fx
 
-//--------------------------------------------------------------------------------------
-// Textures & Samplers
-//--------------------------------------------------------------------------------------
-texture NoiseTex < source = "perlin512x8Noise.png"; > // Define the noise texture
+#include "ReShade.fxh"
+#include "AS_Utils.1.fxh" // For AS_getTime() and other utilities
+
+// ============================================================================
+// TUNABLE CONSTANTS
+// ============================================================================
+static const float OCTAVE_COUNT = 3.0; // Number of Voronoi octaves to render (3-4 recommended)
+static const float VIGNETTE_STRENGTH = 0.6; // Strength of the vignetting effect
+
+// ============================================================================
+// TEXTURE CONFIGURATION
+// ============================================================================
+#ifndef NOISE_TEXTURE_PATH
+#define NOISE_TEXTURE_PATH "perlin512x8Noise.png" // Default noise texture
+#endif
+
+// ============================================================================
+// TEXTURES AND SAMPLERS
+// ============================================================================
+texture DigitalBrain_NoiseTex < source = NOISE_TEXTURE_PATH; ui_label = "Noise Texture"; ui_category = "Effect-Specific Parameters"; >
 {
-    Width = 512;
-    Height = 512;
-    Format = RGBA8; // Assuming a common format, adjust if needed
+    Width = 512; Height = 512; Format = RGBA8;
 };
+sampler DigitalBrain_NoiseSampler { Texture = DigitalBrain_NoiseTex; AddressU = REPEAT; AddressV = REPEAT; MinFilter = LINEAR; MagFilter = LINEAR; MipFilter = LINEAR; };
 
-sampler sNoiseTex
-{
-    Texture = NoiseTex;
-    AddressU = REPEAT; // ShaderToy iChannels default to REPEAT
-    AddressV = REPEAT;
-    MinFilter = LINEAR;
-    MagFilter = LINEAR;
-    MipFilter = LINEAR; // Or NONE if no mipmaps
-};
+// ============================================================================
+// UI DECLARATIONS
+// ============================================================================
 
-//--------------------------------------------------------------------------------------
-// Helper Functions
-//--------------------------------------------------------------------------------------
+// Effect-Specific Parameters
+uniform float AnimationSpeed < ui_type = "slider"; ui_label = "Animation Speed"; ui_tooltip = "Controls how fast the digital brain patterns evolve."; ui_min = 0.0; ui_max = 2.0; ui_step = 0.01; ui_category = "Effect-Specific Parameters"; > = 1.0;
+uniform float ZoomFactor < ui_type = "slider"; ui_label = "Zoom Factor"; ui_tooltip = "Adjusts the zoom level of the pattern."; ui_min = 0.2; ui_max = 2.0; ui_step = 0.01; ui_category = "Effect-Specific Parameters"; > = 0.6;
+uniform float PatternDensity < ui_type = "slider"; ui_label = "Pattern Density"; ui_tooltip = "Controls density of the Voronoi patterns."; ui_min = 0.5; ui_max = 5.0; ui_step = 0.1; ui_category = "Effect-Specific Parameters"; > = 1.0;
 
-// rotate position around axis
+// Color Settings
+uniform float3 ColorMultiplier < ui_type = "color"; ui_label = "Color Multiplier"; ui_tooltip = "Adjusts the color balance of the effect."; ui_category = "Color Settings"; > = float3(1.0, 1.0, 1.0);
+uniform float ColorIntensity < ui_type = "slider"; ui_label = "Color Intensity"; ui_tooltip = "Overall brightness of the effect."; ui_min = 0.5; ui_max = 4.0; ui_step = 0.1; ui_category = "Color Settings"; > = 2.0;
+
+// Final Mix
+AS_BLENDMODE_UI(BlendMode)
+AS_BLENDAMOUNT_UI(BlendStrength)
+
+// ============================================================================
+// HELPER FUNCTIONS
+// ============================================================================
+
+// Rotate position around axis
 float2 rotate(float2 p, float a)
 {
     float s = sin(a);
@@ -44,13 +89,13 @@ float2 rotate(float2 p, float a)
 }
 
 // 1D random numbers
-float rand_1d(float n) // Renamed to avoid conflict if "rand" is a keyword/macro
+float rand_1d(float n)
 {
     return frac(sin(n) * 43758.5453123f);
 }
 
 // 2D random numbers
-float2 rand_2d(float2 p) // Renamed
+float2 rand_2d(float2 p)
 {
     return frac(float2(sin(p.x * 591.32f + p.y * 154.077f), cos(p.x * 391.32f + p.y * 49.077f)));
 }
@@ -60,16 +105,17 @@ float noise1(float p)
 {
     float fl = floor(p);
     float fc = frac(p);
-    return lerp(rand_1d(fl), rand_1d(fl + 1.0f), fc); // mix -> lerp
+    return lerp(rand_1d(fl), rand_1d(fl + 1.0f), fc);
 }
 
-// voronoi distance noise, based on iq's articles
+// Voronoi distance noise, based on iq's articles
 float voronoi(float2 x)
 {
     float2 p = floor(x);
     float2 f = frac(x);
 
-    float2 res = float2(8.0f, 8.0f); // HLSL requires explicit .0 for floats in constructors sometimes
+    float2 res = float2(8.0f, 8.0f);
+    
     for (int j = -1; j <= 1; j++)
     {
         for (int i = -1; i <= 1; i++)
@@ -77,7 +123,7 @@ float voronoi(float2 x)
             float2 b = float2(i, j);
             float2 r = b - f + rand_2d(p + b);
 
-            // chebyshev distance, one of many ways to do this
+            // Chebyshev distance, one of many ways to do this
             float d = max(abs(r.x), abs(r.y));
 
             if (d < res.x)
@@ -94,12 +140,15 @@ float voronoi(float2 x)
     return res.y - res.x;
 }
 
-//--------------------------------------------------------------------------------------
-// Pixel Shader
-//--------------------------------------------------------------------------------------
+// ============================================================================
+// PIXEL SHADER
+// ============================================================================
 float4 PS_DigitalBrain(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : SV_Target
 {
-    float currentTime = AS_getTime(); // Get time from AS_Utils
+    float4 originalColor = tex2D(ReShade::BackBuffer, texcoord);
+    
+    // Get time with speed adjustment
+    float currentTime = AS_getTime() * AnimationSpeed; 
 
     float flicker = noise1(currentTime * 2.0f) * 0.8f + 0.4f;
 
@@ -112,33 +161,27 @@ float4 PS_DigitalBrain(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) :
     float2 suv = uv; // Store screen-space UVs for vignetting (already -1 to 1 centered)
 
     // 3. Apply aspect ratio correction
-    uv.x *= ReShade::ScreenSize.x / ReShade::ScreenSize.y;
-
+    uv.x *= ReShade::AspectRatio;
 
     float v = 0.0f;
 
-    // that looks highly interesting:
-    // v = 1.0f - length(uv) * 1.3f;
-
-
-    // a bit of camera movement
-    uv *= 0.6f + sin(currentTime * 0.1f) * 0.4f;
+    // Apply zoom and animation
+    uv *= ZoomFactor + sin(currentTime * 0.1f) * 0.4f;
     uv = rotate(uv, sin(currentTime * 0.3f) * 1.0f);
     uv += currentTime * 0.4f;
 
+    // Add some noise octaves
+    float a = 0.6f, f = PatternDensity;
 
-    // add some noise octaves
-    float a = 0.6f, f = 1.0f;
-
-    for (int i = 0; i < 3; i++) // 4 octaves also look nice, its getting a bit slow though
+    for (int i = 0; i < int(OCTAVE_COUNT); i++)
     {
         float v1 = voronoi(uv * f + 5.0f);
         float v2 = 0.0f;
 
-        // make the moving electrons-effect for higher octaves
+        // Make the moving electrons-effect for higher octaves
         if (i > 0)
         {
-            // of course everything based on voronoi
+            // Of course everything based on voronoi
             v2 = voronoi(uv * f * 0.5f + 50.0f + currentTime);
 
             float va = 0.0f, vb = 0.0f;
@@ -147,13 +190,13 @@ float4 PS_DigitalBrain(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) :
             v += a * pow(va * (0.5f + vb), 2.0f);
         }
 
-        // make sharp edges
+        // Make sharp edges
         v1 = 1.0f - smoothstep(0.0f, 0.3f, v1);
 
-        // noise is used as intensity map
+        // Noise is used as intensity map
         v2 = a * (noise1(v1 * 5.5f + 0.1f));
 
-        // octave 0's intensity changes a bit
+        // Octave 0's intensity changes a bit
         if (i == 0)
             v += v2 * flicker;
         else
@@ -163,34 +206,36 @@ float4 PS_DigitalBrain(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) :
         a *= 0.7f;
     }
 
-    // slight vignetting
-    v *= exp(-0.6f * length(suv)) * 1.2f;
+    // Apply vignetting
+    v *= exp(-VIGNETTE_STRENGTH * length(suv)) * 1.2f;
 
-    // use texture channel0 for color? why not.
-    // tex2D(sampler, float2 coords)
-    float3 cexp = tex2D(sNoiseTex, uv * 0.001f).xyz * 3.0f + tex2D(sNoiseTex, uv * 0.01f).xyz;
-    cexp *= 1.4f;
+    // Use texture channel for color
+    float3 cexp = tex2D(DigitalBrain_NoiseSampler, uv * 0.001f).xyz * 3.0f 
+                + tex2D(DigitalBrain_NoiseSampler, uv * 0.01f).xyz;
+    cexp *= 1.4f * ColorMultiplier;
 
-    // old blueish color set (from original shader)
-    // float3 cexp = float3(6.0f, 4.0f, 2.0f);
-
-    float3 col = float3(pow(v, cexp.x), pow(v, cexp.y), pow(v, cexp.z)) * 2.0f;
-
-    return float4(col, 1.0f);
+    // Calculate final color
+    float3 col = float3(pow(v, cexp.x), pow(v, cexp.y), pow(v, cexp.z)) * ColorIntensity;
+    
+    // Apply the standard blend function for final output
+    float3 blendedColor = AS_ApplyBlend(col, originalColor.rgb, BlendMode);
+    return float4(lerp(originalColor.rgb, blendedColor, BlendStrength), originalColor.a);
 }
 
-//--------------------------------------------------------------------------------------
-// Technique
-//--------------------------------------------------------------------------------------
-technique DigitalBrain_Tech <
-    ui_label = "[AS] Digital Brain";
+// ============================================================================
+// TECHNIQUE
+// ============================================================================
+technique AS_BGX_DigitalBrain <
+    ui_label = "[AS] BGX: Digital Brain";
     ui_tooltip = "Visualizes an abstract 'digital brain' effect with evolving Voronoi patterns.\n"
-                 "Original GLSL by srtuss on ShaderToy.\n"
-                 "Uses 'perlin512x8Noise.png' or other noise texture selected for 'NoiseTex'."; >
+                "Part of AS StageFX shader collection by Leon Aquitaine.";
+>
 {
     pass
     {
-        VertexShader = PostProcessVS; // Standard ReShade pass-through VS
+        VertexShader = PostProcessVS;
         PixelShader = PS_DigitalBrain;
     }
 }
+
+#endif // __AS_BGX_DigitalBrain_1_fx
