@@ -102,28 +102,33 @@ jobs:
             $manifest = Get-Content -Path $manifestPath -Raw | ConvertFrom-Json
           
           # Get all ZIP files in the packages directory
-          $zipFiles = Get-ChildItem -Path "packages" -Filter "*.zip" | Select-Object -ExpandProperty FullName
+          $zipFileObjects = Get-ChildItem -Path "packages" -Filter "*.zip"
           
-          if ($zipFiles.Count -eq 0) {
+          if ($zipFileObjects.Count -eq 0) {
             Write-Error "No ZIP files found in packages directory. Build may have failed."
             exit 1
           }
           
-          Write-Output "Found $($zipFiles.Count) ZIP packages for release:"
-          foreach ($zipFile in $zipFiles) {
-            Write-Output "  - $zipFile"
+          # Create a list of relative paths for release notes generation and logging
+          $relativeZipPaths = @()
+          foreach ($zipFileObj in $zipFileObjects) {
+            # Construct relative path with forward slashes, e.g., packages/MyArchive.zip
+            $relativePath = "packages/$($zipFileObj.Name)" 
+            $relativeZipPaths += $relativePath
           }
-            # Create comma-separated list of ZIP files for the release
-          $zipFilesStr = $zipFiles -join ","
-          echo "ZIP_FILES=$zipFilesStr" | Out-File -FilePath $env:GITHUB_ENV -Append
+
+          Write-Output "Found $($relativeZipPaths.Count) ZIP packages for release (using glob 'packages/*.zip' for upload):"
+          foreach ($rPath in $relativeZipPaths) {
+            Write-Output "  - $rPath (will be included in release notes)"
+          }
           
           # Add package information to release notes
           $releaseNotes = Get-Content -Path "temp/release/release.md" -Raw
           $packageInfo = "`n## Packages`n`n"
           $packageInfo += "This release includes the following packages:\n\n"
           
-          foreach ($zipFile in $zipFiles) {
-            $zipFileName = Split-Path $zipFile -Leaf
+          foreach ($rPath in $relativeZipPaths) { # Iterate over relative paths
+            $zipFileName = Split-Path $rPath -Leaf # Correctly gets "filename.zip"
             $packageInfo += "* **[$zipFileName](https://github.com/${{ github.repository }}/releases/download/${{ env.VERSION }}/$zipFileName)**\n"
           }
           
@@ -147,12 +152,13 @@ jobs:
           }
           
           $releaseNotes += $packageInfo
-          $releaseNotes | Set-Content -Path "temp/release/release.md"      - name: Create release
+          $releaseNotes | Set-Content -Path "temp/release/release.md"
+          
+      - name: Create release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ env.VERSION }}
           body_path: temp/release/release.md
-          files: |
-            packages/*.zip
+          files: packages/*.zip # Use glob pattern
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
