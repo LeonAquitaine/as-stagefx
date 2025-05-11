@@ -2,15 +2,6 @@
 
 This release includes the AS-StageFX shader collection for ReShade.
 
-## Package Options
-
-This release includes multiple package options to suit your needs:
-
-- **AS_StageFX_Essentials.zip**: Core library files and essential effects
-- **AS_StageFX_Backgrounds.zip**: More Background effects. Requires the Essentials package.
-- **AS_StageFX_VisualEffects.zip**: More Visual effects. Requires the Essentials package.
-- **AS_StageFX_Complete.zip**: Complete collection of all shaders and utilities
-
 ## Installation
 
 1. **Download:** Choose and download the appropriate package ZIP file for your needs.
