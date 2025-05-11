@@ -128,8 +128,29 @@ jobs:
           $packageInfo += "This release includes the following packages:\n\n"
           
           foreach ($rPath in $relativeZipPaths) { # Iterate over relative paths
-            $zipFileName = Split-Path $rPath -Leaf # Correctly gets "filename.zip"
-            $packageInfo += "* **[$zipFileName](https://github.com/${{ github.repository }}/releases/download/${{ env.VERSION }}/$zipFileName)**\n"
+            $zipFileName = Split-Path $rPath -Leaf
+            $packageDescription = "" # Default to empty if not found
+
+            # Find the package in the manifest by zipFileName to get its description
+            # The $manifest variable is already populated from packages/package-manifest.json
+            if ($manifest -and $manifest.packages) {
+                foreach ($packageKey in $manifest.packages.PSObject.Properties.Name) {
+                    $packageDetail = $manifest.packages.$packageKey
+                    # Ensure $packageDetail has zipFile property before accessing
+                    if ($packageDetail.PSObject.Properties.Name -contains 'zipFile' -and $packageDetail.zipFile -eq $zipFileName) {
+                        if ($packageDetail.PSObject.Properties.Name -contains 'description') {
+                            $packageDescription = $packageDetail.description
+                        }
+                        break # Found the package, no need to search further
+                    }
+                }
+            }
+            
+            $packageInfo += "* **[$zipFileName](https://github.com/${{ github.repository }}/releases/download/${{ env.VERSION }}/$zipFileName)**"
+            if ($packageDescription -and $packageDescription.Trim() -ne "") { # Add description if found and not empty
+                $packageInfo += ": $($packageDescription.Trim())" # Trim to remove potential leading/trailing whitespace
+            }
+            $packageInfo += "\n" # Newline
           }
           
           $packageInfo += "\n### Package Contents\n\n"
