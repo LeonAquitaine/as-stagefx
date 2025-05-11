@@ -157,18 +157,28 @@ jobs:
           
           foreach ($packageKey in $manifest.packages.PSObject.Properties.Name) {
             $package = $manifest.packages.$packageKey
-            $packageName = $package.name
             $packageDesc = $package.description
             $fileCount = $package.fileCount
             
+            $zipFileNameForHeader = "Unknown.zip" # Default
+            if ($package.PSObject.Properties.Name -contains 'zipFile' -and $package.zipFile) {
+                $zipFileNameForHeader = $package.zipFile
+            } elseif ($package.PSObject.Properties.Name -contains 'name' -and $package.name) {
+                # Fallback if zipFile property is missing, construct from name (less ideal)
+                $zipFileNameForHeader = "$($package.name).zip"
+            }
+
             # Check if package has textures
             $textureInfo = ""
             if ($package.PSObject.Properties.Name -contains "textures" -and $package.textures.fileCount -gt 0) {
               $textureInfo = " + $($package.textures.fileCount) textures"
             }
             
-            $packageInfo += "### $packageName`n"
+            # New header: Linked ZIP file name
+            $packageInfo += "### [$zipFileNameForHeader](https://github.com/${{ github.repository }}/releases/download/${{ env.VERSION }}/$zipFileNameForHeader)`n"
+            # Description
             $packageInfo += "$packageDesc`n"
+            # Contents
             $packageInfo += "- **Contents**: $fileCount shader files$textureInfo`n`n"
           }
           
