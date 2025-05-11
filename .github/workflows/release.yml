@@ -124,8 +124,8 @@ jobs:
           
           # Add package information to release notes
           $releaseNotes = Get-Content -Path "temp/release/release.md" -Raw
-          $packageInfo = "`n## Packages`n`n"
-          $packageInfo += "This release includes the following packages:\n\n"
+          $packageInfo = "`n## Packages`n`n" # Corrected newline characters
+          $packageInfo += "This release includes the following packages:`n`n" # Corrected newline characters
           
           foreach ($rPath in $relativeZipPaths) { # Iterate over relative paths
             $zipFileName = Split-Path $rPath -Leaf
@@ -150,10 +150,10 @@ jobs:
             if ($packageDescription -and $packageDescription.Trim() -ne "") { # Add description if found and not empty
                 $packageInfo += ": $($packageDescription.Trim())" # Trim to remove potential leading/trailing whitespace
             }
-            $packageInfo += "\n" # Newline
+            $packageInfo += "`n" # Corrected newline character
           }
           
-          $packageInfo += "\n### Package Contents\n\n"
+          $packageInfo += "`n### Package Contents`n`n" # Corrected newline characters
           
           foreach ($packageKey in $manifest.packages.PSObject.Properties.Name) {
             $package = $manifest.packages.$packageKey
@@ -175,11 +175,11 @@ jobs:
             }
             
             # New header: Linked ZIP file name
-            $packageInfo += "### [$zipFileNameForHeader](https://github.com/${{ github.repository }}/releases/download/${{ env.VERSION }}/$zipFileNameForHeader)`n"
+            $packageInfo += "### [$zipFileNameForHeader](https://github.com/${{ github.repository }}/releases/download/${{ env.VERSION }}/$zipFileNameForHeader)`n" # Corrected newline character
             # Description
-            $packageInfo += "$packageDesc`n"
+            $packageInfo += "$packageDesc`n" # Corrected newline character
             # Contents
-            $packageInfo += "- **Contents**: $fileCount shader files$textureInfo`n`n"
+            $packageInfo += "- **Contents**: $fileCount shader files$textureInfo`n`n" # Corrected newline characters
           }
           
           $releaseNotes += $packageInfo
