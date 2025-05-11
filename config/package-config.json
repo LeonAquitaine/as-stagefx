@@ -1,0 +1,57 @@
+{
+  "essentials": {
+    "fxh": [
+      "AS_Utils.1.fxh",
+      "AS_Noise.1.fxh",
+      "AS_Palette.1.fxh",
+      "AS_Palette_Styles.1.fxh"
+    ],
+    "bgx": [
+      "AS_BGX_PlasmaFlow.1.fx",
+      "AS_BGX_LightWall.1.fx",
+      "AS_BGX_ShineOn.1.fx"
+    ],
+    "gfx": [
+      "AS_GFX_MultiLayerHalftone.1.fx"
+    ],
+    "lfx": [
+      "AS_LFX_StageSpotlights.1.fx"
+    ],
+    "vfx": [
+      "AS_VFX_DigitalArtifacts.1.fx",
+      "AS_VFX_SparkleBloom.1.fx",
+      "AS_VFX_WarpDistort.1.fx"
+    ]
+  },
+  "packageDescription": {
+    "essentials": "Core library files and essential visual effects for general use",
+    "backgrounds": "Complete collection of background effects (not included in Essentials)",
+    "visualeffects": "Complete collection of visual effects (not included in Essentials)",
+    "complete": "Complete collection of all AS StageFX shaders and utilities"
+  },
+  "paths": {
+    "shaderDir": "Shaders/AS",
+    "textureDir": "textures",
+    "manifestFile": "package-manifest.json",
+    "packageContentsFile": "package-contents.json",
+    "readmeFile": "README.txt",
+    "excludePaths": [
+      "\\\\packages\\\\",
+      "\\\\build\\\\",
+      "\\\\config\\\\",
+      "\\\\docs\\\\"
+    ]
+  },
+  "fileExtensions": {
+    "shaders": [".fx", ".fxh"]
+  },
+  "packageNames": {
+    "prefix": "AS_StageFX_",
+    "essentials": "Essentials",
+    "backgrounds": "Backgrounds",
+    "visualEffects": "VisualEffects",
+    "complete": "Complete"
+  },  "readmeTemplate": "# AS StageFX Package\nVersion: {version}\n\n## Description\n{description}{textureNote}\n\n## Installation\n1. Copy the entire contents of this package to your ReShade installation directory\n   (This is usually your game directory that contains the ReShade DLL)\n2. The shaders will appear in the ReShade effects list under their respective categories\n\n## Support\nFor help and updates, visit: {supportUrl}\n",
+  "supportUrl": "https://github.com/YOUR-USERNAME/as-stagefx",
+  "version": "1.6.5"
+}
