@@ -113,10 +113,11 @@ jobs:
           foreach ($zipFile in $zipFiles) {
             Write-Output "  - $zipFile"
           }
-          
-          # Create comma-separated list of ZIP files for the release
+            # Create comma-separated list of ZIP files for the release
           $zipFilesStr = $zipFiles -join ","
-          echo "ZIP_FILES=$zipFilesStr" | Out-File -FilePath $env:GITHUB_ENV -Append          # Add package information to release notes
+          echo "ZIP_FILES=$zipFilesStr" | Out-File -FilePath $env:GITHUB_ENV -Append
+          
+          # Add package information to release notes
           $releaseNotes = Get-Content -Path "temp/release/release.md" -Raw
           $packageInfo = "`n## Packages`n`n"
           $packageInfo += "This release includes the following packages:\n\n"
@@ -146,13 +147,12 @@ jobs:
           }
           
           $releaseNotes += $packageInfo
-          $releaseNotes | Set-Content -Path "temp/release/release.md"
-
-      - name: Create release
+          $releaseNotes | Set-Content -Path "temp/release/release.md"      - name: Create release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ env.VERSION }}
           body_path: temp/release/release.md
-          files: ${{ env.ZIP_FILES }}
+          files: |
+            packages/*.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
