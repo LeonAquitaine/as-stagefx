@@ -1,0 +1,122 @@
+{
+  "packageVersion": "1.6.5",
+  "packages": {
+    "essentials": {
+      "files": [
+        "AS_BGX_LightWall.1.fx",
+        "AS_BGX_PlasmaFlow.1.fx",
+        "AS_BGX_ShineOn.1.fx",
+        "AS_GFX_MultiLayerHalftone.1.fx",
+        "AS_LFX_StageSpotlights.1.fx",
+        "AS_Noise.1.fxh",
+        "AS_Palette_Styles.1.fxh",
+        "AS_Palette.1.fxh",
+        "AS_Utils.1.fxh",
+        "AS_VFX_DigitalArtifacts.1.fx",
+        "AS_VFX_SparkleBloom.1.fx",
+        "AS_VFX_WarpDistort.1.fx"
+      ],
+      "description": "Core library files and essential visual effects for general use",
+      "textures": {
+        "fileCount": 2,
+        "files": [
+          "perlin512x8CNoise.png",
+          "perlin512x8Noise.png"
+        ]
+      },
+      "fileCount": 12,
+      "version": "1.6.5",
+      "name": "AS_StageFX_Essentials"
+    },
+    "backgrounds": {
+      "files": [
+        "AS_BGX_BlueCorona.1.fx",
+        "AS_BGX_CosmicKaleidoscope.1.fx",
+        "AS_BGX_DigitalBrain.1.fx",
+        "AS_BGX_GoldenClockwork.1.fx",
+        "AS_BGX_LightRipples.1.fx",
+        "AS_BGX_MeltWave.1.fx",
+        "AS_BGX_StainedLights.1.fx",
+        "AS_BGX_TimeCrystal.1.fx",
+        "AS_BGX_WavySquares.1.fx",
+        "AS_BGX_WavySquiggles.1.fx",
+        "AS_BGX_ZippyZaps.1.fx"
+      ],
+      "name": "AS_StageFX_Backgrounds",
+      "fileCount": 11,
+      "description": "Complete collection of background effects (not included in Essentials)",
+      "version": "1.6.5"
+    },
+    "visualEffects": {
+      "files": [
+        "AS_LFX_CandleFlame.1.fx",
+        "AS_LFX_LaserShow.1.fx",
+        "AS_VFX_BoomSticker.1.fx",
+        "AS_VFX_MotionTrails.1.fx",
+        "AS_VFX_RainyWindow.1.fx",
+        "AS_VFX_ScreenRing.1.fx",
+        "AS_VFX_SpectrumRing.1.fx",
+        "AS_VFX_StencilMask.1.fx",
+        "AS_VFX_TiltedGrid.1.fx",
+        "AS_VFX_VUMeter.1.fx",
+        "AS_VFX_WaterSurface.1.fx"
+      ],
+      "name": "AS_StageFX_VisualEffects",
+      "fileCount": 11,
+      "description": "Complete collection of visual effects (not included in Essentials)",
+      "version": "1.6.5"
+    },
+    "complete": {
+      "files": [
+        "AS_BGX_BlueCorona.1.fx",
+        "AS_BGX_CosmicKaleidoscope.1.fx",
+        "AS_BGX_DigitalBrain.1.fx",
+        "AS_BGX_GoldenClockwork.1.fx",
+        "AS_BGX_LightRipples.1.fx",
+        "AS_BGX_LightWall.1.fx",
+        "AS_BGX_MeltWave.1.fx",
+        "AS_BGX_PlasmaFlow.1.fx",
+        "AS_BGX_ShineOn.1.fx",
+        "AS_BGX_StainedLights.1.fx",
+        "AS_BGX_TimeCrystal.1.fx",
+        "AS_BGX_WavySquares.1.fx",
+        "AS_BGX_WavySquiggles.1.fx",
+        "AS_BGX_ZippyZaps.1.fx",
+        "AS_GFX_MultiLayerHalftone.1.fx",
+        "AS_LFX_CandleFlame.1.fx",
+        "AS_LFX_LaserShow.1.fx",
+        "AS_LFX_StageSpotlights.1.fx",
+        "AS_Noise.1.fxh",
+        "AS_Palette_Styles.1.fxh",
+        "AS_Palette.1.fxh",
+        "AS_Perspective.1.fx",
+        "AS_Utils.1.fxh",
+        "AS_VFX_BoomSticker.1.fx",
+        "AS_VFX_DigitalArtifacts.1.fx",
+        "AS_VFX_MotionTrails.1.fx",
+        "AS_VFX_RainyWindow.1.fx",
+        "AS_VFX_ScreenRing.1.fx",
+        "AS_VFX_SparkleBloom.1.fx",
+        "AS_VFX_SpectrumRing.1.fx",
+        "AS_VFX_StencilMask.1.fx",
+        "AS_VFX_TiltedGrid.1.fx",
+        "AS_VFX_VUMeter.1.fx",
+        "AS_VFX_WarpDistort.1.fx",
+        "AS_VFX_WaterSurface.1.fx"
+      ],
+      "description": "Complete collection of all AS StageFX shaders and utilities",
+      "textures": {
+        "fileCount": 2,
+        "files": [
+          "perlin512x8CNoise.png",
+          "perlin512x8Noise.png"
+        ]
+      },
+      "fileCount": 35,
+      "version": "1.6.5",
+      "name": "AS_StageFX_Complete"
+    }
+  },
+  "generatedOn": "2025-05-11 09:17:19",
+  "version": "1.6.5"
+}
