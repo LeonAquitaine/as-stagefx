@@ -1,6 +1,7 @@
 /**
  * AS_BGX_DigitalBrain.1.fx - Abstract digital brain visualization with animated Voronoi patterns
  * Author: Leon Aquitaine (shader port), Original GLSL by srtuss (2013)
+ * Original ShaderToy: https://www.shadertoy.com/view/4sl3Dr
  * License: Creative Commons Attribution 4.0 International
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
  * 
@@ -63,6 +64,10 @@ static const float SYNAPSE_SPEED_MIN = 0.1;
 static const float SYNAPSE_SPEED_MAX = 2.0;
 static const float SYNAPSE_SPEED_STEP = 0.01;
 static const float SYNAPSE_SPEED_DEFAULT = 1.0;
+
+// Audio constants
+static const float AUDIO_MULTIPLIER_DEFAULT = 1.0;
+static const float AUDIO_MULTIPLIER_MAX = 5.0;
 
 // ============================================================================
 // TEXTURE CONFIGURATION
@@ -128,8 +133,13 @@ uniform float3 ClassicColorBalance < ui_type = "slider"; ui_label = "Classic Col
 AS_BLENDMODE_UI(BlendMode)
 AS_BLENDAMOUNT_UI(BlendStrength)
 
+// Audio Reactivity
+AS_AUDIO_SOURCE_UI(DigitalBrain_AudioSource, "Audio Source", AS_AUDIO_BASS, "Audio Reactivity")
+AS_AUDIO_MULTIPLIER_UI(DigitalBrain_AudioMultiplier, "Audio Multiplier", AUDIO_MULTIPLIER_DEFAULT, AUDIO_MULTIPLIER_MAX, "Audio Reactivity")
+uniform int DigitalBrain_AudioTarget < ui_type = "combo"; ui_label = "Audio Target"; ui_items = "None\0Pattern Intensity\0Camera Movement\0Synapse Speed\0Camera Speed\0"; ui_category = "Audio Reactivity"; > = 0;
+
 // Debug
-AS_DEBUG_MODE_UI("Off\0Pattern\0UV Coords\0Vignette\0")
+AS_DEBUG_MODE_UI("Off\0Pattern\0UV Coords\0Vignette\0Audio Reactivity\0")
 
 // ============================================================================
 // HELPER FUNCTIONS
@@ -232,50 +242,68 @@ float4 PS_DigitalBrain(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) :
     } else {
         // Otherwise use animated time plus keyframe offset
         currentTime = (AS_getTime() * AnimationSpeed) + AnimationKeyframe;
-    }
-
-    // Enhanced flicker control with separate frequency and intensity
+    }    // Enhanced flicker control with separate frequency and intensity
     float flicker = noise1(currentTime * FlickerFrequency) * FlickerIntensity + (1.0 - FlickerIntensity / 2.0);
+
+    // Apply audio reactivity if enabled
+    float audioReactivity = AS_applyAudioReactivity(1.0, DigitalBrain_AudioSource, DigitalBrain_AudioMultiplier, true);
+    
+    // Pattern intensity and camera speeds will be modified by audio if selected
+    float patternIntensity = 1.0;
+    float cameraMovementValue = CameraMovementAmount;
+    float synapseSpeedValue = SynapseSpeed;
+    float cameraSpeedValue = CameraSpeed;
+    
+    if (DigitalBrain_AudioTarget == 1) { // Pattern Intensity
+        patternIntensity = audioReactivity;
+    }
+    else if (DigitalBrain_AudioTarget == 2) { // Camera Movement
+        cameraMovementValue *= audioReactivity;
+    }
+    else if (DigitalBrain_AudioTarget == 3) { // Synapse Speed
+        synapseSpeedValue *= audioReactivity;
+    }
+    else if (DigitalBrain_AudioTarget == 4) { // Camera Speed
+        cameraSpeedValue *= audioReactivity;
+    }
 
     // UV setup: texcoord is (0,0) top-left. ShaderToy fragCoord is (0,0) bottom-left.
     // 1. Make texcoord behave like ShaderToy's (fragCoord.xy / iResolution.xy)
     float2 uv_norm = float2(positionAdjustedUV.x, 1.0f - positionAdjustedUV.y); // uv_norm is now 0-1, (0,0) at bottom-left    // 2. Transform to -1 to 1 range, with (0,0) at center
     float2 uv = (uv_norm - 0.5f) * 2.0f;
     float2 suv = uv; // Store screen-space UVs for vignetting (already -1 to 1 centered)
-    float v = 0.0f; // Accumulated pattern value
-
-    // ===== Resolution-Independent Coordinate Handling =====
+    float v = 0.0f; // Accumulated pattern value    // ===== Resolution-Independent Coordinate Handling =====
     // Important: We apply zoom and rotation BEFORE aspect ratio correction to avoid distortion
     // This ensures the effect looks the same on all screen aspect ratios and rotates properly    // Apply zoom and animation with user-controlled amounts (but not aspect ratio yet)
-    float zoomAmount = ZoomFactor + sin(currentTime * CameraSpeed * 0.1f) * CameraMovementAmount;
+    float zoomAmount = ZoomFactor + sin(currentTime * cameraSpeedValue * 0.1f) * cameraMovementValue;
     uv *= zoomAmount;
       // Apply both manual and animated rotation in non-stretched space for proper circular movement
-    float rotationAmount = sin(currentTime * CameraSpeed * 0.3f) * CameraRotationAmount;
+    float rotationAmount = sin(currentTime * cameraSpeedValue * 0.3f) * CameraRotationAmount;
     float totalRotation = rotationAmount + AS_getRotationRadians(SnapRotation, ManualRotation);
     uv = rotate(uv, totalRotation);
     
     // NOW apply aspect ratio correction to the rotated coordinates
-    uv.x *= ReShade::AspectRatio;
-      // Apply pattern stretching control to compensate for compression
+    uv.x *= ReShade::AspectRatio;    // Apply pattern stretching control to compensate for compression
     // This is applied after all transformations to directly affect the pattern appearance
     // Multiply by the optimal hidden values and then by the user-controlled values
     uv.x *= DEFAULT_PATTERN_STRETCH.x * PatternStretch.x;
     uv.y *= DEFAULT_PATTERN_STRETCH.y * PatternStretch.y;
     
     // Apply time-based movement
-    uv += currentTime * CameraSpeed * 0.4f;
+    uv += currentTime * cameraSpeedValue * 0.4f;
 
     // Add some noise octaves
-    float a = 0.6f, f = PatternDensity;
-
-    for (int i = 0; i < OctaveCount; i++)
+    float a = 0.6f, f = PatternDensity;    for (int i = 0; i < OctaveCount; i++)
     {
         float v1 = voronoi(uv * f + 5.0f);
-        float v2 = 0.0f;        // Make the moving electrons-effect for higher octaves        if (i > 0)
+        float v2 = 0.0f;
+        
+        // Make the moving electrons-effect for higher octaves
+        if (i > 0)
         {
             // Of course everything based on voronoi - use currentTime with SynapseSpeed
             // so that neuron movement can be controlled independently from camera movement
-            v2 = voronoi(uv * f * 0.5f + 50.0f + currentTime * SynapseSpeed);
+            v2 = voronoi(uv * f * 0.5f + 50.0f + currentTime * synapseSpeedValue);
 
             float va = 0.0f, vb = 0.0f;
             va = 1.0f - smoothstep(0.0f, 0.1f, v1);
@@ -298,7 +326,7 @@ float4 PS_DigitalBrain(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) :
         // Use user-controlled frequency multiplier and amplitude decay
         f *= FrequencyMultiplier;
         a *= AmplitudeDecay;
-    }    // Apply advanced vignette with user controls
+    }// Apply advanced vignette with user controls
     // Adjust for aspect ratio to ensure circular vignette regardless of screen dimensions
     float2 vignetteUV = suv;
     if (ReShade::AspectRatio > 1.0)
@@ -309,9 +337,7 @@ float4 PS_DigitalBrain(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) :
     float vignetteX = abs(vignetteUV.x);
     float vignetteY = abs(vignetteUV.y);
     float vignetteFactor = pow(pow(vignetteX, VignetteRoundness) + pow(vignetteY, VignetteRoundness), 1.0/VignetteRoundness);
-    v *= exp(-VignetteStrength * vignetteFactor) * VignetteRadius;
-
-    // Color calculation with options for classic or texture-based coloring
+    v *= exp(-VignetteStrength * vignetteFactor) * VignetteRadius;    // Color calculation with options for classic or texture-based coloring
     float3 cexp;
     
     if (UseClassicColors)
@@ -325,10 +351,11 @@ float4 PS_DigitalBrain(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) :
         cexp = tex2D(DigitalBrain_NoiseSampler, uv * TextureSamplingScale).xyz * ColorNoiseInfluence 
              + tex2D(DigitalBrain_NoiseSampler, uv * ColorVariationScale).xyz;
         cexp *= 1.4f * ColorMultiplier;
-    }    // Calculate final color
-    float3 col = float3(pow(v, cexp.x), pow(v, cexp.y), pow(v, cexp.z)) * ColorIntensity;
+    }    
     
-    // Debug mode display options
+    // Calculate final color with pattern intensity affected by audio if selected
+    float3 col = float3(pow(v * patternIntensity, cexp.x), pow(v * patternIntensity, cexp.y), pow(v * patternIntensity, cexp.z)) * ColorIntensity;
+      // Debug mode display options
     if (DebugMode == 1)
     {
         // Show the raw pattern without color processing
@@ -353,6 +380,15 @@ float4 PS_DigitalBrain(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) :
         float vignetteFactor = pow(pow(vignetteX, VignetteRoundness) + pow(vignetteY, VignetteRoundness), 1.0/VignetteRoundness);
         float vignetteMask = exp(-VignetteStrength * vignetteFactor) * VignetteRadius;
         return float4(vignetteMask.xxx, originalColor.a);
+    }
+    else if (DebugMode == 4) 
+    {
+        // Show Audio Reactivity
+        float2 debugCenter = float2(0.1f, 0.1f);
+        float debugRadius = 0.08f;
+        if (length(texcoord - debugCenter) < debugRadius) {
+            return float4(audioReactivity, audioReactivity, audioReactivity, 1.0);
+        }
     }
     
     // Apply the standard blend function for final output
