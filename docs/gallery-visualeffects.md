@@ -2,11 +2,11 @@
 
 This gallery provides detailed descriptions and visual examples of the visual effects included in the **AS_StageFX_VisualEffects** package. For installation instructions and general information, please refer to the [main README](../README.md).
 
-> **Note:** This package requires the [AS_StageFX_Essentials](./GALLERY.md) package to be installed.
+> **Note:** This package requires the [AS_StageFX_Essentials](./gallery.md) package to be installed.
 
 > **Looking for other packages?**
-> - [Essentials Gallery](./GALLERY.md) - Core library files and essential effects
-> - [Backgrounds Gallery](./GALLERY-BACKGROUNDS.md) - Complete collection of background effects
+> - [Essentials Gallery](./gallery.md) - Core library files and essential effects
+> - [Backgrounds Gallery](./gallery-backgrounds.md) - Complete collection of background effects
 
 ---
 
