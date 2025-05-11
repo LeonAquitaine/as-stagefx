@@ -10,12 +10,13 @@
  * Creates an abstract visualization of a "digital brain" with evolving Voronoi patterns and neural-like
  * connections. The effect simulates an organic electronic network with dynamic light paths that mimic
  * neural activity in a stylized, technological manner.
- *
- * FEATURES:
- * - Dynamic Voronoi-based pattern generation that mimics neural networks
+ * * FEATURES: * - Dynamic Voronoi-based pattern generation that mimics neural networks
  * - Animated "electrical" pulses that simulate synaptic activity
  * - Color modulation based on noise texture for organic variation
- * - Vignetting effect to enhance visual focus
+ * - Advanced vignette controls with shape adjustment
+ * - Pre-optimized pattern stretching with manual fine-tuning capability
+ * - Classic and texture-based coloring options
+ * - Extensive animation and pattern controls for artistic expression
  * - Customizable noise texture for different pattern styles
  *
  * IMPLEMENTATION OVERVIEW:
@@ -40,14 +41,18 @@
 // ============================================================================
 // TUNABLE CONSTANTS
 // ============================================================================
-static const float OCTAVE_COUNT = 3.0; // Number of Voronoi octaves to render (3-4 recommended)
-static const float VIGNETTE_STRENGTH = 0.6; // Strength of the vignetting effect
+static const float DEFAULT_OCTAVE_COUNT = 3.0; // Number of Voronoi octaves to render (3-4 recommended)
+static const float DEFAULT_VIGNETTE_STRENGTH = 0.6; // Strength of the vignetting effect
+static const float DEFAULT_EDGE_SHARPNESS = 0.3f; // Default edge sharpness value for Voronoi patterns
+static const float DEFAULT_FREQ_MULTIPLIER = 3.0f; // Default frequency multiplier between octaves
+static const float DEFAULT_AMPLITUDE_DECAY = 0.7f; // Default amplitude decay per octave
+static const float2 DEFAULT_PATTERN_STRETCH = float2(0.7f, 1.22f); // Hidden stretch values for optimal pattern appearance
 
 // ============================================================================
 // TEXTURE CONFIGURATION
 // ============================================================================
 #ifndef NOISE_TEXTURE_PATH
-#define NOISE_TEXTURE_PATH "perlin512x8Noise.png" // Default noise texture
+#define NOISE_TEXTURE_PATH "perlin512x8CNoise.png" // Default noise texture
 #endif
 
 // ============================================================================
@@ -63,14 +68,41 @@ sampler DigitalBrain_NoiseSampler { Texture = DigitalBrain_NoiseTex; AddressU = 
 // UI DECLARATIONS
 // ============================================================================
 
-// Effect-Specific Parameters
-uniform float AnimationSpeed < ui_type = "slider"; ui_label = "Animation Speed"; ui_tooltip = "Controls how fast the digital brain patterns evolve."; ui_min = 0.0; ui_max = 2.0; ui_step = 0.01; ui_category = "Effect-Specific Parameters"; > = 1.0;
-uniform float ZoomFactor < ui_type = "slider"; ui_label = "Zoom Factor"; ui_tooltip = "Adjusts the zoom level of the pattern."; ui_min = 0.2; ui_max = 2.0; ui_step = 0.01; ui_category = "Effect-Specific Parameters"; > = 0.6;
-uniform float PatternDensity < ui_type = "slider"; ui_label = "Pattern Density"; ui_tooltip = "Controls density of the Voronoi patterns."; ui_min = 0.5; ui_max = 5.0; ui_step = 0.1; ui_category = "Effect-Specific Parameters"; > = 1.0;
+// Position & Stage Controls
+AS_POSITION_SCALE_UI(PositionOffset, Scale)
+AS_STAGEDEPTH_UI(StageDepth)
+
+// Animation Controls
+uniform float AnimationSpeed < ui_type = "slider"; ui_label = "Animation Speed"; ui_tooltip = "Controls how fast the digital brain patterns evolve."; ui_min = 0.0; ui_max = 2.0; ui_step = 0.01; ui_category = "Animation Controls"; > = 1.0;
+uniform float CameraMovementAmount < ui_type = "slider"; ui_label = "Camera Movement"; ui_tooltip = "Controls amplitude of camera movement animation."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Animation Controls"; > = 0.4;
+uniform float CameraRotationAmount < ui_type = "slider"; ui_label = "Camera Rotation"; ui_tooltip = "Controls amplitude of camera rotation animation."; ui_min = 0.0; ui_max = 2.0; ui_step = 0.01; ui_category = "Animation Controls"; > = 1.0;
+uniform float FlickerIntensity < ui_type = "slider"; ui_label = "Flicker Intensity"; ui_tooltip = "Controls the intensity of the flickering effect."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Animation Controls"; > = 0.8;
+uniform float FlickerFrequency < ui_type = "slider"; ui_label = "Flicker Frequency"; ui_tooltip = "Controls how rapidly the flicker effect changes."; ui_min = 0.5; ui_max = 5.0; ui_step = 0.1; ui_category = "Animation Controls"; > = 2.0;
+
+// Pattern Controls
+uniform float ZoomFactor < ui_type = "slider"; ui_label = "Zoom Factor"; ui_tooltip = "Adjusts the zoom level of the pattern."; ui_min = 0.2; ui_max = 2.0; ui_step = 0.01; ui_category = "Pattern Controls"; > = 0.6;
+uniform float PatternDensity < ui_type = "slider"; ui_label = "Pattern Density"; ui_tooltip = "Controls density of the Voronoi patterns."; ui_min = 0.5; ui_max = 5.0; ui_step = 0.1; ui_category = "Pattern Controls"; > = 1.0;
+uniform int OctaveCount < ui_type = "slider"; ui_label = "Octave Count"; ui_tooltip = "Number of Voronoi detail layers (higher = more detail but slower)."; ui_min = 1; ui_max = 4; ui_category = "Pattern Controls"; > = 3;
+uniform float EdgeSharpness < ui_type = "slider"; ui_label = "Edge Sharpness"; ui_tooltip = "Controls the sharpness of pattern edges."; ui_min = 0.05; ui_max = 0.5; ui_step = 0.01; ui_category = "Pattern Controls"; > = DEFAULT_EDGE_SHARPNESS;
+uniform float FrequencyMultiplier < ui_type = "slider"; ui_label = "Frequency Multiplier"; ui_tooltip = "Controls how much detail increases with each octave."; ui_min = 1.5; ui_max = 5.0; ui_step = 0.1; ui_category = "Pattern Controls"; > = DEFAULT_FREQ_MULTIPLIER;
+uniform float AmplitudeDecay < ui_type = "slider"; ui_label = "Amplitude Decay"; ui_tooltip = "Controls how quickly higher octaves diminish in influence."; ui_min = 0.3; ui_max = 0.9; ui_step = 0.01; ui_category = "Pattern Controls"; > = DEFAULT_AMPLITUDE_DECAY;
+uniform float2 PatternStretch < ui_type = "slider"; ui_label = "Pattern Stretch (X/Y)"; ui_tooltip = "Fine-tune the pattern aspect ratio if needed (default 1.0/1.0 is already optimized for most displays)."; ui_min = 0.5; ui_max = 2.0; ui_step = 0.01; ui_category = "Pattern Controls"; > = float2(1.0, 1.0);
+
+// Vignette Controls
+uniform float VignetteStrength < ui_type = "slider"; ui_label = "Vignette Strength"; ui_tooltip = "Controls the strength of the vignette effect."; ui_min = 0.0; ui_max = 1.5; ui_step = 0.01; ui_category = "Vignette Controls"; > = DEFAULT_VIGNETTE_STRENGTH;
+uniform float VignetteRadius < ui_type = "slider"; ui_label = "Vignette Radius"; ui_tooltip = "Controls the size of the vignette effect."; ui_min = 0.5; ui_max = 1.5; ui_step = 0.01; ui_category = "Vignette Controls"; > = 1.2;
+uniform float VignetteRoundness < ui_type = "slider"; ui_label = "Vignette Roundness"; ui_tooltip = "Adjusts the shape of the vignette between elliptical and rectangular."; ui_min = 1.0; ui_max = 4.0; ui_step = 0.1; ui_category = "Vignette Controls"; > = 2.0;
+
+// Texture Sampling
+uniform float TextureSamplingScale < ui_type = "slider"; ui_label = "Texture Sampling Scale"; ui_tooltip = "Controls the scale of noise texture sampling."; ui_min = 0.0005; ui_max = 0.02; ui_step = 0.0005; ui_category = "Texture Controls"; > = 0.1;
+uniform float ColorNoiseInfluence < ui_type = "slider"; ui_label = "Color Noise Influence"; ui_tooltip = "Controls how much the noise texture affects coloring."; ui_min = 0.5; ui_max = 5.0; ui_step = 0.1; ui_category = "Texture Controls"; > = 3.0;
+uniform float ColorVariationScale < ui_type = "slider"; ui_label = "Color Variation Scale"; ui_tooltip = "Controls scaling of the secondary color variation sampling."; ui_min = 0.005; ui_max = 0.05; ui_step = 0.001; ui_category = "Texture Controls"; > = 0.01;
 
 // Color Settings
 uniform float3 ColorMultiplier < ui_type = "color"; ui_label = "Color Multiplier"; ui_tooltip = "Adjusts the color balance of the effect."; ui_category = "Color Settings"; > = float3(1.0, 1.0, 1.0);
 uniform float ColorIntensity < ui_type = "slider"; ui_label = "Color Intensity"; ui_tooltip = "Overall brightness of the effect."; ui_min = 0.5; ui_max = 4.0; ui_step = 0.1; ui_category = "Color Settings"; > = 2.0;
+uniform bool UseClassicColors < ui_label = "Use Classic Blue Colors"; ui_tooltip = "Use the original blue-colored version instead of texture-based colors."; ui_category = "Color Settings"; > = false;
+uniform float3 ClassicColorBalance < ui_type = "slider"; ui_label = "Classic Color Balance"; ui_tooltip = "RGB balance for classic mode colors (higher values = stronger color)."; ui_min = 0.5; ui_max = 8.0; ui_step = 0.1; ui_category = "Color Settings"; > = float3(6.0, 4.0, 2.0);
 
 // Final Mix
 AS_BLENDMODE_UI(BlendMode)
@@ -146,34 +178,68 @@ float voronoi(float2 x)
 float4 PS_DigitalBrain(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : SV_Target
 {
     float4 originalColor = tex2D(ReShade::BackBuffer, texcoord);
+    float depth = ReShade::GetLinearizedDepth(texcoord);
+      // Skip processing if pixel is beyond stage depth
+    if (depth < StageDepth - AS_DEPTH_EPSILON)
+        return originalColor;
+    
+    // Apply position offset and scaling
+    // We'll do this directly while maintaining aspect ratio
+    float2 positionAdjustedUV = texcoord;
+    
+    // Calculate normalized offset (centered around 0.5)
+    float2 centeredUV = texcoord - 0.5;
+      // Apply proper aspect ratio compensation for positioning
+    if (ReShade::AspectRatio > 1.0)
+        centeredUV.x *= ReShade::AspectRatio;
+    else
+        centeredUV.y *= ReShade::AspectRatio;
+        
+    // Apply scale
+    centeredUV *= Scale;
+    
+    // Apply offset and recenter
+    centeredUV += PositionOffset * 0.5; // Convert from [-1,1] to [-0.5,0.5] range
+    positionAdjustedUV = centeredUV + 0.5;
     
     // Get time with speed adjustment
     float currentTime = AS_getTime() * AnimationSpeed; 
 
-    float flicker = noise1(currentTime * 2.0f) * 0.8f + 0.4f;
+    // Enhanced flicker control with separate frequency and intensity
+    float flicker = noise1(currentTime * FlickerFrequency) * FlickerIntensity + (1.0 - FlickerIntensity / 2.0);
 
     // UV setup: texcoord is (0,0) top-left. ShaderToy fragCoord is (0,0) bottom-left.
     // 1. Make texcoord behave like ShaderToy's (fragCoord.xy / iResolution.xy)
-    float2 uv_norm = float2(texcoord.x, 1.0f - texcoord.y); // uv_norm is now 0-1, (0,0) at bottom-left
-
-    // 2. Transform to -1 to 1 range, with (0,0) at center
+    float2 uv_norm = float2(positionAdjustedUV.x, 1.0f - positionAdjustedUV.y); // uv_norm is now 0-1, (0,0) at bottom-left    // 2. Transform to -1 to 1 range, with (0,0) at center
     float2 uv = (uv_norm - 0.5f) * 2.0f;
     float2 suv = uv; // Store screen-space UVs for vignetting (already -1 to 1 centered)
+    float v = 0.0f; // Accumulated pattern value
 
-    // 3. Apply aspect ratio correction
+    // ===== Resolution-Independent Coordinate Handling =====
+    // Important: We apply zoom and rotation BEFORE aspect ratio correction to avoid distortion
+    // This ensures the effect looks the same on all screen aspect ratios and rotates properly
+    
+    // Apply zoom and animation with user-controlled amounts (but not aspect ratio yet)
+    float zoomAmount = ZoomFactor + sin(currentTime * 0.1f) * CameraMovementAmount;
+    uv *= zoomAmount;
+    
+    // Apply rotation in non-stretched space for proper circular movement
+    uv = rotate(uv, sin(currentTime * 0.3f) * CameraRotationAmount);    // NOW apply aspect ratio correction to the rotated coordinates
     uv.x *= ReShade::AspectRatio;
-
-    float v = 0.0f;
-
-    // Apply zoom and animation
-    uv *= ZoomFactor + sin(currentTime * 0.1f) * 0.4f;
-    uv = rotate(uv, sin(currentTime * 0.3f) * 1.0f);
+    
+    // Apply pattern stretching control to compensate for compression
+    // This is applied after all transformations to directly affect the pattern appearance
+    // Multiply by the optimal hidden values and then by the user-controlled values
+    uv.x *= DEFAULT_PATTERN_STRETCH.x * PatternStretch.x;
+    uv.y *= DEFAULT_PATTERN_STRETCH.y * PatternStretch.y;
+    
+    // Apply time-based movement
     uv += currentTime * 0.4f;
 
     // Add some noise octaves
     float a = 0.6f, f = PatternDensity;
 
-    for (int i = 0; i < int(OCTAVE_COUNT); i++)
+    for (int i = 0; i < OctaveCount; i++)
     {
         float v1 = voronoi(uv * f + 5.0f);
         float v2 = 0.0f;
@@ -190,8 +256,8 @@ float4 PS_DigitalBrain(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) :
             v += a * pow(va * (0.5f + vb), 2.0f);
         }
 
-        // Make sharp edges
-        v1 = 1.0f - smoothstep(0.0f, 0.3f, v1);
+        // Make sharp edges with user-controlled sharpness
+        v1 = 1.0f - smoothstep(0.0f, EdgeSharpness, v1);
 
         // Noise is used as intensity map
         v2 = a * (noise1(v1 * 5.5f + 0.1f));
@@ -202,17 +268,37 @@ float4 PS_DigitalBrain(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) :
         else
             v += v2;
 
-        f *= 3.0f;
-        a *= 0.7f;
+        // Use user-controlled frequency multiplier and amplitude decay
+        f *= FrequencyMultiplier;
+        a *= AmplitudeDecay;
+    }    // Apply advanced vignette with user controls
+    // Adjust for aspect ratio to ensure circular vignette regardless of screen dimensions
+    float2 vignetteUV = suv;
+    if (ReShade::AspectRatio > 1.0)
+        vignetteUV.x /= ReShade::AspectRatio; // Correct for wider screens
+    else
+        vignetteUV.y *= ReShade::AspectRatio; // Correct for taller screens
+        
+    float vignetteX = abs(vignetteUV.x);
+    float vignetteY = abs(vignetteUV.y);
+    float vignetteFactor = pow(pow(vignetteX, VignetteRoundness) + pow(vignetteY, VignetteRoundness), 1.0/VignetteRoundness);
+    v *= exp(-VignetteStrength * vignetteFactor) * VignetteRadius;
+
+    // Color calculation with options for classic or texture-based coloring
+    float3 cexp;
+    
+    if (UseClassicColors)
+    {
+        // Use the original blue-colored version with adjustable color balance
+        cexp = ClassicColorBalance * ColorMultiplier;
     }
-
-    // Apply vignetting
-    v *= exp(-VIGNETTE_STRENGTH * length(suv)) * 1.2f;
-
-    // Use texture channel for color
-    float3 cexp = tex2D(DigitalBrain_NoiseSampler, uv * 0.001f).xyz * 3.0f 
-                + tex2D(DigitalBrain_NoiseSampler, uv * 0.01f).xyz;
-    cexp *= 1.4f * ColorMultiplier;
+    else 
+    {
+        // Use texture channel for color with enhanced controls
+        cexp = tex2D(DigitalBrain_NoiseSampler, uv * TextureSamplingScale).xyz * ColorNoiseInfluence 
+             + tex2D(DigitalBrain_NoiseSampler, uv * ColorVariationScale).xyz;
+        cexp *= 1.4f * ColorMultiplier;
+    }
 
     // Calculate final color
     float3 col = float3(pow(v, cexp.x), pow(v, cexp.y), pow(v, cexp.z)) * ColorIntensity;
@@ -227,7 +313,8 @@ float4 PS_DigitalBrain(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) :
 // ============================================================================
 technique AS_BGX_DigitalBrain <
     ui_label = "[AS] BGX: Digital Brain";
-    ui_tooltip = "Visualizes an abstract 'digital brain' effect with evolving Voronoi patterns.\n"
+    ui_tooltip = "Creates an abstract visualization of a 'digital brain' with evolving Voronoi patterns and neural-like connections.\n"
+                "Features extensive controls for pattern complexity, animation, coloring, and vignette effects.\n"
                 "Part of AS StageFX shader collection by Leon Aquitaine.";
 >
 {
