@@ -99,26 +99,50 @@ jobs:
             Write-Error "Package manifest not found at $manifestPath"
             exit 1
           }
-            $manifest = Get-Content -Path $manifestPath -Raw | ConvertFrom-Json
+          $manifest = Get-Content -Path $manifestPath -Raw | ConvertFrom-Json
+
+          # Read package-config.json again to get display order and names
+          $configJsonForOrder = Get-Content -Path "config/package-config.json" -Raw | ConvertFrom-Json
+          $packageDisplayOrder = $configJsonForOrder.packageDisplayOrder
+          $packageNames = $configJsonForOrder.packageNames
           
           # Get all ZIP files in the packages directory
-          $zipFileObjects = Get-ChildItem -Path "packages" -Filter "*.zip"
+          $allZipFileObjects = Get-ChildItem -Path "packages" -Filter "*.zip"
           
-          if ($zipFileObjects.Count -eq 0) {
+          if ($allZipFileObjects.Count -eq 0) {
             Write-Error "No ZIP files found in packages directory. Build may have failed."
             exit 1
           }
           
           # Create a list of relative paths for release notes generation and logging
-          $relativeZipPaths = @()
-          foreach ($zipFileObj in $zipFileObjects) {
-            # Construct relative path with forward slashes, e.g., packages/MyArchive.zip
-            $relativePath = "packages/$($zipFileObj.Name)" 
-            $relativeZipPaths += $relativePath
+          $orderedRelativeZipPaths = @()
+          $processedZipFiles = @{}
+
+          foreach ($packageKeyInOrder in $packageDisplayOrder) {
+            $suffix = $packageNames.$packageKeyInOrder
+            $expectedZipName = "$($packageNames.prefix)$suffix.zip"
+            # For the 'complete' package, the suffix is empty, so adjust the name
+            if ($packageKeyInOrder -eq 'complete') {
+                $expectedZipName = "$($packageNames.prefix).zip"
+            }
+
+            $foundZip = $allZipFileObjects | Where-Object { $_.Name -eq $expectedZipName } | Select-Object -First 1
+            if ($foundZip) {
+                $relativePath = "packages/$($foundZip.Name)"
+                $orderedRelativeZipPaths += $relativePath
+                $processedZipFiles[$foundZip.Name] = $true
+            }
           }
 
-          Write-Output "Found $($relativeZipPaths.Count) ZIP packages for release (using glob 'packages/*.zip' for upload):"
-          foreach ($rPath in $relativeZipPaths) {
+          # Add any remaining ZIPs not in the display order (maintains them in the list)
+          foreach ($zipFileObj In $allZipFileObjects) {
+            if (-not $processedZipFiles.ContainsKey($zipFileObj.Name)) {
+                $orderedRelativeZipPaths += "packages/$($zipFileObj.Name)"
+            }
+          }
+
+          Write-Output "Found $($orderedRelativeZipPaths.Count) ZIP packages for release (using glob 'packages/*.zip' for upload):"
+          foreach ($rPath in $orderedRelativeZipPaths) {
             Write-Output "  - $rPath (will be included in release notes)"
           }
           
@@ -127,59 +151,59 @@ jobs:
           $packageInfo = "`n## Packages`n`n" # Corrected newline characters
           $packageInfo += "This release includes the following packages:`n`n" # Corrected newline characters
           
-          foreach ($rPath in $relativeZipPaths) { # Iterate over relative paths
+          # Iterate over the ordered list for the first section
+          foreach ($rPath in $orderedRelativeZipPaths) { 
             $zipFileName = Split-Path $rPath -Leaf
             $packageDescription = "" # Default to empty if not found
 
             # Find the package in the manifest by zipFileName to get its description
-            # The $manifest variable is already populated from packages/package-manifest.json
             if ($manifest -and $manifest.packages) {
                 foreach ($packageKey in $manifest.packages.PSObject.Properties.Name) {
                     $packageDetail = $manifest.packages.$packageKey
-                    # Ensure $packageDetail has zipFile property before accessing
                     if ($packageDetail.PSObject.Properties.Name -contains 'zipFile' -and $packageDetail.zipFile -eq $zipFileName) {
                         if ($packageDetail.PSObject.Properties.Name -contains 'description') {
                             $packageDescription = $packageDetail.description
                         }
-                        break # Found the package, no need to search further
+                        break
                     }
                 }
             }
             
             $packageInfo += "* **[$zipFileName](https://github.com/${{ github.repository }}/releases/download/${{ env.VERSION }}/$zipFileName)**"
-            if ($packageDescription -and $packageDescription.Trim() -ne "") { # Add description if found and not empty
-                $packageInfo += ": $($packageDescription.Trim())" # Trim to remove potential leading/trailing whitespace
+            if ($packageDescription -and $packageDescription.Trim() -ne "") {
+                $packageInfo += ": $($packageDescription.Trim())"
             }
-            $packageInfo += "`n" # Corrected newline character
+            $packageInfo += "`n"
           }
           
           $packageInfo += "`n### Package Contents`n`n" # Corrected newline characters
           
-          foreach ($packageKey in $manifest.packages.PSObject.Properties.Name) {
-            $package = $manifest.packages.$packageKey
-            $packageDesc = $package.description
-            $fileCount = $package.fileCount
-            
-            $zipFileNameForHeader = "Unknown.zip" # Default
-            if ($package.PSObject.Properties.Name -contains 'zipFile' -and $package.zipFile) {
-                $zipFileNameForHeader = $package.zipFile
-            } elseif ($package.PSObject.Properties.Name -contains 'name' -and $package.name) {
-                # Fallback if zipFile property is missing, construct from name (less ideal)
-                $zipFileNameForHeader = "$($package.name).zip"
-            }
+          # Iterate based on packageDisplayOrder for the "Package Contents" section
+          foreach ($packageKeyInOrder in $packageDisplayOrder) {
+            if ($manifest.packages.PSObject.Properties.Name -contains $packageKeyInOrder) {
+                $package = $manifest.packages.$packageKeyInOrder
+                $packageDesc = $package.description
+                $fileCount = $package.fileCount
+                
+                $zipFileNameForHeader = "Unknown.zip" # Default
+                if ($package.PSObject.Properties.Name -contains 'zipFile' -and $package.zipFile) {
+                    $zipFileNameForHeader = $package.zipFile
+                } elseif ($package.PSObject.Properties.Name -contains 'name' -and $package.name) {
+                    $zipFileNameForHeader = "$($package.name).zip"
+                }
 
-            # Check if package has textures
-            $textureInfo = ""
-            if ($package.PSObject.Properties.Name -contains "textures" -and $package.textures.fileCount -gt 0) {
-              $textureInfo = " + $($package.textures.fileCount) textures"
+                # Check if package has textures
+                $textureInfo = ""
+                if ($package.PSObject.Properties.Name -contains "textures" -and $package.textures.fileCount -gt 0) {
+                  $textureInfo = " + $($package.textures.fileCount) textures"
+                }
+                
+                $packageInfo += "### [$zipFileNameForHeader](https://github.com/${{ github.repository }}/releases/download/${{ env.VERSION }}/$zipFileNameForHeader)`n"
+                $packageInfo += "$packageDesc`n"
+                $packageInfo += "- **Contents**: $fileCount shader files$textureInfo`n`n"
+            } else {
+                Write-Warning "Package key '$packageKeyInOrder' from displayOrder not found in manifest.packages"
             }
-            
-            # New header: Linked ZIP file name
-            $packageInfo += "### [$zipFileNameForHeader](https://github.com/${{ github.repository }}/releases/download/${{ env.VERSION }}/$zipFileNameForHeader)`n" # Corrected newline character
-            # Description
-            $packageInfo += "$packageDesc`n" # Corrected newline character
-            # Contents
-            $packageInfo += "- **Contents**: $fileCount shader files$textureInfo`n`n" # Corrected newline characters
           }
           
           $releaseNotes += $packageInfo
