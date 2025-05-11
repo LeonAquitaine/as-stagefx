@@ -167,12 +167,6 @@ jobs:
                     }
                 }
             }
-            
-            $packageInfo += "* **[$zipFileName](https://github.com/${{ github.repository }}/releases/download/${{ env.VERSION }}/$zipFileName)**"
-            if ($packageDescription -and $packageDescription.Trim() -ne "") {
-                $packageInfo += ": $($packageDescription.Trim())"
-            }
-            $packageInfo += "`n"
           }
          
           # Iterate based on packageDisplayOrder for the "Package Contents" section
