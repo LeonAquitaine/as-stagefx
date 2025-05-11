@@ -77,14 +77,14 @@ static const float LIGHTNING_FREQ_APOCALYPSE = 4.0f;
 // ============================================================================
 // TEXTURES AND SAMPLERS
 // ============================================================================
-texture RainyWindowEffectMapTarget { Width = BUFFER_WIDTH; Height = BUFFER_HEIGHT; Format = RGBA16F; }; // R=focus_val, GB=normal.xy, A=drop_coverage
-sampler RainyWindowEffectMapSampler { Texture = RainyWindowEffectMapTarget; };
+texture RainyWindow_EffectMapTarget { Width = BUFFER_WIDTH; Height = BUFFER_HEIGHT; Format = RGBA16F; }; // R=focus_val, GB=normal.xy, A=drop_coverage
+sampler RainyWindow_EffectMapSampler { Texture = RainyWindow_EffectMapTarget; };
 
-texture PureHorizontalBlurTarget { Width = BUFFER_WIDTH; Height = BUFFER_HEIGHT; Format = RGBA8; };
-sampler PureHorizontalBlurSampler { Texture = PureHorizontalBlurTarget; };
+texture RainyWindow_HorizontalBlurTarget { Width = BUFFER_WIDTH; Height = BUFFER_HEIGHT; Format = RGBA8; };
+sampler RainyWindow_HorizontalBlurSampler { Texture = RainyWindow_HorizontalBlurTarget; };
 
-texture PureBlurredBackgroundTarget { Width = BUFFER_WIDTH; Height = BUFFER_HEIGHT; Format = RGBA8; };
-sampler PureBlurredBackgroundSampler { Texture = PureBlurredBackgroundTarget; };
+texture RainyWindow_BlurredBackgroundTarget { Width = BUFFER_WIDTH; Height = BUFFER_HEIGHT; Format = RGBA8; };
+sampler RainyWindow_BlurredBackgroundSampler { Texture = RainyWindow_BlurredBackgroundTarget; };
 
 
 // ============================================================================
@@ -317,12 +317,11 @@ float4 GenerateEffectMapsPS(float4 vpos : SV_Position, float2 texcoord : TEXCOOR
 }
 
 // PASS 1: Pure Horizontal Blur
-float4 PureHorizontalBlurPS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : SV_Target {
-    float depth = ReShade::GetLinearizedDepth(texcoord); // Depth check for blur pass
+float4 PureHorizontalBlurPS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : SV_Target {    float depth = ReShade::GetLinearizedDepth(texcoord); // Depth check for blur pass
     if (depth < StageDepth - AS_DEPTH_EPSILON) 
         return tex2D(ReShade::BackBuffer, texcoord);
 
-    float focus_val = tex2D(RainyWindowEffectMapSampler, texcoord).r;
+    float focus_val = tex2D(RainyWindow_EffectMapSampler, texcoord).r;
     float2 blur_direction = float2(1.0f, 0.0f);
     
     float3 blurred_color = ApplyGaussianBlur(texcoord, blur_direction, focus_val, float2(0.0f, 0.0f), ReShade::BackBuffer);
@@ -333,12 +332,12 @@ float4 PureHorizontalBlurPS(float4 vpos : SV_Position, float2 texcoord : TEXCOOR
 float4 PureVerticalBlurPS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : SV_Target {
     float depth = ReShade::GetLinearizedDepth(texcoord); // Depth check for blur pass
     if (depth < StageDepth - AS_DEPTH_EPSILON) 
-        return tex2D(PureHorizontalBlurSampler, texcoord); // Pass through already H-blurred if culled
+        return tex2D(RainyWindow_HorizontalBlurSampler, texcoord); // Pass through already H-blurred if culled
 
-    float focus_val = tex2D(RainyWindowEffectMapSampler, texcoord).r;
+    float focus_val = tex2D(RainyWindow_EffectMapSampler, texcoord).r;
     float2 blur_direction = float2(0.0f, 1.0f);
 
-    float3 blurred_color = ApplyGaussianBlur(texcoord, blur_direction, focus_val, float2(0.0f, 0.0f), PureHorizontalBlurSampler);
+    float3 blurred_color = ApplyGaussianBlur(texcoord, blur_direction, focus_val, float2(0.0f, 0.0f), RainyWindow_HorizontalBlurSampler);
     return float4(blurred_color, 1.0f);
 }
 
@@ -349,7 +348,7 @@ float4 FinalCompositePS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) 
     
     if (depth < StageDepth - AS_DEPTH_EPSILON) return original_scene_color;
 
-    float4 effect_map_data = tex2D(RainyWindowEffectMapSampler, texcoord);
+    float4 effect_map_data = tex2D(RainyWindow_EffectMapSampler, texcoord);
     // float focus_val_from_map = effect_map_data.r; // Not directly used here, but was used for blurring
     float2 original_drop_normals = effect_map_data.gb;
     float drop_coverage = effect_map_data.a;
@@ -360,12 +359,11 @@ float4 FinalCompositePS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) 
     if (drop_coverage < NormalsCutoffThreshold) { // Use the UI tunable threshold
         active_normals = float2(0.0f, 0.0f);
     }
-    
-    // Get the purely blurred background (which already has correct blur levels for droplet vs frosted areas)
-    float3 pure_blurred_bg = tex2D(PureBlurredBackgroundSampler, texcoord).rgb;
+      // Get the purely blurred background (which already has correct blur levels for droplet vs frosted areas)
+    float3 pure_blurred_bg = tex2D(RainyWindow_BlurredBackgroundSampler, texcoord).rgb;
 
     // Apply refraction to the (appropriately blurred or sharp) background
-    float3 view_through_glass = tex2D(PureBlurredBackgroundSampler, texcoord + active_normals * ReShade::PixelSize * 2.0).rgb; // Small pixel scale for normals offset, tune "2.0"
+    float3 view_through_glass = tex2D(RainyWindow_BlurredBackgroundSampler, texcoord + active_normals * ReShade::PixelSize * 2.0).rgb; // Small pixel scale for normals offset, tune "2.0"
 
     // Lightning effect
     float3 final_pixel_color_lit = view_through_glass;
@@ -387,7 +385,7 @@ float4 FinalCompositePS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) 
         final_pixel_color_lit += final_pixel_color_lit * lightning_flicker * LightningIntensity;
     }
     
-    float3 result_blended = AS_blendResult(original_scene_color.rgb, final_pixel_color_lit, BlendMode);
+    float3 result_blended = AS_ApplyBlend(final_pixel_color_lit, original_scene_color.rgb, BlendMode);
     return float4(lerp(original_scene_color.rgb, result_blended, BlendStrength), original_scene_color.a);
 }
 
@@ -396,24 +394,24 @@ float4 FinalCompositePS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) 
 // TECHNIQUE
 // ============================================================================
 technique AS_VFX_RainyWindow <
+    ui_label = "[AS] VFX: Rainy Window";
     ui_tooltip = "Realistic rainy window effect with droplets, blur, and frost.\n"
                  "Part of AS StageFX shader collection by Leon Aquitaine.";
 >
-{
-    pass GenerateMapsPass {
+{    pass GenerateMapsPass {
         VertexShader = PostProcessVS;
         PixelShader = GenerateEffectMapsPS;
-        RenderTarget0 = RainyWindowEffectMapTarget;
+        RenderTarget0 = RainyWindow_EffectMapTarget;
     }
     pass PureHorizontalBlurPass {
         VertexShader = PostProcessVS;
         PixelShader = PureHorizontalBlurPS;
-        RenderTarget0 = PureHorizontalBlurTarget;
+        RenderTarget0 = RainyWindow_HorizontalBlurTarget;
     }
     pass PureVerticalBlurPass {
         VertexShader = PostProcessVS;
         PixelShader = PureVerticalBlurPS;
-        RenderTarget0 = PureBlurredBackgroundTarget;
+        RenderTarget0 = RainyWindow_BlurredBackgroundTarget;
     }
     pass FinalCompositePass {
         VertexShader = PostProcessVS;

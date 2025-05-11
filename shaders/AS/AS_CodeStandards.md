@@ -1,7 +1,6 @@
-/**
- * AS_CodeStandards.md - Coding Standards for AS StageFX Shaders
+/** * AS_CodeStandards.md - Coding Standards for AS StageFX Shaders
  * Author: Leon Aquitaine
- * Updated: May 3, 2025
+ * Updated: May 10, 2025
  */
 
 # AS StageFX Code Standards
@@ -49,6 +48,17 @@ These requirements are non-negotiable for all AS StageFX shaders:
    ```
 
 5. **Standardized UI Macros**: Use the predefined macros from AS_Utils.1.fxh for common parameters.
+
+6. **Shader-Specific Texture/Sampler Prefixing**: All texture and sampler declarations MUST be prefixed with the shader name to prevent naming conflicts when multiple shaders are loaded.
+   ```hlsl
+   // CORRECT ✓
+   texture ShaderName_EffectBuffer { ... };
+   sampler ShaderName_EffectSampler { Texture = ShaderName_EffectBuffer; ... };
+   
+   // INCORRECT ✗
+   texture EffectBuffer { ... };
+   sampler EffectSampler { Texture = EffectBuffer; ... };
+   ```
 
 ## Common Constants Reference
 
@@ -274,7 +284,22 @@ float effectStrength = AS_applyAudioReactivity(BaseStrength, Effect_AudioSource,
 - `AS_AUDIO_MID` (6) - Mid frequency
 
 ## Textures and Samplers
+
+### Naming Requirements
+All texture and sampler declarations MUST be prefixed with the shader name to prevent naming conflicts when multiple shaders are loaded simultaneously.
+
 ```hlsl
+// CORRECT ✓
+texture ShaderName_EffectBuffer { Width = BUFFER_WIDTH; Height = BUFFER_HEIGHT; Format = RGBA8; };
+sampler ShaderName_EffectSampler { 
+    Texture = ShaderName_EffectBuffer; 
+    AddressU = CLAMP; 
+    AddressV = CLAMP; 
+    MinFilter = LINEAR; 
+    MagFilter = LINEAR; 
+};
+
+// INCORRECT ✗
 texture EffectBuffer { Width = BUFFER_WIDTH; Height = BUFFER_HEIGHT; Format = RGBA8; };
 sampler EffectSampler { 
     Texture = EffectBuffer; 
@@ -284,6 +309,8 @@ sampler EffectSampler {
     MagFilter = LINEAR; 
 };
 ```
+
+The prefixing pattern should be `ShaderName_TextureName`, where `ShaderName` is the main part of the shader file name (e.g., for `AS_VFX_RainyWindow.1.fx`, use `RainyWindow_` as the prefix).
 
 ## Depth Handling
 ```hlsl

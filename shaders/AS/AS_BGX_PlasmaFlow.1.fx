@@ -215,7 +215,7 @@ float4 PS_PlasmaFlow(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_
     if (DebugMode == 3) return float4(colorAudio.xxx, 1.0); // Audio
 
     // --- Blending ---
-    float3 finalColor = AS_blendResult(orig.rgb, plasmaColor, BlendMode);
+    float3 finalColor = AS_ApplyBlend(plasmaColor, orig.rgb, BlendMode);
     finalColor = lerp(orig.rgb, finalColor, BlendAmount);
 
     return float4(finalColor, 1.0);

@@ -402,7 +402,7 @@ float4 ASShineOnPS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD0) : SV_
     
     // Final output with blend
     float4 effectColor = float4(saturate(fragC), 1.0f);
-    float4 finalColor = float4(AS_blendResult(originalColor.rgb, effectColor.rgb, BlendMode), 1.0f);
+    float4 finalColor = float4(AS_ApplyBlend(effectColor.rgb, originalColor.rgb, BlendMode), 1.0f);
     finalColor = lerp(originalColor, finalColor, BlendStrength);
     
     // Debug overlay if enabled

@@ -393,8 +393,8 @@ float4 PS_DigitalArtifacts(float4 pos : SV_Position, float2 texcoord : TEXCOORD)
     }
     
     // Apply blend mode and depth mask
-    float3 result = AS_blendResult(originalColor.rgb, effectColor, BlendMode);
-    return float4(lerp(originalColor.rgb, result, depthMask * BlendAmount), originalColor.a);
+    float3 blendedColor = AS_ApplyBlend(effectColor, originalColor.rgb, BlendMode);
+    return float4(lerp(originalColor.rgb, blendedColor, depthMask * BlendAmount), originalColor.a);
 }
 
 technique AS_DigitalArtifacts < ui_label = "[AS] VFX: Digital Artifacts"; ui_tooltip = "Creates digital artifacts, glitches, and holographic effects that can be positioned in 3D space."; > {

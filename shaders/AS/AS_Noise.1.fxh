@@ -264,15 +264,15 @@ float AS_VoronoiNoise2D(float2 p, out float2 cellPoint) {
     for(int y = -1; y <= 1; y++) {
         for(int x = -1; x <= 1; x++) {
             float2 neighbor = float2(x, y);
-            float2 point = AS_hash22(i + neighbor);
+            float2 point1 = AS_hash22(i + neighbor);
             
             // Randomize position within the cell
-            float2 diff = neighbor + point - f;
+            float2 diff = neighbor + point1 - f;
             float dist = length(diff);
             
             if(dist < minDist) {
                 minDist = dist;
-                cellPoint = point;
+                cellPoint = point1;
             }
         }
     }

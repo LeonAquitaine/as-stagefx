@@ -404,8 +404,8 @@ float4 ShaderToyPS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD0) : SV_
     o = float4(finalRGB, 1.0f);
 
     // Blend with original color using standard blend mode function
-    float4 finalColor = float4(AS_blendResult(originalColor.rgb, o.rgb, BlendMode), 1.0f);
-    finalColor = lerp(originalColor, finalColor, BlendStrength);
+    float3 blendedColor = AS_ApplyBlend(finalRGB, originalColor.rgb, BlendMode);
+    float4 finalColor = float4(lerp(originalColor.rgb, blendedColor, BlendStrength), originalColor.a);
     
     // Show debug overlay if enabled
     if (DebugMode != AS_DEBUG_OFF) {

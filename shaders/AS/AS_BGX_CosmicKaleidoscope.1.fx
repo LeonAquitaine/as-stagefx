@@ -268,7 +268,7 @@ float4 ASCosmicKaleidoscopePS(float4 vpos : SV_POSITION, float2 texcoord : TEXCO
     effectColor.rgb = saturate(finalRGB); 
 
     // --- Final Blending & Debug ---
-    float4 finalColor = float4(AS_blendResult(originalColor.rgb, effectColor.rgb, BlendMode), 1.0f);
+    float4 finalColor = float4(AS_ApplyBlend(effectColor.rgb, originalColor.rgb, BlendMode), 1.0f);
     finalColor = lerp(originalColor, finalColor, BlendStrength);
     
     if (DebugMode != AS_DEBUG_OFF) {

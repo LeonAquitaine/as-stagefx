@@ -379,7 +379,7 @@ float4 PS_LaserShow(float4 pos : SV_Position, float2 texcoord : TexCoord) : SV_T
     float4 outColor = AS_debugOutput(DebugMode, orig, maskDbg, audioDbg, laserDbg);
     if (DebugMode == 0) {
         // Use standard blend function from AS_Utils with blend amount
-        float3 blended = AS_blendResult(orig.rgb, effect.rgb, BlendMode);
+        float3 blended = AS_ApplyBlend(effect.rgb, orig.rgb, BlendMode);
         // Apply blend amount for final mix
         outColor = float4(lerp(orig.rgb, blended, BlendAmount), orig.a);
     }

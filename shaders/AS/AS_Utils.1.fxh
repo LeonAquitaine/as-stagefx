@@ -346,6 +346,22 @@ float2 AS_transformCoord(float2 texcoord, float2 pos, float scale, float rotatio
     return positioned;
 }
 
+/**
+ * Rotates a 2D point around the origin.
+ * p: The float2 point to rotate.
+ * a: The angle of rotation in radians.
+ * Returns the rotated float2 point.
+ */
+float2 AS_rotate2D(float2 p, float a)
+{
+    float s = sin(a);
+    float c = cos(a);
+    return float2(
+        p.x * c - p.y * s,
+        p.x * s + p.y * c
+    );
+}
+
 #endif // __AS_POSITION_UI_INCLUDED
 
 // --- Math Helpers ---
@@ -367,17 +383,54 @@ float AS_mod(float x, float y) {
 // ============================================================================
 
 // --- Blend Functions ---
-// Applies various blend modes between original and effect colors
-// mode: 0=Normal, 1=Lighter Only, 2=Darker Only, 3=Additive, 4=Multiply, 5=Screen
-float3 AS_blendResult(float3 orig, float3 fx, int mode) {
-    if (mode == 1) return max(orig, fx);                      // Lighter Only
-    if (mode == 2) return min(orig, fx);                      // Darker Only
-    if (mode == 3) return orig + fx;                          // Additive
-    if (mode == 4) return orig * fx;                          // Multiply
-    if (mode == 5) return 1.0 - (1.0 - orig) * (1.0 - fx);    // Screen
-    // Default: Normal blend (replace original with effect)
-    // Note: Lerping with 1.0 is equivalent to just returning fx, but lerp is explicit
-    return lerp(orig, fx, 1.0);
+
+// Applies various blend modes between a foreground and background color.
+// Parameters:
+//   fgColor: The foreground color (float3) - the effect's color.
+//   bgColor: The background color (float3) - the original scene color.
+//   blendMode: Integer specifying the blend mode:
+//              0: Normal (Foreground replaces Background)
+//              1: Lighter Only (Lighten)
+//              2: Darker Only (Darken)
+//              3: Additive
+//              4: Multiply
+//              5: Screen
+// Returns: The blended float3 color.
+float3 AS_ApplyBlend(float3 fgColor, float3 bgColor, int blendMode) {
+    if (blendMode == 1) return max(bgColor, fgColor);                      // Lighter Only (Lighten)
+    if (blendMode == 2) return min(bgColor, fgColor);                      // Darker Only (Darken)
+    if (blendMode == 3) return saturate(bgColor + fgColor);                // Additive (saturate to prevent overflow)
+    if (blendMode == 4) return saturate(bgColor * fgColor);                // Multiply
+    if (blendMode == 5) return saturate(1.0 - (1.0 - bgColor) * (1.0 - fgColor)); // Screen
+    
+    // Default: Normal blend (mode 0 or any other mode)
+    return fgColor; 
+}
+
+// Applies various blend modes between a foreground and background color, with opacity.
+// Parameters:
+//   fgColor: The foreground color (float4) - the effect's color, including its own alpha (fgColor.a).
+//   bgColor: The background color (float4) - the original scene color.
+//   blendMode: Integer specifying the blend mode:
+//              0: Normal (Foreground over Background)
+//              1: Lighter Only (Lighten)
+//              2: Darker Only (Darken)
+//              3: Additive
+//              4: Multiply
+//              5: Screen
+//   blendOpacity: Overall opacity of the foreground effect layer (0.0 to 1.0).
+// Returns: The blended float4 color. The alpha channel of the result is taken from bgColor.a.
+float4 AS_ApplyBlend(float4 fgColor, float4 bgColor, int blendMode, float blendOpacity) {
+    // Call the 3-parameter version for RGB blending
+    float3 effect_rgb = AS_ApplyBlend(fgColor.rgb, bgColor.rgb, blendMode);
+
+    // Combine fgColor.a (per-pixel effect alpha) and blendOpacity (overall layer opacity)
+    float final_opacity = saturate(fgColor.a * blendOpacity);
+
+    // Lerp between the original background color and the blended effect color
+    float3 final_rgb = lerp(bgColor.rgb, effect_rgb, final_opacity);
+    
+    return float4(final_rgb, bgColor.a); // Preserve original scene alpha
 }
 
 // Linearly interpolates between two colors for palette generation

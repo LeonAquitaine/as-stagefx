@@ -41,8 +41,8 @@
 #define WAVE_TEXTURE "perlin512x8Noise.png"
 #endif
 
-texture WaveTexture < source = WAVE_TEXTURE; > { Width = 512; Height = 512; Format = RGBA8; };
-sampler WaveSampler { Texture = WaveTexture; AddressU = WRAP; AddressV = WRAP; MipFilter = LINEAR; MinFilter = LINEAR; MagFilter = LINEAR; };
+texture WaterSurface_WaveTexture < source = WAVE_TEXTURE; > { Width = 512; Height = 512; Format = RGBA8; };
+sampler WaterSurface_WaveSampler { Texture = WaterSurface_WaveTexture; AddressU = WRAP; AddressV = WRAP; MipFilter = LINEAR; MinFilter = LINEAR; MagFilter = LINEAR; };
 
 // ============================================================================
 // TUNABLE CONSTANTS
@@ -128,7 +128,7 @@ float2 GetWaveDistortion(float2 texcoord, float time, float reflectionHorizon)
     float2 waveUV = scaledCoord + (normalize(WaveDirection + AS_EPSILON) * time * WaveSpeed); // Normalize direction safely
 
     // Sample wave texture
-    float2 waveValue = tex2D(WaveSampler, waveUV).rg;
+    float2 waveValue = tex2D(WaterSurface_WaveSampler, waveUV).rg;
 
     // Convert from 0-1 range to -1 to 1
     waveValue = waveValue * 2.0 - 1.0;
@@ -225,7 +225,7 @@ float4 PS_WaterSurface(float4 vpos : SV_Position, float2 texcoord : TEXCOORD) : 
 
     // --- Blending ---
     float3 waterWithReflection = lerp(WaterColor, reflectionColor.rgb, ReflectionIntensity * WaterTransparency);
-    float3 blendedColor = AS_blendResult(originalColor.rgb, waterWithReflection, BlendMode);
+    float3 blendedColor = AS_ApplyBlend(waterWithReflection, originalColor.rgb, BlendMode);
     float3 result = lerp(originalColor.rgb, blendedColor, edgeFade * BlendAmount);
 
     // Normal Mode Output
@@ -238,7 +238,7 @@ float4 PS_WaterSurface(float4 vpos : SV_Position, float2 texcoord : TEXCOORD) : 
 // ============================================================================
 // TECHNIQUE DEFINITION
 // ============================================================================
-technique AS_VFX_WaterSurface < ui_label = "[AS] VFX: Water Surface"; ui_tooltip = "Creates a water surface with depth-based reflection horizons."; >
+technique AS_VFX_WaterSurface < ui_label = "[AS] VFX: Water Surface"; ui_tooltip = "Simulates a water surface with depth-based reflections and animated waves."; >
 {
     pass
     {

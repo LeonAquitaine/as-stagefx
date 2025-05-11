@@ -272,7 +272,7 @@ float4 BlueCoronaPS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD) : SV_
     float4 effectColor = float4(effectColorRGB, 1.0);
     
     // --- Final Blending & Debug ---
-    float4 finalColor = float4(AS_blendResult(originalColor.rgb, effectColor.rgb, BlendMode), 1.0);
+    float4 finalColor = float4(AS_ApplyBlend(effectColor.rgb,originalColor.rgb, BlendMode), 1.0);
     finalColor = lerp(originalColor, finalColor, BlendStrength);
     
     // Show debug overlay if enabled
@@ -297,7 +297,7 @@ float4 BlueCoronaPS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD) : SV_
 // ============================================================================
 // TECHNIQUE
 // ============================================================================
-technique AS_BGX_BlueCorona < ui_label="[AS] BGX: Blue Corona"; ui_tooltip="Dynamic blue corona effect with fluid animation and organic patterns."; >
+technique AS_BGX_BlueCorona < ui_label="[AS] BGX: Blue Corona"; ui_tooltip="Creates a dynamic blue corona effect with fluid animation and organic patterns."; >
 {
     pass
     {

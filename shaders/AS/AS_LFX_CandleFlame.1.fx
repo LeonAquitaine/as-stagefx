@@ -506,7 +506,7 @@ float4 PS_ProceduralDepthPlaneFlame(float4 pos : SV_Position, float2 uv : TEXCOO
 
             // --- Apply Effect ---
             if (flame.a > 0.0) {
-                float3 blended = AS_blendResult(finalResult.rgb, flame.rgb * flame.a, BlendMode);
+                float3 blended = AS_ApplyBlend(flame.rgb * flame.a, finalResult.rgb, BlendMode);
                 finalResult = float4(lerp(finalResult.rgb, blended, BlendAmount), orig.a);
             }
         }

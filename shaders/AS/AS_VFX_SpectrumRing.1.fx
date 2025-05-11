@@ -224,13 +224,13 @@ float4 PS_SpectrumRing(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : S
     }
     
     // Apply blend mode and blend amount
-    float3 blended = AS_blendResult(orig.rgb, color, BlendMode);
+    float3 blended = AS_ApplyBlend(color, orig.rgb, BlendMode);
     float blendAlpha = edge * mask * alpha * BlendAmount;
     
     return float4(lerp(orig.rgb, blended, blendAlpha), 1.0);
 }
 
-technique AS_SpectrumRing < ui_label = "[AS] VFX: Spectrum Ring"; ui_tooltip = "Audio-reactive spectrum ring UV meter using all audio bands."; > {
+technique AS_SpectrumRing < ui_label = "[AS] VFX: Spectrum Ring"; ui_tooltip = "Creates an audio-reactive circular visualizer for the full audio spectrum."; > {
     pass {
         VertexShader = PostProcessVS;
         PixelShader = PS_SpectrumRing;

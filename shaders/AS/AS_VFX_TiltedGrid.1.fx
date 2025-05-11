@@ -301,14 +301,14 @@ float4 PS_TiltedGrid(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_
     }
 
     // --- Final Blending ---
-    float3 blendedColor = AS_blendResult(orig.rgb, finalColor, BlendMode);
+    float3 blendedColor = AS_ApplyBlend(finalColor, orig.rgb, BlendMode);
     return float4(lerp(orig.rgb, blendedColor, BlendAmount), orig.a);
 }
 
 // ============================================================================
 // TECHNIQUE DEFINITION
 // ============================================================================
-technique AS_VFX_TiltedGrid < ui_label = "[AS] VFX: Tilted Grid"; ui_tooltip = "Creates a rotatable grid with adjustable borders and chamfered corners."; >
+technique AS_VFX_TiltedGrid < ui_label = "[AS] VFX: Tilted Grid"; ui_tooltip = "Pixelates the image into a rotatable grid with customizable borders and corner chamfers."; >
 {
     pass
     {

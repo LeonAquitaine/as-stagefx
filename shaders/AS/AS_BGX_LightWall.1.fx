@@ -552,7 +552,7 @@ float4 PS_StageGrid(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_T
     if (sceneDepth < StageDepth - 0.0005)
         return orig;
     fx = saturate(fx);
-    float3 blended = AS_blendResult(orig.rgb, fx, BlendMode);
+    float3 blended = AS_ApplyBlend(fx, orig.rgb, BlendMode);
     float3 result = lerp(orig.rgb, blended, BlendAmount);
     return float4(result, orig.a);
 }

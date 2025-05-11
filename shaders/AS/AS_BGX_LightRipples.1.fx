@@ -300,7 +300,7 @@ float4 LightRipplesPS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD0) : 
     float4 effectColor = float4(finalRGB, 1.0f);
 
     // --- Final Blending & Debug ---
-    float4 finalColor = float4(AS_blendResult(originalColor.rgb, effectColor.rgb, BlendMode), 1.0f);
+    float4 finalColor = float4(AS_ApplyBlend(effectColor.rgb, originalColor.rgb, BlendMode), 1.0f);
     finalColor = lerp(originalColor, finalColor, BlendStrength);
     
     // Show debug overlay if enabled

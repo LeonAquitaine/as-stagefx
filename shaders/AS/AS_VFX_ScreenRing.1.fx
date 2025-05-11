@@ -56,8 +56,8 @@
 
 #include "ReShadeUI.fxh" // Needed for texture UI element
 
-texture RingTexture < source = RING_TEXTURE_FILENAME; ui_label="Ring Texture"; ui_tooltip="Wide, short texture (e.g., 2048x60) to wrap around the ring."; > { Width=RING_TEXTURE_SIZE_WIDTH; Height=RING_TEXTURE_SIZE_HEIGHT; Format=RGBA8; };
-sampler RingSampler { Texture = RingTexture; AddressU = WRAP; AddressV = CLAMP; MagFilter = LINEAR; MinFilter = LINEAR; MipFilter = LINEAR; };
+texture ScreenRing_RingTexture < source = RING_TEXTURE_FILENAME; ui_label="Ring Texture"; ui_tooltip="Wide, short texture (e.g., 2048x60) to wrap around the ring."; > { Width=RING_TEXTURE_SIZE_WIDTH; Height=RING_TEXTURE_SIZE_HEIGHT; Format=RGBA8; };
+sampler ScreenRing_RingSampler { Texture = ScreenRing_RingTexture; AddressU = WRAP; AddressV = CLAMP; MagFilter = LINEAR; MinFilter = LINEAR; MipFilter = LINEAR; };
 
 // ============================================================================
 // TUNABLE CONSTANTS
@@ -263,7 +263,7 @@ float4 PS_ScreenRing(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_
             float texU = frac(angle / AS_TWO_PI + 0.5);
             float texV = 1.0 - saturate(0.5 + (screenDistNorm - effectiveRadiusNorm) / (effectiveThicknessNorm + DEPTH_EPSILON));
 
-            float4 texColor = tex2D(RingSampler, float2(texU, texV));
+            float4 texColor = tex2D(ScreenRing_RingSampler, float2(texU, texV));
             
             // Skip processing for fully transparent pixels in the texture
             if (texColor.a > 0.0)
@@ -295,7 +295,7 @@ float4 PS_ScreenRing(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_
                 // Incorporate the texture's alpha channel into the final alpha calculation
                 float finalAlpha = ringFactor * texColor.a * BlendAmount;
 
-                float3 blendedColor = AS_blendResult(orig.rgb, ringColor, BlendMode);
+                float3 blendedColor = AS_ApplyBlend(ringColor, orig.rgb, BlendMode);
 
                 finalResult = float4(lerp(orig.rgb, blendedColor, finalAlpha), orig.a);
             }
@@ -361,7 +361,9 @@ float4 PS_ScreenRing(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_
 // ============================================================================
 // TECHNIQUE DEFINITION
 // ============================================================================
-technique AS_VFX_ScreenRing < ui_label = "[AS] VFX: Screen Ring"; ui_tooltip = "Draws a textured ring in screen space with depth occlusion and artistic controls."; >
+technique AS_VFX_ScreenRing < 
+    ui_label = "[AS] VFX: Screen Ring"; 
+    ui_tooltip = "Draws a textured ring in screen space with depth occlusion and artistic controls."; >
 {
     pass
     {

@@ -196,12 +196,12 @@ AS_DEBUG_MODE_UI("Off\0Depth\0Normal\0Sparkle\0Mask\0Force On\0")
 // ============================================================================
 // TEXTURES AND SAMPLERS
 // ============================================================================
-texture SparkleRT { Width = BUFFER_WIDTH; Height = BUFFER_HEIGHT; Format = RGBA16F; };
-sampler SparkleSampler { Texture = SparkleRT; };
+texture SparkleBloom_SparkleRT { Width = BUFFER_WIDTH; Height = BUFFER_HEIGHT; Format = RGBA16F; };
+sampler SparkleBloom_SparkleSampler { Texture = SparkleBloom_SparkleRT; };
 
-texture SparkleBloomRT { Width = BUFFER_WIDTH / 2; Height = BUFFER_HEIGHT / 2; Format = RGBA16F; };
-sampler SparkleBloomSampler { 
-    Texture = SparkleBloomRT;
+texture SparkleBloom_BloomRT { Width = BUFFER_WIDTH / 2; Height = BUFFER_HEIGHT / 2; Format = RGBA16F; };
+sampler SparkleBloom_BloomSampler { 
+    Texture = SparkleBloom_BloomRT;
     MagFilter = LINEAR;
     MinFilter = LINEAR;
     MipFilter = LINEAR;
@@ -446,7 +446,7 @@ float4 PS_BloomH(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Targ
 {
     // Early return for debug modes
     if (DebugMode > 0 && DebugMode < 5) {
-        return tex2D(SparkleSampler, texcoord);
+        return tex2D(SparkleBloom_SparkleSampler, texcoord);
     }
     
     // Skip bloom calculation if disabled
@@ -480,10 +480,9 @@ float4 PS_BloomH(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Targ
         
         float2 sampleOffset = float2(x / BUFFER_WIDTH, 0.0) * BloomRadius;
         if (BloomDither) {
-            sampleOffset += float2(noise.x * BLOOM_DITHER_SCALE, 0.0);
-        }
+            sampleOffset += float2(noise.x * BLOOM_DITHER_SCALE, 0.0);        }
         
-        color += tex2D(SparkleSampler, texcoord + sampleOffset) * weight;
+        color += tex2D(SparkleBloom_SparkleSampler, texcoord + sampleOffset) * weight;
     }
     
     // Normalize and apply intensity
@@ -501,14 +500,13 @@ float4 PS_BloomV(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Targ
 {
     // Get original scene color
     float4 originalColor = tex2D(ReShade::BackBuffer, texcoord);
-    
-    // Early return for debug modes
+      // Early return for debug modes
     if (DebugMode > 0 && DebugMode < 5) {
-        return tex2D(SparkleSampler, texcoord);
+        return tex2D(SparkleBloom_SparkleSampler, texcoord);
     }
     
     // Get sparkles from the first pass
-    float3 sparkles = tex2D(SparkleSampler, texcoord).rgb;
+    float3 sparkles = tex2D(SparkleBloom_SparkleSampler, texcoord).rgb;
     float3 bloom = float3(0.0, 0.0, 0.0);
     
     // Only process bloom if enabled
@@ -535,10 +533,9 @@ float4 PS_BloomV(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Targ
             
             float2 sampleOffset = float2(0.0, y / BUFFER_HEIGHT) * BloomRadius;
             if (BloomDither) {
-                sampleOffset += float2(0.0, noise.y * BLOOM_DITHER_SCALE);
-            }
+                sampleOffset += float2(0.0, noise.y * BLOOM_DITHER_SCALE);            }
             
-            bloomColor += tex2D(SparkleBloomSampler, texcoord + sampleOffset) * weight;
+            bloomColor += tex2D(SparkleBloom_BloomSampler, texcoord + sampleOffset) * weight;
         }
         
         // Normalize
@@ -553,7 +550,7 @@ float4 PS_BloomV(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Targ
     result += sparkles + bloom;
     
     // Apply blend mode and amount
-    float3 blendedColor = AS_blendResult(originalColor.rgb, result, BlendMode);
+    float3 blendedColor = AS_ApplyBlend(result, originalColor.rgb, BlendMode);
     result = lerp(originalColor.rgb, blendedColor, DebugMode == 5 ? 1.0 : BlendAmount);
     
     return float4(result, originalColor.a);
@@ -563,18 +560,16 @@ float4 PS_BloomV(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Targ
 | :: Technique Definition |
 '-------------------------*/
 
-technique AS_VFX_SparkleBloom < ui_label = "[AS] VFX: Sparkle Bloom"; ui_tooltip = "Adds dynamic sparkles that respond to scene edges and depth"; >
-{
-    pass RenderSparkles {
+technique AS_SparkleBloom < ui_label = "[AS] VFX: Sparkle Bloom"; ui_tooltip = "Generates dynamic, lighting-responsive sparkles with bloom, depth masking, and audio reactivity."; >
+{    pass RenderSparkles {
         VertexShader = PostProcessVS;
         PixelShader = PS_RenderSparkles;
-        RenderTarget = SparkleRT;
+        RenderTarget = SparkleBloom_SparkleRT;
     }
-    
-    pass BloomH {
+      pass BloomH {
         VertexShader = PostProcessVS;
         PixelShader = PS_BloomH;
-        RenderTarget = SparkleBloomRT;
+        RenderTarget = SparkleBloom_BloomRT;
     }
     
     pass BloomV {

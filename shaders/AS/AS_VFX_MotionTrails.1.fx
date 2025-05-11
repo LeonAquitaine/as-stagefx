@@ -101,17 +101,17 @@ AS_DEBUG_MODE_UI("Off\0Depth Mask\0Echo Buffer\0Linear Depth\0")
 uniform float TimeBeatValue < source = "listeningway"; listeningway_property = "beat"; >;
 
 // --- Textures and Samplers ---
-texture EchoAccumBuffer { Width = BUFFER_WIDTH; Height = BUFFER_HEIGHT; Format = RGBA8; };
-sampler sEchoAccumBuffer { Texture = EchoAccumBuffer; };
+texture MotionTrails_AccumBuffer { Width = BUFFER_WIDTH; Height = BUFFER_HEIGHT; Format = RGBA8; };
+sampler MotionTrails_AccumBufferSampler { Texture = MotionTrails_AccumBuffer; };
 
-texture EchoAccumTempBuffer { Width = BUFFER_WIDTH; Height = BUFFER_HEIGHT; Format = RGBA8; };
-sampler sEchoAccumTempBuffer { Texture = EchoAccumTempBuffer; };
+texture MotionTrails_AccumTempBuffer { Width = BUFFER_WIDTH; Height = BUFFER_HEIGHT; Format = RGBA8; };
+sampler MotionTrails_AccumTempBufferSampler { Texture = MotionTrails_AccumTempBuffer; };
 
-texture EchoTimingBuffer { Width = BUFFER_WIDTH; Height = BUFFER_HEIGHT; Format = RG32F; };
-sampler sEchoTimingBuffer { Texture = EchoTimingBuffer; };
+texture MotionTrails_TimingBuffer { Width = BUFFER_WIDTH; Height = BUFFER_HEIGHT; Format = RG32F; };
+sampler MotionTrails_TimingBufferSampler { Texture = MotionTrails_TimingBuffer; };
 
-texture EchoTimingPrevBuffer { Width = BUFFER_WIDTH; Height = BUFFER_HEIGHT; Format = RG32F; }; 
-sampler sEchoTimingPrevBuffer { Texture = EchoTimingPrevBuffer; };
+texture MotionTrails_TimingPrevBuffer { Width = BUFFER_WIDTH; Height = BUFFER_HEIGHT; Format = RG32F; }; 
+sampler MotionTrails_TimingPrevBufferSampler { Texture = MotionTrails_TimingPrevBuffer; };
 
 // --- Pixel Shader: Pass 1 (Timing and Capture State Update) ---
 void PS_TimingCaptureUpdate(
@@ -120,7 +120,7 @@ void PS_TimingCaptureUpdate(
     out float2 out_TimingCapture : SV_Target0 // Output RG float to EchoTimingBuffer
 ) {
     // --- Read Previous Frame's State ---
-    float2 prevTimingCapture = tex2D(sEchoTimingPrevBuffer, texcoord).rg;
+    float2 prevTimingCapture = tex2D(MotionTrails_TimingPrevBufferSampler, texcoord).rg;
     float lastCapturePhase = prevTimingCapture.r; // Phase stored at the end of the last frame
     float captureStoredLastFrame = prevTimingCapture.g; // Previous capture state
     
@@ -211,11 +211,10 @@ void PS_EchoAccum(
         out_Accum = float4(0.0, 0.0, 0.0, 0.0);
         return;
     }
-    
-    // --- Read Previous State from main buffer ---
-    float4 prevAccum = tex2D(sEchoAccumBuffer, texcoord);
+      // --- Read Previous State from main buffer ---
+    float4 prevAccum = tex2D(MotionTrails_AccumBufferSampler, texcoord);
     // Read the capture state calculated and stored in Pass 1 of *this* frame.
-    float captureState = tex2D(sEchoTimingBuffer, texcoord).g; // Read Green channel
+    float captureState = tex2D(MotionTrails_TimingBufferSampler, texcoord).g; // Read Green channel
 
     // --- Calculate Current Mask ---
     float linearDepth = ReShade::GetLinearizedDepth(texcoord);
@@ -242,9 +241,8 @@ void PS_CopyBackAccum(
     float4 vpos : SV_Position,
     float2 texcoord : TEXCOORD,
     out float4 out_Accum : SV_Target0 // Output RGBA8 to EchoAccumBuffer
-) {
-    // Simply copy from temp buffer back to main buffer
-    out_Accum = tex2D(sEchoAccumTempBuffer, texcoord);
+) {    // Simply copy from temp buffer back to main buffer
+    out_Accum = tex2D(MotionTrails_AccumTempBufferSampler, texcoord);
 }
 
 // --- Pixel Shader: Pass 4 (Compositing) ---
@@ -252,16 +250,15 @@ void PS_EchoComposite(
     float4 vpos : SV_Position,
     float2 texcoord : TEXCOORD,
     out float4 out_Color : SV_Target0
-) {
-    // Read necessary buffers
+) {    // Read necessary buffers
     float4 originalColor = tex2D(ReShade::BackBuffer, texcoord);
-    float4 echoColor = tex2D(sEchoAccumBuffer, texcoord);
+    float4 echoColor = tex2D(MotionTrails_AccumBufferSampler, texcoord);
 
     // --- Create the base echo effect ---
     float3 echoEffect = echoColor.rgb;
     
     // --- Apply blend mode using AS_Utils helper ---
-    float3 blendedResult = AS_blendResult(originalColor.rgb, echoEffect, BlendMode);
+    float3 blendedResult = AS_ApplyBlend(echoEffect, originalColor.rgb, BlendMode);
     
     // --- Final blend with original using user-defined strength ---
     float3 finalResult = lerp(originalColor.rgb, blendedResult, BlendAmount * echoColor.a);
@@ -300,9 +297,8 @@ void PS_CopyTimingBuffer(
     float4 vpos : SV_Position,
     float2 texcoord : TEXCOORD,
     out float2 out_TimingCapture : SV_Target0 // Output RG float to EchoTimingPrevBuffer
-) {
-    // Simply copy the current frame's timing data to the previous frame buffer
-    out_TimingCapture = tex2D(sEchoTimingBuffer, texcoord).rg;
+) {    // Simply copy the current frame's timing data to the previous frame buffer
+    out_TimingCapture = tex2D(MotionTrails_TimingBufferSampler, texcoord).rg;
 }
 
 // --- Technique ---
@@ -310,23 +306,22 @@ technique AS_MotionTrails_1 <
     ui_label = "[AS] VFX: Motion Trails";
     ui_tooltip = "Creates dynamic motion trails perfect for music videos and creative compositions.";
 >
-{
-    pass TimingCapturePass {
+{    pass TimingCapturePass {
         VertexShader = PostProcessVS;
         PixelShader = PS_TimingCaptureUpdate;
-        RenderTarget0 = EchoTimingBuffer;
+        RenderTarget0 = MotionTrails_TimingBuffer;
         ClearRenderTargets = false;
     }
     pass AccumPass {
         VertexShader = PostProcessVS;
         PixelShader = PS_EchoAccum;
-        RenderTarget0 = EchoAccumTempBuffer;
+        RenderTarget0 = MotionTrails_AccumTempBuffer;
         ClearRenderTargets = false;
     }
     pass CopyBackPass {
         VertexShader = PostProcessVS;
         PixelShader = PS_CopyBackAccum;
-        RenderTarget0 = EchoAccumBuffer;
+        RenderTarget0 = MotionTrails_AccumBuffer;
         ClearRenderTargets = false;
     }
     pass CompositePass {
@@ -336,7 +331,7 @@ technique AS_MotionTrails_1 <
     pass CopyTimingBufferPass {
         VertexShader = PostProcessVS;
         PixelShader = PS_CopyTimingBuffer;
-        RenderTarget0 = EchoTimingPrevBuffer;
+        RenderTarget0 = MotionTrails_TimingPrevBuffer;
         ClearRenderTargets = false;
     }
 }

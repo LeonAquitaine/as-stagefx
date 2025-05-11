@@ -48,7 +48,7 @@ Effects are categorized as Background (BGX), Graphic (GFX), Lighting (LFX), and 
 -   **Wavy Squiggles**: Mesmerizing pattern of adaptive wavy lines following a fixed position, forming intricate, rotating designs. Features customizable line parameters, color palettes, pattern displacement, audio reactivity, depth-awareness, and rotation.
 -   **Blue Corona**: Vibrant, abstract blue corona with fluid, dynamic motion and hypnotic, organic, plasma-like visuals. Features customizable iteration/scale, speed/flow, color controls, audio reactivity, depth-awareness, and standard position/rotation/scale/blend options.
 -   **Zippy Zaps**: Dynamic electric arcs/lightning patterns with procedural generation. Features customizable colors, intensity, animation, resolution independence, audio reactivity, depth-awareness, and 3D rotation/positioning.
--   **Golden Clockwork**: Intricate, animated golden clockwork or Apollonian fractal patterns. Features complex geometric designs, dynamic movement, and a golden palette. Includes controls for animation, complexity, color, positioning, and blending.
+-   **Golden Clockwork**: Intricate, animated golden clockwork or Apollonian fractal patterns. Features complex geometric designs and dynamic movement with a golden palette. Offers extensive controls for animation (speed, keyframe, path evolution), complexity, color, audio reactivity, stage presence (position, scale, rotation, depth), and blending.
 
 ### Graphic Effects (GFX)
 -   **Multi-Layer Halftone**: Highly customizable multi-layer halftone (up to 4 layers). Each layer supports different patterns (dots, lines, crosshatch), isolation methods (brightness, RGB, hue, depth), colors, thresholds, scales, densities, angles, and layer blending.

@@ -276,12 +276,12 @@ float4 PS_VUMeterBG(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_T
     }
     // At the end, blend with the original scene
     float4 orig = tex2D(ReShade::BackBuffer, texcoord);
-    float3 blended = AS_blendResult(orig.rgb, effectColor.rgb, BlendMode);
+    float3 blended = AS_ApplyBlend(effectColor.rgb, orig.rgb, BlendMode);
     float3 result = lerp(orig.rgb, blended, BlendAmount * effectColor.a);
     return float4(result, orig.a);
 }
 
-technique AS_VUMeterBG < ui_label = "[AS] VFX: VU Meter"; ui_tooltip = "Audio-reactive VU meter background using AS_Utils audio integration."; > {
+technique AS_VUMeterBG < ui_label = "[AS] VFX: VU Meter"; ui_tooltip = "Displays an audio-reactive VU meter with various styles and customization options."; > {
     pass {
         VertexShader = PostProcessVS;
         PixelShader = PS_VUMeterBG;

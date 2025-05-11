@@ -172,12 +172,12 @@ float4 PS_AudioMirror(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV
     // Note: DebugMode for "Warp Pattern" (value 2 in AS_DEBUG_MODE_UI) would typically show 'final_texcoord_to_sample' or similar.
     // For now, re-using audio display for DebugMode == 2.
 
-    float3 blended = AS_blendResult(orig.rgb, scene.rgb, BlendMode);
-    float3 result = lerp(orig.rgb, blended, mask * BlendAmount);
-    return float4(result, orig.a);
+    float3 blended = AS_ApplyBlend(scene.rgb, orig.rgb, BlendMode);
+    float3 final_color = lerp(orig.rgb, blended, BlendAmount);
+    return float4(final_color, orig.a);
 }
 
-technique AS_Warp < ui_label = "[AS] VFX: Warp Distort"; ui_tooltip = "Circular mirrored effect that pulses and waves with music."; > {
+technique AS_Warp < ui_label = "[AS] VFX: Warp Distort"; ui_tooltip = "Creates a warp distortion effect that pulses and waves with audio, featuring shape and depth controls."; > {
     pass {
         VertexShader = PostProcessVS;
         PixelShader = PS_AudioMirror;

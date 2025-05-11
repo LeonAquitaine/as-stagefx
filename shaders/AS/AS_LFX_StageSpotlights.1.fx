@@ -433,7 +433,7 @@ float4 PS_Spotlights(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_
     fx = saturate(fx);
     
     // Apply appropriate blend mode
-    float3 blended = AS_blendResult(orig.rgb, fx, BlendMode);
+    float3 blended = AS_ApplyBlend(fx, orig.rgb, BlendMode);
     float3 result = lerp(orig.rgb, blended, BlendAmount);
     
     return float4(result, orig.a);

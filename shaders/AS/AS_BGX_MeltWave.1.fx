@@ -271,7 +271,7 @@ float4 PS_MeltWave(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Ta
     float4 effectColor = float4(processed_col, extrusion);
     
     // Blend with UI BackgroundColor using standard AS blend function
-    float3 blendedColor = AS_blendResult(BackgroundColor, effectColor.rgb, BlendMode);
+    float3 blendedColor = AS_ApplyBlend(effectColor.rgb, BackgroundColor, BlendMode);
     float3 finalColor = lerp(BackgroundColor, blendedColor, BlendAmount * effectColor.a);
     
     // Debug mode handling

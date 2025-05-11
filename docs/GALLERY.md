@@ -226,7 +226,7 @@ This gallery provides detailed descriptions and visual examples of all shaders i
   </tr>
   <tr>
     <td width="50%"><strong>BGX: Golden Clockwork</strong> (<code>AS_BGX_GoldenClockwork.1.fx</code>)<br>
-      Creates an intricate, animated background effect reminiscent of golden clockwork mechanisms or Apollonian fractal patterns. Features complex geometric designs with dynamic movement and a golden color palette. Likely includes controls for animation speed, complexity, and color adjustments, along with standard AS StageFX integration for positioning and blending.<br><em>Technique: [AS] BGX: Golden Clockwork</em></td>
+      Renders a mesmerizing and intricate animated background effect reminiscent of golden clockwork mechanisms or Apollonian gasket-like fractal patterns. The effect features complex, evolving geometric designs with a characteristic golden color palette. Features procedurally generated Apollonian fractal patterns, dynamic animation driven by time, a golden color scheme with lighting and shading effects, depth-like progression through fractal layers, kaleidoscopic and mirroring options for pattern variation, resolution-independent rendering, and UI controls for animation (speed, keyframe, path speed), palette, fractal/kaleidoscope parameters, audio reactivity, stage controls (position, scale, rotation, depth), and blending.<br><em>Technique: [AS] BGX: Golden Clockwork</em></td>
     <td width="50%"><div style="text-align:center">
       <!-- Placeholder for future image -->
     </div></td>
