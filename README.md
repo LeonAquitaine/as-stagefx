@@ -36,6 +36,7 @@ Effects are categorized as Background (BGX), Graphic (GFX), Lighting (LFX), and 
 
 ### Background Effects (BGX)
 -   **Cosmic Kaleidoscope**: Renders a raymarched volumetric fractal (Mandelbox/Mandelbulb-like) with adjustable parameters, kaleidoscopic mirroring, audio reactivity, palette-based coloring, and full rotation/position/depth control. Includes fixes for tiling and rotation from the original source.
+-   **Digital Brain**: Abstract visualization of a digital brain neural network with animated Voronoi patterns and neural-like connections. Features dynamic pattern generation, animated electrical pulses, organic variation through texture sampling, and extensive animation/pattern controls.
 -   **Fractal Strands**: Intricate, evolving fractal patterns; customizable type, depth, colors, animation, audio reactivity.
 -   **Light Ripples**: Mesmerizing, rippling kaleidoscopic light patterns with customizable distortion, animation, color palettes (with cycling), audio reactivity, depth-awareness, rotation, and blending.
 -   **Light Wall**: Seamless, soft, overlapping grid of light panels with 14 built-in patterns. Features audio reactivity, customizable palettes, light bursts, 3D perspective, and blend modes.
@@ -109,10 +110,10 @@ Many shaders are adaptations from effects for other engines, enhanced for ReShad
 -   **ShaderToy Community**: Various inspirations.
     -   Water Surface: [ShaderToy Water Collection](https://www.shadertoy.com/results?query=water).
     -   Multi-Layer Halftone: ["Halftone Shader"](https://www.shadertoy.com/view/XdcGzn) by P. Gonzalez Vivo.
-    -   Plasma Flow: Classic demoscene plasma (e.g., [this](https://www.shadertoy.com/view/XsVSzW)).
-    -   Cosmic Kaleidoscope: Original "cosmos in crystal" by nayk ([ShaderToy](https://www.shadertoy.com/view/MXccR4)).
+    -   Plasma Flow: Classic demoscene plasma (e.g., [this](https://www.shadertoy.com/view/XsVSzW)).    -   Cosmic Kaleidoscope: Original "cosmos in crystal" by nayk ([ShaderToy](https://www.shadertoy.com/view/MXccR4)).
     -   Rainy Window: Core droplet logic inspired by "Heartfelt" by Martijn Steinrucken (BigWings) ([ShaderToy](https://www.shadertoy.com/view/ltffzl)).
     -   Blue Corona: Based on "Blue Corona" by SnoopethDuckDuck ([ShaderToy](https://www.shadertoy.com/view/XfKGWV)), adapted with enhanced controls and AS StageFX integration.
+    -   Digital Brain: Based on original GLSL by srtuss ([ShaderToy](https://www.shadertoy.com/view/4sl3Dr)), adapted with enhanced controls and AS StageFX integration.
     -   Light Ripples: Original shader by Danilo Guanabara ([Pouet](https://www.pouet.net/prod.php?which=57245)).
     -   Shine On: Original "Shine On" by emodeman ([ShaderToy](https://www.shadertoy.com/view/st23zw)).
     -   Stained Lights: Inspired by "Stained Lights" by 104 ([ShaderToy](https://www.shadertoy.com/view/WlsSzM)).
