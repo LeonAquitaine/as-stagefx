@@ -1,7 +1,5 @@
 # AS-StageFX Shaders v${VERSION}
 
-This release includes the AS-StageFX shader collection for ReShade.
-
 ## Installation
 
 1. **Download:** Choose and download the appropriate package ZIP file for your needs.
