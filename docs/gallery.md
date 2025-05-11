@@ -3,8 +3,8 @@
 This gallery provides detailed descriptions and visual examples of the shaders included in the **AS_StageFX_Essentials** package. For installation instructions and general information, please refer to the [main README](../README.md).
 
 > **Looking for other packages?**
-> - [Backgrounds Gallery](./GALLERY-BACKGROUNDS.md) - Complete collection of background effects
-> - [Visual Effects Gallery](./GALLERY-VISUALEFFECTS.md) - Complete collection of visual effects
+> - [Backgrounds Gallery](./gallery-backgrounds.md) - Complete collection of background effects
+> - [Visual Effects Gallery](./gallery-visualeffects.md) - Complete collection of visual effects
 
 ## Core Library Files (.fxh)
 
