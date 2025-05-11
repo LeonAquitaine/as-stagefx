@@ -25,9 +25,9 @@
   },
   "packageDescription": {
     "essentials": "Core library files and essential visual effects for general use",
-    "backgrounds": "Complete collection of background effects (not included in Essentials)",
-    "visualeffects": "Complete collection of visual effects (not included in Essentials)",
-    "complete": "Complete collection of all AS StageFX shaders and utilities"
+    "backgrounds": "Complete collection of background effects (Requires Essentials)",
+    "visualeffects": "Complete collection of visual effects (Requires Essentials)",
+    "complete": "The complete collection of all AS StageFX shaders and utilities"
   },
   "paths": {
     "shaderDir": "Shaders/AS",
