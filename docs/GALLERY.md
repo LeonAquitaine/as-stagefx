@@ -65,7 +65,7 @@ This gallery provides detailed descriptions and visual examples of all shaders i
   </tr>
   <tr>
     <td width="50%"><strong>VFX: Rainy Window</strong> (<code>AS_VFX_RainyWindow.1.fx</code>)<br>
-      Simulates an immersive rainy window with animated water droplets, realistic trails, and frost. Features dynamic raindrop movement, customizable blur/frost, audio-reactive storm intensity, optional lightning flashes, and resolution independence. Inspired by Martijn Steinrucken's "Heartfelt".<br><em>Technique: [AS] VFX: Rainy Window</em></td>
+      Simulates an immersive rainy window with animated water droplets, realistic trails, and frost. Features dynamic raindrop movement, customizable blur/frost, audio-reactive storm intensity, optional lightning flashes, and resolution independence. Inspired by "Heartfelt" by Martijn Steinrucken (BigWings) ([ShaderToy](https://www.shadertoy.com/view/ltffzl)).<br><em>Technique: [AS] VFX: Rainy Window</em></td>
     <td width="50%"><div style="text-align:center">
       <img src="https://github.com/user-attachments/assets/94601169-e214-4a45-8879-444b64c65d33" alt="Rainy Window Effect" style="max-width:100%;">
     </div></td>
@@ -135,7 +135,13 @@ This gallery provides detailed descriptions and visual examples of all shaders i
 <table>
   <tr>
     <td width="50%"><strong>BGX: Cosmic Kaleidoscope</strong> (<code>AS_BGX_CosmicKaleidoscope.1.fx</code>)<br>
-      Renders a raymarched volumetric fractal resembling a Mandelbox or Mandelbulb. Features adjustable fractal parameters, kaleidoscope-like mirroring with customizable repetitions, audio reactivity for dynamic adjustments, a palette-based coloring system, and full rotation, position, and depth control for scene integration. Includes fixes for accurate tiling and missing rotation from the original source.<br><em>Technique: [AS] BGX: Cosmic Kaleidoscope</em></td>
+      Renders a raymarched volumetric fractal resembling a Mandelbox or Mandelbulb. Features adjustable fractal parameters, kaleidoscope-like mirroring with customizable repetitions, audio reactivity for dynamic adjustments, a palette-based coloring system, and full rotation, position, and depth control for scene integration. Includes fixes for accurate tiling and missing rotation from the original source. Based on "cosmos in crystal" by nayk ([ShaderToy](https://www.shadertoy.com/view/MXccR4)).<br><em>Technique: [AS] BGX: Cosmic Kaleidoscope</em></td>
+    <td width="50%"><div style="text-align:center">
+      <!-- Placeholder for future image -->
+    </div></td>
+  </tr>  <tr>
+    <td width="50%"><strong>BGX: Digital Brain</strong> (<code>AS_BGX_DigitalBrain.1.fx</code>)<br>
+      Creates an abstract visualization of a "digital brain" with evolving Voronoi patterns and neural-like connections. The effect simulates an organic electronic network with dynamic light paths that mimic neural activity in a stylized, technological manner. Features dynamic Voronoi-based pattern generation, animated "electrical" pulses simulating synaptic activity, color modulation based on noise texture for organic variation, advanced vignette controls, pre-optimized pattern stretching, classic and texture-based coloring options, customizable animation and pattern controls, and depth-aware rendering with standard blending. Based on original GLSL by srtuss ([ShaderToy](https://www.shadertoy.com/view/4sl3Dr)).<br><em>Technique: [AS] BGX: Digital Brain</em></td>
     <td width="50%"><div style="text-align:center">
       <!-- Placeholder for future image -->
     </div></td>
@@ -149,7 +155,7 @@ This gallery provides detailed descriptions and visual examples of all shaders i
   </tr>
   <tr>
     <td width="50%"><strong>BGX: Light Ripples</strong> (<code>AS_BGX_LightRipples.1.fx</code>)<br>
-      Creates a mesmerizing, rippling kaleidoscopic light pattern effect. Suitable as a dynamic background or overlay. Includes controls for animation, distortion (amplitude, frequencies), color palettes with cycling, audio reactivity, depth-aware rendering, adjustable rotation, and standard blending options.<br><em>Technique: [AS] BGX: Light Ripples</em></td>
+      Creates a mesmerizing, rippling kaleidoscopic light pattern effect. Suitable as a dynamic background or overlay. Includes controls for animation, distortion (amplitude, frequencies), color palettes with cycling, audio reactivity, depth-aware rendering, adjustable rotation, and standard blending options. Original shader by Danilo Guanabara ([Pouet](https://www.pouet.net/prod.php?which=57245)).<br><em>Technique: [AS] BGX: Light Ripples</em></td>
     <td width="50%"><div style="text-align:center">
       <!-- Placeholder for future image -->
     </div></td>
@@ -177,14 +183,14 @@ This gallery provides detailed descriptions and visual examples of all shaders i
   </tr>
   <tr>
     <td width="50%"><strong>BGX: Shine On</strong> (<code>AS_BGX_ShineOn.1.fx</code>)<br>
-      Creates a dynamic, evolving fractal noise pattern with bright, sparkly crystal highlights that move across the screen. Combines multiple layers of noise with procedural animation for a mesmerizing background effect. Features layered noise patterns with dynamic animation, crystal point highlights with customizable parameters, audio reactivity, and depth-aware rendering.<br><em>Technique: [AS] BGX: Shine On</em></td>
+      Creates a dynamic, evolving fractal noise pattern with bright, sparkly crystal highlights that move across the screen. Combines multiple layers of noise with procedural animation for a mesmerizing background effect. Features layered noise patterns with dynamic animation, crystal point highlights with customizable parameters, audio reactivity, and depth-aware rendering. Original "Shine On" by emodeman ([ShaderToy](https://www.shadertoy.com/view/st23zw)).<br><em>Technique: [AS] BGX: Shine On</em></td>
     <td width="50%"><div style="text-align:center">
       <!-- Placeholder for future image -->
     </div></td>
   </tr>
   <tr>
     <td width="50%"><strong>BGX: Stained Lights</strong> (<code>AS_BGX_StainedLights.1.fx</code>)<br>
-      Creates dynamic and colorful patterns reminiscent of stained glass illuminated by shifting light, with multiple blurred layers enhancing depth and visual complexity. Generates layers of distorted, cell-like structures with vibrant, evolving colors and subtle edge highlighting, overlaid with softer, floating elements. Features multi-layered pattern generation (adjustable iterations), dynamic animation with speed control, customizable pattern scaling/edge highlighting, audio reactivity for animation/pattern evolution, post-processing (curve adjustments, noise), blurred floating layers for depth, and depth-aware rendering with standard blending. Suitable for abstract backgrounds, energy fields, or mystical visuals.<br><em>Technique: [AS] BGX: Stained Lights</em></td>
+      Creates dynamic and colorful patterns reminiscent of stained glass illuminated by shifting light, with multiple blurred layers enhancing depth and visual complexity. Generates layers of distorted, cell-like structures with vibrant, evolving colors and subtle edge highlighting, overlaid with softer, floating elements. Features multi-layered pattern generation (adjustable iterations), dynamic animation with speed control, customizable pattern scaling/edge highlighting, audio reactivity for animation/pattern evolution, post-processing (curve adjustments, noise), blurred floating layers for depth, and depth-aware rendering with standard blending. Inspired by "Stained Lights" by 104 ([ShaderToy](https://www.shadertoy.com/view/WlsSzM)). Suitable for abstract backgrounds, energy fields, or mystical visuals.<br><em>Technique: [AS] BGX: Stained Lights</em></td>
     <td width="50%"><div style="text-align:center">
       <!-- Placeholder for future image -->
     </div></td>
@@ -196,30 +202,26 @@ This gallery provides detailed descriptions and visual examples of all shaders i
       <!-- Placeholder for future image -->
     </div></td>
   </tr>
-  <tr>
-    <td width="50%"><strong>BGX: Wavy Squares</strong> (<code>AS_BGX_WavySquares.1.fx</code>)<br>
-      Creates a hypnotic pattern of wavy, animated square tiles that shift and transform. The squares follow a wave-like motion and feature dynamic size changes, creating a flowing, organic grid pattern. Features wavy, undulating square tiling; customizable wave parameters (amplitude, frequency, speed); variable tile size/scaling; shape smoothness/box roundness controls; audio reactivity (multiple targets); depth-aware rendering; adjustable rotation; and standard position, scale, and blending options.<br><em>Technique: [AS] BGX: Wavy Squares</em></td>
+  <tr>    <td width="50%"><strong>BGX: Wavy Squares</strong> (<code>AS_BGX_WavySquares.1.fx</code>)<br>
+      Creates a hypnotic pattern of wavy, animated square tiles that shift and transform. The squares follow a wave-like motion and feature dynamic size changes, creating a flowing, organic grid pattern. Features wavy, undulating square tiling; customizable wave parameters (amplitude, frequency, speed); variable tile size/scaling; shape smoothness/box roundness controls; audio reactivity (multiple targets); depth-aware rendering; adjustable rotation; and standard position, scale, and blending options. Original by "Square Tiling Example E" by SnoopethDuckDuck ([ShaderToy](https://www.shadertoy.com/view/NdfBzn)).<br><em>Technique: [AS] BGX: Wavy Squares</em></td>
     <td width="50%"><div style="text-align:center">
       <!-- Placeholder for future image -->
     </div></td>
   </tr>
-  <tr>
-    <td width="50%"><strong>BGX: Wavy Squiggles</strong> (<code>AS_BGX_WavySquiggles.1.fx</code>)<br>
-      Creates a mesmerizing pattern of adaptive wavy lines that follow a mouse or fixed position. The lines create intricate patterns that look like dynamic squiggly lines arranged around a central point, with rotation applied based on direction. Features position-reactive wavy line patterns; customizable line parameters (rotation influence, thickness, distance, smoothness); optional color palettes (hue, saturation, value control); pattern displacement for off-center effects; audio reactivity (multiple targets); depth-aware rendering; adjustable rotation; and standard position, scale, and blending options.<br><em>Technique: [AS] BGX: Wavy Squiggles</em></td>
+  <tr>    <td width="50%"><strong>BGX: Wavy Squiggles</strong> (<code>AS_BGX_WavySquiggles.1.fx</code>)<br>
+      Creates a mesmerizing pattern of adaptive wavy lines that follow a mouse or fixed position. The lines create intricate patterns that look like dynamic squiggly lines arranged around a central point, with rotation applied based on direction. Features position-reactive wavy line patterns; customizable line parameters (rotation influence, thickness, distance, smoothness); optional color palettes (hue, saturation, value control); pattern displacement for off-center effects; audio reactivity (multiple targets); depth-aware rendering; adjustable rotation; and standard position, scale, and blending options. Original by "Interactive 2.5D Squiggles" by SnoopethDuckDuck ([ShaderToy](https://www.shadertoy.com/view/7sBfDD)).<br><em>Technique: [AS] BGX: Wavy Squiggles</em></td>
     <td width="50%"><div style="text-align:center">
       <!-- Placeholder for future image -->
     </div></td>
   </tr>
-  <tr>
-    <td width="50%"><strong>BGX: Blue Corona</strong> (<code>AS_BGX_BlueCorona.1.fx</code>)<br>
-      Creates a vibrant, abstract blue corona effect with fluid, dynamic motion. The effect generates hypnotic patterns through iterative mathematical transformations, resulting in organic, plasma-like visuals with a predominantly blue color scheme. Features abstract, organic blue corona patterns; smooth fluid-like animation; customizable iteration count/pattern scale; animation speed/flow controls; intuitive color controls; customizable background color; audio reactivity (multiple targets); depth-aware rendering; and standard position, rotation, scale, and blending options.<br><em>Technique: [AS] BGX: Blue Corona</em></td>
+  <tr>    <td width="50%"><strong>BGX: Blue Corona</strong> (<code>AS_BGX_BlueCorona.1.fx</code>)<br>
+      Creates a vibrant, abstract blue corona effect with fluid, dynamic motion. The effect generates hypnotic patterns through iterative mathematical transformations, resulting in organic, plasma-like visuals with a predominantly blue color scheme. Features abstract, organic blue corona patterns; smooth fluid-like animation; customizable iteration count/pattern scale; animation speed/flow controls; intuitive color controls; customizable background color; audio reactivity (multiple targets); depth-aware rendering; and standard position, rotation, scale, and blending options. Original by "Blue Corona" by SnoopethDuckDuck ([ShaderToy](https://www.shadertoy.com/view/XfKGWV)).<br><em>Technique: [AS] BGX: Blue Corona</em></td>
     <td width="50%"><div style="text-align:center">
       <!-- Placeholder for future image -->
     </div></td>
-  </tr>
-  <tr>
+  </tr>  <tr>
     <td width="50%"><strong>BGX: Zippy Zaps</strong> (<code>AS_BGX_ZippyZaps.1.fx</code>)<br>
-      Creates dynamic electric arcs and lightning patterns for a striking background effect. This effect generates procedural electric-like patterns that appear behind objects in the scene, creating an energetic, dynamic background with complete control over appearance and animation. Features animated electric/lightning arcs with procedural generation; fully customizable colors, intensity, and animation parameters; resolution-independent rendering; audio reactivity; depth-aware rendering; and adjustable rotation/positioning in 3D space.<br><em>Technique: [AS] BGX: Zippy Zaps</em></td>
+      Creates dynamic electric arcs and lightning patterns for a striking background effect. This effect generates procedural electric-like patterns that appear behind objects in the scene, creating an energetic, dynamic background with complete control over appearance and animation. Features animated electric/lightning arcs with procedural generation; fully customizable colors, intensity, and animation parameters; resolution-independent rendering; audio reactivity; depth-aware rendering; and adjustable rotation/positioning in 3D space. Original shader by SnoopethDuckDuck (ShaderToy link pending).<br><em>Technique: [AS] BGX: Zippy Zaps</em></td>
     <td width="50%"><div style="text-align:center">
       <!-- Placeholder for future image -->
     </div></td>
@@ -240,7 +242,7 @@ This gallery provides detailed descriptions and visual examples of all shaders i
 <table>
   <tr>
     <td width="50%"><strong>GFX: Multi-Layer Halftone</strong> (<code>AS_GFX_MultiLayerHalftone.1.fx</code>)<br>
-      Creates a highly customizable multi-layer halftone effect with support for up to four independent layers. Each layer can use different pattern types (dots, lines, crosshatch), isolation methods (brightness, RGB, hue, depth), colors, thresholds, scales, densities, and angles. Features layer blending with transparency support.<br><em>Technique: [AS] Multi-Layer Halftone</em></td>
+      Creates a highly customizable multi-layer halftone effect with support for up to four independent layers. Each layer can use different pattern types (dots, lines, crosshatch), isolation methods (brightness, RGB, hue, depth), colors, thresholds, scales, densities, and angles. Features layer blending with transparency support. Based on "Halftone Shader" by P. Gonzalez Vivo ([ShaderToy](https://www.shadertoy.com/view/XdcGzn)).<br><em>Technique: [AS] Multi-Layer Halftone</em></td>
     <td width="50%"><div style="text-align:center">
       <img src="https://github.com/user-attachments/assets/b93c9d03-5d23-4b32-aa3e-f2b6a9736c70" alt="Multi-Layer Halftone Effect" style="max-width:100%;">
     </div></td>
