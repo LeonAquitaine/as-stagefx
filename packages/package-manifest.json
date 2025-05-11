@@ -1,27 +1,29 @@
 {
     "packageVersion":  "1.6.5",
-    "generatedOn":  "2025-05-11 10:14:44",
+    "generatedOn":  "2025-05-11 10:39:32",
     "version":  "1.6.5",
     "packages":  {
                      "essentials":  {
                                         "version":  "1.6.5",
                                         "name":  "AS_StageFX_Essentials",
                                         "files":  [
-                                                      "AS_BGX_LightWall.1.fx",
-                                                      "AS_BGX_PlasmaFlow.1.fx",
-                                                      "AS_BGX_ShineOn.1.fx",
+                                                      "AS_BGX_LightRipples.1.fx",
+                                                      "AS_BGX_StainedLights.1.fx",
+                                                      "AS_BGX_TimeCrystal.1.fx",
                                                       "AS_GFX_MultiLayerHalftone.1.fx",
+                                                      "AS_LFX_LaserShow.1.fx",
                                                       "AS_LFX_StageSpotlights.1.fx",
                                                       "AS_Noise.1.fxh",
                                                       "AS_Palette.1.fxh",
                                                       "AS_Palette_Styles.1.fxh",
                                                       "AS_Utils.1.fxh",
-                                                      "AS_VFX_DigitalArtifacts.1.fx",
+                                                      "AS_VFX_BoomSticker.1.fx",
+                                                      "AS_VFX_MotionTrails.1.fx",
                                                       "AS_VFX_SparkleBloom.1.fx",
-                                                      "AS_VFX_WarpDistort.1.fx"
+                                                      "AS_VFX_StencilMask.1.fx"
                                                   ],
                                         "description":  "Core library files and essential visual effects for general use",
-                                        "fileCount":  12,
+                                        "fileCount":  14,
                                         "textures":  {
                                                          "fileCount":  2,
                                                          "files":  [
@@ -33,21 +35,19 @@
                      "visualEffects":  {
                                            "files":  [
                                                          "AS_LFX_CandleFlame.1.fx",
-                                                         "AS_LFX_LaserShow.1.fx",
-                                                         "AS_VFX_BoomSticker.1.fx",
-                                                         "AS_VFX_MotionTrails.1.fx",
+                                                         "AS_VFX_DigitalArtifacts.1.fx",
                                                          "AS_VFX_RainyWindow.1.fx",
                                                          "AS_VFX_ScreenRing.1.fx",
                                                          "AS_VFX_SpectrumRing.1.fx",
-                                                         "AS_VFX_StencilMask.1.fx",
                                                          "AS_VFX_TiltedGrid.1.fx",
                                                          "AS_VFX_VUMeter.1.fx",
+                                                         "AS_VFX_WarpDistort.1.fx",
                                                          "AS_VFX_WaterSurface.1.fx"
                                                      ],
-                                           "description":  "Complete collection of visual effects (not included in Essentials)",
+                                           "description":  "Complete collection of visual effects (Requires Essentials)",
                                            "name":  "AS_StageFX_VisualEffects",
                                            "version":  "1.6.5",
-                                           "fileCount":  11
+                                           "fileCount":  9
                                        },
                      "backgrounds":  {
                                          "files":  [
@@ -55,15 +55,15 @@
                                                        "AS_BGX_CosmicKaleidoscope.1.fx",
                                                        "AS_BGX_DigitalBrain.1.fx",
                                                        "AS_BGX_GoldenClockwork.1.fx",
-                                                       "AS_BGX_LightRipples.1.fx",
+                                                       "AS_BGX_LightWall.1.fx",
                                                        "AS_BGX_MeltWave.1.fx",
-                                                       "AS_BGX_StainedLights.1.fx",
-                                                       "AS_BGX_TimeCrystal.1.fx",
+                                                       "AS_BGX_PlasmaFlow.1.fx",
+                                                       "AS_BGX_ShineOn.1.fx",
                                                        "AS_BGX_WavySquares.1.fx",
                                                        "AS_BGX_WavySquiggles.1.fx",
                                                        "AS_BGX_ZippyZaps.1.fx"
                                                    ],
-                                         "description":  "Complete collection of background effects (not included in Essentials)",
+                                         "description":  "Complete collection of background effects (Requires Essentials)",
                                          "name":  "AS_StageFX_Backgrounds",
                                          "version":  "1.6.5",
                                          "fileCount":  11
@@ -108,7 +108,7 @@
                                                     "AS_VFX_WarpDistort.1.fx",
                                                     "AS_VFX_WaterSurface.1.fx"
                                                 ],
-                                      "description":  "Complete collection of all AS StageFX shaders and utilities",
+                                      "description":  "The complete collection of all AS StageFX shaders and utilities",
                                       "fileCount":  35,
                                       "textures":  {
                                                        "fileCount":  2,

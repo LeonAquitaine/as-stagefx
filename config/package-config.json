@@ -7,20 +7,22 @@
       "AS_Palette_Styles.1.fxh"
     ],
     "bgx": [
-      "AS_BGX_PlasmaFlow.1.fx",
-      "AS_BGX_LightWall.1.fx",
-      "AS_BGX_ShineOn.1.fx"
+      "AS_BGX_TimeCrystal.1.fx",
+      "AS_BGX_StainedLights.1.fx",
+      "AS_BGX_LightRipples.1.fx"
     ],
     "gfx": [
       "AS_GFX_MultiLayerHalftone.1.fx"
     ],
     "lfx": [
-      "AS_LFX_StageSpotlights.1.fx"
+      "AS_LFX_StageSpotlights.1.fx",
+      "AS_LFX_LaserShow.1.fx"
     ],
     "vfx": [
-      "AS_VFX_DigitalArtifacts.1.fx",
+      "AS_VFX_BoomSticker.1.fx",
       "AS_VFX_SparkleBloom.1.fx",
-      "AS_VFX_WarpDistort.1.fx"
+      "AS_VFX_MotionTrails.1.fx",
+      "AS_VFX_StencilMask.1.fx"
     ]
   },
   "packageDescription": {
