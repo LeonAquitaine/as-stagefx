@@ -149,7 +149,6 @@ jobs:
           # Add package information to release notes
           $releaseNotes = Get-Content -Path "temp/release/release.md" -Raw
           $packageInfo = "`n## Packages`n`n" # Corrected newline characters
-          $packageInfo += "This release includes the following packages:`n`n" # Corrected newline characters
           
           # Iterate over the ordered list for the first section
           foreach ($rPath in $orderedRelativeZipPaths) { 
