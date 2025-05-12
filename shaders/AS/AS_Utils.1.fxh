@@ -180,7 +180,7 @@ static const int AS_DEBUG_PATTERN = 4;                  // Debug pattern display
 #define AS_AUDIO_BEAT    3  // Beat detection
 
 // --- Blend Constants ---
-#define AS_BLEND_OFF        0 // No blending
+#define AS_BLEND_NORMAL     0 // No blending
 #define AS_BLEND_ADDITIVE   1 // Additive blending
 
 // --- Display and Resolution Constants ---
