@@ -20,10 +20,12 @@
 // --- Palette Constants ---
 // Standard palette size
 #define AS_PALETTE_COLORS 5
-#define AS_PALETTE_CUSTOM       99 // Moved here, needs to be before include
 
-// Include the palette style definitions
+// Include the palette style definitions first so AS_PALETTE_COUNT is available
 #include "AS_Palette_Styles.1.fxh"
+
+// Define AS_PALETTE_CUSTOM as the index immediately following the last predefined palette
+#define AS_PALETTE_CUSTOM       AS_PALETTE_COUNT 
 
 // Default custom palette colors (will be overridden by AS_CUSTOM_PALETTE_UI macro when used)
 // These defaults ensure the variables exist even if the macro isn't used
