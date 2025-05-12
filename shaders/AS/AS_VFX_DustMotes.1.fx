@@ -151,7 +151,7 @@ uniform float LargeFeatureOpacityMin < ui_type = "slider"; ui_label = "Min Opaci
 uniform float LargeFeatureOpacityMax < ui_type = "slider"; ui_label = "Max Opacity"; ui_tooltip = "Maximum opacity for large features."; ui_min = 0.01; ui_max = 0.5; ui_step = 0.01; ui_category = "Large Features"; > = DEFAULT_L2_MAX_ALPHA;
 
 // --- Backlit Effect Controls ---
-uniform float BacklightFlareIntensity < ui_type = "slider"; ui_label = "Flare Intensity"; ui_tooltip = "How much bright background areas make opposite particles flare (increase opacity)."; ui_min = 0.0; ui_max = 2.0; ui_step = 0.01; ui_category = "Backlight"; > = DEFAULT_LIGHT_INTENSITY_INFLUENCE;
+uniform float BacklightFlareIntensity < ui_type = "slider"; ui_label = "Flare Intensity"; ui_tooltip = "How much bright background areas make opposite particles flare (increase opacity)."; ui_min = 0.0; ui_max = 4.0; ui_step = 0.01; ui_category = "Backlight"; > = DEFAULT_LIGHT_INTENSITY_INFLUENCE;
 uniform float BacklightColorBleed < ui_type = "slider"; ui_label = "Color Bleed"; ui_tooltip = "How much color from bright background areas bleeds into opposite particles."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Backlight"; > = DEFAULT_LIGHT_COLOR_INFLUENCE;
 
 // --- Post-Pass Particle Blur Control ---
