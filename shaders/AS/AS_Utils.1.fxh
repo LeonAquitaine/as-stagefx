@@ -179,6 +179,10 @@ static const int AS_DEBUG_PATTERN = 4;                  // Debug pattern display
 #define AS_AUDIO_VOLUME  2  // Overall audio volume
 #define AS_AUDIO_BEAT    3  // Beat detection
 
+// --- Blend Constants ---
+#define AS_BLEND_OFF        0 // No blending
+#define AS_BLEND_ADDITIVE   1 // Additive blending
+
 // --- Display and Resolution Constants ---
 #ifndef __AS_DISPLAY_CONSTANTS
 #define __AS_DISPLAY_CONSTANTS
