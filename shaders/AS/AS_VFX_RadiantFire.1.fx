@@ -149,37 +149,41 @@ static const float DEFAULT_FLAME_COLOR_THRESHOLD_MID = 0.5f;
 
 // Using standard AS_Utils time function instead of Timer
 
-// --- Subject Detection & Edges ---
-uniform float SubjectDepthCutoff < ui_type = "slider"; ui_label = "Subject Depth Cutoff"; ui_min = 0.001; ui_max = 1.0; ui_step = 0.001; ui_category = "Subject & Source"; > = DEFAULT_SUBJECT_DEPTH_CUTOFF;
-uniform float EdgeDetectionSensitivity < ui_type = "slider"; ui_label = "Edge Sensitivity"; ui_min = 1.0; ui_max = 200.0; ui_step = 1.0; ui_category = "Subject & Source"; > = DEFAULT_EDGE_DETECTION_SENSITIVITY; 
-uniform float EdgeSoftness < ui_type = "slider"; ui_label = "Edge Softness"; ui_min = 0.001; ui_max = 0.5; ui_step = 0.001; ui_category = "Subject & Source"; > = DEFAULT_EDGE_SOFTNESS;
-uniform bool OverlaySubject < ui_type = "bool"; ui_label = "Overlay Subject on Fire"; ui_tooltip = "If checked, the original subject (defined by depth cutoff) will be drawn on top of the fire effect."; ui_category = "Subject & Source"; > = DEFAULT_OVERLAY_SUBJECT;
+// --- Palette & Style ---
+uniform float3 FlameColorCore < ui_type = "color"; ui_label = "Render: Core Color"; ui_category = "Palette & Style"; > = DEFAULT_FLAME_COLOR_CORE;
+uniform float3 FlameColorMid < ui_type = "color"; ui_label = "Render: Mid Color"; ui_category = "Palette & Style"; > = DEFAULT_FLAME_COLOR_MID;
+uniform float3 FlameColorOuter < ui_type = "color"; ui_label = "Render: Outer Color"; ui_category = "Palette & Style"; > = DEFAULT_FLAME_COLOR_OUTER;
 
-// --- Flame Simulation Controls ---
-uniform float2 FireRepulsionCenterPos < ui_type = "drag"; ui_label = "Fire Repulsion Center (Screen XY)"; ui_tooltip = "Normalized screen position (0-1) the fire radiates AWAY from."; ui_min = 0.0; ui_max = 1.0; ui_speed = 0.01; ui_category = "Flame Simulation"; > = DEFAULT_FIRE_REPULSION_CENTER_POS; 
-uniform float SourceInjectionStrength < ui_type = "slider"; ui_label = "Source: Injection Strength"; ui_tooltip = "Amount of 'heat' injected at subject edges."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Flame Simulation"; > = DEFAULT_SOURCE_INJECTION_STRENGTH;
-uniform float AdvectionStrength < ui_type = "slider"; ui_label = "Advection: Velocity Influence"; ui_tooltip = "How strongly flames move based on their existing velocity."; ui_min = 0.0; ui_max = 5.0; ui_step = 0.01; ui_category = "Flame Simulation"; > = DEFAULT_ADVECTION_STRENGTH;
-uniform float RepulsionStrength < ui_type = "slider"; ui_label = "Physics: Repulsion Strength"; ui_tooltip = "How strongly flames are pushed from the repulsion center."; ui_min = 0.0; ui_max = 0.01; ui_step = 0.0001; ui_category = "Flame Simulation"; > = DEFAULT_REPULSION_STRENGTH;
-uniform float GeneralBuoyancy < ui_type = "slider"; ui_label = "Physics: General Buoyancy"; ui_tooltip = "Constant upwards drift for all flames (screen space)."; ui_min = 0.0; ui_max = 0.005; ui_step = 0.00001; ui_category = "Flame Simulation"; > = DEFAULT_GENERAL_BUOYANCY;
-uniform float DraftSpeed < ui_type = "slider"; ui_label = "Physics: Draft Speed"; ui_tooltip = "Constant vertical draft. Positive = up, Negative = down."; ui_min = -0.005; ui_max = 0.005; ui_step = 0.00001; ui_category = "Flame Simulation"; > = DEFAULT_DRAFT_SPEED;
-uniform float Diffusion < ui_type = "slider"; ui_label = "Physics: Diffusion (Spread/Blur)"; ui_tooltip = "How much the flame spreads/blurs out. Uses UV offset."; ui_min = 0.0; ui_max = 0.005; ui_step = 0.0001; ui_category = "Flame Simulation"; > = DEFAULT_DIFFUSION;
-uniform float Dissipation < ui_type = "slider"; ui_label = "Physics: Dissipation (Cooling/Fade)"; ui_tooltip = "Rate at which flame intensity fades over time (0=no fade, 1=instant fade)."; ui_min = 0.0; ui_max = 0.1; ui_step = 0.001; ui_category = "Flame Simulation"; > = DEFAULT_DISSIPATION;
-uniform float VelocityDamping < ui_type = "slider"; ui_label = "Physics: Velocity Damping"; ui_tooltip = "How quickly flame velocity fades (0=no damping, 1=instant stop)."; ui_min = 0.0; ui_max = 0.1; ui_step = 0.001; ui_category = "Flame Simulation"; > = DEFAULT_VELOCITY_DAMPING;
-uniform float GLSLTurbulenceAdvectionInfluence < ui_type = "slider"; ui_label = "GLSL Turbulence: Advection Influence"; ui_tooltip = "Scales the displacement applied to advection lookups by the GLSL turbulence pattern."; ui_min = 0.0; ui_max = 0.1; ui_step = 0.001; ui_category = "Flame Simulation"; > = DEFAULT_GLSL_TURBULENCE_ADVECTION_INFLUENCE;
-uniform float AnimationSpeed < ui_type = "slider"; ui_label = "Animation Speed"; ui_tooltip = "Controls the overall speed of the fire animation."; ui_min = 0.1f; ui_max = 3.0f; ui_step = 0.05f; ui_category = "Flame Simulation"; > = TIME_SCALE_NORMAL;
+// --- Effect-Specific Parameters ---
+uniform float SubjectDepthCutoff < ui_type = "slider"; ui_label = "Subject Depth Cutoff"; ui_min = 0.001; ui_max = 1.0; ui_step = 0.001; ui_category = "Effect-Specific Parameters"; > = DEFAULT_SUBJECT_DEPTH_CUTOFF;
+uniform float EdgeDetectionSensitivity < ui_type = "slider"; ui_label = "Edge Sensitivity"; ui_min = 1.0; ui_max = 200.0; ui_step = 1.0; ui_category = "Effect-Specific Parameters"; > = DEFAULT_EDGE_DETECTION_SENSITIVITY;
+uniform float EdgeSoftness < ui_type = "slider"; ui_label = "Edge Softness"; ui_min = 0.001; ui_max = 0.5; ui_step = 0.001; ui_category = "Effect-Specific Parameters"; > = DEFAULT_EDGE_SOFTNESS;
+uniform bool OverlaySubject < ui_type = "bool"; ui_label = "Overlay Subject on Fire"; ui_tooltip = "If checked, the original subject (defined by depth cutoff) will be drawn on top of the fire effect."; ui_category = "Effect-Specific Parameters"; > = DEFAULT_OVERLAY_SUBJECT;
+uniform float SourceInjectionStrength < ui_type = "slider"; ui_label = "Source: Injection Strength"; ui_tooltip = "Amount of \'heat\' injected at subject edges."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Effect-Specific Parameters"; > = DEFAULT_SOURCE_INJECTION_STRENGTH;
+uniform float AdvectionStrength < ui_type = "slider"; ui_label = "Advection: Velocity Influence"; ui_tooltip = "How strongly flames move based on their existing velocity."; ui_min = 0.0; ui_max = 5.0; ui_step = 0.01; ui_category = "Effect-Specific Parameters"; > = DEFAULT_ADVECTION_STRENGTH;
+uniform float RepulsionStrength < ui_type = "slider"; ui_label = "Physics: Repulsion Strength"; ui_tooltip = "How strongly flames are pushed from the repulsion center."; ui_min = 0.0; ui_max = 0.01; ui_step = 0.0001; ui_category = "Effect-Specific Parameters"; > = DEFAULT_REPULSION_STRENGTH;
+uniform float GeneralBuoyancy < ui_type = "slider"; ui_label = "Physics: General Buoyancy"; ui_tooltip = "Constant upwards drift for all flames (screen space)."; ui_min = 0.0; ui_max = 0.005; ui_step = 0.00001; ui_category = "Effect-Specific Parameters"; > = DEFAULT_GENERAL_BUOYANCY;
+uniform float DraftSpeed < ui_type = "slider"; ui_label = "Physics: Draft Speed"; ui_tooltip = "Constant vertical draft. Positive = up, Negative = down."; ui_min = -0.005; ui_max = 0.005; ui_step = 0.00001; ui_category = "Effect-Specific Parameters"; > = DEFAULT_DRAFT_SPEED;
+uniform float Diffusion < ui_type = "slider"; ui_label = "Physics: Diffusion (Spread/Blur)"; ui_tooltip = "How much the flame spreads/blurs out. Uses UV offset."; ui_min = 0.0; ui_max = 0.005; ui_step = 0.0001; ui_category = "Effect-Specific Parameters"; > = DEFAULT_DIFFUSION;
+uniform float Dissipation < ui_type = "slider"; ui_label = "Physics: Dissipation (Cooling/Fade)"; ui_tooltip = "Rate at which flame intensity fades over time (0=no fade, 1=instant fade)."; ui_min = 0.0; ui_max = 0.1; ui_step = 0.001; ui_category = "Effect-Specific Parameters"; > = DEFAULT_DISSIPATION;
+uniform float VelocityDamping < ui_type = "slider"; ui_label = "Physics: Velocity Damping"; ui_tooltip = "How quickly flame velocity fades (0=no damping, 1=instant stop)."; ui_min = 0.0; ui_max = 0.1; ui_step = 0.001; ui_category = "Effect-Specific Parameters"; > = DEFAULT_VELOCITY_DAMPING;
+uniform float GLSLTurbulenceAdvectionInfluence < ui_type = "slider"; ui_label = "GLSL Turbulence: Advection Influence"; ui_tooltip = "Scales the displacement applied to advection lookups by the GLSL turbulence pattern."; ui_min = 0.0; ui_max = 0.1; ui_step = 0.001; ui_category = "Effect-Specific Parameters"; > = DEFAULT_GLSL_TURBULENCE_ADVECTION_INFLUENCE;
+uniform float FlameIntensity < ui_type = "slider"; ui_label = "Render: Flame Intensity"; ui_min = 0.0; ui_max = 10.0; ui_step = 0.01; ui_category = "Effect-Specific Parameters"; > = DEFAULT_FLAME_INTENSITY;
+uniform float FlameColorThresholdCore < ui_type = "slider"; ui_label = "Render: Core Temp Threshold"; ui_min = 0.5; ui_max = 2.0; ui_step = 0.01; ui_category = "Effect-Specific Parameters"; > = DEFAULT_FLAME_COLOR_THRESHOLD_CORE;
+uniform float FlameColorThresholdMid < ui_type = "slider"; ui_label = "Render: Mid Temp Threshold"; ui_min = 0.1; ui_max = 1.0; ui_step = 0.01; ui_category = "Effect-Specific Parameters"; > = DEFAULT_FLAME_COLOR_THRESHOLD_MID;
 
-// --- Flame Rendering Controls ---
-uniform float FlameIntensity < ui_type = "slider"; ui_label = "Render: Flame Intensity"; ui_min = 0.0; ui_max = 10.0; ui_step = 0.01; ui_category = "Flame Rendering"; > = DEFAULT_FLAME_INTENSITY;
-uniform float3 FlameColorCore < ui_type = "color"; ui_label = "Render: Core Color"; ui_category = "Flame Rendering"; > = DEFAULT_FLAME_COLOR_CORE; 
-uniform float3 FlameColorMid < ui_type = "color"; ui_label = "Render: Mid Color"; ui_category = "Flame Rendering"; > = DEFAULT_FLAME_COLOR_MID;  
-uniform float3 FlameColorOuter < ui_type = "color"; ui_label = "Render: Outer Color"; ui_category = "Flame Rendering"; > = DEFAULT_FLAME_COLOR_OUTER; 
-uniform float FlameColorThresholdCore < ui_type = "slider"; ui_label = "Render: Core Temp Threshold"; ui_min = 0.5; ui_max = 2.0; ui_step = 0.01; ui_category = "Flame Rendering"; > = DEFAULT_FLAME_COLOR_THRESHOLD_CORE;
-uniform float FlameColorThresholdMid < ui_type = "slider"; ui_label = "Render: Mid Temp Threshold"; ui_min = 0.1; ui_max = 1.0; ui_step = 0.01; ui_category = "Flame Rendering"; > = DEFAULT_FLAME_COLOR_THRESHOLD_MID;
+// --- Animation Controls ---
+uniform float AnimationSpeed < ui_type = "slider"; ui_label = "Animation Speed"; ui_tooltip = "Controls the overall speed of the fire animation."; ui_min = 0.1f; ui_max = 3.0f; ui_step = 0.05f; ui_category = "Animation Controls"; > = TIME_SCALE_NORMAL;
 
-// --- Output & Debug ---
-AS_DEBUG_MODE_UI("Off\0Subject Mask\0Edge Factor\0Flame Buffer Temp (R)\0Flame Buffer Vel (GB)\0Turbulence Displacement (RG)\0") 
+// --- Stage/Position Controls ---
+uniform float2 FireRepulsionCenterPos < ui_type = "drag"; ui_label = "Fire Repulsion Center (Screen XY)"; ui_tooltip = "Normalized screen position (0-1) the fire radiates AWAY from."; ui_min = 0.0; ui_max = 1.0; ui_speed = 0.01; ui_category = "Stage/Position Controls"; > = DEFAULT_FIRE_REPULSION_CENTER_POS;
+
+// --- Final Mix (Blend) ---
 AS_BLENDMODE_UI_DEFAULT(OutputBlendMode, AS_BLEND_ADDITIVE)
 AS_BLENDAMOUNT_UI(OutputBlendAmount)
+
+// --- Debug Controls ---
+AS_DEBUG_MODE_UI("Off\\0Subject Mask\\0Edge Factor\\0Flame Buffer Temp (R)\\0Flame Buffer Vel (GB)\\0Turbulence Displacement (RG)\\0")
 
 // ============================================================================
 // HELPER FUNCTIONS
