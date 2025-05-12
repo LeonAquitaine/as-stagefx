@@ -167,15 +167,15 @@ STICKER_UI(1, true, float2(POSITION_DEFAULT, POSITION_DEFAULT), SCALE_DEFAULT, f
 
 // Sticker 2 controls (disabled by default, slightly offset)
 STICKER_UI(2, false, float2(POSITION_DEFAULT + 0.2, POSITION_DEFAULT), SCALE_DEFAULT * 0.9, float2(1.0, 1.0), 
-           OPACITY_DEFAULT, 0.1)
+           OPACITY_DEFAULT, 0.05)
 
 // Sticker 3 controls (disabled by default, slightly offset)
 STICKER_UI(3, false, float2(POSITION_DEFAULT - 0.2, POSITION_DEFAULT), SCALE_DEFAULT * 0.8, float2(1.0, 1.0), 
-           OPACITY_DEFAULT, 0.15)
+           OPACITY_DEFAULT, 0.05)
 
 // Sticker 4 controls (disabled by default, slightly offset)
 STICKER_UI(4, false, float2(POSITION_DEFAULT, POSITION_DEFAULT - 0.2), SCALE_DEFAULT * 0.7, float2(1.0, 1.0), 
-           OPACITY_DEFAULT, 0.2)
+           OPACITY_DEFAULT, 0.05)
 
 // ============================================================================
 // AUDIO REACTIVITY
@@ -217,11 +217,12 @@ struct StickerParams {
 };
 
 // Helper function to get sticker parameters for a given index
+// IMPORTANT: stickerIndex is 1-based (1-4), matching the UI labels
 StickerParams GetStickerParams(int stickerIndex) {
     StickerParams params;
     
     // Set sticker-specific parameters based on index
-    if (stickerIndex == 0) {
+    if (stickerIndex == 1) {
         params.enable = Sticker1_Enable;
         params.position = Sticker1_PosXY;
         params.scale = Sticker1_Scale;
@@ -233,7 +234,7 @@ StickerParams GetStickerParams(int stickerIndex) {
         params.swayAngle = Sticker1_SwayAngle;
         params.depth = Sticker1_Depth;
     }
-    else if (stickerIndex == 1) {
+    else if (stickerIndex == 2) {
         params.enable = Sticker2_Enable;
         params.position = Sticker2_PosXY;
         params.scale = Sticker2_Scale;
@@ -245,7 +246,7 @@ StickerParams GetStickerParams(int stickerIndex) {
         params.swayAngle = Sticker2_SwayAngle;
         params.depth = Sticker2_Depth;
     }
-    else if (stickerIndex == 2) {
+    else if (stickerIndex == 3) {
         params.enable = Sticker3_Enable;
         params.position = Sticker3_PosXY;
         params.scale = Sticker3_Scale;
@@ -257,7 +258,7 @@ StickerParams GetStickerParams(int stickerIndex) {
         params.swayAngle = Sticker3_SwayAngle;
         params.depth = Sticker3_Depth;
     }
-    else { // stickerIndex == 3
+    else { // stickerIndex == 4
         params.enable = Sticker4_Enable;
         params.position = Sticker4_PosXY;
         params.scale = Sticker4_Scale;
@@ -274,19 +275,21 @@ StickerParams GetStickerParams(int stickerIndex) {
 }
 
 // Helper function to sample the appropriate texture based on sticker index
+// IMPORTANT: stickerIndex is 1-based (1-4), matching the UI labels
 float4 SampleStickerTexture(float2 uv, int stickerIndex) {
-    if (stickerIndex == 0) return tex2D(BoomSticker1_Sampler, uv);
-    else if (stickerIndex == 1) return tex2D(BoomSticker2_Sampler, uv);
-    else if (stickerIndex == 2) return tex2D(BoomSticker3_Sampler, uv);
-    else return tex2D(BoomSticker4_Sampler, uv); // stickerIndex == 3
+    if (stickerIndex == 1) return tex2D(BoomSticker1_Sampler, uv);
+    else if (stickerIndex == 2) return tex2D(BoomSticker2_Sampler, uv);
+    else if (stickerIndex == 3) return tex2D(BoomSticker3_Sampler, uv);
+    else return tex2D(BoomSticker4_Sampler, uv); // stickerIndex == 4
 }
 
 // Helper function to get the texture dimensions for a given sticker
+// IMPORTANT: stickerIndex is 1-based (1-4), matching the UI labels
 float2 GetStickerDimensions(int stickerIndex) {
-    if (stickerIndex == 0) return float2(BoomSticker1_Width, BoomSticker1_Height);
-    else if (stickerIndex == 1) return float2(BoomSticker2_Width, BoomSticker2_Height);
-    else if (stickerIndex == 2) return float2(BoomSticker3_Width, BoomSticker3_Height);
-    else return float2(BoomSticker4_Width, BoomSticker4_Height); // stickerIndex == 3
+    if (stickerIndex == 1) return float2(BoomSticker1_Width, BoomSticker1_Height);
+    else if (stickerIndex == 2) return float2(BoomSticker2_Width, BoomSticker2_Height);
+    else if (stickerIndex == 3) return float2(BoomSticker3_Width, BoomSticker3_Height);
+    else return float2(BoomSticker4_Width, BoomSticker4_Height); // stickerIndex == 4
 }
 
 // Helper function to rotate UVs
@@ -302,9 +305,6 @@ float2 rotateUV(float2 uv, float angle) {
 // Helper function to apply a sticker to the original color
 float4 ApplySticker(float4 originalColor, float2 texCoord, int stickerIndex, float audioValue) {
     StickerParams params = GetStickerParams(stickerIndex);
-    
-    // Skip if disabled
-    if (!params.enable) return originalColor;
     
     // Apply audio reactivity
     float opacity = params.opacity;
@@ -421,40 +421,31 @@ void PS_BoomSticker(in float4 position : SV_Position, in float2 texCoord : TEXCO
     
     // Initialize output color with original color
     float4 finalResult = originalColor;
-    
-    // Process each sticker in predefined order (sticker 4 to 1, assuming depth increases with sticker number)
+      // Process each sticker in predefined order (sticker 4 to 1, assuming depth increases with sticker number)
     // This eliminates the need for complex sorting which might cause compilation issues
     
     // Sticker 4 (background)
-    if (Sticker4_Enable) {
-        AS_BoomSticker::StickerParams params = AS_BoomSticker::GetStickerParams(3);
-        if (sceneDepth >= params.depth - AS_DEPTH_EPSILON) {
-            finalResult = AS_BoomSticker::ApplySticker(finalResult, texCoord, 3, audioValue);
-        }
+    AS_BoomSticker::StickerParams params4 = AS_BoomSticker::GetStickerParams(4);
+    if (params4.enable && sceneDepth >= params4.depth - AS_DEPTH_EPSILON) {
+        finalResult = AS_BoomSticker::ApplySticker(finalResult, texCoord, 4, audioValue);
     }
     
     // Sticker 3
-    if (Sticker3_Enable) {
-        AS_BoomSticker::StickerParams params = AS_BoomSticker::GetStickerParams(2);
-        if (sceneDepth >= params.depth - AS_DEPTH_EPSILON) {
-            finalResult = AS_BoomSticker::ApplySticker(finalResult, texCoord, 2, audioValue);
-        }
+    AS_BoomSticker::StickerParams params3 = AS_BoomSticker::GetStickerParams(3);
+    if (params3.enable && sceneDepth >= params3.depth - AS_DEPTH_EPSILON) {
+        finalResult = AS_BoomSticker::ApplySticker(finalResult, texCoord, 3, audioValue);
     }
     
     // Sticker 2
-    if (Sticker2_Enable) {
-        AS_BoomSticker::StickerParams params = AS_BoomSticker::GetStickerParams(1);
-        if (sceneDepth >= params.depth - AS_DEPTH_EPSILON) {
-            finalResult = AS_BoomSticker::ApplySticker(finalResult, texCoord, 1, audioValue);
-        }
+    AS_BoomSticker::StickerParams params2 = AS_BoomSticker::GetStickerParams(2);
+    if (params2.enable && sceneDepth >= params2.depth - AS_DEPTH_EPSILON) {
+        finalResult = AS_BoomSticker::ApplySticker(finalResult, texCoord, 2, audioValue);
     }
     
     // Sticker 1 (foreground)
-    if (Sticker1_Enable) {
-        AS_BoomSticker::StickerParams params = AS_BoomSticker::GetStickerParams(0);
-        if (sceneDepth >= params.depth - AS_DEPTH_EPSILON) {
-            finalResult = AS_BoomSticker::ApplySticker(finalResult, texCoord, 0, audioValue);
-        }
+    AS_BoomSticker::StickerParams params1 = AS_BoomSticker::GetStickerParams(1);
+    if (params1.enable && sceneDepth >= params1.depth - AS_DEPTH_EPSILON) {
+        finalResult = AS_BoomSticker::ApplySticker(finalResult, texCoord, 1, audioValue);
     }
     
     passColor = finalResult;
