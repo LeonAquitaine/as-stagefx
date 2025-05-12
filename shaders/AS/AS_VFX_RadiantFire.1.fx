@@ -32,7 +32,8 @@
 // INCLUDES
 // ============================================================================
 #include "ReShade.fxh"
-#include "AS_Utils.1.fxh" 
+#include "AS_Utils.1.fxh"
+#include "AS_Palette.1.fxh"
 
 // ============================================================================
 // TECHNIQUE GUARD - Prevents duplicate loading of the same shader
@@ -137,9 +138,6 @@ static const float DEFAULT_DISSIPATION = 0.01f;
 static const float DEFAULT_VELOCITY_DAMPING = 0.02f;
 static const float DEFAULT_GLSL_TURBULENCE_ADVECTION_INFLUENCE = 0.005f;
 static const float DEFAULT_FLAME_INTENSITY = 1.5f;
-static const float3 DEFAULT_FLAME_COLOR_CORE = float3(1.0f, 0.8f, 0.2f);
-static const float3 DEFAULT_FLAME_COLOR_MID = float3(1.0f, 0.4f, 0.0f);
-static const float3 DEFAULT_FLAME_COLOR_OUTER = float3(0.5f, 0.1f, 0.0f);
 static const float DEFAULT_FLAME_COLOR_THRESHOLD_CORE = 1.0f;
 static const float DEFAULT_FLAME_COLOR_THRESHOLD_MID = 0.5f;
 
@@ -150,9 +148,8 @@ static const float DEFAULT_FLAME_COLOR_THRESHOLD_MID = 0.5f;
 // Using standard AS_Utils time function instead of Timer
 
 // --- Palette & Style ---
-uniform float3 FlameColorCore < ui_type = "color"; ui_label = "Render: Core Color"; ui_category = "Palette & Style"; > = DEFAULT_FLAME_COLOR_CORE;
-uniform float3 FlameColorMid < ui_type = "color"; ui_label = "Render: Mid Color"; ui_category = "Palette & Style"; > = DEFAULT_FLAME_COLOR_MID;
-uniform float3 FlameColorOuter < ui_type = "color"; ui_label = "Render: Outer Color"; ui_category = "Palette & Style"; > = DEFAULT_FLAME_COLOR_OUTER;
+AS_PALETTE_SELECTION_UI(FlamePalette, "Flame Color Palette", 0, "Palette & Style") // Using 0 as a default palette index
+AS_DECLARE_CUSTOM_PALETTE(Flame, "Palette & Style")
 
 // --- Effect-Specific Parameters ---
 uniform float SubjectDepthCutoff < ui_type = "slider"; ui_label = "Subject Depth Cutoff"; ui_min = 0.001; ui_max = 1.0; ui_step = 0.001; ui_category = "Effect-Specific Parameters"; > = DEFAULT_SUBJECT_DEPTH_CUTOFF;
@@ -332,23 +329,36 @@ float4 CopyStatePS(float4 vpos : SV_Position, float2 texcoord : TexCoord) : SV_T
 float4 RenderFlamePS(float4 vpos : SV_Position, float2 texcoord : TexCoord) : SV_Target
 {
     float3 baseSceneColor = tex2D(ReShade::BackBuffer, texcoord).rgb; // Original scene
-    float4 flameState = tex2D(SamplerFlameState_A, texcoord); 
+    float4 flameState = tex2D(SamplerFlameState_A, texcoord);
 
-    float temp = flameState.r; 
+    float temp = flameState.r;
     float3 flameVisualColor = float3(0.0f, 0.0f, 0.0f);
+
+    float3 actualFlameColorOuter, actualFlameColorMid, actualFlameColorCore;
+
+    if (FlamePalette == AS_PALETTE_CUSTOM) {
+        actualFlameColorOuter = AS_GET_CUSTOM_PALETTE_COLOR(Flame, 0);
+        actualFlameColorMid   = AS_GET_CUSTOM_PALETTE_COLOR(Flame, 2);
+        actualFlameColorCore  = AS_GET_CUSTOM_PALETTE_COLOR(Flame, 4);
+    } else {
+        actualFlameColorOuter = AS_getPaletteColor(FlamePalette, 0);
+        actualFlameColorMid   = AS_getPaletteColor(FlamePalette, 2);
+        actualFlameColorCore  = AS_getPaletteColor(FlamePalette, 4);
+    }
+
     if (temp > TEMP_THRESHOLD) {
         float midThresholdHalf = FlameColorThresholdMid * 0.5f;
-        float3 colorLerp1 = lerp(FlameColorOuter, FlameColorMid, 
+        float3 colorLerp1 = lerp(actualFlameColorOuter, actualFlameColorMid,
                                  saturate((temp - midThresholdHalf) / (midThresholdHalf + NORMALIZATION_TERM)));
-        flameVisualColor = lerp(colorLerp1, FlameColorCore, 
+        flameVisualColor = lerp(colorLerp1, actualFlameColorCore,
                                saturate((temp - FlameColorThresholdMid) / (FlameColorThresholdCore - FlameColorThresholdMid + NORMALIZATION_TERM)));
     }
-    
-    float flameAlpha = saturate(temp * FlameIntensity); 
-    float3 premultipliedFlame = flameVisualColor * flameAlpha; 
+
+    float flameAlpha = saturate(temp * FlameIntensity);
+    float3 premultipliedFlame = flameVisualColor * flameAlpha;
     
     // Blend flame onto the scene
-    float3 colorWithFlame = premultipliedFlame + baseSceneColor * (1.0f - flameAlpha); 
+    float3 colorWithFlame = premultipliedFlame + baseSceneColor * (1.0f - flameAlpha);
     
     // --- Subject Overlay ---
     float linearDepth = ReShade::GetLinearizedDepth(texcoord); 
