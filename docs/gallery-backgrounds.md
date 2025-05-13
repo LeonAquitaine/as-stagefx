@@ -20,17 +20,9 @@ This gallery provides detailed descriptions and visual examples of the backgroun
 Creates a vibrant, abstract blue corona effect with fluid, dynamic motion. The effect generates hypnotic patterns through iterative mathematical transformations, resulting in organic, plasma-like visuals with a predominantly blue color scheme. Features abstract, organic blue corona patterns; smooth fluid-like animation; customizable iteration count/pattern scale; animation speed/flow controls; intuitive color controls; customizable background color; audio reactivity (multiple targets); depth-aware rendering; and standard position, rotation, scale, and blending options.<br><br>
 Original: <a href="https://www.shadertoy.com/view/XfKGWV" target="_new">"Blue Corona" by SnoopethDuckDuck</a>.
 </td>
-<td width="50%"><div style="text-align:center">
-</div></td>
-</tr>
-<tr>
 <td width="50%">
-<h4>BGX: Cosmic Kaleidoscope</h4>
-<h5><code>[AS] BGX: Cosmic Kaleidoscope|AS_BGX_CosmicKaleidoscope.1.fx</code></h5>
-Renders a raymarched volumetric fractal resembling a Mandelbox or Mandelbulb. Features adjustable fractal parameters, kaleidoscope-like mirroring with customizable repetitions, audio reactivity for dynamic adjustments, a palette-based coloring system, and full rotation, position, and depth control for scene integration. Includes fixes for accurate tiling and missing rotation from the original source.<br><br>
-Based on: <a href="https://www.shadertoy.com/view/MXccR4" target="_new">"cosmos in crystal" by nayk</a>.
-</td>
-<td width="50%"><div style="text-align:center">
+<img src="https://github.com/user-attachments/assets/f5ee6ce1-36b9-4d2f-9250-4c345394c27c"/>
+<div style="text-align:center">
 </div></td>
 </tr>
 <tr>
@@ -41,7 +33,9 @@ Simulates an artistic flight through an abstract, glowing, patterned tunnel. Fea
 Original: <a href="https://www.shadertoy.com/view/3sXyRN" target="_new">Shader by NuSan</a>.
 </td>
 <td width="50%"><div style="text-align:center">
-</div></td>
+</div>
+<img src="https://github.com/user-attachments/assets/be502be4-cc82-44a4-8947-74dfd6f072b8"/>
+</td>
 </tr>
 <tr>
 <td width="50%">
@@ -51,7 +45,9 @@ Renders a raymarched volumetric fractal resembling a Mandelbox or Mandelbulb. Fe
 Based on: <a href="https://www.shadertoy.com/view/MXccR4" target="_new">"cosmos in crystal" by nayk</a>.
 </td>
 <td width="50%"><div style="text-align:center">
-</div></td>
+</div>
+<img src="https://github.com/user-attachments/assets/d466ec57-964c-4c25-93e2-6d01ca4ee1d3"/>
+</td>
 </tr>
 <tr>
 <td width="50%">
@@ -61,7 +57,9 @@ Creates an abstract visualization of a "digital brain" with evolving Voronoi pat
 Based on: <a href="https://www.shadertoy.com/view/4sl3Dr" target="_new">original GLSL by srtuss</a>.
 </td>
 <td width="50%"><div style="text-align:center">
-</div></td>
+</div>
+<img src="https://github.com/user-attachments/assets/27c3f540-b8f5-4b85-a4a4-4a5076e67f39"/>
+</td>
 </tr>
 <tr>
 <td width="50%">
@@ -70,7 +68,9 @@ Based on: <a href="https://www.shadertoy.com/view/4sl3Dr" target="_new">original
 Renders a mesmerizing and intricate animated background effect reminiscent of golden clockwork mechanisms or Apollonian gasket-like fractal patterns. The effect features complex, evolving geometric designs with a characteristic golden color palette. Features procedurally generated Apollonian fractal patterns, dynamic animation driven by time, a golden color scheme with lighting and shading effects, depth-like progression through fractal layers, kaleidoscopic and mirroring options for pattern variation, resolution-independent rendering, and UI controls for animation (speed, keyframe, path speed), palette, fractal/kaleidoscope parameters, audio reactivity, stage controls (position, scale, rotation, depth), and blending.
 </td>
 <td width="50%"><div style="text-align:center">
-</div></td>
+</div>
+<img src="https://github.com/user-attachments/assets/583dfe11-c8b6-4e34-ad79-35d875ce32c6"/>
+</td>
 </tr>
 <tr>
 <td width="50%">
@@ -84,22 +84,25 @@ Renders a seamless, soft, overlapping grid of light panels with various built-in
 </tr>
 <tr>
 <td width="50%">
-<h4>BGX: Misty Grid</h4>
-<h5><code>[AS] BGX: Misty Grid|AS_BGX_MistyGrid.1.fx</code></h5>
-Creates an abstract fractal-based grid background with a misty, ethereal appearance using raymarching techniques. Features dynamic fractal-based grid environment, customizable colors with palette system, folding and repetition for complex patterns, camera movement simulation with smooth rotations, audio reactivity affecting multiple parameters (fractal scale, folding intensity, saturation, brightness, camera zoom, animation speed), and standard position/rotation/scale controls.<br><br>
-Based on: <a href="https://www.shadertoy.com/view/wl2Szd" target="_new">"Misty Grid" by NuSan</a>.
-</td>
-<td width="50%"><div style="text-align:center">
-</div></td>
-</tr>
-<tr>
-<td width="50%">
 <h4>BGX: Melt Wave</h4>
 <h5><code>[AS] BGX: Melt Wave|AS_BGX_MeltWave.1.fx</code></h5>
 Creates a flowing, warping psychedelic effect inspired by 1970s visual aesthetics. Generates mesmerizing colored patterns with sine-based distortions that evolve over time. Features adjustable zoom/intensity, a palette system (mathematical or preset colors), dynamic time-based animation with keyframe support, audio reactivity mappable to different parameters, and resolution-independent transformation with position/rotation controls.
 </td>
 <td width="50%"><div style="text-align:center">
-</div></td>
+</div>
+<img src="https://github.com/user-attachments/assets/4871c7be-b540-4f19-8cb2-bbd0c47ac237"/>
+</td>
+</tr>
+<tr>
+<td width="50%">
+<h4>BGX: Misty Grid</h4>
+<h5><code>[AS] BGX: Misty Grid|AS_BGX_MistyGrid.1.fx</code></h5>
+Creates an abstract fractal-based grid background with a misty, ethereal appearance using raymarching techniques. Features dynamic fractal-based grid environment, customizable colors with palette system, folding and repetition for complex patterns, camera movement simulation with smooth rotations, audio reactivity affecting multiple parameters (fractal scale, folding intensity, saturation, brightness, camera zoom, animation speed), and standard position/rotation/scale controls.<br><br>
+Based on: <a href="https://www.shadertoy.com/view/wl2Szd" target="_new">"Misty Grid" by NuSan</a>.
+</td>
+<td width="50%">
+<img src="https://github.com/user-attachments/assets/ddd37fd8-70be-442c-aaed-f31063f8d9e9"/>
+</td>
 </tr>
 <tr>
 <td width="50%">
@@ -119,7 +122,9 @@ Creates a dynamic, evolving fractal noise pattern with bright, sparkly crystal h
 Original: <a href="https://www.shadertoy.com/view/st23zw" target="_new">"Shine On" by emodeman</a>.
 </td>
 <td width="50%"><div style="text-align:center">
-</div></td>
+</div>
+<img src="https://github.com/user-attachments/assets/50162c8a-4841-4319-b731-d79c15453c7a"/>
+</td>
 </tr>
 <tr>
 <td width="50%">
@@ -129,6 +134,7 @@ Creates a hypnotic pattern of wavy, animated square tiles that shift and transfo
 Original: <a href="https://www.shadertoy.com/view/NdfBzn" target="_new">"Square Tiling Example E" by SnoopethDuckDuck</a>.
 </td>
 <td width="50%"><div style="text-align:center">
+<img src="https://github.com/user-attachments/assets/30c2fa46-0d3c-4fe4-bb24-001b85585f41"/>
 </div></td>
 </tr>
 <tr>
@@ -138,7 +144,9 @@ Original: <a href="https://www.shadertoy.com/view/NdfBzn" target="_new">"Square 
 Creates a mesmerizing pattern of adaptive wavy lines that follow a mouse or fixed position. The lines create intricate patterns that look like dynamic squiggly lines arranged around a central point, with rotation applied based on direction. Features position-reactive wavy line patterns; customizable line parameters (rotation influence, thickness, distance, smoothness); optional color palettes (hue, saturation, value control); pattern displacement for off-center effects; audio reactivity (multiple targets); depth-aware rendering; adjustable rotation; and standard position, scale, and blending options.<br><br>
 Original: <a href="https://www.shadertoy.com/view/7sBfDD" target="_new">"Interactive 2.5D Squiggles" by SnoopethDuckDuck</a>.
 </td>
-<td width="50%"><div style="text-align:center">
+<td width="50%">
+<img src="https://github.com/user-attachments/assets/adfe182d-2507-49e1-82c1-38e41a1403a5"/>
+<div style="text-align:center">
 </div></td>
 </tr>
 <tr>
@@ -149,7 +157,9 @@ Creates dynamic electric arcs and lightning patterns for a striking background e
 Original: Shader by SnoopethDuckDuck (ShaderToy link pending).
 </td>
 <td width="50%"><div style="text-align:center">
-</div></td>
+<img src="https://github.com/user-attachments/assets/f32eebde-9c76-49ab-ab6e-50bc4fdeaf2f"/>
+</div>
+</td>
 </tr>
 </table>
 
