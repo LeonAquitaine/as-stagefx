@@ -38,17 +38,223 @@
 #include "AS_Utils.1.fxh" // For AS_getTime()
 #include "AS_Noise.1.fxh" // For noise functions and hash functions
 
+// ============================================================================
+// CONSTANTS - Organized by category
+// ============================================================================
+
+// --- Texture Constants ---
+static const int TEXTURE_WIDTH = 512;
+static const int TEXTURE_HEIGHT = 512;
+static const int TEXTURE_MIP_LEVELS = 1;
+static const float TEXTURE_PETAL_THRESHOLD = 0.5; // Used for selecting between petal textures
+
+// --- Blending Constants ---
+static const float ALPHA_THRESHOLD = 0.01;      // Minimum alpha value for a petal to be considered visible
+static const float MIN_PETAL_SIZE = 0.0001;     // Minimum size limit for petals
+
+// --- Animation & Timing Constants ---
+// Sway and timing
+static const float SWAY_TIMING_OFFSET = 5.0;
+static const float SWAY_BASE_FREQUENCY = 1.5;
+static const float SWAY_FREQUENCY_VARIATION = 1.5;
+static const float SWAY_PHASE_SEED_MULTIPLIER = 0.7;
+static const float SWAY_UV_OFFSET = 0.3;       // Offset for hash UV in sway calculation
+static const float FLUTTER_ANIMATION_SPEED = 0.2;
+static const float BASE_SWAY_ANIMATION_SPEED = 0.7;
+static const float DENSITY_PATTERN_ANIMATION_SPEED = 0.005;
+static const float FLUTTER_LAYER_OFFSET = 0.1;  // Per-layer offset for flutter animation
+static const float LAYER_OFFSET_MULTIPLIER = 0.3;
+
+// Lifecycle constants
+static const float FADE_IN_THRESHOLD = 0.20;
+static const float FADE_OUT_THRESHOLD = 0.80;
+static const float LIFECYCLE_NOISE_FACTOR1 = 3.7;
+static const float LIFECYCLE_NOISE_FACTOR2 = 2.9;
+static const float LIFECYCLE_NOISE_TIMING_FACTOR = 0.01;
+static const float LIFECYCLE_ENTRY_PHASE = 0.3;  // Smooth entry phase for lifecycle transitions
+static const float LIFECYCLE_EXIT_PHASE = 0.7;   // Smooth exit phase for lifecycle transitions
+static const float LIFECYCLE_VULNERABILITY_SCALE = 4.0; // Scaling for vulnerability calculation
+static const float LIFECYCLE_NOISE_INFLUENCE = 0.3;    // Noise influence on lifecycle vulnerability
+static const float LIFECYCLE_MICRO_TURBULENCE = 0.5;   // Micro turbulence scale in lifecycle
+static const float LIFECYCLE_HIGH_FREQ_SCALE = 2.5;    // High frequency component scale
+static const float LIFECYCLE_HIGH_FREQ_COMPONENT = 0.2; // High frequency component amplitude
+static const float LIFECYCLE_VULNERABILITY_WEIGHT = 0.7; // Weight of vulnerability in cycle calculation
+static const float LIFECYCLE_AMPLITUDE_SCALE = 0.3;    // Overall amplitude scale for lifecycle oscillation
+static const float LIFECYCLE_MICRO_OSC_FACTOR = 0.1;   // Factor for micro oscillations in alpha
+static const float LIFECYCLE_MIN_ALPHA = 0.001;        // Minimum alpha value for lifecycle
+
+// --- Rotation & Variation Constants ---
+// Rotation sampling and coordinates
+static const float NOISE_SCALE_FACTOR1 = 7.89;
+static const float NOISE_SCALE_FACTOR2 = 3.21;
+static const float NOISE_SCALE_FACTOR3 = 1.43;
+static const float NOISE_SCALE_FACTOR4 = 9.76;
+static const float NOISE_TIME_FACTOR1 = 0.05;
+static const float NOISE_TIME_FACTOR2 = 0.03;
+static const float NOISE_TIME_FACTOR3 = 0.07;
+static const float NOISE_TIME_FACTOR4 = 0.02;
+static const float PETAL_FREQUENCY_FACTOR = 2.0;      // Factor for per-petal frequency variation
+static const float PETAL_MIN_SPEED_FACTOR = 0.75;     // Minimum petal spin speed multiplier
+static const float PETAL_MAX_SPEED_FACTOR = 1.25;     // Maximum petal spin speed multiplier (0.75 + 0.5)
+
+// Oscillation frequencies and amplitudes
+static const float ROTATION_OSC_FREQ1 = 0.23;
+static const float ROTATION_OSC_FREQ2 = 0.57;
+static const float ROTATION_OSC_FREQ3 = 1.38;
+static const float ROTATION_OSC_FREQ4 = 0.11;
+static const float ROTATION_OSC_PHASE_FACTOR1 = 1.0;
+static const float ROTATION_OSC_PHASE_FACTOR2 = 1.3;
+static const float ROTATION_OSC_PHASE_FACTOR3 = 0.7;
+static const float ROTATION_OSC_PHASE_FACTOR4 = 1.7;
+static const float ROTATION_OSC_AMP1 = 0.45;
+static const float ROTATION_OSC_AMP2 = 0.30;
+static const float ROTATION_OSC_AMP3 = 0.15;
+static const float ROTATION_OSC_AMP4 = 0.20;
+static const float ROTATION_VARIATION_FINAL_SCALE = 0.5; // Final scaling for rotation variation
+
+// Special math constants for rotation
+static const float ROTATION_MICRO_FREQ1 = 3.14159;    // PI
+static const float ROTATION_MICRO_FREQ2 = 2.71828;    // e
+static const float ROTATION_MICRO_AMP = 0.10;
+static const float ROTATION_NOISE_INFLUENCE1 = 0.3;    // Noise influence on frequency 1
+static const float ROTATION_NOISE_INFLUENCE2 = 0.2;    // Noise influence on frequency 2
+static const float ROTATION_NOISE_NONLINEAR = 0.1;     // Noise influence on nonlinear curve
+static const float ROTATION_CHAOS_FACTOR = 0.15;
+
+// --- Noise & Randomness Constants ---
+// Noise influence constants
+static const float NOISE_INFLUENCE_MIN = 0.8;
+static const float NOISE_INFLUENCE_MAX = 1.2;
+static const float NOISE_NORMALIZATION_FACTOR = 1.2;
+static const float NONLINEAR_CURVE_FACTOR = 0.2;
+
+// Hash and offset constants
+static const float VORONOI_POINT_SCALE = 0.66;
+static const float HASH_OFFSET_X = 17.3;
+static const float HASH_OFFSET_Y = 3.7;
+static const float INSTANCE_SEED_FACTOR = 0.31;
+static const float INSTANCE_TIMING_FACTOR = 0.123;
+
+// --- Boundary & Position Constants ---
+static const float MIN_SWAY_DIR_LENGTH = 0.001;       // Minimum length for sway direction vector
+static const float DEFAULT_SWAY_DIR_X = 1.0;          // Default X direction when sway vector is too small
+static const float DEFAULT_SWAY_DIR_Y = 0.0;          // Default Y direction when sway vector is too small
+static const float CELL_CENTER_OFFSET = 0.5;          // Offset for cell center positioning
+
+// --- UI Range Constants --- 
+// Stage Depth (handled by AS_STAGEDEPTH_UI macro)
+static const float STAGEDEPTH_DEFAULT = 0.05;
+
+// Petal Appearance
+static const float3 PETAL_COLOR_DEFAULT = float3(1.0, 1.0, 1.0);
+static const float PETAL_ALPHA_MIN = 0.0;
+static const float PETAL_ALPHA_MAX = 1.0;
+static const float PETAL_ALPHA_DEFAULT = 1.0;
+static const float PETAL_SIZE_MIN = 0.001;
+static const float PETAL_SIZE_MAX = 0.5;
+static const float PETAL_SIZE_STEP = 0.001;
+static const float PETAL_SIZE_DEFAULT = 0.110;
+static const float PETAL_SIZE_VAR_MIN = 0.0;
+static const float PETAL_SIZE_VAR_MAX = 1.0;
+static const float PETAL_SIZE_VAR_STEP = 0.01;
+static const float PETAL_SIZE_VAR_DEFAULT = 1.0;
+static const int PETAL_SHADING_DEFAULT = 1;  // Opaque (Solid) as default
+
+// Layers
+static const float DENSITY_MIN = 1.0;
+static const float DENSITY_MAX = 30.0;
+static const float DENSITY_STEP = 0.5;
+static const float DENSITY_DEFAULT = 7.0;
+static const int LAYERS_MIN = 1;
+static const int LAYERS_MAX = 30;
+static const int LAYERS_DEFAULT = 15;
+static const float LAYER_SIZE_MOD_MIN = 0.8;
+static const float LAYER_SIZE_MOD_MAX = 1.2;
+static const float LAYER_SIZE_MOD_STEP = 0.01;
+static const float LAYER_SIZE_MOD_DEFAULT = 1.05;
+static const float LAYER_ALPHA_MOD_MIN = 0.7;
+static const float LAYER_ALPHA_MOD_MAX = 1.0;
+static const float LAYER_ALPHA_MOD_STEP = 0.01;
+static const float LAYER_ALPHA_MOD_DEFAULT = 0.85;
+
+// Movement & Animation
+static const float SIMULATION_SPEED_MIN = 0.0;
+static const float SIMULATION_SPEED_MAX = 2.0;
+static const float SIMULATION_SPEED_DEFAULT = 0.500;
+static const float SPIN_SPEED_MIN = 0.0;
+static const float SPIN_SPEED_MAX = 10.0;
+static const float SPIN_SPEED_DEFAULT = 2.573;
+static const float ROT_VAR_SPEED_MIN = 0.0;
+static const float ROT_VAR_SPEED_MAX = 2.0;
+static const float ROT_VAR_SPEED_DEFAULT = 1.190;
+static const float ROT_VAR_AMP_MIN = 0.0;
+static const float ROT_VAR_AMP_MAX = 1.0;
+static const float ROT_VAR_AMP_DEFAULT = 0.650;
+static const float DRIFT_SPEED_MIN = 0.0;
+static const float DRIFT_SPEED_MAX = 2.0;
+static const float DRIFT_SPEED_STEP = 0.01;
+static const float DRIFT_SPEED_DEFAULT = 0.90;
+static const float DIRECTION_MIN = -1.0;
+static const float DIRECTION_MAX = 1.0;
+static const float2 DIRECTION_DEFAULT = float2(-0.311, -0.571);
+static const float FLUTTER_MIN = 0.0;
+static const float FLUTTER_MAX = 0.2;
+static const float FLUTTER_STEP = 0.005;
+static const float FLUTTER_DEFAULT = 0.022;
+static const float SWAY_MIN = 0.0;
+static const float SWAY_MAX = 0.05;
+static const float SWAY_STEP = 0.001;
+static const float SWAY_DEFAULT = 0.005;
+static const float LIFETIME_MIN = 1.0;
+static const float LIFETIME_MAX = 20.0;
+static const float LIFETIME_DEFAULT = 10.000;
+
+// Entrance/Exit Effect
+static const float EDGE_THIN_MIN = 0.01;
+static const float EDGE_THIN_MAX = 0.5;
+static const float EDGE_THIN_DEFAULT = 0.167;
+static const float FLIP_AXIS_MIN = 0.0;
+static const float FLIP_AXIS_MAX = 1.0;
+static const float FLIP_AXIS_DEFAULT = 0.911;
+static const float FLIP_TIMING_MIN = 1.0;
+static const float FLIP_TIMING_MAX = 5.0;
+static const float FLIP_TIMING_DEFAULT = 1.538;
+
+// Advanced Settings
+static const float DENSITY_THRESH_MIN = 0.0;
+static const float DENSITY_THRESH_MAX = 1.0;
+static const float DENSITY_THRESH_DEFAULT = 0.400;
+static const float DENSITY_FADE_MIN = 0.01;
+static const float DENSITY_FADE_MAX = 0.5;
+static const float DENSITY_FADE_DEFAULT = 0.150;
+static const float NOISE_SCALE_MIN = 0.1;
+static const float NOISE_SCALE_MAX = 10.0;
+static const float NOISE_SCALE_DEFAULT = 1.000;
+static const float PATTERN_SPIN_MIN = 0.0;
+static const float PATTERN_SPIN_MAX = 5.0;
+static const float PATTERN_SPIN_DEFAULT = 0.300;
+static const float PATTERN_REPEAT_MIN = 1.0;
+static const float PATTERN_REPEAT_MAX = 100.0;
+static const float PATTERN_REPEAT_DEFAULT = 20.000;
+static const bool BOUNDARY_CHECK_DEFAULT = true;
+static const int BOUNDARY_LAYERS_MIN = 0;
+static const int BOUNDARY_LAYERS_MAX = 3;
+static const int BOUNDARY_LAYERS_DEFAULT = 0;
+static const float BOUNDARY_MARGIN_MIN = 1.0;
+static const float BOUNDARY_MARGIN_MAX = 5.0;
+static const float BOUNDARY_MARGIN_DEFAULT = 1.719;
+
 // --- Textures ---
-texture PetalFlutter_NoiseSourceTexture < source = "perlin512x8Noise.png"; > { Width = 512; Height = 512; Format = R8; };
+texture PetalFlutter_NoiseSourceTexture < source = "perlin512x8Noise.png"; > { Width = TEXTURE_WIDTH; Height = TEXTURE_HEIGHT; Format = R8; };
 sampler PetalFlutter_samplerNoiseSource { Texture = PetalFlutter_NoiseSourceTexture; AddressU = WRAP; AddressV = WRAP; MinFilter = LINEAR; MagFilter = LINEAR; MipFilter = LINEAR; };
 
-texture PetalShape_Texture1 < source = "AS_RedRosePetal1.png"; > { Width = 512; Height = 512; Format = RGBA8; };
+texture PetalShape_Texture1 < source = "AS_RedRosePetal1.png"; > { Width = TEXTURE_WIDTH; Height = TEXTURE_HEIGHT; Format = RGBA8; };
 sampler PetalShape_Sampler1 { Texture = PetalShape_Texture1; AddressU = CLAMP; AddressV = CLAMP; MinFilter = LINEAR; MagFilter = LINEAR; MipFilter = LINEAR; };
 
-texture PetalShape_Texture2 < source = "AS_RedRosePetal2.png"; > { Width = 512; Height = 512; Format = RGBA8; };
+texture PetalShape_Texture2 < source = "AS_RedRosePetal2.png"; > { Width = TEXTURE_WIDTH; Height = TEXTURE_HEIGHT; Format = RGBA8; };
 sampler PetalShape_Sampler2 { Texture = PetalShape_Texture2; AddressU = CLAMP; AddressV = CLAMP; MinFilter = LINEAR; MagFilter = LINEAR; MipFilter = LINEAR; };
 
-// --- Constants ---
+// --- Shader Constants ---
 #define ALPHA_THRESHOLD 0.01      // Minimum alpha value for a petal to be considered visible
 
 // --- UI Uniforms ---
@@ -56,6 +262,7 @@ sampler PetalShape_Sampler2 { Texture = PetalShape_Texture2; AddressU = CLAMP; A
 // ---- Stage Controls ----
 AS_STAGEDEPTH_UI(ClairObscur_StageDepth)
 AS_ROTATION_UI(ClairObscur_SnapRotation, ClairObscur_FineRotation)
+AS_POSITION_SCALE_UI(ClairObscur_Position, ClairObscur_Scale)
 
 // ---- Petal Appearance ----
 uniform float3 PetalColor < ui_type = "color"; ui_label = "Petal Color"; ui_category = "Petals"; > = float3(1.0, 1.0, 1.0);
@@ -96,6 +303,10 @@ uniform float DensityCellRepeatScale < ui_type = "slider"; ui_label = "Density P
 uniform bool EnableBoundaryChecking < ui_label = "Fix Petal Cutoff"; ui_category = "Advanced"; ui_category_closed = true; ui_tooltip="Enable searching adjacent cells to prevent petal cutoff at boundaries"; > = true;
 uniform int BoundaryCheckLayers < ui_type = "slider"; ui_label = "Boundary Check Layers"; ui_category = "Advanced"; ui_category_closed = true; ui_min = 0; ui_max = 3; ui_tooltip="Number of neighboring cell layers to check (0=none, 1=immediate neighbors, 2=two layers deep, etc.)"; > = 0;
 uniform float BorderCheckMargin < ui_type = "slider"; ui_label = "Boundary Check Margin"; ui_category = "Advanced"; ui_category_closed = true; ui_min = 1.0; ui_max = 5.0; ui_tooltip="Controls how far to check for petals crossing cell boundaries (higher values prevent cutoff but may impact performance)"; > = 1.719;
+
+// ---- Final Mix ----
+AS_BLENDMODE_UI(ClairObscur_BlendMode)
+AS_BLENDAMOUNT_UI(ClairObscur_BlendAmount)
 
 // ---- Debug Tools ----
 uniform int DebugMode <
@@ -151,8 +362,8 @@ float4 DrawPetalInstance(float2 uvForVoronoiLookup, float2 originalScreenUV, flo
     }
 
     float voronoiPointRotRad = calcVoronoiPointRotRad(rootUV, currentTime);
-    float2 petalInstanceCenter_NoSway = getVoronoiPoint(rootUV, voronoiPointRotRad);    float swayTime = currentTime * SimulationSpeed * 0.7 + instanceSeed * 5.0;
-    float swayAngle_calc = swayTime * (1.5 + AS_hash21(rootUV + 0.3) * 1.5) + AS_hash21(rootUV + instanceSeed * 0.7) * AS_TWO_PI;
+    float2 petalInstanceCenter_NoSway = getVoronoiPoint(rootUV, voronoiPointRotRad);    float swayTime = currentTime * SimulationSpeed * BASE_SWAY_ANIMATION_SPEED + instanceSeed * SWAY_TIMING_OFFSET;
+    float swayAngle_calc = swayTime * (SWAY_BASE_FREQUENCY + AS_hash21(rootUV + 0.3) * SWAY_FREQUENCY_VARIATION) + AS_hash21(rootUV + instanceSeed * SWAY_PHASE_SEED_MULTIPLIER) * AS_TWO_PI;
     float2 swayDirVec = float2(driftVelocityForSway.y, -driftVelocityForSway.x); 
     if (length(swayDirVec) < 0.001) swayDirVec = float2(1.0, 0.0); 
     else swayDirVec = normalize(swayDirVec);
@@ -161,20 +372,17 @@ float4 DrawPetalInstance(float2 uvForVoronoiLookup, float2 originalScreenUV, flo
     float time_val = instanceTimeRaw / Lifetime;
     float normalizedTime = time_val - floor(time_val); 
     
-    float petalRandomFactor = AS_hash21(rootUV + instanceSeed * 0.31);
-
-    // Create a smooth bell curve for the lifecycle - for both opacity and edge-on scaling
+    float petalRandomFactor = AS_hash21(rootUV + instanceSeed * 0.31);    // Create a smooth bell curve for the lifecycle - for both opacity and edge-on scaling
     // This gives us a more natural appearance where petals gradually turn from edge-on to face-on and back
-    float fadeIn = smoothstep(0.0, 0.20, normalizedTime); 
-    float fadeOut = smoothstep(1.0, 0.80, normalizedTime); 
-    float lifetimeAlpha = fadeIn * fadeOut;    // Apply a subtle, additional oscillation to the rotation during lifecycle
+    float fadeIn = smoothstep(0.0, FADE_IN_THRESHOLD, normalizedTime); 
+    float fadeOut = smoothstep(1.0, FADE_OUT_THRESHOLD, normalizedTime); 
+    float lifetimeAlpha = fadeIn * fadeOut;// Apply a subtle, additional oscillation to the rotation during lifecycle
     // Creates a gentle wobbling effect as petals fall, like real petals in air
     float lifetimeOscillation = 0.0;
-    if (RotationVariationAmplitude > 0.0) {
-        // Create lifecycle-specific texture coordinates for sampling noise
+    if (RotationVariationAmplitude > 0.0) {        // Create lifecycle-specific texture coordinates for sampling noise
         float2 lifecycleNoiseUV = float2(
-            frac(normalizedTime + petalRandomFactor * 3.7),
-            frac(petalRandomFactor * 2.9 + instanceTimeRaw * 0.01 * RotationVariationSpeed)
+            frac(normalizedTime + petalRandomFactor * LIFECYCLE_NOISE_FACTOR1),
+            frac(petalRandomFactor * LIFECYCLE_NOISE_FACTOR2 + instanceTimeRaw * LIFECYCLE_NOISE_TIMING_FACTOR * RotationVariationSpeed)
         );
         
         // Sample noise texture for organic variation
@@ -214,9 +422,8 @@ float4 DrawPetalInstance(float2 uvForVoronoiLookup, float2 originalScreenUV, flo
     if (lifetimeAlpha <= ALPHA_THRESHOLD) {
         return float4(0.0, 0.0, 0.0, 0.0);
     }    
-    
-    // Apply subtle wobble to alpha for more natural appearance
-    lifetimeAlpha = max(0.001, lifetimeAlpha * (1.0 + lifetimeOscillation * 0.1));
+      // Apply subtle wobble to alpha for more natural appearance
+    lifetimeAlpha = max(0.001, lifetimeAlpha * (1.0 + lifetimeOscillation * LIFECYCLE_MICRO_OSC_FACTOR));
 
     float2 petalSpaceUV_raw = uvForVoronoiLookup - finalPetalInstanceCenter;
     
@@ -224,22 +431,20 @@ float4 DrawPetalInstance(float2 uvForVoronoiLookup, float2 originalScreenUV, flo
     float effectiveSpinSpeed = BasePetalSpinSpeed;    // Create unique characteristics for each petal's rotation variation
     float baseFrequency = 1.0 + petalRandomFactor * 2.0;
     float phaseOffset = petalRandomFactor * AS_TWO_PI; // Random phase offset for each petal
-    
-    // Base linear rotation with random initial rotation
-    float baseSpinAngle = instanceTimeRaw * effectiveSpinSpeed * (0.75 + petalRandomFactor * 0.5) + petalRandomFactor * AS_TWO_PI;
+      // Base linear rotation with random initial rotation
+    float baseSpinAngle = instanceTimeRaw * effectiveSpinSpeed * (PETAL_MIN_SPEED_FACTOR + petalRandomFactor * (PETAL_MAX_SPEED_FACTOR - PETAL_MIN_SPEED_FACTOR)) + petalRandomFactor * AS_TWO_PI;
     
     // Complex multi-frequency system with varied phases and amplitudes
     float timeBase = instanceTimeRaw * baseFrequency * RotationVariationSpeed;
-    
-    // Sample noise texture for additional organic variation
+      // Sample noise texture for additional organic variation
     // Create unique texture coordinates for each petal based on its random characteristics
     float2 noiseUV1 = float2(
-        frac(petalRandomFactor * 7.89 + timeBase * 0.05), 
-        frac(petalRandomFactor * 3.21 + timeBase * 0.03)
+        frac(petalRandomFactor * NOISE_SCALE_FACTOR1 + timeBase * NOISE_TIME_FACTOR1), 
+        frac(petalRandomFactor * NOISE_SCALE_FACTOR2 + timeBase * NOISE_TIME_FACTOR2)
     );
     float2 noiseUV2 = float2(
-        frac(petalRandomFactor * 1.43 + timeBase * 0.07), 
-        frac(petalRandomFactor * 9.76 + timeBase * 0.02)
+        frac(petalRandomFactor * NOISE_SCALE_FACTOR3 + timeBase * NOISE_TIME_FACTOR3), 
+        frac(petalRandomFactor * NOISE_SCALE_FACTOR4 + timeBase * NOISE_TIME_FACTOR4)
     );
     
     // Sample noise texture at two different locations and times for varied input
