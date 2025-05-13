@@ -55,6 +55,7 @@ sampler PetalShape_Sampler2 { Texture = PetalShape_Texture2; AddressU = CLAMP; A
 
 // ---- Stage Controls ----
 AS_STAGEDEPTH_UI(ClairObscur_StageDepth)
+AS_ROTATION_UI(ClairObscur_SnapRotation, ClairObscur_FineRotation)
 
 // ---- Petal Appearance ----
 uniform float3 PetalColor < ui_type = "color"; ui_label = "Petal Color"; ui_category = "Petals"; > = float3(1.0, 1.0, 1.0);
@@ -507,6 +508,18 @@ float4 PS_Main(float4 pos : SV_Position, float2 uv : TexCoord) : SV_Target
     float4 originalColor = tex2D(ReShade::BackBuffer, uv);
     float currentTime = AS_getTime();    float2 centeredAspectUV = uv - 0.5;
     centeredAspectUV.x *= ReShade::ScreenSize.x / ReShade::ScreenSize.y;
+    
+    // Apply rotation to the coordinates
+    float rotationRadians = AS_getRotationRadians(ClairObscur_SnapRotation, ClairObscur_FineRotation);
+    if (rotationRadians != 0.0) {
+        float sinRot, cosRot;
+        sincos(-rotationRadians, sinRot, cosRot); // Negative for clockwise rotation
+        centeredAspectUV = float2(
+            centeredAspectUV.x * cosRot - centeredAspectUV.y * sinRot,
+            centeredAspectUV.x * sinRot + centeredAspectUV.y * cosRot
+        );
+    }
+    
     centeredAspectUV *= GlobalVoronoiDensity;
 
     // Stage depth check for all rendering paths
