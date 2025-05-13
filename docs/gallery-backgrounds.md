@@ -21,8 +21,8 @@ Creates a vibrant, abstract blue corona effect with fluid, dynamic motion. The e
 Original: <a href="https://www.shadertoy.com/view/XfKGWV" target="_new">"Blue Corona" by SnoopethDuckDuck</a>.
 </td>
 <td width="50%">
-  <img src="https://github.com/user-attachments/assets/f5ee6ce1-36b9-4d2f-9250-4c345394c27c"/>
-  <div style="text-align:center">
+<img src="https://github.com/user-attachments/assets/f5ee6ce1-36b9-4d2f-9250-4c345394c27c"/>
+<div style="text-align:center">
 </div></td>
 </tr>
 <tr>
@@ -122,7 +122,9 @@ Creates a dynamic, evolving fractal noise pattern with bright, sparkly crystal h
 Original: <a href="https://www.shadertoy.com/view/st23zw" target="_new">"Shine On" by emodeman</a>.
 </td>
 <td width="50%"><div style="text-align:center">
-</div></td>
+</div>
+<img src="https://github.com/user-attachments/assets/50162c8a-4841-4319-b731-d79c15453c7a"/>
+</td>
 </tr>
 <tr>
 <td width="50%">
@@ -132,6 +134,7 @@ Creates a hypnotic pattern of wavy, animated square tiles that shift and transfo
 Original: <a href="https://www.shadertoy.com/view/NdfBzn" target="_new">"Square Tiling Example E" by SnoopethDuckDuck</a>.
 </td>
 <td width="50%"><div style="text-align:center">
+<img src="https://github.com/user-attachments/assets/30c2fa46-0d3c-4fe4-bb24-001b85585f41"/>
 </div></td>
 </tr>
 <tr>
@@ -141,7 +144,9 @@ Original: <a href="https://www.shadertoy.com/view/NdfBzn" target="_new">"Square 
 Creates a mesmerizing pattern of adaptive wavy lines that follow a mouse or fixed position. The lines create intricate patterns that look like dynamic squiggly lines arranged around a central point, with rotation applied based on direction. Features position-reactive wavy line patterns; customizable line parameters (rotation influence, thickness, distance, smoothness); optional color palettes (hue, saturation, value control); pattern displacement for off-center effects; audio reactivity (multiple targets); depth-aware rendering; adjustable rotation; and standard position, scale, and blending options.<br><br>
 Original: <a href="https://www.shadertoy.com/view/7sBfDD" target="_new">"Interactive 2.5D Squiggles" by SnoopethDuckDuck</a>.
 </td>
-<td width="50%"><div style="text-align:center">
+<td width="50%">
+<img src="https://github.com/user-attachments/assets/adfe182d-2507-49e1-82c1-38e41a1403a5"/>
+<div style="text-align:center">
 </div></td>
 </tr>
 <tr>
@@ -152,7 +157,9 @@ Creates dynamic electric arcs and lightning patterns for a striking background e
 Original: Shader by SnoopethDuckDuck (ShaderToy link pending).
 </td>
 <td width="50%"><div style="text-align:center">
-</div></td>
+<img src="https://github.com/user-attachments/assets/f32eebde-9c76-49ab-ab6e-50bc4fdeaf2f"/>
+</div>
+</td>
 </tr>
 </table>
 
