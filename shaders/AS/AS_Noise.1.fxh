@@ -68,6 +68,13 @@ float AS_hash12(float2 p) {
     return frac(sin(dot(p, float2(127.1, 311.7))) * 43758.5453);
 }
 
+// 2D->1D visual noise function - gives more random looking/contrasting results than hash21
+// Particularly useful for jittering/dithering type effects
+float AS_randomNoise21(float2 p) {
+    // Using trig functions for more visual randomness
+    return frac(dot(sin(p * 752.322 + p.yx * 653.842), float2(254.652, 254.652)));
+}
+
 // 2D->2D hash
 float2 AS_hash22(float2 p) {
     float3 p3 = frac(float3(p.xyx) * float3(0.1031, 0.1030, 0.0973));
