@@ -26,6 +26,19 @@ This gallery provides detailed descriptions and visual examples of the backgroun
     <td width="50%"><div style="text-align:center">
       <!-- Placeholder for future image -->
     </div></td>
+  </tr>  <tr>
+    <td width="50%"><strong>BGX: Corridor Travel</strong> (<code>AS_BGX_CorridorTravel.1.fx</code>)<br>
+      Simulates an artistic flight through an abstract, glowing, patterned tunnel. Features multiple samples per pixel for pseudo-DOF and motion blur, and simulates light bounces with artistic reflection logic. Includes highly tunable graphics and animation parameters, realistic-looking reflections, animated grid/cell/floor patterns, complex camera movement with adjustable rotation, and audio reactivity for various parameters. Original by NuSan ([ShaderToy](https://www.shadertoy.com/view/3sXyRN)).<br><em>Technique: [AS] BGX: Corridor Travel</em></td>
+    <td width="50%"><div style="text-align:center">
+      <!-- Placeholder for future image -->
+    </div></td>
+  </tr>
+  <tr>
+    <td width="50%"><strong>BGX: Cosmic Kaleidoscope</strong> (<code>AS_BGX_CosmicKaleidoscope.1.fx</code>)<br>
+      Renders a raymarched volumetric fractal resembling a Mandelbox or Mandelbulb. Features Kaleidoscope-like mirroring effect with customizable repetitions, audio reactivity for dynamic parameter adjustments, palette-based coloring system with customizable options, and full rotation, position and depth control for scene integration. Based on "cosmos in crystal" by nayk ([ShaderToy](https://www.shadertoy.com/view/MXccR4)).<br><em>Technique: [AS] BGX: Cosmic Kaleidoscope</em></td>
+    <td width="50%"><div style="text-align:center">
+      <!-- Placeholder for future image -->
+    </div></td>
   </tr>
   <tr>
     <td width="50%"><strong>BGX: Digital Brain</strong> (<code>AS_BGX_DigitalBrain.1.fx</code>)<br>
@@ -40,12 +53,18 @@ This gallery provides detailed descriptions and visual examples of the backgroun
     <td width="50%"><div style="text-align:center">
       <!-- Placeholder for future image -->
     </div></td>
-  </tr>
-  <tr>
+  </tr>  <tr>
     <td width="50%"><strong>BGX: Light Wall</strong> (<code>AS_BGX_LightWall.1.fx</code>)<br>
       Renders a seamless, soft, overlapping grid of light panels with various built-in patterns (14 total, including Heart, Diamond, Beat Meter). Features audio-reactive panels pulsing to music, customizable color palettes (9 presets + custom), light burst effects, cross beams, 3D perspective controls (tilt, pitch, roll), and multiple blend modes. Perfect for dance club/concert backdrops.<br><em>Technique: [AS] BGX: Light Wall</em></td>
     <td width="50%"><div style="text-align:center">
       <img src="https://github.com/user-attachments/assets/ece86ab7-36f1-459c-8c83-31414c3b5cc3" alt="Light Wall Effect" style="max-width:100%;">
+    </div></td>
+  </tr>
+  <tr>
+    <td width="50%"><strong>BGX: Misty Grid</strong> (<code>AS_BGX_MistyGrid.1.fx</code>)<br>
+      Creates an abstract fractal-based grid background with a misty, ethereal appearance using raymarching techniques. Features dynamic fractal-based grid environment, customizable colors with palette system, folding and repetition for complex patterns, camera movement simulation with smooth rotations, audio reactivity affecting multiple parameters (fractal scale, folding intensity, saturation, brightness, camera zoom, animation speed), and standard position/rotation/scale controls. Based on "Misty Grid" by NuSan ([ShaderToy](https://www.shadertoy.com/view/wl2Szd)).<br><em>Technique: [AS] BGX: Misty Grid</em></td>
+    <td width="50%"><div style="text-align:center">
+      <!-- Placeholder for future image -->
     </div></td>
   </tr>
   <tr>
