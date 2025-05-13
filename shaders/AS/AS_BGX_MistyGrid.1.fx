@@ -51,100 +51,78 @@ static const float SURFACE_DISTANCE = 0.001;   // Distance considered close enou
 static const float MAX_DISTANCE = 100.0;       // Maximum raymarch distance
 static const float DOMAIN_FOLDING_SCALE = 10.0; // Scale for domain folding
 
+// Domain transformation constants
+static const float ROT_SPEED_XY = 0.3;         // Rotation speed for XY plane
+static const float ROT_SPEED_YZ = 0.4;         // Rotation speed for YZ plane
+static const float ROT_Z_FACTOR = 0.023;       // Z-dependent rotation factor
+static const float ROT_TIME_FACTOR = 0.1;      // Time-dependent rotation factor
+static const float ROT_X_FACTOR = 0.087;       // X-dependent rotation factor
+
+// Fractal constants
+static const float FR1_TIME_FACTOR = 0.2;      // Time factor for first fractal
+static const float FR2_TIME_FACTOR = 0.23;     // Time factor for second fractal
+static const float FR2_OFFSET_X = 5.0;         // X offset for second fractal
+
+// Box dimension constants
+static const float3 BOX1_SIZE = float3(1.0, 1.3, 4.0);  // Size for first box
+static const float3 BOX2_SIZE = float3(3.0, 0.7, 0.4);  // Size for second box
+static const float3 BOX3_SIZE = float3(0.4, 0.4, 0.4);  // Size for third box
+static const float3 BOUNDARY_BOX_SIZE = float3(4.0, 4.0, 4.0); // Size for boundary box
+
+// Boolean operation constants
+static const float BOOLEAN_OFFSET = 0.2;       // Offset for boolean operation
+static const float BOOLEAN_FACTOR = 0.4;       // Factor for boolean subtraction
+
+// Accumulator constants
+static const float AT1_FACTOR = 0.13;          // Factor for first accumulator
+static const float AT2_FACTOR = 0.2;           // Factor for second accumulator
+static const float AT2_DENOMINATOR = 0.15;     // Denominator for second accumulator
+static const float AT3_FACTOR = 0.2;           // Factor for third accumulator
+static const float AT3_DENOMINATOR = 0.5;      // Denominator for third accumulator
+
+// Camera and scene constants
+static const float CAMERA_Z_DISTANCE = -15.0;  // Initial Z distance for camera
+static const float CAM_TIME_FACTOR = 0.1;      // Time factor for camera animation
+static const float CAM_ZX_TIME_FACTOR = 1.2;   // Time factor for ZX plane camera rotation
+static const float STEP_MIN_FACTOR = 0.01;     // Minimum step factor
+static const float STEP_DISTANCE_LIMIT = 6.0;  // Distance limit for step calculation
+
+// Color and visualization constants
+static const float COLOR_EXPONENT = 8.0;       // Exponent for color interpolation
+static const float COLOR_BLEND = 0.5;          // Blend factor between primary and secondary colors
+static const float3 LUMA_WEIGHTS = float3(0.2126, 0.7152, 0.0722); // Standard Rec. 709 luma weights
+static const float COLOR_BRIGHTNESS_MULT = 15.0; // Multiplier for brightness adjustment
+static const float DEBUG_SCALE = 0.05;         // Scale factor for debug visualization
+
+// Final color processing constants
+static const float ACCUMULATOR2_SCALE = 0.008; // Scale for second accumulator in final color
+static const float ACCUMULATOR3_SCALE = 0.072; // Scale for third accumulator in final color
+static const float ACCUMULATOR3_EXPONENT = 2.0; // Exponent for third accumulator
+static const float3 ACCUMULATOR3_TINT = float3(0.7, 0.3, 1.0); // Tint for third accumulator
+static const float ACCUMULATOR3_BRIGHTNESS = 2.0; // Brightness multiplier for third accumulator
+static const float VIGNETTE_SIZE = 1.2;        // Size factor for vignette
+
 //------------------------------------------------------------------------------------------------
 // UNIFORMS - Following AS StageFX standards
 //------------------------------------------------------------------------------------------------
 
 // Animation Controls
-uniform float Timer < source = "timer"; ui_label = "Timer"; ui_category_closed = true; > = 0.0;
-
-uniform float AnimSpeed < 
-    ui_type = "slider"; 
-    ui_label = "Animation Speed"; 
-    ui_tooltip = "Controls the speed of the animation"; 
-    ui_category = "Animation"; 
-    ui_min = 0.0; 
-    ui_max = 5.0; 
-> = 1.0;
-
-uniform float AnimKeyframe < 
-    ui_type = "slider"; 
-    ui_label = "Animation Keyframe"; 
-    ui_tooltip = "Sets a specific point in time for the animation. Useful for finding and saving specific patterns."; 
-    ui_category = "Animation"; 
-    ui_min = 0.0; 
-    ui_max = 100.0; 
-    ui_step = 0.1; 
-> = 0.0;
+AS_ANIMATION_UI(AnimSpeed, AnimKeyframe, "Animation")
 
 // Fractal Parameters
-uniform float FractalScale < 
-    ui_type = "slider"; 
-    ui_label = "Fractal Scale"; 
-    ui_tooltip = "Controls the overall scale of the fractal pattern"; 
-    ui_category = "Fractal Parameters"; 
-    ui_min = 0.1; 
-    ui_max = 2.0; 
-> = 0.7;
-
-uniform float FractalIterations < 
-    ui_type = "slider"; 
-    ui_label = "Detail Level"; 
-    ui_tooltip = "Controls the amount of detail in the fractal pattern"; 
-    ui_category = "Fractal Parameters"; 
-    ui_min = 1.0; 
-    ui_max = 5.0; 
-    ui_step = 1.0; 
-> = 5.0;
-
-uniform float FoldingAmount < 
-    ui_type = "slider"; 
-    ui_label = "Folding Intensity"; 
-    ui_tooltip = "Controls how tightly the pattern folds on itself"; 
-    ui_category = "Fractal Parameters"; 
-    ui_min = 5.0; 
-    ui_max = 15.0; 
-> = 10.0;
+uniform float FractalScale < ui_type = "slider"; ui_label = "Fractal Scale"; ui_tooltip = "Controls the overall scale of the fractal pattern"; ui_category = "Fractal Parameters"; ui_min = 0.1; ui_max = 2.0; > = 0.7;
+uniform float FractalIterations < ui_type = "slider"; ui_label = "Detail Level"; ui_tooltip = "Controls the amount of detail in the fractal pattern"; ui_category = "Fractal Parameters"; ui_min = 1.0; ui_max = 5.0; ui_step = 1.0; > = 5.0;
+uniform float FoldingAmount < ui_type = "slider"; ui_label = "Folding Intensity"; ui_tooltip = "Controls how tightly the pattern folds on itself"; ui_category = "Fractal Parameters"; ui_min = 5.0; ui_max = 15.0; > = 10.0;
 
 // Color Controls
 AS_PALETTE_SELECTION_UI(ColorPalette, "Color Palette", 0, "Color Settings")
-
-uniform float ColorSaturation < 
-    ui_type = "slider"; 
-    ui_label = "Saturation"; 
-    ui_tooltip = "Adjusts the saturation of the colors"; 
-    ui_category = "Color Settings"; 
-    ui_min = 0.0; 
-    ui_max = 2.0; 
-> = 1.0;
-
-uniform float ColorBrightness < 
-    ui_type = "slider"; 
-    ui_label = "Brightness"; 
-    ui_tooltip = "Adjusts the brightness of the effect"; 
-    ui_category = "Color Settings"; 
-    ui_min = 0.0; 
-    ui_max = 2.0; 
-> = 1.0;
+AS_DECLARE_CUSTOM_PALETTE(MistyGrid_, "Color Settings")
+uniform float ColorSaturation < ui_type = "slider"; ui_label = "Saturation"; ui_tooltip = "Adjusts the saturation of the colors"; ui_category = "Color Settings"; ui_min = 0.0; ui_max = 2.0; > = 1.0;
+uniform float ColorBrightness < ui_type = "slider"; ui_label = "Brightness"; ui_tooltip = "Adjusts the brightness of the effect"; ui_category = "Color Settings"; ui_min = 0.0; ui_max = 2.0; > = 1.0;
 
 // Camera Controls
-uniform float CameraSpeed < 
-    ui_type = "slider"; 
-    ui_label = "Camera Speed"; 
-    ui_tooltip = "Controls how fast the camera moves through the scene"; 
-    ui_category = "Camera"; 
-    ui_min = 0.0; 
-    ui_max = 2.0; 
-> = 0.5;
-
-uniform float CameraZoom < 
-    ui_type = "slider"; 
-    ui_label = "Camera Zoom"; 
-    ui_tooltip = "Adjusts the camera field of view"; 
-    ui_category = "Camera"; 
-    ui_min = 0.5; 
-    ui_max = 2.0; 
-> = 1.0;
+uniform float CameraSpeed < ui_type = "slider"; ui_label = "Camera Speed"; ui_tooltip = "Controls how fast the camera moves through the scene"; ui_category = "Camera"; ui_min = 0.0; ui_max = 2.0; > = 0.5;
+uniform float CameraZoom < ui_type = "slider"; ui_label = "Camera Zoom"; ui_tooltip = "Adjusts the camera field of view"; ui_category = "Camera"; ui_min = 0.5; ui_max = 2.0; > = 1.0;
 
 // Standard AS Controls
 AS_STAGEDEPTH_UI(EffectDepth)
@@ -154,13 +132,7 @@ AS_ROTATION_UI(EffectSnapRotation, EffectFineRotation)
 // Audio Reactivity
 AS_AUDIO_SOURCE_UI(AudioSource, "Audio Source", AS_AUDIO_VOLUME, "Audio Reactivity")
 AS_AUDIO_MULTIPLIER_UI(AudioMultiplier, "Audio Multiplier", 1.0, 2.0, "Audio Reactivity")
-uniform int AudioTarget < 
-    ui_type = "combo"; 
-    ui_label = "Audio Target"; 
-    ui_tooltip = "Select which parameter will react to audio";
-    ui_items = "Fractal Scale\0Folding Intensity\0Saturation\0Brightness\0Camera Zoom\0Animation Speed\0All\0"; 
-    ui_category = "Audio Reactivity"; 
-> = 0;
+uniform int AudioTarget < ui_type = "combo"; ui_label = "Audio Target"; ui_tooltip = "Select which parameter will react to audio"; ui_items = "Fractal Scale\0Folding Intensity\0Saturation\0Brightness\0Camera Zoom\0Animation Speed\0All\0"; ui_category = "Audio Reactivity"; > = 0;
 
 // Final Mix (Blend) Controls
 AS_BLENDMODE_UI(BlendMode)
@@ -234,30 +206,28 @@ float map_hlsl(float3 p, float effect_time, inout float at_acc, inout float at2_
     // Apply rotation to the initial space
     float2x2 rotMat = rot_hlsl(rotationAngle);
     p.xy = mul(p.xy, rotMat);
-    
-    // Initial rotations based on p's components and time
-    p.xy = mul(p.xy, rot_hlsl((p.z * 0.023 + effect_time * 0.1) * 0.3));    p.yz = mul(p.yz, rot_hlsl((p.x * 0.087) * 0.4));
+      // Initial rotations based on p's components and time
+    p.xy = mul(p.xy, rot_hlsl((p.z * ROT_Z_FACTOR + effect_time * ROT_TIME_FACTOR) * ROT_SPEED_XY));
+    p.yz = mul(p.yz, rot_hlsl((p.x * ROT_X_FACTOR) * ROT_SPEED_YZ));
 
     float t_map_internal = effect_time * 0.5; // Corresponds to 't' inside GLSL map
-    float3 p_fr1 = fr_hlsl(p, t_map_internal * 0.2, effect_time, foldingAmountFinal);
-    float3 p_fr2 = fr_hlsl(p + float3(5.0, 0.0, 0.0), t_map_internal * 0.23, effect_time, foldingAmountFinal);
+    float3 p_fr1 = fr_hlsl(p, t_map_internal * FR1_TIME_FACTOR, effect_time, foldingAmountFinal);
+    float3 p_fr2 = fr_hlsl(p + float3(FR2_OFFSET_X, 0.0, 0.0), t_map_internal * FR2_TIME_FACTOR, effect_time, foldingAmountFinal);
 
-    float d1 = box_hlsl(p_fr1, float3(1.0, 1.3, 4.0));
-    float d2 = box_hlsl(p_fr2, float3(3.0, 0.7, 0.4));
+    float d1 = box_hlsl(p_fr1, BOX1_SIZE);
+    float d2 = box_hlsl(p_fr2, BOX2_SIZE);
 
     // Combine distances and apply further modifications
-    float d = max(abs(d1), abs(d2)) - 0.2; // Note: abs(d1), abs(d2) used here.
+    float d = max(abs(d1), abs(d2)) - BOOLEAN_OFFSET; // Note: abs(d1), abs(d2) used here.
     
     float fold_dist_map = 1.0;
     float3 p_box3 = (frac(p_fr1 / fold_dist_map - 0.5) - 0.5) * fold_dist_map; // Using p_fr1 for this box
-    float d3 = box_hlsl(p_box3, float3(0.4, 0.4, 0.4));
-    d = d - d3 * 0.4; // Subtracting another SDF (boolean subtraction or erosion)
-
-    // Accumulate 'at_acc' based on proximity to the current surface 'd'
-    at_acc += 0.13 / (0.13 + abs(d));
+    float d3 = box_hlsl(p_box3, BOX3_SIZE);
+    d = d - d3 * BOOLEAN_FACTOR; // Subtracting another SDF (boolean subtraction or erosion)    // Accumulate 'at_acc' based on proximity to the current surface 'd'
+    at_acc += AT1_FACTOR / (AT1_FACTOR + abs(d));
 
     // Further SDF operations using the initial point 'initial_p'
-    float d5_box_boundary = box_hlsl(initial_p, float3(4.0, 4.0, 4.0));
+    float d5_box_boundary = box_hlsl(initial_p, BOUNDARY_BOX_SIZE);
     
     float fold_dist2_map = 8.0;
     float3 p_sphere_like = initial_p;
@@ -266,15 +236,15 @@ float map_hlsl(float3 p, float effect_time, inout float at_acc, inout float at2_
     float d6_sphere_like = length(p_sphere_like.xz) - 1.0;
 
     // Accumulate 'at2_acc' and 'at3_acc'
-    at2_acc += 0.2 / (0.15 + abs(d5_box_boundary));
-    at3_acc += 0.2 / (0.5 + abs(d6_sphere_like));
+    at2_acc += AT2_FACTOR / (AT2_DENOMINATOR + abs(d5_box_boundary));
+    at3_acc += AT3_FACTOR / (AT3_DENOMINATOR + abs(d6_sphere_like));
     
     return d; // Return the final distance estimate for this point
 }
 
 // Camera transformation function
 void cam_hlsl(inout float3 p, float effect_time, float rotationAngle) {
-    float t_cam_internal = effect_time * 0.1 * CameraSpeed; // Apply camera speed
+    float t_cam_internal = effect_time * CAM_TIME_FACTOR * CameraSpeed; // Apply camera speed
 
     // Apply standard rotation
     float2x2 baseCamRot = rot_hlsl(rotationAngle);
@@ -282,7 +252,7 @@ void cam_hlsl(inout float3 p, float effect_time, float rotationAngle) {
     
     // Apply animated rotations
     p.yz = mul(p.yz, rot_hlsl(t_cam_internal));
-    p.zx = mul(p.zx, rot_hlsl(t_cam_internal * 1.2));
+    p.zx = mul(p.zx, rot_hlsl(t_cam_internal * CAM_ZX_TIME_FACTOR));
 }
 
 // Random function (simple hash)
@@ -291,35 +261,8 @@ float rnd_hlsl(float2 uv_rand) {
 }
 
 //------------------------------------------------------------------------------------------------
-// Blend Function from AS_Utils
+// Note: We're using the standard AS_ApplyBlend function from AS_Utils.1.fxh instead of a custom implementation
 //------------------------------------------------------------------------------------------------
-float4 AS_blend(float4 source, float4 overlay, int blendMode, float blendAmount) {
-    float4 output = source;
-    
-    // Apply specific blend mode
-    switch (blendMode) {
-        case 0: // Normal
-            output = lerp(source, overlay, overlay.a * blendAmount);
-            break;
-        case 1: // Lighter Only
-            output = max(source, lerp(source, overlay, overlay.a * blendAmount));
-            break;
-        case 2: // Darker Only
-            output = min(source, lerp(source, overlay, overlay.a * blendAmount));
-            break;
-        case 3: // Additive
-            output = source + overlay * blendAmount;
-            break;
-        case 4: // Multiply
-            output = lerp(source, source * overlay, blendAmount);
-            break;
-        case 5: // Screen
-            output = lerp(source, 1.0 - (1.0 - source) * (1.0 - overlay), blendAmount);
-            break;
-    }
-    
-    return output;
-}
 
 //------------------------------------------------------------------------------------------------
 // Pixel Shader
@@ -360,15 +303,8 @@ float4 MainPS(float4 vpos : SV_Position, float2 texcoord : TexCoord) : SV_Target
         if (AudioTarget == 5 || AudioTarget == 6) { // Animation Speed or All
             animSpeedFinal *= audioValue;
         }
-    }    // Calculate local_time from ReShade Timer (ms to s) with animation speed and keyframe
-    float local_time;
-    if (animSpeedFinal <= 0.0001) {
-        // When animation speed is effectively zero, use keyframe directly
-        local_time = AnimKeyframe;
-    } else {
-        // Otherwise use animated time plus keyframe offset
-        local_time = (Timer / 1000.0) * animSpeedFinal + AnimKeyframe;
-    }
+    }    // Calculate local_time using AS_getAnimationTime with animation speed and keyframe
+    float local_time = AS_getAnimationTime(animSpeedFinal, AnimKeyframe);
 
     // Apply standard AS coordinate transformations
     float2 centerCoord = texcoord - 0.5; // Center coords
@@ -382,10 +318,8 @@ float4 MainPS(float4 vpos : SV_Position, float2 texcoord : TexCoord) : SV_Target
 
     // Factor for raymarching step modification
     float factor = 0.9 + 0.1 * rnd_hlsl(texcoord);     // Get rotation angle from UI controls
-    float rotationAngle = AS_getRotationRadians(EffectSnapRotation, EffectFineRotation);
-
-    // Ray setup
-    float3 ray_origin = float3(0.0, 0.0, -15.0 * cameraZoomFinal);
+    float rotationAngle = AS_getRotationRadians(EffectSnapRotation, EffectFineRotation);    // Ray setup
+    float3 ray_origin = float3(0.0, 0.0, CAMERA_Z_DISTANCE * cameraZoomFinal);
     float3 ray_direction = normalize(float3(centerCoord, 1.0));
 
     // Apply camera transformations
@@ -400,11 +334,11 @@ float4 MainPS(float4 vpos : SV_Position, float2 texcoord : TexCoord) : SV_Target
         
         // Step logic
         float d_abs_map = abs(dist_to_surface);
-        float d_step = abs(max(d_abs_map, -(length(current_ray_pos - ray_origin) - 6.0)));
+        float d_step = abs(max(d_abs_map, -(length(current_ray_pos - ray_origin) - STEP_DISTANCE_LIMIT)));
         d_step *= factor;
 
         if (d_step < SURFACE_DISTANCE) {
-            d_step = 0.01;
+            d_step = STEP_MIN_FACTOR;
         }
         
         current_ray_pos += ray_direction * d_step;
@@ -413,38 +347,53 @@ float4 MainPS(float4 vpos : SV_Position, float2 texcoord : TexCoord) : SV_Target
         if (length(current_ray_pos - ray_origin) > MAX_DISTANCE) {
             break;
         }
-    }
-
-    // Color calculation based on accumulators
+    }    // Color calculation based on accumulators
     float3 final_color = float3(0.0, 0.0, 0.0);
 
     // Base sky color calculation
-    float3 sky_color_primary = AS_getInterpolatedColor(ColorPalette, pow(abs(ray_direction.z), 8.0));
-    float3 sky_color_secondary = AS_getInterpolatedColor(ColorPalette, pow(abs(ray_direction.y), 8.0));
-    float3 sky_color = lerp(sky_color_primary, sky_color_secondary, 0.5);
+    float3 sky_color_primary, sky_color_secondary, sky_color;
+    
+    // Get interpolation parameters
+    float primary_t = pow(abs(ray_direction.z), COLOR_EXPONENT);
+    float secondary_t = pow(abs(ray_direction.y), COLOR_EXPONENT);
+    
+    if (ColorPalette == AS_PALETTE_CUSTOM) {
+        // Use custom palette colors with the AS_GET_INTERPOLATED_CUSTOM_COLOR macro
+        sky_color_primary = AS_GET_INTERPOLATED_CUSTOM_COLOR(MistyGrid_, primary_t);
+        sky_color_secondary = AS_GET_INTERPOLATED_CUSTOM_COLOR(MistyGrid_, secondary_t);
+    } else {
+        // Use standard palette colors
+        sky_color_primary = AS_getInterpolatedColor(ColorPalette, primary_t);
+        sky_color_secondary = AS_getInterpolatedColor(ColorPalette, secondary_t);
+    }
+    
+    // Blend primary and secondary colors
+    sky_color = lerp(sky_color_primary, sky_color_secondary, COLOR_BLEND);
 
     // Apply the accumulators to create the final color
-    final_color += pow(at2_accumulator * 0.008, 1.0) * sky_color;
-    final_color += pow(at3_accumulator * 0.072, 2.0) * sky_color * float3(0.7, 0.3, 1.0) * 2.0;    // Apply vignette
-    final_color *= (1.2 - length(texcoord - 0.5));
+    final_color += pow(at2_accumulator * ACCUMULATOR2_SCALE, 1.0) * sky_color;
+    final_color += pow(at3_accumulator * ACCUMULATOR3_SCALE, ACCUMULATOR3_EXPONENT) * sky_color * ACCUMULATOR3_TINT * ACCUMULATOR3_BRIGHTNESS;
+    
+    // Apply vignette
+    final_color *= (VIGNETTE_SIZE - length(texcoord - 0.5));
 
     // Apply color adjustments with audio reactivity
-    final_color = 1.0 - exp(-final_color * 15.0 * colorBrightnessFinal);
+    final_color = 1.0 - exp(-final_color * COLOR_BRIGHTNESS_MULT * colorBrightnessFinal);
     
     // Apply saturation adjustment with audio reactivity
-    float luma = dot(final_color, float3(0.2126, 0.7152, 0.0722));
+    float luma = dot(final_color, LUMA_WEIGHTS);
     final_color = lerp(float3(luma, luma, luma), final_color, colorSaturationFinal);
-    
-    // Debug View handling
+      // Debug View handling
     if (DebugMode == 1) { // Show Accumulator 1
-        return float4(at_accumulator * 0.05, 0, 0, 1);
+        return float4(at_accumulator * DEBUG_SCALE, 0, 0, 1);
     } 
     else if (DebugMode == 2) { // Show Accumulator 2
-        return float4(0, at2_accumulator * 0.05, 0, 1);
+        return float4(0, at2_accumulator * DEBUG_SCALE, 0, 1);
     }
     else if (DebugMode == 3) { // Show Accumulator 3
-        return float4(0, 0, at3_accumulator * 0.05, 1);
-    }    else if (DebugMode == 4) { // Show Raw Distance
+        return float4(0, 0, at3_accumulator * DEBUG_SCALE, 1);
+    }    
+    else if (DebugMode == 4) { // Show Raw Distance
         float dist = map_hlsl(ray_origin, local_time, at_accumulator, at2_accumulator, at3_accumulator, foldingAmountFinal);
         return float4(abs(dist) * 0.1, 0, 0, 1);
     }
@@ -499,11 +448,9 @@ float4 MainPS(float4 vpos : SV_Position, float2 texcoord : TexCoord) : SV_Target
                 return float4(targetColor, 1.0);
             }
         }
-    }
-
-    // Final composition
+    }    // Final composition
     float4 result = float4(final_color, 1.0);
-    result = AS_blend(background, result, BlendMode, BlendAmount);
+    result = AS_ApplyBlend(result, background, BlendMode, BlendAmount);
     
     return result;
 }
@@ -512,7 +459,7 @@ float4 MainPS(float4 vpos : SV_Position, float2 texcoord : TexCoord) : SV_Target
 // Technique Definition
 //------------------------------------------------------------------------------------------------
 technique AS_BGX_MistyGrid <
-    ui_label = "AS BGX MistyGrid";
+    ui_label = "[AS] BGX: Misty Grid";
     ui_tooltip = "Abstract fractal grid background for creating ethereal 3D spaces.";
 >
 {
