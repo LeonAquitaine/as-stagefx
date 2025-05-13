@@ -42,6 +42,7 @@
 #include "ReShade.fxh"      // Basic ReShade utilities
 #include "AS_Utils.1.fxh"   // AS common utilities
 #include "AS_Palette.1.fxh" // AS palette system
+#include "AS_Noise.1.fxh"   // AS noise utilities
 
 //------------------------------------------------------------------------------------------------
 // CONSTANTS
@@ -255,10 +256,8 @@ void cam_hlsl(inout float3 p, float effect_time, float rotationAngle) {
     p.zx = mul(p.zx, rot_hlsl(t_cam_internal * CAM_ZX_TIME_FACTOR));
 }
 
-// Random function (simple hash)
-float rnd_hlsl(float2 uv_rand) {
-    return frac(dot(sin(uv_rand * 752.322 + uv_rand.yx * 653.842), float2(254.652, 254.652)));
-}
+// Note: Using AS_randomNoise21 from AS_Noise.1.fxh instead of a custom implementation
+//------------------------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------------------------
 // Note: We're using the standard AS_ApplyBlend function from AS_Utils.1.fxh instead of a custom implementation
@@ -317,7 +316,7 @@ float4 MainPS(float4 vpos : SV_Position, float2 texcoord : TexCoord) : SV_Target
     float at3_accumulator = 0.0;
 
     // Factor for raymarching step modification
-    float factor = 0.9 + 0.1 * rnd_hlsl(texcoord);     // Get rotation angle from UI controls
+    float factor = 0.9 + 0.1 * AS_randomNoise21(texcoord);     // Get rotation angle from UI controls
     float rotationAngle = AS_getRotationRadians(EffectSnapRotation, EffectFineRotation);    // Ray setup
     float3 ray_origin = float3(0.0, 0.0, CAMERA_Z_DISTANCE * cameraZoomFinal);
     float3 ray_direction = normalize(float3(centerCoord, 1.0));
