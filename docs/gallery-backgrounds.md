@@ -20,17 +20,9 @@ This gallery provides detailed descriptions and visual examples of the backgroun
 Creates a vibrant, abstract blue corona effect with fluid, dynamic motion. The effect generates hypnotic patterns through iterative mathematical transformations, resulting in organic, plasma-like visuals with a predominantly blue color scheme. Features abstract, organic blue corona patterns; smooth fluid-like animation; customizable iteration count/pattern scale; animation speed/flow controls; intuitive color controls; customizable background color; audio reactivity (multiple targets); depth-aware rendering; and standard position, rotation, scale, and blending options.<br><br>
 Original: <a href="https://www.shadertoy.com/view/XfKGWV" target="_new">"Blue Corona" by SnoopethDuckDuck</a>.
 </td>
-<td width="50%"><div style="text-align:center">
-</div></td>
-</tr>
-<tr>
 <td width="50%">
-<h4>BGX: Cosmic Kaleidoscope</h4>
-<h5><code>[AS] BGX: Cosmic Kaleidoscope|AS_BGX_CosmicKaleidoscope.1.fx</code></h5>
-Renders a raymarched volumetric fractal resembling a Mandelbox or Mandelbulb. Features adjustable fractal parameters, kaleidoscope-like mirroring with customizable repetitions, audio reactivity for dynamic adjustments, a palette-based coloring system, and full rotation, position, and depth control for scene integration. Includes fixes for accurate tiling and missing rotation from the original source.<br><br>
-Based on: <a href="https://www.shadertoy.com/view/MXccR4" target="_new">"cosmos in crystal" by nayk</a>.
-</td>
-<td width="50%"><div style="text-align:center">
+  <img src="https://github.com/user-attachments/assets/f5ee6ce1-36b9-4d2f-9250-4c345394c27c"/>
+  <div style="text-align:center">
 </div></td>
 </tr>
 <tr>
@@ -41,7 +33,9 @@ Simulates an artistic flight through an abstract, glowing, patterned tunnel. Fea
 Original: <a href="https://www.shadertoy.com/view/3sXyRN" target="_new">Shader by NuSan</a>.
 </td>
 <td width="50%"><div style="text-align:center">
-</div></td>
+</div>
+<img src="https://github.com/user-attachments/assets/be502be4-cc82-44a4-8947-74dfd6f072b8"/>
+</td>
 </tr>
 <tr>
 <td width="50%">
@@ -51,7 +45,9 @@ Renders a raymarched volumetric fractal resembling a Mandelbox or Mandelbulb. Fe
 Based on: <a href="https://www.shadertoy.com/view/MXccR4" target="_new">"cosmos in crystal" by nayk</a>.
 </td>
 <td width="50%"><div style="text-align:center">
-</div></td>
+</div>
+<img src="https://github.com/user-attachments/assets/d466ec57-964c-4c25-93e2-6d01ca4ee1d3"/>
+</td>
 </tr>
 <tr>
 <td width="50%">
@@ -61,7 +57,9 @@ Creates an abstract visualization of a "digital brain" with evolving Voronoi pat
 Based on: <a href="https://www.shadertoy.com/view/4sl3Dr" target="_new">original GLSL by srtuss</a>.
 </td>
 <td width="50%"><div style="text-align:center">
-</div></td>
+</div>
+<img src="https://github.com/user-attachments/assets/27c3f540-b8f5-4b85-a4a4-4a5076e67f39"/>
+</td>
 </tr>
 <tr>
 <td width="50%">
