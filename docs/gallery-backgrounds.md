@@ -68,7 +68,9 @@ Based on: <a href="https://www.shadertoy.com/view/4sl3Dr" target="_new">original
 Renders a mesmerizing and intricate animated background effect reminiscent of golden clockwork mechanisms or Apollonian gasket-like fractal patterns. The effect features complex, evolving geometric designs with a characteristic golden color palette. Features procedurally generated Apollonian fractal patterns, dynamic animation driven by time, a golden color scheme with lighting and shading effects, depth-like progression through fractal layers, kaleidoscopic and mirroring options for pattern variation, resolution-independent rendering, and UI controls for animation (speed, keyframe, path speed), palette, fractal/kaleidoscope parameters, audio reactivity, stage controls (position, scale, rotation, depth), and blending.
 </td>
 <td width="50%"><div style="text-align:center">
-</div></td>
+</div>
+<img src="https://github.com/user-attachments/assets/583dfe11-c8b6-4e34-ad79-35d875ce32c6"/>
+</td>
 </tr>
 <tr>
 <td width="50%">
@@ -82,22 +84,25 @@ Renders a seamless, soft, overlapping grid of light panels with various built-in
 </tr>
 <tr>
 <td width="50%">
-<h4>BGX: Misty Grid</h4>
-<h5><code>[AS] BGX: Misty Grid|AS_BGX_MistyGrid.1.fx</code></h5>
-Creates an abstract fractal-based grid background with a misty, ethereal appearance using raymarching techniques. Features dynamic fractal-based grid environment, customizable colors with palette system, folding and repetition for complex patterns, camera movement simulation with smooth rotations, audio reactivity affecting multiple parameters (fractal scale, folding intensity, saturation, brightness, camera zoom, animation speed), and standard position/rotation/scale controls.<br><br>
-Based on: <a href="https://www.shadertoy.com/view/wl2Szd" target="_new">"Misty Grid" by NuSan</a>.
-</td>
-<td width="50%"><div style="text-align:center">
-</div></td>
-</tr>
-<tr>
-<td width="50%">
 <h4>BGX: Melt Wave</h4>
 <h5><code>[AS] BGX: Melt Wave|AS_BGX_MeltWave.1.fx</code></h5>
 Creates a flowing, warping psychedelic effect inspired by 1970s visual aesthetics. Generates mesmerizing colored patterns with sine-based distortions that evolve over time. Features adjustable zoom/intensity, a palette system (mathematical or preset colors), dynamic time-based animation with keyframe support, audio reactivity mappable to different parameters, and resolution-independent transformation with position/rotation controls.
 </td>
 <td width="50%"><div style="text-align:center">
-</div></td>
+</div>
+<img src="https://github.com/user-attachments/assets/4871c7be-b540-4f19-8cb2-bbd0c47ac237"/>
+</td>
+</tr>
+<tr>
+<td width="50%">
+<h4>BGX: Misty Grid</h4>
+<h5><code>[AS] BGX: Misty Grid|AS_BGX_MistyGrid.1.fx</code></h5>
+Creates an abstract fractal-based grid background with a misty, ethereal appearance using raymarching techniques. Features dynamic fractal-based grid environment, customizable colors with palette system, folding and repetition for complex patterns, camera movement simulation with smooth rotations, audio reactivity affecting multiple parameters (fractal scale, folding intensity, saturation, brightness, camera zoom, animation speed), and standard position/rotation/scale controls.<br><br>
+Based on: <a href="https://www.shadertoy.com/view/wl2Szd" target="_new">"Misty Grid" by NuSan</a>.
+</td>
+<td width="50%">
+<img src="https://github.com/user-attachments/assets/ddd37fd8-70be-442c-aaed-f31063f8d9e9"/>
+</td>
 </tr>
 <tr>
 <td width="50%">
