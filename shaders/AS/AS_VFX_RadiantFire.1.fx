@@ -8,12 +8,6 @@
  * DESCRIPTION:
  * A GPU-based fire simulation that generates flames radiating from subject edges.
  * Rotation now affects the direction of internal physics forces.
- *
- * Version 2.9:
- * - Refined UI labels for better clarity and artist-friendliness.
- * - Reorganized uniforms into more intuitive categories.
- * - Corrected debug mode UI string separator.
- * * ===================================================================================
  */
 
 // ============================================================================
@@ -118,34 +112,34 @@ static const float DEFAULT_FLAME_COLOR_THRESHOLD_MID = 0.5f;
 // UNIFORMS
 // ============================================================================
 
-// --- Subject & Edges ---
-uniform float SubjectDepthCutoff < ui_type = "slider"; ui_label = "Subject: Depth Cutoff"; ui_tooltip = "Linear depth value to separate subject (closer) from background."; ui_min = 0.001; ui_max = 1.0; ui_step = 0.001; ui_category = "Subject & Edges"; > = DEFAULT_SUBJECT_DEPTH_CUTOFF;
-uniform float EdgeDetectionSensitivity < ui_type = "slider"; ui_label = "Subject Edge: Sensitivity"; ui_tooltip = "Sensitivity of edge detection based on depth changes."; ui_min = 1.0; ui_max = 200.0; ui_step = 1.0; ui_category = "Subject & Edges"; > = DEFAULT_EDGE_DETECTION_SENSITIVITY;
-uniform float EdgeSoftness < ui_type = "slider"; ui_label = "Subject Edge: Softness"; ui_tooltip = "Softness of the detected subject edges for fire generation."; ui_min = 0.001; ui_max = 0.5; ui_step = 0.001; ui_category = "Subject & Edges"; > = DEFAULT_EDGE_SOFTNESS;
-uniform bool OverlaySubject < ui_type = "bool"; ui_label = "Subject: Overlay on Fire"; ui_tooltip = "If checked, the original subject is drawn on top of the fire."; ui_category = "Subject & Edges"; > = DEFAULT_OVERLAY_SUBJECT;
-uniform float SourceInjectionStrength < ui_type = "slider"; ui_label = "Source: Edge Fire Strength"; ui_tooltip = "Amount of 'heat' injected at subject edges to start flames."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Subject & Edges"; > = DEFAULT_SOURCE_INJECTION_STRENGTH;
-
 // --- Flame Physics ---
-uniform float AdvectionStrength < ui_type = "slider"; ui_label = "Flow: Velocity Influence"; ui_tooltip = "How strongly flames follow their existing velocity (advection)."; ui_min = 0.0; ui_max = 5.0; ui_step = 0.01; ui_category = "Flame Physics"; > = DEFAULT_ADVECTION_STRENGTH;
-uniform float RepulsionStrength < ui_type = "slider"; ui_label = "Flow: Repulsion Strength"; ui_tooltip = "How strongly flames are pushed from the Repulsion Center. Affected by Rotation."; ui_min = 0.0; ui_max = 0.01; ui_step = 0.0001; ui_category = "Flame Physics"; > = DEFAULT_REPULSION_STRENGTH;
-uniform float GeneralBuoyancy < ui_type = "slider"; ui_label = "Flow: Buoyancy"; ui_tooltip = "Constant 'upwards' drift for all flames. Affected by Rotation."; ui_min = 0.0; ui_max = 0.005; ui_step = 0.00001; ui_category = "Flame Physics"; > = DEFAULT_GENERAL_BUOYANCY;
-uniform float DraftSpeed < ui_type = "slider"; ui_label = "Flow: Draft Speed"; ui_tooltip = "Constant directional draft. Positive = 'up', Negative = 'down'. Affected by Rotation."; ui_min = -0.005; ui_max = 0.005; ui_step = 0.00001; ui_category = "Flame Physics"; > = DEFAULT_DRAFT_SPEED;
-uniform float Diffusion < ui_type = "slider"; ui_label = "Shape: Diffusion (Spread)"; ui_tooltip = "How much the flame spreads/blurs out over time."; ui_min = 0.0; ui_max = 0.005; ui_step = 0.0001; ui_category = "Flame Physics"; > = DEFAULT_DIFFUSION;
-uniform float Dissipation < ui_type = "slider"; ui_label = "Lifecycle: Dissipation (Fade)"; ui_tooltip = "Rate at which flame intensity fades (cools down)."; ui_min = 0.0; ui_max = 0.1; ui_step = 0.001; ui_category = "Flame Physics"; > = DEFAULT_DISSIPATION;
-uniform float VelocityDamping < ui_type = "slider"; ui_label = "Flow: Velocity Damping"; ui_tooltip = "How quickly flame velocity fades over time."; ui_min = 0.0; ui_max = 0.1; ui_step = 0.001; ui_category = "Flame Physics"; > = DEFAULT_VELOCITY_DAMPING;
-uniform float GLSLTurbulenceAdvectionInfluence < ui_type = "slider"; ui_label = "Turbulence: Advection Influence"; ui_tooltip = "How much the GLSL turbulence pattern displaces advecting flames. Affected by Rotation."; ui_min = 0.0; ui_max = 0.1; ui_step = 0.001; ui_category = "Flame Physics"; > = DEFAULT_GLSL_TURBULENCE_ADVECTION_INFLUENCE;
+uniform float AdvectionStrength < ui_type = "slider"; ui_label = "Velocity Influence"; ui_tooltip = "How strongly flames follow their existing velocity (advection)."; ui_min = 0.0; ui_max = 5.0; ui_step = 0.01; ui_category = "Flame Physics"; > = DEFAULT_ADVECTION_STRENGTH;
+uniform float RepulsionStrength < ui_type = "slider"; ui_label = "Repulsion Strength"; ui_tooltip = "How strongly flames are pushed from the Repulsion Center. Affected by Rotation."; ui_min = 0.0; ui_max = 0.01; ui_step = 0.0001; ui_category = "Flame Physics"; > = DEFAULT_REPULSION_STRENGTH;
+uniform float GeneralBuoyancy < ui_type = "slider"; ui_label = "Buoyancy"; ui_tooltip = "Constant 'upwards' drift for all flames. Affected by Rotation."; ui_min = 0.0; ui_max = 0.005; ui_step = 0.00001; ui_category = "Flame Physics"; > = DEFAULT_GENERAL_BUOYANCY;
+uniform float DraftSpeed < ui_type = "slider"; ui_label = "Draft Speed"; ui_tooltip = "Constant directional draft. Positive = 'up', Negative = 'down'. Affected by Rotation."; ui_min = -0.005; ui_max = 0.005; ui_step = 0.00001; ui_category = "Flame Physics"; > = DEFAULT_DRAFT_SPEED;
+uniform float Diffusion < ui_type = "slider"; ui_label = "Diffusion (Spread)"; ui_tooltip = "How much the flame spreads/blurs out over time."; ui_min = 0.0; ui_max = 0.005; ui_step = 0.0001; ui_category = "Flame Physics"; > = DEFAULT_DIFFUSION;
+uniform float Dissipation < ui_type = "slider"; ui_label = "Dissipation (Fade)"; ui_tooltip = "Rate at which flame intensity fades (cools down)."; ui_min = 0.0; ui_max = 0.1; ui_step = 0.001; ui_category = "Flame Physics"; > = DEFAULT_DISSIPATION;
+uniform float VelocityDamping < ui_type = "slider"; ui_label = "Velocity Damping"; ui_tooltip = "How quickly flame velocity fades over time."; ui_min = 0.0; ui_max = 0.1; ui_step = 0.001; ui_category = "Flame Physics"; > = DEFAULT_VELOCITY_DAMPING;
+uniform float GLSLTurbulenceAdvectionInfluence < ui_type = "slider"; ui_label = "Advection Influence"; ui_tooltip = "How much the GLSL turbulence pattern displaces advecting flames. Affected by Rotation."; ui_min = 0.0; ui_max = 0.1; ui_step = 0.001; ui_category = "Flame Physics"; > = DEFAULT_GLSL_TURBULENCE_ADVECTION_INFLUENCE;
 
 // --- Flame Appearance ---
 AS_PALETTE_SELECTION_UI(FlamePalette, "Color: Palette", 0, "Flame Appearance") 
 AS_DECLARE_CUSTOM_PALETTE(Flame, "Flame Appearance") // Label for custom palette colors set by AS_Utils
-uniform float FlameIntensity < ui_type = "slider"; ui_label = "Color: Overall Intensity"; ui_tooltip = "Master brightness multiplier for the rendered flame."; ui_min = 0.0; ui_max = 10.0; ui_step = 0.01; ui_category = "Flame Appearance"; > = DEFAULT_FLAME_INTENSITY;
-uniform float FlameColorThresholdCore < ui_type = "slider"; ui_label = "Color: Core Temperature"; ui_tooltip = "Temperature threshold for the flame's core color."; ui_min = 0.5; ui_max = 2.0; ui_step = 0.01; ui_category = "Flame Appearance"; > = DEFAULT_FLAME_COLOR_THRESHOLD_CORE;
-uniform float FlameColorThresholdMid < ui_type = "slider"; ui_label = "Color: Mid Temperature"; ui_tooltip = "Temperature threshold for the flame's mid color."; ui_min = 0.1; ui_max = 1.0; ui_step = 0.01; ui_category = "Flame Appearance"; > = DEFAULT_FLAME_COLOR_THRESHOLD_MID;
+uniform float FlameIntensity < ui_type = "slider"; ui_label = "Overall Intensity"; ui_tooltip = "Master brightness multiplier for the rendered flame."; ui_min = 0.0; ui_max = 10.0; ui_step = 0.01; ui_category = "Flame Appearance"; > = DEFAULT_FLAME_INTENSITY;
+uniform float FlameColorThresholdCore < ui_type = "slider"; ui_label = "Core Temperature"; ui_tooltip = "Temperature threshold for the flame's core color."; ui_min = 0.5; ui_max = 2.0; ui_step = 0.01; ui_category = "Flame Appearance"; > = DEFAULT_FLAME_COLOR_THRESHOLD_CORE;
+uniform float FlameColorThresholdMid < ui_type = "slider"; ui_label = "Mid Temperature"; ui_tooltip = "Temperature threshold for the flame's mid color."; ui_min = 0.1; ui_max = 1.0; ui_step = 0.01; ui_category = "Flame Appearance"; > = DEFAULT_FLAME_COLOR_THRESHOLD_MID;
 
 // --- Global Controls ---
 uniform float AnimationSpeed < ui_type = "slider"; ui_label = "Animation Speed"; ui_tooltip = "Controls the overall speed of the fire animation."; ui_min = 0.1f; ui_max = 3.0f; ui_step = 0.05f; ui_category = "Global Controls"; > = TIME_SCALE_NORMAL;
 uniform float2 FireRepulsionCenterPos < ui_type = "drag"; ui_label = "Repulsion Center (XY)"; ui_tooltip = "Normalized screen position (0-1) the fire radiates AWAY from."; ui_min = 0.0; ui_max = 1.0; ui_speed = 0.01; ui_category = "Global Controls"; > = DEFAULT_FIRE_REPULSION_CENTER_POS;
 AS_ROTATION_UI(EffectSnapRotation, EffectFineRotation) // Uses ui_category "Transform" from AS_Utils
+
+// --- Subject & Edges ---
+uniform float SubjectDepthCutoff < ui_type = "slider"; ui_label = "Depth"; ui_tooltip = "Linear depth value to separate subject (closer) from background."; ui_min = 0.001; ui_max = 1.0; ui_step = 0.001; ui_category = "Stage"; > = DEFAULT_SUBJECT_DEPTH_CUTOFF;
+uniform float EdgeDetectionSensitivity < ui_type = "slider"; ui_label = "Depth Sensitivity"; ui_tooltip = "Sensitivity of edge detection based on depth changes."; ui_min = 1.0; ui_max = 200.0; ui_step = 1.0; ui_category = "Stage"; > = DEFAULT_EDGE_DETECTION_SENSITIVITY;
+uniform float EdgeSoftness < ui_type = "slider"; ui_label = "Depth Edge"; ui_tooltip = "Softness of the detected subject edges for fire generation."; ui_min = 0.001; ui_max = 0.5; ui_step = 0.001; ui_category = "Stage"; > = DEFAULT_EDGE_SOFTNESS;
+uniform float SourceInjectionStrength < ui_type = "slider"; ui_label = "Edge Fire Strength"; ui_tooltip = "Amount of 'heat' injected at subject edges to start flames."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Stage"; > = DEFAULT_SOURCE_INJECTION_STRENGTH;
+uniform bool OverlaySubject < ui_type = "bool"; ui_label = "Subject: Overlay on Fire"; ui_tooltip = "If checked, the original subject is drawn on top of the fire."; ui_category = "Subject & Edges"; > = DEFAULT_OVERLAY_SUBJECT;
 
 // --- Output & Blending ---
 AS_BLENDMODE_UI_DEFAULT(OutputBlendMode, AS_BLEND_ADDITIVE) // Uses ui_category "Final Mix" from AS_Utils
