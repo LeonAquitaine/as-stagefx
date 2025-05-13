@@ -60,6 +60,8 @@ uniform float DensityFadeRange < ui_type = "slider"; ui_label = "Spawn Fade Rang
 uniform float NoiseTexScale < ui_type = "slider"; ui_label = "Density Pattern Scale"; ui_category = "Advanced"; ui_category_closed = true; ui_min = 0.1; ui_max = 10.0; > = 1.0; 
 uniform float VoronoiPointSpinSpeed < ui_type = "slider"; ui_label = "Pattern Rotation Speed"; ui_category = "Advanced"; ui_category_closed = true; ui_min = 0.0; ui_max = 5.0; > = 0.3;
 uniform float DensityCellRepeatScale < ui_type = "slider"; ui_label = "Density Pattern Repeat"; ui_category = "Advanced"; ui_category_closed = true; ui_min = 1.0; ui_max = 100.0; ui_tooltip="How often the density pattern repeats"; > = 20.0; 
+uniform bool EnableBoundaryChecking < ui_label = "Fix Petal Cutoff"; ui_category = "Advanced"; ui_category_closed = true; ui_tooltip="Enable searching adjacent cells to prevent petal cutoff at boundaries"; > = true;
+uniform float BorderCheckMargin < ui_type = "slider"; ui_label = "Boundary Check Margin"; ui_category = "Advanced"; ui_category_closed = true; ui_min = 1.0; ui_max = 5.0; ui_tooltip="Controls how far to check for petals crossing cell boundaries (higher values prevent cutoff but may impact performance)"; > = 1.5;
 
 // ---- Debug Tools ----
 uniform int DebugMode <
@@ -303,9 +305,87 @@ float4 RenderPetalLayers(float2 baseCenteredAspectUV, float2 originalScreenUV, f
         float2 driftOffset = currentTime * driftVelocity; 
         
         float2 uvForVoronoiLookup = (baseCenteredAspectUV * currentLayerSizeFactor) + driftOffset + layerGlobalOffset + flutterOffset;
-          // currentGlobalWindStrength (last param) will be 0.0f
+          // First, render the petal from the primary cell
         float4 petalLayerColor = DrawPetalInstance(uvForVoronoiLookup, originalScreenUV, float(i) * 0.123, currentTime, currentLayerAlphaFactor, driftVelocity);
+          // Only check boundaries if boundary checking is enabled
+        if (EnableBoundaryChecking) {
+            // Calculate petal size including the border check margin
+            float maxPetalRadius = PetalBaseSize * (1.0 + PetalSizeVariation) * BorderCheckMargin;
+            float gridSpacePetalRadius = maxPetalRadius * currentLayerSizeFactor;
+            
+            // Calculate distance to nearest cell edge
+            float2 cellFrac = frac(uvForVoronoiLookup);
+            float2 distToEdge = min(cellFrac, 1.0 - cellFrac);
+            float minDistToEdge = min(distToEdge.x, distToEdge.y);
+            
+            // Only process boundaries if we're close enough to an edge
+            if (minDistToEdge < gridSpacePetalRadius) {
+                // Check for diagonal cell boundaries using the Euclidean distance to corners
+                bool nearCorner = false;
+                
+                // Determine corner proximity - if we're close to a corner, we'll check diagonals too
+                if (distToEdge.x < gridSpacePetalRadius && distToEdge.y < gridSpacePetalRadius) {
+                    // Calculate distance to the nearest corner
+                    float2 cornerPos;
+                    cornerPos.x = (cellFrac.x < 0.5) ? 0.0 : 1.0;
+                    cornerPos.y = (cellFrac.y < 0.5) ? 0.0 : 1.0;
+                    float2 distToCorner = abs(cellFrac - cornerPos);
+                    float cornerDist = length(distToCorner);
+                    
+                    // If we're close enough to the corner, check diagonals
+                    nearCorner = (cornerDist < gridSpacePetalRadius * 1.414); // sqrt(2) ≈ 1.414
+                }
+                
+                // Determine which boundaries to check based on our position
+                bool checkLeft = distToEdge.x < gridSpacePetalRadius && cellFrac.x < 0.5;
+                bool checkRight = distToEdge.x < gridSpacePetalRadius && cellFrac.x >= 0.5;
+                bool checkTop = distToEdge.y < gridSpacePetalRadius && cellFrac.y < 0.5;
+                bool checkBottom = distToEdge.y < gridSpacePetalRadius && cellFrac.y >= 0.5;
+                
+                // Figure out which corners to check if we're near a corner
+                bool checkTopLeft = nearCorner && cellFrac.x < 0.5 && cellFrac.y < 0.5;
+                bool checkTopRight = nearCorner && cellFrac.x >= 0.5 && cellFrac.y < 0.5;
+                bool checkBottomLeft = nearCorner && cellFrac.x < 0.5 && cellFrac.y >= 0.5;
+                bool checkBottomRight = nearCorner && cellFrac.x >= 0.5 && cellFrac.y >= 0.5;
+                
+                // Helper function to process adjacent petal (defined inline to avoid redundancy)
+                // We define this as a macro to avoid performance overhead and unroll issues
+                #define PROCESS_ADJACENT_PETAL(offset_x, offset_y) \
+                { \
+                    float2 adjacentUV = uvForVoronoiLookup + float2(offset_x, offset_y); \
+                    float4 adjacentPetalColor = DrawPetalInstance(adjacentUV, originalScreenUV, float(i) * 0.123, currentTime, currentLayerAlphaFactor, driftVelocity); \
+                    \
+                    if (adjacentPetalColor.a > 0.01) { \
+                        if (PetalShadingMode == 1) { /* Opaque Mode */ \
+                            float occupancyMask = (1.0 - step(0.01, petalLayerColor.a)); \
+                            petalLayerColor.rgb = lerp(petalLayerColor.rgb, adjacentPetalColor.rgb, adjacentPetalColor.a * occupancyMask); \
+                            petalLayerColor.a = max(petalLayerColor.a, adjacentPetalColor.a * occupancyMask); \
+                        } else { /* Transparent Mode */ \
+                            petalLayerColor.rgb = lerp(petalLayerColor.rgb, adjacentPetalColor.rgb, adjacentPetalColor.a * (1.0 - petalLayerColor.a)); \
+                            petalLayerColor.a = petalLayerColor.a + adjacentPetalColor.a * (1.0 - petalLayerColor.a); \
+                        } \
+                    } \
+                }
+                
+                // Check all 8 adjacent cells without using loops to avoid unroll errors
+                // First check the 4 direct neighbors (left, right, top, bottom)
+                if (checkLeft) PROCESS_ADJACENT_PETAL(-1, 0);
+                if (checkRight) PROCESS_ADJACENT_PETAL(1, 0);
+                if (checkTop) PROCESS_ADJACENT_PETAL(0, -1);
+                if (checkBottom) PROCESS_ADJACENT_PETAL(0, 1);
+                
+                // Then check the 4 diagonal neighbors only if we're near a corner
+                if (checkTopLeft) PROCESS_ADJACENT_PETAL(-1, -1);
+                if (checkTopRight) PROCESS_ADJACENT_PETAL(1, -1);
+                if (checkBottomLeft) PROCESS_ADJACENT_PETAL(-1, 1);
+                if (checkBottomRight) PROCESS_ADJACENT_PETAL(1, 1);
+                
+                // Clean up the macro definition
+                #undef PROCESS_ADJACENT_PETAL
+            }
+        }
 
+        // Now blend this layer's combined petals with our accumulated result
         if (PetalShadingMode == 1) // Opaque (Solid) Mode
         {
             // Only blend visible pixels where there isn't already a petal
