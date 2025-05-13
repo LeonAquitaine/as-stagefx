@@ -67,7 +67,7 @@ static const float PATTERN_SCALE_DEFAULT = 9.0;
 static const float PATTERN_OFFSET_MIN = 0.0;
 static const float PATTERN_OFFSET_MAX = 30.0;
 static const float PATTERN_OFFSET_STEP = 0.1;
-static const float PATTERN_OFFSET_DEFAULT = 6.0;
+static const float PATTERN_OFFSET_DEFAULT = 10.0;
 
 static const int ITERATION_COUNT_MIN = 5;
 static const int ITERATION_COUNT_MAX = 15;
@@ -76,23 +76,23 @@ static const int ITERATION_COUNT_DEFAULT = 9;
 static const float FLOW_MULTIPLIER_MIN = 0.1;
 static const float FLOW_MULTIPLIER_MAX = 1.0;
 static const float FLOW_MULTIPLIER_STEP = 0.01;
-static const float FLOW_MULTIPLIER_DEFAULT = 0.5;
+static const float FLOW_MULTIPLIER_DEFAULT = 0.3;
 
 // --- Color Tuning ---
 static const float RED_WEIGHT_MIN = 0.1;
 static const float RED_WEIGHT_MAX = 10.0;
 static const float RED_WEIGHT_STEP = 0.1;
-static const float RED_WEIGHT_DEFAULT = 7.0;
+static const float RED_WEIGHT_DEFAULT = 2.0;
 
 static const float GREEN_WEIGHT_MIN = 0.1;
 static const float GREEN_WEIGHT_MAX = 10.0;
 static const float GREEN_WEIGHT_STEP = 0.1;
-static const float GREEN_WEIGHT_DEFAULT = 3.0;
+static const float GREEN_WEIGHT_DEFAULT = 4.0;
 
 static const float BLUE_WEIGHT_MIN = 0.1;
 static const float BLUE_WEIGHT_MAX = 10.0;
 static const float BLUE_WEIGHT_STEP = 0.1;
-static const float BLUE_WEIGHT_DEFAULT = 1.0;
+static const float BLUE_WEIGHT_DEFAULT = 9.0;
 
 // Background color default - dark gray
 static const float3 BACKGROUND_COLOR_DEFAULT = float3(0.05, 0.05, 0.05);
@@ -101,7 +101,7 @@ static const float3 BACKGROUND_COLOR_DEFAULT = float3(0.05, 0.05, 0.05);
 static const float ANIMATION_SPEED_MIN = 0.0;
 static const float ANIMATION_SPEED_MAX = 5.0;
 static const float ANIMATION_SPEED_STEP = 0.01;
-static const float ANIMATION_SPEED_DEFAULT = 1.0;
+static const float ANIMATION_SPEED_DEFAULT = 0.25;
 
 static const float ANIMATION_KEYFRAME_MIN = 0.0;
 static const float ANIMATION_KEYFRAME_MAX = 100.0;
@@ -168,7 +168,7 @@ float4 BlueCoronaPS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD) : SV_
         return originalColor;
     }
       // Apply audio reactivity to selected parameters
-    float animSpeed = AnimationSpeed;
+    float animSpeed = AnimationSpeed/4.0; // Normalize speed for better control
     float patternScl = PatternScale;
     float flowMult = FlowMultiplier;
     float redWt = RedWeight;
