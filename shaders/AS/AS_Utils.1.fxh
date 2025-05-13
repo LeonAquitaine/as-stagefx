@@ -71,6 +71,7 @@ static const float AS_HALF = 0.5;              // 1/2 - useful for centered coor
 static const float AS_QUARTER = 0.25;          // 1/4
 static const float AS_THIRD = 0.3333333333;    // 1/3
 static const float AS_TWO_THIRDS = 0.6666666667; // 2/3
+static const float AS_SQRT_TWO = 1.4142135623730950; // Square root of 2, useful for diagonal calculations
 
 // Depth testing constants 
 static const float AS_DEPTH_EPSILON = 0.0005;  // Standard depth epsilon for z-fighting prevention
