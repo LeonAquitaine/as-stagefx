@@ -59,10 +59,10 @@ AS_ROTATION_UI(ClairObscur_SnapRotation, ClairObscur_FineRotation)
 
 // ---- Petal Appearance ----
 uniform float3 PetalColor < ui_type = "color"; ui_label = "Petal Color"; ui_category = "Petals"; > = float3(1.0, 1.0, 1.0);
-uniform float PetalBaseAlpha < ui_type = "slider"; ui_label = "Opacity"; ui_category = "Petals"; ui_min = 0.0; ui_max = 1.0; > = 0.8;
-uniform float PetalBaseSize < ui_type = "slider"; ui_label = "Size"; ui_category = "Petals"; ui_min = 0.001; ui_max = 0.5; ui_step=0.001; > = 0.05; 
-uniform float PetalSizeVariation < ui_type = "slider"; ui_label = "Size Variation"; ui_category = "Petals"; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; > = 0.3;
-uniform int PetalShadingMode < ui_type = "combo"; ui_label = "Overlapping Mode"; ui_category = "Petals"; ui_items = "Transparent Blend\0Opaque (Solid)\0"; ui_tooltip = "Choose how petals blend with the scene."; > = 0;
+uniform float PetalBaseAlpha < ui_type = "slider"; ui_label = "Opacity"; ui_category = "Petals"; ui_min = 0.0; ui_max = 1.0; > = 1.0;
+uniform float PetalBaseSize < ui_type = "slider"; ui_label = "Size"; ui_category = "Petals"; ui_min = 0.001; ui_max = 0.5; ui_step=0.001; > = 0.110; 
+uniform float PetalSizeVariation < ui_type = "slider"; ui_label = "Size Variation"; ui_category = "Petals"; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; > = 1.0;
+uniform int PetalShadingMode < ui_type = "combo"; ui_label = "Overlapping Mode"; ui_category = "Petals"; ui_items = "Transparent Blend\0Opaque (Solid)\0"; ui_tooltip = "Choose how petals blend with the scene."; > = 1;
 
 // ---- Layers ----
 uniform float GlobalVoronoiDensity < ui_type = "slider"; ui_label = "Density"; ui_category = "Layers"; ui_min = 1.0; ui_max = 30.0; ui_step = 0.5; > = 7.0; 
@@ -72,30 +72,30 @@ uniform float LayerAlphaMod < ui_type = "slider"; ui_label = "Layer Opacity Fall
 
 
 // ---- Movement & Animation ----
-uniform float SimulationSpeed < ui_type = "slider"; ui_label = "Animation Speed"; ui_category = "Movement"; ui_min = 0.0; ui_max = 2.0; > = 0.5;
-uniform float BasePetalSpinSpeed < ui_type = "slider"; ui_label = "Rotation Speed"; ui_category = "Movement"; ui_min = 0.0; ui_max = 10.0; > = 1.5;
-uniform float RotationVariationSpeed < ui_type = "slider"; ui_label = "Rotation Variation Speed"; ui_category = "Movement"; ui_tooltip = "Controls the speed of unpredictable rotation with noise-driven patterns"; ui_min = 0.0; ui_max = 2.0; > = 0.5;
-uniform float RotationVariationAmplitude < ui_type = "slider"; ui_label = "Rotation Variation Amplitude"; ui_category = "Movement"; ui_tooltip = "Controls the magnitude of rotation variation"; ui_min = 0.0; ui_max = 1.0; > = 0.4;
-uniform float BaseDriftSpeed < ui_type = "slider"; ui_label = "Drift Speed"; ui_category = "Movement"; ui_min = 0.0; ui_max = 2.0; ui_step=0.01; > = 0.1;
-uniform float2 UserDirection < ui_type = "slider"; ui_label = "Flow Direction"; ui_category = "Movement"; ui_min = -1.0; ui_max = 1.0; > = float2(0.1, -0.3);
-uniform float BaseFlutterStrength < ui_type = "slider"; ui_label = "Flutter Intensity"; ui_category = "Movement"; ui_min = 0.0; ui_max = 0.2; ui_step = 0.005; > = 0.02;
+uniform float SimulationSpeed < ui_type = "slider"; ui_label = "Animation Speed"; ui_category = "Movement"; ui_min = 0.0; ui_max = 2.0; > = 0.500;
+uniform float BasePetalSpinSpeed < ui_type = "slider"; ui_label = "Rotation Speed"; ui_category = "Movement"; ui_min = 0.0; ui_max = 10.0; > = 2.573;
+uniform float RotationVariationSpeed < ui_type = "slider"; ui_label = "Rotation Variation Speed"; ui_category = "Movement"; ui_tooltip = "Controls the speed of unpredictable rotation with noise-driven patterns"; ui_min = 0.0; ui_max = 2.0; > = 1.190;
+uniform float RotationVariationAmplitude < ui_type = "slider"; ui_label = "Rotation Variation Amplitude"; ui_category = "Movement"; ui_tooltip = "Controls the magnitude of rotation variation"; ui_min = 0.0; ui_max = 1.0; > = 0.650;
+uniform float BaseDriftSpeed < ui_type = "slider"; ui_label = "Drift Speed"; ui_category = "Movement"; ui_min = 0.0; ui_max = 2.0; ui_step=0.01; > = 0.90;
+uniform float2 UserDirection < ui_type = "slider"; ui_label = "Flow Direction"; ui_category = "Movement"; ui_min = -1.0; ui_max = 1.0; > = float2(-0.311, -0.571);
+uniform float BaseFlutterStrength < ui_type = "slider"; ui_label = "Flutter Intensity"; ui_category = "Movement"; ui_min = 0.0; ui_max = 0.2; ui_step = 0.005; > = 0.022;
 uniform float SwayMagnitude < ui_type = "slider"; ui_label = "Sway Amount"; ui_category = "Movement"; ui_min = 0.0; ui_max = 0.05; ui_step = 0.001; > = 0.005;
-uniform float Lifetime < ui_type = "slider"; ui_label = "Petal Lifespan"; ui_category = "Movement"; ui_min = 1.0; ui_max = 20.0; > = 10.0;
+uniform float Lifetime < ui_type = "slider"; ui_label = "Petal Lifespan"; ui_category = "Movement"; ui_min = 1.0; ui_max = 20.0; > = 10.000;
 
 // ---- Entrance/Exit Effect ----
-uniform float FlipScaleMin < ui_type = "slider"; ui_label = "Edge Thinness"; ui_category = "Entrance/Exit Effect"; ui_tooltip = "How thin petals appear when entering/exiting the scene"; ui_min = 0.01; ui_max = 0.5; > = 0.05;
-uniform float FlipAxis < ui_type = "slider"; ui_label = "Rotation Axis"; ui_category = "Entrance/Exit Effect"; ui_tooltip = "Direction petals rotate when entering/exiting (0=horizontal, 1=vertical)"; ui_min = 0.0; ui_max = 1.0; > = 0.3;
-uniform float FlipLifecycleBias < ui_type = "slider"; ui_label = "Rotation Timing"; ui_category = "Entrance/Exit Effect"; ui_tooltip = "Controls how quickly petals rotate to face the camera"; ui_min = 1.0; ui_max = 5.0; > = 2.0;
+uniform float FlipScaleMin < ui_type = "slider"; ui_label = "Edge Thinness"; ui_category = "Entrance/Exit Effect"; ui_tooltip = "How thin petals appear when entering/exiting the scene"; ui_min = 0.01; ui_max = 0.5; > = 0.167;
+uniform float FlipAxis < ui_type = "slider"; ui_label = "Rotation Axis"; ui_category = "Entrance/Exit Effect"; ui_tooltip = "Direction petals rotate when entering/exiting (0=horizontal, 1=vertical)"; ui_min = 0.0; ui_max = 1.0; > = 0.911;
+uniform float FlipLifecycleBias < ui_type = "slider"; ui_label = "Rotation Timing"; ui_category = "Entrance/Exit Effect"; ui_tooltip = "Controls how quickly petals rotate to face the camera"; ui_min = 1.0; ui_max = 5.0; > = 1.538;
 
 // ---- Advanced Settings ----
-uniform float DensityThreshold < ui_type = "slider"; ui_label = "Spawn Threshold"; ui_category = "Advanced"; ui_category_closed = true; ui_min = 0.0; ui_max = 1.0; ui_tooltip = "Controls overall petal quantity"; > = 0.4;
-uniform float DensityFadeRange < ui_type = "slider"; ui_label = "Spawn Fade Range"; ui_category = "Advanced"; ui_category_closed = true; ui_min = 0.01; ui_max = 0.5; > = 0.15;
-uniform float NoiseTexScale < ui_type = "slider"; ui_label = "Density Pattern Scale"; ui_category = "Advanced"; ui_category_closed = true; ui_min = 0.1; ui_max = 10.0; > = 1.0; 
-uniform float VoronoiPointSpinSpeed < ui_type = "slider"; ui_label = "Pattern Rotation Speed"; ui_category = "Advanced"; ui_category_closed = true; ui_min = 0.0; ui_max = 5.0; > = 0.3;
-uniform float DensityCellRepeatScale < ui_type = "slider"; ui_label = "Density Pattern Repeat"; ui_category = "Advanced"; ui_category_closed = true; ui_min = 1.0; ui_max = 100.0; ui_tooltip="How often the density pattern repeats"; > = 20.0; 
+uniform float DensityThreshold < ui_type = "slider"; ui_label = "Spawn Threshold"; ui_category = "Advanced"; ui_category_closed = true; ui_min = 0.0; ui_max = 1.0; ui_tooltip = "Controls overall petal quantity"; > = 0.400;
+uniform float DensityFadeRange < ui_type = "slider"; ui_label = "Spawn Fade Range"; ui_category = "Advanced"; ui_category_closed = true; ui_min = 0.01; ui_max = 0.5; > = 0.150;
+uniform float NoiseTexScale < ui_type = "slider"; ui_label = "Density Pattern Scale"; ui_category = "Advanced"; ui_category_closed = true; ui_min = 0.1; ui_max = 10.0; > = 1.000; 
+uniform float VoronoiPointSpinSpeed < ui_type = "slider"; ui_label = "Pattern Rotation Speed"; ui_category = "Advanced"; ui_category_closed = true; ui_min = 0.0; ui_max = 5.0; > = 0.300;
+uniform float DensityCellRepeatScale < ui_type = "slider"; ui_label = "Density Pattern Repeat"; ui_category = "Advanced"; ui_category_closed = true; ui_min = 1.0; ui_max = 100.0; ui_tooltip="How often the density pattern repeats"; > = 20.000; 
 uniform bool EnableBoundaryChecking < ui_label = "Fix Petal Cutoff"; ui_category = "Advanced"; ui_category_closed = true; ui_tooltip="Enable searching adjacent cells to prevent petal cutoff at boundaries"; > = true;
-uniform int BoundaryCheckLayers < ui_type = "slider"; ui_label = "Boundary Check Layers"; ui_category = "Advanced"; ui_category_closed = true; ui_min = 0; ui_max = 3; ui_tooltip="Number of neighboring cell layers to check (0=none, 1=immediate neighbors, 2=two layers deep, etc.)"; > = 1;
-uniform float BorderCheckMargin < ui_type = "slider"; ui_label = "Boundary Check Margin"; ui_category = "Advanced"; ui_category_closed = true; ui_min = 1.0; ui_max = 5.0; ui_tooltip="Controls how far to check for petals crossing cell boundaries (higher values prevent cutoff but may impact performance)"; > = 1.5;
+uniform int BoundaryCheckLayers < ui_type = "slider"; ui_label = "Boundary Check Layers"; ui_category = "Advanced"; ui_category_closed = true; ui_min = 0; ui_max = 3; ui_tooltip="Number of neighboring cell layers to check (0=none, 1=immediate neighbors, 2=two layers deep, etc.)"; > = 0;
+uniform float BorderCheckMargin < ui_type = "slider"; ui_label = "Boundary Check Margin"; ui_category = "Advanced"; ui_category_closed = true; ui_min = 1.0; ui_max = 5.0; ui_tooltip="Controls how far to check for petals crossing cell boundaries (higher values prevent cutoff but may impact performance)"; > = 1.719;
 
 // ---- Debug Tools ----
 uniform int DebugMode <
@@ -555,8 +555,7 @@ float4 PS_Main(float4 pos : SV_Position, float2 uv : TexCoord) : SV_Target
         default:        // RenderPetalLayers now handles PetalShadingMode internally
             // for layer blending, but we still handle final blending with the scene here
             float4 layeredPetalColor = RenderPetalLayers(centeredAspectUV, uv, currentTime); 
-            
-            // Stage depth check - don't apply effect on pixels with depth less than our stage depth
+              // Stage depth check - don't apply effect on pixels with depth less than our stage depth
             if (depthSample < ClairObscur_StageDepth)
                 return originalColor;
                 
