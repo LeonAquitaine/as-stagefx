@@ -53,6 +53,9 @@ sampler PetalShape_Sampler2 { Texture = PetalShape_Texture2; AddressU = CLAMP; A
 
 // --- UI Uniforms ---
 
+// ---- Stage Controls ----
+AS_STAGEDEPTH_UI(ClairObscur_StageDepth)
+
 // ---- Petal Appearance ----
 uniform float3 PetalColor < ui_type = "color"; ui_label = "Petal Color"; ui_category = "Petals"; > = float3(1.0, 1.0, 1.0);
 uniform float PetalBaseAlpha < ui_type = "slider"; ui_label = "Opacity"; ui_category = "Petals"; ui_min = 0.0; ui_max = 1.0; > = 0.8;
@@ -502,11 +505,14 @@ float4 RenderPetalLayers(float2 baseCenteredAspectUV, float2 originalScreenUV, f
 float4 PS_Main(float4 pos : SV_Position, float2 uv : TexCoord) : SV_Target
 {
     float4 originalColor = tex2D(ReShade::BackBuffer, uv);
-    float currentTime = AS_getTime();
-
-    float2 centeredAspectUV = uv - 0.5;
+    float currentTime = AS_getTime();    float2 centeredAspectUV = uv - 0.5;
     centeredAspectUV.x *= ReShade::ScreenSize.x / ReShade::ScreenSize.y;
-    centeredAspectUV *= GlobalVoronoiDensity;     switch(DebugMode) {        case 1: // Density Visualization
+    centeredAspectUV *= GlobalVoronoiDensity;
+
+    // Stage depth check for all rendering paths
+    float depthSample = ReShade::GetLinearizedDepth(uv);
+    
+    switch(DebugMode) {case 1: // Density Visualization
             float2 testRootUV_density = floor(centeredAspectUV); 
             float2 density_tex_uv_debug = frac(testRootUV_density / DensityCellRepeatScale); 
             float instanceDensityNoise_debug = tex2D(PetalFlutter_samplerNoiseSource, density_tex_uv_debug * NoiseTexScale + currentTime * 0.005).r;
@@ -532,12 +538,15 @@ float4 PS_Main(float4 pos : SV_Position, float2 uv : TexCoord) : SV_Target
         case 5: // Petal Texture Test
             // Pass 0.0f for currentWindStrength argument
             float4 texPetal = DrawPetalInstance(centeredAspectUV, uv, 0.0, currentTime, 1.0, UserDirection * BaseDriftSpeed); 
-            return float4(texPetal.rgb * texPetal.a, texPetal.a); 
-        case 0: // Normal Effect
+            return float4(texPetal.rgb * texPetal.a, texPetal.a);        case 0: // Normal Effect
         default:        // RenderPetalLayers now handles PetalShadingMode internally
             // for layer blending, but we still handle final blending with the scene here
             float4 layeredPetalColor = RenderPetalLayers(centeredAspectUV, uv, currentTime); 
             
+            // Stage depth check - don't apply effect on pixels with depth less than our stage depth
+            if (depthSample < ClairObscur_StageDepth)
+                return originalColor;
+                
             if (PetalShadingMode == 1) // Opaque (Solid) Mode
             {
                 float petalPresence = (layeredPetalColor.a > ALPHA_THRESHOLD) ? 1.0 : 0.0; 
