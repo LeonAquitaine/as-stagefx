@@ -244,15 +244,28 @@ static const float BOUNDARY_MARGIN_MIN = 1.0;
 static const float BOUNDARY_MARGIN_MAX = 5.0;
 static const float BOUNDARY_MARGIN_DEFAULT = 1.719;
 
+// --- Atlas Constants ---
+static const int ATLAS_WIDTH = 1024;
+static const int ATLAS_HEIGHT = 512;
+static const int ATLAS_TILE_WIDTH = 256;
+static const int ATLAS_TILE_HEIGHT = 256;
+static const int ATLAS_COLUMNS = 4;
+static const int ATLAS_ROWS = 2;
+static const int ATLAS_PETAL_TYPES = 2; // 0 = Roses (top row), 1 = Sakura (bottom row)
+static const int ATLAS_PETALS_PER_TYPE = 4; // 4 variants per type
+
 // --- Textures ---
 texture PetalFlutter_NoiseSourceTexture < source = "perlin512x8Noise.png"; > { Width = TEXTURE_WIDTH; Height = TEXTURE_HEIGHT; Format = R8; };
 sampler PetalFlutter_samplerNoiseSource { Texture = PetalFlutter_NoiseSourceTexture; AddressU = WRAP; AddressV = WRAP; MinFilter = LINEAR; MagFilter = LINEAR; MipFilter = LINEAR; };
 
-texture PetalShape_Texture1 < source = "AS_RedRosePetal1.png"; > { Width = TEXTURE_WIDTH; Height = TEXTURE_HEIGHT; Format = RGBA8; };
-sampler PetalShape_Sampler1 { Texture = PetalShape_Texture1; AddressU = CLAMP; AddressV = CLAMP; MinFilter = LINEAR; MagFilter = LINEAR; MipFilter = LINEAR; };
+#ifndef __PETAL_ATLAS_TEXTURE_PATH
+#define __PETAL_ATLAS_TEXTURE_PATH "AS_petals.atlas.png" // Corrected path
+#endif
 
-texture PetalShape_Texture2 < source = "AS_RedRosePetal2.png"; > { Width = TEXTURE_WIDTH; Height = TEXTURE_HEIGHT; Format = RGBA8; };
-sampler PetalShape_Sampler2 { Texture = PetalShape_Texture2; AddressU = CLAMP; AddressV = CLAMP; MinFilter = LINEAR; MagFilter = LINEAR; MipFilter = LINEAR; };
+texture PetalAtlasTexture < source = __PETAL_ATLAS_TEXTURE_PATH; ui_label = "Petal Atlas"; > {
+    Width = 1024; Height = 512; Format = RGBA8; // Atlas dimensions from manifest
+};
+sampler PetalAtlas_Sampler { Texture = PetalAtlasTexture; AddressU = CLAMP; AddressV = CLAMP; MinFilter = LINEAR; MagFilter = LINEAR; MipFilter = LINEAR; };
 
 // --- Shader Constants ---
 #define ALPHA_THRESHOLD 0.01      // Minimum alpha value for a petal to be considered visible
@@ -270,6 +283,8 @@ uniform float PetalBaseAlpha < ui_type = "slider"; ui_label = "Opacity"; ui_cate
 uniform float PetalBaseSize < ui_type = "slider"; ui_label = "Size"; ui_category = "Petals"; ui_min = 0.001; ui_max = 0.5; ui_step=0.001; > = 0.110; 
 uniform float PetalSizeVariation < ui_type = "slider"; ui_label = "Size Variation"; ui_category = "Petals"; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; > = 1.0;
 uniform int PetalShadingMode < ui_type = "combo"; ui_label = "Overlapping Mode"; ui_category = "Petals"; ui_items = "Transparent Blend\0Opaque (Solid)\0"; ui_tooltip = "Choose how petals blend with the scene."; > = 1;
+uniform int PetalType < ui_type = "combo"; ui_label = "Petal Type"; ui_category = "Petals"; ui_items = "Roses\0Cherry Blossoms\0"; ui_tooltip = "Choose the type of petals to display."; > = 0;
+uniform int PetalVariety < ui_type = "slider"; ui_label = "Petal Variety"; ui_category = "Petals"; ui_min = 1; ui_max = 4; ui_tooltip = "Number of different petal sprites to use from the selected type (1 to 4)."; > = 2;
 
 // ---- Layers ----
 uniform float GlobalVoronoiDensity < ui_type = "slider"; ui_label = "Density"; ui_category = "Layers"; ui_min = 1.0; ui_max = 30.0; ui_step = 0.5; > = 7.0; 
@@ -317,7 +332,8 @@ uniform int DebugMode <
                "Cell Structure\0"
                "Single Petal Alpha\0"
                "Flutter Effect\0"
-               "Petal Texture Test\0"; 
+               "Petal Texture Test\0"
+               "Atlas Tile View\0"; 
     ui_tooltip = "Tools for visualizing different aspects of the effect.";
 > = 0;
 
@@ -511,16 +527,35 @@ float4 DrawPetalInstance(float2 uvForVoronoiLookup, float2 originalScreenUV, flo
 
     float sizeVariation = (petalRandomFactor - 0.5) * 2.0 * PetalSizeVariation;
     float currentPetalVisualSize = PetalBaseSize * (1.0 + sizeVariation); 
-    if (currentPetalVisualSize <= 0.0001) currentPetalVisualSize = 0.0001;
-    
-    float2 texLookupUV = (rotatedPetalSpaceUV / currentPetalVisualSize) + 0.5;
+    if (currentPetalVisualSize <= 0.0001) currentPetalVisualSize = 0.0001;    float2 texLookupUV = (rotatedPetalSpaceUV / currentPetalVisualSize) + 0.5;
 
-    float4 petalTextureSample;
-    if (petalRandomFactor < 0.5) { 
-        petalTextureSample = tex2D(PetalShape_Sampler1, texLookupUV);
-    } else {
-        petalTextureSample = tex2D(PetalShape_Sampler2, texLookupUV);
+    // Sample from atlas based on petal type and random variant
+    // Check if texture coordinates are within valid range (0 to 1)
+    if (texLookupUV.x < 0.0 || texLookupUV.x > 1.0 || texLookupUV.y < 0.0 || texLookupUV.y > 1.0) {
+        return float4(0.0, 0.0, 0.0, 0.0); // Outside valid texture range
     }
+    
+    // Select random variant based on petal random factor and PetalVariety
+    int variant = int(petalRandomFactor * float(PetalVariety));
+    // Clamp to ensure variant is within the actual number of sprites available in the atlas for that type (0 to ATLAS_PETALS_PER_TYPE - 1)
+    variant = clamp(variant, 0, ATLAS_PETALS_PER_TYPE - 1); 
+    
+    // Tile dimensions in normalized texture space (0.0-1.0)
+    float tileWidth = 1.0 / float(ATLAS_COLUMNS);   // 0.25 (4 columns)
+    float tileHeight = 1.0 / float(ATLAS_ROWS);     // 0.5 (2 rows)
+    
+    // Calculate offset to the specific tile
+    float2 tileOffset;
+    tileOffset.x = float(variant) * tileWidth;      // x offset based on variant
+    tileOffset.y = float(PetalType) * tileHeight;   // y offset based on petal type
+    
+    // Transform the original UVs to the specific tile's coordinates
+    float2 scaledUV;
+    scaledUV.x = (texLookupUV.x * tileWidth) + tileOffset.x;
+    scaledUV.y = (texLookupUV.y * tileHeight) + tileOffset.y;
+    
+    // Sample the atlas texture with the calculated coordinates
+    float4 petalTextureSample = tex2D(PetalAtlas_Sampler, scaledUV);
     
     float3 colorFromTexture = petalTextureSample.rgb;
     float petalShapeAlpha = petalTextureSample.a;
@@ -730,7 +765,8 @@ float4 PS_Main(float4 pos : SV_Position, float2 uv : TexCoord) : SV_Target
     // Stage depth check for all rendering paths
     float depthSample = ReShade::GetLinearizedDepth(uv);
     
-    switch(DebugMode) {case 1: // Density Visualization
+    switch(DebugMode) {
+        case 1: // Density Visualization
             float2 testRootUV_density = floor(centeredAspectUV); 
             float2 density_tex_uv_debug = frac(testRootUV_density / DensityCellRepeatScale); 
             float instanceDensityNoise_debug = tex2D(PetalFlutter_samplerNoiseSource, density_tex_uv_debug * NoiseTexScale + currentTime * 0.005).r;
@@ -756,8 +792,31 @@ float4 PS_Main(float4 pos : SV_Position, float2 uv : TexCoord) : SV_Target
         case 5: // Petal Texture Test
             // Pass 0.0f for currentWindStrength argument
             float4 texPetal = DrawPetalInstance(centeredAspectUV, uv, 0.0, currentTime, 1.0, UserDirection * BaseDriftSpeed); 
-            return float4(texPetal.rgb * texPetal.a, texPetal.a);        case 0: // Normal Effect
-        default:        // RenderPetalLayers now handles PetalShadingMode internally
+            return float4(texPetal.rgb * texPetal.a, texPetal.a);
+        case 6: // Atlas Tile View
+        {
+            // Tile dimensions in normalized texture space (0.0-1.0)
+            float tileWidth = 1.0 / float(ATLAS_COLUMNS);
+            float tileHeight = 1.0 / float(ATLAS_ROWS);
+
+            // For this debug view, let's pick the first variant (variant 0)
+            int variantIndex = 0; 
+
+            // Calculate offset to the specific tile based on PetalType and variantIndex
+            float2 tileOffset;
+            tileOffset.x = float(variantIndex) * tileWidth;
+            tileOffset.y = float(PetalType) * tileHeight; // PetalType from UI
+
+            // Transform the screen UVs to the specific tile's coordinates
+            float2 atlasUV;
+            atlasUV.x = (uv.x * tileWidth) + tileOffset.x;
+            atlasUV.y = (uv.y * tileHeight) + tileOffset.y;
+            
+            return tex2D(PetalAtlas_Sampler, atlasUV);
+        }
+        case 0: // Normal Effect
+        default:
+            // RenderPetalLayers now handles PetalShadingMode internally
             // for layer blending, but we still handle final blending with the scene here
             float4 layeredPetalColor = RenderPetalLayers(centeredAspectUV, uv, currentTime); 
               // Stage depth check - don't apply effect on pixels with depth less than our stage depth
