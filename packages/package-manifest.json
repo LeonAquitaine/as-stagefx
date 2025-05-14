@@ -1,6 +1,6 @@
 {
     "packageVersion":  "1.7.2",
-    "generatedOn":  "2025-05-13 21:14:06",
+    "generatedOn":  "2025-05-13 22:56:12",
     "version":  "1.7.2",
     "packages":  {
                      "essentials":  {
@@ -36,8 +36,8 @@
                                     },
                      "visualEffects":  {
                                            "files":  [
-                                                         "AS_GFX_ClairObscur.1.fx",
                                                          "AS_LFX_CandleFlame.1.fx",
+                                                         "AS_VFX_ClairObscur.1.fx",
                                                          "AS_VFX_DigitalArtifacts.1.fx",
                                                          "AS_VFX_DustMotes.1.fx",
                                                          "AS_VFX_RadiantFire.1.fx",
@@ -99,7 +99,6 @@
                                                     "AS_BGX_WavySquares.1.fx",
                                                     "AS_BGX_WavySquiggles.1.fx",
                                                     "AS_BGX_ZippyZaps.1.fx",
-                                                    "AS_GFX_ClairObscur.1.fx",
                                                     "AS_GFX_MultiLayerHalftone.1.fx",
                                                     "AS_LFX_CandleFlame.1.fx",
                                                     "AS_LFX_LaserShow.1.fx",
@@ -110,6 +109,7 @@
                                                     "AS_Perspective.1.fxh",
                                                     "AS_Utils.1.fxh",
                                                     "AS_VFX_BoomSticker.1.fx",
+                                                    "AS_VFX_ClairObscur.1.fx",
                                                     "AS_VFX_DigitalArtifacts.1.fx",
                                                     "AS_VFX_DustMotes.1.fx",
                                                     "AS_VFX_MotionTrails.1.fx",
