@@ -14,6 +14,7 @@ The Essentials package includes these foundation libraries used by all shaders:
 - **AS_Noise.1.fxh** - Noise generation functions (Perlin, Simplex, FBM, etc.)
 - **AS_Palette.1.fxh** - Color palette and gradient system
 - **AS_Palette_Styles.1.fxh** - Preset color palettes and styles
+- **AS_Perspective.1.fxh** - Perspective and 3D utility functions
 
 ---
 

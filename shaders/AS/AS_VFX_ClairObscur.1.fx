@@ -1,5 +1,5 @@
 /**
- * AS_GFX_ClairObscur.1.fx - Floating Petals Visual Effect
+ * AS_VFX_ClairObscur.1.fx - Floating Petals Visual Effect
  * Author: Leon Aquitaine
  * License: Creative Commons Attribution 4.0 International
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
@@ -31,8 +31,8 @@
 // ============================================================================
 // TECHNIQUE GUARD - Prevents duplicate loading of the same shader
 // ============================================================================
-#ifndef __AS_GFX_ClairObscur_1_fx
-#define __AS_GFX_ClairObscur_1_fx
+#ifndef __AS_VFX_ClairObscur_1_fx
+#define __AS_VFX_ClairObscur_1_fx
 
 #include "ReShade.fxh"
 #include "AS_Utils.1.fxh" // For AS_getTime()
@@ -890,7 +890,7 @@ float4 PS_Main(float4 pos : SV_Position, float2 uv : TexCoord) : SV_Target
 
 // --- Technique Definition ---
 technique FlutteringPetals < 
-    ui_label="[AS] GFX: Clair Obscur"; 
+    ui_label="[AS] VFX: Clair Obscur"; 
     ui_tooltip = "Creates a beautiful cascade of floating petals with realistic movement, natural rotation variation, and elegant entrance/exit effects";
 > {
     pass {
@@ -899,4 +899,4 @@ technique FlutteringPetals <
     }
 }
 
-#endif // __AS_GFX_ClairObscur_1_fx
+#endif // __AS_VFX_ClairObscur_1_fx

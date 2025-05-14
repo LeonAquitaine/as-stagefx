@@ -37,10 +37,12 @@ Effects are categorized as Background (BGX), Graphic (GFX), Lighting (LFX), and 
 ### Background Effects (BGX)
 -   **Cosmic Kaleidoscope**: Renders a raymarched volumetric fractal (Mandelbox/Mandelbulb-like) with adjustable parameters, kaleidoscopic mirroring, audio reactivity, palette-based coloring, and full rotation/position/depth control. Includes fixes for tiling and rotation from the original source.
 -   **Digital Brain**: Abstract visualization of a digital brain neural network with animated Voronoi patterns and neural-like connections. Features dynamic pattern generation, animated electrical pulses, organic variation through texture sampling, and extensive animation/pattern controls.
--   **Fractal Strands**: Intricate, evolving fractal patterns; customizable type, depth, colors, animation, audio reactivity.
 -   **Light Ripples**: Mesmerizing, rippling kaleidoscopic light patterns with customizable distortion, animation, color palettes (with cycling), audio reactivity, depth-awareness, rotation, and blending.
 -   **Light Wall**: Seamless, soft, overlapping grid of light panels with 14 built-in patterns. Features audio reactivity, customizable palettes, light bursts, 3D perspective, and blend modes.
+-   **Liquid Chrome**: Creates dynamic, flowing psychedelic patterns reminiscent of liquid metal or chrome. This shader iteratively distorts screen coordinates, creating complex, flowing patterns with optional vertical stripe overlays for additional visual texture.
 -   **Melt Wave**: Flowing, warping psychedelic effect with sine-based distortions. Features adjustable zoom/intensity, palette system, time-based animation with keyframes, audio reactivity, and position/rotation controls.
+-   **Misty Grid**: Creates an abstract fractal-based grid background with a misty, ethereal appearance using raymarching techniques. Features dynamic fractal-based grid environment, customizable colors with palette system, folding and repetition for complex patterns, camera movement simulation with smooth rotations, audio reactivity affecting multiple parameters (fractal scale, folding intensity, saturation, brightness, camera zoom, animation speed), and standard position/rotation/scale controls.
+-   **Past Racer**: A ray marching shader that generates one of two selectable abstract procedural scenes. Features domain repetition, custom transformations, and pseudo-random patterns. Scene geometry and flare effects can be reactive to audio frequency bands.
 -   **Plasma Flow**: Sophisticated, gentle, flexible plasma effect with procedural noise and domain warping. Generates smooth, swirling, organic patterns with customizable color gradients (2-4 colors) and audio-reactive modulation of movement, color, brightness, and turbulence.
 -   **Shine On**: Dynamic, evolving fractal noise pattern with bright, sparkly, moving crystal highlights. Features layered noise, procedural animation, customizable crystal parameters, audio reactivity, and depth-awareness.
 -   **Stained Lights**: Dynamic, colorful patterns like stained glass with shifting light and blurred layers. Features multi-layered/iterated patterns, animation, customizable scaling/edges, audio reactivity, post-processing, and depth-awareness.
@@ -61,9 +63,10 @@ Effects are categorized as Background (BGX), Graphic (GFX), Lighting (LFX), and 
 
 ### Visual Effects (VFX)
 -   **Boom Sticker**: Displays a texture overlay ("sticker") with controls for placement, scale, rotation, audio reactivity, and depth masking.
--   **Broken Glass**: Broken glass/mirror effect; customizable crack patterns.
 -   **Digital Artifacts**: Creates stylized digital artifacts, glitch effects, and hologram visuals with 3D positioning. Features audio-reactive intensity, depth control, and various effect types.
+-   **Dust Motes**: Simulates static, sharp-bordered dust motes using two independent particle layers. A blur effect is applied to the final image in areas covered by particles. Supports depth masking, rotation, audio reactivity and standard AS blending modes.
 -   **Motion Trails**: Creates striking, persistent motion trails based on depth. Features multiple capture modes, audio reactivity, and customizable trail appearance.
+-   **Radiant Fire**: A GPU-based fire simulation that generates flames radiating from subject edges. Rotation now affects the direction of internal physics forces.
 -   **Rainy Window**: Simulates a rainy window with animated droplets, trails, and frost. Features customizable blur, audio-reactive intensity, and optional lightning.
 -   **Screen Ring**: Draws a textured ring/band in screen space with depth occlusion. Customizable position, size, texture, and rotation.
 -   **Sparkle Bloom**: Creates a dynamic sparkle and bloom effect that responds to scene lighting, depth, camera movement, and audio. Features Voronoi noise, customizable lifetime, depth masking, fresnel, and bloom.

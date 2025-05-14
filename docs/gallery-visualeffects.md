@@ -32,12 +32,30 @@ Generates animated procedural candle flames with realistic shape and color gradi
 <table>
 <tr>
 <td width="50%">
+<h4>VFX: Clair Obscur</h4>
+<h5><code>[AS] VFX: Clair Obscur|AS_VFX_ClairObscur.1.fx</code></h5>
+Creates a beautiful cascade of floating petals with realistic movement and organic animation. This effect simulates petals drifting through the air with natural rotation variation and elegant entrance/exit effects.
+</td>
+<td width="50%"><div style="text-align:center">
+</div></td>
+</tr>
+<tr>
+<td width="50%">
 <h4>VFX: Digital Artifacts</h4>
 <h5><code>[AS] VFX: Digital Artifacts|AS_VFX_DigitalArtifacts.1.fx</code></h5>
 Creates stylized digital artifacts, glitch effects, and hologram visuals positionable in 3D space. Features multiple effect types (hologram, blocks, scanlines, RGB shifts, noise), audio-reactive intensity, depth-controlled positioning, customizable colors/timing, and blend modes.
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://github.com/user-attachments/assets/6786cb0a-f2c7-4d82-8584-1c669c7513ea" alt="Digital Artifacts Effect" style="max-width:100%;">
+</div></td>
+</tr>
+<tr>
+<td width="50%">
+<h4>VFX: Dust Motes</h4>
+<h5><code>[AS] VFX: Dust Motes|AS_VFX_DustMotes.1.fx</code></h5>
+Simulates static, sharp-bordered dust motes using two independent particle layers. A blur effect is applied to the final image in areas covered by particles. Supports depth masking, rotation, audio reactivity and standard AS blending modes.
+</td>
+<td width="50%"><div style="text-align:center">
 </div></td>
 </tr>
 <tr>
@@ -49,6 +67,15 @@ Inspired by: <a href="https://www.shadertoy.com/view/ltffzl" target="_new">"Hear
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://github.com/user-attachments/assets/94601169-e214-4a45-8879-444b64c65d33" alt="Rainy Window Effect" style="max-width:100%;">
+</div></td>
+</tr>
+<tr>
+<td width="50%">
+<h4>VFX: Radiant Fire</h4>
+<h5><code>[AS] VFX: Radiant Fire|AS_VFX_RadiantFire.1.fx</code></h5>
+A GPU-based fire simulation that generates flames radiating from subject edges. Rotation now affects the direction of internal physics forces.
+</td>
+<td width="50%"><div style="text-align:center">
 </div></td>
 </tr>
 <tr>
@@ -83,7 +110,7 @@ Creates a rotatable grid that pixelates the image and adds adjustable borders be
 <tr>
 <td width="50%">
 <h4>VFX: VU Meter</h4>
-<h5><code>[AS] VU Meter Background|AS_VFX_VUMeter.1.fx</code></h5>
+<h5><code>[AS] VU Meter|AS_VFX_VUMeter.1.fx</code></h5>
 Creates an audio-reactive VU meter visualization with multiple display styles (vertical/horizontal bars, line, dots, classic VU). Features customizable appearance with various palettes, adjustable bar width/spacing/roundness, zoom/pan controls, and audio sensitivity settings.
 </td>
 <td width="50%"><div style="text-align:center">

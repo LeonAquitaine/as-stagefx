@@ -68,23 +68,23 @@ Based on: <a href="https://www.shadertoy.com/view/4sl3Dr" target="_new">original
 Renders a mesmerizing and intricate animated background effect reminiscent of golden clockwork mechanisms or Apollonian gasket-like fractal patterns. The effect features complex, evolving geometric designs with a characteristic golden color palette. Features procedurally generated Apollonian fractal patterns, dynamic animation driven by time, a golden color scheme with lighting and shading effects, depth-like progression through fractal layers, kaleidoscopic and mirroring options for pattern variation, resolution-independent rendering, and UI controls for animation (speed, keyframe, path speed), palette, fractal/kaleidoscope parameters, audio reactivity, stage controls (position, scale, rotation, depth), and blending.
 </td>
 <td width="50%"><div style="text-align:center">
-</div>
 <img src="https://github.com/user-attachments/assets/583dfe11-c8b6-4e34-ad79-35d875ce32c6"/>
+</div>
 </td>
+</tr>
+<tr>
+<td width="50%">
+<h4>BGX: Liquid Chrome</h4>
+<h5><code>[AS] BGX: Liquid Chrome|AS_BGX_LiquidChrome.1.fx</code></h5>
+Creates dynamic, flowing psychedelic patterns reminiscent of liquid metal or chrome. This shader iteratively distorts screen coordinates, creating complex, flowing patterns with optional vertical stripe overlays for additional visual texture.
+</td>
+<td width="50%"><div style="text-align:center">
+</div></td>
 </tr>
 <tr>
 <td width="50%">
 <h4>BGX: Light Wall</h4>
 <h5><code>[AS] BGX: Light Wall|AS_BGX_LightWall.1.fx</code></h5>
-Renders a seamless, soft, overlapping grid of light panels with various built-in patterns (14 total, including Heart, Diamond, Beat Meter). Features audio-reactive panels pulsing to music, customizable color palettes (9 presets + custom), light burst effects, cross beams, 3D perspective controls (tilt, pitch, roll), and multiple blend modes. Perfect for dance club/concert backdrops.
-</td>
-<td width="50%"><div style="text-align:center">
-<img src="https://github.com/user-attachments/assets/ece86ab7-36f1-459c-8c83-31414c3b5cc3" alt="Light Wall Effect" style="max-width:100%;">
-</div></td>
-</tr>
-<tr>
-<td width="50%">
-<h4>BGX: Melt Wave</h4>
 <h5><code>[AS] BGX: Melt Wave|AS_BGX_MeltWave.1.fx</code></h5>
 Creates a flowing, warping psychedelic effect inspired by 1970s visual aesthetics. Generates mesmerizing colored patterns with sine-based distortions that evolve over time. Features adjustable zoom/intensity, a palette system (mathematical or preset colors), dynamic time-based animation with keyframe support, audio reactivity mappable to different parameters, and resolution-independent transformation with position/rotation controls.
 </td>
@@ -103,6 +103,15 @@ Based on: <a href="https://www.shadertoy.com/view/wl2Szd" target="_new">"Misty G
 <td width="50%">
 <img src="https://github.com/user-attachments/assets/ddd37fd8-70be-442c-aaed-f31063f8d9e9"/>
 </td>
+</tr>
+<tr>
+<td width="50%">
+<h4>BGX: Past Racer</h4>
+<h5><code>[AS] BGX: Past Racer|AS_BGX_PastRacer.1.fx</code></h5>
+A ray marching shader that generates one of two selectable abstract procedural scenes. Features domain repetition, custom transformations, and pseudo-random patterns. Scene geometry and flare effects can be reactive to audio frequency bands.
+</td>
+<td width="50%"><div style="text-align:center">
+</div></td>
 </tr>
 <tr>
 <td width="50%">
