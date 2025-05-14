@@ -535,10 +535,61 @@ float4 DrawPetalInstance(float2 uvForVoronoiLookup, float2 originalScreenUV, flo
         return float4(0.0, 0.0, 0.0, 0.0); // Outside valid texture range
     }
     
-    // Select random variant based on petal random factor and PetalVariety
-    int variant = int(petalRandomFactor * float(PetalVariety));
-    // Clamp to ensure variant is within the actual number of sprites available in the atlas for that type (0 to ATLAS_PETALS_PER_TYPE - 1)
-    variant = clamp(variant, 0, ATLAS_PETALS_PER_TYPE - 1); 
+    // Weighted selection of petal variant based on PetalVariety
+    int variant; // This will be our selected variant index
+    { // Scope for temporary variables for weighted selection logic
+        float petal_weights[4] = { 4.0f, 3.0f, 2.0f, 1.0f }; // Weights for variant 0, 1, 2, 3
+        float cumulative_petal_weights[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+        float total_selected_petal_weight = 0.0f;
+        int num_variants_in_pool = PetalVariety; // How many variants are active based on UI (1-4)
+
+        // Calculate total and cumulative weights for the active variants
+        if (num_variants_in_pool >= 1) {
+            total_selected_petal_weight += petal_weights[0];
+            cumulative_petal_weights[0] = petal_weights[0];
+        }
+        if (num_variants_in_pool >= 2) {
+            total_selected_petal_weight += petal_weights[1];
+            cumulative_petal_weights[1] = cumulative_petal_weights[0] + petal_weights[1];
+        }
+        if (num_variants_in_pool >= 3) {
+            total_selected_petal_weight += petal_weights[2];
+            cumulative_petal_weights[2] = cumulative_petal_weights[1] + petal_weights[2];
+        }
+        if (num_variants_in_pool >= 4) { // PetalVariety can be up to 4, matching ATLAS_PETALS_PER_TYPE
+            total_selected_petal_weight += petal_weights[3];
+            cumulative_petal_weights[3] = cumulative_petal_weights[2] + petal_weights[3];
+        }
+
+        // Handle edge case of zero total weight (though PetalVariety min is 1, ensuring this is unlikely)
+        if (total_selected_petal_weight <= 0.0001f) { 
+            total_selected_petal_weight = 1.0f; 
+        }
+
+        float random_roll = petalRandomFactor * total_selected_petal_weight;
+        
+        // Determine variant based on random_roll and cumulative_petal_weights
+        if (num_variants_in_pool >= 1 && random_roll < cumulative_petal_weights[0]) {
+            variant = 0;
+        } else if (num_variants_in_pool >= 2 && random_roll < cumulative_petal_weights[1]) {
+            variant = 1;
+        } else if (num_variants_in_pool >= 3 && random_roll < cumulative_petal_weights[2]) {
+            variant = 2;
+        } else if (num_variants_in_pool >= 4 && random_roll < cumulative_petal_weights[3]) {
+            variant = 3;
+        } else {
+            // Fallback: if random_roll was >= last cumulative weight (e.g. petalRandomFactor was 1.0)
+            // or if num_variants_in_pool was unexpectedly low.
+            // Default to the last variant within the active pool.
+            variant = num_variants_in_pool - 1; 
+        }
+        
+        // Final clamp to ensure variant index is valid for the atlas (0 to ATLAS_PETALS_PER_TYPE - 1)
+        // This is a safeguard, as 'variant' should already be within [0, num_variants_in_pool-1]
+        // and num_variants_in_pool is already clamped by UI (1-4) and <= ATLAS_PETALS_PER_TYPE.
+        variant = clamp(variant, 0, ATLAS_PETALS_PER_TYPE - 1);
+    }
+    // 'variant' now holds the weighted-randomly selected petal variant index.
     
     // Tile dimensions in normalized texture space (0.0-1.0)
     float tileWidth = 1.0 / float(ATLAS_COLUMNS);   // 0.25 (4 columns)
