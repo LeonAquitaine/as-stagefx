@@ -1,10 +1,10 @@
 {
-    "packageVersion":  "1.7.1",
-    "generatedOn":  "2025-05-13 15:39:27",
-    "version":  "1.7.1",
+    "packageVersion":  "1.7.2",
+    "generatedOn":  "2025-05-13 21:07:02",
+    "version":  "1.7.2",
     "packages":  {
                      "essentials":  {
-                                        "version":  "1.7.1",
+                                        "version":  "1.7.2",
                                         "name":  "AS_StageFX_Essentials",
                                         "files":  [
                                                       "AS_BGX_LightRipples.1.fx",
@@ -26,10 +26,9 @@
                                         "description":  "Core library files and essential visual effects for general use",
                                         "fileCount":  15,
                                         "textures":  {
-                                                         "fileCount":  4,
+                                                         "fileCount":  3,
                                                          "files":  [
-                                                                       "AS_RedRosePetal1.png",
-                                                                       "AS_RedRosePetal2.png",
+                                                                       "AS_petals.atlas.png",
                                                                        "perlin512x8CNoise.png",
                                                                        "perlin512x8Noise.png"
                                                                    ]
@@ -52,7 +51,7 @@
                                                      ],
                                            "description":  "Complete collection of visual effects (Requires Essentials)",
                                            "name":  "AS_StageFX_VisualEffects",
-                                           "version":  "1.7.1",
+                                           "version":  "1.7.2",
                                            "fileCount":  12
                                        },
                      "backgrounds":  {
@@ -75,11 +74,11 @@
                                                    ],
                                          "description":  "Complete collection of background effects (Requires Essentials)",
                                          "name":  "AS_StageFX_Backgrounds",
-                                         "version":  "1.7.1",
+                                         "version":  "1.7.2",
                                          "fileCount":  15
                                      },
                      "complete":  {
-                                      "version":  "1.7.1",
+                                      "version":  "1.7.2",
                                       "name":  "AS_StageFX",
                                       "files":  [
                                                     "AS_BGX_BlueCorona.1.fx",
@@ -128,10 +127,9 @@
                                       "description":  "The complete collection of all AS StageFX shaders and utilities",
                                       "fileCount":  42,
                                       "textures":  {
-                                                       "fileCount":  4,
+                                                       "fileCount":  3,
                                                        "files":  [
-                                                                     "AS_RedRosePetal1.png",
-                                                                     "AS_RedRosePetal2.png",
+                                                                     "AS_petals.atlas.png",
                                                                      "perlin512x8CNoise.png",
                                                                      "perlin512x8Noise.png"
                                                                  ]

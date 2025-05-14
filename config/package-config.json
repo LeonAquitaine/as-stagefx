@@ -58,5 +58,5 @@
   "packageDisplayOrder": ["complete", "essentials", "visualEffects", "backgrounds"],
   "readmeTemplate": "# AS StageFX Package\nVersion: {version}\n\n## Description\n{description}{textureNote}\n\n## Installation\n1. Copy the entire contents of this package to your ReShade installation directory\n   (This is usually your game directory that contains the ReShade DLL)\n2. The shaders will appear in the ReShade effects list under their respective categories\n\n## Support\nFor help and updates, visit: {supportUrl}\n",
   "supportUrl": "https://github.com/YOUR-USERNAME/as-stagefx",
-  "version": "1.7.1"
+  "version": "1.7.2"
 }

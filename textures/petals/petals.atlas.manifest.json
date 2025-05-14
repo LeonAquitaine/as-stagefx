@@ -1,0 +1,67 @@
+{
+  "AtlasName": "petals",
+  "Width": 1024,
+  "Height": 512,
+  "TileWidth": 256,
+  "TileHeight": 256,
+  "Columns": 4,
+  "Rows": 2,
+  "Images": [
+    {
+      "FileName": "AS_RosePetal1.optimal.png",
+      "X": 0,
+      "Y": 0,
+      "Width": 256,
+      "Height": 256
+    },
+    {
+      "FileName": "AS_RosePetal2.optimal.png",
+      "X": 256,
+      "Y": 0,
+      "Width": 256,
+      "Height": 256
+    },
+    {
+      "FileName": "AS_RosePetal3.optimal.png",
+      "X": 512,
+      "Y": 0,
+      "Width": 256,
+      "Height": 256
+    },
+    {
+      "FileName": "AS_RosePetal4.optimal.png",
+      "X": 768,
+      "Y": 0,
+      "Width": 256,
+      "Height": 256
+    },
+    {
+      "FileName": "AS_SakuraPetal1.optimal.png",
+      "X": 0,
+      "Y": 256,
+      "Width": 256,
+      "Height": 256
+    },
+    {
+      "FileName": "AS_SakuraPetal2.optimal.png",
+      "X": 256,
+      "Y": 256,
+      "Width": 256,
+      "Height": 256
+    },
+    {
+      "FileName": "AS_SakuraPetal3.optimal.png",
+      "X": 512,
+      "Y": 256,
+      "Width": 256,
+      "Height": 256
+    },
+    {
+      "FileName": "AS_SakuraPetal4.optimal.png",
+      "X": 768,
+      "Y": 256,
+      "Width": 256,
+      "Height": 256
+    }
+  ]
+}
