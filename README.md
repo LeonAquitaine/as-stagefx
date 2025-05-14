@@ -35,10 +35,13 @@ AS-StageFX provides a collection of performant, customizable, and audio-reactive
 Effects are categorized as Background (BGX), Graphic (GFX), Lighting (LFX), and Visual (VFX).
 
 ### Background Effects (BGX)
+-   **Blue Corona**: Vibrant, abstract blue corona with fluid, dynamic motion and hypnotic, organic, plasma-like visuals. Features customizable iteration/scale, speed/flow, color controls, audio reactivity, depth-awareness, and standard position/rotation/scale/blend options.
+-   **Corridor Travel**: Simulates an artistic flight through an abstract, glowing, patterned tunnel. Features multiple samples per pixel for pseudo-DOF and motion blur, and simulates light bounces with artistic reflection logic.
 -   **Cosmic Kaleidoscope**: Renders a raymarched volumetric fractal (Mandelbox/Mandelbulb-like) with adjustable parameters, kaleidoscopic mirroring, audio reactivity, palette-based coloring, and full rotation/position/depth control. Includes fixes for tiling and rotation from the original source.
 -   **Digital Brain**: Abstract visualization of a digital brain neural network with animated Voronoi patterns and neural-like connections. Features dynamic pattern generation, animated electrical pulses, organic variation through texture sampling, and extensive animation/pattern controls.
+-   **Golden Clockwork**: Intricate, animated golden clockwork or Apollonian fractal patterns. Features complex geometric designs and dynamic movement with a golden palette. Offers extensive controls for animation (speed, keyframe, path evolution), complexity, color, audio reactivity, stage presence (position, scale, rotation, depth), and blending.
 -   **Light Ripples**: Mesmerizing, rippling kaleidoscopic light patterns with customizable distortion, animation, color palettes (with cycling), audio reactivity, depth-awareness, rotation, and blending.
--   **Light Wall**: Seamless, soft, overlapping grid of light panels with 14 built-in patterns. Features audio reactivity, customizable palettes, light bursts, 3D perspective, and blend modes.
+-   **Light Wall**: This shader renders a seamless, soft, overlapping grid of light panels with various built-in patterns. Perfect for creating dance club and concert backdrops with fully customizable colors, patterns, and audio reactivity.
 -   **Liquid Chrome**: Creates dynamic, flowing psychedelic patterns reminiscent of liquid metal or chrome. This shader iteratively distorts screen coordinates, creating complex, flowing patterns with optional vertical stripe overlays for additional visual texture.
 -   **Melt Wave**: Flowing, warping psychedelic effect with sine-based distortions. Features adjustable zoom/intensity, palette system, time-based animation with keyframes, audio reactivity, and position/rotation controls.
 -   **Misty Grid**: Creates an abstract fractal-based grid background with a misty, ethereal appearance using raymarching techniques. Features dynamic fractal-based grid environment, customizable colors with palette system, folding and repetition for complex patterns, camera movement simulation with smooth rotations, audio reactivity affecting multiple parameters (fractal scale, folding intensity, saturation, brightness, camera zoom, animation speed), and standard position/rotation/scale controls.
@@ -49,9 +52,7 @@ Effects are categorized as Background (BGX), Graphic (GFX), Lighting (LFX), and 
 -   **Time Crystal**: Hypnotic, crystalline fractal structure with dynamic animation and color cycling. Features customizable iterations, speed, density/detail, palettes, audio reactivity, depth-awareness, and position/rotation controls.
 -   **Wavy Squares**: Hypnotic pattern of wavy, animated, transforming square tiles with dynamic size changes. Features customizable wave parameters, tile size/scaling, smoothness/roundness, audio reactivity, depth-awareness, rotation, and standard position/scale/blend options.
 -   **Wavy Squiggles**: Mesmerizing pattern of adaptive wavy lines following a fixed position, forming intricate, rotating designs. Features customizable line parameters, color palettes, pattern displacement, audio reactivity, depth-awareness, and rotation.
--   **Blue Corona**: Vibrant, abstract blue corona with fluid, dynamic motion and hypnotic, organic, plasma-like visuals. Features customizable iteration/scale, speed/flow, color controls, audio reactivity, depth-awareness, and standard position/rotation/scale/blend options.
 -   **Zippy Zaps**: Dynamic electric arcs/lightning patterns with procedural generation. Features customizable colors, intensity, animation, resolution independence, audio reactivity, depth-awareness, and 3D rotation/positioning.
--   **Golden Clockwork**: Intricate, animated golden clockwork or Apollonian fractal patterns. Features complex geometric designs and dynamic movement with a golden palette. Offers extensive controls for animation (speed, keyframe, path evolution), complexity, color, audio reactivity, stage presence (position, scale, rotation, depth), and blending.
 
 ### Graphic Effects (GFX)
 -   **Multi-Layer Halftone**: Highly customizable multi-layer halftone (up to 4 layers). Each layer supports different patterns (dots, lines, crosshatch), isolation methods (brightness, RGB, hue, depth), colors, thresholds, scales, densities, angles, and layer blending.
@@ -63,6 +64,7 @@ Effects are categorized as Background (BGX), Graphic (GFX), Lighting (LFX), and 
 
 ### Visual Effects (VFX)
 -   **Boom Sticker**: Displays a texture overlay ("sticker") with controls for placement, scale, rotation, audio reactivity, and depth masking.
+-   **Clair Obscur**: Creates a beautiful cascade of floating petals with realistic movement and organic animation. This effect simulates petals drifting through the air with natural rotation variation and elegant entrance/exit effects.
 -   **Digital Artifacts**: Creates stylized digital artifacts, glitch effects, and hologram visuals with 3D positioning. Features audio-reactive intensity, depth control, and various effect types.
 -   **Dust Motes**: Simulates static, sharp-bordered dust motes using two independent particle layers. A blur effect is applied to the final image in areas covered by particles. Supports depth masking, rotation, audio reactivity and standard AS blending modes.
 -   **Motion Trails**: Creates striking, persistent motion trails based on depth. Features multiple capture modes, audio reactivity, and customizable trail appearance.

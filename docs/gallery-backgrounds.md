@@ -29,7 +29,7 @@ Original: <a href="https://www.shadertoy.com/view/XfKGWV" target="_new">"Blue Co
 <td width="50%">
 <h4>BGX: Corridor Travel</h4>
 <h5><code>[AS] BGX: Corridor Travel|AS_BGX_CorridorTravel.1.fx</code></h5>
-Simulates an artistic flight through an abstract, glowing, patterned tunnel. Features multiple samples per pixel for pseudo-DOF and motion blur, and simulates light bounces with artistic reflection logic. Includes highly tunable graphics and animation parameters, realistic-looking reflections, animated grid/cell/floor patterns, complex camera movement with adjustable rotation, and audio reactivity for various parameters.<br><br>
+Simulates an artistic flight through an abstract, glowing, patterned tunnel. Features multiple samples per pixel for pseudo-DOF and motion blur, and simulates light bounces with artistic reflection logic.<br><br>
 Original: <a href="https://www.shadertoy.com/view/3sXyRN" target="_new">Shader by NuSan</a>.
 </td>
 <td width="50%"><div style="text-align:center">
@@ -74,6 +74,17 @@ Renders a mesmerizing and intricate animated background effect reminiscent of go
 </tr>
 <tr>
 <td width="50%">
+<h4>BGX: Light Wall</h4>
+<h5><code>[AS] BGX: Light Wall|AS_BGX_LightWall.1.fx</code></h5>
+This shader renders a seamless, soft, overlapping grid of light panels with various built-in patterns. Perfect for creating dance club and concert backdrops with fully customizable colors, patterns, and audio reactivity.
+</td>
+<td width="50%"><div style="text-align:center">
+</div>
+<img src="https://github.com/user-attachments/assets/4871c7be-b540-4f19-8cb2-bbd0c47ac237"/>
+</td>
+</tr>
+<tr>
+<td width="50%">
 <h4>BGX: Liquid Chrome</h4>
 <h5><code>[AS] BGX: Liquid Chrome|AS_BGX_LiquidChrome.1.fx</code></h5>
 Creates dynamic, flowing psychedelic patterns reminiscent of liquid metal or chrome. This shader iteratively distorts screen coordinates, creating complex, flowing patterns with optional vertical stripe overlays for additional visual texture.
@@ -83,8 +94,7 @@ Creates dynamic, flowing psychedelic patterns reminiscent of liquid metal or chr
 </tr>
 <tr>
 <td width="50%">
-<h4>BGX: Light Wall</h4>
-<h5><code>[AS] BGX: Light Wall|AS_BGX_LightWall.1.fx</code></h5>
+<h4>BGX: Melt Wave</h4>
 <h5><code>[AS] BGX: Melt Wave|AS_BGX_MeltWave.1.fx</code></h5>
 Creates a flowing, warping psychedelic effect inspired by 1970s visual aesthetics. Generates mesmerizing colored patterns with sine-based distortions that evolve over time. Features adjustable zoom/intensity, a palette system (mathematical or preset colors), dynamic time-based animation with keyframe support, audio reactivity mappable to different parameters, and resolution-independent transformation with position/rotation controls.
 </td>

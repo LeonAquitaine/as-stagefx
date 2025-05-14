@@ -10,11 +10,65 @@ This gallery provides detailed descriptions and visual examples of the shaders i
 
 The Essentials package includes these foundation libraries used by all shaders:
 
-- **AS_Utils.1.fxh** - Core utility functions, constants, and common code
 - **AS_Noise.1.fxh** - Noise generation functions (Perlin, Simplex, FBM, etc.)
 - **AS_Palette.1.fxh** - Color palette and gradient system
 - **AS_Palette_Styles.1.fxh** - Preset color palettes and styles
 - **AS_Perspective.1.fxh** - Perspective and 3D utility functions
+- **AS_Utils.1.fxh** - Core utility functions, constants, and common code
+
+---
+
+## Background Effects (BGX)
+
+<table>
+<tr>
+<td width="50%">
+<h4>BGX: Light Ripples</h4>
+<h5><code>[AS] BGX: Light Ripples|AS_BGX_LightRipples.1.fx</code></h5>
+Creates a mesmerizing, rippling kaleidoscopic light pattern effect. Suitable as a dynamic background or overlay. Includes controls for animation, distortion (amplitude, frequencies), color palettes with cycling, audio reactivity, depth-aware rendering, adjustable rotation, and standard blending options.<br><br>
+Original: <a href="https://www.pouet.net/prod.php?which=57245" target="_new">Shader by Danilo Guanabara</a>.
+</td>
+<td width="50%"><div style="text-align:center">
+</div></td>
+</tr>
+<tr>
+<td width="50%">
+<h4>BGX: Stained Lights</h4>
+<h5><code>[AS] BGX: Stained Lights|AS_BGX_StainedLights.1.fx</code></h5>
+Creates dynamic and colorful patterns reminiscent of stained glass illuminated by shifting light, with multiple blurred layers enhancing depth and visual complexity. Generates layers of distorted, cell-like structures with vibrant, evolving colors and subtle edge highlighting, overlaid with softer, floating elements. Features multi-layered pattern generation (adjustable iterations), dynamic animation with speed control, customizable pattern scaling/edge highlighting, audio reactivity for animation/pattern evolution, post-processing (curve adjustments, noise), blurred floating layers for depth, and depth-aware rendering with standard blending. Suitable for abstract backgrounds, energy fields, or mystical visuals.<br><br>
+Inspired by: <a href="https://www.shadertoy.com/view/WlsSzM" target="_new">"Stained Lights" by 104</a>.
+</td>
+<td width="50%"><div style="text-align:center">
+</div></td>
+</tr>
+<tr>
+<td width="50%">
+<h4>BGX: Time Crystal</h4>
+<h5><code>[AS] BGX: Time Crystal|AS_BGX_TimeCrystal.1.fx</code></h5>
+Creates a hypnotic, crystalline fractal structure with dynamic animation and color cycling. Generates patterns reminiscent of crystalline structures or gems with depth and dimension. Features fractal crystal-like patterns (customizable iterations), dynamic animation (controllable speed), adjustable pattern density/detail, customizable color palettes with cycling, audio reactivity for pattern dynamics/colors, depth-aware rendering with standard blending, and adjustable position/rotation controls. Suitable for mystic or sci-fi backgrounds, portals, or energy fields.
+</td>
+<td width="50%"><div style="text-align:center">
+</div></td>
+</tr>
+</table>
+
+---
+
+## Graphic Effects (GFX)
+
+<table>
+<tr>
+<td width="50%">
+<h4>GFX: Multi-Layer Halftone</h4>
+<h5><code>[AS] Multi-Layer Halftone|AS_GFX_MultiLayerHalftone.1.fx</code></h5>
+Creates a highly customizable multi-layer halftone effect with support for up to four independent layers. Each layer can use different pattern types (dots, lines, crosshatch), isolation methods (brightness, RGB, hue, depth), colors, thresholds, scales, densities, and angles. Features layer blending with transparency support.<br><br>
+Based on: <a href="https://www.shadertoy.com/view/XdcGzn" target="_new">"Halftone Shader" by P. Gonzalez Vivo</a>.
+</td>
+<td width="50%"><div style="text-align:center">
+<img src="https://github.com/user-attachments/assets/b93c9d03-5d23-4b32-aa3e-f2b6a9736c70" alt="Multi-Layer Halftone Effect" style="max-width:100%;">
+</div></td>
+</tr>
+</table>
 
 ---
 
@@ -86,60 +140,6 @@ Isolates foreground subjects based on depth and applies customizable borders and
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://github.com/user-attachments/assets/98097147-0a9e-40ac-ae21-0b19e5241c91" alt="Stencil Mask Effect" style="max-width:100%;">
-</div></td>
-</tr>
-</table>
-
----
-
-## Background Effects (BGX)
-
-<table>
-<tr>
-<td width="50%">
-<h4>BGX: Light Ripples</h4>
-<h5><code>[AS] BGX: Light Ripples|AS_BGX_LightRipples.1.fx</code></h5>
-Creates a mesmerizing, rippling kaleidoscopic light pattern effect. Suitable as a dynamic background or overlay. Includes controls for animation, distortion (amplitude, frequencies), color palettes with cycling, audio reactivity, depth-aware rendering, adjustable rotation, and standard blending options.<br><br>
-Original: <a href="https://www.pouet.net/prod.php?which=57245" target="_new">Shader by Danilo Guanabara</a>.
-</td>
-<td width="50%"><div style="text-align:center">
-</div></td>
-</tr>
-<tr>
-<td width="50%">
-<h4>BGX: Stained Lights</h4>
-<h5><code>[AS] BGX: Stained Lights|AS_BGX_StainedLights.1.fx</code></h5>
-Creates dynamic and colorful patterns reminiscent of stained glass illuminated by shifting light, with multiple blurred layers enhancing depth and visual complexity. Generates layers of distorted, cell-like structures with vibrant, evolving colors and subtle edge highlighting, overlaid with softer, floating elements. Features multi-layered pattern generation (adjustable iterations), dynamic animation with speed control, customizable pattern scaling/edge highlighting, audio reactivity for animation/pattern evolution, post-processing (curve adjustments, noise), blurred floating layers for depth, and depth-aware rendering with standard blending. Suitable for abstract backgrounds, energy fields, or mystical visuals.<br><br>
-Inspired by: <a href="https://www.shadertoy.com/view/WlsSzM" target="_new">"Stained Lights" by 104</a>.
-</td>
-<td width="50%"><div style="text-align:center">
-</div></td>
-</tr>
-<tr>
-<td width="50%">
-<h4>BGX: Time Crystal</h4>
-<h5><code>[AS] BGX: Time Crystal|AS_BGX_TimeCrystal.1.fx</code></h5>
-Creates a hypnotic, crystalline fractal structure with dynamic animation and color cycling. Generates patterns reminiscent of crystalline structures or gems with depth and dimension. Features fractal crystal-like patterns (customizable iterations), dynamic animation (controllable speed), adjustable pattern density/detail, customizable color palettes with cycling, audio reactivity for pattern dynamics/colors, depth-aware rendering with standard blending, and adjustable position/rotation controls. Suitable for mystic or sci-fi backgrounds, portals, or energy fields.
-</td>
-<td width="50%"><div style="text-align:center">
-</div></td>
-</tr>
-</table>
-
----
-
-## Graphic Effects (GFX)
-
-<table>
-<tr>
-<td width="50%">
-<h4>GFX: Multi-Layer Halftone</h4>
-<h5><code>[AS] Multi-Layer Halftone|AS_GFX_MultiLayerHalftone.1.fx</code></h5>
-Creates a highly customizable multi-layer halftone effect with support for up to four independent layers. Each layer can use different pattern types (dots, lines, crosshatch), isolation methods (brightness, RGB, hue, depth), colors, thresholds, scales, densities, and angles. Features layer blending with transparency support.<br><br>
-Based on: <a href="https://www.shadertoy.com/view/XdcGzn" target="_new">"Halftone Shader" by P. Gonzalez Vivo</a>.
-</td>
-<td width="50%"><div style="text-align:center">
-<img src="https://github.com/user-attachments/assets/b93c9d03-5d23-4b32-aa3e-f2b6a9736c70" alt="Multi-Layer Halftone Effect" style="max-width:100%;">
 </div></td>
 </tr>
 </table>
