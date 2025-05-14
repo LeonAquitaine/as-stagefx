@@ -50,7 +50,7 @@
 // ============================================================================
 #include "ReShade.fxh"
 #include "AS_Utils.1.fxh" 
-#include "AS_Perspective.1.fx" // Added for perspective controls
+#include "AS_Perspective.1.fxh" // Added for perspective controls
 
 // ============================================================================
 // CONSTANTS
