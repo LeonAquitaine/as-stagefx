@@ -71,8 +71,8 @@ static const float DEFAULT_COVERAGE_BOOST = 1.05; // Default pattern coverage bo
 // --- UI Range Constants ---
 static const float MIN_FALLOFF = 0.0f;            // Minimum falloff percentage
 static const float MAX_FALLOFF = 100.0f;          // Maximum falloff percentage
-static const float MIN_PATTERN_SIZE = 0.005f;     // Minimum pattern element size
-static const float MAX_PATTERN_SIZE = 0.2f;       // Maximum pattern element size
+static const float MIN_PATTERN_SIZE = 0.001f;     // Minimum pattern element size
+static const float MAX_PATTERN_SIZE = 0.1f;       // Maximum pattern element size
 static const float MIN_COVERAGE_BOOST = 1.0f;     // Minimum pattern coverage boost
 static const float MAX_COVERAGE_BOOST = 1.2f;     // Maximum pattern coverage boost
 
@@ -94,32 +94,26 @@ static const int DEBUG_PATTERN_ONLY = 4;
 //------------------------------------------------------------------------------------------------
 
 // --- Group I: Main Effect Style & Appearance ---
-uniform int EffectStyle < ui_type = "combo"; ui_label = "Visual Style"; ui_items = "Smooth Gradient\0Duotone: Circles\0Duotone: Lines (Perpendicular)\0Duotone: Lines (Parallel)\0"; ui_tooltip = "Selects the overall visual appearance of the effect."; ui_category = "Style"; > = STYLE_SMOOTH_GRADIENT;
-
+uniform int EffectStyle < ui_type = "combo"; ui_label = "Visual Style"; ui_items = "Smooth Gradient\0Duotone: Circles\0Duotone: Lines (Perpendicular)\0Duotone: Lines (Parallel)\0"; ui_tooltip = "Selects the overall visual appearance of the effect."; ui_category = "Style"; > = STYLE_DUOTONE_CIRCLES;
 uniform float3 EffectColor < ui_type = "color"; ui_label = "Effect Color"; ui_tooltip = "The primary color used for the gradient or duotone patterns."; ui_category = "Style"; > = float3(0.0, 0.0, 0.0);
+uniform bool MirrorDirection < ui_type = "checkbox"; ui_label = "Mirror Effect"; ui_tooltip = "Mirrors the directional effect, making it symmetrical around its central axis."; ui_category = "Style"; > = false;
+uniform bool InvertAlpha < ui_type = "checkbox"; ui_label = "Invert Transparency"; ui_tooltip = "Flips the effect's opacity: solid areas become transparent, and vice-versa."; ui_category = "Style"; > = false;
+
 
 // --- Group II: Falloff Controls ---
 uniform float FalloffStart < ui_type = "slider"; ui_label = "Falloff Start (%)"; ui_min = MIN_FALLOFF; ui_max = MAX_FALLOFF; ui_step = 0.1; ui_tooltip = "Defines where the effect begins to transition from solid. Order of Start/End doesn't matter."; ui_category = "Falloff"; > = DEFAULT_FALLOFF_START;
-
 uniform float FalloffEnd < ui_type = "slider"; ui_label = "Falloff End (%)"; ui_min = MIN_FALLOFF; ui_max = MAX_FALLOFF; ui_step = 0.1; ui_tooltip = "Defines where the effect becomes fully transparent after transitioning. Order of Start/End doesn't matter."; ui_category = "Falloff"; > = DEFAULT_FALLOFF_END;
 
 // --- Group III: Pattern Specifics (for Duotone/Lines) ---
 uniform float PatternElementSize < ui_type = "slider"; ui_label = "Pattern Element Size / Spacing"; ui_tooltip = "For Duotone/Lines: Controls the base size of circles, or spacing of lines."; ui_min = MIN_PATTERN_SIZE; ui_max = MAX_PATTERN_SIZE; ui_step = 0.001; ui_category = "Pattern"; > = DEFAULT_PATTERN_SIZE;
-
 uniform float PatternCoverageBoost < ui_type = "slider"; ui_label = "Pattern Coverage Boost"; ui_tooltip = "For Duotone/Lines: Slightly enlarges elements in solid areas to ensure full coverage. 1.0 = no boost."; ui_min = MIN_COVERAGE_BOOST; ui_max = MAX_COVERAGE_BOOST; ui_step = 0.005; ui_category = "Pattern"; > = DEFAULT_COVERAGE_BOOST;
 
 // --- Group IV: Direction & Orientation ---
 // Standard rotation controls for AS StageFX
 AS_ROTATION_UI(SnapRotation, FineRotation)
 
-uniform bool MirrorDirection < ui_type = "checkbox"; ui_label = "Mirror Effect"; ui_tooltip = "Mirrors the directional effect, making it symmetrical around its central axis."; ui_category = "Stage"; > = false;
-
-// --- Group V: Output Control ---
-uniform bool InvertAlpha < ui_type = "checkbox"; ui_label = "Invert Transparency"; ui_tooltip = "Flips the effect's opacity: solid areas become transparent, and vice-versa."; ui_category = "Stage"; > = false;
-
 // --- Stage Depth Control ---
 AS_STAGEDEPTH_UI(EffectDepth)
-
 // --- Final Mix Controls ---
 AS_BLENDMODE_UI(BlendMode)
 AS_BLENDAMOUNT_UI(BlendAmount)
@@ -194,15 +188,22 @@ float2 HexGridCartesianToNearestCell(float2 cartesianCoord, float gridDensity) {
 
 // --- Composition Logic ---
 float GetCompositionFactor(float2 texcoord, float rotation_radians, bool mirror) {
+    // Center coordinates and adjust for aspect ratio
     float2 centered_coord = texcoord - CENTER_COORD;
+    
+    // Apply aspect ratio correction to y-coordinate before rotation
+    centered_coord.y *= ReShade::AspectRatio;
+    
+    // Calculate rotation angles
     float cos_angle = cos(rotation_radians);
     float sin_angle = sin(rotation_radians);
     
     // Calculate rotated coordinate (u component)
     float rotated_u_component = centered_coord.x * cos_angle + centered_coord.y * sin_angle;
     
-    // Normalize to 0-1 range
-    float factor = rotated_u_component + CENTER_COORD;
+    // Normalize back to proper range, adjusting for aspect ratio effects
+    float aspect_compensation = sqrt(cos_angle * cos_angle + sin_angle * sin_angle * ReShade::AspectRatio * ReShade::AspectRatio);
+    float factor = (rotated_u_component / aspect_compensation) + CENTER_COORD;
     
     // Apply mirroring if requested
     if (mirror) {
@@ -215,35 +216,39 @@ float GetCompositionFactor(float2 texcoord, float rotation_radians, bool mirror)
 }
 
 // --- Vignette Alpha Calculation ---
-float CalculateVignetteAlpha(float position, float normalizedStart, float normalizedEnd) {
-    // Ensure start is smaller than end for correct transition
-    float first_threshold = min(normalizedStart, normalizedEnd);
-    float second_threshold = max(normalizedStart, normalizedEnd);
+// --- Vignette Alpha Calculation ---
+float CalculateVignetteAlpha(float position, float normalizedStartInput, float normalizedEndInput) {
+    // Determine the actual start and end of the transition range
+    // to handle cases where user might set FalloffStart > FalloffEnd.
+    float first_threshold = min(normalizedStartInput, normalizedEndInput);
+    float second_threshold = max(normalizedStartInput, normalizedEndInput);
     
-    // Early exit if thresholds are equal (no transition zone)
-    if (first_threshold >= second_threshold) {
+    // If thresholds are the same (or crossed over due to precision, though min/max prevents crossing),
+    // it implies a hard step rather than a smooth transition.
+    if (first_threshold >= second_threshold) { 
         return position <= first_threshold ? 1.0f : 0.0f;
     }
     
-    float transitionFactor = 0.0;
-        
-    if (position <= normalizedStart) {
-        // Before the start point: full effect
-        transitionFactor = 1.0;
+    // Now, use the correctly ordered 'first_threshold' and 'second_threshold'
+    // for the rest of the logic.
+    
+    if (position <= first_threshold) {
+        // Position is before or at the start of the falloff: full effect
+        return 1.0f;
     }
-    else if (position >= normalizedEnd) {
-        // After the end point: no effect
-        transitionFactor = 0.0;
+    else if (position >= second_threshold) {
+        // Position is after or at the end of the falloff: no effect
+        return 0.0f;
     }
     else {
-        // In the transition zone: smooth blend from 1 to 0
-        float normalizedPos = (position - normalizedStart) / (normalizedEnd - normalizedStart);
-        transitionFactor = 1.0 - smoothstep(0.0, 1.0, normalizedPos);
+        // Position is within the transition zone.
+        // Calculate 't' to go from 0 to 1 as 'position' moves from 'first_threshold' to 'second_threshold'.
+        float t = (position - first_threshold) / (second_threshold - first_threshold);
+        // We want alpha to go from 1 (at t=0) down to 0 (at t=1).
+        // smoothstep(0.0, 1.0, t) goes from 0 to 1, so we invert it.
+        return 1.0f - smoothstep(0.0f, 1.0f, t); 
     }
-    
-    return transitionFactor;
 }
-
 //------------------------------------------------------------------------------------------------
 // Pattern Functions
 //------------------------------------------------------------------------------------------------
@@ -288,9 +293,16 @@ float4 ApplyDuotoneLinesParallelPS(float2 texcoord, float raw_alpha_param, float
     // Center coordinates for rotation
     float2 ctd_coord = texcoord - CENTER_COORD;
     
+    // Apply aspect ratio correction to y-coordinate before rotation
+    ctd_coord.y *= ReShade::AspectRatio;
+    
     // Apply rotation transform
     float cos_a = cos(effect_rotation_rad), sin_a = sin(effect_rotation_rad);
     float v_rot = -ctd_coord.x * sin_a + ctd_coord.y * cos_a;
+    
+    // Apply aspect ratio compensation for rotation
+    float aspect_compensation = sqrt(sin_a * sin_a + cos_a * cos_a * ReShade::AspectRatio * ReShade::AspectRatio);
+    v_rot /= aspect_compensation;
     
     // Calculate normalized position within pattern cycle
     float band_coord = v_rot + CENTER_COORD;
@@ -318,9 +330,16 @@ float4 ApplyDuotoneLinesPerpendicularPS(float2 texcoord, float raw_alpha_param, 
     // Center coordinates for rotation
     float2 ctd_coord = texcoord - CENTER_COORD;
     
+    // Apply aspect ratio correction to y-coordinate before rotation
+    ctd_coord.y *= ReShade::AspectRatio;
+    
     // Apply rotation transform
     float cos_a = cos(effect_rotation_rad), sin_a = sin(effect_rotation_rad);
     float u_rot = ctd_coord.x * cos_a + ctd_coord.y * sin_a;
+    
+    // Apply aspect ratio compensation for rotation
+    float aspect_compensation = sqrt(cos_a * cos_a + sin_a * sin_a * ReShade::AspectRatio * ReShade::AspectRatio);
+    u_rot /= aspect_compensation;
     
     // Calculate normalized position within pattern cycle
     float band_coord = u_rot + CENTER_COORD;
