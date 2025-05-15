@@ -1,59 +1,373 @@
+/**
+ * AS_BGX_LogSpirals.1.fx - Dynamic Logarithmic Spiral Effect
+ * Author: Leon Aquitaine (adaptated from original by nmz/stormoid)
+ * License: Creative Commons Attribution 4.0 International
+ * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
+ * 
+ * ===================================================================================
+ *
+ * DESCRIPTION:
+ * Creates an organic spiral pattern based on logarithmic growth with animated spheres
+ * along the spiral arms. Features detailed customization of color, animation, and geometry.
+ *
+ * FEATURES:
+ * - Precise control over spiral expansion rate and animation
+ * - Customizable sphere size, fade effect, and specular highlights
+ * - Color palette options with hue cycling and ambient glow
+ * - Audio reactivity options for multiple parameters
+ * - Position, scale, and rotation controls
+ *
+ * IMPLEMENTATION OVERVIEW:
+ * 1. Uses coordinate transformations including Smith chart mapping for complex distortion
+ * 2. Calculates logarithmic spiral parameters based on animated variables
+ * 3. Implements sphere ray-marching for volumetric sphere rendering
+ * 4. Applies modular polar coordinate mapping for spiral arm generation
+ * 5. Uses ACES tone mapping and sRGB conversion for visual quality
+ *
+ * ===================================================================================
+ */
+
+// ============================================================================
+// TECHNIQUE GUARD - Prevents duplicate loading of the same shader
+// ============================================================================
+#ifndef __AS_BGX_LogSpirals_1_fx
+#define __AS_BGX_LogSpirals_1_fx
+
+// ============================================================================
+// INCLUDES
+// ============================================================================
 #include "ReShade.fxh"
-#include "AS_Utils.1.fxh" // Custom header for AS utilities
+#include "AS_Utils.1.fxh"    // Custom header for AS utilities
+#include "AS_Palette.1.fxh"  // Color palette system
 
-// Define PI and TAU locally for this shader
-#define LOCAL_PI 3.141592654f
-#define LOCAL_TAU (2.0f * LOCAL_PI)
+namespace ASLogSpirals {
 
-// Rotation matrix macro for HLSL
-#define ROT(a) float2x2(cos(a), sin(a), -sin(a), cos(a))
-
-namespace LogarithmicSpiralsArtistic {
-
-// Global constants (ExpBy will now depend on a uniform)
+// ============================================================================
+// CONSTANTS
+// ============================================================================
 static const float ALPHA_EPSILON = 0.00001f; // For safe division
 
-//------------------------------------------------------------------------------------------------
-// Artistic Control Uniforms
-//------------------------------------------------------------------------------------------------
-uniform float AnimationScale < ui_type="slider"; ui_label="Animation Scale"; ui_min=0.0; ui_max=2.0; ui_step=0.01; ui_tooltip="Overall speed of all time-based animations."; > = 0.75;
-uniform float SpiralExpansionRate < ui_type="slider"; ui_label="Spiral Expansion Rate"; ui_min=1.01; ui_max=2.5; ui_step=0.01; ui_tooltip="Controls how rapidly spirals expand/contract. Original: 1.2"; > = 1.2;
+// Define local constants as needed
+#define LOCAL_PI AS_PI
+#define LOCAL_TAU AS_TWO_PI
+#define ROT(a) float2x2(cos(a), sin(a), -sin(a), cos(a))
 
-uniform float TransformSpeed1 < ui_type="slider"; ui_label="Transform Animation Speed 1"; ui_min=0.0; ui_max=1.0; ui_step=0.01; > = 0.12;
-uniform float TransformSpeed2 < ui_type="slider"; ui_label="Transform Animation Speed 2"; ui_min=0.0; ui_max=1.0; ui_step=0.01; > = 0.23;
-
-uniform float GlobalRotationSpeed < ui_type="slider"; ui_label="Global Rotation Speed"; ui_min=-0.5; ui_max=0.5; ui_step=0.005; > = -0.125;
-uniform float ArmTwistFactor < ui_type="slider"; ui_label="Spiral Arm Twist Factor"; ui_min=0.0; ui_max=2.0; ui_step=0.01; > = 0.66;
-
-uniform float ColorHueFactor < ui_type="slider"; ui_label="Primary Color Hue Factor"; ui_min=0.0; ui_max=2.0; ui_step=0.01; > = 0.85;
-uniform float GlowColorIntensity < ui_type="slider"; ui_label="Ambient Glow Intensity"; ui_min=0.0; ui_max=0.1; ui_step=0.001; > = 0.01;
-uniform float FadeCycleSpeed < ui_type="slider"; ui_label="Sphere Fade Cycle Speed"; ui_min=0.0; ui_max=1.0; ui_step=0.01; > = 0.33;
-
-uniform float SphereBaseRadiusScale < ui_type="slider"; ui_label="Sphere Base Radius Scale"; ui_min=0.01; ui_max=0.5; ui_step=0.005; > = 0.125;
-uniform float SphereFadeRadiusScale < ui_type="slider"; ui_label="Sphere Fade Radius Scale"; ui_min=0.0; ui_max=1.0; ui_step=0.01; ui_tooltip="Max radius additional scale based on fade (added to base)"; > = 0.375; // Orig max was 0.5, so 0.125 + 0.375 = 0.5
-
-uniform float SpecularPower < ui_type="slider"; ui_label="Specular Power"; ui_min=1.0; ui_max=64.0; ui_step=1.0; > = 10.0;
-uniform float SpecularIntensity < ui_type="slider"; ui_label="Specular Intensity"; ui_min=0.0; ui_max=2.0; ui_step=0.01; > = 0.5;
-uniform float AmbientLightLevel < ui_type="slider"; ui_label="Ambient Light Level (Sphere)"; ui_min=0.0; ui_max=1.0; ui_step=0.01; > = 0.2;
-
-uniform float OutputBrightness < ui_type="slider"; ui_label="Output Brightness Boost"; ui_min=0.1; ui_max=5.0; ui_step=0.01; > = 1.5;
-uniform float DetailGlowStrength < ui_type="slider"; ui_label="Detail-based Glow Strength"; ui_min=0.0; ui_max=50.0; ui_step=0.1; > = 10.0;
-
-
-// Helper Functions (Translated from GLSL)
+// Helper Functions
 float modPolar(inout float2 p, float repetitions) {
-    if (abs(repetitions) < ALPHA_EPSILON) repetitions = sign(repetitions) * ALPHA_EPSILON;
     float angle = LOCAL_TAU / repetitions;
     float a = atan2(p.y, p.x) + angle / 2.0f;
     float r = length(p);
     float c = floor(a / angle);
-    a = AS_mod(a, angle); 
-    a = a - angle / 2.0f;
+    a = frac(a / angle) * angle - angle / 2.0f; // Use frac instead of fmod for consistency
     p = float2(cos(a), sin(a)) * r;
     if (abs(c) >= (repetitions / 2.0f)) c = abs(c);
     return c;
 }
 
+// ============================================================================
+// TUNABLE CONSTANTS (Defaults and Ranges)
+// ============================================================================
+static const float ANIMATION_SCALE_MIN = 0.0;
+static const float ANIMATION_SCALE_MAX = 2.0;
+static const float ANIMATION_SCALE_DEFAULT = 0.75;
+
+static const float SPIRAL_EXPANSION_MIN = 1.01;
+static const float SPIRAL_EXPANSION_MAX = 2.5;
+static const float SPIRAL_EXPANSION_DEFAULT = 1.2;
+
+static const float TRANSFORM_SPEED_MIN = 0.0;
+static const float TRANSFORM_SPEED_MAX = 1.0;
+static const float TRANSFORM_SPEED1_DEFAULT = 0.12;
+static const float TRANSFORM_SPEED2_DEFAULT = 0.23;
+
+static const float ROTATION_SPEED_MIN = -0.5;
+static const float ROTATION_SPEED_MAX = 0.5;
+static const float ROTATION_SPEED_DEFAULT = -0.125;
+
+static const float ARM_TWIST_MIN = 0.0;
+static const float ARM_TWIST_MAX = 2.0;
+static const float ARM_TWIST_DEFAULT = 0.66;
+
+static const float COLOR_HUE_MIN = 0.0;
+static const float COLOR_HUE_MAX = 2.0;
+static const float COLOR_HUE_DEFAULT = 0.85;
+
+static const float GLOW_INTENSITY_MIN = 0.0;
+static const float GLOW_INTENSITY_MAX = 0.1;
+static const float GLOW_INTENSITY_DEFAULT = 0.01;
+
+static const float FADE_CYCLE_MIN = 0.0;
+static const float FADE_CYCLE_MAX = 1.0;
+static const float FADE_CYCLE_DEFAULT = 0.33;
+
+static const float SPHERE_RADIUS_MIN = 0.01;
+static const float SPHERE_RADIUS_MAX = 0.5;
+static const float SPHERE_RADIUS_DEFAULT = 0.125;
+
+static const float SPHERE_FADE_MIN = 0.0;
+static const float SPHERE_FADE_MAX = 1.0;
+static const float SPHERE_FADE_DEFAULT = 0.375;
+
+static const float SPECULAR_POWER_MIN = 1.0;
+static const float SPECULAR_POWER_MAX = 64.0;
+static const float SPECULAR_POWER_DEFAULT = 10.0;
+
+static const float SPECULAR_INTENSITY_MIN = 0.0;
+static const float SPECULAR_INTENSITY_MAX = 2.0;
+static const float SPECULAR_INTENSITY_DEFAULT = 0.5;
+
+static const float AMBIENT_LIGHT_MIN = 0.0;
+static const float AMBIENT_LIGHT_MAX = 1.0;
+static const float AMBIENT_LIGHT_DEFAULT = 0.2;
+
+static const float BRIGHTNESS_MIN = 0.1;
+static const float BRIGHTNESS_MAX = 5.0;
+static const float BRIGHTNESS_DEFAULT = 1.5;
+
+static const float DETAIL_GLOW_MIN = 0.0;
+static const float DETAIL_GLOW_MAX = 50.0;
+static const float DETAIL_GLOW_DEFAULT = 10.0;
+
+
+// ============================================================================
+// UI DECLARATIONS - Organized by category
+// ============================================================================
+
+//------------------------------------------------------------------------------------------------
+// Primary Spiral Controls
+//------------------------------------------------------------------------------------------------
+uniform float AnimationScale < 
+    ui_type = "slider"; 
+    ui_label = "Animation Scale"; 
+    ui_min = ANIMATION_SCALE_MIN; 
+    ui_max = ANIMATION_SCALE_MAX; 
+    ui_step = 0.01; 
+    ui_tooltip = "Overall speed of all time-based animations.";
+    ui_category = "Spiral Controls"; 
+> = ANIMATION_SCALE_DEFAULT;
+
+uniform float SpiralExpansionRate < 
+    ui_type = "slider"; 
+    ui_label = "Spiral Expansion Rate"; 
+    ui_min = SPIRAL_EXPANSION_MIN; 
+    ui_max = SPIRAL_EXPANSION_MAX; 
+    ui_step = 0.01; 
+    ui_tooltip = "Controls how rapidly spirals expand/contract. Original: 1.2";
+    ui_category = "Spiral Controls"; 
+> = SPIRAL_EXPANSION_DEFAULT;
+
+uniform float GlobalRotationSpeed < 
+    ui_type = "slider"; 
+    ui_label = "Global Rotation Speed"; 
+    ui_min = ROTATION_SPEED_MIN; 
+    ui_max = ROTATION_SPEED_MAX; 
+    ui_step = 0.005;
+    ui_tooltip = "Controls the rotation speed of the entire spiral structure."; 
+    ui_category = "Spiral Controls"; 
+> = ROTATION_SPEED_DEFAULT;
+
+uniform float ArmTwistFactor < 
+    ui_type = "slider"; 
+    ui_label = "Spiral Arm Twist Factor"; 
+    ui_min = ARM_TWIST_MIN; 
+    ui_max = ARM_TWIST_MAX; 
+    ui_step = 0.01;
+    ui_tooltip = "Controls how much the spiral arms twist."; 
+    ui_category = "Spiral Controls"; 
+> = ARM_TWIST_DEFAULT;
+
+//------------------------------------------------------------------------------------------------
+// Transform Controls
+//------------------------------------------------------------------------------------------------
+uniform float TransformSpeed1 < 
+    ui_type = "slider"; 
+    ui_label = "Transform Animation Speed 1"; 
+    ui_min = TRANSFORM_SPEED_MIN; 
+    ui_max = TRANSFORM_SPEED_MAX; 
+    ui_step = 0.01;
+    ui_tooltip = "Controls the first coordinate transformation animation speed."; 
+    ui_category = "Transform Controls"; 
+> = TRANSFORM_SPEED1_DEFAULT;
+
+uniform float TransformSpeed2 < 
+    ui_type = "slider"; 
+    ui_label = "Transform Animation Speed 2"; 
+    ui_min = TRANSFORM_SPEED_MIN; 
+    ui_max = TRANSFORM_SPEED_MAX; 
+    ui_step = 0.01;
+    ui_tooltip = "Controls the second coordinate transformation animation speed."; 
+    ui_category = "Transform Controls"; 
+> = TRANSFORM_SPEED2_DEFAULT;
+
+//------------------------------------------------------------------------------------------------
+// Sphere Controls
+//------------------------------------------------------------------------------------------------
+uniform float SphereBaseRadiusScale < 
+    ui_type = "slider"; 
+    ui_label = "Sphere Base Radius Scale"; 
+    ui_min = SPHERE_RADIUS_MIN; 
+    ui_max = SPHERE_RADIUS_MAX; 
+    ui_step = 0.005;
+    ui_tooltip = "Base radius for the spheres along spiral arms."; 
+    ui_category = "Sphere Controls"; 
+> = SPHERE_RADIUS_DEFAULT;
+
+uniform float SphereFadeRadiusScale < 
+    ui_type = "slider"; 
+    ui_label = "Sphere Fade Radius Scale"; 
+    ui_min = SPHERE_FADE_MIN; 
+    ui_max = SPHERE_FADE_MAX; 
+    ui_step = 0.01; 
+    ui_tooltip = "Max radius additional scale based on fade (added to base)";
+    ui_category = "Sphere Controls"; 
+> = SPHERE_FADE_DEFAULT;
+
+uniform float FadeCycleSpeed < 
+    ui_type = "slider"; 
+    ui_label = "Sphere Fade Cycle Speed"; 
+    ui_min = FADE_CYCLE_MIN; 
+    ui_max = FADE_CYCLE_MAX; 
+    ui_step = 0.01;
+    ui_tooltip = "Controls how fast spheres fade in and out."; 
+    ui_category = "Sphere Controls"; 
+> = FADE_CYCLE_DEFAULT;
+
+//------------------------------------------------------------------------------------------------
+// Lighting Controls
+//------------------------------------------------------------------------------------------------
+uniform float SpecularPower < 
+    ui_type = "slider"; 
+    ui_label = "Specular Power"; 
+    ui_min = SPECULAR_POWER_MIN; 
+    ui_max = SPECULAR_POWER_MAX; 
+    ui_step = 1.0;
+    ui_tooltip = "Controls the tightness of specular highlights."; 
+    ui_category = "Lighting Controls"; 
+> = SPECULAR_POWER_DEFAULT;
+
+uniform float SpecularIntensity < 
+    ui_type = "slider"; 
+    ui_label = "Specular Intensity"; 
+    ui_min = SPECULAR_INTENSITY_MIN; 
+    ui_max = SPECULAR_INTENSITY_MAX; 
+    ui_step = 0.01;
+    ui_tooltip = "Controls the brightness of specular highlights."; 
+    ui_category = "Lighting Controls"; 
+> = SPECULAR_INTENSITY_DEFAULT;
+
+uniform float AmbientLightLevel < 
+    ui_type = "slider"; 
+    ui_label = "Ambient Light Level"; 
+    ui_min = AMBIENT_LIGHT_MIN; 
+    ui_max = AMBIENT_LIGHT_MAX; 
+    ui_step = 0.01;
+    ui_tooltip = "Controls the base lighting on spheres."; 
+    ui_category = "Lighting Controls"; 
+> = AMBIENT_LIGHT_DEFAULT;
+
+//------------------------------------------------------------------------------------------------
+// Color Controls
+//------------------------------------------------------------------------------------------------
+uniform float ColorHueFactor < 
+    ui_type = "slider"; 
+    ui_label = "Primary Color Hue Factor"; 
+    ui_min = COLOR_HUE_MIN; 
+    ui_max = COLOR_HUE_MAX; 
+    ui_step = 0.01;
+    ui_tooltip = "Controls the hue variation of the primary colors."; 
+    ui_category = "Color Controls"; 
+> = COLOR_HUE_DEFAULT;
+
+uniform float3 BackgroundColor <
+    ui_type = "color";
+    ui_label = "Background Color";
+    ui_tooltip = "Base color for the background. Set all channels to 0 for black background.";
+    ui_category = "Color Controls";
+> = float3(0.0, 0.0, 0.0);
+
+uniform float GlowColorIntensity < 
+    ui_type = "slider"; 
+    ui_label = "Ambient Glow Intensity"; 
+    ui_min = GLOW_INTENSITY_MIN; 
+    ui_max = GLOW_INTENSITY_MAX; 
+    ui_step = 0.001;
+    ui_tooltip = "Controls the intensity of the ambient glow effect."; 
+    ui_category = "Color Controls"; 
+> = GLOW_INTENSITY_DEFAULT;
+
+uniform float OutputBrightness < 
+    ui_type = "slider"; 
+    ui_label = "Output Brightness Boost"; 
+    ui_min = BRIGHTNESS_MIN; 
+    ui_max = BRIGHTNESS_MAX; 
+    ui_step = 0.01;
+    ui_tooltip = "Overall brightness adjustment."; 
+    ui_category = "Color Controls"; 
+> = BRIGHTNESS_DEFAULT;
+
+uniform float DetailGlowStrength < 
+    ui_type = "slider"; 
+    ui_label = "Detail-based Glow Strength"; 
+    ui_min = DETAIL_GLOW_MIN; 
+    ui_max = DETAIL_GLOW_MAX; 
+    ui_step = 0.1;
+    ui_tooltip = "Controls the strength of detail-based glow effects."; 
+    ui_category = "Color Controls"; 
+> = DETAIL_GLOW_DEFAULT;
+
+//------------------------------------------------------------------------------------------------
+// Palette & Style
+//------------------------------------------------------------------------------------------------
+uniform bool UseOriginalColors <
+    ui_label = "Use Original Colors";
+    ui_tooltip = "When enabled, uses the original mathematical colors. When disabled, uses palettes.";
+    ui_category = "Palette & Style";
+> = true;
+
+AS_PALETTE_SELECTION_UI(PalettePreset, "Color Palette", AS_PALETTE_ELECTRIC, "Palette & Style")
+AS_DECLARE_CUSTOM_PALETTE(Spiral_, "Palette & Style")
+
+uniform float ColorCycleSpeed <
+    ui_type = "slider"; 
+    ui_label = "Color Cycle Speed";
+    ui_tooltip = "Controls how fast palette colors cycle. 0 = static.";
+    ui_min = -2.0; 
+    ui_max = 2.0; 
+    ui_step = 0.1;
+    ui_category = "Palette & Style";
+> = 0.0;
+
+//------------------------------------------------------------------------------------------------
+// Audio Reactivity
+//------------------------------------------------------------------------------------------------
+AS_AUDIO_SOURCE_UI(Spiral_AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
+AS_AUDIO_MULTIPLIER_UI(Spiral_AudioMultiplier, "Audio Intensity", 1.0, 2.0, "Audio Reactivity")
+uniform int Spiral_AudioTarget < 
+    ui_type = "combo"; 
+    ui_label = "Audio Target Parameter"; 
+    ui_items = "None\0Animation Scale\0Global Rotation\0Arm Twist\0Sphere Size\0Brightness\0"; 
+    ui_category = "Audio Reactivity"; 
+> = 0;
+
+//------------------------------------------------------------------------------------------------
+// Stage/Position
+//------------------------------------------------------------------------------------------------
+AS_STAGEDEPTH_UI(EffectDepth)
+AS_ROTATION_UI(EffectSnapRotation, EffectFineRotation)
+AS_POSITION_SCALE_UI(Position, Scale)
+
+//------------------------------------------------------------------------------------------------
+// Final Mix
+//------------------------------------------------------------------------------------------------
+AS_BLENDMODE_UI(BlendMode)
+AS_BLENDAMOUNT_UI(BlendStrength)
+
+//------------------------------------------------------------------------------------------------
+// Debug
+//------------------------------------------------------------------------------------------------
+AS_DEBUG_MODE_UI("Off\0Show Audio Reactivity\0")
+
+// Helper functions
 float forward_exp(float l, float exp_base) { // Pass expansion base
     return exp2(log2(exp_base) * l);
 }
@@ -121,7 +435,8 @@ float3 effect_render(float2 p_eff, float time_eff,
                      float global_rot_speed, float arm_twist_factor, float color_hue_factor,
                      float glow_intensity, float fade_speed, float sphere_base_r, float sphere_fade_r_scale,
                      float spec_pow, float spec_intens, float ambient_lvl,
-                     float output_bright, float detail_glow_str)
+                     float output_bright, float detail_glow_str,
+                     float3 bg_color)
 {
     float2 p_initial_transformed = transform_coords(p_eff, time_eff * anim_scale, trans_speed1, trans_speed2);
     float2 np_eff = p_eff + float2(ReShade::PixelSize.x, ReShade::PixelSize.y);
@@ -152,19 +467,17 @@ float3 effect_render(float2 p_eff, float time_eff,
 
     float2 p1 = p0;
     float reps_calc = floor(LOCAL_TAU * r_avg / (w + ALPHA_EPSILON));
-    reps_calc = max(reps_calc, 1.0f);
-        
+    reps_calc = max(reps_calc, 1.0f);        
     float2x2 rot1 = ROT(arm_twist_factor * n0_val);  
     p1 = mul(rot1, p1);
     float m1_polar = modPolar(p1, reps_calc); // p1 is inout
     if (abs(reps_calc) > ALPHA_EPSILON) m1_polar /= reps_calc; else m1_polar = 0.0f;
     p1.x -= r_avg;
     
-    float3 ccol = (1.0f + cos(color_hue_factor * float3(0.0f, 1.0f, 2.0f) + LOCAL_TAU * (m1_polar) + 0.5f * n0_val)) * 0.5f;
-    float3 gcol = (1.0f + cos(float3(0.0f, 1.0f, 2.0f) + global_rot_speed * 0.5f * ltm)) * glow_intensity; // Used global_rot_speed for glow color variation speed
+    float3 ccol = (1.0f + cos(color_hue_factor * float3(0.0f, 1.0f, 2.0f) + LOCAL_TAU * (m1_polar) + 0.5f * n0_val)) * 0.5f;    float3 gcol = (1.0f + cos(float3(0.0f, 1.0f, 2.0f) + global_rot_speed * 0.5f * ltm)) * glow_intensity; // Used global_rot_speed for glow color variation speed
     float2x2 rot2 = ROT(LOCAL_TAU * m1_polar);
 
-    float3 col_out = float3(0.0f, 0.0f, 0.0f);
+    float3 col_out = bg_color; // Initialize with background color instead of black
     float fade = 0.5f + 0.5f * cos(LOCAL_TAU * m1_polar + fade_speed * ltm);
     
     float2x2 combined_rotation = mul(mul(rot0, rot1), rot2);
@@ -189,33 +502,129 @@ float3 effect_render(float2 p_eff, float time_eff,
     return col_out;
 }
 
-// Main Pixel Shader
-float4 MinimalLogSpiralsPS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : SV_Target0
+// ============================================================================
+// PIXEL SHADER
+// ============================================================================
+float4 LogSpiralsPS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : SV_Target0
 {
-    float2 p_transformed_uv = (texcoord * 2.0f - 1.0f); 
-    p_transformed_uv.x *= ReShade::ScreenSize.x / ReShade::ScreenSize.y; 
-
-    float3 col = effect_render(
-        p_transformed_uv, 
-        AS_getTime(), // Base time
-        AnimationScale, SpiralExpansionRate, TransformSpeed1, TransformSpeed2,
-        GlobalRotationSpeed, ArmTwistFactor, ColorHueFactor, GlowColorIntensity,
-        FadeCycleSpeed, SphereBaseRadiusScale, SphereFadeRadiusScale,
-        SpecularPower, SpecularIntensity, AmbientLightLevel,
-        OutputBrightness, DetailGlowStrength
+    // Get original background color for blending and depth check
+    float4 originalColor = tex2D(ReShade::BackBuffer, texcoord);
+    float depth = ReShade::GetLinearizedDepth(texcoord);
+    
+    // Apply depth test - skip effect if pixel is closer than effect depth
+    if (depth < EffectDepth) {
+        return originalColor;
+    }
+    
+    // Apply audio reactivity to selected parameters
+    float anim_scale = AnimationScale;
+    float rot_speed = GlobalRotationSpeed;
+    float arm_twist = ArmTwistFactor;
+    float sphere_radius = SphereBaseRadiusScale;
+    float bright = OutputBrightness;
+    
+    float audioReactivity = AS_applyAudioReactivity(1.0, Spiral_AudioSource, Spiral_AudioMultiplier, true);
+    
+    // Apply audio reactivity to targeted parameter
+    if (Spiral_AudioTarget == 1) anim_scale *= audioReactivity;
+    else if (Spiral_AudioTarget == 2) rot_speed *= audioReactivity;
+    else if (Spiral_AudioTarget == 3) arm_twist *= audioReactivity;
+    else if (Spiral_AudioTarget == 4) sphere_radius *= audioReactivity;
+    else if (Spiral_AudioTarget == 5) bright *= audioReactivity;
+    
+    // --- POSITION HANDLING ---
+    // Step 1: Center and correct for aspect ratio
+    float2 p_centered = (texcoord - AS_HALF) * 2.0;          // Center coordinates (-1 to 1)
+    p_centered.x *= ReShade::AspectRatio;                    // Correct for aspect ratio
+    
+    // Step 2: Apply rotation around center (negative rotation for clockwise)
+    float sinRot, cosRot;
+    float rotationRadians = AS_getRotationRadians(EffectSnapRotation, EffectFineRotation);
+    sincos(-rotationRadians, sinRot, cosRot);
+    float2 p_rotated = float2(
+        p_centered.x * cosRot - p_centered.y * sinRot,
+        p_centered.x * sinRot + p_centered.y * cosRot
     );
-
-    return float4(col, 1.0f);
+      // Step 3: Apply position and scale
+    float2 p_final = p_rotated / Scale - Position;    // Calculate the spiral effect
+    // Ensure modPolar is resolved by using the fully qualified name ASLogSpirals::modPolar
+    float3 col = effect_render(
+        p_final, 
+        AS_getTime(), // Base time
+        anim_scale, SpiralExpansionRate, TransformSpeed1, TransformSpeed2,
+        rot_speed, arm_twist, ColorHueFactor, GlowColorIntensity,
+        FadeCycleSpeed, sphere_radius, SphereFadeRadiusScale,
+        SpecularPower, SpecularIntensity, AmbientLightLevel,
+        bright, DetailGlowStrength,
+        BackgroundColor // Pass background color to the effect
+    );
+    
+    // Apply additional effects to the raw output
+    col = aces_approx_convert(col);
+    
+    // Apply palette if enabled
+    float3 final_color;
+    if (UseOriginalColors) {
+        final_color = sRGB_convert(col);
+    } else {
+        // Get normalized brightness for palette
+        float intensity = length(col) / sqrt(3.0);
+        intensity = saturate(intensity);
+        
+        // Apply optional color cycling
+        float t = intensity;
+        if (ColorCycleSpeed != 0.0) {
+            float cycleRate = ColorCycleSpeed * 0.1;
+            t = frac(t + cycleRate * AS_getTime());
+        }
+        
+        // Get color from palette system
+        if (PalettePreset == AS_PALETTE_CUSTOM) {
+            final_color = AS_GET_INTERPOLATED_CUSTOM_COLOR(Spiral_, t);
+        } else {
+            final_color = AS_getInterpolatedColor(PalettePreset, t);
+        }
+        
+        // Modulate palette color by spiral intensity
+        final_color *= intensity;
+    }
+    
+    // Create the effect color with alpha
+    float4 effectColor = float4(final_color, 1.0f);
+    
+    // Apply blend mode and strength
+    float4 finalColor = float4(AS_ApplyBlend(effectColor.rgb, originalColor.rgb, BlendMode), 1.0);
+    finalColor = lerp(originalColor, finalColor, BlendStrength);
+    
+    // Show debug overlay if enabled
+    if (DebugMode != AS_DEBUG_OFF) {
+        if (DebugMode == 1) { // Show Audio Reactivity
+            float2 debugPos = float2(0.05, 0.05);
+            float debugSize = 0.15;
+            if (all(abs(texcoord - debugPos) < debugSize)) {
+                return float4(audioReactivity, audioReactivity, audioReactivity, 1.0);
+            }
+        }
+    }
+    
+    return finalColor;
 }
 
-technique MinimalLogarithmicSpirals_Artistic_Tech < // Renamed Technique
-    ui_label = "[AS] Logarithmic Spirals (Artistic)";
-    ui_tooltip = "Artistic Logarithmic Spirals by nmz/stormoid, with exposed controls.\nOriginal: https://www.shadertoy.com/view/NdfyRM";
-> {
+// ============================================================================
+// TECHNIQUE
+// ============================================================================
+technique AS_BGX_LogSpirals_Tech < 
+    ui_label = "[AS] BGX: Logarithmic Spirals";
+    ui_tooltip = "Artistic logarithmic spiral pattern with customizable sphere elements and colors.\n"
+                 "Original concept by nmz/stormoid (https://www.shadertoy.com/view/NdfyRM)";
+>
+{
     pass {
         VertexShader = PostProcessVS;
-        PixelShader = MinimalLogSpiralsPS;
+        PixelShader = LogSpiralsPS;
     }
 }
 
-} // end namespace LogarithmicSpiralsArtistic
+} // end namespace ASLogSpirals
+
+#endif // __AS_BGX_LogSpirals_1_fx
