@@ -52,7 +52,7 @@
 #ifndef __AS_MATH_CONSTANTS
 #define __AS_MATH_CONSTANTS
 // Core mathematical constants
-static const float AS_PI = 3.14159265359;
+static const float AS_PI = 3.14159265358979323846f;
 static const float AS_TWO_PI = 6.28318530718;
 static const float AS_HALF_PI = 1.57079632679;
 static const float AS_QUARTER_PI = 0.78539816339;
