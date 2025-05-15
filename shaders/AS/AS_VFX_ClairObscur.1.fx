@@ -871,22 +871,51 @@ float4 PS_Main(float4 pos : SV_Position, float2 uv : TexCoord) : SV_Target
         default:
             // RenderPetalLayers now handles PetalShadingMode internally
             // for layer blending, but we still handle final blending with the scene here
-            float4 layeredPetalColor = RenderPetalLayers(centeredAspectUV, uv, currentTime); 
-              // Stage depth check - don't apply effect on pixels with depth less than our stage depth
+            float4 layeredPetalColor = RenderPetalLayers(centeredAspectUV, uv, currentTime);            // Stage depth check - don't apply effect on pixels with depth less than our stage depth
             if (depthSample < ClairObscur_StageDepth)
                 return originalColor;
+                
+            // Create a temporary variable to hold the petal composition before final blending
+            float4 petalComposition = originalColor;
                 
             if (PetalShadingMode == 1) // Opaque (Solid) Mode
             {
                 float petalPresence = (layeredPetalColor.a > ALPHA_THRESHOLD) ? 1.0 : 0.0; 
                 float3 finalPetalRgb = layeredPetalColor.rgb * layeredPetalColor.a; 
-                originalColor.rgb = lerp(originalColor.rgb, finalPetalRgb, petalPresence); 
+                petalComposition.rgb = lerp(petalComposition.rgb, finalPetalRgb, petalPresence); 
             }
             else // Transparent Blend Mode
             {
-                originalColor.rgb = lerp(originalColor.rgb, layeredPetalColor.rgb, layeredPetalColor.a);
+                petalComposition.rgb = lerp(petalComposition.rgb, layeredPetalColor.rgb, layeredPetalColor.a);
             }
-            return originalColor;
+            
+            // Apply Final Mix controls (blend mode and strength)
+            float3 finalColor = originalColor.rgb;
+            float blendStrength = ClairObscur_BlendAmount;
+            
+            switch (ClairObscur_BlendMode)
+            {
+                case 0: // Normal
+                    finalColor = lerp(originalColor.rgb, petalComposition.rgb, blendStrength);
+                    break;
+                case 1: // Lighter Only
+                    finalColor = max(originalColor.rgb, lerp(originalColor.rgb, petalComposition.rgb, blendStrength));
+                    break;
+                case 2: // Darker Only
+                    finalColor = min(originalColor.rgb, lerp(originalColor.rgb, petalComposition.rgb, blendStrength));
+                    break;
+                case 3: // Additive
+                    finalColor = originalColor.rgb + petalComposition.rgb * blendStrength;
+                    break;
+                case 4: // Multiply
+                    finalColor = lerp(originalColor.rgb, originalColor.rgb * petalComposition.rgb, blendStrength);
+                    break;
+                case 5: // Screen
+                    finalColor = lerp(originalColor.rgb, 1.0 - (1.0 - originalColor.rgb) * (1.0 - petalComposition.rgb), blendStrength);
+                    break;
+            }
+            
+            return float4(finalColor, originalColor.a);
     }
 }
 
