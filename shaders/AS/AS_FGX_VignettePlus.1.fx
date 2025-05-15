@@ -1,8 +1,11 @@
 /**
  * AS_FGX_VignettePlus.1.fx - Enhanced vignette effects with customizable patterns
- * Author: Leon Aquitaine (based on original VignettePlus by Anonymous)
+ * Author: Leon Aquitaine
  * License: Creative Commons Attribution 4.0 International
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
+ * 
+ * The hexagonal grid implementation is inspired by/adapted from the hexagonal wipe shader on Shadertoy:
+ * https://www.shadertoy.com/view/XfjyWG created by blandprix (2024-08-06)
  * 
  * ===================================================================================
  *
