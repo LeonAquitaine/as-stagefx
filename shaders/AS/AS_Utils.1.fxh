@@ -52,30 +52,30 @@
 #ifndef __AS_MATH_CONSTANTS
 #define __AS_MATH_CONSTANTS
 // Core mathematical constants
-static const float AS_PI = 3.14159265358979323846f;
-static const float AS_TWO_PI = 6.28318530718;
-static const float AS_HALF_PI = 1.57079632679;
-static const float AS_QUARTER_PI = 0.78539816339;
-static const float AS_INV_PI = 0.31830988618;
-static const float AS_E = 2.71828182846;
-static const float AS_GOLDEN_RATIO = 1.61803398875;
+static const float AS_PI = 3.1415926535897932384626433832795f;
+static const float AS_TWO_PI = 6.2831853071795864769252867665590f;
+static const float AS_HALF_PI = 1.5707963267948966192313216916398f;
+static const float AS_QUARTER_PI = 0.7853981633974483096156608458199f;
+static const float AS_INV_PI = 0.3183098861837906715377675267450f;
+static const float AS_E = 2.7182818284590452353602874713527f;
+static const float AS_GOLDEN_RATIO = 1.6180339887498948482045868343656f;
 
 // Physics & graphics constants
-static const float AS_EPSILON = 1e-6;          // Very small number to avoid division by zero
-static const float AS_EPSILON_SAFE = 1e-5;     // Slightly larger epsilon for screen-space operations
-static const float AS_DEGREES_TO_RADIANS = AS_PI / 180.0;
-static const float AS_RADIANS_TO_DEGREES = 180.0 / AS_PI;
+static const float AS_EPSILON = 1e-6f;          // Very small number to avoid division by zero
+static const float AS_EPSILON_SAFE = 1e-5f;     // Slightly larger epsilon for screen-space operations
+static const float AS_DEGREES_TO_RADIANS = AS_PI / 180.0f;
+static const float AS_RADIANS_TO_DEGREES = 180.0f / AS_PI;
 
 // Common numerical constants
-static const float AS_HALF = 0.5;              // 1/2 - useful for centered coordinates
-static const float AS_QUARTER = 0.25;          // 1/4
-static const float AS_THIRD = 0.3333333333;    // 1/3
-static const float AS_TWO_THIRDS = 0.6666666667; // 2/3
-static const float AS_SQRT_TWO = 1.4142135623730950; // Square root of 2, useful for diagonal calculations
+static const float AS_HALF = 0.5f;                      // 1/2 - useful for centered coordinates
+static const float AS_QUARTER = 0.25f;                  // 1/4
+static const float AS_THIRD = 0.3333333333333333333333333333333f;    // 1/3
+static const float AS_TWO_THIRDS = 0.6666666666666666666666666666667f; // 2/3
+static const float AS_SQRT_TWO = 1.4142135623730950488016887242097f; // Square root of 2, useful for diagonal calculations
 
 // Depth testing constants 
-static const float AS_DEPTH_EPSILON = 0.0005;  // Standard depth epsilon for z-fighting prevention
-static const float AS_EDGE_AA = 0.05;          // Standard anti-aliasing edge size for smoothstep
+static const float AS_DEPTH_EPSILON = 0.0005f;  // Standard depth epsilon for z-fighting prevention
+static const float AS_EDGE_AA = 0.05f;          // Standard anti-aliasing edge size for smoothstep
 #endif // __AS_MATH_CONSTANTS
 
 // ============================================================================
