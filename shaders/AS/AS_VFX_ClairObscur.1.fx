@@ -308,6 +308,9 @@ uniform float BaseFlutterStrength < ui_type = "slider"; ui_label = "Flutter Inte
 uniform float SwayMagnitude < ui_type = "slider"; ui_label = "Sway Amount"; ui_category = "Movement"; ui_min = 0.0; ui_max = 0.05; ui_step = 0.001; > = 0.005;
 uniform float Lifetime < ui_type = "slider"; ui_label = "Petal Lifespan"; ui_category = "Movement"; ui_min = 1.0; ui_max = 20.0; > = 10.000;
 
+// ---- Animation Controls ----
+AS_ANIMATION_UI(AnimationSpeed, AnimationKeyframe, "Animation")
+
 // ---- Entrance/Exit Effect ----
 uniform float FlipScaleMin < ui_type = "slider"; ui_label = "Edge Thinness"; ui_category = "Entrance/Exit Effect"; ui_tooltip = "How thin petals appear when entering/exiting the scene"; ui_min = 0.01; ui_max = 0.5; > = 0.167;
 uniform float FlipAxis < ui_type = "slider"; ui_label = "Rotation Axis"; ui_category = "Entrance/Exit Effect"; ui_tooltip = "Direction petals rotate when entering/exiting (0=horizontal, 1=vertical)"; ui_min = 0.0; ui_max = 1.0; > = 0.911;
@@ -379,16 +382,20 @@ float4 DrawPetalInstance(float2 uvForVoronoiLookup, float2 originalScreenUV, flo
         instanceDensityNoise
     );    if (instanceDensityFactor < ALPHA_THRESHOLD) { 
         return float4(0.0, 0.0, 0.0, 0.0); 
-    }
-
-    float voronoiPointRotRad = calcVoronoiPointRotRad(rootUV, currentTime);
-    float2 petalInstanceCenter_NoSway = getVoronoiPoint(rootUV, voronoiPointRotRad);    float swayTime = currentTime * SimulationSpeed * BASE_SWAY_ANIMATION_SPEED + instanceSeed * SWAY_TIMING_OFFSET;
+    }    float voronoiPointRotRad = calcVoronoiPointRotRad(rootUV, currentTime);
+    float2 petalInstanceCenter_NoSway = getVoronoiPoint(rootUV, voronoiPointRotRad);
+    
+    // Calculate sway time - we'll keep SimulationSpeed for legacy compatibility
+    float swayTime = currentTime * SimulationSpeed * BASE_SWAY_ANIMATION_SPEED + instanceSeed * SWAY_TIMING_OFFSET;
     float swayAngle_calc = swayTime * (SWAY_BASE_FREQUENCY + AS_hash21(rootUV + 0.3) * SWAY_FREQUENCY_VARIATION) + AS_hash21(rootUV + instanceSeed * SWAY_PHASE_SEED_MULTIPLIER) * AS_TWO_PI;
     float2 swayDirVec = float2(driftVelocityForSway.y, -driftVelocityForSway.x); 
     if (length(swayDirVec) < 0.001) swayDirVec = float2(1.0, 0.0); 
-    else swayDirVec = normalize(swayDirVec);
-    float2 swayOffset = swayDirVec * sin(swayAngle_calc) * SwayMagnitude;
-    float2 finalPetalInstanceCenter = petalInstanceCenter_NoSway + swayOffset;    float timeOffset = AS_hash21(rootUV + instanceSeed) * Lifetime;    float instanceTimeRaw = (currentTime * SimulationSpeed + timeOffset);
+    else swayDirVec = normalize(swayDirVec);    float2 swayOffset = swayDirVec * sin(swayAngle_calc) * SwayMagnitude;
+    float2 finalPetalInstanceCenter = petalInstanceCenter_NoSway + swayOffset;
+    
+    float timeOffset = AS_hash21(rootUV + instanceSeed) * Lifetime;
+    // Keep using SimulationSpeed for backwards compatibility
+    float instanceTimeRaw = (currentTime * SimulationSpeed + timeOffset);
     float time_val = instanceTimeRaw / Lifetime;
     float normalizedTime = time_val - floor(time_val); 
     
@@ -799,7 +806,8 @@ float4 RenderPetalLayers(float2 baseCenteredAspectUV, float2 originalScreenUV, f
 float4 PS_Main(float4 pos : SV_Position, float2 uv : TexCoord) : SV_Target
 {
     float4 originalColor = tex2D(ReShade::BackBuffer, uv);
-    float currentTime = AS_getTime();    float2 centeredAspectUV = uv - 0.5;
+    float currentTime = AS_getAnimationTime(AnimationSpeed, AnimationKeyframe);
+    float2 centeredAspectUV = uv - 0.5;
     centeredAspectUV.x *= ReShade::ScreenSize.x / ReShade::ScreenSize.y;
     
     // Apply rotation to the coordinates
