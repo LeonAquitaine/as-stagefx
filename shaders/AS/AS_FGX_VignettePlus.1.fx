@@ -7,10 +7,9 @@
  * ===================================================================================
  *
  * DESCRIPTION:
- * A sophisticated vignette shader that extends beyond simple darkening of image edges to provide
- * multiple visual styles and customizable pattern options. This shader creates directional, 
- * controllable vignette effects for professional stage compositions and scene framing.
- * Perfect for adding mood, focus, or stylistic elements to any scene.
+ * A vignette shader that provides multiple visual styles and customizable pattern options. 
+ * This shader creates directional, controllable vignette effects for stage compositions 
+ * and scene framing. Perfect for adding mood, focus, or stylistic elements.
  *
  * FEATURES:
  * - Four distinct visual styles:
@@ -29,14 +28,6 @@
  * 2. Determines vignette alpha using configured falloff points with scale adjustment
  * 3. Applies selected pattern (gradient, circles, or lines) with anti-aliasing
  * 4. Implements standard AS StageFX depth masking and blend modes
- * 5. Provides extensive visualization options for effect development and tuning
- *
- * USAGE TIPS:
- * - For subtle frame darkening: Use Smooth Gradient with low opacity
- * - For stylized look: Try pattern modes with colored vignette
- * - For cinematic bars: Set high falloff values with perpendicular lines
- * - Combine with StageDepth to restrict effect to specific scene areas
- *
  * ===================================================================================
  */
 
