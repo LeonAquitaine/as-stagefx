@@ -92,75 +92,71 @@ static const float AS_EDGE_AA = 0.05f;          // Standard anti-aliasing edge s
     // Since we're not including ListeningwayUniforms.fxh anymore,
     // provide a complete compatible implementation directly here
     #define LISTENINGWAY_NUM_BANDS 32
-    #define __LISTENINGWAY_INSTALLED 1
-
-    // Create fallback uniforms with the same interface as the real Listeningway
-    uniform float Listeningway_Volume < source = "listeningway_volume"; > = 0.0;
+    #define __LISTENINGWAY_INSTALLED 1    // Create fallback uniforms with the same interface as the real Listeningway
+    uniform float Listeningway_Volume < source = "listeningway_volume"; > = 0.0f;
     uniform float Listeningway_FreqBands[LISTENINGWAY_NUM_BANDS] < source = "listeningway_freqbands"; > = {
-        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
+        0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+        0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+        0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+        0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f
     };
-    uniform float Listeningway_Beat < source = "listeningway_beat"; > = 0.0;
-
-    // Time uniforms
-    uniform float Listeningway_TimeSeconds < source = "listeningway_timeseconds"; > = 0.0;
-    uniform float Listeningway_TimePhase60Hz < source = "listeningway_timephase60hz"; > = 0.0;
-    uniform float Listeningway_TimePhase120Hz < source = "listeningway_timephase120hz"; > = 0.0;
-    uniform float Listeningway_TotalPhases60Hz < source = "listeningway_totalphases60hz"; > = 0.0;
-    uniform float Listeningway_TotalPhases120Hz < source = "listeningway_totalphases120hz"; > = 0.0;
+    uniform float Listeningway_Beat < source = "listeningway_beat"; > = 0.0f;    // Time uniforms
+    uniform float Listeningway_TimeSeconds < source = "listeningway_timeseconds"; > = 0.0f;
+    uniform float Listeningway_TimePhase60Hz < source = "listeningway_timephase60hz"; > = 0.0f;
+    uniform float Listeningway_TimePhase120Hz < source = "listeningway_timephase120hz"; > = 0.0f;
+    uniform float Listeningway_TotalPhases60Hz < source = "listeningway_totalphases60hz"; > = 0.0f;
+    uniform float Listeningway_TotalPhases120Hz < source = "listeningway_totalphases120hz"; > = 0.0f;
 #endif
 
 #ifndef __AS_ANIMATION_CONSTANTS
 #define __AS_ANIMATION_CONSTANTS
 // Animation timing constants
-static const float AS_ANIMATION_SPEED_SLOW = 0.5;       // Slow animation speed multiplier
-static const float AS_ANIMATION_SPEED_NORMAL = 1.0;     // Normal animation speed multiplier  
-static const float AS_ANIMATION_SPEED_FAST = 2.0;       // Fast animation speed multiplier
+static const float AS_ANIMATION_SPEED_SLOW = 0.5f;       // Slow animation speed multiplier
+static const float AS_ANIMATION_SPEED_NORMAL = 1.0f;     // Normal animation speed multiplier  
+static const float AS_ANIMATION_SPEED_FAST = 2.0f;       // Fast animation speed multiplier
 
 // Timing constants
-static const float AS_TIME_1_SECOND = 1.0;              // 1 second of animation time
-static const float AS_TIME_HALF_SECOND = 0.5;           // 0.5 seconds of animation time
-static const float AS_TIME_QUARTER_SECOND = 0.25;       // 0.25 seconds of animation time
+static const float AS_TIME_1_SECOND = 1.0f;              // 1 second of animation time
+static const float AS_TIME_HALF_SECOND = 0.5f;           // 0.5 seconds of animation time
+static const float AS_TIME_QUARTER_SECOND = 0.25f;       // 0.25 seconds of animation time
 
 // Animation patterns
-static const float AS_PATTERN_FREQ_LOW = 2.0;           // Low frequency for animation patterns
-static const float AS_PATTERN_FREQ_MED = 5.0;           // Medium frequency for animation patterns
-static const float AS_PATTERN_FREQ_HIGH = 10.0;         // High frequency for animation patterns
+static const float AS_PATTERN_FREQ_LOW = 2.0f;           // Low frequency for animation patterns
+static const float AS_PATTERN_FREQ_MED = 5.0f;           // Medium frequency for animation patterns
+static const float AS_PATTERN_FREQ_HIGH = 10.0f;         // High frequency for animation patterns
 #endif // __AS_ANIMATION_CONSTANTS
 
 #ifndef __AS_COMMON_UI_RANGES
 #define __AS_COMMON_UI_RANGES
 
 // Standard UI ranges for commonly used parameters
-static const float AS_RANGE_ZERO_ONE_MIN = 0.0;         // Common minimum for normalized parameters
-static const float AS_RANGE_ZERO_ONE_MAX = 1.0;         // Common maximum for normalized parameters
+static const float AS_RANGE_ZERO_ONE_MIN = 0.0f;         // Common minimum for normalized parameters
+static const float AS_RANGE_ZERO_ONE_MAX = 1.0f;         // Common maximum for normalized parameters
 
-static const float AS_RANGE_NEG_ONE_ONE_MIN = -1.0;     // Common minimum for bipolar normalized parameters
-static const float AS_RANGE_NEG_ONE_ONE_MAX = 1.0;      // Common maximum for bipolar normalized parameters
+static const float AS_RANGE_NEG_ONE_ONE_MIN = -1.0f;     // Common minimum for bipolar normalized parameters
+static const float AS_RANGE_NEG_ONE_ONE_MAX = 1.0f;      // Common maximum for bipolar normalized parameters
 
-static const float AS_RANGE_OPACITY_MIN = 0.0;          // Minimum for opacity parameters
-static const float AS_RANGE_OPACITY_MAX = 1.0;          // Maximum for opacity parameters
-static const float AS_RANGE_OPACITY_DEFAULT = 1.0;      // Default for opacity parameters
+static const float AS_RANGE_OPACITY_MIN = 0.0f;          // Minimum for opacity parameters
+static const float AS_RANGE_OPACITY_MAX = 1.0f;          // Maximum for opacity parameters
+static const float AS_RANGE_OPACITY_DEFAULT = 1.0f;      // Default for opacity parameters
 
-static const float AS_RANGE_BLEND_MIN = 0.0;            // Minimum for blend amount parameters
-static const float AS_RANGE_BLEND_MAX = 1.0;            // Maximum for blend amount parameters
-static const float AS_RANGE_BLEND_DEFAULT = 1.0;        // Default for blend amount parameters
+static const float AS_RANGE_BLEND_MIN = 0.0f;            // Minimum for blend amount parameters
+static const float AS_RANGE_BLEND_MAX = 1.0f;            // Maximum for blend amount parameters
+static const float AS_RANGE_BLEND_DEFAULT = 1.0f;        // Default for blend amount parameters
 
-static const float AS_RANGE_AUDIO_MULT_MIN = 0.0;       // Minimum for audio multiplier parameters
-static const float AS_RANGE_AUDIO_MULT_MAX = 2.0;       // Maximum for audio multiplier parameters
-static const float AS_RANGE_AUDIO_MULT_DEFAULT = 1.0;   // Default for audio multiplier parameters
+static const float AS_RANGE_AUDIO_MULT_MIN = 0.0f;       // Minimum for audio multiplier parameters
+static const float AS_RANGE_AUDIO_MULT_MAX = 2.0f;       // Maximum for audio multiplier parameters
+static const float AS_RANGE_AUDIO_MULT_DEFAULT = 1.0f;   // Default for audio multiplier parameters
 
 // Scale range constants
-static const float AS_RANGE_SCALE_MIN = 0.1;            // Minimum for scale parameters
-static const float AS_RANGE_SCALE_MAX = 5.0;            // Maximum for scale parameters
-static const float AS_RANGE_SCALE_DEFAULT = 1.0;        // Default for scale parameters
+static const float AS_RANGE_SCALE_MIN = 0.1f;            // Minimum for scale parameters
+static const float AS_RANGE_SCALE_MAX = 5.0f;            // Maximum for scale parameters
+static const float AS_RANGE_SCALE_DEFAULT = 1.0f;        // Default for scale parameters
 
 // Speed range constants
-static const float AS_RANGE_SPEED_MIN = 0.0;            // Minimum for speed parameters 
-static const float AS_RANGE_SPEED_MAX = 5.0;            // Maximum for speed parameters
-static const float AS_RANGE_SPEED_DEFAULT = 1.0;        // Default for speed parameters
+static const float AS_RANGE_SPEED_MIN = 0.0f;            // Minimum for speed parameters 
+static const float AS_RANGE_SPEED_MAX = 5.0f;            // Maximum for speed parameters
+static const float AS_RANGE_SPEED_DEFAULT = 1.0f;        // Default for speed parameters
 
 #endif // __AS_COMMON_UI_RANGES
 
@@ -187,19 +183,19 @@ static const int AS_DEBUG_PATTERN = 4;                  // Debug pattern display
 // --- Display and Resolution Constants ---
 #ifndef __AS_DISPLAY_CONSTANTS
 #define __AS_DISPLAY_CONSTANTS
-static const float AS_RESOLUTION_BASE_HEIGHT = 1080.0;  // Standard height for scaling calculations
-static const float AS_RESOLUTION_BASE_WIDTH = 1920.0;   // Standard width for scaling calculations
-static const float AS_STANDARD_ASPECT_RATIO = 16.0/9.0; // Standard aspect ratio for reference
+static const float AS_RESOLUTION_BASE_HEIGHT = 1080.0f;  // Standard height for scaling calculations
+static const float AS_RESOLUTION_BASE_WIDTH = 1920.0f;   // Standard width for scaling calculations
+static const float AS_STANDARD_ASPECT_RATIO = 16.0f/9.0f; // Standard aspect ratio for reference
 
 // Common UI mapping constants
-static const float AS_UI_POSITION_RANGE = 1.5;  // Standard range for position UI controls (-1.5 to 1.5)
-static const float AS_UI_CENTRAL_SQUARE = 1.0;  // Range mapping to central square (-1.0 to 1.0)
-static const float AS_UI_POSITION_SCALE = 0.5;  // Position scaling factor for centered coordinates
+static const float AS_UI_POSITION_RANGE = 1.5f;  // Standard range for position UI controls (-1.5 to 1.5)
+static const float AS_UI_CENTRAL_SQUARE = 1.0f;  // Range mapping to central square (-1.0 to 1.0)
+static const float AS_UI_POSITION_SCALE = 0.5f;  // Position scaling factor for centered coordinates
 
 // Common coordinate system values
-static const float AS_SCREEN_CENTER_X = 0.5;    // Screen center X coordinate
-static const float AS_SCREEN_CENTER_Y = 0.5;    // Screen center Y coordinate
-static const float AS_RESOLUTION_SCALE = 1080.0 / BUFFER_HEIGHT; // Resolution scaling factor
+static const float AS_SCREEN_CENTER_X = 0.5f;    // Screen center X coordinate
+static const float AS_SCREEN_CENTER_Y = 0.5f;    // Screen center Y coordinate
+static const float AS_RESOLUTION_SCALE = 1080.0f / BUFFER_HEIGHT; // Resolution scaling factor
 #endif // __AS_DISPLAY_CONSTANTS
 #define AS_AUDIO_BASS    4  // Low frequency band
 #define AS_AUDIO_TREBLE  5  // High frequency band
@@ -261,15 +257,15 @@ uniform float name < ui_type = "slider"; ui_label = "Sway Angle"; ui_tooltip = "
 #define __AS_POSITION_UI_INCLUDED
 
 // --- Position Constants ---
-#define AS_POSITION_MIN -1.5
-#define AS_POSITION_MAX 1.5
-#define AS_POSITION_STEP 0.01
-#define AS_POSITION_DEFAULT 0.0
+#define AS_POSITION_MIN -1.5f
+#define AS_POSITION_MAX 1.5f
+#define AS_POSITION_STEP 0.01f
+#define AS_POSITION_DEFAULT 0.0f
 
-#define AS_SCALE_MIN 0.1
-#define AS_SCALE_MAX 5.0
-#define AS_SCALE_STEP 0.01
-#define AS_SCALE_DEFAULT 1.0
+#define AS_SCALE_MIN 0.1f
+#define AS_SCALE_MAX 5.0f
+#define AS_SCALE_STEP 0.01f
+#define AS_SCALE_DEFAULT 1.0f
 
 // --- Position UI Macros ---
 // Creates a standardized position control (as float2)
@@ -296,9 +292,8 @@ float2 AS_applyPositionAndScale(float2 coord, float2 pos, float scale) {
     // Apply position offset (Y is inverted in screen space)
     coord.x -= pos.x;
     coord.y += pos.y;
-    
-    // Apply scale (higher value = zoomed out)
-    return coord / max(scale, 0.001); // Prevent division by zero
+      // Apply scale (higher value = zoomed out)
+    return coord / max(scale, AS_EPSILON); // Prevent division by zero
 }
 
 // Converts normalized texcoord to centered, aspect-corrected coordinates
@@ -337,9 +332,8 @@ float2 AS_transformCoord(float2 texcoord, float2 pos, float scale, float rotatio
     
     // Apply position and scale
     float2 positioned = AS_applyPositionAndScale(centered, pos, scale);
-    
-    // Apply rotation if needed
-    if (abs(rotation) > 0.0001) {
+      // Apply rotation if needed
+    if (abs(rotation) > AS_EPSILON) {
         float s = sin(rotation);
         float c = cos(rotation);
         positioned = float2(
@@ -379,7 +373,7 @@ float2 AS_rotate2D(float2 p, float a)
 // - This implementation provides consistent, predictable modulo behavior for all AS shaders.
 float AS_mod(float x, float y) {
     // Ensure y is not zero to avoid division by zero
-    if (abs(y) < 1e-6) return x;
+    if (abs(y) < AS_EPSILON) return x;
     return x - y * floor(x / y);
 }
 
@@ -455,17 +449,17 @@ uniform int frameCount < source = "framecount"; >; // Frame count from ReShade
 float AS_getTime() {
 #if defined(__LISTENINGWAY_INSTALLED)
     // Check if Listeningway appears to be actively running by checking if totalphases is non-zero
-    if (Listeningway_TotalPhases120Hz > 0.0001) {
+    if (Listeningway_TotalPhases120Hz > AS_EPSILON) {
         // Use Listeningway's high-precision timer when available and active
-        return Listeningway_TotalPhases120Hz * (1.0 / 120.0); // 120Hz phase counter
+        return Listeningway_TotalPhases120Hz * (1.0f / 120.0f); // 120Hz phase counter
     }
-    else if (Listeningway_TimeSeconds > 0.0001) {
+    else if (Listeningway_TimeSeconds > AS_EPSILON) {
         // Alternative fallback to direct time seconds if available
         return Listeningway_TimeSeconds;
     }
 #endif
     // Fallback to frame count approximation (assumes ~60 FPS)
-    return float(frameCount) * (1.0 / 60.0);
+    return float(frameCount) * (1.0f / 60.0f);
 }
 
 // --- Listeningway Helpers ---
