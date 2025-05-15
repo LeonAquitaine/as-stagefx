@@ -123,7 +123,7 @@ uniform float VelocityDamping < ui_type = "slider"; ui_label = "Velocity Damping
 uniform float GLSLTurbulenceAdvectionInfluence < ui_type = "slider"; ui_label = "Advection Influence"; ui_tooltip = "How much the GLSL turbulence pattern displaces advecting flames. Affected by Rotation."; ui_min = 0.0; ui_max = 0.1; ui_step = 0.001; ui_category = "Flame Physics"; > = DEFAULT_GLSL_TURBULENCE_ADVECTION_INFLUENCE;
 
 // --- Flame Appearance ---
-AS_PALETTE_SELECTION_UI(FlamePalette, "Color: Palette", 0, "Flame Appearance") 
+AS_PALETTE_SELECTION_UI(FlamePalette, "Color: Palette", AS_PALETTE_CUSTOM, "Flame Appearance") 
 AS_DECLARE_CUSTOM_PALETTE(Flame, "Flame Appearance") // Label for custom palette colors set by AS_Utils
 uniform float FlameIntensity < ui_type = "slider"; ui_label = "Overall Intensity"; ui_tooltip = "Master brightness multiplier for the rendered flame."; ui_min = 0.0; ui_max = 10.0; ui_step = 0.01; ui_category = "Flame Appearance"; > = DEFAULT_FLAME_INTENSITY;
 uniform float FlameColorThresholdCore < ui_type = "slider"; ui_label = "Core Temperature"; ui_tooltip = "Temperature threshold for the flame's core color."; ui_min = 0.5; ui_max = 2.0; ui_step = 0.01; ui_category = "Flame Appearance"; > = DEFAULT_FLAME_COLOR_THRESHOLD_CORE;

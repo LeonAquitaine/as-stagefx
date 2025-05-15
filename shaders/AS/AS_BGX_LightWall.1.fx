@@ -366,7 +366,7 @@ float3 getCustomPaletteColor(int idx) {
 }
 
 float3 LightWall_getPaletteColor(float t) {
-    if (PalettePreset == AS_PALETTE_COUNT) {
+    if (PalettePreset == AS_PALETTE_CUSTOM) {
         return AS_GET_INTERPOLATED_CUSTOM_COLOR(LightWall_, t);
     }
     return AS_getInterpolatedColor(PalettePreset, t);
@@ -565,3 +565,4 @@ technique AS_LightWall < ui_label = "[AS] BGX: Light Wall"; ui_tooltip = "Soft g
 }
 
 #endif // __AS_BGX_LightWall_1_fx
+

@@ -229,7 +229,7 @@ float3 LaserShow_getPaletteColor(float t, float time) {
     }
     
     // Return the color from the selected palette
-    if (PalettePreset == AS_PALETTE_COUNT) {
+    if (PalettePreset == AS_PALETTE_CUSTOM) {
         return AS_GET_INTERPOLATED_CUSTOM_COLOR(LaserShow_, t);
     }
     return AS_getInterpolatedColor(PalettePreset, t);

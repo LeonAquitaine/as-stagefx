@@ -24,8 +24,7 @@
 // Include the palette style definitions first so AS_PALETTE_COUNT is available
 #include "AS_Palette_Styles.1.fxh"
 
-// Define AS_PALETTE_CUSTOM as the index immediately following the last predefined palette
-#define AS_PALETTE_CUSTOM       AS_PALETTE_COUNT 
+// AS_PALETTE_CUSTOM is now defined as 0 in AS_Palette_Styles.1.fxh for backward compatibility
 
 // Default custom palette colors (will be overridden by AS_CUSTOM_PALETTE_UI macro when used)
 // These defaults ensure the variables exist even if the macro isn't used
@@ -38,10 +37,10 @@ static const float3 CustomPaletteColor4 = float3(1.0, 0.0, 1.0); // Magenta
 // Get palette color by index from the array
 float3 AS_getPaletteColor(int paletteIdx, int colorIdx) {
     // Clamp palette and color indices to valid ranges
-    paletteIdx = clamp(paletteIdx, 0, AS_PALETTE_COUNT - 1); // AS_PALETTE_COUNT is now from AS_Palette_Styles.1.fxh
+    paletteIdx = clamp(paletteIdx, 0, AS_PALETTE_COUNT - 1);
     colorIdx = clamp(colorIdx, 0, AS_PALETTE_COLORS - 1);
     
-    // Handle custom palette as a special case
+    // Handle custom palette as index 0
     if (paletteIdx == AS_PALETTE_CUSTOM) {
         if (colorIdx == 0) return CustomPaletteColor0;
         if (colorIdx == 1) return CustomPaletteColor1;
@@ -50,9 +49,10 @@ float3 AS_getPaletteColor(int paletteIdx, int colorIdx) {
         return CustomPaletteColor4;
     }
     
-    // Calculate index into the flattened array
-    int idx = paletteIdx * AS_PALETTE_COLORS + colorIdx;
-    return AS_PALETTES[idx]; // AS_PALETTES is now from AS_Palette_Styles.1.fxh
+    // For built-in palettes (indices 1 and above), adjust index to account for custom being at index 0
+    int adjustedPaletteIdx = paletteIdx - 1; // Subtract 1 to skip the custom palette slot
+    int idx = adjustedPaletteIdx * AS_PALETTE_COLORS + colorIdx;
+    return AS_PALETTES[idx];
 }
 
 // Interpolate color between palette colors

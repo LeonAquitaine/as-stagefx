@@ -16,39 +16,41 @@
 
 // --- Palette Style Constants ---
 // Define palette modes for all shaders
-#define AS_PALETTE_CLASSIC_VU    0
-#define AS_PALETTE_BLUE          1
-#define AS_PALETTE_SUNSET        2
-#define AS_PALETTE_NEON          3
-#define AS_PALETTE_RETRO         4
-#define AS_PALETTE_BLUEWAVE      5
-#define AS_PALETTE_BRIGHT_LIGHTS 6
-#define AS_PALETTE_DISCO         7
-#define AS_PALETTE_ELECTRONICA   8
-#define AS_PALETTE_INDUSTRIAL    9
-#define AS_PALETTE_METAL        10
-#define AS_PALETTE_MONOTONE     11
-#define AS_PALETTE_PASTEL_POP   12
-#define AS_PALETTE_REDLINE      13
-#define AS_PALETTE_RAINBOW      14
-#define AS_PALETTE_FIRE         15
-#define AS_PALETTE_AQUA         16
-#define AS_PALETTE_VIRIDIS      17
-#define AS_PALETTE_DEEP_PURPLE  18
-#define AS_PALETTE_GROOVY       19
-#define AS_PALETTE_VAPORWAVE    20
-#define AS_PALETTE_AURORA       21
-#define AS_PALETTE_ELECTRIC     22
-#define AS_PALETTE_MYSTIC_NIGHT 23
+#define AS_PALETTE_CUSTOM       0  // Custom palette should be index 0 to avoid breaking presets when adding new palettes
+#define AS_PALETTE_CLASSIC_VU   1
+#define AS_PALETTE_BLUE         2
+#define AS_PALETTE_SUNSET       3
+#define AS_PALETTE_NEON         4
+#define AS_PALETTE_RETRO        5
+#define AS_PALETTE_BLUEWAVE     6
+#define AS_PALETTE_BRIGHT_LIGHTS 7
+#define AS_PALETTE_DISCO        8
+#define AS_PALETTE_ELECTRONICA  9
+#define AS_PALETTE_INDUSTRIAL  10
+#define AS_PALETTE_METAL       11
+#define AS_PALETTE_MONOTONE    12
+#define AS_PALETTE_PASTEL_POP  13
+#define AS_PALETTE_REDLINE     14
+#define AS_PALETTE_RAINBOW     15
+#define AS_PALETTE_FIRE        16
+#define AS_PALETTE_AQUA        17
+#define AS_PALETTE_VIRIDIS     18
+#define AS_PALETTE_DEEP_PURPLE 19
+#define AS_PALETTE_GROOVY      20
+#define AS_PALETTE_VAPORWAVE   21
+#define AS_PALETTE_AURORA      22
+#define AS_PALETTE_ELECTRIC    23
+#define AS_PALETTE_MYSTIC_NIGHT 24
 // Note: AS_PALETTE_CUSTOM is defined in AS_Palette.1.fxh
 
-// Total number of built-in palettes
-#define AS_PALETTE_COUNT 24
+// Total number of built-in palettes (including custom)
+#define AS_PALETTE_COUNT 25
 
 // --- Standard Palette Arrays ---
 // All palettes standardized to 5 colors (AS_PALETTE_COLORS) for consistent interface
 // HLSL doesn't support true multidimensional arrays, so we use a flattened array
-static const float3 AS_PALETTES[AS_PALETTE_COUNT * AS_PALETTE_COLORS] = {
+// Custom palette is not in this array - it's handled separately in AS_getPaletteColor
+static const float3 AS_PALETTES[(AS_PALETTE_COUNT-1) * AS_PALETTE_COLORS] = {
     // Classic VU (green -> yellow -> red)
     float3(0.0, 1.0, 0.0), float3(0.7, 1.0, 0.0), float3(1.0, 1.0, 0.0), float3(1.0, 0.5, 0.0), float3(1.0, 0.0, 0.0),
     // Blue
@@ -100,6 +102,6 @@ static const float3 AS_PALETTES[AS_PALETTE_COUNT * AS_PALETTE_COLORS] = {
 };
 
 // Standard palette UI strings for combo boxes
-#define AS_PALETTE_ITEMS "Classic VU\0Blue\0Sunset\0Neon\0Retro\0Bluewave\0Bright Lights\0Disco\0Electronica\0Industrial\0Metal\0Monotone\0Pastel Pop\0Redline\0Rainbow\0Fire\0Aqua\0Viridis\0Deep Purple\0Groovy\0Vaporwave\0Aurora\0Electric\0Mystic Night\0Custom\0"
+#define AS_PALETTE_ITEMS "Custom\0Classic VU\0Blue\0Sunset\0Neon\0Retro\0Bluewave\0Bright Lights\0Disco\0Electronica\0Industrial\0Metal\0Monotone\0Pastel Pop\0Redline\0Rainbow\0Fire\0Aqua\0Viridis\0Deep Purple\0Groovy\0Vaporwave\0Aurora\0Electric\0Mystic Night\0"
 
 #endif // __AS_Palette_Styles_1_fxh

@@ -116,7 +116,7 @@ float2x2 rotMat(in float r) {
 float3 getCosmosCrystalColor(float t, float time) { 
     if (ColorCycleSpeed != 0.0) { t = frac(t + ColorCycleSpeed * 0.1 * time); }
     t = saturate(t); 
-    if (PalettePreset == AS_PALETTE_COUNT) { return AS_GET_INTERPOLATED_CUSTOM_COLOR(CosmosCrystal_, t); }
+    if (PalettePreset == AS_PALETTE_CUSTOM) { return AS_GET_INTERPOLATED_CUSTOM_COLOR(CosmosCrystal_, t); }
     return AS_getInterpolatedColor(PalettePreset, t); 
 }
 

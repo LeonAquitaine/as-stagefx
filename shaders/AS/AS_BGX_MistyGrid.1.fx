@@ -116,7 +116,7 @@ uniform float FractalIterations < ui_type = "slider"; ui_label = "Detail Level";
 uniform float FoldingAmount < ui_type = "slider"; ui_label = "Folding Intensity"; ui_tooltip = "Controls how tightly the pattern folds on itself"; ui_category = "Fractal Parameters"; ui_min = 5.0; ui_max = 15.0; > = 10.0;
 
 // Color Controls
-AS_PALETTE_SELECTION_UI(ColorPalette, "Color Palette", 0, "Color Settings")
+AS_PALETTE_SELECTION_UI(ColorPalette, "Color Palette", AS_PALETTE_CUSTOM, "Color Settings")
 AS_DECLARE_CUSTOM_PALETTE(MistyGrid_, "Color Settings")
 uniform float ColorSaturation < ui_type = "slider"; ui_label = "Saturation"; ui_tooltip = "Adjusts the saturation of the colors"; ui_category = "Color Settings"; ui_min = 0.0; ui_max = 2.0; > = 1.0;
 uniform float ColorBrightness < ui_type = "slider"; ui_label = "Brightness"; ui_tooltip = "Adjusts the brightness of the effect"; ui_category = "Color Settings"; ui_min = 0.0; ui_max = 2.0; > = 1.0;

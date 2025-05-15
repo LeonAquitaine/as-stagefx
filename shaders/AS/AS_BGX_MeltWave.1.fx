@@ -158,7 +158,7 @@ float3 getMeltWaveColor(float t, float time) {
     
     t = saturate(t); // Ensure t is in [0,1]
     
-    if (PalettePreset == AS_PALETTE_COUNT) {
+    if (PalettePreset == AS_PALETTE_CUSTOM) {
         // Use custom palette
         return AS_GET_INTERPOLATED_CUSTOM_COLOR(MeltWave_, t);
     }

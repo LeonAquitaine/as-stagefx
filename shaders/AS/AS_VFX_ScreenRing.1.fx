@@ -161,10 +161,9 @@ float3 getScreenRingPaletteColor(float t, float timer) {
             t = cyclePos; // Override t completely with current cycle position
         }
     }
+      t = saturate(t); // Ensure t is within valid range [0, 1]
     
-    t = saturate(t); // Ensure t is within valid range [0, 1]
-    
-    if (PalettePreset == AS_PALETTE_COUNT) { // Use custom palette
+    if (PalettePreset == AS_PALETTE_CUSTOM) { // Use custom palette
         return AS_GET_INTERPOLATED_CUSTOM_COLOR(Ring_, t);
     }
     return AS_getInterpolatedColor(PalettePreset, t); // Use preset palette

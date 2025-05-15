@@ -83,6 +83,10 @@ static const float LIFECYCLE_AMPLITUDE_SCALE = 0.3;    // Overall amplitude scal
 static const float LIFECYCLE_MICRO_OSC_FACTOR = 0.1;   // Factor for micro oscillations in alpha
 static const float LIFECYCLE_MIN_ALPHA = 0.001;        // Minimum alpha value for lifecycle
 
+// --- Petal Variant Selection Constants ---
+static const float PETAL_VARIANT_WEIGHTS[4] = { 64.0f, 16.0f, 4.0f, 1.0f }; // Weights for variants (primary, secondary, tertiary, quaternary)
+static const float PETAL_WEIGHT_MINIMUM = 0.0001f;    // Minimum weight threshold for variant selection
+
 // --- Rotation & Variation Constants ---
 // Rotation sampling and coordinates
 static const float NOISE_SCALE_FACTOR1 = 7.89;
@@ -534,35 +538,33 @@ float4 DrawPetalInstance(float2 uvForVoronoiLookup, float2 originalScreenUV, flo
     if (texLookupUV.x < 0.0 || texLookupUV.x > 1.0 || texLookupUV.y < 0.0 || texLookupUV.y > 1.0) {
         return float4(0.0, 0.0, 0.0, 0.0); // Outside valid texture range
     }
-    
-    // Weighted selection of petal variant based on PetalVariety
+      // Weighted selection of petal variant based on PetalVariety
     int variant; // This will be our selected variant index
     { // Scope for temporary variables for weighted selection logic
-        float petal_weights[4] = { 4.0f, 3.0f, 2.0f, 1.0f }; // Weights for variant 0, 1, 2, 3
         float cumulative_petal_weights[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
         float total_selected_petal_weight = 0.0f;
         int num_variants_in_pool = PetalVariety; // How many variants are active based on UI (1-4)
 
         // Calculate total and cumulative weights for the active variants
         if (num_variants_in_pool >= 1) {
-            total_selected_petal_weight += petal_weights[0];
-            cumulative_petal_weights[0] = petal_weights[0];
+            total_selected_petal_weight += PETAL_VARIANT_WEIGHTS[0];
+            cumulative_petal_weights[0] = PETAL_VARIANT_WEIGHTS[0];
         }
         if (num_variants_in_pool >= 2) {
-            total_selected_petal_weight += petal_weights[1];
-            cumulative_petal_weights[1] = cumulative_petal_weights[0] + petal_weights[1];
+            total_selected_petal_weight += PETAL_VARIANT_WEIGHTS[1];
+            cumulative_petal_weights[1] = cumulative_petal_weights[0] + PETAL_VARIANT_WEIGHTS[1];
         }
         if (num_variants_in_pool >= 3) {
-            total_selected_petal_weight += petal_weights[2];
-            cumulative_petal_weights[2] = cumulative_petal_weights[1] + petal_weights[2];
+            total_selected_petal_weight += PETAL_VARIANT_WEIGHTS[2];
+            cumulative_petal_weights[2] = cumulative_petal_weights[1] + PETAL_VARIANT_WEIGHTS[2];
         }
         if (num_variants_in_pool >= 4) { // PetalVariety can be up to 4, matching ATLAS_PETALS_PER_TYPE
-            total_selected_petal_weight += petal_weights[3];
-            cumulative_petal_weights[3] = cumulative_petal_weights[2] + petal_weights[3];
+            total_selected_petal_weight += PETAL_VARIANT_WEIGHTS[3];
+            cumulative_petal_weights[3] = cumulative_petal_weights[2] + PETAL_VARIANT_WEIGHTS[3];
         }
 
         // Handle edge case of zero total weight (though PetalVariety min is 1, ensuring this is unlikely)
-        if (total_selected_petal_weight <= 0.0001f) { 
+        if (total_selected_petal_weight <= PETAL_WEIGHT_MINIMUM) { 
             total_selected_petal_weight = 1.0f; 
         }
 

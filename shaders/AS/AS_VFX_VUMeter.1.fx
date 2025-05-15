@@ -99,9 +99,8 @@ AS_BLENDAMOUNT_UI(BlendAmount)
 namespace AS_VUMeterBG {
     float getSmoothedBand(int i, int bands) {
         return saturate(AS_getFrequencyBand(i)) * Sensibility;
-    }
-    float3 getPaletteColorByValue(float value) {
-        if (PaletteMode == AS_PALETTE_COUNT) {
+    }    float3 getPaletteColorByValue(float value) {
+        if (PaletteMode == AS_PALETTE_CUSTOM) {
             return AS_GET_INTERPOLATED_CUSTOM_COLOR(VUMeter_, value);
         }
         return AS_getInterpolatedColor(PaletteMode, value);

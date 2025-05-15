@@ -156,7 +156,7 @@ namespace AS_PlasmaFlow {
 }
 
 float3 PlasmaFlow_getPaletteColor(float t) {
-    if (PalettePreset == AS_PALETTE_COUNT) {
+    if (PalettePreset == AS_PALETTE_CUSTOM) {
         return AS_GET_INTERPOLATED_CUSTOM_COLOR(PlasmaFlow_, t);
     }
     return AS_getInterpolatedColor(PalettePreset, t);
@@ -229,3 +229,4 @@ technique AS_PlasmaFlow_1 < ui_label = "[AS] BGX: Plasma Flow"; ui_tooltip = "Au
 }
 
 #endif // __AS_BGX_PlasmaFlow_1_fx
+

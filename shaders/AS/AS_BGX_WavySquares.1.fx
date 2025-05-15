@@ -185,7 +185,7 @@ float3 getWavySquaresColor(float t, float time) {
     }
     t = saturate(t); 
     
-    if (PalettePreset == AS_PALETTE_COUNT) { // Use custom palette
+    if (PalettePreset == AS_PALETTE_CUSTOM) { // Use custom palette
         return AS_GET_INTERPOLATED_CUSTOM_COLOR(WavySquares_, t);
     }
     return AS_getInterpolatedColor(PalettePreset, t); // Use preset palette

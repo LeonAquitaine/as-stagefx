@@ -92,8 +92,7 @@ AS_BLENDAMOUNT_UI(BlendAmount)
 AS_DEBUG_MODE_UI("Off\0Bands\0")
 
 // --- Helper Functions ---
-float3 SpectrumRing_getPaletteColor(float t) {
-    if (ColorPattern == AS_PALETTE_COUNT) {
+float3 SpectrumRing_getPaletteColor(float t) {    if (ColorPattern == AS_PALETTE_CUSTOM) {
         return AS_GET_INTERPOLATED_CUSTOM_COLOR(SpectrumRing_, t);
     }
     return AS_getInterpolatedColor(ColorPattern, t);

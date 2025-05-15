@@ -185,10 +185,9 @@ float3 getWavySquigglesColor(float t, float time) {
     if (ColorCycleSpeed != 0.0) {
         float cycleRate = ColorCycleSpeed * 0.1;
         t = frac(t + cycleRate * time);
-    }
-    t = saturate(t); 
+    }    t = saturate(t); 
     
-    if (PalettePreset == AS_PALETTE_COUNT) { // Use custom palette
+    if (PalettePreset == AS_PALETTE_CUSTOM) { // Use custom palette
         return AS_GET_INTERPOLATED_CUSTOM_COLOR(WavySquiggles_, t);    }
     return AS_getInterpolatedColor(PalettePreset, t); // Use preset palette
 }
