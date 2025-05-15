@@ -1,5 +1,5 @@
 /**
- * AS_FGX_VignettePlus.1.fx - Enhanced vignette effects with customizable patterns
+ * AS_GFX_VignettePlus.1.fx - Enhanced vignette effects with customizable patterns
  * Author: Leon Aquitaine
  * License: Creative Commons Attribution 4.0 International
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
@@ -34,8 +34,8 @@
  * ===================================================================================
  */
 
-#ifndef __AS_FGX_VignettePlus_1_fx
-#define __AS_FGX_VignettePlus_1_fx
+#ifndef __AS_GFX_VignettePlus_1_fx
+#define __AS_GFX_VignettePlus_1_fx
 
 // ============================================================================
 // INCLUDES
@@ -459,7 +459,7 @@ float4 VignettePlusPS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : 
 //------------------------------------------------------------------------------------------------
 // Technique Definition
 //------------------------------------------------------------------------------------------------
-technique AS_FGX_VignettePlus < ui_label = "[AS] FGX: Vignette Plus"; ui_tooltip = "Advanced vignette effects with customizable styles, falloff, and patterns."; >
+technique AS_GFX_VignettePlus < ui_label = "[AS] GFX: Vignette Plus"; ui_tooltip = "Advanced vignette effects with customizable styles, falloff, and patterns."; >
 {
     pass {
         VertexShader = PostProcessVS;
@@ -469,4 +469,4 @@ technique AS_FGX_VignettePlus < ui_label = "[AS] FGX: Vignette Plus"; ui_tooltip
 
 } // namespace ASVignettePlus
 
-#endif // __AS_FGX_VignettePlus_1_fx
+#endif // __AS_GFX_VignettePlus_1_fx

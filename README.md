@@ -62,6 +62,7 @@ Effects are categorized as Background (BGX), Graphic (GFX), Lighting (LFX), and 
 | Shader                 | Description                                                                                                |
 | ---------------------- | ---------------------------------------------------------------------------------------------------------- |
 | **Multi-Layer Halftone**| Highly customizable multi-layer halftone (up to 4 layers) with various patterns, isolation methods, and blending options. |
+| **Vignette Plus**      | Advanced vignette effect with customizable shape, color, animation, blur, and audio reactivity. |
 
 ### Lighting Effects (LFX)
 
