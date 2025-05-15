@@ -308,83 +308,151 @@ float4 ApplyDuotoneCirclesPS(float2 texcoord, float raw_alpha_param, float3 colo
     return float4(color, smoothstep(radius + aa_w * 0.5f, radius - aa_w * 0.5f, dist));
 }
 
+// Shared logic for both line pattern functions to reduce code duplication
 float4 ApplyDuotoneLinesSharedLogic(float2 texcoord, float raw_alpha_param, float3 color,
-                                    float line_cycle_width_uv, float effect_rotation_rad, float coverage_boost_uniform,
-                                    bool use_u_component_for_banding) {
-    if (raw_alpha_param <= ALPHA_EPSILON) return float4(color, 0.0f);
-    float2 ctd_coord = texcoord - CENTER_COORD; float W = ReShade::ScreenSize.x; float H = ReShade::ScreenSize.y;
-    float cos_a = cos(effect_rotation_rad), sin_a = sin(effect_rotation_rad);
-    float comp_pixels; float max_extent_pixels;
+                                   float line_cycle_width_uv, float effect_rotation_rad, 
+                                   float coverage_boost_uniform, bool use_u_component_for_banding) {
+    if (raw_alpha_param <= ALPHA_EPSILON) 
+        return float4(color, 0.0f);
+    
+    // Center coordinates for rotation
+    float2 ctd_coord = texcoord - CENTER_COORD; 
+    float W = ReShade::ScreenSize.x; 
+    float H = ReShade::ScreenSize.y;
+    
+    // Compute trig functions once
+    float cos_a = cos(effect_rotation_rad);
+    float sin_a = sin(effect_rotation_rad);
+    
+    // Calculate components based on whether perpendicular or parallel lines
+    float comp_pixels;
+    float max_extent_pixels;
+    
     if (use_u_component_for_banding) {
-        comp_pixels = (ctd_coord.x*W)*cos_a + (ctd_coord.y*H)*sin_a;
-        max_extent_pixels = CENTER_COORD * (W*abs(cos_a) + H*abs(sin_a));
-    } else {
-        comp_pixels = -(ctd_coord.x*W)*sin_a + (ctd_coord.y*H)*cos_a;
-        max_extent_pixels = CENTER_COORD * (W*abs(sin_a) + H*abs(cos_a));
+        // For perpendicular lines (parallel to gradient direction)
+        comp_pixels = (ctd_coord.x * W) * cos_a + (ctd_coord.y * H) * sin_a;
+        max_extent_pixels = CENTER_COORD * (W * abs(cos_a) + H * abs(sin_a));
+    } 
+    else {
+        // For parallel lines (perpendicular to gradient direction)
+        comp_pixels = -(ctd_coord.x * W) * sin_a + (ctd_coord.y * H) * cos_a;
+        max_extent_pixels = CENTER_COORD * (W * abs(sin_a) + H * abs(cos_a));
     }
-    float norm_pos_banding = (comp_pixels/(max_extent_pixels+ALPHA_EPSILON))*CENTER_COORD + CENTER_COORD;
-    float cycle_in_raw = saturate(norm_pos_banding)/line_cycle_width_uv;
-    float coord_cycle = frac(cycle_in_raw); 
-    float base_half_thick = raw_alpha_param*CENTER_COORD;
-    float boost = lerp(1.0f,coverage_boost_uniform,raw_alpha_param);
-    float boosted_half_thick = base_half_thick*boost;
-    float val_to_test = abs(coord_cycle-CENTER_COORD);
-    float edge_thresh = boosted_half_thick; 
-    float aa_w_cycle = fwidth(cycle_in_raw); 
-    return float4(color, smoothstep(edge_thresh+aa_w_cycle*0.5f, edge_thresh-aa_w_cycle*0.5f, val_to_test));
+    
+    // Normalize position to [0,1] range and calculate cycle position
+    float norm_pos_banding = (comp_pixels / (max_extent_pixels + ALPHA_EPSILON)) * CENTER_COORD + CENTER_COORD;
+    float cycle_in_raw = saturate(norm_pos_banding) / line_cycle_width_uv;
+    float coord_cycle = frac(cycle_in_raw);
+    
+    // Calculate line thickness with boosting for solid areas
+    float base_half_thick = raw_alpha_param * CENTER_COORD;
+    float boost = lerp(1.0f, coverage_boost_uniform, raw_alpha_param);
+    float boosted_half_thick = base_half_thick * boost;
+    
+    // Calculate distance from nearest line center
+    float val_to_test = abs(coord_cycle - CENTER_COORD);
+    float edge_thresh = boosted_half_thick;
+    
+    // Calculate anti-aliasing width for smooth transitions
+    float aa_w_cycle = fwidth(cycle_in_raw);
+    
+    // Apply anti-aliasing with smoothstep
+    return float4(color, smoothstep(edge_thresh + aa_w_cycle * 0.5f, edge_thresh - aa_w_cycle * 0.5f, val_to_test));
 }
 
-float4 ApplyDuotoneLinesParallelPS(float2 tc,float ra,float3 col,float lcw,float er,float cbu){ return ApplyDuotoneLinesSharedLogic(tc,ra,col,lcw,er,cbu,false); }
-float4 ApplyDuotoneLinesPerpendicularPS(float2 tc,float ra,float3 col,float lcw,float er,float cbu){ return ApplyDuotoneLinesSharedLogic(tc,ra,col,lcw,er,cbu,true); }
+// Pattern-specific wrapper functions for parallel and perpendicular lines
+float4 ApplyDuotoneLinesParallelPS(float2 texcoord, float raw_alpha, float3 color, 
+                                  float line_cycle_width, float effect_rotation, float coverage_boost) {
+    return ApplyDuotoneLinesSharedLogic(texcoord, raw_alpha, color, line_cycle_width, 
+                                      effect_rotation, coverage_boost, false);
+}
+
+float4 ApplyDuotoneLinesPerpendicularPS(float2 texcoord, float raw_alpha, float3 color, 
+                                       float line_cycle_width, float effect_rotation, float coverage_boost) {
+    return ApplyDuotoneLinesSharedLogic(texcoord, raw_alpha, color, line_cycle_width, 
+                                      effect_rotation, coverage_boost, true);
+}
 
 //------------------------------------------------------------------------------------------------
 // Pixel Shader
 //------------------------------------------------------------------------------------------------
 float4 VignettePlusPS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : SV_Target {
+    // Get depth and handle depth-based masking
     float depth = ReShade::GetLinearizedDepth(texcoord);
-    if (depth < EffectDepth) { return tex2D(ReShade::BackBuffer, texcoord); }
-    
-    float3 original_color = tex2D(ReShade::BackBuffer, texcoord).rgb;
-    float rotation_radians = AS_getRotationRadians(SnapRotation, FineRotation); 
-    
-    float composition_f = GetCompositionFactor(texcoord, rotation_radians, MirrorStyle); // Pass MirrorStyle
-    float tA_norm = FalloffStart * PERCENT_TO_NORMAL;
-    float tB_norm = FalloffEnd * PERCENT_TO_NORMAL;
-    float raw_vignette_alpha = CalculateVignetteAlpha(composition_f, tA_norm, tB_norm);
-    
-    float4 vignette_effect_color_alpha = float4(EffectColor, 0.0f);
-    
-    if (EffectStyle == STYLE_SMOOTH_GRADIENT) {
-        vignette_effect_color_alpha = ApplySmoothGradientPS(raw_vignette_alpha, EffectColor);
-    } else if (EffectStyle == STYLE_DUOTONE_CIRCLES) {
-        vignette_effect_color_alpha = ApplyDuotoneCirclesPS(texcoord, raw_vignette_alpha, EffectColor, PatternElementSize, PatternCoverageBoost);
-    } else if (EffectStyle == STYLE_LINES_PERPENDICULAR) {
-        vignette_effect_color_alpha = ApplyDuotoneLinesPerpendicularPS(texcoord, raw_vignette_alpha, EffectColor, PatternElementSize, rotation_radians, PatternCoverageBoost);
-    } else if (EffectStyle == STYLE_LINES_PARALLEL) {
-        vignette_effect_color_alpha = ApplyDuotoneLinesParallelPS(texcoord, raw_vignette_alpha, EffectColor, PatternElementSize, rotation_radians, PatternCoverageBoost);
+    if (depth < EffectDepth) {
+        return tex2D(ReShade::BackBuffer, texcoord);
     }
     
-    float final_effect_alpha = vignette_effect_color_alpha.a;
-    if (InvertAlpha) { final_effect_alpha = 1.0f - final_effect_alpha; }
+    // Get original pixel color
+    float3 original_color = tex2D(ReShade::BackBuffer, texcoord).rgb;
     
+    // Calculate rotation using standard AS helpers
+    float rotation_radians = AS_getRotationRadians(SnapRotation, FineRotation); 
+    
+    // Calculate composition factor based on mirror style
+    float composition_f = GetCompositionFactor(texcoord, rotation_radians, MirrorStyle);
+    
+    // Normalize falloff values from percentage to 0-1 range
+    float tA_norm = FalloffStart * PERCENT_TO_NORMAL;
+    float tB_norm = FalloffEnd * PERCENT_TO_NORMAL;
+    
+    // Calculate vignette alpha
+    float raw_vignette_alpha = CalculateVignetteAlpha(composition_f, tA_norm, tB_norm);
+    
+    // Initialize the effect output
+    float4 vignette_effect_color_alpha = float4(EffectColor, 0.0f);
+    
+    // Apply the selected pattern
+    if (EffectStyle == STYLE_SMOOTH_GRADIENT) {
+        vignette_effect_color_alpha = ApplySmoothGradientPS(raw_vignette_alpha, EffectColor);
+    } 
+    else if (EffectStyle == STYLE_DUOTONE_CIRCLES) {
+        vignette_effect_color_alpha = ApplyDuotoneCirclesPS(texcoord, raw_vignette_alpha, EffectColor, 
+                                                          PatternElementSize, PatternCoverageBoost);
+    } 
+    else if (EffectStyle == STYLE_LINES_PERPENDICULAR) {
+        vignette_effect_color_alpha = ApplyDuotoneLinesPerpendicularPS(texcoord, raw_vignette_alpha, EffectColor, 
+                                                                     PatternElementSize, rotation_radians, PatternCoverageBoost);
+    } 
+    else if (EffectStyle == STYLE_LINES_PARALLEL) {
+        vignette_effect_color_alpha = ApplyDuotoneLinesParallelPS(texcoord, raw_vignette_alpha, EffectColor, 
+                                                                PatternElementSize, rotation_radians, PatternCoverageBoost);
+    }
+    
+    // Apply alpha inversion if enabled
+    float final_effect_alpha = vignette_effect_color_alpha.a;
+    if (InvertAlpha) {
+        final_effect_alpha = 1.0f - final_effect_alpha;
+    }
+    
+    // Blend with original scene color
     float3 blended_color = lerp(original_color, vignette_effect_color_alpha.rgb, final_effect_alpha);
+    
+    // Create a float4 with the effect result for blending and potential debug display
     float4 effect_result = float4(blended_color, FULL_OPACITY);
     float4 final_color = effect_result;
-
+    
+    // Apply blend mode if amount is less than full
     if (BlendAmount < FULL_OPACITY) {
         float4 background = float4(original_color, FULL_OPACITY);
         final_color = AS_ApplyBlend(effect_result, background, BlendMode, BlendAmount);
     }
-
-    if (DebugMode != DEBUG_OFF) {
-        if (DebugMode == DEBUG_MASK) { return float4(final_effect_alpha.xxx, FULL_OPACITY); }
-        else if (DebugMode == DEBUG_FALLOFF) { return float4(raw_vignette_alpha.xxx, FULL_OPACITY); }
-        else if (DebugMode == DEBUG_PATTERN) { return float4(vignette_effect_color_alpha.a.xxx, FULL_OPACITY); }
-        else if (DebugMode == DEBUG_PATTERN_ONLY) {
-            float3 pattern_only = lerp(BLACK_COLOR, EffectColor, vignette_effect_color_alpha.a);
-            return float4(pattern_only, FULL_OPACITY);
-        }
+    
+    // Handle debug modes
+    if (DebugMode == DEBUG_MASK) { 
+        return float4(final_effect_alpha.xxx, FULL_OPACITY);
     }
+    else if (DebugMode == DEBUG_FALLOFF) { 
+        return float4(raw_vignette_alpha.xxx, FULL_OPACITY);
+    }
+    else if (DebugMode == DEBUG_PATTERN) { 
+        return float4(vignette_effect_color_alpha.a.xxx, FULL_OPACITY);
+    }
+    else if (DebugMode == DEBUG_PATTERN_ONLY) {
+        float3 pattern_only = lerp(BLACK_COLOR, EffectColor, vignette_effect_color_alpha.a);
+        return float4(pattern_only, FULL_OPACITY);
+    }
+    
     return final_color;
 }
 
@@ -392,7 +460,13 @@ float4 VignettePlusPS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : 
 // Technique Definition
 //------------------------------------------------------------------------------------------------
 technique AS_FGX_VignettePlus < ui_label = "[AS] FGX: Vignette Plus"; ui_tooltip = "Advanced vignette effects with customizable styles, falloff, and patterns."; >
-{ pass { VertexShader = PostProcessVS; PixelShader = ASVignettePlus::VignettePlusPS; } }
+{
+    pass {
+        VertexShader = PostProcessVS;
+        PixelShader = ASVignettePlus::VignettePlusPS;
+    }
+}
 
 } // namespace ASVignettePlus
+
 #endif // __AS_FGX_VignettePlus_1_fx
