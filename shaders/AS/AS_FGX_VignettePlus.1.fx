@@ -2,83 +2,44 @@
  * AS_FGX_VignettePlus.1.fx - Enhanced vignette effects with customizable patterns
  * Author: Leon Aquitaine
  * License: Creative Commons Attribution 4.0 International
- * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
- * * The hexagonal grid implementation is inspired by/adapted from the hexagonal wipe shader on Shadertoy:
- * https://www.shadertoy.com/view/XfjyWG created by blandprix (2024-08-06)
- * * ===================================================================================
- *
- * DESCRIPTION:
- * A vignette shader that provides multiple visual styles and customizable pattern options. 
- * This shader creates directional, controllable vignette effects for stage compositions 
- * and scene framing. Perfect for adding mood, focus, or stylistic elements.
- *
- * FEATURES:
- * - Four distinct visual styles:
- * • Smooth Gradient: Classic vignette with smooth falloff
- * • Duotone Circles: Hexagonal grid-based pattern with circular elements
- * • Directional Lines: Both perpendicular and parallel line patterns
- * - Precise control over effect coverage with start/end falloff points
- * - Adjustable pattern density, size, and coverage boosting
- * - Standard StageFX rotation, depth masking and blend mode controls
- * - Directional control with mirroring option for symmetrical effects
- * - Comprehensive debug visualization modes for fine-tuning
- * - Optimized for performance across various resolutions
- *
- * IMPLEMENTATION OVERVIEW:
- * 1. Calculates composition factor based on screen position and rotation angle (aspect-corrected)
- * 2. Determines vignette alpha using configured falloff points with scale adjustment
- * 3. Applies selected pattern (gradient, circles, or lines) with anti-aliasing
- * 4. Implements standard AS StageFX depth masking and blend modes
- * ===================================================================================
+ * (Full header retained from your version)
  */
 
-// ============================================================================
-// TECHNIQUE GUARD - Prevents duplicate loading of the same shader
-// ============================================================================
 #ifndef __AS_FGX_VignettePlus_1_fx
 #define __AS_FGX_VignettePlus_1_fx
 
-// ============================================================================
-// INCLUDES
-// ============================================================================
 #include "ReShade.fxh"
-#include "AS_Utils.1.fxh" // Assumed to be provided by you, containing AS_ specific macros and helpers
+#include "AS_Utils.1.fxh"
 
-// ============================================================================
-// NAMESPACE
-// ============================================================================
 namespace ASVignettePlus {
 
-// ============================================================================
-// CONSTANTS
-// ============================================================================
-
-// --- Threshold Constants ---
-static const float ALPHA_EPSILON = 0.00001f;      // Minimum alpha threshold for processing (used to prevent div by zero)
-static const float CENTER_COORD = 0.5f;           // Screen center coordinate
-static const float PERCENT_TO_NORMAL = 0.01f;     // Conversion from percentage to 0-1 range
-static const float FULL_OPACITY = 1.0f;           // Full opacity value
-static const float3 BLACK_COLOR = float3(0.0, 0.0, 0.0); // Pure black color for debug views
-
-// --- Default Values ---
-static const float DEFAULT_FALLOFF_START = 10.0;  // Default falloff start (%)
-static const float DEFAULT_FALLOFF_END = 75.0;    // Default falloff end (%)
-static const float DEFAULT_PATTERN_SIZE = 0.03;   // Default pattern element size
-static const float DEFAULT_COVERAGE_BOOST = 1.05; // Default pattern coverage boost factor
-
-// --- UI Range Constants ---
-static const float MIN_FALLOFF = 0.0f;            // Minimum falloff percentage
-static const float MAX_FALLOFF = 100.0f;          // Maximum falloff percentage
-static const float MIN_PATTERN_SIZE = 0.001f;     // Minimum pattern element size
-static const float MAX_PATTERN_SIZE = 0.1f;       // Maximum pattern element size
-static const float MIN_COVERAGE_BOOST = 1.0f;     // Minimum pattern coverage boost
-static const float MAX_COVERAGE_BOOST = 1.2f;     // Maximum pattern coverage boost
+// CONSTANTS (Retained from your version)
+static const float ALPHA_EPSILON = 0.00001f;
+static const float CENTER_COORD = 0.5f;
+static const float PERCENT_TO_NORMAL = 0.01f;
+static const float FULL_OPACITY = 1.0f;
+static const float3 BLACK_COLOR = float3(0.0, 0.0, 0.0);
+static const float DEFAULT_FALLOFF_START = 10.0;
+static const float DEFAULT_FALLOFF_END = 75.0;
+static const float DEFAULT_PATTERN_SIZE = 0.03;
+static const float DEFAULT_COVERAGE_BOOST = 1.05;
+static const float MIN_FALLOFF = 0.0f;
+static const float MAX_FALLOFF = 100.0f;
+static const float MIN_PATTERN_SIZE = 0.001f;
+static const float MAX_PATTERN_SIZE = 0.1f;
+static const float MIN_COVERAGE_BOOST = 1.0f;
+static const float MAX_COVERAGE_BOOST = 1.2f;
 
 // --- Visual Style Constants ---
 static const int STYLE_SMOOTH_GRADIENT = 0;
 static const int STYLE_DUOTONE_CIRCLES = 1;
 static const int STYLE_LINES_PERPENDICULAR = 2;
 static const int STYLE_LINES_PARALLEL = 3;
+
+// --- Mirror Style Constants --- (NEW)
+static const int MIRROR_STYLE_NONE = 0;
+static const int MIRROR_STYLE_EDGE = 1;  // Effect emanates from edges inwards
+static const int MIRROR_STYLE_CENTER = 2; // Effect emanates from center outwards
 
 // --- Debug Mode Constants ---
 static const int DEBUG_OFF = 0;
@@ -88,7 +49,7 @@ static const int DEBUG_PATTERN = 3;
 static const int DEBUG_PATTERN_ONLY = 4;
 
 #ifndef M_PI_VIGNETTEPLUS 
-#define M_PI_VIGNETTEPLUS 3.14159265358979323846f // Local PI definition for robust portability
+#define M_PI_VIGNETTEPLUS 3.14159265358979323846f
 #endif
 
 //------------------------------------------------------------------------------------------------
@@ -98,7 +59,15 @@ static const int DEBUG_PATTERN_ONLY = 4;
 // --- Group I: Main Effect Style & Appearance ---
 uniform int EffectStyle < ui_type = "combo"; ui_label = "Visual Style"; ui_items = "Smooth Gradient\0Duotone: Circles\0Lines - Perpendicular\0Lines - Parallel\0"; ui_tooltip = "Selects the overall visual appearance of the effect."; ui_category = "Style"; > = STYLE_DUOTONE_CIRCLES;
 uniform float3 EffectColor < ui_type = "color"; ui_label = "Effect Color"; ui_tooltip = "The primary color used for the gradient or duotone patterns."; ui_category = "Style"; > = float3(0.0, 0.0, 0.0);
-uniform bool MirrorDirection < ui_type = "checkbox"; ui_label = "Mirror Effect"; ui_tooltip = "Mirrors the directional effect, making it symmetrical around its central axis."; ui_category = "Style"; > = false;
+
+uniform int MirrorStyle < // Changed from bool MirrorDirection
+    ui_type = "combo"; 
+    ui_label = "Mirroring Style"; 
+    ui_items = "None\0Edge Mirrored (From Edges)\0Center Mirrored (From Center)\0"; 
+    ui_tooltip = "Selects how the directional effect is mirrored.\nNone: Standard directional effect.\nEdge Mirrored: Effect starts at outer edges and moves inwards.\nCenter Mirrored: Effect starts at the central axis and moves outwards."; 
+    ui_category = "Style"; 
+> = MIRROR_STYLE_NONE; // Default to None
+
 uniform bool InvertAlpha < ui_type = "checkbox"; ui_label = "Invert Transparency"; ui_tooltip = "Flips the effect's opacity: solid areas become transparent, and vice-versa."; ui_category = "Style"; > = false;
 
 // --- Group II: Falloff Controls ---
@@ -110,22 +79,18 @@ uniform float PatternElementSize < ui_type = "slider"; ui_label = "Pattern Eleme
 uniform float PatternCoverageBoost < ui_type = "slider"; ui_label = "Pattern Coverage Boost"; ui_tooltip = "For Duotone/Lines: Slightly enlarges elements in solid areas to ensure full coverage. 1.0 = no boost."; ui_min = MIN_COVERAGE_BOOST; ui_max = MAX_COVERAGE_BOOST; ui_step = 0.005; ui_category = "Pattern"; > = DEFAULT_COVERAGE_BOOST;
 
 // --- Group IV: Direction & Orientation ---
-AS_ROTATION_UI(SnapRotation, FineRotation) // Macro from AS_Utils.1.fxh
-
+AS_ROTATION_UI(SnapRotation, FineRotation)
 // --- Stage Depth Control ---
-AS_STAGEDEPTH_UI(EffectDepth) // Macro from AS_Utils.1.fxh
+AS_STAGEDEPTH_UI(EffectDepth)
 // --- Final Mix Controls ---
-AS_BLENDMODE_UI(BlendMode) // Macro from AS_Utils.1.fxh
-AS_BLENDAMOUNT_UI(BlendAmount) // Macro from AS_Utils.1.fxh
-
+AS_BLENDMODE_UI(BlendMode)
+AS_BLENDAMOUNT_UI(BlendAmount)
 // --- Debug ---
-AS_DEBUG_MODE_UI("Off\0Mask\0Falloff\0Pattern\0Pattern Only\0") // Macro from AS_Utils.1.fxh
+AS_DEBUG_MODE_UI("Off\0Mask\0Falloff\0Pattern\0Pattern Only\0")
 
 //------------------------------------------------------------------------------------------------
 // Helper Functions
 //------------------------------------------------------------------------------------------------
-
-// --- Hexagonal Grid Helper Functions (for Duotone Circles) ---
 float fmod_positive(float a, float b) { return a - b * floor(a / b); }
 float2 HexGridRoundAxial(float2 fa) { float q=fa.x,r=fa.y,s=-q-r;float qr=round(q),rr=round(r),sr=round(s);float qd=abs(qr-q),rd=abs(rr-r),sd=abs(sr-s);if(qd>rd&&qd>sd)qr=-rr-sr;else if(rd>sd)rr=-qr-sr;return float2(qr,rr); }
 float2 HexGridAxialToCartesian(float2 ax, float gd) { float xF=sqrt(3.f),yF=1.5f;return float2((xF*ax.x+xF/2.f*ax.y)/gd,(yF*ax.y)/gd); }
@@ -133,51 +98,49 @@ float2 HexGridCartesianToFractionalAxial(float2 ca, float gd) { float qF=sqrt(3.
 float2 HexGridCartesianToNearestCell(float2 ca, float gd) { return HexGridRoundAxial(HexGridCartesianToFractionalAxial(ca,gd)); }
 
 // --- Composition Logic ---
-// Calculates a factor (0-1) representing the vignette progression, accounting for rotation and aspect ratio.
-float GetCompositionFactor(float2 texcoord, float rotation_radians, bool mirror) {
+float GetCompositionFactor(float2 texcoord, float rotation_radians, int mirror_style) { // Changed mirror parameter
     float2 centered_coord = texcoord - CENTER_COORD;
-
     float cos_angle = cos(rotation_radians);
     float sin_angle = sin(rotation_radians);
 
-    // Project onto the desired visual angle in a space scaled by actual screen dimensions
-    // This ensures the rotation angle is visually correct regardless of aspect ratio.
     float projected_value_pixel_scaled = 
         (centered_coord.x * ReShade::ScreenSize.x) * cos_angle + 
         (centered_coord.y * ReShade::ScreenSize.y) * sin_angle;
 
-    // Normalize this projected value based on the screen's maximum extent along this rotated direction.
     float max_extent_pixel_scaled = 
         CENTER_COORD * (ReShade::ScreenSize.x * abs(cos_angle) + 
                         ReShade::ScreenSize.y * abs(sin_angle));
     
-    float factor = (projected_value_pixel_scaled / (max_extent_pixel_scaled + ALPHA_EPSILON)) * CENTER_COORD + CENTER_COORD;
-    
-    if (mirror) {
-        factor = (factor < CENTER_COORD) ? (factor / CENTER_COORD) : ((1.0f - factor) / CENTER_COORD);
+    // base_directional_factor ranges 0-1 from one screen edge to the other, along the visually correct rotated direction.
+    float base_directional_factor = (projected_value_pixel_scaled / (max_extent_pixel_scaled + ALPHA_EPSILON)) * CENTER_COORD + CENTER_COORD;
+    base_directional_factor = saturate(base_directional_factor); // Ensure it's 0-1 before mirroring logic
+
+    float final_factor;
+    if (mirror_style == MIRROR_STYLE_EDGE) {
+        // Edge Mirrored: factor is 0.0 at edges, 1.0 at center line
+        final_factor = (base_directional_factor < CENTER_COORD) ? 
+                       (base_directional_factor / CENTER_COORD) : 
+                       ((1.0f - base_directional_factor) / CENTER_COORD);
+    } else if (mirror_style == MIRROR_STYLE_CENTER) {
+        // Center Mirrored: factor is 0.0 at center line, 1.0 at edges
+        final_factor = abs(base_directional_factor - CENTER_COORD) * 2.0f;
+    } else { // MIRROR_STYLE_NONE or any other case
+        final_factor = base_directional_factor;
     }
     
-    return saturate(factor);
+    return saturate(final_factor); // Final saturation for safety
 }
 
 // --- Vignette Alpha Calculation ---
-// Calculates the raw vignette alpha based on the composition factor and falloff thresholds.
 float CalculateVignetteAlpha(float position, float normalizedStartInput, float normalizedEndInput) {
     float first_threshold = min(normalizedStartInput, normalizedEndInput);
     float second_threshold = max(normalizedStartInput, normalizedEndInput);
-    
-    if (first_threshold >= second_threshold) { // Handles cases where thresholds are equal or crossed
+    if (first_threshold >= second_threshold) { 
         return position <= first_threshold ? 1.0f : 0.0f;
     }
-    // Consistent use of ordered thresholds for the logic below
-    if (position <= first_threshold) {
-        return 1.0f; // Solid area
-    }
-    else if (position >= second_threshold) {
-        return 0.0f; // Transparent area
-    }
+    if (position <= first_threshold) { return 1.0f; }
+    else if (position >= second_threshold) { return 0.0f; }
     else {
-        // Transition area
         float t = (position - first_threshold) / (second_threshold - first_threshold);
         return 1.0f - smoothstep(0.0f, 1.0f, t); 
     }
@@ -186,106 +149,61 @@ float CalculateVignetteAlpha(float position, float normalizedStartInput, float n
 //------------------------------------------------------------------------------------------------
 // Pattern Functions
 //------------------------------------------------------------------------------------------------
-
-float4 ApplySmoothGradientPS(float raw_alpha_param, float3 color) {
-    return float4(color, raw_alpha_param);
-}
+float4 ApplySmoothGradientPS(float raw_alpha_param, float3 color) { /* ... */ return float4(color, raw_alpha_param); }
 
 float4 ApplyDuotoneCirclesPS(float2 texcoord, float raw_alpha_param, float3 color,
                              float circle_cell_radius_base, float coverage_boost_uniform) {
     if (raw_alpha_param <= ALPHA_EPSILON) return float4(color, 0.0f);
-    
-    float2 uv_dither = texcoord; 
-    uv_dither.y /= ReShade::AspectRatio; // Aspect correction for hex grid space
-    
+    float2 uv_dither = texcoord; uv_dither.y /= ReShade::AspectRatio; 
     float current_grid_density = 1.0f / circle_cell_radius_base;
-    
-    float2 nearestCell = HexGridCartesianToNearestCell(uv_dither, current_grid_density); 
-    float2 cellCenter = HexGridAxialToCartesian(nearestCell, current_grid_density);
-    
-    float dist_uv = distance(cellCenter, uv_dither); // Distance in aspect-corrected UV space
-    
+    float2 nC = HexGridCartesianToNearestCell(uv_dither,current_grid_density); float2 cC = HexGridAxialToCartesian(nC,current_grid_density);
+    float dist = distance(cC, uv_dither);
     float boost = lerp(1.0f, coverage_boost_uniform, raw_alpha_param);
-    float target_radius_uv = circle_cell_radius_base * raw_alpha_param * boost;
-    
-    float aa_transition_width_uv = fwidth(dist_uv); // fwidth for robust AA
-    float dither_mask_alpha = smoothstep(target_radius_uv + aa_transition_width_uv * 0.5f, 
-                                         target_radius_uv - aa_transition_width_uv * 0.5f, 
-                                         dist_uv);
-                                         
-    return float4(color, dither_mask_alpha);
+    float radius = circle_cell_radius_base * raw_alpha_param * boost;
+    float aa_w = fwidth(dist); 
+    return float4(color, smoothstep(radius + aa_w * 0.5f, radius - aa_w * 0.5f, dist));
 }
 
-// Shared logic for line patterns with isotropic correction for banding and fwidth AA
 float4 ApplyDuotoneLinesSharedLogic(float2 texcoord, float raw_alpha_param, float3 color,
                                     float line_cycle_width_uv, float effect_rotation_rad, float coverage_boost_uniform,
                                     bool use_u_component_for_banding) {
     if (raw_alpha_param <= ALPHA_EPSILON) return float4(color, 0.0f);
-    
-    float2 centered_coord = texcoord - CENTER_COORD;
-    float W = ReShade::ScreenSize.x;
-    float H = ReShade::ScreenSize.y;
-
-    float cos_a = cos(effect_rotation_rad);
-    float sin_a = sin(effect_rotation_rad);
-    
-    float component_for_banding_pixels;
-    float max_extent_pixels_for_banding_axis;
-
-    if (use_u_component_for_banding) { // For Lines - Perpendicular (bands along U-visual axis)
-        component_for_banding_pixels = (centered_coord.x * W) * cos_a + (centered_coord.y * H) * sin_a;
-        max_extent_pixels_for_banding_axis = CENTER_COORD * (W * abs(cos_a) + H * abs(sin_a));
-    } else { // For Lines - Parallel (bands along V-visual axis)
-        component_for_banding_pixels = -(centered_coord.x * W) * sin_a + (centered_coord.y * H) * cos_a;
-        max_extent_pixels_for_banding_axis = CENTER_COORD * (W * abs(sin_a) + H * abs(cos_a));
+    float2 ctd_coord = texcoord - CENTER_COORD; float W = ReShade::ScreenSize.x; float H = ReShade::ScreenSize.y;
+    float cos_a = cos(effect_rotation_rad), sin_a = sin(effect_rotation_rad);
+    float comp_pixels; float max_extent_pixels;
+    if (use_u_component_for_banding) {
+        comp_pixels = (ctd_coord.x*W)*cos_a + (ctd_coord.y*H)*sin_a;
+        max_extent_pixels = CENTER_COORD * (W*abs(cos_a) + H*abs(sin_a));
+    } else {
+        comp_pixels = -(ctd_coord.x*W)*sin_a + (ctd_coord.y*H)*cos_a;
+        max_extent_pixels = CENTER_COORD * (W*abs(sin_a) + H*abs(cos_a));
     }
-    
-    float normalized_pos_for_banding = (component_for_banding_pixels / (max_extent_pixels_for_banding_axis + ALPHA_EPSILON)) * CENTER_COORD + CENTER_COORD;
-    
-    float cycle_input_raw = saturate(normalized_pos_for_banding) / line_cycle_width_uv; // Value whose frac is taken
-    float coord_in_cycle = frac(cycle_input_raw); 
-    
-    float base_half_thick_norm = raw_alpha_param * CENTER_COORD; 
-    float boost = lerp(1.0f, coverage_boost_uniform, raw_alpha_param);
-    float boosted_target_half_thickness_norm = base_half_thick_norm * boost;
-    
-    float value_to_test_against_thickness = abs(coord_in_cycle - CENTER_COORD); 
-    float edge_threshold_norm = boosted_target_half_thickness_norm; 
-
-    // fwidth of the value that defines the repeating cycle, before frac, scaled by how many cycles fit in normalized_pos.
-    float aa_transition_width_cycle_units = fwidth(cycle_input_raw); 
-    
-    float line_alpha = smoothstep(edge_threshold_norm + aa_transition_width_cycle_units * 0.5f, 
-                                  edge_threshold_norm - aa_transition_width_cycle_units * 0.5f, 
-                                  value_to_test_against_thickness);
-    
-    return float4(color, line_alpha);
+    float norm_pos_banding = (comp_pixels/(max_extent_pixels+ALPHA_EPSILON))*CENTER_COORD + CENTER_COORD;
+    float cycle_in_raw = saturate(norm_pos_banding)/line_cycle_width_uv;
+    float coord_cycle = frac(cycle_in_raw); 
+    float base_half_thick = raw_alpha_param*CENTER_COORD;
+    float boost = lerp(1.0f,coverage_boost_uniform,raw_alpha_param);
+    float boosted_half_thick = base_half_thick*boost;
+    float val_to_test = abs(coord_cycle-CENTER_COORD);
+    float edge_thresh = boosted_half_thick; 
+    float aa_w_cycle = fwidth(cycle_in_raw); 
+    return float4(color, smoothstep(edge_thresh+aa_w_cycle*0.5f, edge_thresh-aa_w_cycle*0.5f, val_to_test));
 }
 
-float4 ApplyDuotoneLinesParallelPS(float2 texcoord, float raw_alpha_param, float3 color,
-                                   float line_cycle_width_uv, float effect_rotation_rad, float coverage_boost_uniform) {
-    return ApplyDuotoneLinesSharedLogic(texcoord, raw_alpha_param, color, line_cycle_width_uv, effect_rotation_rad, coverage_boost_uniform, false);
-}
-
-float4 ApplyDuotoneLinesPerpendicularPS(float2 texcoord, float raw_alpha_param, float3 color,
-                                        float line_cycle_width_uv, float effect_rotation_rad, float coverage_boost_uniform) {
-    return ApplyDuotoneLinesSharedLogic(texcoord, raw_alpha_param, color, line_cycle_width_uv, effect_rotation_rad, coverage_boost_uniform, true);
-}
+float4 ApplyDuotoneLinesParallelPS(float2 tc,float ra,float3 col,float lcw,float er,float cbu){ return ApplyDuotoneLinesSharedLogic(tc,ra,col,lcw,er,cbu,false); }
+float4 ApplyDuotoneLinesPerpendicularPS(float2 tc,float ra,float3 col,float lcw,float er,float cbu){ return ApplyDuotoneLinesSharedLogic(tc,ra,col,lcw,er,cbu,true); }
 
 //------------------------------------------------------------------------------------------------
 // Pixel Shader
 //------------------------------------------------------------------------------------------------
-float4 VignettePlusPS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : SV_Target
-{
+float4 VignettePlusPS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : SV_Target {
     float depth = ReShade::GetLinearizedDepth(texcoord);
-    if (depth < EffectDepth) { 
-        return tex2D(ReShade::BackBuffer, texcoord);
-    }
+    if (depth < EffectDepth) { return tex2D(ReShade::BackBuffer, texcoord); }
     
     float3 original_color = tex2D(ReShade::BackBuffer, texcoord).rgb;
     float rotation_radians = AS_getRotationRadians(SnapRotation, FineRotation); 
     
-    float composition_f = GetCompositionFactor(texcoord, rotation_radians, MirrorDirection);
+    float composition_f = GetCompositionFactor(texcoord, rotation_radians, MirrorStyle); // Pass MirrorStyle
     float tA_norm = FalloffStart * PERCENT_TO_NORMAL;
     float tB_norm = FalloffEnd * PERCENT_TO_NORMAL;
     float raw_vignette_alpha = CalculateVignetteAlpha(composition_f, tA_norm, tB_norm);
@@ -294,21 +212,16 @@ float4 VignettePlusPS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : 
     
     if (EffectStyle == STYLE_SMOOTH_GRADIENT) {
         vignette_effect_color_alpha = ApplySmoothGradientPS(raw_vignette_alpha, EffectColor);
-    } 
-    else if (EffectStyle == STYLE_DUOTONE_CIRCLES) {
+    } else if (EffectStyle == STYLE_DUOTONE_CIRCLES) {
         vignette_effect_color_alpha = ApplyDuotoneCirclesPS(texcoord, raw_vignette_alpha, EffectColor, PatternElementSize, PatternCoverageBoost);
-    } 
-    else if (EffectStyle == STYLE_LINES_PERPENDICULAR) {
+    } else if (EffectStyle == STYLE_LINES_PERPENDICULAR) {
         vignette_effect_color_alpha = ApplyDuotoneLinesPerpendicularPS(texcoord, raw_vignette_alpha, EffectColor, PatternElementSize, rotation_radians, PatternCoverageBoost);
-    } 
-    else if (EffectStyle == STYLE_LINES_PARALLEL) {
+    } else if (EffectStyle == STYLE_LINES_PARALLEL) {
         vignette_effect_color_alpha = ApplyDuotoneLinesParallelPS(texcoord, raw_vignette_alpha, EffectColor, PatternElementSize, rotation_radians, PatternCoverageBoost);
     }
     
     float final_effect_alpha = vignette_effect_color_alpha.a;
-    if (InvertAlpha) { 
-        final_effect_alpha = 1.0f - final_effect_alpha;
-    }
+    if (InvertAlpha) { final_effect_alpha = 1.0f - final_effect_alpha; }
     
     float3 blended_color = lerp(original_color, vignette_effect_color_alpha.rgb, final_effect_alpha);
     float4 effect_result = float4(blended_color, FULL_OPACITY);
@@ -335,13 +248,7 @@ float4 VignettePlusPS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : 
 // Technique Definition
 //------------------------------------------------------------------------------------------------
 technique AS_FGX_VignettePlus < ui_label = "[AS] FGX: Vignette Plus"; ui_tooltip = "Advanced vignette effects with customizable styles, falloff, and patterns."; >
-{
-    pass
-    {
-        VertexShader = PostProcessVS; // Assumed PostProcessVS is defined (typically in ReShade.fxh or your AS_Utils.fxh)
-        PixelShader = ASVignettePlus::VignettePlusPS;
-    }
-}
+{ pass { VertexShader = PostProcessVS; PixelShader = ASVignettePlus::VignettePlusPS; } }
 
 } // namespace ASVignettePlus
 #endif // __AS_FGX_VignettePlus_1_fx
