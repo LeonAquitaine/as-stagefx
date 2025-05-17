@@ -34,6 +34,8 @@ AS-StageFX provides a collection of performant, customizable, and audio-reactive
 
 Effects are categorized as Background (BGX), Graphic (GFX), Lighting (LFX), and Visual (VFX).
 
+**Detailed descriptions and examples: [Shader Gallery](docs/gallery.md).**
+
 ### Background Effects (BGX)
 
 | Shader                 | Description                                                                                                |
@@ -91,8 +93,6 @@ Effects are categorized as Background (BGX), Graphic (GFX), Lighting (LFX), and 
 | **VU Meter**           | Audio-reactive VU meter with multiple display styles, customizable appearance, palettes, and zoom/pan controls. |
 | **Warp Distort**       | Audio-reactive warp effect with customizable shape, pulsing radius, and wave/ripple effects. Adjustable position and depth. |
 | **Water Surface**      | Water surface with depth-based reflections, perspective-scaled waves, and customizable appearance. |
-
-**Detailed descriptions and examples: [Shader Gallery](docs/gallery.md).**
 
 ---
 
