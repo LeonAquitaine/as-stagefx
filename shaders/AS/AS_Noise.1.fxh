@@ -150,6 +150,45 @@ float AS_PerlinNoise2D_Animated(float2 p, float time) {
     return AS_PerlinNoise2D(p + time);
 }
 
+// --- Perlin Noise 3D ---
+// Classic 3D Perlin noise implementation
+float AS_PerlinNoise3D(float3 p) {
+    float3 i = floor(p);
+    float3 f = frac(p);
+    
+    // Quintic interpolation curve
+    float3 u = f * f * f * (f * (f * 6.0 - 15.0) + 10.0);
+    
+    // Calculate grid point coordinate hashes
+    float n000 = dot(AS_hash33(i), f);
+    float n100 = dot(AS_hash33(i + float3(1.0, 0.0, 0.0)), f - float3(1.0, 0.0, 0.0));
+    float n010 = dot(AS_hash33(i + float3(0.0, 1.0, 0.0)), f - float3(0.0, 1.0, 0.0));
+    float n110 = dot(AS_hash33(i + float3(1.0, 1.0, 0.0)), f - float3(1.0, 1.0, 0.0));
+    float n001 = dot(AS_hash33(i + float3(0.0, 0.0, 1.0)), f - float3(0.0, 0.0, 1.0));
+    float n101 = dot(AS_hash33(i + float3(1.0, 0.0, 1.0)), f - float3(1.0, 0.0, 1.0));
+    float n011 = dot(AS_hash33(i + float3(0.0, 1.0, 1.0)), f - float3(0.0, 1.0, 1.0));
+    float n111 = dot(AS_hash33(i + float3(1.0, 1.0, 1.0)), f - float3(1.0, 1.0, 1.0));
+    
+    // Interpolate along x
+    float nx00 = lerp(n000, n100, u.x);
+    float nx01 = lerp(n001, n101, u.x);
+    float nx10 = lerp(n010, n110, u.x);
+    float nx11 = lerp(n011, n111, u.x);
+    
+    // Interpolate along y
+    float nxy0 = lerp(nx00, nx10, u.y);
+    float nxy1 = lerp(nx01, nx11, u.y);
+    
+    // Interpolate along z and normalize output to [-1, 1] range
+    return lerp(nxy0, nxy1, u.z) * 0.5 + 0.5;
+}
+
+// Animatable version of 3D Perlin noise
+float AS_PerlinNoise3D_Animated(float3 p, float time) {
+    // Add time to z-coordinate for smooth animation
+    return AS_PerlinNoise3D(p + float3(0.0, 0.0, time));
+}
+
 // ============================================================================
 // FBM (FRACTAL BROWNIAN MOTION)
 // ============================================================================
