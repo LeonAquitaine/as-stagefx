@@ -145,39 +145,102 @@ uniform int GuideType <
                "  Center Lines\0"
                "  Phi Grid (Golden Grid)\0"
                "Dynamic Guides\0"
-               "  Diagonal Method\0"
-               "  Triangles\0"
-               "  Golden Spiral\0"
-               "  Harmonic Armature\0"
+               "  Diagonal Method - Both\0"
+               "  Diagonal Method - Baroque\0"
+               "  Diagonal Method - Sinister\0"
+               "  Triangle - Up\0"
+               "  Triangle - Down\0"
+               "  Triangle - Diagonal\0"
+               "  Golden Spiral - Lower Right\0"
+               "  Golden Spiral - Upper Right\0"
+               "  Golden Spiral - Upper Left\0"
+               "  Golden Spiral - Lower Left\0"
+               "  Harmonic Armature - Basic\0"
+               "  Harmonic Armature - Reciprocal\0"
+               "  Harmonic Armature - Complex\0"
                "Practical Guides\0"
-               "  Grid\0"
+               "  Grid 3×3\0"
+               "  Grid 4×4\0"
+               "  Grid 5×5\0"
+               "  Grid 6×6\0"
                "  Safe Zones\0";
 > = 0;
 
-uniform int GuideSubType <
-    ui_type = "combo";
-    ui_label = "Guide Variant";
-    ui_tooltip = "Specific variation of the selected composition guide";
-    ui_category = "Composition Guides";
-> = 0;
+// Guide type constants (hundreds place = main type, ones place = subtype)
+#define GUIDE_NONE 0
+#define GUIDE_RULE_THIRDS 100
+#define GUIDE_GOLDEN_RATIO 200
+#define GUIDE_CENTER_LINES 300
+#define GUIDE_DIAGONAL_METHOD 400
+#define GUIDE_PHI_GRID 500
+#define GUIDE_TRIANGLE 600
+#define GUIDE_GOLDEN_SPIRAL 700
+#define GUIDE_HARMONIC_ARMATURE 800
+#define GUIDE_GRID 900
+#define GUIDE_SAFE_ZONES 1000
 
-// Helper function to manage guide variant options
-int GetActualGuideType() {
-    // Convert from nested UI to actual guide type index
-    switch(GuideType) {
-        case 0: return 0;  // None
-        case 2: return 1;  // Rule of Thirds
-        case 3: return 2;  // Golden Ratio
-        case 4: return 3;  // Center Lines
-        case 5: return 5;  // Phi Grid
-        case 7: return 4;  // Diagonal Method
-        case 8: return 6;  // Triangles 
-        case 9: return 7;  // Golden Spiral
-        case 10: return 8; // Harmonic Armature
-        case 12: return 9; // Grid
-        case 13: return 10; // Safe Zones
-        default: return 0; // Default to None for headers
+// Guide subtype constants (add to main type)
+#define SUBTYPE_DEFAULT 0
+#define SUBTYPE_BAROQUE 1
+#define SUBTYPE_SINISTER 2
+#define SUBTYPE_UPPER_LEFT 2
+#define SUBTYPE_UPPER_RIGHT 1
+#define SUBTYPE_LOWER_LEFT 3
+#define SUBTYPE_LOWER_RIGHT 0
+#define SUBTYPE_UP 0
+#define SUBTYPE_DOWN 1
+#define SUBTYPE_DIAGONAL 2
+#define SUBTYPE_RECIPROCAL 1
+#define SUBTYPE_COMPLEX 2
+
+// Array mapping UI indices directly to encoded guide values
+static const int GUIDE_MAP[] = {
+    GUIDE_NONE,                         // [0] None
+    GUIDE_NONE,                         // [1] Basic Guides (header)
+    GUIDE_RULE_THIRDS,                  // [2] Rule of Thirds
+    GUIDE_GOLDEN_RATIO,                 // [3] Golden Ratio
+    GUIDE_CENTER_LINES,                 // [4] Center Lines
+    GUIDE_PHI_GRID,                     // [5] Phi Grid (Golden Grid)
+    GUIDE_NONE,                         // [6] Dynamic Guides (header)
+    GUIDE_DIAGONAL_METHOD,              // [7] Diagonal Method - Both
+    GUIDE_DIAGONAL_METHOD + SUBTYPE_BAROQUE,   // [8] Diagonal Method - Baroque
+    GUIDE_DIAGONAL_METHOD + SUBTYPE_SINISTER,  // [9] Diagonal Method - Sinister
+    GUIDE_TRIANGLE + SUBTYPE_UP,        // [10] Triangle - Up
+    GUIDE_TRIANGLE + SUBTYPE_DOWN,      // [11] Triangle - Down
+    GUIDE_TRIANGLE + SUBTYPE_DIAGONAL,  // [12] Triangle - Diagonal
+    GUIDE_GOLDEN_SPIRAL + SUBTYPE_LOWER_RIGHT, // [13] Golden Spiral - Lower Right
+    GUIDE_GOLDEN_SPIRAL + SUBTYPE_UPPER_RIGHT, // [14] Golden Spiral - Upper Right
+    GUIDE_GOLDEN_SPIRAL + SUBTYPE_UPPER_LEFT,  // [15] Golden Spiral - Upper Left
+    GUIDE_GOLDEN_SPIRAL + SUBTYPE_LOWER_LEFT,  // [16] Golden Spiral - Lower Left
+    GUIDE_HARMONIC_ARMATURE,            // [17] Harmonic Armature - Basic
+    GUIDE_HARMONIC_ARMATURE + SUBTYPE_RECIPROCAL, // [18] Harmonic Armature - Reciprocal
+    GUIDE_HARMONIC_ARMATURE + SUBTYPE_COMPLEX,    // [19] Harmonic Armature - Complex
+    GUIDE_NONE,                         // [20] Practical Guides (header)
+    GUIDE_GRID,                         // [21] Grid 3×3
+    GUIDE_GRID + 1,                     // [22] Grid 4×4
+    GUIDE_GRID + 2,                     // [23] Grid 5×5
+    GUIDE_GRID + 3,                     // [24] Grid 6×6
+    GUIDE_SAFE_ZONES                    // [25] Safe Zones
+};
+
+// Helper functions to extract type and subtype from the encoded value
+int GetGuideType(int guideValue) {
+    return guideValue / 100;
+}
+
+int GetGuideSubType(int guideValue) {
+    return guideValue % 100;
+}
+
+// Simple accessor function that handles boundary checking
+int GetGuideValue() {
+    // Default to None for invalid indices or headers
+    if (GuideType < 0 || GuideType >= 26 || 
+        GuideType == 1 || GuideType == 6 || GuideType == 20) {
+        return GUIDE_NONE;
     }
+    
+    return GUIDE_MAP[GuideType];
 }
 
 // Appearance Controls
@@ -390,9 +453,8 @@ float3 DrawGuideLine(float3 originalColor, float3 guideColor, float guideAlpha, 
     if (projLength >= 0.0 && projLength <= lineLength) {
         float2 closestPoint = lineStart + lineDir * projLength;
         float dist = distance(frameCoord, closestPoint);
-        
-        // Adjust line width based on screen resolution
-        float adjustedWidth = length(float2(pixelSize.x, pixelSize.y)) * lineWidth;
+          // Adjust line width for consistent physical width regardless of aspect ratio
+        float adjustedWidth = pixelSize.y * lineWidth;
         
         if (dist < adjustedWidth) {
             return lerp(originalColor, guideColor, guideAlpha * GuideIntensity);
@@ -419,15 +481,17 @@ float3 DrawGuides(float2 texcoord, float3 originalColor, float3 guideColor, floa
         borderSize.x = (1.0 - (aspectRatio / ReShade::AspectRatio)) / 2.0;
         isInFrame = (texcoord.x >= borderSize.x + HorizontalOffset) && 
                    (texcoord.x <= 1.0 - borderSize.x + HorizontalOffset);
-    }
-    
-    // Get the actual guide type from the UI selection
-    int actualGuideType = GetActualGuideType();
+    }    // Get the guide configuration from the UI selection
+    int guideValue = GetGuideValue();
+    int actualGuideType = GetGuideType(guideValue);
+    int actualSubType = GetGuideSubType(guideValue);
     
     // If not in frame, return original color immediately
     if (!isInFrame && actualGuideType != 0) {
         return originalColor;
-    }    // Draw guides
+    }
+
+    // Draw guides
     if (actualGuideType != 0 && isInFrame) {
         // Adjust texture coordinates to the active area
         float2 frameCoord = texcoord;
@@ -452,13 +516,19 @@ float3 DrawGuides(float2 texcoord, float3 originalColor, float3 guideColor, floa
             
             // For Y, just adjust for vertical offset, centering in available height
             frameCoord.y = texcoord.y - VerticalOffset;
-        }        // Calculate pixel-width based threshold for grid lines
+        }        // Calculate pixel-width based threshold for grid lines with consistent physical width
         float2 pixelSize = 1.0 / float2(BUFFER_WIDTH, BUFFER_HEIGHT);
-        float gridWidthX = pixelSize.x * GridWidth * 0.5; // Half width for each side
-        float gridWidthY = pixelSize.y * GridWidth * 0.5; // Half width for each side
+        
+        // Base line width on vertical resolution for consistent physical width
+        float gridWidthUniform = pixelSize.y * GridWidth * 0.5; // Half width for each side
+        
+        // Use the same physical width for both directions
+        float gridWidthX = gridWidthUniform;
+        float gridWidthY = gridWidthUniform;
         
         // Rule of thirds grid
-        if (actualGuideType == 1) {            // Vertical lines
+        if (actualGuideType == 1) { // GUIDE_RULE_THIRDS / 100
+            // Vertical lines
             if (abs(frameCoord.x - 1.0/3.0) < gridWidthX || abs(frameCoord.x - 2.0/3.0) < gridWidthX)
                 return lerp(originalColor, guideColor, GuideColor.a * GuideIntensity);
             
@@ -467,7 +537,7 @@ float3 DrawGuides(float2 texcoord, float3 originalColor, float3 guideColor, floa
                 return lerp(originalColor, guideColor, GuideColor.a * GuideIntensity);
         }
         // Golden ratio
-        else if (actualGuideType == 2) {
+        else if (actualGuideType == 2) { // GUIDE_GOLDEN_RATIO / 100
             float goldenX = 1.0 / GOLDEN_RATIO;
             float goldenY = 1.0 / GOLDEN_RATIO;
               // Vertical lines
@@ -478,7 +548,8 @@ float3 DrawGuides(float2 texcoord, float3 originalColor, float3 guideColor, floa
             if (abs(frameCoord.y - goldenY) < gridWidthY || abs(frameCoord.y - (1.0 - goldenY)) < gridWidthY)
                 return lerp(originalColor, guideColor, GuideColor.a * GuideIntensity);
         }        // Center lines
-        else if (actualGuideType == 3) {            // Vertical center line
+        else if (actualGuideType == 3) { // GUIDE_CENTER_LINES / 100
+            // Vertical center line
             if (abs(frameCoord.x - 0.5) < gridWidthX)
                 return lerp(originalColor, guideColor, GuideColor.a * GuideIntensity);
             
@@ -486,7 +557,7 @@ float3 DrawGuides(float2 texcoord, float3 originalColor, float3 guideColor, floa
             if (abs(frameCoord.y - 0.5) < gridWidthY)
                 return lerp(originalColor, guideColor, GuideColor.a * GuideIntensity);
         }        // Diagonal Method (Baroque and Sinister Diagonals)
-        else if (actualGuideType == 4) {
+        else if (actualGuideType == 4) { // GUIDE_DIAGONAL_METHOD / 100
             // Diagonal lines from opposite corners
             float diagonalWidth = sqrt(gridWidthX * gridWidthX + gridWidthY * gridWidthY);
             
@@ -496,21 +567,21 @@ float3 DrawGuides(float2 texcoord, float3 originalColor, float3 guideColor, floa
                 rotatedCoord = RotatePoint(frameCoord, float2(0.5, 0.5), PatternRotation * AS_PI / 180.0);
             }
             
-            if (GuideSubType == 0 || GuideSubType == 1) {
+            if (actualSubType == 0 || actualSubType == 1) {
                 // Baroque diagonal: Lower-left to upper-right
                 float distToBaroque = abs(rotatedCoord.y - rotatedCoord.x);
                 if (distToBaroque < diagonalWidth)
                     return lerp(originalColor, guideColor, GuideColor.a * GuideIntensity);
             }
             
-            if (GuideSubType == 0 || GuideSubType == 2) {
+            if (actualSubType == 0 || actualSubType == 2) {
                 // Sinister diagonal: Upper-left to lower-right
                 float distToSinister = abs(rotatedCoord.y - (1.0 - rotatedCoord.x));
                 if (distToSinister < diagonalWidth)
                     return lerp(originalColor, guideColor, GuideColor.a * GuideIntensity);
             }
         }        // Phi Grid (Golden Grid)
-        else if (actualGuideType == 5) {
+        else if (actualGuideType == 5) { // GUIDE_PHI_GRID / 100
             // Phi proportions (golden ratio)
             float phi = 1.0 / 1.618;
             
@@ -521,12 +592,11 @@ float3 DrawGuides(float2 texcoord, float3 originalColor, float3 guideColor, floa
             // Horizontal lines at phi and 1-phi
             if (abs(frameCoord.y - phi) < gridWidthY || abs(frameCoord.y - (1.0 - phi)) < gridWidthY)
                 return lerp(originalColor, guideColor, GuideColor.a);
-        }
-        // Triangle Composition
-        else if (actualGuideType == 6) {
+        }        // Triangle Composition
+        else if (actualGuideType == 6) { // GUIDE_TRIANGLE / 100
             float triHeight = 0.866; // Height of an equilateral triangle
             
-            if (GuideSubType == 0) { // Centered triangle pointing up
+            if (actualSubType == 0) { // Centered triangle pointing up
                 // Triangle base at bottom
                 if (abs(frameCoord.y - 1.0) < gridWidthY && frameCoord.x >= 0.25 && frameCoord.x <= 0.75)
                     return lerp(originalColor, guideColor, GuideColor.a);
@@ -541,7 +611,7 @@ float3 DrawGuides(float2 texcoord, float3 originalColor, float3 guideColor, floa
                 if (abs(frameCoord.x - rightSide) < gridWidthX && frameCoord.y <= 1.0 && frameCoord.y >= 0.0)
                     return lerp(originalColor, guideColor, GuideColor.a);
             }
-            else if (GuideSubType == 1) { // Centered triangle pointing down
+            else if (actualSubType == 1) { // Centered triangle pointing down
                 // Triangle base at top
                 if (abs(frameCoord.y) < gridWidthY && frameCoord.x >= 0.25 && frameCoord.x <= 0.75)
                     return lerp(originalColor, guideColor, GuideColor.a);
@@ -556,26 +626,24 @@ float3 DrawGuides(float2 texcoord, float3 originalColor, float3 guideColor, floa
                 if (abs(frameCoord.x - rightSide) < gridWidthX && frameCoord.y <= 0.5 && frameCoord.y >= 0.0)
                     return lerp(originalColor, guideColor, GuideColor.a);
             }
-            else if (GuideSubType == 2) { // Rule of triangles - diagonal from lower-left
+            else if (actualSubType == 2) { // Rule of triangles - diagonal from lower-left
                 float dist = abs(frameCoord.x + frameCoord.y - 1.0);
                 if (dist < gridWidthX)
                     return lerp(originalColor, guideColor, GuideColor.a);
             }
         }        // Golden Spiral
-        else if (actualGuideType == 7) {
+        else if (actualGuideType == 7) { // GUIDE_GOLDEN_SPIRAL / 100
             float2 spiralCenter;
             float angle, radius, phi = 1.618;
-            
-            // Change spiral orientation based on subtype
-            if (GuideSubType == 0) { // Lower-right spiral
+              // Change spiral orientation based on subtype
+            if (actualSubType == 0) { // Lower-right spiral
                 spiralCenter = float2(1.0, 1.0);
                 angle = atan2(1.0 - frameCoord.y, 1.0 - frameCoord.x);
-            } 
-            else if (GuideSubType == 1) { // Upper-right spiral
+            }            else if (actualSubType == 1) { // Upper-right spiral
                 spiralCenter = float2(1.0, 0.0);
                 angle = atan2(frameCoord.y, 1.0 - frameCoord.x);
             }
-            else if (GuideSubType == 2) { // Upper-left spiral
+            else if (actualSubType == 2) { // Upper-left spiral
                 spiralCenter = float2(0.0, 0.0);
                 angle = atan2(frameCoord.y, frameCoord.x);
             }
@@ -602,16 +670,15 @@ float3 DrawGuides(float2 texcoord, float3 originalColor, float3 guideColor, floa
             
             // Draw the golden rectangles
             float phiInv = 1.0 / phi;
-            
-            if (GuideSubType == 0) { // Lower-right
+              if (actualSubType == 0) { // Lower-right
                 if (abs(frameCoord.x - (1.0 - phiInv)) < gridWidthX || abs(frameCoord.y - (1.0 - phiInv)) < gridWidthY)
                     return lerp(originalColor, guideColor, GuideColor.a * 0.7);
             }
-            else if (GuideSubType == 1) { // Upper-right
+            else if (actualSubType == 1) { // Upper-right
                 if (abs(frameCoord.x - (1.0 - phiInv)) < gridWidthX || abs(frameCoord.y - phiInv) < gridWidthY)
                     return lerp(originalColor, guideColor, GuideColor.a * 0.7);
             }
-            else if (GuideSubType == 2) { // Upper-left
+            else if (actualSubType == 2) { // Upper-left
                 if (abs(frameCoord.x - phiInv) < gridWidthX || abs(frameCoord.y - phiInv) < gridWidthY)
                     return lerp(originalColor, guideColor, GuideColor.a * 0.7);
             }
@@ -620,7 +687,7 @@ float3 DrawGuides(float2 texcoord, float3 originalColor, float3 guideColor, floa
                     return lerp(originalColor, guideColor, GuideColor.a * 0.7);
             }
         }        // Harmonic Armature / Dynamic Symmetry
-        else if (actualGuideType == 8) {
+        else if (actualGuideType == 8) { // GUIDE_HARMONIC_ARMATURE / 100
             float diagonalWidth = sqrt(gridWidthX * gridWidthX + gridWidthY * gridWidthY);
             
             // Main diagonals
@@ -631,13 +698,13 @@ float3 DrawGuides(float2 texcoord, float3 originalColor, float3 guideColor, floa
                 return lerp(originalColor, guideColor, GuideColor.a);
             
             // Reciprocal
-            if (GuideSubType > 0) {
+            if (actualSubType > 0) {
                 // Vertical and horizontal center lines
                 if (abs(frameCoord.x - 0.5) < gridWidthX * 0.7 || abs(frameCoord.y - 0.5) < gridWidthY * 0.7)
                     return lerp(originalColor, guideColor, GuideColor.a * 0.7);
                 
                 // Additional diagonals for more complex armature
-                if (GuideSubType > 1) {
+                if (actualSubType > 1) {
                     // Reciprocal diagonals from the center
                     float centerDistY1 = abs((frameCoord.x - 0.5) * 2.0 - (frameCoord.y - 0.5));
                     float centerDistY2 = abs((frameCoord.x - 0.5) * 2.0 + (frameCoord.y - 0.5));
@@ -647,12 +714,12 @@ float3 DrawGuides(float2 texcoord, float3 originalColor, float3 guideColor, floa
                 }
             }
         }        // Grid
-        else if (actualGuideType == 9) {
+        else if (actualGuideType == 9) { // GUIDE_GRID / 100
             // Determine grid size based on SubType
             int gridSize = 3; // Default to 3x3
-            if (GuideSubType == 1) gridSize = 4; // 4x4
-            else if (GuideSubType == 2) gridSize = 5; // 5x5
-            else if (GuideSubType == 3) gridSize = 6; // 6x6
+            if (actualSubType == 1) gridSize = 4; // 4x4
+            else if (actualSubType == 2) gridSize = 5; // 5x5
+            else if (actualSubType == 3) gridSize = 6; // 6x6
             
             // Check if we're on a grid line
             for (int i = 1; i < gridSize; i++) {
@@ -667,7 +734,7 @@ float3 DrawGuides(float2 texcoord, float3 originalColor, float3 guideColor, floa
                     return lerp(originalColor, guideColor, GuideColor.a);
             }
         }        // Safe Zones
-        else if (actualGuideType == 10) {
+        else if (actualGuideType == 10) { // GUIDE_SAFE_ZONES / 100
             // Action Safe (90%)
             float actionSafe = 0.05;
             
@@ -681,15 +748,19 @@ float3 DrawGuides(float2 texcoord, float3 originalColor, float3 guideColor, floa
             
             // Draw Title Safe zone
             if ((abs(frameCoord.x - titleSafe) < gridWidthX || abs(frameCoord.x - (1.0 - titleSafe)) < gridWidthX ||
-                 abs(frameCoord.y - titleSafe) < gridWidthY || abs(frameCoord.y - (1.0 - titleSafe)) < gridWidthY))                return lerp(originalColor, float3(1.0, 1.0, 0.5), GuideColor.a * 0.8); // Use a different color
+                 abs(frameCoord.y - titleSafe) < gridWidthY || abs(frameCoord.y - (1.0 - titleSafe)) < gridWidthY)) {
+                return lerp(originalColor, float3(1.0, 1.0, 0.5), GuideColor.a * 0.8); // Use a different color
+            }
         }
-    }
-    
+    } // Added missing closing brace for if (actualGuideType != 0 && isInFrame)
+      
     // Draw border around active area
     if (GridWidth > 0.0 && isInFrame) {
         float2 pixelSize = 1.0 / float2(BUFFER_WIDTH, BUFFER_HEIGHT);
-        float borderWidthX = pixelSize.x * GridWidth;
-        float borderWidthY = pixelSize.y * GridWidth;
+        // Use consistent physical width for borders
+        float borderWidthUniform = pixelSize.y * GridWidth;
+        float borderWidthX = borderWidthUniform;
+        float borderWidthY = borderWidthUniform;
         
         if (aspectRatio > ReShade::AspectRatio) {
             // Wider aspect ratio - draw horizontal borders
@@ -708,10 +779,11 @@ float3 DrawGuides(float2 texcoord, float3 originalColor, float3 guideColor, floa
             
             // Draw the vertical borders exactly at the crop edges
             if ((abs(texcoord.x - leftEdge) < borderWidthX) || 
-                (abs(texcoord.x - rightEdge) < borderWidthX))
+                (abs(texcoord.x - rightEdge) < borderWidthX)) { // Added missing parenthesis
                 return lerp(originalColor, guideColor, GuideColor.a * GuideIntensity);
+            }
         }
-    }
+    } // Added missing closing brace for if (GridWidth > 0.0 && isInFrame)
     
     return originalColor;
 }
@@ -742,12 +814,11 @@ float3 PS_AspectRatio(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV
         float leftEdge = borderSize.x + HorizontalOffset;
         float rightEdge = 1.0 - borderSize.x + HorizontalOffset;
         isInFrame = (texcoord.x >= leftEdge) && (texcoord.x <= rightEdge);
-    }
-    
-    // Save the original color before applying effects
+    }    // Save the original color before applying effects
     float3 originalColor = color;
-      // Draw composition guides (only inside frame)
-    if (isInFrame || GetActualGuideType() == 0) {
+    
+    // Draw composition guides (only inside frame)
+    if (isInFrame || GetGuideType(GetGuideValue()) == 0) {
         color = DrawGuides(texcoord, color, GuideColor.rgb, aspectRatio);
     }
     
