@@ -519,12 +519,22 @@ float3 DrawGuides(float2 texcoord, float3 originalColor, float3 guideColor, floa
         }        // Calculate pixel-width based threshold for grid lines with consistent physical width
         float2 pixelSize = 1.0 / float2(BUFFER_WIDTH, BUFFER_HEIGHT);
         
-        // Base line width on vertical resolution for consistent physical width
-        float gridWidthUniform = pixelSize.y * GridWidth * 0.5; // Half width for each side
+        // Base grid width in pixels
+        float gridWidthPixels = GridWidth * 0.5; // Half width for each side
         
-        // Use the same physical width for both directions
-        float gridWidthX = gridWidthUniform;
-        float gridWidthY = gridWidthUniform;
+        // Calculate normalized width values based on frame dimensions
+        float frameWidth = 1.0;
+        float frameHeight = 1.0;
+        
+        if (aspectRatio > ReShade::AspectRatio) {
+            frameHeight = 1.0 - (borderSize.y * 2.0);
+        } else {
+            frameWidth = 1.0 - (borderSize.x * 2.0);
+        }
+        
+        // Adjust grid widths based on normalization scaling
+        float gridWidthX = (pixelSize.x * gridWidthPixels) / frameWidth;
+        float gridWidthY = (pixelSize.y * gridWidthPixels) / frameHeight;
         
         // Rule of thirds grid
         if (actualGuideType == 1) { // GUIDE_RULE_THIRDS / 100
@@ -753,14 +763,25 @@ float3 DrawGuides(float2 texcoord, float3 originalColor, float3 guideColor, floa
             }
         }
     } // Added missing closing brace for if (actualGuideType != 0 && isInFrame)
-      
-    // Draw border around active area
+        // Draw border around active area
     if (GridWidth > 0.0 && isInFrame) {
         float2 pixelSize = 1.0 / float2(BUFFER_WIDTH, BUFFER_HEIGHT);
-        // Use consistent physical width for borders
-        float borderWidthUniform = pixelSize.y * GridWidth;
-        float borderWidthX = borderWidthUniform;
-        float borderWidthY = borderWidthUniform;
+        // Base border width in pixels
+        float borderWidthPixels = GridWidth;
+        
+        // Normalize border width based on aspect ratio
+        float frameWidth = 1.0;
+        float frameHeight = 1.0;
+        
+        if (aspectRatio > ReShade::AspectRatio) {
+            frameHeight = 1.0 - (borderSize.y * 2.0);
+        } else {
+            frameWidth = 1.0 - (borderSize.x * 2.0);
+        }
+        
+        // Adjust border widths to ensure consistent physical size
+        float borderWidthX = pixelSize.x * borderWidthPixels;
+        float borderWidthY = pixelSize.y * borderWidthPixels;
         
         if (aspectRatio > ReShade::AspectRatio) {
             // Wider aspect ratio - draw horizontal borders
