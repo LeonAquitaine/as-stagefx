@@ -34,7 +34,12 @@ Generates animated procedural candle flames with realistic shape and color gradi
 <td width="50%">
 <h4>VFX: Clair Obscur</h4>
 <h5><code>[AS] VFX: Clair Obscur|AS_VFX_ClairObscur.1.fx</code></h5>
-Creates a beautiful cascade of floating petals with realistic movement and organic animation. This effect simulates petals drifting through the air with natural rotation variation and elegant entrance/exit effects.
+Creates a beautiful cascade of floating petals with realistic movement and organic animation. This effect simulates petals drifting through the air with natural rotation variation and elegant entrance/exit effects.<br/><br/>
+Petal Textures:  
+
+<a href="https://www.freepik.com/free-vector/realistic-rose-petals-isolated_13304910.htm#fromView=search&page=1&position=0&uuid=c7ea13ec-fc26-4e55-9fb3-475ac469e557&query=Rose+Petal+Texture?sign-up=google">Realistic rose petals isolated by user15245033 on Freepik</a><br/>
+<a href="https://www.freepik.com/free-vector/pink-flower-petal-illustration-vector-set_16359014.htm#fromView=search&page=1&position=14&uuid=e443ac80-13a3-47b5-8a9e-55131e185fd7&query=sakura+petals+isolated">Pink flower petal illustration vector set by rawpixel.com on Freepik</a>
+<a href="https://www.freepik.com/free-psd/nine-colorful-rose-petals-collection-vibrant-display-detached-rose-petals-various-colors-showcasing-their-delicate-textures-unique-shapes_409092672.htm#fromView=search&page=2&position=5&uuid=b59b1768-c8b2-4db8-92d0-670f89edcd8a&query=white+rose+petals+isolated">Nine Colorful Rose Petals Collection by tohamina on Freepik</a>
 </td>
 <td width="50%"><div style="text-align:center">
 </div></td>
