@@ -184,31 +184,4 @@ Original: Shader by SnoopethDuckDuck (ShaderToy link pending).
 
 ---
 
-## Usage Tips
-
-### Audio Reactivity
-
-Most shaders in the AS-StageFX collection include audio reactivity options. Here are some tips for getting the most out of these features:
-
-1. **Listeningway Integration:** Install [Listeningway](https://github.com/gposingway/Listeningway) for full audio responsiveness. Without it, shaders will still work but won't react to sound.
-
-2. **Audio Source Selection:** Each shader with audio reactivity includes an "Audio Source" dropdown. Choose the appropriate source for your needs:
-- **Bass**: Good for rhythmic pulsing effects
-- **Mids**: Works well for vocals and most instruments
-- **Treble**: Better for high-frequency response (cymbals, etc.)
-- **Volume**: Overall audio volume (good for general reactivity)
-- **Custom**: Allows using a specific frequency band
-
-3. **Adjusting Sensitivity:** Use the "Audio Reactivity" slider to control how strongly the effect responds to audio. Higher values create more dramatic effects.
-
-### Performance Considerations
-
-Background effects can be particularly demanding on system resources. To optimize performance:
-
-1. Start with lower resolution scale settings
-2. Reduce iteration counts for fractal effects
-3. Use simpler effects on lower-end hardware
-
----
-
 *For more detailed information about installation, updates, and credits, please refer to the [main README](../README.md).*
