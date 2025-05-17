@@ -673,9 +673,12 @@ float3 DrawGuides(float2 texcoord, float3 originalColor, float3 guideColor, floa
             // r = a * e^(b * θ) where b = ln(phi) / (π/2)
             float b = log(phi) / (3.14159265 * 0.5);
             float idealRadius = 0.25 * exp(b * angle);
-            
-            // Check if we're on the spiral
-            if (abs(dist - idealRadius) < 0.02)
+              // Check if we're on the spiral
+            // Calculate spiral thickness based on GridWidth - normalize by screen resolution for consistent size
+            float spiralThickness = (GridWidth * 0.01) * length(float2(1.0/BUFFER_WIDTH, 1.0/BUFFER_HEIGHT)) * 100.0;
+            // Apply minimum thickness to ensure visibility at small GridWidth values
+            spiralThickness = max(spiralThickness, 0.001);
+            if (abs(dist - idealRadius) < spiralThickness)
                 return lerp(originalColor, guideColor, GuideColor.a);
             
             // Draw the golden rectangles
