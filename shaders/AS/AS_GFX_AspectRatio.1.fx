@@ -183,10 +183,19 @@ uniform int GuideType <
 #define SUBTYPE_DEFAULT 0
 #define SUBTYPE_BAROQUE 1
 #define SUBTYPE_SINISTER 2
+
+// Spiral orientation constants for clarity
+#define SPIRAL_LOWER_RIGHT 0
+#define SPIRAL_UPPER_RIGHT 1
+#define SPIRAL_UPPER_LEFT  2
+#define SPIRAL_LOWER_LEFT  3
+
+// Old constants kept for backwards compatibility
 #define SUBTYPE_UPPER_LEFT 2
 #define SUBTYPE_UPPER_RIGHT 1
 #define SUBTYPE_LOWER_LEFT 3
 #define SUBTYPE_LOWER_RIGHT 0
+
 #define SUBTYPE_UP 0
 #define SUBTYPE_DOWN 1
 #define SUBTYPE_DIAGONAL 2
@@ -758,16 +767,16 @@ float3 DrawGuides(float2 texcoord, float3 originalColor, float3 guideColor, floa
                 float angle, radius, phi = 1.618;
                 
                 // Change spiral orientation based on subtype
-                if (actualSubType == 0) { // Lower-right spiral
+                if (actualSubType == SPIRAL_LOWER_RIGHT) {
                     spiralCenter = float2(1.0, 1.0);
                     angle = atan2(1.0 - frameCoord.y, 1.0 - frameCoord.x);
-                } else if (actualSubType == 1) { // Upper-right spiral
+                } else if (actualSubType == SPIRAL_UPPER_RIGHT) {
                     spiralCenter = float2(1.0, 0.0);
                     angle = atan2(frameCoord.y, 1.0 - frameCoord.x);
-                } else if (actualSubType == 2) { // Upper-left spiral
+                } else if (actualSubType == SPIRAL_UPPER_LEFT) {
                     spiralCenter = float2(0.0, 0.0);
                     angle = atan2(frameCoord.y, frameCoord.x);
-                } else { // Lower-left spiral
+                } else if (actualSubType == SPIRAL_LOWER_LEFT) {
                     spiralCenter = float2(0.0, 1.0);
                     angle = atan2(1.0 - frameCoord.y, frameCoord.x);
                 }
@@ -793,19 +802,19 @@ float3 DrawGuides(float2 texcoord, float3 originalColor, float3 guideColor, floa
                 // Draw the golden rectangles
                 float phiInv = 1.0 / phi;
                 
-                if (actualSubType == 0) { // Lower-right
+                if (actualSubType == SPIRAL_LOWER_RIGHT) {
                     if (IsPointOnLine(frameCoord.x, 1.0 - phiInv, gridWidth.x) || 
                         IsPointOnLine(frameCoord.y, 1.0 - phiInv, gridWidth.y))
                         return lerp(originalColor, guideColor, GuideColor.a * 0.7);
-                } else if (actualSubType == 1) { // Upper-right
+                } else if (actualSubType == SPIRAL_UPPER_RIGHT) {
                     if (IsPointOnLine(frameCoord.x, 1.0 - phiInv, gridWidth.x) || 
                         IsPointOnLine(frameCoord.y, phiInv, gridWidth.y))
                         return lerp(originalColor, guideColor, GuideColor.a * 0.7);
-                } else if (actualSubType == 2) { // Upper-left
+                } else if (actualSubType == SPIRAL_UPPER_LEFT) {
                     if (IsPointOnLine(frameCoord.x, phiInv, gridWidth.x) || 
                         IsPointOnLine(frameCoord.y, phiInv, gridWidth.y))
                         return lerp(originalColor, guideColor, GuideColor.a * 0.7);
-                } else { // Lower-left
+                } else if (actualSubType == SPIRAL_LOWER_LEFT) {
                     if (IsPointOnLine(frameCoord.x, phiInv, gridWidth.x) || 
                         IsPointOnLine(frameCoord.y, 1.0 - phiInv, gridWidth.y))
                         return lerp(originalColor, guideColor, GuideColor.a * 0.7);
@@ -941,7 +950,7 @@ float3 PS_AspectRatio(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV
 // ============================================================================
 
 technique AS_GFX_AspectRatio <
-    ui_label = "AS GFX: Aspect Ratio";
+    ui_label = "[AS] GFX: Aspect Ratio";
     ui_tooltip = "Aspect ratio framing tool for precise subject positioning";
 > {
     pass {
