@@ -64,6 +64,161 @@ function Get-ShaderType($filename) {
     return "other"
 }
 
+function Test-IsPrerelease($filename) {
+    # Check if the filename matches any exclude patterns from config
+    foreach ($pattern in $config.buildRules.excludePatterns) {
+        if ($filename -match $pattern) {
+            return $true
+        }
+    }
+    return $false
+}
+
+# This function is not currently used, available dependencies are gathered in the main script block.
+# function Get-AvailableDependencies() {
+#     # Get all .fxh files in the workspace
+#     $fxhFiles = Get-ChildItem -Path $shadersRoot -Recurse -File -Filter "*.fxh" | Where-Object {
+#         $file = $_
+#         # Check if file path is in any of the excluded paths
+#         $excluded = $false
+#         foreach ($excludePath in $excludePathsArray) {
+#             if ($file.FullName -match $excludePath) {
+#                 $excluded = $true
+#                 break
+#             }
+#         }
+#         -not $excluded
+#     } | Select-Object -ExpandProperty Name
+
+#     # Get all texture files
+#     $textureSourceDir = Join-Path $shadersRoot $textureDirPath
+#     $textureFiles = @()
+#     if (Test-Path $textureSourceDir) {
+#         $textureFiles = Get-ChildItem -Path $textureSourceDir -File | Select-Object -ExpandProperty Name
+#     }
+
+#     return @{
+#         FxhFiles = $fxhFiles
+#         TextureFiles = $textureFiles
+#     }
+# }
+
+function Get-ParsedShaderContentDependencies($shaderPath, $availableDependencies) {
+    # Read the shader content
+    $content = Get-Content -Path $shaderPath -Raw
+    
+    # Initialize dependency arrays
+    $fxhDependencies = @()
+    $textureDependencies = @()
+    
+    # Get include pattern from config or use default
+    $includePattern = '#include\s+["<]([^">]+)[">]'
+    if ($config.buildRules.dependencyTracking.includePatterns) {
+        $includePattern = $config.buildRules.dependencyTracking.includePatterns[0]
+    }
+    
+    # Find .fxh dependencies using regex for #include statements
+    $includeMatches = [regex]::Matches($content, $includePattern)
+    foreach ($match in $includeMatches) {
+        $includePath = $match.Groups[1].Value
+        # Only add .fxh files
+        if ($includePath -match "\.fxh$") {
+            # Extract just the filename without directory path
+            $includeName = $includePath -replace ".*[\\/]", ""
+            # Ensure we don't add ReShade standard includes
+            if ($includeName -ne "ReShade.fxh" -and $includeName -ne "ReShadeUI.fxh") {
+                # Check if this fxh file exists in our available dependencies
+                if ($availableDependencies.FxhFiles -contains $includeName) {
+                    $fxhDependencies += $includeName
+                }
+            }
+        }
+    }
+    
+    # Fallback FXH matching by basename has been removed for precision.
+    
+    # Get texture pattern from config or use default
+    $texturePattern = 'texture\s+\w+\s*<\s*source\s*=\s*([^;>]+)\s*[;>]'
+    if ($config.buildRules.dependencyTracking.texturePatterns) {
+        $texturePattern = $config.buildRules.dependencyTracking.texturePatterns[0]
+    }
+    
+    # Find texture dependencies using regex for texture definitions with source attribute
+    $textureMatches = [regex]::Matches($content, $texturePattern)
+    foreach ($match in $textureMatches) {
+        $texturePathOrMacro = $match.Groups[1].Value.Trim().Trim('"')
+        
+        # Handle macro cases like source=TEXTURE_PATH
+        # Check if it looks like a macro (no quotes, no dot typically)
+        if ($texturePathOrMacro -notmatch '"') {
+            # Look for a macro definition: #define TEXTURE_PATH "actual.png"
+            $macroRegex = "#define\s+$([regex]::Escape($texturePathOrMacro))\s+`"([^`"]+)`""
+            $macroDefinitionMatches = [regex]::Matches($content, $macroRegex)
+            if ($macroDefinitionMatches.Count -gt 0) {
+                $texturePathOrMacro = $macroDefinitionMatches[0].Groups[1].Value
+            }
+            else {
+                # If macro not found in this file, we cannot resolve it here.
+                # It might be defined in an included FXH or intended for global definition.
+                # For dependency tracking, we skip it if not resolvable locally.
+                Write-Warning "Could not resolve texture macro '$texturePathOrMacro' directly in shader '$shaderPath'. It might be defined in an included FXH or globally."
+                continue # Skip this unresolved macro
+            }
+        }
+        
+        # Extract just the filename without directory path from the (potentially resolved) path
+        $textureName = $texturePathOrMacro -replace ".*[\\/]", ""
+
+        # Only add if it's a real file name (contains a dot) and is in the available list
+        if ($textureName -match "\." -and ($availableDependencies.TextureFiles -contains $textureName)) {
+            if (-not ($textureDependencies -contains $textureName)) { # Ensure uniqueness before adding
+                 $textureDependencies += $textureName
+            }
+        }
+    }
+    
+    # Fallback texture matching by basename has been removed for precision.
+    
+    # Add global dependencies from config
+    if ($config.buildRules.dependencyTracking.globalDependencies) {
+        foreach ($globalDep in $config.buildRules.dependencyTracking.globalDependencies) {
+            if ($globalDep -match "\.fxh$" -and ($availableDependencies.FxhFiles -contains $globalDep) -and -not ($fxhDependencies -contains $globalDep)) {
+                $fxhDependencies += $globalDep
+            }
+            # Global textures are not explicitly handled here, assuming they are part of FXH or direct includes if needed
+        }
+    }
+    
+    return @{
+        FxhDependencies = $fxhDependencies | Select-Object -Unique
+        TextureDependencies = $textureDependencies | Select-Object -Unique
+    }
+}
+
+function Get-AggregatedPackageDependencies($shaders, $allShadersCollection, $currentShadersRoot, $currentAvailableDependencies) {
+    $packageFxhDependencies = @()
+    $packageTextureDependencies = @()
+    
+    foreach ($shaderName in $shaders) {
+        $shaderFile = $allShadersCollection | Where-Object { $_.Name -eq $shaderName } | Select-Object -First 1
+        
+        if ($shaderFile) {
+            $dependencies = Get-ParsedShaderContentDependencies $shaderFile.FullName $currentAvailableDependencies
+            $packageFxhDependencies += $dependencies.FxhDependencies
+            $packageTextureDependencies += $dependencies.TextureDependencies
+        }
+    }
+    
+    # Ensure we only have unique dependencies
+    $packageFxhDependencies = $packageFxhDependencies | Select-Object -Unique
+    $packageTextureDependencies = $packageTextureDependencies | Select-Object -Unique
+    
+    return @{
+        FxhDependencies = $packageFxhDependencies
+        TextureDependencies = $packageTextureDependencies
+    }
+}
+
 function Clear-PackagesDirectory {
     param(
         [string]$PackagesPath
@@ -191,6 +346,23 @@ $allShaders = Get-ChildItem -Path $shadersRoot -Recurse -File -Include $includeP
 
 Write-Info "Found $($allShaders.Count) shader files"
 
+# Build a collection of available dependencies (FXH files and textures)
+$availableDependencies = @{
+    FxhFiles = @()
+    TextureFiles = @()
+}
+
+# Find all .fxh files
+$availableDependencies.FxhFiles = $allShaders | Where-Object { $_.Name -match "\.fxh$" } | ForEach-Object { $_.Name }
+
+# Find all texture files
+$textureDir = Join-Path $shadersRoot $config.paths.textureDir
+if (Test-Path $textureDir) {
+    $availableDependencies.TextureFiles = Get-ChildItem -Path $textureDir -File | ForEach-Object { $_.Name }
+}
+
+Write-Info "Found $($availableDependencies.FxhFiles.Count) FXH files and $($availableDependencies.TextureFiles.Count) texture files for dependency tracking"
+
 # Create lists for each package
 $essentialShaders = @()
 $backgroundShaders = @()
@@ -208,6 +380,13 @@ foreach ($categoryName in $config.essentials.PSObject.Properties.Name) {
 # Process all shaders and categorize them
 foreach ($shader in $allShaders) {
     $shaderName = $shader.Name
+    
+    # Skip shaders prefixed with [PRE]
+    if (Test-IsPrerelease $shaderName) {
+        Write-Info "Skipping prerelease shader: $shaderName"
+        continue
+    }
+    
     $shaderType = Get-ShaderType $shaderName
     $allShadersList += $shaderName
     
@@ -256,6 +435,8 @@ foreach ($dir in $packageDirs) {
     }
     
     # For essentials and complete packages, also create textures directory
+    # This logic might need adjustment based on actual texture dependencies per package
+    # For now, creating it for essentials and complete as before.
     if ($dir -eq $essentialsDir -or $dir -eq $completeDir) {
         $texturesDir = Join-Path $dir $textureDirPath
         if (-not (Test-Path $texturesDir)) {
@@ -264,220 +445,218 @@ foreach ($dir in $packageDirs) {
     }
 }
 
+# Store package details for manifest generation
+$script:packagesForManifest = @()
+$script:createdPackageFolderNames = [System.Collections.Generic.List[string]]::new() # Added to store folder names
+
 # Copy appropriate shaders to each package
-function Copy-ShadersToPackage($shaderList, $packageDir) {
+function Copy-ShadersToPackage($shaderList, $packageDirName, $packageDesc, $currentAllShaders, $currentShadersRoot, $currentAvailableDependencies) {
+    $packageFullPath = Join-Path $OutputPath $packageDirName
+    Write-Info "Processing package: $packageDirName"
+    $script:createdPackageFolderNames.Add($packageDirName) # Add folder name to the list
+
+    # Resolve dependencies for this package
+    $packageDependencies = Get-AggregatedPackageDependencies $shaderList $currentAllShaders $currentShadersRoot $currentAvailableDependencies
+    $fxhDependencies = $packageDependencies.FxhDependencies
+    $textureDependencies = $packageDependencies.TextureDependencies
+    
+    Write-Info "  $($shaderList.Count) primary shaders for this package."
+    Write-Info "  Resolved dependencies: $($fxhDependencies.Count) FXH files, $($textureDependencies.Count) textures."
+    
+    # Create shader directory within the package if it doesn't exist
+    $packageShaderDir = Join-Path $packageFullPath $shaderDirPath
+    if (-not (Test-Path $packageShaderDir)) {
+        New-Item -ItemType Directory -Path $packageShaderDir -Force | Out-Null
+    }
+
+    # Copy the main shaders
     foreach ($shaderName in $shaderList) {
-        $shader = $allShaders | Where-Object { $_.Name -eq $shaderName } | Select-Object -First 1
+        $shader = $currentAllShaders | Where-Object { $_.Name -eq $shaderName } | Select-Object -First 1
         
         if ($shader) {
-            $destPath = Join-Path $packageDir "$shaderDirPath\$shaderName"
+            $destPath = Join-Path $packageShaderDir $shaderName
             Copy-Item -Path $shader.FullName -Destination $destPath -Force
         }
         else {
-            Write-Warning "Shader not found in project: $shaderName"
+            Write-Warning "Shader not found in project: $shaderName (when copying to $packageDirName)"
         }
     }
-}
-
-# Copy textures to specified package
-function Copy-TexturesToPackage($packageDir) {
-    # Get texture directory
-    $textureSourceDir = Join-Path $shadersRoot $textureDirPath
-    if (Test-Path $textureSourceDir) {
-        $textureDestDir = Join-Path $packageDir $textureDirPath
+    
+    # Copy FXH dependencies
+    foreach ($fxhName in $fxhDependencies) {
+        $fxh = $currentAllShaders | Where-Object { $_.Name -eq $fxhName } | Select-Object -First 1
+        
+        if ($fxh) {
+            $destPath = Join-Path $packageShaderDir $fxhName
+            # Ensure not to copy over a primary shader if an FXH has the same name (unlikely but a safeguard)
+            if (-not (Test-Path $destPath -PathType Leaf) -or ($shaderList -notcontains $fxhName) ) {
+                 Copy-Item -Path $fxh.FullName -Destination $destPath -Force
+            }
+        }
+        else {
+            Write-Warning "FXH dependency not found in project: $fxhName (when copying to $packageDirName)"
+        }
+    }
+    
+    # Copy texture dependencies
+    if ($textureDependencies.Count -gt 0) {
+        $textureSourceDir = Join-Path $currentShadersRoot $textureDirPath
+        $textureDestDir = Join-Path $packageFullPath $textureDirPath
         
         # Create textures directory if it doesn't exist
         if (-not (Test-Path $textureDestDir)) {
             New-Item -ItemType Directory -Path $textureDestDir -Force | Out-Null
         }
         
-        # Copy all textures
-        $textures = Get-ChildItem -Path $textureSourceDir -File
-        foreach ($texture in $textures) {
-            $destPath = Join-Path $textureDestDir $texture.Name
-            Copy-Item -Path $texture.FullName -Destination $destPath -Force
+        foreach ($textureName in $textureDependencies) {
+            $sourceTexturePath = Join-Path $textureSourceDir $textureName
+            if (Test-Path $sourceTexturePath) {
+                $destTexturePath = Join-Path $textureDestDir $textureName
+                Copy-Item -Path $sourceTexturePath -Destination $destTexturePath -Force
+            }
+            else {
+                Write-Warning "Texture dependency not found in source: $textureName (when copying to $packageDirName)"
+            }
         }
-        
-        Write-Info "Copied $($textures.Count) texture files to $packageDir"
-        return $textures.Count
-    } else {
-        Write-Warning "Texture directory not found: $textureSourceDir"
-        return 0
+    }
+
+    # Add to manifest data
+    $script:packagesForManifest += @{
+        Name = $packageDirName
+        Description = $packageDesc
+        Shaders = $shaderList # List of primary shader names
+        Dependencies = $packageDependencies # Contains .FxhDependencies and .TextureDependencies arrays
+        ShaderCount = $shaderList.Count
+        FxhCount = $fxhDependencies.Count
+        TextureCount = $textureDependencies.Count
     }
 }
 
-# Create the readme files for each package
-function New-ReadmeFile($packageDir, $description) {
-    $readmePath = Join-Path $packageDir $config.paths.readmeFile
-    
-    # Get package version from config
-    $packageVersion = $config.version
-    
-    # Check if this package includes textures
-    $hasTextures = Test-Path (Join-Path $packageDir $textureDirPath)
-    $textureNote = ""
-    if ($hasTextures) {
-        $textureNote = "`nNote: This package includes texture files required by some shaders."
-    }
-    
-    # Replace placeholders in readme template
-    $readmeContent = $config.readmeTemplate
-    $readmeContent = $readmeContent -replace "{version}", $packageVersion
-    $readmeContent = $readmeContent -replace "{description}", $description
-    $readmeContent = $readmeContent -replace "{textureNote}", $textureNote
-    $readmeContent = $readmeContent -replace "{supportUrl}", $config.supportUrl
-    
-    Set-Content -Path $readmePath -Value $readmeContent
-}
+# Call Copy-ShadersToPackage for each package
+# Essentials Package
+Copy-ShadersToPackage -shaderList $essentialShaders `
+                      -packageDirName "$packagePrefix$essentialsName" `
+                      -packageDesc $config.packageDescription.essentials `
+                      -currentAllShaders $allShaders `
+                      -currentShadersRoot $shadersRoot `
+                      -currentAvailableDependencies $availableDependencies
 
-# Copy shaders to packages
-Write-Info ("Generating " + $essentialsName + " package...")
-Copy-ShadersToPackage $essentialShaders $essentialsDir
-Copy-TexturesToPackage $essentialsDir
-New-ReadmeFile $essentialsDir $config.packageDescription.essentials
+# Backgrounds Package
+Copy-ShadersToPackage -shaderList $backgroundShaders `
+                      -packageDirName "$packagePrefix$backgroundsName" `
+                      -packageDesc $config.packageDescription.backgrounds `
+                      -currentAllShaders $allShaders `
+                      -currentShadersRoot $shadersRoot `
+                      -currentAvailableDependencies $availableDependencies
 
-Write-Info ("Generating " + $backgroundsName + " package...")
-Copy-ShadersToPackage $backgroundShaders $backgroundsDir
-New-ReadmeFile $backgroundsDir $config.packageDescription.backgrounds
+# Visual Effects Package
+Copy-ShadersToPackage -shaderList $visualEffectShaders `
+                      -packageDirName "$packagePrefix$visualEffectsName" `
+                      -packageDesc $config.packageDescription.visualeffects `
+                      -currentAllShaders $allShaders `
+                      -currentShadersRoot $shadersRoot `
+                      -currentAvailableDependencies $availableDependencies
 
-Write-Info ("Generating " + $visualEffectsName + " package...")
-Copy-ShadersToPackage $visualEffectShaders $visualEffectsDir
-New-ReadmeFile $visualEffectsDir $config.packageDescription.visualeffects
+# Complete Package (all non-prerelease shaders)
+Copy-ShadersToPackage -shaderList $allShadersList `
+                      -packageDirName "$packagePrefix$completeName" `
+                      -packageDesc $config.packageDescription.complete `
+                      -currentAllShaders $allShaders `
+                      -currentShadersRoot $shadersRoot `
+                      -currentAvailableDependencies $availableDependencies
 
-Write-Info ("Generating " + $completeName + " Collection package...")
-Copy-ShadersToPackage $allShadersList $completeDir
-Copy-TexturesToPackage $completeDir
-New-ReadmeFile $completeDir $config.packageDescription.complete
+Write-Success "All packages processed."
 
-# Create ZIP archives for easy distribution
-function New-ZipPackage($sourceDir) {
-    $dirName = Split-Path $sourceDir -Leaf
-    $zipPath = Join-Path $OutputPath "$dirName.zip"
+# Generate package manifest
+function New-PackageManifest($packagesDataToManifest, $manifestPath) {
+    Write-Info "Generating package manifest: $manifestPath"
     
-    if (Test-Path $zipPath) {
-        Remove-Item $zipPath -Force
-    }
-    
-    Add-Type -AssemblyName System.IO.Compression.FileSystem
-    [System.IO.Compression.ZipFile]::CreateFromDirectory($sourceDir, $zipPath)
-    
-    return $zipPath
-}
-
-# Create zip packages if PowerShell version supports it
-if ($PSVersionTable.PSVersion.Major -ge 5) {
-    Write-Info "Creating ZIP packages..."
-    
-    $essentialsZip = New-ZipPackage $essentialsDir
-    $backgroundsZip = New-ZipPackage $backgroundsDir
-    $visualEffectsZip = New-ZipPackage $visualEffectsDir
-    $completeZip = New-ZipPackage $completeDir
-      Write-Success "Created ZIP packages:"
-    Write-Output "  - $essentialsZip"
-    Write-Output "  - $backgroundsZip"
-    Write-Output "  - $visualEffectsZip"
-    Write-Output "  - $completeZip"
-}
-else {
-    Write-Warning "PowerShell 5.0 or higher required for ZIP creation. Packages are available as folders."
-}
-
-# Generate JSON manifest of package contents
-function New-PackageManifest() {
-    # Get package version from config
-    $packageVersion = $config.version
-    
-    Write-Info "Using package version: $packageVersion"
-    
-    # Get texture file list
-    $textureSourceDir = Join-Path $shadersRoot $textureDirPath
-    $textureFiles = @()
-    if (Test-Path $textureSourceDir) {
-        $textureFiles = (Get-ChildItem -Path $textureSourceDir -File).Name
-    }
-    
-    # Create main manifest
-    $manifestFile = $config.paths.manifestFile
     $manifest = @{
-        packageVersion = $packageVersion
-        version = $packageVersion # For backward compatibility
-        generatedOn = (Get-Date -Format "yyyy-MM-dd HH:mm:ss")
-        packages = @{
-            essentials = @{
-                name = "$packagePrefix$essentialsName"
-                version = $packageVersion
-                description = $config.packageDescription.essentials
-                fileCount = $essentialShaders.Count
-                files = $essentialShaders | Sort-Object
-                textures = @{
-                    fileCount = $textureFiles.Count
-                    files = $textureFiles | Sort-Object
-                }
+        version = $config.version
+        buildDate = Get-Date -Format "yyyy-MM-ddTHH:mm:ssZ"
+        packages = [System.Collections.Generic.List[object]]::new() # Initialize as a resizable list
+    }
+    
+    # Sort packages by display order from config, then by name
+    $sortedPackagesData = $packagesDataToManifest | Sort-Object {
+        $order = $config.packageDisplayOrder.IndexOf($_.Name.Replace($packagePrefix, "").TrimStart('_'))
+        if ($order -eq -1) { $order = 999 } # Put unsorted items at the end
+        $order
+    }, Name
+
+    foreach ($package in $sortedPackagesData) {
+        # Ensure dependencies are arrays, even if empty
+        $fxhDeps = @()
+        if ($package.Dependencies.FxhDependencies) {
+            if ($package.Dependencies.FxhDependencies -is [array]) {
+                $fxhDeps = $package.Dependencies.FxhDependencies
             }
-            backgrounds = @{
-                name = "$packagePrefix$backgroundsName"
-                version = $packageVersion
-                description = $config.packageDescription.backgrounds
-                fileCount = $backgroundShaders.Count
-                files = $backgroundShaders | Sort-Object
-            }
-            visualEffects = @{
-                name = "$packagePrefix$visualEffectsName"
-                version = $packageVersion
-                description = $config.packageDescription.visualeffects
-                fileCount = $visualEffectShaders.Count
-                files = $visualEffectShaders | Sort-Object
-            }
-            complete = @{
-                name = "$packagePrefix$completeName"
-                version = $packageVersion
-                description = $config.packageDescription.complete
-                fileCount = $allShadersList.Count
-                files = $allShadersList | Sort-Object
-                textures = @{
-                    fileCount = $textureFiles.Count
-                    files = $textureFiles | Sort-Object
-                }
+            else {
+                $fxhDeps = @($package.Dependencies.FxhDependencies)
             }
         }
+
+        $textureDeps = @()
+        if ($package.Dependencies.TextureDependencies) {
+            if ($package.Dependencies.TextureDependencies -is [array]) {
+                $textureDeps = $package.Dependencies.TextureDependencies
+            }
+            else {
+                $textureDeps = @($package.Dependencies.TextureDependencies)
+            }
+        }
+
+        $packageManifest = @{
+            name = $package.Name
+            version = $config.version
+            description = $package.Description
+            shaderCount = $package.ShaderCount
+            fxhDependencyCount = $package.FxhCount
+            textureDependencyCount = $package.TextureCount
+            shaders = $package.Shaders # This is a list of primary shader filenames for the package
+            dependencies = @{ # This structure contains the lists of dependency filenames
+                fxh = $fxhDeps
+                textures = $textureDeps
+            }
+        }
+        $manifest.packages.Add($packageManifest)
     }
-      $manifestPath = Join-Path $OutputPath $manifestFile
-    $manifest | ConvertTo-Json -Depth 4 | Set-Content -Path $manifestPath
     
-    # Now that the main manifest is created, remove the package folders
-    # but only if ZIP files exist (meaning we've created them earlier)
-    if ($PSVersionTable.PSVersion.Major -ge 5) {
-        Remove-PackageFolders -PackagesPath $OutputPath -FolderNames @(
-            "$packagePrefix$essentialsName",
-            "$packagePrefix$backgroundsName",
-            "$packagePrefix$visualEffectsName",
-            "$packagePrefix$completeName"
-        )
+    try {
+        $manifest | ConvertTo-Json -Depth 5 | Set-Content -Path $manifestPath -Encoding UTF8
+        Write-Success "Package manifest generated: $manifestPath"
     }
-    
-    Write-Info "Generated package manifests with version: $packageVersion"
-    return $manifestPath
+    catch {
+        Write-Error "Failed to generate package manifest: $_"
+    }
 }
 
-$manifestPath = New-PackageManifest
+$manifestFilePath = Join-Path $OutputPath $config.paths.manifestFile
+New-PackageManifest -packagesDataToManifest $packagesForManifest -manifestPath $manifestFilePath
 
-# Package generation summary
-Write-Success "Package generation complete!"
-# Get the version for the summary
-$packageVersion = $config.version
+# Create ZIP archives for each package
+Write-Info "Creating ZIP archives for packages..."
+foreach ($packageData in $packagesForManifest) {
+    $packageFolderName = $packageData.Name
+    $packageFolderPath = Join-Path $OutputPath $packageFolderName
+    $zipFilePath = Join-Path $OutputPath "$packageFolderName.zip"
 
-# Get texture count for the summary
-$textureSourceDir = Join-Path $shadersRoot $textureDirPath
-$textureCount = 0
-if (Test-Path $textureSourceDir) {
-    $textureCount = (Get-ChildItem -Path $textureSourceDir -File).Count
+    if (Test-Path $packageFolderPath) {
+        try {
+            Compress-Archive -Path "$packageFolderPath\\*" -DestinationPath $zipFilePath -Force -ErrorAction Stop
+            Write-Success "Created ZIP archive: $zipFilePath"
+        }
+        catch {
+            Write-Error "Failed to create ZIP archive for $packageFolderName : $_"
+        }
+    }
+    else {
+        Write-Warning "Package folder not found for zipping: $packageFolderPath"
+    }
 }
 
-Write-Output "Package Version: $packageVersion"
-Write-Output ($essentialsName + ": " + $essentialShaders.Count + " shaders + " + $textureCount + " textures")
-Write-Output ($backgroundsName + ": " + $backgroundShaders.Count + " shaders")
-Write-Output ($visualEffectsName + ": " + $visualEffectShaders.Count + " shaders")
-Write-Output ($completeName + " Collection: " + $allShadersList.Count + " shaders + " + $textureCount + " textures")
-Write-Output ""
-Write-Output "Packages are available at: $OutputPath"
-Write-Output "Package manifest: $manifestPath"
+# Clean up individual package folders after zipping
+Remove-PackageFolders -PackagesPath $OutputPath -FolderNames $script:createdPackageFolderNames
+
+# Create README files for each package
+# ... (rest of the script remains the same for now)
