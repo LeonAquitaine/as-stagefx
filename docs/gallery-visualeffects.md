@@ -146,39 +146,4 @@ Creates a water surface where reflection start points are determined by object d
 
 ---
 
-## Usage Tips
-
-### Audio Reactivity
-
-Most shaders in the AS-StageFX collection include audio reactivity options. Here are some tips for getting the most out of these features:
-
-1. **Listeningway Integration:** Install [Listeningway](https://github.com/gposingway/Listeningway) for full audio responsiveness. Without it, shaders will still work but won't react to sound.
-
-2. **Audio Source Selection:** Each shader with audio reactivity includes an "Audio Source" dropdown. Choose the appropriate source for your needs:
-- **Bass**: Good for rhythmic pulsing effects
-- **Mids**: Works well for vocals and most instruments
-- **Treble**: Better for high-frequency response (cymbals, etc.)
-- **Volume**: Overall audio volume (good for general reactivity)
-- **Custom**: Allows using a specific frequency band
-
-3. **Adjusting Sensitivity:** Use the "Audio Reactivity" slider to control how strongly the effect responds to audio. Higher values create more dramatic effects.
-
-### Performance Considerations
-
-Visual effects can be layered strategically for the best results:
-
-1. Apply visual effects in a meaningful order (e.g., water surface before rain)
-2. Adjust depth settings to position effects at appropriate distances
-3. Use blend modes strategically to achieve the desired layering
-
-### Combining Visual Effects
-
-For professional-looking results:
-
-1. Don't overuse effects - pick 2-3 that complement each other
-2. Consider thematic consistency (e.g., water + rain + reflections)
-3. Pay attention to depth settings to create a sense of space
-
----
-
 *For more detailed information about installation, updates, and credits, please refer to the [main README](../README.md).*
