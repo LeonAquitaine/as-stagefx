@@ -1,10 +1,10 @@
 {
-    "packageVersion":  "1.7.3",
-    "generatedOn":  "2025-05-15 14:57:02",
-    "version":  "1.7.3",
+    "packageVersion":  "1.7.4",
+    "generatedOn":  "2025-05-16 23:45:40",
+    "version":  "1.7.4",
     "packages":  {
                      "essentials":  {
-                                        "version":  "1.7.3",
+                                        "version":  "1.7.4",
                                         "name":  "AS_StageFX_Essentials",
                                         "files":  [
                                                       "AS_BGX_LightRipples.1.fx",
@@ -52,11 +52,13 @@
                                                      ],
                                            "description":  "Complete collection of visual effects (Requires Essentials)",
                                            "name":  "AS_StageFX_VisualEffects",
-                                           "version":  "1.7.3",
+                                           "version":  "1.7.4",
                                            "fileCount":  12
                                        },
                      "backgrounds":  {
                                          "files":  [
+                                                       "[PRE] AS_BGX_LogSpirals.fx",
+                                                       "[PRE] AS_BGX_Sun.1.fx",
                                                        "AS_BGX_BlueCorona.1.fx",
                                                        "AS_BGX_CorridorTravel.1.fx",
                                                        "AS_BGX_CosmicKaleidoscope.1.fx",
@@ -75,13 +77,15 @@
                                                    ],
                                          "description":  "Complete collection of background effects (Requires Essentials)",
                                          "name":  "AS_StageFX_Backgrounds",
-                                         "version":  "1.7.3",
-                                         "fileCount":  15
+                                         "version":  "1.7.4",
+                                         "fileCount":  17
                                      },
                      "complete":  {
-                                      "version":  "1.7.3",
+                                      "version":  "1.7.4",
                                       "name":  "AS_StageFX",
                                       "files":  [
+                                                    "[PRE] AS_BGX_LogSpirals.fx",
+                                                    "[PRE] AS_BGX_Sun.1.fx",
                                                     "AS_BGX_BlueCorona.1.fx",
                                                     "AS_BGX_CorridorTravel.1.fx",
                                                     "AS_BGX_CosmicKaleidoscope.1.fx",
@@ -127,7 +131,7 @@
                                                     "AS_VFX_WaterSurface.1.fx"
                                                 ],
                                       "description":  "The complete collection of all AS StageFX shaders and utilities",
-                                      "fileCount":  43,
+                                      "fileCount":  45,
                                       "textures":  {
                                                        "fileCount":  3,
                                                        "files":  [
