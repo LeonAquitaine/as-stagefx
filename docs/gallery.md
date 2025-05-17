@@ -68,6 +68,18 @@ Based on: <a href="https://www.shadertoy.com/view/XdcGzn" target="_new">"Halfton
 <img src="https://github.com/user-attachments/assets/b93c9d03-5d23-4b32-aa3e-f2b6a9736c70" alt="Multi-Layer Halftone Effect" style="max-width:100%;">
 </div></td>
 </tr>
+<tr>
+<td width="50%">
+<h4>GFX: Vignette Plus</h4>
+<h5><code>[AS] GFX: Vignette Plus|AS_GFX_VignettePlus.1.fx</code></h5>
+A vignette shader that provides multiple visual styles and customizable pattern options, creating directional, controllable vignette effects for stage compositions and scene framing. Perfect for adding mood, focus, or stylistic elements. Features four distinct visual styles (Smooth Gradient, Duotone Circles, Directional Lines perpendicular and parallel), multiple mirroring options (none, edge-based, center-based), precise control over effect coverage with start/end falloff points, and much more. Optimized for performance across various resolutions.<br><br>
+Inspired by: The hexagonal grid implementation is adapted from <a href="https://www.shadertoy.com/view/XfjyWG" target="_new">"hexagonal wipe" by blandprix</a>.
+</td>
+<td width="50%"><div style="text-align:center">
+<!-- Awaiting preview image. -->
+Awaiting preview image.
+</div></td>
+</tr>
 </table>
 
 ---
@@ -143,42 +155,6 @@ Isolates foreground subjects based on depth and applies customizable borders and
 </div></td>
 </tr>
 </table>
-
----
-
-## Usage Tips
-
-### Audio Reactivity
-
-Most shaders in the AS-StageFX collection include audio reactivity options. Here are some tips for getting the most out of these features:
-
-1. **Listeningway Integration:** Install [Listeningway](https://github.com/gposingway/Listeningway) for full audio responsiveness. Without it, shaders will still work but won't react to sound.
-
-2. **Audio Source Selection:** Each shader with audio reactivity includes an "Audio Source" dropdown. Choose the appropriate source for your needs:
-- **Bass**: Good for rhythmic pulsing effects
-- **Mids**: Works well for vocals and most instruments
-- **Treble**: Better for high-frequency response (cymbals, etc.)
-- **Volume**: Overall audio volume (good for general reactivity)
-- **Custom**: Allows using a specific frequency band
-
-3. **Adjusting Sensitivity:** Use the "Audio Reactivity" slider to control how strongly the effect responds to audio. Higher values create more dramatic effects.
-
-### Performance Considerations
-
-Some effects can be more demanding than others. If you experience performance issues:
-
-1. Start with fewer shaders active at once
-2. Reduce resolution scale settings in more complex shaders
-3. Avoid using multiple distortion-based effects simultaneously
-
-### Combining Shaders
-
-For the best visual results when combining multiple shaders:
-
-1. Apply background effects (BGX) first
-2. Add lighting effects (LFX) next
-3. Apply visual effects (VFX) last for final touches
-4. Pay attention to blend modes in each shader to control how they interact
 
 ---
 
