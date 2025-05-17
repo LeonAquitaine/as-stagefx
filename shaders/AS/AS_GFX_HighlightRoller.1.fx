@@ -73,14 +73,40 @@
  * - Various output gamma modes (Linear, sRGB, PQ/HDR)
  * - Professional presets for different shooting situations (Cinematic, Natural, Studio, etc.)
  * - Optional highlight clamping for output compatibility
- *
- * IMPLEMENTATION OVERVIEW:
+ * * IMPLEMENTATION OVERVIEW:
  * 1. Input pixel luminance is evaluated against a highlight threshold
  * 2. Selected tone mapping curve is applied to compress highlights without losing detail
  * 3. Saturation roll-off is gradually applied above the threshold to prevent color clipping
  * 4. Optional visualization modes help identify highlight issues and clipped areas
  * 5. Output gamma correction is applied based on selected mode
- *
+ * 
+ * PERFORMANCE CONSIDERATIONS:
+ * - This shader performs multiple color space conversions and applies complex tone mapping,
+ *   which may impact performance on lower-end systems or in real-time applications
+ * - Debug visualizations (especially Heat Map and False Color) add additional calculations
+ *   and should be disabled when not actively using them for analysis
+ * - The YCbCr color space conversion provides high-quality results but at a computational cost;
+ *   simpler implementations would be faster but may compromise highlight color transitions
+ * - For maximum performance, consider using one of the preset configurations instead of Custom S-Curve
+ * 
+ * TECHNICAL NOTES:
+ * - Custom Curve Parameters: The CurveGamma and CurveSteepness parameters interact in complex ways:
+ *   • Higher CurveGamma values create a more aggressive "shoulder" roll-off
+ *   • Higher CurveSteepness values create more contrast in mid-tones
+ *   • The parameters work best in the 0.5-2.0 range for most natural photography
+ *   • Extreme values can create artistic effects but may result in unnatural transitions
+ * 
+ * - PQ Transfer Function: The implementation is a simplified preview of ST.2084, not a full
+ *   HDR mastering solution. It provides a reasonable simulation but is not calibrated to
+ *   specific nit values for professional HDR grading work.
+ * 
+ * - Zebra Pattern: The sine-based striping pattern may show aliasing at certain resolutions.
+ *   Adjust the stripeFreq value if you notice distracting artifacts in zebra pattern debug mode.
+ * 
+ * - Highlight Clamping: The ClampHighlights option is essential for compatible output in most
+ *   SDR workflows, but disabling it allows values to exceed 1.0 for HDR or complex effect chains.
+ *   Use caution when disabling this option in standard SDR pipelines.
+ * 
  * ===================================================================================
  */
 
@@ -104,13 +130,19 @@
 
 #define OUTPUT_LINEAR       0
 #define OUTPUT_SRGB         1
-#define OUTPUT_PQ           2
+#define OUTPUT_PQ_PREVIEW   2
+#define OUTPUT_PQ_ACCURATE  3
 
 #define DEBUG_OFF           0
 #define DEBUG_MASK          1
 #define DEBUG_HEATMAP       2
 #define DEBUG_ZEBRA         3
 #define DEBUG_FALSECOLOR    4
+
+// Performance modes
+#define PERF_QUALITY        0  // Full quality with YCbCr preservation
+#define PERF_BALANCED       1  // Conditional YCbCr preservation
+#define PERF_FAST           2  // Direct luma mapping with minimal color space conversions
 
 #define PRESET_CUSTOM       0
 #define PRESET_CINEMATIC    1
@@ -200,15 +232,25 @@ uniform int OutputGamma <
     ui_label = "Output Gamma";
     ui_tooltip = "Gamma correction mode for the final output";
     ui_category = "Output";
-    ui_items = "Linear\0sRGB\0PQ (HDR Preview)\0";
+    ui_items = "Linear\0sRGB\0PQ (HDR Preview)\0PQ (Accurate HDR)\0";
 > = 1;
 
 uniform bool ClampHighlights < 
     ui_type = "bool";
     ui_label = "Clamp Highlights";
-    ui_tooltip = "Prevent RGB values from exceeding 1.0 for compatibility";
+    ui_tooltip = "Prevent RGB values from exceeding 1.0 for compatibility. Disable only for HDR workflows or when chaining with other HDR-aware effects.";
     ui_category = "Output";
 > = true;
+
+// Performance Options
+uniform int PerformanceMode <
+    ui_type = "combo";
+    ui_label = "Performance Mode";
+    ui_tooltip = "Controls the balance between quality and performance";
+    ui_category = "Performance";
+    ui_category_closed = true;
+    ui_items = "Quality (Full color preservation)\0Balanced (Auto color preservation)\0Fast (Basic color handling)\0";
+> = 1;
 
 // Debug Visualization
 uniform int DebugMode < 
@@ -227,6 +269,21 @@ uniform float DebugIntensity <
     ui_category = "Debug";
     ui_min = 0.0; ui_max = 1.0; ui_step = 0.01;
 > = 0.5;
+
+uniform float ZebraFrequency < 
+    ui_type = "slider";
+    ui_label = "Zebra Pattern Frequency";
+    ui_tooltip = "Controls the width of zebra stripes in debug mode. Higher values create thinner stripes.";
+    ui_category = "Debug";
+    ui_min = 5.0; ui_max = 30.0; ui_step = 1.0;
+> = 10.0;
+
+uniform bool AntiAliasZebra < 
+    ui_type = "bool";
+    ui_label = "Anti-Alias Zebra Pattern";
+    ui_tooltip = "Applies smoother transitions to zebra stripes to reduce aliasing at certain resolutions.";
+    ui_category = "Debug";
+> = true;
 
 // ============================================================================
 // HELPER FUNCTIONS
@@ -326,9 +383,11 @@ float3 ApplyOutputGamma(float3 color, int gammaMode) {
             float3 linearMask = step(0.0031308, color);
             float3 srgbLow = 12.92 * color;
             float3 srgbHigh = 1.055 * pow(abs(color), 1.0 / 2.4) - 0.055;
-            return lerp(srgbLow, srgbHigh, linearMask);        case OUTPUT_PQ:
-            // PQ (ST.2084) transfer function
-            // Simplified version for preview only
+            return lerp(srgbLow, srgbHigh, linearMask);
+            
+        case OUTPUT_PQ_PREVIEW:
+            // PQ (ST.2084) transfer function - Simplified preview version
+            // Maps roughly to HDR10 range but is not accurately calibrated
             
             // Clamp to a reasonable HDR range (0-1000 nits equivalent)
             // 1.0 in SDR is approximately 80-100 nits, so we scale up to simulate HDR range
@@ -346,6 +405,27 @@ float3 ApplyOutputGamma(float3 color, int gammaMode) {
             
             // Prevent potential NaN/Inf issues
             return pow(clamp(num / den, 0.0, 1.0), m2);
+            
+        case OUTPUT_PQ_ACCURATE:
+            // Full ST.2084 PQ implementation with proper nit calibration
+            // According to BT.2100/BT.2084 specifications
+            
+            // Convert from normalized values to nits (assumes 80 nits for SDR reference white)
+            // Map to 0-10000 nit range as per HDR10 standard
+            float3 nits = color * 80.0 * 10.0; // Apply both reference white and HDR expansion
+            nits = max(nits, 1e-6); // Avoid issues with very dark values
+            
+            // ST.2084 constants
+            const float m1_precise = 0.1593017578125; // 2610.0 / 4096.0 / 4.0
+            const float m2_precise = 78.84375; // 2523.0 / 4096.0 * 128.0
+            const float c1_precise = 0.8359375; // 3424.0 / 4096.0 or c3 - c2 + 1
+            const float c2_precise = 18.8515625; // 2413.0 / 4096.0 * 32.0
+            const float c3_precise = 18.6875; // 2392.0 / 4096.0 * 32.0
+            
+            // L' = ((c1 + c2*Y^m1)/(1 + c3*Y^m1))^m2
+            float3 Lp = pow(nits / 10000.0, m1_precise); // Normalize to 0-1 range and apply first power
+            Lp = (c1_precise + c2_precise * Lp) / (1.0 + c3_precise * Lp);
+            return pow(Lp, m2_precise); // Final power and return
     }
     
     return color; // Default fallback
@@ -387,17 +467,22 @@ float3 GenerateDebugView(float3 color, float luminance, float highlightMask, int
             
             debugColor = lerp(color, heatColor, debugIntensity);
             break;
-            
-        case DEBUG_ZEBRA:
+              case DEBUG_ZEBRA:
             // Zebra striping for clipped areas using screen coordinates for consistent spacing
             if (highlightMask > 0.0) {
-                // Use screen coordinates for consistent stripe pattern
-                float stripeFreq = 10.0; // Adjust for desired stripe width
-                float diagonalPos = (screenPos.x + screenPos.y) / stripeFreq;
+                // Use screen coordinates for consistent stripe pattern with user-defined frequency
+                float diagonalPos = (screenPos.x + screenPos.y) / ZebraFrequency;
                 
-                // Create binary zebra pattern
-                float zebra = (sin(diagonalPos * AS_PI) > 0.0) ? 1.0 : 0.0;
-                zebra *= highlightMask;
+                float zebra;
+                if (AntiAliasZebra) {
+                    // Smoother zebra pattern using abs(sin) to reduce aliasing
+                    float sinValue = abs(sin(diagonalPos * AS_PI));
+                    zebra = smoothstep(0.4, 0.6, sinValue) * highlightMask;
+                } else {
+                    // Binary zebra pattern (original style)
+                    zebra = (sin(diagonalPos * AS_PI) > 0.0) ? 1.0 : 0.0;
+                    zebra *= highlightMask;
+                }
                 
                 debugColor = lerp(color, (zebra > 0.5) ? float3(1.0, 1.0, 1.0) : float3(0.0, 0.0, 0.0), debugIntensity * zebra);
             }
@@ -484,14 +569,13 @@ void ApplyPreset(int preset, out int curve, out float start, out float knee,
             debug = DEBUG_OFF;
             clamp = true;
             break;
-            
-        case PRESET_HDR:
+              case PRESET_HDR:
             curve = CURVE_HABLE;
             start = 0.85;
             knee = 0.15;
             sat = 0.2;
             roll = 0.5;
-            output = OUTPUT_PQ;
+            output = OUTPUT_PQ_ACCURATE;
             debug = DEBUG_OFF;
             clamp = false;
             break;
@@ -564,36 +648,65 @@ float3 PS_HighlightRoller(float4 vpos : SV_Position, float2 texcoord : TEXCOORD)
         float saturationFactor = 1.0 - (compressionAmount * effectiveSatFalloff * effectiveColorRoll);
         saturationFactor = max(0.0, saturationFactor);
         
-        // Use YCbCr for proper tone mapping while preserving chroma
-        float3 ycbcr = RGBtoYCbCr(color);
-        float origY = ycbcr.x;
+        float3 adjustedColor;
         
-        // Only modify the Y (luminance) component
-        float luminanceRatio = mappedLuma / max(0.001, origY);
-        ycbcr.x = mappedLuma;
-        
-        // Convert back to RGB while preserving the chroma
-        float3 toneMappedColor = YCbCrtoRGB(ycbcr);
-        
-        // Apply saturation adjustment
-        // Calculate chrominance components
-        float3 luminanceVector = float3(1.0, 1.0, 1.0) * origY;
-        float3 chrominanceVector = color - luminanceVector;
-        
-        // Apply saturation factor to chrominance
-        float3 adjustedChrominance = chrominanceVector * saturationFactor;
-        
-        // Combine adjusted luminance with adjusted chrominance
-        float3 adjustedColor = float3(mappedLuma, mappedLuma, mappedLuma) + adjustedChrominance * luminanceRatio;
-        
-        // Safety check for NaN/Inf values
-        if (any(isnan(adjustedColor)) || any(isinf(adjustedColor))) {
-            adjustedColor = toneMappedColor; // Fallback to simpler tone mapping
+        // Use different color handling based on performance mode
+        switch(PerformanceMode) {
+            case PERF_QUALITY:
+                // Highest quality with full YCbCr conversion for maximum color preservation
+                float3 ycbcr = RGBtoYCbCr(color);
+                float origY = ycbcr.x;
+                
+                float luminanceRatio = mappedLuma / max(0.001, origY);
+                ycbcr.x = mappedLuma;
+                
+                float3 toneMappedColor = YCbCrtoRGB(ycbcr);
+                
+                // Apply saturation adjustment to chrominance components
+                float3 luminanceVector = float3(1.0, 1.0, 1.0) * origY;
+                float3 chrominanceVector = color - luminanceVector;
+                float3 adjustedChrominance = chrominanceVector * saturationFactor;
+                adjustedColor = float3(mappedLuma, mappedLuma, mappedLuma) + adjustedChrominance * luminanceRatio;
+                
+                // Safety check for NaN/Inf values
+                if (any(isnan(adjustedColor)) || any(isinf(adjustedColor))) {
+                    adjustedColor = toneMappedColor; // Fallback to simpler tone mapping
+                }
+                break;
+                
+            case PERF_BALANCED:
+                // Skip YCbCr conversion for minor highlights (optimization for common case)
+                if (compressionAmount > 0.2 || effectiveSatFalloff > 0.5) {
+                    // For significant compression or high saturation falloff, use full quality path
+                    float3 ycbcr = RGBtoYCbCr(color);
+                    float origY = ycbcr.x;
+                    
+                    float luminanceRatio = mappedLuma / max(0.001, origY);
+                    ycbcr.x = mappedLuma;
+                    
+                    adjustedColor = YCbCrtoRGB(ycbcr);
+                    
+                    // Apply saturation scaling
+                    float3 rgbRatio = adjustedColor / max(float3(0.001, 0.001, 0.001), color);
+                    float maxRatio = max(max(rgbRatio.r, rgbRatio.g), rgbRatio.b);
+                    adjustedColor = lerp(adjustedColor, color * (mappedLuma/luma), saturate((maxRatio - 1.0) * (1.0 - saturationFactor) * 0.5));
+                } else {
+                    // For minor adjustments, use simpler method
+                    float3 colorRatio = color / max(0.001, luma);
+                    adjustedColor = mappedLuma * lerp(1.0, colorRatio, saturationFactor);
+                }
+                break;
+                
+            case PERF_FAST:
+                // Simplified color handling - fast but less accurate 
+                float3 colorRatio = color / max(0.001, luma);
+                adjustedColor = mappedLuma * lerp(float3(1.0, 1.0, 1.0), colorRatio, saturationFactor);
+                break;
         }
         
         // Apply highlight mask for smooth blending
-        color = lerp(tex2D(ReShade::BackBuffer, texcoord).rgb, adjustedColor, highlightMask);
-    }    // Apply debug visualization if enabled
+        color = lerp(color, adjustedColor, highlightMask);
+    }// Apply debug visualization if enabled
     if (effectiveDebug != DEBUG_OFF) {
         color = GenerateDebugView(color, luma, highlightMask, effectiveDebug, DebugIntensity, vpos.xy);
     }
