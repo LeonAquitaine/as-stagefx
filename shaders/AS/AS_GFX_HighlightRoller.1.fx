@@ -10,8 +10,7 @@
  * A feature-rich highlight roll-off shader designed for virtual photography professionals.
  * Implements advanced highlight shoulder compression with filmic tone mapping behaviors and
  * color saturation management in bright areas.
- *
- * WHEN TO USE:
+ * * WHEN TO USE:
  * - When bright highlights (sun, reflections, lighting) are blown out and losing detail
  * - For achieving a cinematic "film-like" look with gentle highlight transitions
  * - In high-contrast scenes where you want to preserve both highlight and shadow detail
@@ -20,6 +19,51 @@
  * - During post-processing to recover details from slightly overexposed shots
  * - When preparing images for HDR to SDR conversion while preserving highlight texture
  * - For creating artistic "analog film" looks with characteristic shoulder roll-off
+ * 
+ * HOW TO USE:
+ * 
+ * BASIC WORKFLOW:
+ * 1. Start with a preset that matches your scene - Cinematic Gold for warm dramatic scenes,
+ *    Natural Skyhold for outdoor environments, Studio Glow for portraits, etc.
+ * 2. If you want to customize, switch to the "Custom" preset and adjust the following:
+ *    - First set "Highlight Start" to target where the roll-off should begin
+ *    - Choose a tone mapping curve that complements your scene's lighting
+ *    - Adjust "Knee Softness" to control the smoothness of the transition
+ *    - Fine-tune saturation behavior with "Saturation Falloff" and "Color Roll Strength"
+ * 3. Use Debug Visualization to check your results (toggle between Off and other modes)
+ *    - "Highlight Mask" shows which areas are being affected
+ *    - "Heat Map" shows the intensity of compression across highlights
+ *    - "Zebra Stripes" help identify potentially problematic areas
+ * 4. Make final adjustments to ensure natural transitions and details
+ *
+ * CURVE SELECTION GUIDE:
+ * - Reinhard: Gentle roll-off, good for subtle highlight management
+ * - Hable (Uncharted 2): Film-like shoulder, excellent for cinematic looks
+ * - ACES Fitted: More aggressive highlight compression, preserves mid-tone contrast
+ * - Custom S-Curve: Maximum control, adjust Gamma and Steepness for precise results
+ *
+ * PARAMETER DETAILS:
+ * - Highlight Start: The luminance threshold where compression begins (0.75-0.85 is typical)
+ * - Knee Softness: Controls how gradual the transition into compression is (higher = smoother)
+ * - Saturation Falloff: Reduces color saturation in highlights to prevent clipping
+ * - Color Roll Strength: Controls the intensity of desaturation in very bright areas
+ * - Output Gamma: Choose between linear, sRGB, or PQ (HDR) output encoding
+ *
+ * TROUBLESHOOTING:
+ * - Unnatural highlight transitions? Increase "Knee Softness" for smoother results
+ * - Colors appear washed out? Decrease "Saturation Falloff" or "Color Roll Strength"
+ * - Too subtle? Decrease "Highlight Start" to affect more of the image
+ * - Too aggressive? Increase "Highlight Start" and/or change to a gentler curve type
+ * - Seeing strange color shifts? Try a different tone mapping curve
+ * - Use "Zebra Stripes" or "False Color Zones" debug modes to identify problem areas
+ *
+ * ADVANCED TIPS:
+ * - Chain with other effects: Use before color grading but after basic exposure adjustment
+ * - For maximum detail retention in landscape shots, use ACES with lower "Highlight Start"
+ * - For skin highlights in portraits, use Reinhard with higher "Knee Softness"
+ * - For artistic film looks, use Hable curve with "Saturation Falloff" around 0.5-0.7
+ * - For technical precision, use "False Color Zones" debug to check IRE values
+ * - When shooting scenes with mixed lighting, use "Heat Map" to check compression gradients
  *
  * FEATURES:
  * - Multiple tone mapping curve models (Reinhard, Hable/Uncharted 2, ACES Fitted, Custom S-curve)
