@@ -54,9 +54,10 @@
 // ============================================================================
 // CONSTANTS
 // ============================================================================
-#define GOLDEN_RATIO 1.6180339887
-#define AS_PI 3.14159265359
-#define AS_TWO_PI 6.28318530718
+// Use constants from AS_Utils.1.fxh instead of redefining them
+// #define GOLDEN_RATIO 1.6180339887
+// #define AS_PI 3.14159265359
+// #define AS_TWO_PI 6.28318530718
 
 // ============================================================================
 // UI DECLARATIONS
@@ -135,7 +136,7 @@ uniform float2 CustomAspectRatio <
     ui_label = "Custom Aspect Ratio";
     ui_tooltip = "Set your own aspect ratio (X:Y)";
     ui_category = "Aspect Ratio";
-    ui_min = 0.1; ui_max = 10.0;
+    ui_min = AS_RANGE_SCALE_MIN; ui_max = AS_RANGE_SCALE_MAX * 2.0;
     ui_step = 0.01;
 > = float2(16.0, 9.0);
 
@@ -255,23 +256,23 @@ uniform float4 ClippedAreaColor <
     ui_label = "Masked Area Color";
     ui_tooltip = "Color for areas outside the selected aspect ratio";
     ui_category = "Appearance";
-> = float4(0.0, 0.0, 0.0, 0.75);
+> = float4(AS_RANGE_ZERO_ONE_MIN, AS_RANGE_ZERO_ONE_MIN, AS_RANGE_ZERO_ONE_MIN, AS_RANGE_OPACITY_MAX * 0.75);
 
 uniform float4 GuideColor <
     ui_type = "color";
     ui_label = "Guide Color";
     ui_tooltip = "Color for the guide lines";
     ui_category = "Appearance";
-> = float4(1.0, 1.0, 1.0, 0.5);
+> = float4(AS_RANGE_ZERO_ONE_MAX, AS_RANGE_ZERO_ONE_MAX, AS_RANGE_ZERO_ONE_MAX, AS_HALF);
 
 uniform float GuideIntensity <
     ui_type = "drag";
     ui_label = "Guide Intensity";
     ui_tooltip = "Adjusts the opacity of composition guides";
     ui_category = "Appearance";
-    ui_min = 0.1; ui_max = 1.0;
+    ui_min = 0.1; ui_max = AS_RANGE_OPACITY_MAX;
     ui_step = 0.05;
-> = 1.0;
+> = AS_RANGE_OPACITY_DEFAULT;
 
 uniform bool PatternAdvanced <
     ui_label = "Advanced Pattern Controls";
@@ -284,9 +285,9 @@ uniform float PatternRotation <
     ui_label = "Pattern Rotation";
     ui_tooltip = "Rotate the pattern (in degrees)";
     ui_category = "Advanced Guide Options";
-    ui_min = 0.0; ui_max = 360.0;
+    ui_min = AS_RANGE_ZERO_ONE_MIN; ui_max = AS_TWO_PI * AS_RADIANS_TO_DEGREES;
     ui_step = 0.5;
-> = 0.0;
+> = AS_RANGE_ZERO_ONE_MIN;
 
 uniform float PatternComplexity <
     ui_type = "drag";
@@ -294,7 +295,7 @@ uniform float PatternComplexity <
     ui_tooltip = "Adjust the complexity of certain patterns";
     ui_category = "Advanced Guide Options";
     ui_category_closed = true;
-    ui_min = 1.0; ui_max = 10.0;
+    ui_min = AS_RANGE_SCALE_DEFAULT; ui_max = AS_RANGE_SCALE_MAX * 2.0;
     ui_step = 0.1;
 > = 3.0;
 
@@ -303,9 +304,9 @@ uniform float GridWidth <
     ui_label = "Grid Width";
     ui_tooltip = "Width of grid lines and border (in pixels)";
     ui_category = "Appearance";
-    ui_min = 1.0; ui_max = 20.0;
+    ui_min = AS_RANGE_SCALE_DEFAULT; ui_max = 20.0;
     ui_step = 1.0;
-> = 1.0;
+> = AS_RANGE_SCALE_DEFAULT;
 
 // Position Controls
 uniform float HorizontalOffset <
@@ -313,18 +314,18 @@ uniform float HorizontalOffset <
     ui_label = "Horizontal Position";
     ui_tooltip = "Shift the frame horizontally";
     ui_category = "Position";
-    ui_min = -0.5; ui_max = 0.5;
+    ui_min = -AS_HALF; ui_max = AS_HALF;
     ui_step = 0.001;
-> = 0.0;
+> = AS_RANGE_ZERO_ONE_MIN;
 
 uniform float VerticalOffset <
     ui_type = "drag";
     ui_label = "Vertical Position"; 
     ui_tooltip = "Shift the frame vertically";
     ui_category = "Position";
-    ui_min = -0.5; ui_max = 0.5;
+    ui_min = -AS_HALF; ui_max = AS_HALF;
     ui_step = 0.001;
-> = 0.0;
+> = AS_RANGE_ZERO_ONE_MIN;
 
 // ============================================================================
 // HELPER FUNCTIONS
@@ -473,7 +474,7 @@ float2 ScreenToFrameCoord(float2 texcoord, float2 borderSize, float aspectRatio,
     if (aspectRatio > ReShade::AspectRatio) {
         // Wider aspect ratio - normalize y coordinates first
         float topEdge = borderSize.y + offset.y;
-        float frameHeight = 1.0 - (borderSize.y * 2.0);
+        float frameHeight = AS_RANGE_ZERO_ONE_MAX - (borderSize.y * 2.0);
         
         // Normalize Y from [topEdge, topEdge + frameHeight] to [0, 1]
         frameCoord.y = (texcoord.y - topEdge) / frameHeight;
@@ -484,7 +485,7 @@ float2 ScreenToFrameCoord(float2 texcoord, float2 borderSize, float aspectRatio,
     else {
         // Taller aspect ratio - normalize x coordinates first
         float leftEdge = borderSize.x + offset.x;
-        float frameWidth = 1.0 - (borderSize.x * 2.0);
+        float frameWidth = AS_RANGE_ZERO_ONE_MAX - (borderSize.x * 2.0);
         
         // Normalize X from [leftEdge, leftEdge + frameWidth] to [0, 1]
         frameCoord.x = (texcoord.x - leftEdge) / frameWidth;
@@ -505,10 +506,10 @@ bool IsPointOnLine(float2 coord, float value, float width) {
 float3 DrawGuideLine(float3 originalColor, float3 guideColor, float guideAlpha, float2 frameCoord, 
                     float2 lineStart, float2 lineEnd, float2 pixelSize, float lineWidth) {
     // Apply rotation if needed
-    if (PatternAdvanced && PatternRotation != 0.0) {
-        float2 center = float2(0.5, 0.5);
-        lineStart = RotatePoint(lineStart, center, PatternRotation * AS_PI / 180.0);
-        lineEnd = RotatePoint(lineEnd, center, PatternRotation * AS_PI / 180.0);
+    if (PatternAdvanced && PatternRotation != AS_RANGE_ZERO_ONE_MIN) {
+        float2 center = float2(AS_SCREEN_CENTER_X, AS_SCREEN_CENTER_Y);
+        lineStart = RotatePoint(lineStart, center, PatternRotation * AS_DEGREES_TO_RADIANS);
+        lineEnd = RotatePoint(lineEnd, center, PatternRotation * AS_DEGREES_TO_RADIANS);
     }
     
     // Calculate distance from point to line
@@ -537,13 +538,13 @@ float3 DrawGuideLine(float3 originalColor, float3 guideColor, float guideAlpha, 
 // Draw Rule of Thirds guide
 float3 DrawRuleOfThirds(float3 origColor, float3 guideColor, float2 frameCoord, float2 gridWidth) {
     // Vertical lines
-    if (IsPointOnLine(frameCoord.x, 1.0/3.0, gridWidth.x) || 
-        IsPointOnLine(frameCoord.x, 2.0/3.0, gridWidth.x))
+    if (IsPointOnLine(frameCoord.x, AS_THIRD, gridWidth.x) || 
+        IsPointOnLine(frameCoord.x, AS_TWO_THIRDS, gridWidth.x))
         return lerp(origColor, guideColor, GuideColor.a * GuideIntensity);
     
     // Horizontal lines
-    if (IsPointOnLine(frameCoord.y, 1.0/3.0, gridWidth.y) || 
-        IsPointOnLine(frameCoord.y, 2.0/3.0, gridWidth.y))
+    if (IsPointOnLine(frameCoord.y, AS_THIRD, gridWidth.y) || 
+        IsPointOnLine(frameCoord.y, AS_TWO_THIRDS, gridWidth.y))
         return lerp(origColor, guideColor, GuideColor.a * GuideIntensity);
     
     return origColor;
@@ -551,17 +552,17 @@ float3 DrawRuleOfThirds(float3 origColor, float3 guideColor, float2 frameCoord, 
 
 // Draw Golden Ratio guide
 float3 DrawGoldenRatio(float3 origColor, float3 guideColor, float2 frameCoord, float2 gridWidth) {
-    float goldenX = 1.0 / GOLDEN_RATIO;
-    float goldenY = 1.0 / GOLDEN_RATIO;
+    float goldenX = 1.0 / AS_GOLDEN_RATIO;
+    float goldenY = 1.0 / AS_GOLDEN_RATIO;
     
     // Vertical lines
     if (IsPointOnLine(frameCoord.x, goldenX, gridWidth.x) || 
-        IsPointOnLine(frameCoord.x, 1.0 - goldenX, gridWidth.x))
+        IsPointOnLine(frameCoord.x, AS_RANGE_ZERO_ONE_MAX - goldenX, gridWidth.x))
         return lerp(origColor, guideColor, GuideColor.a * GuideIntensity);
     
     // Horizontal lines
     if (IsPointOnLine(frameCoord.y, goldenY, gridWidth.y) || 
-        IsPointOnLine(frameCoord.y, 1.0 - goldenY, gridWidth.y))
+        IsPointOnLine(frameCoord.y, AS_RANGE_ZERO_ONE_MAX - goldenY, gridWidth.y))
         return lerp(origColor, guideColor, GuideColor.a * GuideIntensity);
     
     return origColor;
@@ -570,11 +571,11 @@ float3 DrawGoldenRatio(float3 origColor, float3 guideColor, float2 frameCoord, f
 // Draw Center Lines guide
 float3 DrawCenterLines(float3 origColor, float3 guideColor, float2 frameCoord, float2 gridWidth) {
     // Vertical center line
-    if (IsPointOnLine(frameCoord.x, 0.5, gridWidth.x))
+    if (IsPointOnLine(frameCoord.x, AS_HALF, gridWidth.x))
         return lerp(origColor, guideColor, GuideColor.a * GuideIntensity);
     
     // Horizontal center line
-    if (IsPointOnLine(frameCoord.y, 0.5, gridWidth.y))
+    if (IsPointOnLine(frameCoord.y, AS_HALF, gridWidth.y))
         return lerp(origColor, guideColor, GuideColor.a * GuideIntensity);
     
     return origColor;
@@ -711,58 +712,61 @@ float3 DrawGuides(float2 texcoord, float3 originalColor, float3 guideColor, floa
                 }
                 break;
             }
-            
-            case 5: { // Phi Grid (Golden Grid)
+              case 5: { // Phi Grid (Golden Grid)
                 // Phi proportions (golden ratio)
-                float phi = 1.0 / 1.618;
+                float phi = 1.0 / AS_GOLDEN_RATIO;
                 
                 // Vertical lines at phi and 1-phi
                 if (IsPointOnLine(frameCoord.x, phi, gridWidth.x) || 
-                    IsPointOnLine(frameCoord.x, 1.0 - phi, gridWidth.x))
+                    IsPointOnLine(frameCoord.x, AS_RANGE_ZERO_ONE_MAX - phi, gridWidth.x))
                     return lerp(originalColor, guideColor, GuideColor.a);
                 
                 // Horizontal lines at phi and 1-phi
                 if (IsPointOnLine(frameCoord.y, phi, gridWidth.y) || 
-                    IsPointOnLine(frameCoord.y, 1.0 - phi, gridWidth.y))
+                    IsPointOnLine(frameCoord.y, AS_RANGE_ZERO_ONE_MAX - phi, gridWidth.y))
                     return lerp(originalColor, guideColor, GuideColor.a);
                 break;
             }
-            
-            case 6: { // Triangle Composition
-                float triHeight = 0.866; // Height of an equilateral triangle
+              case 6: { // Triangle Composition
+                float triHeight = 0.866; // Height of an equilateral triangle (sqrt(3)/2)
                 
                 if (actualSubType == 0) { // Centered triangle pointing up
                     // Triangle base at bottom
-                    if (IsPointOnLine(frameCoord.y, 1.0, gridWidth.y) && frameCoord.x >= 0.25 && frameCoord.x <= 0.75)
+                    if (IsPointOnLine(frameCoord.y, AS_RANGE_ZERO_ONE_MAX, gridWidth.y) && 
+                        frameCoord.x >= AS_QUARTER && frameCoord.x <= 0.75)
                         return lerp(originalColor, guideColor, GuideColor.a);
                     
                     // Left side
-                    float leftSide = 0.5 - 2.0 * (0.5 - frameCoord.y);
-                    if (IsPointOnLine(frameCoord.x, leftSide, gridWidth.x) && frameCoord.y <= 1.0 && frameCoord.y >= 0.0)
+                    float leftSide = AS_HALF - 2.0 * (AS_HALF - frameCoord.y);
+                    if (IsPointOnLine(frameCoord.x, leftSide, gridWidth.x) && 
+                        frameCoord.y <= AS_RANGE_ZERO_ONE_MAX && frameCoord.y >= AS_RANGE_ZERO_ONE_MIN)
                         return lerp(originalColor, guideColor, GuideColor.a);
                     
                     // Right side
-                    float rightSide = 0.5 + 2.0 * (0.5 - frameCoord.y);
-                    if (IsPointOnLine(frameCoord.x, rightSide, gridWidth.x) && frameCoord.y <= 1.0 && frameCoord.y >= 0.0)
+                    float rightSide = AS_HALF + 2.0 * (AS_HALF - frameCoord.y);
+                    if (IsPointOnLine(frameCoord.x, rightSide, gridWidth.x) && 
+                        frameCoord.y <= AS_RANGE_ZERO_ONE_MAX && frameCoord.y >= AS_RANGE_ZERO_ONE_MIN)
                         return lerp(originalColor, guideColor, GuideColor.a);
-                }
-                else if (actualSubType == 1) { // Centered triangle pointing down
+                }                else if (actualSubType == 1) { // Centered triangle pointing down
                     // Triangle base at top
-                    if (IsPointOnLine(frameCoord.y, 0.0, gridWidth.y) && frameCoord.x >= 0.25 && frameCoord.x <= 0.75)
+                    if (IsPointOnLine(frameCoord.y, AS_RANGE_ZERO_ONE_MIN, gridWidth.y) && 
+                        frameCoord.x >= AS_QUARTER && frameCoord.x <= 0.75)
                         return lerp(originalColor, guideColor, GuideColor.a);
                     
                     // Left side
-                    float leftSide = 0.5 - 2.0 * frameCoord.y;
-                    if (IsPointOnLine(frameCoord.x, leftSide, gridWidth.x) && frameCoord.y <= 0.5 && frameCoord.y >= 0.0)
+                    float leftSide = AS_HALF - 2.0 * frameCoord.y;
+                    if (IsPointOnLine(frameCoord.x, leftSide, gridWidth.x) && 
+                        frameCoord.y <= AS_HALF && frameCoord.y >= AS_RANGE_ZERO_ONE_MIN)
                         return lerp(originalColor, guideColor, GuideColor.a);
                     
                     // Right side
-                    float rightSide = 0.5 + 2.0 * frameCoord.y;
-                    if (IsPointOnLine(frameCoord.x, rightSide, gridWidth.x) && frameCoord.y <= 0.5 && frameCoord.y >= 0.0)
+                    float rightSide = AS_HALF + 2.0 * frameCoord.y;
+                    if (IsPointOnLine(frameCoord.x, rightSide, gridWidth.x) && 
+                        frameCoord.y <= AS_HALF && frameCoord.y >= AS_RANGE_ZERO_ONE_MIN)
                         return lerp(originalColor, guideColor, GuideColor.a);
                 }
                 else if (actualSubType == 2) { // Rule of triangles - diagonal from lower-left
-                    float dist = abs(frameCoord.x + frameCoord.y - 1.0);
+                    float dist = abs(frameCoord.x + frameCoord.y - AS_RANGE_ZERO_ONE_MAX);
                     if (dist < gridWidth.x)
                         return lerp(originalColor, guideColor, GuideColor.a);
                 }
@@ -787,16 +791,15 @@ float3 DrawGuides(float2 texcoord, float3 originalColor, float3 guideColor, floa
                     spiralCenter = float2(0.0, 1.0);
                     angle = atan2(1.0 - frameCoord.y, frameCoord.x);
                 }
-                
-                // Normalize angle to [0, 2π)
-                if (angle < 0) angle += 2.0 * 3.14159265;
+                  // Normalize angle to [0, 2π)
+                if (angle < AS_RANGE_ZERO_ONE_MIN) angle += AS_TWO_PI;
                 
                 // Calculate distance to spiral center
                 float2 delta = abs(frameCoord - spiralCenter);
                 float dist = length(delta);
                 
                 // Calculate the ideal radius for a golden spiral at this angle
-                float b = log(phi) / (3.14159265 * 0.5);
+                float b = log(phi) / (AS_PI * AS_HALF);
                 float idealRadius = 0.25 * exp(b * angle);
                 
                 // Calculate spiral thickness based on GridWidth
