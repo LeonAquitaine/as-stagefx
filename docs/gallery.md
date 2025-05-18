@@ -60,6 +60,17 @@ Original: <a href="https://www.shadertoy.com/view/lcl3z2" target="_new">"Time Cr
 <table>
 <tr>
 <td width="50%">
+<h4>GFX: Aspect Ratio</h4>
+<h5><code>[AS] GFX: Aspect Ratio|AS_GFX_AspectRatio.1.fx</code></h5>
+A versatile aspect ratio framing tool designed to help position subjects for social media posts, photography, and video composition. Features preset aspect ratios for common social media and photography formats (1:1, 16:9, 4:5, etc.), custom aspect ratio input, adjustable clipped area color and opacity, optional composition guides (rule of thirds, golden ratio, center lines), horizontal/vertical alignment controls, and adjustable border appearance. Perfect for precise subject positioning and consistent framing across platforms.
+</td>
+<td width="50%"><div style="text-align:center">
+<!-- Awaiting preview image. -->
+Awaiting preview image.
+</div></td>
+</tr>
+<tr>
+<td width="50%">
 <h4>GFX: Multi-Layer Halftone</h4>
 <h5><code>[AS] Multi-Layer Halftone|AS_GFX_MultiLayerHalftone.1.fx</code></h5>
 Creates a highly customizable multi-layer halftone effect with support for up to four independent layers. Each layer can use different pattern types (dots, lines, crosshatch), isolation methods (brightness, RGB, hue, depth), colors, thresholds, scales, densities, and angles. Features layer blending with transparency support.<br><br>
