@@ -157,133 +157,53 @@
 // ============================================================================
 
 // Preset Selection
-uniform int PresetSelect < 
-    ui_type = "combo";
-    ui_label = "Preset";
-    ui_tooltip = "Select a preset configuration or choose Custom to manually adjust settings";
-    ui_category = "Preset";
-    ui_items = "Custom\0Cinematic Gold\0Natural Skyhold\0Studio Glow\0Analog Film Scan\0HDR Ready\0Flat Recovery Pass\0";
-> = 0;
+uniform int PresetSelect <
+    ui_text =
+        "Select a preset configuration or choose Custom to manually adjust settings:\n"
+        " - Custom: Allows you to manually adjust all parameters.\n"
+        " - Cinematic Gold: A warm, dramatic look for cinematic scenes.\n"
+        " - Natural Skyhold: A natural look for outdoor environments.\n"
+        " - Studio Glow: A soft, flattering look for portraits.\n"
+        " - Analog Film Scan: Emulates the look of scanned film negatives.\n"
+        " - HDR Ready: Prepares images for HDR workflows with minimal clipping.\n"
+        " - Flat Recovery Pass: For recovering details in flat images.\n"
+        "\n";
+ ui_type = "combo"; ui_label = "Preset"; ui_tooltip = "Select a preset configuration or choose Custom to manually adjust settings"; ui_category = "Preset"; ui_items = "Custom\0Cinematic Gold\0Natural Skyhold\0Studio Glow\0Analog Film Scan\0HDR Ready\0Flat Recovery Pass\0"; > = PRESET_CUSTOM;
 
 // Tone Mapping Curve
-uniform int CurveType < 
-    ui_type = "combo";
-    ui_label = "Tone Mapping Curve";
-    ui_tooltip = "Select the tone mapping curve to use for highlight compression";
-    ui_category = "Curve Model";
-    ui_items = "Reinhard\0Hable (Uncharted 2)\0ACES Fitted\0Custom S-Curve\0";
-> = 0;
+uniform int CurveType < ui_type = "combo"; ui_label = "Tone Mapping Curve"; ui_tooltip = "Select the tone mapping curve to use for highlight compression"; ui_category = "Curve Model"; ui_items = "Reinhard\0Hable (Uncharted 2)\0ACES Fitted\0Custom S-Curve\0"; > = CURVE_REINHARD;
 
 // Highlight Control
-uniform float HighlightStart < 
-    ui_type = "slider";
-    ui_label = "Highlight Start";
-    ui_tooltip = "Luminance threshold where highlight compression begins";
-    ui_category = "Highlight Control";
-    ui_min = 0.0; ui_max = 1.0; ui_step = 0.01;
-> = 0.75;
+uniform float HighlightStart < ui_type = "slider"; ui_label = "Highlight Start"; ui_tooltip = "Luminance threshold where highlight compression begins"; ui_category = "Highlight Control"; ui_min = AS_RANGE_ZERO_ONE_MIN; ui_max = AS_RANGE_ZERO_ONE_MAX; ui_step = 0.01; > = 0.75;
 
-uniform float KneeSoftness < 
-    ui_type = "slider";
-    ui_label = "Knee Softness";
-    ui_tooltip = "Controls how smooth the transition into highlight compression is";
-    ui_category = "Highlight Control";
-    ui_min = 0.0; ui_max = 1.0; ui_step = 0.01;
-> = 0.3;
+uniform float KneeSoftness < ui_type = "slider"; ui_label = "Knee Softness"; ui_tooltip = "Controls how smooth the transition into highlight compression is"; ui_category = "Highlight Control"; ui_min = AS_RANGE_ZERO_ONE_MIN; ui_max = AS_RANGE_ZERO_ONE_MAX; ui_step = 0.01; > = 0.3;
 
 // Curve Parameters (for Custom S-Curve)
-uniform float CurveGamma < 
-    ui_type = "slider";
-    ui_label = "Curve Gamma";
-    ui_tooltip = "Controls the overall shape of the custom S-curve";
-    ui_category = "Custom Curve";
-    ui_category_closed = true;
-    ui_min = 0.1; ui_max = 5.0; ui_step = 0.05;
-> = 1.0;
+uniform float CurveGamma < ui_type = "slider"; ui_label = "Curve Gamma"; ui_tooltip = "Controls the overall shape of the custom S-curve"; ui_category = "Custom Curve"; ui_category_closed = true; ui_min = 0.1; ui_max = AS_RANGE_SCALE_MAX; ui_step = 0.05; > = AS_RANGE_SCALE_DEFAULT;
 
-uniform float CurveSteepness < 
-    ui_type = "slider";
-    ui_label = "Curve Steepness";
-    ui_tooltip = "Controls how steep the transition is in the custom S-curve";
-    ui_category = "Custom Curve";
-    ui_min = 0.1; ui_max = 5.0; ui_step = 0.05;
-> = 1.0;
+uniform float CurveSteepness < ui_type = "slider"; ui_label = "Curve Steepness"; ui_tooltip = "Controls how steep the transition is in the custom S-curve"; ui_category = "Custom Curve"; ui_min = 0.1; ui_max = AS_RANGE_SCALE_MAX; ui_step = 0.05; > = AS_RANGE_SCALE_DEFAULT;
 
 // Saturation Management
-uniform float SaturationFalloff < 
-    ui_type = "slider";
-    ui_label = "Saturation Falloff";
-    ui_tooltip = "Controls how much saturation is reduced in highlights";
-    ui_category = "Saturation Management";
-    ui_min = 0.0; ui_max = 1.0; ui_step = 0.01;
-> = 0.5;
+uniform float SaturationFalloff < ui_type = "slider"; ui_label = "Saturation Falloff"; ui_tooltip = "Controls how much saturation is reduced in highlights"; ui_category = "Saturation Management"; ui_min = AS_RANGE_ZERO_ONE_MIN; ui_max = AS_RANGE_ZERO_ONE_MAX; ui_step = 0.01; > = 0.5;
 
-uniform float ColorRollStrength < 
-    ui_type = "slider";
-    ui_label = "Color Roll Strength";
-    ui_tooltip = "Strength of desaturation in clipped highlight areas";
-    ui_category = "Saturation Management";
-    ui_min = 0.0; ui_max = 2.0; ui_step = 0.01;
-> = 1.0;
+uniform float ColorRollStrength < ui_type = "slider"; ui_label = "Color Roll Strength"; ui_tooltip = "Strength of desaturation in clipped highlight areas"; ui_category = "Saturation Management"; ui_min = AS_RANGE_ZERO_ONE_MIN; ui_max = AS_RANGE_AUDIO_MULT_MAX; ui_step = 0.01; > = AS_RANGE_AUDIO_MULT_DEFAULT;
 
 // Output Settings
-uniform int OutputGamma < 
-    ui_type = "combo";
-    ui_label = "Output Gamma";
-    ui_tooltip = "Gamma correction mode for the final output";
-    ui_category = "Output";
-    ui_items = "Linear\0sRGB\0PQ (HDR Preview)\0PQ (Accurate HDR)\0";
-> = 1;
+uniform int OutputGamma < ui_type = "combo"; ui_label = "Output Gamma"; ui_tooltip = "Gamma correction mode for the final output"; ui_category = "Output"; ui_items = "Linear\0sRGB\0PQ (HDR Preview)\0PQ (Accurate HDR)\0"; > = OUTPUT_SRGB;
 
-uniform bool ClampHighlights < 
-    ui_type = "bool";
-    ui_label = "Clamp Highlights";
-    ui_tooltip = "Prevent RGB values from exceeding 1.0 for compatibility. Disable only for HDR workflows or when chaining with other HDR-aware effects.";
-    ui_category = "Output";
-> = true;
+uniform bool ClampHighlights < ui_type = "bool"; ui_label = "Clamp Highlights"; ui_tooltip = "Prevent RGB values from exceeding 1.0 for compatibility. Disable only for HDR workflows or when chaining with other HDR-aware effects."; ui_category = "Output"; > = true;
 
 // Performance Options
-uniform int PerformanceMode <
-    ui_type = "combo";
-    ui_label = "Performance Mode";
-    ui_tooltip = "Controls the balance between quality and performance";
-    ui_category = "Performance";
-    ui_category_closed = true;
-    ui_items = "Quality (Full color preservation)\0Balanced (Auto color preservation)\0Fast (Basic color handling)\0";
-> = 1;
+uniform int PerformanceMode < ui_type = "combo"; ui_label = "Performance Mode"; ui_tooltip = "Controls the balance between quality and performance"; ui_category = "Performance"; ui_category_closed = true; ui_items = "Quality (Full color preservation)\0Balanced (Auto color preservation)\0Fast (Basic color handling)\0"; > = PERF_BALANCED;
 
 // Debug Visualization
-uniform int DebugMode < 
-    ui_type = "combo";
-    ui_label = "Debug Visualization";
-    ui_tooltip = "Display various debug visualizations to help identify issues";
-    ui_category = "Debug";
-    ui_category_closed = true;
-    ui_items = "Off\0Highlight Mask\0Heat Map\0Zebra Stripes\0False Color Zones\0";
-> = 0;
+uniform int DebugMode < ui_type = "combo"; ui_label = "Debug Visualization"; ui_tooltip = "Display various debug visualizations to help identify issues"; ui_category = "Debug"; ui_category_closed = true; ui_items = "Off\0Highlight Mask\0Heat Map\0Zebra Stripes\0False Color Zones\0"; > = DEBUG_OFF;
 
-uniform float DebugIntensity < 
-    ui_type = "slider";
-    ui_label = "Debug Overlay Intensity";
-    ui_tooltip = "Controls the opacity of debugging visualizations";
-    ui_category = "Debug";
-    ui_min = 0.0; ui_max = 1.0; ui_step = 0.01;
-> = 0.5;
+uniform float DebugIntensity < ui_type = "slider"; ui_label = "Debug Overlay Intensity"; ui_tooltip = "Controls the opacity of debugging visualizations"; ui_category = "Debug"; ui_min = AS_RANGE_ZERO_ONE_MIN; ui_max = AS_RANGE_OPACITY_MAX; ui_step = 0.01; > = AS_HALF;
 
-uniform float ZebraFrequency < 
-    ui_type = "slider";
-    ui_label = "Zebra Pattern Frequency";
-    ui_tooltip = "Controls the width of zebra stripes in debug mode. Higher values create thinner stripes.";
-    ui_category = "Debug";
-    ui_min = 5.0; ui_max = 30.0; ui_step = 1.0;
-> = 10.0;
+uniform float ZebraFrequency < ui_type = "slider"; ui_label = "Zebra Pattern Frequency"; ui_tooltip = "Controls the width of zebra stripes in debug mode. Higher values create thinner stripes."; ui_category = "Debug"; ui_min = AS_PATTERN_FREQ_LOW; ui_max = AS_PATTERN_FREQ_HIGH * 3.0; ui_step = 1.0; > = 10.0;
 
-uniform bool AntiAliasZebra < 
-    ui_type = "bool";
-    ui_label = "Anti-Alias Zebra Pattern";
-    ui_tooltip = "Applies smoother transitions to zebra stripes to reduce aliasing at certain resolutions.";
-    ui_category = "Debug";
-> = true;
+uniform bool AntiAliasZebra < ui_type = "bool"; ui_label = "Anti-Alias Zebra Pattern"; ui_tooltip = "Applies smoother transitions to zebra stripes to reduce aliasing at certain resolutions."; ui_category = "Debug"; > = true;
 
 // ============================================================================
 // HELPER FUNCTIONS
@@ -358,7 +278,8 @@ float ApplyToneMappingCurve(float value, int curveType) {
             // Scale value for proper highlight handling
             float acesValue = value * 0.9; // Adjusted for visual preference
             result = (acesValue * (a * acesValue + b)) / (acesValue * (c * acesValue + d) + e);
-            break;        case CURVE_CUSTOM:
+            break;        
+        case CURVE_CUSTOM:
             // Custom parametric S-curve with edge case handling
             float x = pow(value, 1.0 / max(0.1, CurveGamma));
             // Add epsilon to avoid division by zero when CurveSteepness is close to 1.0
@@ -467,11 +388,23 @@ float3 GenerateDebugView(float3 color, float luminance, float highlightMask, int
             
             debugColor = lerp(color, heatColor, debugIntensity);
             break;
-              case DEBUG_ZEBRA:
+        case DEBUG_ZEBRA:
             // Zebra striping for clipped areas using screen coordinates for consistent spacing
             if (highlightMask > 0.0) {
-                // Use screen coordinates for consistent stripe pattern with user-defined frequency
-                float diagonalPos = (screenPos.x + screenPos.y) / ZebraFrequency;
+                // Use normalized screen coordinates for resolution-independent stripe pattern
+                float aspectRatio = ReShade::AspectRatio;
+                float2 normalizedScreenPos;
+                if (aspectRatio >= 1.0) {
+                    // Wider screen
+                    normalizedScreenPos.x = screenPos.x / (BUFFER_WIDTH * aspectRatio);
+                    normalizedScreenPos.y = screenPos.y / BUFFER_HEIGHT;
+                } else {
+                    // Taller screen
+                    normalizedScreenPos.x = screenPos.x / BUFFER_WIDTH;
+                    normalizedScreenPos.y = screenPos.y / (BUFFER_HEIGHT / aspectRatio);
+                }
+                
+                float diagonalPos = (normalizedScreenPos.x + normalizedScreenPos.y) * ZebraFrequency;
                 
                 float zebra;
                 if (AntiAliasZebra) {
@@ -487,7 +420,7 @@ float3 GenerateDebugView(float3 color, float luminance, float highlightMask, int
                 debugColor = lerp(color, (zebra > 0.5) ? float3(1.0, 1.0, 1.0) : float3(0.0, 0.0, 0.0), debugIntensity * zebra);
             }
             break;
-              case DEBUG_FALSECOLOR:
+        case DEBUG_FALSECOLOR:
             // IRE-style false color zones
             float3 zoneColor = color;
             
@@ -569,7 +502,7 @@ void ApplyPreset(int preset, out int curve, out float start, out float knee,
             debug = DEBUG_OFF;
             clamp = true;
             break;
-              case PRESET_HDR:
+        case PRESET_HDR:
             curve = CURVE_HABLE;
             start = 0.85;
             knee = 0.15;
@@ -631,7 +564,9 @@ float3 PS_HighlightRoller(float4 vpos : SV_Position, float2 texcoord : TEXCOORD)
     }
     else if (luma > softKneeStart) {
         highlightMask = smoothstep(softKneeStart, softKneeEnd, luma);
-    }    // Process highlights if needed
+    }
+    
+    // Process highlights if needed
     if (highlightMask > 0.0) {
         // Calculate compression amount (how much to compress, based on how far above threshold)
         float compressionAmount = (luma - threshold) / max(0.001, 1.0 - threshold);
@@ -706,7 +641,9 @@ float3 PS_HighlightRoller(float4 vpos : SV_Position, float2 texcoord : TEXCOORD)
         
         // Apply highlight mask for smooth blending
         color = lerp(color, adjustedColor, highlightMask);
-    }// Apply debug visualization if enabled
+    }
+    
+    // Apply debug visualization if enabled
     if (effectiveDebug != DEBUG_OFF) {
         color = GenerateDebugView(color, luma, highlightMask, effectiveDebug, DebugIntensity, vpos.xy);
     }
