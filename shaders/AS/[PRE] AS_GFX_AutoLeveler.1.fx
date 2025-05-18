@@ -227,11 +227,10 @@ struct LevelerParams {
 
 
 // ========== Default Preset Values (Arrays) ==========
-static const float STATIC_LEVELER_PRESETS[NUM_STATIC_PRESETS * DEF_STATIC_PARAMETERS] = {
-    // Index 0: Corresponds to PRESET_CHOICE_STANDARD_PHOTO (value 1 from UI)
+static const float STATIC_LEVELER_PRESETS[NUM_STATIC_PRESETS * DEF_STATIC_PARAMETERS] = {    // Index 0: Corresponds to PRESET_CHOICE_STANDARD_PHOTO (value 1 from UI)
     0.5f, 99.0f, 1.0f, 0.03f, 0.15f, 1.1f, 0.8f, (int)5, 0.01f, 0.002f, true, (int)1, (int)0, false, 0.03f,
     // Index 1: Corresponds to PRESET_CHOICE_CINEMATIC (value 2 from UI)
-    1.5f, 99.0f, 1.05f, 0.05f, 0.3f, 1.05f, 0.9f, (int)10, 0.003f, 0.005f, true, (int)1, (int)1, true, 0.08f,
+    3.5f, 99.0f, 1.25f, 0.06f, 0.2f, 1.15f, 0.7f, (int)2, 0.02f, 0.001f, true, (int)1, (int)1, false, 0.08f,
     // Index 2: Corresponds to PRESET_CHOICE_HIGH_CONTRAST (value 3 from UI)
     3.0f, 98.0f, 1.15f, 0.04f, 0.1f, 1.4f, 0.75f, (int)3, 0.02f, 0.001f, true, (int)2, (int)0, false, 0.04f,
     // Index 3: Corresponds to PRESET_CHOICE_NATURAL_LIGHT (value 4 from UI)
@@ -243,7 +242,7 @@ static const float STATIC_LEVELER_PRESETS[NUM_STATIC_PRESETS * DEF_STATIC_PARAME
     // Index 6: Corresponds to PRESET_CHOICE_GAMING (value 7 from UI)
     0.8f, 99.2f, 0.9f, 0.03f, 0.1f, 1.2f, 0.6f, (int)2, 0.03f, 0.001f, true, (int)2, (int)0, false, 0.03f,
     // Index 7: Corresponds to PRESET_CHOICE_VINTAGE_FILM (value 8 from UI)
-    2.0f, 98.0f, 1.2f, 0.1f, 0.3f, 1.15f, 0.85f, (int)6, 0.01f, 0.004f, true, (int)2, (int)4, true, 0.12f,
+    2.0f, 98.0f, 1.2f, 0.1f, 0.3f, 1.15f, 0.85f, (int)6, 0.01f, 0.004f, true, (int)2, (int)4, false, 0.12f,
 };
 
 // ============================================================================
@@ -616,34 +615,26 @@ float3 ApplyShadowLift(float3 color, float threshold, float liftAmount)
 float FindPercentile(sampler histSampler, float percentile)
 {
     float totalPixels = 0.0;
-    
-    // Calculate total number of pixels
-    for (int i = 0; i < HISTOGRAM_BINS; i++)
+    int binCount = GetHistogramBinCount();
+
+    for (int i = 0; i < binCount; i++)
     {
-        float binValue = tex2Dfetch(histSampler, int2(i, 0)).r;
-        totalPixels += binValue;
+        totalPixels += tex2Dfetch(histSampler, int2(i, 0)).r;
     }
-      
+
     if (totalPixels <= 0.0)
-        return (percentile < 50.0) ? 0.0 : 1.0; // Default values if no data
-    
-    // Find the appropriate percentile
-    float pixelsToFind = totalPixels * (percentile / 100.0);
-    float accumulatedPixels = 0.0;
-    
-    for (int j = 0; j < HISTOGRAM_BINS; j++)
+        return (percentile < 50.0) ? 0.0 : 1.0;
+
+    float targetCount = totalPixels * (percentile / 100.0);
+    float accumulated = 0.0;
+
+    for (int j = 0; j < binCount; j++)
     {
-        float binValue = tex2Dfetch(histSampler, int2(j, 0)).r;
-        accumulatedPixels += binValue;
-        
-        if (accumulatedPixels >= pixelsToFind)
-        {
-            // Convert bin index to normalized luminance value [0.0, 1.0]
-            return float(j) / float(HISTOGRAM_BINS - 1);
-        }
+        accumulated += tex2Dfetch(histSampler, int2(j, 0)).r;
+        if (accumulated >= targetCount)
+            return float(j) / float(binCount - 1);
     }
-    
-    // Safety return (shouldn't reach here)
+
     return 1.0;
 }
 
@@ -681,7 +672,8 @@ float3 DrawHistogramOverlay(float2 texcoord, float opacity, float blackP, float 
         float2 relPos = (texcoord - histStart) / histSize;
         
         // Calculate histogram bin at this position
-        int bin = int(relPos.x * HISTOGRAM_BINS);
+        int binCount = GetHistogramBinCount();
+        int bin = int(relPos.x * binCount);
         
         // Get histogram value and normalize it
         float histogramValue = 0.0;
@@ -689,7 +681,7 @@ float3 DrawHistogramOverlay(float2 texcoord, float opacity, float blackP, float 
         float totalCount = 0.0;
         
         // First find the maximum value for normalization
-        for (int i = 0; i < HISTOGRAM_BINS; i++)
+        for (int i = 0; i < binCount; i++)
         {
             float binValue = tex2Dfetch(AutoLeveler_HistogramSampler, int2(i, 0)).r;
             maxValue = max(maxValue, binValue);
@@ -701,7 +693,7 @@ float3 DrawHistogramOverlay(float2 texcoord, float opacity, float blackP, float 
             maxValue = max(maxValue, 0.01);
         
         // Get the actual value for this bin
-        if (bin >= 0 && bin < HISTOGRAM_BINS)
+        if (bin >= 0 && bin < binCount)
         {
             histogramValue = tex2Dfetch(AutoLeveler_HistogramSampler, int2(bin, 0)).r;
             
@@ -719,8 +711,8 @@ float3 DrawHistogramOverlay(float2 texcoord, float opacity, float blackP, float 
             }
             
             // Draw black/white point markers
-            int blackBin = int(blackP * HISTOGRAM_BINS);
-            int whiteBin = int(whiteP * HISTOGRAM_BINS);
+            int blackBin = int(blackP * binCount);
+            int whiteBin = int(whiteP * binCount);
             
             if (abs(bin - blackBin) < 2)
                 result = float3(0.0, 0.0, 1.0); // Blue for black point
@@ -961,6 +953,24 @@ float4 PS_BuildHistogram(float4 vpos : SV_Position, float2 texcoord : TEXCOORD) 
     return (int(vpos.x) == bin) ? 1.0 : 0.0;
 }
 
+// Accumulate weighted luminance instead of a single bin sample
+float GetWeightedLumaAverage()
+{
+    float weightedSum = 0.0;
+    float totalSum = 0.0;
+    int binCount = GetHistogramBinCount();
+
+    for (int i = 0; i < binCount; i++)
+    {
+        float binValue = tex2Dfetch(AutoLeveler_CurrentHistogramSampler, int2(i, 0)).r;
+        float luma = float(i) / float(binCount - 1);
+        weightedSum += binValue * luma;
+        totalSum += binValue;
+    }
+
+    return (totalSum > 0.0) ? weightedSum / totalSum : 0.5;
+}
+
 // Second pass: Apply temporal smoothing to histogram
 float4 PS_SmoothHistogram(float4 vpos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target
 {
@@ -978,25 +988,20 @@ float4 PS_SmoothHistogram(float4 vpos : SV_Position, float2 texcoord : TEXCOORD)
     float previousValue = tex2Dfetch(AutoLeveler_HistogramSampler, int2(binIndex, 0)).r;
     
     // Calculate scene difference detection once (for middle bin only)
-    if (binIndex == HISTOGRAM_BINS / 2)
+    if (binIndex == GetHistogramBinCount() / 2)
     {
-        // Calculate scene difference using median gray as approximation
-        float currentAvgLuma = currentValue;
-        s_autoLevelerSceneDifference = abs(currentAvgLuma - s_autoLevelerPrevAvgLuma) / 
+        float currentAvgLuma = GetWeightedLumaAverage();
+        s_autoLevelerSceneDifference = abs(currentAvgLuma - s_autoLevelerPrevAvgLuma) /
             max(max(currentAvgLuma, s_autoLevelerPrevAvgLuma), AS_EPSILON_SAFE);
         s_autoLevelerSceneDifference = saturate(s_autoLevelerSceneDifference / MAX_SCENE_DIFF);
-        
-        // Update for next frame
         s_autoLevelerPrevAvgLuma = currentAvgLuma;
-        
-        // Get smoothing settings from preset
+
         bool adaptiveSmooth;
         float temporalSmooth;
         GetAdaptiveSmoothingForPreset(Preset, adaptiveSmooth, temporalSmooth);
-        
-        // Calculate adaptive smoothing based on scene difference
-        s_autoLevelerAdaptiveSmoothing = adaptiveSmooth 
-            ? lerp(temporalSmooth, MIN_SMOOTHING, s_autoLevelerSceneDifference) 
+
+        s_autoLevelerAdaptiveSmoothing = adaptiveSmooth
+            ? lerp(temporalSmooth, MIN_SMOOTHING, s_autoLevelerSceneDifference)
             : temporalSmooth;
     }
     
@@ -1007,6 +1012,7 @@ float4 PS_SmoothHistogram(float4 vpos : SV_Position, float2 texcoord : TEXCOORD)
     
     // Use the appropriate smoothing amount (adaptive or fixed)
     float effectiveSmoothing = useAdaptiveSmoothing ? s_autoLevelerAdaptiveSmoothing : baseSmoothingAmount;
+    
     return lerp(currentValue, previousValue, effectiveSmoothing);
 }
 
@@ -1097,11 +1103,14 @@ float4 PS_AutoLeveler(float4 vpos : SV_Position, float2 texcoord : TEXCOORD) : S
     float rawWhite = FindPercentile(AutoLeveler_HistogramSampler, params.WhitePoint);
     
     // 2. Apply stability threshold - ignore small changes
-    if (abs(rawBlack - prevBlack) < params.StabilityThreshold)
-        rawBlack = prevBlack;
-        
-    if (abs(rawWhite - prevWhite) < params.StabilityThreshold)
-        rawWhite = prevWhite;
+    if (Preset != PRESET_CUSTOM) {
+        if (abs(rawBlack - prevBlack) < params.StabilityThreshold)
+            rawBlack = prevBlack;
+
+        if (abs(rawWhite - prevWhite) < params.StabilityThreshold)
+            rawWhite = prevWhite;
+    }
+
         
     // 3. Apply change rate limiting (max adjustment per frame)
     float blackDiff = rawBlack - prevBlack;
@@ -1116,9 +1125,22 @@ float4 PS_AutoLeveler(float4 vpos : SV_Position, float2 texcoord : TEXCOORD) : S
     float limitedWhite = prevWhite + whiteDiff;
       
     // 4. Apply temporal smoothing to the rate-limited values
-    float effectiveSmoothing = params.EnableAdaptiveSmoothing ? s_autoLevelerAdaptiveSmoothing : params.TemporalSmoothing;
-    float blackPoint = lerp(limitedBlack, prevBlack, effectiveSmoothing);
-    float whitePoint = lerp(limitedWhite, prevWhite, effectiveSmoothing);
+    float blackPoint;
+    float whitePoint;
+
+    float effectiveSmoothing = (Preset != PRESET_CUSTOM && params.EnableAdaptiveSmoothing)
+        ? s_autoLevelerAdaptiveSmoothing
+        : params.TemporalSmoothing;
+
+    if (Preset == PRESET_CUSTOM) {
+        // No smoothing — use limitedBlack/White directly
+        blackPoint = limitedBlack;
+        whitePoint = limitedWhite;
+    } else {
+        // Apply smoothing
+        blackPoint = lerp(limitedBlack, prevBlack, effectiveSmoothing);
+        whitePoint = lerp(limitedWhite, prevWhite, effectiveSmoothing);
+    }    
     
     // 5. Update smoothed values for next frame
     prevBlack = blackPoint;
