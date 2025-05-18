@@ -29,8 +29,7 @@
  * 4. Use Shadow Lift for a filmic raised-black look, and Soft Clip for highlight roll-off
  * 5. Adjust overall Contrast to taste for the final image
  * 6. Use the debug visualization options to identify problem areas
- *
- * PARAMETER DETAILS:
+ * * PARAMETER DETAILS:
  * - Black Point: Lower percentile of luminance to map to black (higher = darker shadows)
  * - White Point: Upper percentile of luminance to map to white (lower = brighter highlights)
  * - Midtone Bias: Controls the curve's gamma for midtone exposure balance
@@ -39,21 +38,34 @@
  * - Contrast: Final contrast multiplier applied after remapping
  * - Temporal Smoothing: How quickly adjustment adapts to scene changes
  * - Color Preservation: Color handling during remapping
- *
- * ADVANCED TIPS:
+ * 
+ * TRANSITION STABILITY CONTROLS:
+ * - Analysis Frequency: Analyze histogram every N frames (higher = smoother, less responsive)
+ * - Max Adjustment Rate: Limits how quickly levels can change per frame
+ * - Stability Threshold: Ignores small changes below this threshold
+ * - Adaptive Smoothing: Automatically reduces smoothing during dramatic scene changes
+ * * ADVANCED TIPS:
  * - Use lower percentiles (0.1%) for subtle adjustment, higher (5-10%) for dramatic effect
  * - For cinematic look: Increase Shadow Lift (0.05-0.1) and moderate Soft Clip (0.2-0.3)
  * - For technical accuracy: Use minimal Shadow Lift (0) and Soft Clip (0-0.1)
  * - Midtone Bias below 1.0 brightens midtones, above 1.0 darkens them
  * - Turn on heatmap debug view to see where adjustments are most significant
  * - For video, use higher temporal smoothing (0.9+) to avoid flickering
- *
- * FEATURES:
+ * 
+ * TRANSITION STABILITY TIPS:
+ * - For smoother gameplay: Set Analysis Frequency to 10-30 frames and increase Stability Threshold
+ * - For cutscenes/video: Use Max Adjustment Rate 0.001-0.005 for very smooth transitions
+ * - For static photography: Keep defaults or lower Stability Threshold to 0 for precise adjustments
+ * - When using high Analysis Frequency, lower Max Adjustment Rate to prevent large jumps
+ * - Enable Adaptive Smoothing for mixed content with both gradual changes and hard cuts
+ * * FEATURES:
  * - Dynamic percentile-based black and white point detection
  * - Gamma-aware midtone correction with artistic control
  * - Soft shoulder roll-off for highlight preservation
  * - Shadow lifting for filmic/analog aesthetics
- * - Temporal smoothing for stable video application
+ * - Advanced transition stability controls for smoother adjustments
+ * - Configurable analysis frequency and change rate limiting
+ * - Adaptive temporal smoothing with scene change detection
  * - Intelligent color preservation options
  * - Multiple debug visualization modes
  * - Optimized performance for real-time use
@@ -83,10 +95,15 @@
 // CONSTANTS
 // ============================================================================
 #ifndef HISTOGRAM_BINS
-#define HISTOGRAM_BINS      256
+#define HISTOGRAM_BINS      256  // Keep this at 256 for compatibility
 #endif
-#define HISTOGRAM_TEXSIZE   HISTOGRAM_BINS
+#define HISTOGRAM_TEXSIZE   256  // Must match HISTOGRAM_BINS
 #define PERCENTILE_SAMPLES  64
+
+// Stability and transition constants
+#define MAX_SCENE_DIFF      0.5  // Maximum scene difference before considered a scene change
+#define MIN_SMOOTHING       0.5  // Minimum smoothing during scene changes
+#define EQUILIBRIUM_RATE    0.01 // Rate at which values drift toward neutral
 
 // Color preservation modes
 #define MODE_RGB           0
@@ -161,6 +178,15 @@ uniform float ContrastAmount < ui_type = "slider"; ui_label = "Contrast"; ui_too
 
 // Advanced Options
 uniform float TemporalSmoothing < ui_type = "slider"; ui_label = "Temporal Smoothing"; ui_tooltip = "Controls how quickly the adjustment adapts to scene changes (higher = slower/smoother)"; ui_category = "Advanced Options"; ui_category_closed = true; ui_min = AS_RANGE_ZERO_ONE_MIN; ui_max = 0.99; ui_step = 0.01; > = 0.8;
+
+// Transition Stability Controls
+uniform int AnalysisFrequency < ui_type = "drag"; ui_label = "Analysis Frequency"; ui_tooltip = "Analyze histogram every N frames (1 = every frame, higher = less frequent updates)"; ui_category = "Transition Stability"; ui_category_closed = true; ui_min = 1; ui_max = 60; ui_step = 1; > = 1;
+
+uniform float MaxAdjustmentRate < ui_type = "slider"; ui_label = "Max Adjustment Rate"; ui_tooltip = "Restricts how quickly black/white points can change per frame (lower = smoother transitions but slower response)"; ui_category = "Transition Stability"; ui_min = 0.001; ui_max = 0.1; ui_step = 0.001; > = 0.01;
+
+uniform float StabilityThreshold < ui_type = "slider"; ui_label = "Stability Threshold"; ui_tooltip = "Ignore small changes below this threshold (higher = more stable but less responsive)"; ui_category = "Transition Stability"; ui_min = 0.0; ui_max = 0.05; ui_step = 0.001; > = 0.002;
+
+uniform bool EnableAdaptiveSmoothing < ui_type = "bool"; ui_label = "Enable Adaptive Smoothing"; ui_tooltip = "Dynamically adjust smoothing based on scene change magnitude"; ui_category = "Transition Stability"; > = true;
 
 uniform int ColorPreservationMode < ui_type = "combo"; ui_label = "Color Preservation"; ui_tooltip = "Method used to preserve color information during remapping"; ui_category = "Advanced Options"; ui_items = "RGB (Basic)\0YCbCr (Perceptual)\0HSV (Saturation-aware)\0GrayWorld (Auto White Balance)\0"; > = MODE_YCBCR;
 
@@ -282,10 +308,10 @@ int GetHistogramBinCount()
 {
     switch (HistogramQuality)
     {
-        case 0: return HIST_QUALITY_LOW;
-        case 1: return HIST_QUALITY_MED;
-        case 3: return HIST_QUALITY_HIGH;
-        default: return HIST_QUALITY_STD;
+        case 0: return HIST_QUALITY_LOW;   // 64 bins
+        case 1: return HIST_QUALITY_MED;   // 128 bins
+        case 3: return HIST_QUALITY_HIGH;  // 512 bins
+        default: return HIST_QUALITY_STD;  // 256 bins
     }
 }
 
@@ -385,30 +411,31 @@ float3 ApplyShadowLift(float3 color, float threshold, float liftAmount)
 // Find percentile value in histogram
 float FindPercentile(sampler histSampler, float percentile)
 {
-    int binCount = GetHistogramBinCount();
     float totalPixels = 0.0;
     
     // Calculate total number of pixels
-    for (int i = 0; i < binCount; i++)
+    for (int i = 0; i < HISTOGRAM_BINS; i++)
     {
         float binValue = tex2Dfetch(histSampler, int2(i, 0)).r;
         totalPixels += binValue;
     }
-      if (totalPixels <= 0.0)
+      
+    if (totalPixels <= 0.0)
         return (percentile < 50.0) ? 0.0 : 1.0; // Default values if no data
     
     // Find the appropriate percentile
     float pixelsToFind = totalPixels * (percentile / 100.0);
     float accumulatedPixels = 0.0;
     
-    for (int j = 0; j < binCount; j++)
+    for (int j = 0; j < HISTOGRAM_BINS; j++)
     {
         float binValue = tex2Dfetch(histSampler, int2(j, 0)).r;
         accumulatedPixels += binValue;
         
         if (accumulatedPixels >= pixelsToFind)
         {
-            return (float(j) + AS_HALF) / float(binCount);
+            // Convert bin index to normalized luminance value [0.0, 1.0]
+            return float(j) / float(HISTOGRAM_BINS - 1);
         }
     }
     
@@ -419,37 +446,62 @@ float FindPercentile(sampler histSampler, float percentile)
 // Draw histogram overlay for debug visualization
 float3 DrawHistogramOverlay(float2 texcoord, float opacity, float blackP, float whiteP)
 {
-    int binCount = GetHistogramBinCount();
     float3 result = float3(0, 0, 0);
-      // Define display area
+    
+    // Define display area
     float2 histArea = float2(0.8, 0.3); // 80% width, 30% height for histogram area
     float uiPadding = 0.02; // 2% padding from screen edges
     float2 histStart = float2(1.0 - histArea.x - uiPadding, 1.0 - histArea.y - uiPadding);
     float2 histSize = histArea;
-      // Check if pixel is within histogram area
+    
+    // Check if pixel is within histogram area
     if (texcoord.x >= histStart.x && texcoord.x <= histStart.x + histSize.x &&
         texcoord.y >= histStart.y && texcoord.y <= histStart.y + histSize.y)
     {
         // Get relative position in histogram
         float2 relPos = (texcoord - histStart) / histSize;
         
-        int bin = int(relPos.x * binCount);if (bin >= 0 && bin < binCount)
+        // Calculate histogram bin at this position
+        int bin = int(relPos.x * HISTOGRAM_BINS);
+        
+        // Get histogram value and normalize it
+        float histogramValue = 0.0;
+        float maxValue = 0.0001; // Small epsilon to avoid division by zero
+        float totalCount = 0.0;
+        
+        // First find the maximum value for normalization
+        for (int i = 0; i < HISTOGRAM_BINS; i++)
         {
-            float binHeight = tex2Dfetch(AutoLeveler_HistogramSampler, int2(bin, 0)).r;
-            // Artistic scaling constants for histogram display - not magic numbers
-            float histogramGamma = 0.4;  // Compress dynamic range for better visualization
-            float histogramScale = 5.0;  // Amplify height for visibility
-            binHeight = pow(binHeight, histogramGamma) * histogramScale;
+            float binValue = tex2Dfetch(AutoLeveler_HistogramSampler, int2(i, 0)).r;
+            maxValue = max(maxValue, binValue);
+            totalCount += binValue;
+        }
+        
+        // If we have a very low count, boost maxValue for better visualization
+        if (totalCount < 100.0)
+            maxValue = max(maxValue, 0.01);
+        
+        // Get the actual value for this bin
+        if (bin >= 0 && bin < HISTOGRAM_BINS)
+        {
+            histogramValue = tex2Dfetch(AutoLeveler_HistogramSampler, int2(bin, 0)).r;
             
-            // Draw histogram bar
-            if (relPos.y > 1.0 - binHeight)
+            // Normalize and apply gamma for better visualization
+            float normalizedHeight = histogramValue / maxValue;
+            float histogramGamma = 0.5;  // Compress dynamic range for better visualization
+            float histogramScale = 0.95;  // Scale to leave a small margin at the top
+            
+            float finalHeight = pow(normalizedHeight, histogramGamma) * histogramScale;
+            
+            // Draw histogram bar - ensure it's visible even with low values
+            if (relPos.y > 1.0 - max(finalHeight, 0.02))
             {
                 result = float3(0.8, 0.8, 0.8);
             }
             
             // Draw black/white point markers
-            float blackBin = blackP * binCount;
-            float whiteBin = whiteP * binCount;
+            int blackBin = int(blackP * HISTOGRAM_BINS);
+            int whiteBin = int(whiteP * HISTOGRAM_BINS);
             
             if (abs(bin - blackBin) < 2)
                 result = float3(0.0, 0.0, 1.0); // Blue for black point
@@ -461,7 +513,8 @@ float3 DrawHistogramOverlay(float2 texcoord, float opacity, float blackP, float 
             if (result.r == 0 && result.g == 0 && result.b == 0)
                 result = float3(0.1, 0.1, 0.1);
         }
-          // Border
+        
+        // Border
         float borderThickness = 0.005; // 0.5% of histogram area is border
         if (relPos.x < borderThickness || relPos.x > (1.0 - borderThickness) ||
             relPos.y < borderThickness || relPos.y > (1.0 - borderThickness))
@@ -651,22 +704,38 @@ float3 GenerateDebugView(float3 originalColor, float3 adjustedColor, float black
 // PIXEL SHADERS
 // ============================================================================
 
+// Static variables for frame tracking and transitions
+static uint s_autoLevelerFrameCount = 0;
+static float s_autoLevelerPrevAvgLuma = 0.0;
+static float s_autoLevelerSceneDifference = 0.0;
+static float s_autoLevelerAdaptiveSmoothing = 0.0;
+static bool s_autoLevelerAnalyzeThisFrame = true;
+
 // First pass: Build histogram of current frame
 float4 PS_BuildHistogram(float4 vpos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target
 {
+    // Increment frame counter and determine if we analyze this frame
+    s_autoLevelerFrameCount = (s_autoLevelerFrameCount + 1) % 65536; // Prevent overflow
+    s_autoLevelerAnalyzeThisFrame = (s_autoLevelerFrameCount % AnalysisFrequency) == 0;
+      // If not analyzing this frame, return zero (skip histogram building)
+    if (!s_autoLevelerAnalyzeThisFrame && AnalysisFrequency > 1)
+    {
+        return 0.0;
+    }
+    
     // Sample pixel color from backbuffer
     float3 color = tex2D(ReShade::BackBuffer, texcoord).rgb;
     
     // Convert to luminance
     float luma = Luminance(color);
     
-    // Determine the bin for this pixel
-    int binCount = GetHistogramBinCount();
-    int bin = min(int(luma * binCount), binCount - 1);
+    // Calculate the bin this pixel belongs to
+    int bin = int(luma * (HISTOGRAM_BINS - 1));
     
-    // Add contribution to this bin
-    // We're using additive blending, so just return 1.0 for the pixel's bin
-    return (vpos.x == bin) ? 1.0 : 0.0;
+    // Each pixel contributes to exactly one bin
+    // We write to the render target where each x position represents a bin
+    // Using EQUAL comparison to ensure exact bin matching
+    return (int(vpos.x) == bin) ? 1.0 : 0.0;
 }
 
 // Second pass: Apply temporal smoothing to histogram
@@ -674,14 +743,39 @@ float4 PS_SmoothHistogram(float4 vpos : SV_Position, float2 texcoord : TEXCOORD)
 {
     int binIndex = int(vpos.x);
     
+    // If not analyzing this frame, keep previous value
+    if (!s_autoLevelerAnalyzeThisFrame && AnalysisFrequency > 1)
+    {
+        float previousValue = tex2Dfetch(AutoLeveler_HistogramSampler, int2(binIndex, 0)).r;
+        return previousValue;
+    }
+    
     // Get current frame's histogram value
     float currentValue = tex2Dfetch(AutoLeveler_CurrentHistogramSampler, int2(binIndex, 0)).r;
     
     // Get previous frame's histogram value
     float previousValue = tex2Dfetch(AutoLeveler_HistogramSampler, int2(binIndex, 0)).r;
     
-    // Apply temporal smoothing
-    float smoothedValue = lerp(currentValue, previousValue, TemporalSmoothing);
+    // Calculate current average luminance for scene change detection if this is bin 128 (~50% gray)
+    if (binIndex == HISTOGRAM_BINS / 2)
+    {
+        // Calculate scene difference (using median gray as rough approximation)
+        float currentAvgLuma = currentValue;
+        s_autoLevelerSceneDifference = abs(currentAvgLuma - s_autoLevelerPrevAvgLuma) / max(max(currentAvgLuma, s_autoLevelerPrevAvgLuma), AS_EPSILON_SAFE);
+        s_autoLevelerSceneDifference = saturate(s_autoLevelerSceneDifference / MAX_SCENE_DIFF); // Normalize to [0,1]
+        
+        // Update for next frame
+        s_autoLevelerPrevAvgLuma = currentAvgLuma;
+        
+        // Calculate adaptive smoothing based on scene difference
+        s_autoLevelerAdaptiveSmoothing = EnableAdaptiveSmoothing 
+            ? lerp(TemporalSmoothing, MIN_SMOOTHING, s_autoLevelerSceneDifference) 
+            : TemporalSmoothing;
+    }
+    
+    // Apply temporal smoothing (either fixed or adaptive)
+    float effectiveSmoothing = EnableAdaptiveSmoothing ? s_autoLevelerAdaptiveSmoothing : TemporalSmoothing;
+    float smoothedValue = lerp(currentValue, previousValue, effectiveSmoothing);
     
     return smoothedValue;
 }
@@ -711,13 +805,32 @@ float4 PS_AutoLeveler(float4 vpos : SV_Position, float2 texcoord : TEXCOORD) : S
     float rawBlack = FindPercentile(AutoLeveler_HistogramSampler, BlackPoint);
     float rawWhite = FindPercentile(AutoLeveler_HistogramSampler, WhitePoint);
 
-    // 2. Apply temporal smoothing to percentile values directly
-    float blackPoint = lerp(rawBlack, prevBlack, TemporalSmoothing);
-    float whitePoint = lerp(rawWhite, prevWhite, TemporalSmoothing);
-
-    // 3. Update smoothed values
+    // 2. Apply stability threshold - ignore small changes
+    if (abs(rawBlack - prevBlack) < StabilityThreshold)
+        rawBlack = prevBlack;
+        
+    if (abs(rawWhite - prevWhite) < StabilityThreshold)
+        rawWhite = prevWhite;
+        
+    // 3. Apply change rate limiting (max adjustment per frame)
+    float blackDiff = rawBlack - prevBlack;
+    float whiteDiff = rawWhite - prevWhite;
+    
+    // Cap the maximum change per frame
+    blackDiff = clamp(blackDiff, -MaxAdjustmentRate, MaxAdjustmentRate);
+    whiteDiff = clamp(whiteDiff, -MaxAdjustmentRate, MaxAdjustmentRate);
+    
+    // Apply the limited change
+    float limitedBlack = prevBlack + blackDiff;
+    float limitedWhite = prevWhite + whiteDiff;
+      // 4. Apply temporal smoothing to the rate-limited values
+    float effectiveSmoothing = EnableAdaptiveSmoothing ? s_autoLevelerAdaptiveSmoothing : TemporalSmoothing;
+    float blackPoint = lerp(limitedBlack, prevBlack, effectiveSmoothing);
+    float whitePoint = lerp(limitedWhite, prevWhite, effectiveSmoothing);
+    
+    // 5. Update smoothed values for next frame
     prevBlack = blackPoint;
-    prevWhite = whitePoint;    // 4. Clamp extremes to prevent aggressive stretching
+    prevWhite = whitePoint;// 4. Clamp extremes to prevent aggressive stretching
     blackPoint = max(blackPoint, AS_EPSILON_SAFE * 10.0); // 0.01 -> 10*epsilon for safety
     whitePoint = min(whitePoint, 1.0 - AS_EPSILON_SAFE * 10.0); // 0.99 -> Almost 1.0 with safety margin
     
@@ -832,10 +945,10 @@ float4 PS_AutoLeveler(float4 vpos : SV_Position, float2 texcoord : TEXCOORD) : S
 // ============================================================================
 
 technique AS_GFX_AutoLeveler <
+    ui_label = "[AS] GFX: Auto Leveler"; // Updated Label
     ui_tooltip = "Dynamic luminance and contrast adjustment via intelligent remapping";
 >
-{
-    pass BuildHistogram
+{    pass BuildHistogram
     {
         VertexShader = PostProcessVS;
         PixelShader = PS_BuildHistogram;
@@ -843,6 +956,7 @@ technique AS_GFX_AutoLeveler <
         ClearRenderTargets = true;
 
         BlendEnable = true;
+        BlendOp = ADD;         // Critical for histogram accumulation
         SrcBlend = ONE;
         DestBlend = ONE;
     }
