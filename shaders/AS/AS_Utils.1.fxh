@@ -377,6 +377,11 @@ float AS_mod(float x, float y) {
     return x - y * floor(x / y);
 }
 
+// Convertion mistakes galore because of fmod, might as well use the same name
+float fmod(float x, float y) {
+    return AS_mod(x, y);
+}
+
 // ============================================================================
 // VISUAL EFFECTS & BLEND MODES
 // ============================================================================
