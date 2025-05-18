@@ -183,6 +183,7 @@
 #define PRESET_BROADCAST       6
 #define PRESET_GAMING          7
 #define PRESET_VINTAGE_FILM    8
+#define NUM_STATIC_PRESETS     8
 
 // ========== Preset Parameter Indexes ==========
 #define DEF_BLACK_POINT       0
@@ -195,144 +196,12 @@
 #define DEF_ANALYSIS_FREQ     7
 #define DEF_ADJUST_RATE       8
 #define DEF_STABILITY         9
-#define DEF_LIFT_THRESHOLD    10  // Only used in some presets
-
-// ========== Default Preset Values (Arrays) ==========
-// Standard Photography preset defaults
-static const float DEF_STD[] = {
-    0.5,    // BLACK_POINT
-    99.0,   // WHITE_POINT
-    1.0,    // MIDTONE_BIAS
-    0.03,   // SHADOW_LIFT
-    0.15,   // SOFT_CLIP
-    1.1,    // CONTRAST
-    0.8,    // SMOOTHING
-    5.0,    // ANALYSIS_FREQ
-    0.01,   // ADJUST_RATE
-    0.002,  // STABILITY
-    0.03    // LIFT_THRESHOLD (same as SHADOW_LIFT for fallback)
-};
-
-// Cinematic preset defaults
-static const float DEF_CINE[] = {
-    1.5,    // BLACK_POINT
-    99.0,   // WHITE_POINT
-    1.05,   // MIDTONE_BIAS
-    0.05,   // SHADOW_LIFT
-    0.3,    // SOFT_CLIP
-    1.05,   // CONTRAST
-    0.9,    // SMOOTHING
-    10.0,   // ANALYSIS_FREQ
-    0.003,  // ADJUST_RATE
-    0.005,  // STABILITY
-    0.08    // LIFT_THRESHOLD
-};
-
-// High Contrast preset defaults
-static const float DEF_HIGH[] = {
-    3.0,    // BLACK_POINT
-    98.0,   // WHITE_POINT
-    1.15,   // MIDTONE_BIAS
-    0.04,   // SHADOW_LIFT
-    0.1,    // SOFT_CLIP
-    1.4,    // CONTRAST
-    0.75,   // SMOOTHING
-    3.0,    // ANALYSIS_FREQ
-    0.02,   // ADJUST_RATE
-    0.001,  // STABILITY
-    0.04    // LIFT_THRESHOLD (same as SHADOW_LIFT for fallback)
-};
-
-// Natural Light preset defaults
-static const float DEF_NAT[] = {
-    0.2,    // BLACK_POINT
-    99.5,   // WHITE_POINT
-    0.95,   // MIDTONE_BIAS
-    0.01,   // SHADOW_LIFT
-    0.15,   // SOFT_CLIP
-    1.05,   // CONTRAST
-    0.85,   // SMOOTHING
-    8.0,    // ANALYSIS_FREQ
-    0.008,  // ADJUST_RATE
-    0.003,  // STABILITY
-    0.01    // LIFT_THRESHOLD (same as SHADOW_LIFT for fallback)
-};
-
-// Technical preset defaults
-static const float DEF_TECH[] = {
-    0.1,    // BLACK_POINT
-    99.9,   // WHITE_POINT
-    1.0,    // MIDTONE_BIAS
-    0.0,    // SHADOW_LIFT
-    0.05,   // SOFT_CLIP
-    1.0,    // CONTRAST
-    0.7,    // SMOOTHING
-    1.0,    // ANALYSIS_FREQ
-    0.02,   // ADJUST_RATE
-    0.0,    // STABILITY
-    0.0     // LIFT_THRESHOLD (same as SHADOW_LIFT for fallback)
-};
-
-// Broadcast preset defaults
-static const float DEF_BCAST[] = {
-    1.0,    // BLACK_POINT
-    99.0,   // WHITE_POINT
-    1.05,   // MIDTONE_BIAS
-    0.02,   // SHADOW_LIFT
-    0.2,    // SOFT_CLIP
-    1.1,    // CONTRAST
-    0.95,   // SMOOTHING
-    15.0,   // ANALYSIS_FREQ
-    0.003,  // ADJUST_RATE
-    0.008,  // STABILITY
-    0.02    // LIFT_THRESHOLD (same as SHADOW_LIFT for fallback)
-};
-
-// Gaming preset defaults
-static const float DEF_GAME[] = {
-    0.8,    // BLACK_POINT
-    99.2,   // WHITE_POINT
-    0.9,    // MIDTONE_BIAS
-    0.03,   // SHADOW_LIFT
-    0.1,    // SOFT_CLIP
-    1.2,    // CONTRAST
-    0.6,    // SMOOTHING
-    2.0,    // ANALYSIS_FREQ
-    0.03,   // ADJUST_RATE
-    0.001,  // STABILITY
-    0.03    // LIFT_THRESHOLD (same as SHADOW_LIFT for fallback)
-};
-
-// Vintage Film preset defaults
-static const float DEF_VINT[] = {
-    2.0,    // BLACK_POINT
-    98.0,   // WHITE_POINT
-    1.2,    // MIDTONE_BIAS
-    0.1,    // SHADOW_LIFT
-    0.3,    // SOFT_CLIP
-    1.15,   // CONTRAST
-    0.85,   // SMOOTHING
-    6.0,    // ANALYSIS_FREQ
-    0.01,   // ADJUST_RATE
-    0.004,  // STABILITY
-    0.12    // LIFT_THRESHOLD
-};
-
-// ============================================================================
-// TEXTURES & SAMPLERS
-// ============================================================================
-
-// Texture to accumulate histogram data (used for analysis)
-texture AutoLeveler_HistogramTex { Width = HISTOGRAM_TEXSIZE; Height = 1; Format = R32F; };
-sampler AutoLeveler_HistogramSampler { Texture = AutoLeveler_HistogramTex; };
-
-// Texture to store current frame's histogram (initial gathering)
-texture AutoLeveler_CurrentHistogramTex { Width = HISTOGRAM_TEXSIZE; Height = 1; Format = R32F; };
-sampler AutoLeveler_CurrentHistogramSampler { Texture = AutoLeveler_CurrentHistogramTex; };
-
-// Texture to use as intermediate buffer for ping-pong rendering (avoids read/write conflict)
-texture AutoLeveler_PrevHistogramTex { Width = HISTOGRAM_TEXSIZE; Height = 1; Format = R32F; };
-sampler AutoLeveler_PrevHistogramSampler { Texture = AutoLeveler_PrevHistogramTex; };
+#define DEF_LIFT_THRESHOLD    10
+#define DEF_ENABLE_ADAPTIVE   11  // 1.0 = true, 0.0 = false
+#define DEF_COLOR_MODE        12  // Store the mode integer directly
+#define DEF_CURVE_TYPE        13  // Store the curve type integer directly
+#define DEF_AUTO_LIFT_SHADOWS 14  // 1.0 = true, 0.0 = false
+#define DEF_STATIC_PARAMETERS 15  // 1.0 = true, 0.0 = false
 
 // ============================================================================
 // PARAMETER STRUCT
@@ -355,6 +224,44 @@ struct LevelerParams {
     bool AutoLiftShadows;
     float AutoLiftThreshold;
 };
+
+
+// ========== Default Preset Values (Arrays) ==========
+static const float STATIC_LEVELER_PRESETS[NUM_STATIC_PRESETS * DEF_STATIC_PARAMETERS] = {
+    // Index 0: Corresponds to PRESET_CHOICE_STANDARD_PHOTO (value 1 from UI)
+    0.5f, 99.0f, 1.0f, 0.03f, 0.15f, 1.1f, 0.8f, (int)5, 0.01f, 0.002f, true, (int)1, (int)0, false, 0.03f,
+    // Index 1: Corresponds to PRESET_CHOICE_CINEMATIC (value 2 from UI)
+    1.5f, 99.0f, 1.05f, 0.05f, 0.3f, 1.05f, 0.9f, (int)10, 0.003f, 0.005f, true, (int)1, (int)1, true, 0.08f,
+    // Index 2: Corresponds to PRESET_CHOICE_HIGH_CONTRAST (value 3 from UI)
+    3.0f, 98.0f, 1.15f, 0.04f, 0.1f, 1.4f, 0.75f, (int)3, 0.02f, 0.001f, true, (int)2, (int)0, false, 0.04f,
+    // Index 3: Corresponds to PRESET_CHOICE_NATURAL_LIGHT (value 4 from UI)
+    0.2f, 99.5f, 0.95f, 0.01f, 0.15f, 1.05f, 0.85f, (int)8, 0.008f, 0.003f, true, (int)1, (int)3, false, 0.01f,
+    // Index 4: Corresponds to PRESET_CHOICE_TECHNICAL (value 5 from UI)
+    0.1f, 99.9f, 1.0f, 0.0f, 0.05f, 1.0f, 0.7f, (int)1, 0.02f, 0.0f, false, (int)1, (int)0, false, 0.0f,
+    // Index 5: Corresponds to PRESET_CHOICE_BROADCAST (value 6 from UI)
+    1.0f, 99.0f, 1.05f, 0.02f, 0.2f, 1.1f, 0.95f, (int)15, 0.003f, 0.008f, true, (int)1, (int)2, false, 0.02f,
+    // Index 6: Corresponds to PRESET_CHOICE_GAMING (value 7 from UI)
+    0.8f, 99.2f, 0.9f, 0.03f, 0.1f, 1.2f, 0.6f, (int)2, 0.03f, 0.001f, true, (int)2, (int)0, false, 0.03f,
+    // Index 7: Corresponds to PRESET_CHOICE_VINTAGE_FILM (value 8 from UI)
+    2.0f, 98.0f, 1.2f, 0.1f, 0.3f, 1.15f, 0.85f, (int)6, 0.01f, 0.004f, true, (int)2, (int)4, true, 0.12f,
+};
+
+// ============================================================================
+// TEXTURES & SAMPLERS
+// ============================================================================
+
+// Texture to accumulate histogram data (used for analysis)
+texture AutoLeveler_HistogramTex { Width = HISTOGRAM_TEXSIZE; Height = 1; Format = R32F; };
+sampler AutoLeveler_HistogramSampler { Texture = AutoLeveler_HistogramTex; };
+
+// Texture to store current frame's histogram (initial gathering)
+texture AutoLeveler_CurrentHistogramTex { Width = HISTOGRAM_TEXSIZE; Height = 1; Format = R32F; };
+sampler AutoLeveler_CurrentHistogramSampler { Texture = AutoLeveler_CurrentHistogramTex; };
+
+// Texture to use as intermediate buffer for ping-pong rendering (avoids read/write conflict)
+texture AutoLeveler_PrevHistogramTex { Width = HISTOGRAM_TEXSIZE; Height = 1; Format = R32F; };
+sampler AutoLeveler_PrevHistogramSampler { Texture = AutoLeveler_PrevHistogramTex; };
+
 
 // ============================================================================
 // UI DECLARATIONS
@@ -414,6 +321,52 @@ uniform float DebugOpacity < ui_type = "slider"; ui_label = "Debug Opacity"; ui_
 // HELPER FUNCTIONS
 // ============================================================================
 
+// Get preset parameters based on the selected preset
+LevelerParams GetPresetParameters (int activePresetChoiceFromUI)
+{
+    LevelerParams params; // Struct to be populated and returned
+
+    params.BlackPoint = BlackPoint;
+    params.WhitePoint = WhitePoint;
+    params.MidtoneBias = MidtoneBias;
+    params.ShadowLift = ShadowLift;
+    params.SoftClipAmount = SoftClipAmount;
+    params.ContrastAmount = ContrastAmount;
+    params.TemporalSmoothing = TemporalSmoothing;
+    params.AnalysisFrequency = AnalysisFrequency;
+    params.MaxAdjustmentRate = MaxAdjustmentRate;
+    params.StabilityThreshold = StabilityThreshold;
+    params.EnableAdaptiveSmoothing = EnableAdaptiveSmoothing;
+    params.ColorPreservationMode = ColorPreservationMode;
+    params.CurveType = CurveType;
+    params.AutoLiftShadows = AutoLiftShadows;
+    params.AutoLiftThreshold = AutoLiftThreshold;
+
+    if (activePresetChoiceFromUI != PRESET_CUSTOM) // This is 0
+    {
+        int staticPresetArrayIndex = (activePresetChoiceFromUI - 1) * DEF_STATIC_PARAMETERS;
+
+        params.BlackPoint= STATIC_LEVELER_PRESETS[staticPresetArrayIndex + DEF_BLACK_POINT];
+        params.WhitePoint= STATIC_LEVELER_PRESETS[staticPresetArrayIndex + DEF_WHITE_POINT];
+        params.MidtoneBias= STATIC_LEVELER_PRESETS[staticPresetArrayIndex + DEF_MIDTONE_BIAS];
+        params.ShadowLift= STATIC_LEVELER_PRESETS[staticPresetArrayIndex + DEF_SHADOW_LIFT];
+        params.SoftClipAmount= STATIC_LEVELER_PRESETS[staticPresetArrayIndex + DEF_SOFT_CLIP];
+        params.ContrastAmount= STATIC_LEVELER_PRESETS[staticPresetArrayIndex + DEF_CONTRAST];
+        params.TemporalSmoothing= STATIC_LEVELER_PRESETS[staticPresetArrayIndex + DEF_SMOOTHING];
+        params.AnalysisFrequency= int(STATIC_LEVELER_PRESETS[staticPresetArrayIndex + DEF_ANALYSIS_FREQ]);
+        params.MaxAdjustmentRate= STATIC_LEVELER_PRESETS[staticPresetArrayIndex + DEF_ADJUST_RATE];
+        params.StabilityThreshold= STATIC_LEVELER_PRESETS[staticPresetArrayIndex + DEF_STABILITY];
+        params.EnableAdaptiveSmoothing= (STATIC_LEVELER_PRESETS[staticPresetArrayIndex + DEF_ENABLE_ADAPTIVE] > 0.5);
+        params.ColorPreservationMode= int(STATIC_LEVELER_PRESETS[staticPresetArrayIndex + DEF_COLOR_MODE]);
+        params.CurveType= int(STATIC_LEVELER_PRESETS[staticPresetArrayIndex + DEF_CURVE_TYPE]);
+        params.AutoLiftShadows= (STATIC_LEVELER_PRESETS[staticPresetArrayIndex + DEF_AUTO_LIFT_SHADOWS] > 0.5);
+        params.AutoLiftThreshold= 0.05;
+    }
+
+    return params;
+}
+
+
 // Static variables for frame tracking and transitions - moved here to ensure proper declaration before use
 static float s_autoLevelerLastAnalysisTime = 0.0;
 static float s_autoLevelerPrevAvgLuma = 0.0;
@@ -432,17 +385,11 @@ float Luminance(float3 color)
 // Get analysis frequency value based on preset
 int GetAnalysisFrequencyForPreset(int presetIndex)
 {
-    switch(presetIndex) {
-        case PRESET_STANDARD_PHOTO: return int(DEF_STD[DEF_ANALYSIS_FREQ]);
-        case PRESET_CINEMATIC: return int(DEF_CINE[DEF_ANALYSIS_FREQ]);
-        case PRESET_HIGH_CONTRAST: return int(DEF_HIGH[DEF_ANALYSIS_FREQ]);
-        case PRESET_NATURAL_LIGHT: return int(DEF_NAT[DEF_ANALYSIS_FREQ]);
-        case PRESET_TECHNICAL: return int(DEF_TECH[DEF_ANALYSIS_FREQ]);
-        case PRESET_BROADCAST: return int(DEF_BCAST[DEF_ANALYSIS_FREQ]);
-        case PRESET_GAMING: return int(DEF_GAME[DEF_ANALYSIS_FREQ]);
-        case PRESET_VINTAGE_FILM: return int(DEF_VINT[DEF_ANALYSIS_FREQ]);
-        default: return AnalysisFrequency; // Custom or unknown preset uses the UI value
-    }
+    // Use the consolidated function to get all parameters
+    LevelerParams params = GetPresetParameters(presetIndex);
+    
+    // Return the analysis frequency from the struct
+    return params.AnalysisFrequency;
 }
 
 // Helper function to determine if the current frame should be analyzed
@@ -972,224 +919,15 @@ float3 GenerateDebugView(float3 originalColor, float3 adjustedColor, float black
     return debugColor;
 }
 
-// Get preset parameters based on the selected preset
-LevelerParams GetPresetParameters(int presetIndex)
-{
-    LevelerParams params;
-    
-    // Default to current UI values for custom preset
-    params.BlackPoint = BlackPoint;
-    params.WhitePoint = WhitePoint;
-    params.MidtoneBias = MidtoneBias;
-    params.ShadowLift = ShadowLift;
-    params.SoftClipAmount = SoftClipAmount;
-    params.ContrastAmount = ContrastAmount;
-    params.TemporalSmoothing = TemporalSmoothing;
-    params.AnalysisFrequency = AnalysisFrequency;
-    params.MaxAdjustmentRate = MaxAdjustmentRate;
-    params.StabilityThreshold = StabilityThreshold;
-    params.EnableAdaptiveSmoothing = EnableAdaptiveSmoothing;
-    params.ColorPreservationMode = ColorPreservationMode;
-    params.CurveType = CurveType;
-    params.AutoLiftShadows = AutoLiftShadows;
-    params.AutoLiftThreshold = AutoLiftThreshold;
-    
-    // Apply preset-specific values if not using custom
-    if (presetIndex != PRESET_CUSTOM) {
-        switch (presetIndex) {            case PRESET_STANDARD_PHOTO:
-                // Standard Photography: Moderate contrast with good balance
-                params.BlackPoint = DEF_STD[DEF_BLACK_POINT];
-                params.WhitePoint = DEF_STD[DEF_WHITE_POINT];
-                params.MidtoneBias = DEF_STD[DEF_MIDTONE_BIAS];
-                params.ShadowLift = DEF_STD[DEF_SHADOW_LIFT];
-                params.SoftClipAmount = DEF_STD[DEF_SOFT_CLIP];
-                params.ContrastAmount = DEF_STD[DEF_CONTRAST];
-                params.TemporalSmoothing = DEF_STD[DEF_SMOOTHING];
-                params.AnalysisFrequency = int(DEF_STD[DEF_ANALYSIS_FREQ]);
-                params.MaxAdjustmentRate = DEF_STD[DEF_ADJUST_RATE];
-                params.StabilityThreshold = DEF_STD[DEF_STABILITY];
-                params.EnableAdaptiveSmoothing = true;
-                params.ColorPreservationMode = MODE_YCBCR;
-                params.CurveType = CURVE_GAMMA;
-                params.AutoLiftShadows = false;
-                params.AutoLiftThreshold = DEF_STD[DEF_LIFT_THRESHOLD];
-                break;
-                  case PRESET_CINEMATIC:
-                // Cinematic Look: With raised blacks and soft highlight roll-off
-                params.BlackPoint = DEF_CINE[DEF_BLACK_POINT];
-                params.WhitePoint = DEF_CINE[DEF_WHITE_POINT];
-                params.MidtoneBias = DEF_CINE[DEF_MIDTONE_BIAS];
-                params.ShadowLift = DEF_CINE[DEF_SHADOW_LIFT];
-                params.SoftClipAmount = DEF_CINE[DEF_SOFT_CLIP];
-                params.ContrastAmount = DEF_CINE[DEF_CONTRAST];
-                params.TemporalSmoothing = DEF_CINE[DEF_SMOOTHING];
-                params.AnalysisFrequency = int(DEF_CINE[DEF_ANALYSIS_FREQ]);
-                params.MaxAdjustmentRate = DEF_CINE[DEF_ADJUST_RATE];
-                params.StabilityThreshold = DEF_CINE[DEF_STABILITY];
-                params.EnableAdaptiveSmoothing = true;
-                params.ColorPreservationMode = MODE_YCBCR;
-                params.CurveType = CURVE_FILMIC_S;
-                params.AutoLiftShadows = true;
-                params.AutoLiftThreshold = DEF_CINE[DEF_LIFT_THRESHOLD];
-                break;
-                  case PRESET_HIGH_CONTRAST:
-                // High Contrast: Strong black and white points, more dramatic look
-                params.BlackPoint = DEF_HIGH[DEF_BLACK_POINT];
-                params.WhitePoint = DEF_HIGH[DEF_WHITE_POINT];
-                params.MidtoneBias = DEF_HIGH[DEF_MIDTONE_BIAS];
-                params.ShadowLift = DEF_HIGH[DEF_SHADOW_LIFT];
-                params.SoftClipAmount = DEF_HIGH[DEF_SOFT_CLIP];
-                params.ContrastAmount = DEF_HIGH[DEF_CONTRAST];
-                params.TemporalSmoothing = DEF_HIGH[DEF_SMOOTHING];
-                params.AnalysisFrequency = int(DEF_HIGH[DEF_ANALYSIS_FREQ]);
-                params.MaxAdjustmentRate = DEF_HIGH[DEF_ADJUST_RATE];
-                params.StabilityThreshold = DEF_HIGH[DEF_STABILITY];
-                params.EnableAdaptiveSmoothing = true;
-                params.ColorPreservationMode = MODE_HSV;
-                params.CurveType = CURVE_GAMMA;
-                params.AutoLiftShadows = false;
-                params.AutoLiftThreshold = DEF_HIGH[DEF_LIFT_THRESHOLD];
-                break;
-                  case PRESET_NATURAL_LIGHT:
-                // Natural Light: Gentle processing to maintain natural appearance
-                params.BlackPoint = DEF_NAT[DEF_BLACK_POINT];
-                params.WhitePoint = DEF_NAT[DEF_WHITE_POINT];
-                params.MidtoneBias = DEF_NAT[DEF_MIDTONE_BIAS];
-                params.ShadowLift = DEF_NAT[DEF_SHADOW_LIFT];
-                params.SoftClipAmount = DEF_NAT[DEF_SOFT_CLIP];
-                params.ContrastAmount = DEF_NAT[DEF_CONTRAST];
-                params.TemporalSmoothing = DEF_NAT[DEF_SMOOTHING];
-                params.AnalysisFrequency = int(DEF_NAT[DEF_ANALYSIS_FREQ]);
-                params.MaxAdjustmentRate = DEF_NAT[DEF_ADJUST_RATE];
-                params.StabilityThreshold = DEF_NAT[DEF_STABILITY];
-                params.EnableAdaptiveSmoothing = true;
-                params.ColorPreservationMode = MODE_YCBCR;
-                params.CurveType = CURVE_POWERLOG;
-                params.AutoLiftShadows = false;
-                params.AutoLiftThreshold = DEF_NAT[DEF_LIFT_THRESHOLD];
-                break;
-                  case PRESET_TECHNICAL:
-                // Technical/Accurate: Minimal processing for technical accuracy
-                params.BlackPoint = DEF_TECH[DEF_BLACK_POINT];
-                params.WhitePoint = DEF_TECH[DEF_WHITE_POINT];
-                params.MidtoneBias = DEF_TECH[DEF_MIDTONE_BIAS];
-                params.ShadowLift = DEF_TECH[DEF_SHADOW_LIFT];
-                params.SoftClipAmount = DEF_TECH[DEF_SOFT_CLIP];
-                params.ContrastAmount = DEF_TECH[DEF_CONTRAST];
-                params.TemporalSmoothing = DEF_TECH[DEF_SMOOTHING];
-                params.AnalysisFrequency = int(DEF_TECH[DEF_ANALYSIS_FREQ]);
-                params.MaxAdjustmentRate = DEF_TECH[DEF_ADJUST_RATE];
-                params.StabilityThreshold = DEF_TECH[DEF_STABILITY];
-                params.EnableAdaptiveSmoothing = false;
-                params.ColorPreservationMode = MODE_YCBCR;
-                params.CurveType = CURVE_GAMMA;
-                params.AutoLiftShadows = false;
-                params.AutoLiftThreshold = DEF_TECH[DEF_LIFT_THRESHOLD];
-                break;
-                  case PRESET_BROADCAST:
-                // Broadcast Safe: Settings suitable for video production
-                params.BlackPoint = DEF_BCAST[DEF_BLACK_POINT];
-                params.WhitePoint = DEF_BCAST[DEF_WHITE_POINT];
-                params.MidtoneBias = DEF_BCAST[DEF_MIDTONE_BIAS];
-                params.ShadowLift = DEF_BCAST[DEF_SHADOW_LIFT];
-                params.SoftClipAmount = DEF_BCAST[DEF_SOFT_CLIP];
-                params.ContrastAmount = DEF_BCAST[DEF_CONTRAST];
-                params.TemporalSmoothing = DEF_BCAST[DEF_SMOOTHING];
-                params.AnalysisFrequency = int(DEF_BCAST[DEF_ANALYSIS_FREQ]);
-                params.MaxAdjustmentRate = DEF_BCAST[DEF_ADJUST_RATE];
-                params.StabilityThreshold = DEF_BCAST[DEF_STABILITY];
-                params.EnableAdaptiveSmoothing = true;
-                params.ColorPreservationMode = MODE_YCBCR;
-                params.CurveType = CURVE_PIECEWISE;
-                params.AutoLiftShadows = false;
-                params.AutoLiftThreshold = DEF_BCAST[DEF_LIFT_THRESHOLD];
-                break;
-                  case PRESET_GAMING:
-                // Gaming: Responsive settings for gameplay with vibrant look
-                params.BlackPoint = DEF_GAME[DEF_BLACK_POINT];
-                params.WhitePoint = DEF_GAME[DEF_WHITE_POINT];
-                params.MidtoneBias = DEF_GAME[DEF_MIDTONE_BIAS];
-                params.ShadowLift = DEF_GAME[DEF_SHADOW_LIFT];
-                params.SoftClipAmount = DEF_GAME[DEF_SOFT_CLIP];
-                params.ContrastAmount = DEF_GAME[DEF_CONTRAST];
-                params.TemporalSmoothing = DEF_GAME[DEF_SMOOTHING];
-                params.AnalysisFrequency = int(DEF_GAME[DEF_ANALYSIS_FREQ]);
-                params.MaxAdjustmentRate = DEF_GAME[DEF_ADJUST_RATE];
-                params.StabilityThreshold = DEF_GAME[DEF_STABILITY];
-                params.EnableAdaptiveSmoothing = true;
-                params.ColorPreservationMode = MODE_HSV;
-                params.CurveType = CURVE_GAMMA;
-                params.AutoLiftShadows = false;
-                params.AutoLiftThreshold = DEF_GAME[DEF_LIFT_THRESHOLD];
-                break;
-                  case PRESET_VINTAGE_FILM:
-                // Vintage Film: With raised blacks and characteristic curve
-                params.BlackPoint = DEF_VINT[DEF_BLACK_POINT];
-                params.WhitePoint = DEF_VINT[DEF_WHITE_POINT];
-                params.MidtoneBias = DEF_VINT[DEF_MIDTONE_BIAS];
-                params.ShadowLift = DEF_VINT[DEF_SHADOW_LIFT];
-                params.SoftClipAmount = DEF_VINT[DEF_SOFT_CLIP];
-                params.ContrastAmount = DEF_VINT[DEF_CONTRAST];
-                params.TemporalSmoothing = DEF_VINT[DEF_SMOOTHING];
-                params.AnalysisFrequency = int(DEF_VINT[DEF_ANALYSIS_FREQ]);
-                params.MaxAdjustmentRate = DEF_VINT[DEF_ADJUST_RATE];
-                params.StabilityThreshold = DEF_VINT[DEF_STABILITY];
-                params.EnableAdaptiveSmoothing = true;
-                params.ColorPreservationMode = MODE_HSV;
-                params.CurveType = CURVE_ANALOG_FILM;
-                params.AutoLiftShadows = true;
-                params.AutoLiftThreshold = DEF_VINT[DEF_LIFT_THRESHOLD];
-                break;
-        }
-    }
-    
-    return params;
-}
-
 // Get adaptive smoothing configuration for the current preset
 void GetAdaptiveSmoothingForPreset(int presetIndex, out bool enableAdaptive, out float smoothingAmount)
 {
-    // Default values
-    enableAdaptive = EnableAdaptiveSmoothing;
-    smoothingAmount = TemporalSmoothing;
+    // Get all parameters from our new consolidated function
+    LevelerParams params = GetPresetParameters(presetIndex);
     
-    // Apply preset-specific values if not custom
-    if (presetIndex != PRESET_CUSTOM) {
-        switch (presetIndex) {
-            case PRESET_STANDARD_PHOTO:
-                enableAdaptive = true;
-                smoothingAmount = DEF_STD[DEF_SMOOTHING];
-                break;
-            case PRESET_CINEMATIC:
-                enableAdaptive = true;
-                smoothingAmount = DEF_CINE[DEF_SMOOTHING];
-                break;
-            case PRESET_HIGH_CONTRAST:
-                enableAdaptive = true;
-                smoothingAmount = DEF_HIGH[DEF_SMOOTHING];
-                break;
-            case PRESET_NATURAL_LIGHT:
-                enableAdaptive = true;
-                smoothingAmount = DEF_NAT[DEF_SMOOTHING];
-                break;
-            case PRESET_TECHNICAL:
-                enableAdaptive = false;
-                smoothingAmount = DEF_TECH[DEF_SMOOTHING];
-                break;
-            case PRESET_BROADCAST:
-                enableAdaptive = true;
-                smoothingAmount = DEF_BCAST[DEF_SMOOTHING];
-                break;
-            case PRESET_GAMING:
-                enableAdaptive = true;
-                smoothingAmount = DEF_GAME[DEF_SMOOTHING];
-                break;
-            case PRESET_VINTAGE_FILM:
-                enableAdaptive = true;
-                smoothingAmount = DEF_VINT[DEF_SMOOTHING];
-                break;
-        }
-    }
+    // Use the values from the struct
+    enableAdaptive = params.EnableAdaptiveSmoothing;
+    smoothingAmount = params.TemporalSmoothing;
 }
 
 // ============================================================================
