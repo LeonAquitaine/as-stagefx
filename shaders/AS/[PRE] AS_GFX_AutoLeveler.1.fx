@@ -228,8 +228,7 @@ struct LevelerParams {
 
 // ========== Default Preset Values (Arrays) ==========
 static const float STATIC_LEVELER_PRESETS[NUM_STATIC_PRESETS * DEF_STATIC_PARAMETERS] = {    // Index 0: Corresponds to PRESET_CHOICE_STANDARD_PHOTO (value 1 from UI)
-    0.5f, 99.0f, 1.0f, 0.03f, 0.15f, 1.1f, 0.8f, (int)5, 0.01f, 0.002f, true, (int)1, (int)0, false, 0.03f,
-    // Index 1: Corresponds to PRESET_CHOICE_CINEMATIC (value 2 from UI)
+    0.5f, 99.0f, 1.0f, 0.03f, 0.15f, 1.1f, 0.8f, (int)5, 0.01f, 0.002f, true, (int)1, (int)0, false, 0.03f,    // Index 1: Corresponds to PRESET_CHOICE_CINEMATIC (value 2 from UI)
     3.5f, 99.0f, 1.25f, 0.06f, 0.2f, 1.15f, 0.7f, (int)2, 0.02f, 0.001f, true, (int)1, (int)1, false, 0.08f,
     // Index 2: Corresponds to PRESET_CHOICE_HIGH_CONTRAST (value 3 from UI)
     3.0f, 98.0f, 1.15f, 0.04f, 0.1f, 1.4f, 0.75f, (int)3, 0.02f, 0.001f, true, (int)2, (int)0, false, 0.04f,
@@ -240,9 +239,8 @@ static const float STATIC_LEVELER_PRESETS[NUM_STATIC_PRESETS * DEF_STATIC_PARAME
     // Index 5: Corresponds to PRESET_CHOICE_BROADCAST (value 6 from UI)
     1.0f, 99.0f, 1.05f, 0.02f, 0.2f, 1.1f, 0.95f, (int)15, 0.003f, 0.008f, true, (int)1, (int)2, false, 0.02f,
     // Index 6: Corresponds to PRESET_CHOICE_GAMING (value 7 from UI)
-    0.8f, 99.2f, 0.9f, 0.03f, 0.1f, 1.2f, 0.6f, (int)2, 0.03f, 0.001f, true, (int)2, (int)0, false, 0.03f,
-    // Index 7: Corresponds to PRESET_CHOICE_VINTAGE_FILM (value 8 from UI)
-    2.0f, 98.0f, 1.2f, 0.1f, 0.3f, 1.15f, 0.85f, (int)6, 0.01f, 0.004f, true, (int)2, (int)4, false, 0.12f,
+    0.8f, 99.2f, 0.9f, 0.03f, 0.1f, 1.2f, 0.6f, (int)2, 0.03f, 0.001f, true, (int)2, (int)0, false, 0.03f,    // Index 7: Corresponds to PRESET_CHOICE_VINTAGE_FILM (value 8 from UI)
+    2.0f, 98.0f, 1.2f, 0.1f, 0.3f, 1.15f, 0.85f, (int)6, 0.01f, 0.004f, true, (int)2, (int)4, true, 0.12f,
 };
 
 // ============================================================================
@@ -353,13 +351,12 @@ LevelerParams GetPresetParameters (int activePresetChoiceFromUI)
         params.ContrastAmount= STATIC_LEVELER_PRESETS[staticPresetArrayIndex + DEF_CONTRAST];
         params.TemporalSmoothing= STATIC_LEVELER_PRESETS[staticPresetArrayIndex + DEF_SMOOTHING];
         params.AnalysisFrequency= int(STATIC_LEVELER_PRESETS[staticPresetArrayIndex + DEF_ANALYSIS_FREQ]);
-        params.MaxAdjustmentRate= STATIC_LEVELER_PRESETS[staticPresetArrayIndex + DEF_ADJUST_RATE];
-        params.StabilityThreshold= STATIC_LEVELER_PRESETS[staticPresetArrayIndex + DEF_STABILITY];
+        params.MaxAdjustmentRate= STATIC_LEVELER_PRESETS[staticPresetArrayIndex + DEF_ADJUST_RATE];        params.StabilityThreshold= STATIC_LEVELER_PRESETS[staticPresetArrayIndex + DEF_STABILITY];
         params.EnableAdaptiveSmoothing= (STATIC_LEVELER_PRESETS[staticPresetArrayIndex + DEF_ENABLE_ADAPTIVE] > 0.5);
         params.ColorPreservationMode= int(STATIC_LEVELER_PRESETS[staticPresetArrayIndex + DEF_COLOR_MODE]);
         params.CurveType= int(STATIC_LEVELER_PRESETS[staticPresetArrayIndex + DEF_CURVE_TYPE]);
         params.AutoLiftShadows= (STATIC_LEVELER_PRESETS[staticPresetArrayIndex + DEF_AUTO_LIFT_SHADOWS] > 0.5);
-        params.AutoLiftThreshold= 0.05;
+        params.AutoLiftThreshold= STATIC_LEVELER_PRESETS[staticPresetArrayIndex + DEF_LIFT_THRESHOLD];
     }
 
     return params;
@@ -601,7 +598,15 @@ float3 ApplyShadowLift(float3 color, float threshold, float liftAmount)
     {
         // Apply progressive shadow lift - more effect closer to black
         float liftFactor = 1.0 - (luma / threshold);
+        
+        // Curve the lift factor to make it more gentle
+        liftFactor = pow(liftFactor, 1.2);
+        
+        // Calculate new luminance with lift
         float newLuma = luma + (liftAmount * liftFactor * threshold);
+        
+        // Ensure we don't go too bright with the lifting
+        newLuma = min(newLuma, threshold * 1.5);
         
         // Preserve color by just adjusting value in HSV
         hsv.z = newLuma / max(AS_EPSILON_SAFE, luma) * hsv.z;
@@ -1186,13 +1191,16 @@ float4 PS_AutoLeveler(float4 vpos : SV_Position, float2 texcoord : TEXCOORD) : S
             normalizedLuma = softClipValue;
         }
     }
-    
-    // Apply shadow lifting
-    normalizedLuma = params.ShadowLift + normalizedLuma * (1.0 - params.ShadowLift);
-      // 9. Apply color preservation using our helper function
+      // Apply shadow lifting - either global or selective based on AutoLiftShadows
+    if (!params.AutoLiftShadows) {
+        // Apply global shadow lifting to all luminance values
+        normalizedLuma = params.ShadowLift + normalizedLuma * (1.0 - params.ShadowLift);
+    }
+      
+    // 9. Apply color preservation using our helper function
     float3 adjustedColor = TransformColorWithPreservation(originalColor, normalizedLuma, params.ColorPreservationMode, WhiteBalanceStrength, texcoord);
 
-    // 10. Apply selective shadow lifting with color preservation
+    // 10. Apply selective shadow lifting with color preservation if enabled
     if (params.AutoLiftShadows) {
         adjustedColor = ApplyShadowLift(adjustedColor, params.AutoLiftThreshold, params.ShadowLift);
     }
