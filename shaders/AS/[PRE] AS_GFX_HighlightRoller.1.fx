@@ -664,6 +664,7 @@ float3 PS_HighlightRoller(float4 vpos : SV_Position, float2 texcoord : TEXCOORD)
 // ============================================================================
 
 technique AS_GFX_HighlightRoller <
+    ui_label = "[AS] GFX: Highlight Roller";
     ui_tooltip = "Advanced highlight roll-off and shoulder compression for virtual photography";
 > {
     pass {
