@@ -18,17 +18,28 @@
  * - When processing batches of screenshots that need standardized exposure
  * - To recover detail from scenes with crushed shadows or blown highlights
  * - For creating stylized cinematic or editorial looks with precise contrast control
- *
- * HOW TO USE:
+ * * HOW TO USE:
  * 
  * BASIC WORKFLOW:
- * 1. Enable the shader and observe the automatic adjustments based on scene content
- * 2. Adjust the percentile thresholds (Black Point and White Point) to control how
- *    aggressively the shader detects and corrects shadows and highlights
- * 3. Fine-tune the Midtone Bias to shift the exposure balance toward shadows or highlights
- * 4. Use Shadow Lift for a filmic raised-black look, and Soft Clip for highlight roll-off
- * 5. Adjust overall Contrast to taste for the final image
- * 6. Use the debug visualization options to identify problem areas
+ * 1. Enable the shader and select a preset that matches your needs, or leave as "Custom"
+ * 2. If using a preset, observe the result and try different presets until you find one
+ *    that works well for your scene or game
+ * 3. If using "Custom", adjust the percentile thresholds (Black Point and White Point)
+ *    to control how aggressively the shader detects and corrects shadows and highlights
+ * 4. Fine-tune the Midtone Bias to shift the exposure balance toward shadows or highlights
+ * 5. Use Shadow Lift for a filmic raised-black look, and Soft Clip for highlight roll-off
+ * 6. Adjust overall Contrast to taste for the final image
+ * 7. Use the debug visualization options to identify problem areas
+ *
+ * PRESET RECOMMENDATIONS:
+ * - Standard Photography: For general purpose use with balanced adjustments
+ * - Cinematic Look: For a film-like appearance with raised blacks and soft highlights
+ * - High Contrast: For dramatic lighting with strong shadows and highlights
+ * - Natural Light: For subtle enhancement that maintains the original feel
+ * - Technical/Accurate: For minimal processing when accuracy is important
+ * - Broadcast Safe: For video content with smooth transitions and safe levels
+ * - Gaming: For responsive adjustments during fast-paced gameplay
+ * - Vintage Film: For a classic film look with characteristic tonality
  * * PARAMETER DETAILS:
  * - Black Point: Lower percentile of luminance to map to black (higher = darker shadows)
  * - White Point: Upper percentile of luminance to map to white (lower = brighter highlights)
@@ -58,6 +69,7 @@
  * - When using high Analysis Frequency, lower Max Adjustment Rate to prevent large jumps
  * - Enable Adaptive Smoothing for mixed content with both gradual changes and hard cuts
  * * FEATURES:
+ * - Ready-to-use professional presets for different scenarios
  * - Dynamic percentile-based black and white point detection
  * - Gamma-aware midtone correction with artistic control
  * - Soft shoulder roll-off for highlight preservation
@@ -141,6 +153,17 @@
 #define HIST_QUALITY_STD   256
 #define HIST_QUALITY_HIGH  512
 
+// Preset identifiers
+#define PRESET_CUSTOM          0
+#define PRESET_STANDARD_PHOTO  1
+#define PRESET_CINEMATIC       2
+#define PRESET_HIGH_CONTRAST   3
+#define PRESET_NATURAL_LIGHT   4
+#define PRESET_TECHNICAL       5
+#define PRESET_BROADCAST       6
+#define PRESET_GAMING          7
+#define PRESET_VINTAGE_FILM    8
+
 // ============================================================================
 // TEXTURES & SAMPLERS
 // ============================================================================
@@ -160,6 +183,9 @@ sampler AutoLeveler_PrevHistogramSampler { Texture = AutoLeveler_PrevHistogramTe
 // ============================================================================
 // UI DECLARATIONS
 // ============================================================================
+
+// Presets
+uniform int Preset < ui_type = "combo"; ui_label = "Preset"; ui_tooltip = "Choose from pre-configured settings or use Custom to manually adjust all parameters"; ui_category = "Presets"; ui_items = "Custom\0Standard Photography\0Cinematic Look\0High Contrast\0Natural Light\0Technical/Accurate\0Broadcast Safe\0Gaming\0Vintage Film\0"; > = PRESET_CUSTOM;
 
 // Auto Leveling Controls
 uniform float BlackPoint < ui_type = "slider"; ui_label = "Black Point"; ui_tooltip = "Lower luminance percentile to anchor shadows"; ui_category = "Leveling Controls"; ui_min = 0.01; ui_max = 10.0; ui_step = 0.01; > = AS_HALF;
@@ -712,11 +738,26 @@ static bool s_autoLevelerAnalyzeThisFrame = true;
 
 // First pass: Build histogram of current frame
 float4 PS_BuildHistogram(float4 vpos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target
-{
-    // Get current time and determine if we analyze this frame
+{    // Get current time and determine if we analyze this frame
     float currentTime = AS_getTime();
     float timeSinceLastAnalysis = currentTime - s_autoLevelerLastAnalysisTime;
-    float analysisInterval = float(AnalysisFrequency) / 60.0; // Convert to seconds (assuming default 60 fps)
+    
+    // Get analysis frequency from preset if applicable
+    int analysisFreq = AnalysisFrequency;
+    if (Preset != PRESET_CUSTOM) {
+        switch (Preset) {
+            case PRESET_STANDARD_PHOTO: analysisFreq = 5; break;
+            case PRESET_CINEMATIC: analysisFreq = 10; break;
+            case PRESET_HIGH_CONTRAST: analysisFreq = 3; break;
+            case PRESET_NATURAL_LIGHT: analysisFreq = 8; break;
+            case PRESET_TECHNICAL: analysisFreq = 1; break;
+            case PRESET_BROADCAST: analysisFreq = 15; break;
+            case PRESET_GAMING: analysisFreq = 2; break;
+            case PRESET_VINTAGE_FILM: analysisFreq = 6; break;
+        }
+    }
+    
+    float analysisInterval = float(analysisFreq) / 60.0; // Convert to seconds (assuming default 60 fps)
     
     s_autoLevelerAnalyzeThisFrame = timeSinceLastAnalysis >= analysisInterval;
     
@@ -725,7 +766,7 @@ float4 PS_BuildHistogram(float4 vpos : SV_Position, float2 texcoord : TEXCOORD) 
         s_autoLevelerLastAnalysisTime = currentTime;
     }
       // If not analyzing this frame, return zero (skip histogram building)
-    if (!s_autoLevelerAnalyzeThisFrame && AnalysisFrequency > 1)
+    if (!s_autoLevelerAnalyzeThisFrame && analysisFreq > 1)
     {
         return 0.0;
     }
@@ -773,11 +814,51 @@ float4 PS_SmoothHistogram(float4 vpos : SV_Position, float2 texcoord : TEXCOORD)
         
         // Update for next frame
         s_autoLevelerPrevAvgLuma = currentAvgLuma;
+          // Get adaptive smoothing settings from preset if applicable
+        bool adaptiveSmooth = EnableAdaptiveSmoothing;
+        float temporalSmooth = TemporalSmoothing;
+        
+        if (Preset != PRESET_CUSTOM) {
+            switch (Preset) {
+                case PRESET_STANDARD_PHOTO: 
+                    adaptiveSmooth = true; 
+                    temporalSmooth = 0.8; 
+                    break;
+                case PRESET_CINEMATIC: 
+                    adaptiveSmooth = true; 
+                    temporalSmooth = 0.9; 
+                    break;
+                case PRESET_HIGH_CONTRAST: 
+                    adaptiveSmooth = true; 
+                    temporalSmooth = 0.75; 
+                    break;
+                case PRESET_NATURAL_LIGHT: 
+                    adaptiveSmooth = true; 
+                    temporalSmooth = 0.85; 
+                    break;
+                case PRESET_TECHNICAL: 
+                    adaptiveSmooth = false; 
+                    temporalSmooth = 0.7; 
+                    break;
+                case PRESET_BROADCAST: 
+                    adaptiveSmooth = true; 
+                    temporalSmooth = 0.95; 
+                    break;
+                case PRESET_GAMING: 
+                    adaptiveSmooth = true; 
+                    temporalSmooth = 0.6; 
+                    break;
+                case PRESET_VINTAGE_FILM: 
+                    adaptiveSmooth = true; 
+                    temporalSmooth = 0.85; 
+                    break;
+            }
+        }
         
         // Calculate adaptive smoothing based on scene difference
-        s_autoLevelerAdaptiveSmoothing = EnableAdaptiveSmoothing 
-            ? lerp(TemporalSmoothing, MIN_SMOOTHING, s_autoLevelerSceneDifference) 
-            : TemporalSmoothing;
+        s_autoLevelerAdaptiveSmoothing = adaptiveSmooth 
+            ? lerp(temporalSmooth, MIN_SMOOTHING, s_autoLevelerSceneDifference) 
+            : temporalSmooth;
     }
     
     // Apply temporal smoothing (either fixed or adaptive)
@@ -807,16 +888,182 @@ static float prevWhite = 1.0;
 float4 PS_AutoLeveler(float4 vpos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target
 {
     float3 originalColor = tex2D(ReShade::BackBuffer, texcoord).rgb;
+    
+    // Local variables for preset values
+    float presetBlackPoint = BlackPoint;
+    float presetWhitePoint = WhitePoint;
+    float presetMidtoneBias = MidtoneBias;
+    float presetShadowLift = ShadowLift;
+    float presetSoftClipAmount = SoftClipAmount;
+    float presetContrastAmount = ContrastAmount;
+    float presetTemporalSmoothing = TemporalSmoothing;
+    int presetAnalysisFrequency = AnalysisFrequency;
+    float presetMaxAdjustmentRate = MaxAdjustmentRate;
+    float presetStabilityThreshold = StabilityThreshold;
+    bool presetEnableAdaptiveSmoothing = EnableAdaptiveSmoothing;
+    int presetColorPreservationMode = ColorPreservationMode;
+    int presetCurveType = CurveType;
+    bool presetAutoLiftShadows = AutoLiftShadows;
+    float presetAutoLiftThreshold = AutoLiftThreshold;
+    
+    // Apply preset values if a preset is selected
+    if (Preset != PRESET_CUSTOM) {
+        switch (Preset) {
+            case PRESET_STANDARD_PHOTO:
+                // Standard Photography: Moderate contrast with good balance
+                presetBlackPoint = 0.5;
+                presetWhitePoint = 99.0;
+                presetMidtoneBias = 1.0;
+                presetShadowLift = 0.03;
+                presetSoftClipAmount = 0.15;
+                presetContrastAmount = 1.1;
+                presetTemporalSmoothing = 0.8;
+                presetAnalysisFrequency = 5;
+                presetMaxAdjustmentRate = 0.01;
+                presetStabilityThreshold = 0.002;
+                presetEnableAdaptiveSmoothing = true;
+                presetColorPreservationMode = MODE_YCBCR;
+                presetCurveType = CURVE_GAMMA;
+                presetAutoLiftShadows = false;
+                break;
+                
+            case PRESET_CINEMATIC:
+                // Cinematic Look: With raised blacks and soft highlight roll-off
+                presetBlackPoint = 1.5;
+                presetWhitePoint = 99.0;
+                presetMidtoneBias = 1.1;
+                presetShadowLift = 0.08;
+                presetSoftClipAmount = 0.25;
+                presetContrastAmount = 1.25;
+                presetTemporalSmoothing = 0.9;
+                presetAnalysisFrequency = 10;
+                presetMaxAdjustmentRate = 0.005;
+                presetStabilityThreshold = 0.005;
+                presetEnableAdaptiveSmoothing = true;
+                presetColorPreservationMode = MODE_YCBCR;
+                presetCurveType = CURVE_FILMIC_S;
+                presetAutoLiftShadows = true;
+                presetAutoLiftThreshold = 0.08;
+                break;
+                
+            case PRESET_HIGH_CONTRAST:
+                // High Contrast: Strong black and white points, more dramatic look
+                presetBlackPoint = 3.0;
+                presetWhitePoint = 98.0;
+                presetMidtoneBias = 1.15;
+                presetShadowLift = 0.04;
+                presetSoftClipAmount = 0.1;
+                presetContrastAmount = 1.4;
+                presetTemporalSmoothing = 0.75;
+                presetAnalysisFrequency = 3;
+                presetMaxAdjustmentRate = 0.02;
+                presetStabilityThreshold = 0.001;
+                presetEnableAdaptiveSmoothing = true;
+                presetColorPreservationMode = MODE_HSV;
+                presetCurveType = CURVE_GAMMA;
+                presetAutoLiftShadows = false;
+                break;
+                
+            case PRESET_NATURAL_LIGHT:
+                // Natural Light: Gentle processing to maintain natural appearance
+                presetBlackPoint = 0.2;
+                presetWhitePoint = 99.5;
+                presetMidtoneBias = 0.95;
+                presetShadowLift = 0.01;
+                presetSoftClipAmount = 0.15;
+                presetContrastAmount = 1.05;
+                presetTemporalSmoothing = 0.85;
+                presetAnalysisFrequency = 8;
+                presetMaxAdjustmentRate = 0.008;
+                presetStabilityThreshold = 0.003;
+                presetEnableAdaptiveSmoothing = true;
+                presetColorPreservationMode = MODE_YCBCR;
+                presetCurveType = CURVE_POWERLOG;
+                presetAutoLiftShadows = false;
+                break;
+                
+            case PRESET_TECHNICAL:
+                // Technical/Accurate: Minimal processing for technical accuracy
+                presetBlackPoint = 0.1;
+                presetWhitePoint = 99.9;
+                presetMidtoneBias = 1.0;
+                presetShadowLift = 0.0;
+                presetSoftClipAmount = 0.05;
+                presetContrastAmount = 1.0;
+                presetTemporalSmoothing = 0.7;
+                presetAnalysisFrequency = 1;
+                presetMaxAdjustmentRate = 0.02;
+                presetStabilityThreshold = 0.0;
+                presetEnableAdaptiveSmoothing = false;
+                presetColorPreservationMode = MODE_YCBCR;
+                presetCurveType = CURVE_GAMMA;
+                presetAutoLiftShadows = false;
+                break;
+                
+            case PRESET_BROADCAST:
+                // Broadcast Safe: Settings suitable for video production
+                presetBlackPoint = 1.0;
+                presetWhitePoint = 99.0;
+                presetMidtoneBias = 1.05;
+                presetShadowLift = 0.02;
+                presetSoftClipAmount = 0.2;
+                presetContrastAmount = 1.1;
+                presetTemporalSmoothing = 0.95;
+                presetAnalysisFrequency = 15;
+                presetMaxAdjustmentRate = 0.003;
+                presetStabilityThreshold = 0.008;
+                presetEnableAdaptiveSmoothing = true;
+                presetColorPreservationMode = MODE_YCBCR;
+                presetCurveType = CURVE_PIECEWISE;
+                presetAutoLiftShadows = false;
+                break;
+                
+            case PRESET_GAMING:
+                // Gaming: Responsive settings for gameplay with vibrant look
+                presetBlackPoint = 0.8;
+                presetWhitePoint = 99.2;
+                presetMidtoneBias = 0.9;
+                presetShadowLift = 0.03;
+                presetSoftClipAmount = 0.1;
+                presetContrastAmount = 1.2;
+                presetTemporalSmoothing = 0.6;
+                presetAnalysisFrequency = 2;
+                presetMaxAdjustmentRate = 0.03;
+                presetStabilityThreshold = 0.001;
+                presetEnableAdaptiveSmoothing = true;
+                presetColorPreservationMode = MODE_HSV;
+                presetCurveType = CURVE_GAMMA;
+                presetAutoLiftShadows = false;
+                break;
+                
+            case PRESET_VINTAGE_FILM:
+                // Vintage Film: With raised blacks and characteristic curve
+                presetBlackPoint = 2.0;
+                presetWhitePoint = 98.0;
+                presetMidtoneBias = 1.2;
+                presetShadowLift = 0.1;
+                presetSoftClipAmount = 0.3;
+                presetContrastAmount = 1.15;
+                presetTemporalSmoothing = 0.85;
+                presetAnalysisFrequency = 6;
+                presetMaxAdjustmentRate = 0.01;
+                presetStabilityThreshold = 0.004;
+                presetEnableAdaptiveSmoothing = true;
+                presetColorPreservationMode = MODE_HSV;
+                presetCurveType = CURVE_ANALOG_FILM;
+                presetAutoLiftShadows = true;
+                presetAutoLiftThreshold = 0.12;
+                break;
+        }
+    }
 
     // 1. Raw black/white point from histogram percentiles
-    float rawBlack = FindPercentile(AutoLeveler_HistogramSampler, BlackPoint);
-    float rawWhite = FindPercentile(AutoLeveler_HistogramSampler, WhitePoint);
-
-    // 2. Apply stability threshold - ignore small changes
-    if (abs(rawBlack - prevBlack) < StabilityThreshold)
+    float rawBlack = FindPercentile(AutoLeveler_HistogramSampler, presetBlackPoint);
+    float rawWhite = FindPercentile(AutoLeveler_HistogramSampler, presetWhitePoint);    // 2. Apply stability threshold - ignore small changes
+    if (abs(rawBlack - prevBlack) < presetStabilityThreshold)
         rawBlack = prevBlack;
         
-    if (abs(rawWhite - prevWhite) < StabilityThreshold)
+    if (abs(rawWhite - prevWhite) < presetStabilityThreshold)
         rawWhite = prevWhite;
         
     // 3. Apply change rate limiting (max adjustment per frame)
@@ -824,14 +1071,14 @@ float4 PS_AutoLeveler(float4 vpos : SV_Position, float2 texcoord : TEXCOORD) : S
     float whiteDiff = rawWhite - prevWhite;
     
     // Cap the maximum change per frame
-    blackDiff = clamp(blackDiff, -MaxAdjustmentRate, MaxAdjustmentRate);
-    whiteDiff = clamp(whiteDiff, -MaxAdjustmentRate, MaxAdjustmentRate);
+    blackDiff = clamp(blackDiff, -presetMaxAdjustmentRate, presetMaxAdjustmentRate);
+    whiteDiff = clamp(whiteDiff, -presetMaxAdjustmentRate, presetMaxAdjustmentRate);
     
     // Apply the limited change
     float limitedBlack = prevBlack + blackDiff;
     float limitedWhite = prevWhite + whiteDiff;
       // 4. Apply temporal smoothing to the rate-limited values
-    float effectiveSmoothing = EnableAdaptiveSmoothing ? s_autoLevelerAdaptiveSmoothing : TemporalSmoothing;
+    float effectiveSmoothing = presetEnableAdaptiveSmoothing ? s_autoLevelerAdaptiveSmoothing : presetTemporalSmoothing;
     float blackPoint = lerp(limitedBlack, prevBlack, effectiveSmoothing);
     float whitePoint = lerp(limitedWhite, prevWhite, effectiveSmoothing);
     
@@ -869,27 +1116,25 @@ float4 PS_AutoLeveler(float4 vpos : SV_Position, float2 texcoord : TEXCOORD) : S
       // 6a. Normalize luminance
     float normalizedLuma = (luma - blackPoint) / max(AS_EPSILON_SAFE, (whitePoint - blackPoint));
     normalizedLuma = saturate(normalizedLuma);
-    
-    // 6b. Apply curve and contrast
-    normalizedLuma = ApplyContrastCurve(normalizedLuma, CurveType, MidtoneBias);
-    normalizedLuma = saturate(pow(normalizedLuma, 1.0 / ContrastAmount));
+      // 6b. Apply curve and contrast
+    normalizedLuma = ApplyContrastCurve(normalizedLuma, presetCurveType, presetMidtoneBias);
+    normalizedLuma = saturate(pow(normalizedLuma, 1.0 / presetContrastAmount));
     
     // 6c. Apply soft clip (highlight compression)
-    if (SoftClipAmount > 0.0) {
-        float softClipThreshold = 1.0 - SoftClipAmount;
+    if (presetSoftClipAmount > 0.0) {
+        float softClipThreshold = 1.0 - presetSoftClipAmount;
         if (normalizedLuma > softClipThreshold) {
             float softClipValue = softClipThreshold + (1.0 - softClipThreshold) * 
-                                 (1.0 - pow(1.0 - ((normalizedLuma - softClipThreshold) / SoftClipAmount), 2.0));
+                                 (1.0 - pow(1.0 - ((normalizedLuma - softClipThreshold) / presetSoftClipAmount), 2.0));
             normalizedLuma = softClipValue;
         }
     }
     
     // Apply shadow lifting
-    normalizedLuma = ShadowLift + normalizedLuma * (1.0 - ShadowLift);    // 6d. Color preservation modes
+    normalizedLuma = presetShadowLift + normalizedLuma * (1.0 - presetShadowLift);    // 6d. Color preservation modes
     // Declare colorRatio variable outside switch for use in multiple cases
     float3 colorRatio;
-    
-    switch(ColorPreservationMode)
+      switch(presetColorPreservationMode)
     {
         case MODE_RGB:
             // Simple RGB ratio method
@@ -937,9 +1182,9 @@ float4 PS_AutoLeveler(float4 vpos : SV_Position, float2 texcoord : TEXCOORD) : S
     }
 
     // Apply selective shadow lifting with color preservation
-    if (AutoLiftShadows) {
-        adjustedColor = ApplyShadowLift(adjustedColor, AutoLiftThreshold, ShadowLift);
-    }    if (DebugMode != DEBUG_OFF) {
+    if (presetAutoLiftShadows) {
+        adjustedColor = ApplyShadowLift(adjustedColor, presetAutoLiftThreshold, presetShadowLift);
+    }if (DebugMode != DEBUG_OFF) {
         float3 debugResult = GenerateDebugView(originalColor, adjustedColor, blackPoint, whitePoint, texcoord, DebugMode, DebugOpacity);
         return float4(debugResult, 1.0);
     }
@@ -953,7 +1198,7 @@ float4 PS_AutoLeveler(float4 vpos : SV_Position, float2 texcoord : TEXCOORD) : S
 
 technique AS_GFX_AutoLeveler <
     ui_label = "[AS] GFX: Auto Leveler"; // Updated Label
-    ui_tooltip = "Dynamic luminance and contrast adjustment via intelligent remapping";
+    ui_tooltip = "Dynamic luminance and contrast adjustment via intelligent remapping with ready-to-use presets";
 >
 {    pass BuildHistogram
     {
