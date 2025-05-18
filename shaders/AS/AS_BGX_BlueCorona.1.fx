@@ -1,6 +1,6 @@
 /**
  * AS_BGX_BlueCorona.1.fx - Blue Corona Background Effect
- * Author: Leon Aquitaine (adapted from GLSL shader)
+ * Author: Leon Aquitaine
  * License: Creative Commons Attribution 4.0 International
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
  * 
