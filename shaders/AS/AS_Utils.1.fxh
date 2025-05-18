@@ -43,6 +43,7 @@
 // ============================================================================
 #include "ReShade.fxh"
 #include "ReShadeUI.fxh"
+#include "Blending.fxh"
 
 // ============================================================================
 // MATH CONSTANTS
@@ -401,14 +402,9 @@ float fmod(float x, float y) {
 //              5: Screen
 // Returns: The blended float3 color.
 float3 AS_ApplyBlend(float3 fgColor, float3 bgColor, int blendMode) {
-    if (blendMode == 1) return max(bgColor, fgColor);                      // Lighter Only (Lighten)
-    if (blendMode == 2) return min(bgColor, fgColor);                      // Darker Only (Darken)
-    if (blendMode == 3) return saturate(bgColor + fgColor);                // Additive (saturate to prevent overflow)
-    if (blendMode == 4) return saturate(bgColor * fgColor);                // Multiply
-    if (blendMode == 5) return saturate(1.0 - (1.0 - bgColor) * (1.0 - fgColor)); // Screen
     
-    // Default: Normal blend (mode 0 or any other mode)
-    return fgColor; 
+    float3 outColor = ComHeaders::Blending::Blend(blendMode, bgColor, fgColor, 1.0);
+    return outColor.rgb; 
 }
 
 // Applies various blend modes between a foreground and background color, with opacity.
@@ -425,6 +421,7 @@ float3 AS_ApplyBlend(float3 fgColor, float3 bgColor, int blendMode) {
 //   blendOpacity: Overall opacity of the foreground effect layer (0.0 to 1.0).
 // Returns: The blended float4 color. The alpha channel of the result is taken from bgColor.a.
 float4 AS_ApplyBlend(float4 fgColor, float4 bgColor, int blendMode, float blendOpacity) {
+    
     // Call the 3-parameter version for RGB blending
     float3 effect_rgb = AS_ApplyBlend(fgColor.rgb, bgColor.rgb, blendMode);
 
@@ -853,7 +850,7 @@ uniform float name < ui_type = "slider"; ui_label = "Effect Depth"; ui_tooltip =
 
 // --- Blend Mode UI Macro with default value ---
 #define AS_BLENDMODE_UI_DEFAULT(name, defaultMode) \
-uniform int name < ui_type = "combo"; ui_label = "Mode"; ui_items = "Normal\0Lighter Only\0Darker Only\0Additive\0Multiply\0Screen\0"; ui_category = "Final Mix"; > = defaultMode;
+BLENDING_COMBO(name, "Mode", "Select how the effect will mix with the background.", "Final Mix", false, 0, defaultMode);
 
 // --- Blend Mode UI Macro (defaults to Normal) ---
 #define AS_BLENDMODE_UI(name) \
