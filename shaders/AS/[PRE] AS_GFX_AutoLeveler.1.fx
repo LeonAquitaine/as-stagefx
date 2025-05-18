@@ -379,10 +379,57 @@ uniform float DebugOpacity < ui_type = "slider"; ui_label = "Debug Opacity"; ui_
 // HELPER FUNCTIONS
 // ============================================================================
 
+// Static variables for frame tracking and transitions - moved here to ensure proper declaration before use
+static float s_autoLevelerLastAnalysisTime = 0.0;
+static float s_autoLevelerPrevAvgLuma = 0.0;
+static float s_autoLevelerSceneDifference = 0.0;
+static float s_autoLevelerAdaptiveSmoothing = 0.0;
+static bool s_autoLevelerAnalyzeThisFrame = true;
+static float prevBlack = 0.0;
+static float prevWhite = 1.0;
+
 // RGB to luminance using BT.709 coefficients
 float Luminance(float3 color)
 {
     return dot(color, float3(0.2126, 0.7152, 0.0722));
+}
+
+// Get analysis frequency value based on preset
+int GetAnalysisFrequencyForPreset(int presetIndex)
+{
+    switch(presetIndex) {
+        case PRESET_STANDARD_PHOTO: return DEF_STD_ANALYSIS_FREQ;
+        case PRESET_CINEMATIC: return DEF_CINE_ANALYSIS_FREQ;
+        case PRESET_HIGH_CONTRAST: return DEF_HIGH_ANALYSIS_FREQ;
+        case PRESET_NATURAL_LIGHT: return DEF_NAT_ANALYSIS_FREQ;
+        case PRESET_TECHNICAL: return DEF_TECH_ANALYSIS_FREQ;
+        case PRESET_BROADCAST: return DEF_BCAST_ANALYSIS_FREQ;
+        case PRESET_GAMING: return DEF_GAME_ANALYSIS_FREQ;
+        case PRESET_VINTAGE_FILM: return DEF_VINT_ANALYSIS_FREQ;
+        default: return AnalysisFrequency; // Custom or unknown preset uses the UI value
+    }
+}
+
+// Helper function to determine if the current frame should be analyzed
+bool ShouldAnalyzeCurrentFrame()
+{
+    // Get current time and determine if we analyze this frame
+    float currentTime = AS_getTime();
+    float timeSinceLastAnalysis = currentTime - s_autoLevelerLastAnalysisTime;
+    
+    // Get analysis frequency from preset using the helper function
+    int analysisFreq = GetAnalysisFrequencyForPreset(Preset);
+    
+    float analysisInterval = float(analysisFreq) / 60.0; // Convert to seconds (assuming default 60 fps)
+    
+    bool shouldAnalyze = timeSinceLastAnalysis >= analysisInterval;
+    
+    // Update last analysis time if analyzing this frame
+    if (shouldAnalyze) {
+        s_autoLevelerLastAnalysisTime = currentTime;
+    }
+    
+    return shouldAnalyze;
 }
 
 // RGB to YCbCr conversion using BT.709 coefficients
@@ -616,6 +663,21 @@ float FindPercentile(sampler histSampler, float percentile)
     
     // Safety return (shouldn't reach here)
     return 1.0;
+}
+
+// Ensure black and white points maintain proper dynamic range
+void EnsureDynamicRange(inout float blackPoint, inout float whitePoint)
+{
+    // Clamp extremes to prevent aggressive stretching
+    blackPoint = max(blackPoint, SAFE_BLACK_POINT);
+    whitePoint = min(whitePoint, SAFE_WHITE_POINT);
+    
+    // Prevent histogram range collapse by ensuring minimum dynamic range
+    if (whitePoint - blackPoint < MIN_DYNAMIC_RANGE)
+    {
+        // Prevent collapse (too narrow range)
+        whitePoint = blackPoint + MIN_DYNAMIC_RANGE;
+    }
 }
 
 // Draw histogram overlay for debug visualization
@@ -1057,25 +1119,6 @@ LevelerParams GetPresetParameters(int presetIndex)
     return params;
 }
 
-// Get appropriate analysis frequency based on preset
-int GetAnalysisFrequencyForPreset(int presetIndex)
-{
-    if (presetIndex == PRESET_CUSTOM)
-        return AnalysisFrequency;
-        
-    switch (presetIndex) {
-        case PRESET_STANDARD_PHOTO: return DEF_STD_ANALYSIS_FREQ;
-        case PRESET_CINEMATIC:      return DEF_CINE_ANALYSIS_FREQ;
-        case PRESET_HIGH_CONTRAST:  return DEF_HIGH_ANALYSIS_FREQ;
-        case PRESET_NATURAL_LIGHT:  return DEF_NAT_ANALYSIS_FREQ;
-        case PRESET_TECHNICAL:      return DEF_TECH_ANALYSIS_FREQ;
-        case PRESET_BROADCAST:      return DEF_BCAST_ANALYSIS_FREQ;
-        case PRESET_GAMING:         return DEF_GAME_ANALYSIS_FREQ;
-        case PRESET_VINTAGE_FILM:   return DEF_VINT_ANALYSIS_FREQ;
-        default:                    return AnalysisFrequency;
-    }
-}
-
 // Get adaptive smoothing configuration for the current preset
 void GetAdaptiveSmoothingForPreset(int presetIndex, out bool enableAdaptive, out float smoothingAmount)
 {
@@ -1126,33 +1169,14 @@ void GetAdaptiveSmoothingForPreset(int presetIndex, out bool enableAdaptive, out
 // PIXEL SHADERS
 // ============================================================================
 
-// Static variables for frame tracking and transitions
-static float s_autoLevelerLastAnalysisTime = 0.0;
-static float s_autoLevelerPrevAvgLuma = 0.0;
-static float s_autoLevelerSceneDifference = 0.0;
-static float s_autoLevelerAdaptiveSmoothing = 0.0;
-static bool s_autoLevelerAnalyzeThisFrame = true;
-
 // First pass: Build histogram of current frame
 float4 PS_BuildHistogram(float4 vpos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target
 {    
-    // Get current time and determine if we analyze this frame
-    float currentTime = AS_getTime();
-    float timeSinceLastAnalysis = currentTime - s_autoLevelerLastAnalysisTime;
+    // Check if we should analyze the current frame using our helper function
+    s_autoLevelerAnalyzeThisFrame = ShouldAnalyzeCurrentFrame();
     
-    // Get analysis frequency from preset using the helper function that centralizes preset management
-    int analysisFreq = GetAnalysisFrequencyForPreset(Preset);
-    
-    float analysisInterval = float(analysisFreq) / 60.0; // Convert to seconds (assuming default 60 fps)
-    
-    s_autoLevelerAnalyzeThisFrame = timeSinceLastAnalysis >= analysisInterval;
-    
-    // Update last analysis time if analyzing this frame
-    if (s_autoLevelerAnalyzeThisFrame) {
-        s_autoLevelerLastAnalysisTime = currentTime;
-    }
-      // If not analyzing this frame, return zero (skip histogram building)
-    if (!s_autoLevelerAnalyzeThisFrame && analysisFreq > 1)
+    // If not analyzing this frame, return zero (skip histogram building)
+    if (!s_autoLevelerAnalyzeThisFrame && GetAnalysisFrequencyForPreset(Preset) > 1)
     {
         return 0.0;
     }
@@ -1184,24 +1208,23 @@ float4 PS_SmoothHistogram(float4 vpos : SV_Position, float2 texcoord : TEXCOORD)
         return previousValue;
     }
     
-    // Get current frame's histogram value
+    // Get current and previous histogram values
     float currentValue = tex2Dfetch(AutoLeveler_CurrentHistogramSampler, int2(binIndex, 0)).r;
-    
-    // Get previous frame's histogram value
     float previousValue = tex2Dfetch(AutoLeveler_HistogramSampler, int2(binIndex, 0)).r;
     
-    // Calculate current average luminance for scene change detection if this is bin 128 (~50% gray)
+    // Calculate scene difference detection once (for middle bin only)
     if (binIndex == HISTOGRAM_BINS / 2)
     {
-        // Calculate scene difference (using median gray as rough approximation)
+        // Calculate scene difference using median gray as approximation
         float currentAvgLuma = currentValue;
-        s_autoLevelerSceneDifference = abs(currentAvgLuma - s_autoLevelerPrevAvgLuma) / max(max(currentAvgLuma, s_autoLevelerPrevAvgLuma), AS_EPSILON_SAFE);
-        s_autoLevelerSceneDifference = saturate(s_autoLevelerSceneDifference / MAX_SCENE_DIFF); // Normalize to [0,1]
+        s_autoLevelerSceneDifference = abs(currentAvgLuma - s_autoLevelerPrevAvgLuma) / 
+            max(max(currentAvgLuma, s_autoLevelerPrevAvgLuma), AS_EPSILON_SAFE);
+        s_autoLevelerSceneDifference = saturate(s_autoLevelerSceneDifference / MAX_SCENE_DIFF);
         
         // Update for next frame
         s_autoLevelerPrevAvgLuma = currentAvgLuma;
         
-        // Get adaptive smoothing settings from helper function that centralizes preset settings
+        // Get smoothing settings from preset
         bool adaptiveSmooth;
         float temporalSmooth;
         GetAdaptiveSmoothingForPreset(Preset, adaptiveSmooth, temporalSmooth);
@@ -1211,17 +1234,15 @@ float4 PS_SmoothHistogram(float4 vpos : SV_Position, float2 texcoord : TEXCOORD)
             ? lerp(temporalSmooth, MIN_SMOOTHING, s_autoLevelerSceneDifference) 
             : temporalSmooth;
     }
-      // Apply temporal smoothing (either fixed or adaptive)
-    // Get the current preset's adaptive smoothing setting
+    
+    // Apply temporal smoothing using preset-specific settings
     bool useAdaptiveSmoothing;
     float baseSmoothingAmount;
     GetAdaptiveSmoothingForPreset(Preset, useAdaptiveSmoothing, baseSmoothingAmount);
     
-    // Calculate effective smoothing based on preset's settings
+    // Use the appropriate smoothing amount (adaptive or fixed)
     float effectiveSmoothing = useAdaptiveSmoothing ? s_autoLevelerAdaptiveSmoothing : baseSmoothingAmount;
-    float smoothedValue = lerp(currentValue, previousValue, effectiveSmoothing);
-    
-    return smoothedValue;
+    return lerp(currentValue, previousValue, effectiveSmoothing);
 }
 
 // Third pass: Copy from intermediate to final histogram texture
@@ -1235,12 +1256,70 @@ float4 PS_CopyHistogram(float4 vpos : SV_Position, float2 texcoord : TEXCOORD) :
     return value;
 }
 
+// Apply color transformation based on the selected preservation mode
+float3 TransformColorWithPreservation(float3 originalColor, float normalizedLuma, int preservationMode, float whiteBalanceStrength, float2 texcoord)
+{
+    float3 adjustedColor;
+    float luma = Luminance(originalColor);
+    float3 colorRatio;
+    
+    switch(preservationMode)
+    {
+        case MODE_RGB:
+            // Simple RGB ratio method
+            colorRatio = (luma > AS_EPSILON_SAFE) ? originalColor / luma : 1.0;
+            adjustedColor = normalizedLuma * colorRatio;
+            break;
+            
+        case MODE_YCBCR:
+            // YCbCr method (preserve chrominance)
+            float3 ycbcr = RGBtoYCbCr(originalColor);
+            ycbcr.x = normalizedLuma;
+            adjustedColor = YCbCrtoRGB(ycbcr);
+            break;
+            
+        case MODE_HSV:
+            // HSV method (preserve hue and saturation)
+            float3 hsv = RGBtoHSV(originalColor);
+            hsv.z = normalizedLuma;
+            adjustedColor = HSVtoRGB(hsv);
+            break;
+            
+        case MODE_GRAYWORLD:
+            // Gray world with auto white balance
+            float3 avgColor = 0.0;
+            
+            // Look at nearby pixels for average color (simple 3x3 sampling)
+            [unroll]
+            for (int y = -1; y <= 1; y++) {
+                [unroll]
+                for (int x = -1; x <= 1; x++) {
+                    float2 sampleCoord = texcoord + float2(x, y) * float2(BUFFER_RCP_WIDTH, BUFFER_RCP_HEIGHT);
+                    avgColor += tex2D(ReShade::BackBuffer, sampleCoord).rgb;
+                }
+            }
+            avgColor /= 9.0;
+            
+            // Calculate white balance correction factors
+            float avgLuma = Luminance(avgColor);
+            float3 correction = (avgLuma > AS_EPSILON_SAFE) ? avgLuma / max(float3(AS_EPSILON_SAFE, AS_EPSILON_SAFE, AS_EPSILON_SAFE), avgColor) : float3(1.0, 1.0, 1.0);
+            
+            // Apply white balance with user-controlled strength
+            // Using float3(1.0, 1.0, 1.0) as identity vector - no correction
+            float3 identityCorrection = float3(1.0, 1.0, 1.0);
+            float3 balancedColor = originalColor * lerp(identityCorrection, correction, whiteBalanceStrength);
+            
+            // Then apply luminance adjustment with RGB ratio method
+            luma = Luminance(balancedColor);
+            colorRatio = (luma > AS_EPSILON_SAFE) ? balancedColor / luma : 1.0;
+            adjustedColor = normalizedLuma * colorRatio;
+            break;
+    }
+    
+    return adjustedColor;
+}
 // Final pass: Apply auto-leveling based on histogram
-// Persistent previous percentile values (for smoothing)
-static float prevBlack = 0.0;
-static float prevWhite = 1.0;
 
-// Final pass: Apply auto-leveling based on histogram
 float4 PS_AutoLeveler(float4 vpos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target
 {
     float3 originalColor = tex2D(ReShade::BackBuffer, texcoord).rgb;
@@ -1280,18 +1359,10 @@ float4 PS_AutoLeveler(float4 vpos : SV_Position, float2 texcoord : TEXCOORD) : S
     prevBlack = blackPoint;
     prevWhite = whitePoint;
     
-    // 6. Clamp extremes to prevent aggressive stretching
-    blackPoint = max(blackPoint, SAFE_BLACK_POINT);
-    whitePoint = min(whitePoint, SAFE_WHITE_POINT);
-      
-    // Prevent histogram range collapse by ensuring minimum dynamic range
-    if (whitePoint - blackPoint < MIN_DYNAMIC_RANGE)
-    {
-        // Prevent collapse (too narrow range)
-        whitePoint = blackPoint + MIN_DYNAMIC_RANGE;
-    }
+    // 6. Ensure proper dynamic range using our helper function
+    EnsureDynamicRange(blackPoint, whitePoint);
 
-    // 5. Reference luminance anchoring
+    // 7. Reference luminance anchoring
     if (UseReferenceLuminance) {
         float refGray = ReferenceLuminance / 100.0;
         float currentMid = (blackPoint + whitePoint) * AS_HALF;
@@ -1302,97 +1373,44 @@ float4 PS_AutoLeveler(float4 vpos : SV_Position, float2 texcoord : TEXCOORD) : S
         blackPoint = refGray - (range * AS_HALF * scale);
         whitePoint = refGray + (range * AS_HALF * scale);
         
-        // Re-clamp
+        // Re-clamp and ensure proper range again
         blackPoint = saturate(blackPoint);
         whitePoint = saturate(whitePoint);
+        EnsureDynamicRange(blackPoint, whitePoint);
     }
 
-    // 6. Process colors based on color preservation mode
-    float3 adjustedColor;
+    // 8. Process luminance normalization
     float luma = Luminance(originalColor);
       
-    // 6a. Normalize luminance
+    // 8a. Normalize luminance
     float normalizedLuma = (luma - blackPoint) / max(AS_EPSILON_SAFE, (whitePoint - blackPoint));
     normalizedLuma = saturate(normalizedLuma);
       
-    // 6b. Apply curve and contrast
+    // 8b. Apply curve and contrast
     normalizedLuma = ApplyContrastCurve(normalizedLuma, params.CurveType, params.MidtoneBias);
     normalizedLuma = saturate(pow(normalizedLuma, 1.0 / params.ContrastAmount));
     
-    // 6c. Apply soft clip (highlight compression)
+    // 8c. Apply soft clip (highlight compression)
     if (params.SoftClipAmount > 0.0) {
         float softClipThreshold = 1.0 - params.SoftClipAmount;
         if (normalizedLuma > softClipThreshold) {
             float softClipValue = softClipThreshold + (1.0 - softClipThreshold) * 
-                                 (1.0 - pow(1.0 - ((normalizedLuma - softClipThreshold) / params.SoftClipAmount), 2.0));
+                               (1.0 - pow(1.0 - ((normalizedLuma - softClipThreshold) / params.SoftClipAmount), 2.0));
             normalizedLuma = softClipValue;
         }
     }
     
     // Apply shadow lifting
     normalizedLuma = params.ShadowLift + normalizedLuma * (1.0 - params.ShadowLift);
-    
-    // 6d. Color preservation modes
-    // Declare colorRatio variable outside switch for use in multiple cases
-    float3 colorRatio;
-      
-    switch(params.ColorPreservationMode)
-    {
-        case MODE_RGB:
-            // Simple RGB ratio method
-            colorRatio = (luma > AS_EPSILON_SAFE) ? originalColor / luma : 1.0;
-            adjustedColor = normalizedLuma * colorRatio;
-            break;
-            
-        case MODE_YCBCR:
-            // YCbCr method (preserve chrominance)
-            float3 ycbcr = RGBtoYCbCr(originalColor);
-            ycbcr.x = normalizedLuma;
-            adjustedColor = YCbCrtoRGB(ycbcr);
-            break;
-            
-        case MODE_HSV:
-            // HSV method (preserve hue and saturation)
-            float3 hsv = RGBtoHSV(originalColor);
-            hsv.z = normalizedLuma;
-            adjustedColor = HSVtoRGB(hsv);
-            break;
-            
-        case MODE_GRAYWORLD:
-            // Gray world with auto white balance
-            float3 avgColor = 0.0;
-            
-            // Look at nearby pixels for average color (simple 3x3 sampling)
-            for (int y = -1; y <= 1; y++) {
-                for (int x = -1; x <= 1; x++) {
-                    float2 sampleCoord = texcoord + float2(x, y) * float2(BUFFER_RCP_WIDTH, BUFFER_RCP_HEIGHT);
-                    avgColor += tex2D(ReShade::BackBuffer, sampleCoord).rgb;
-                }
-            }
-            avgColor /= 9.0;
-            
-            // Calculate white balance correction factors
-            float avgLuma = Luminance(avgColor);
-            float3 correction = (avgLuma > AS_EPSILON_SAFE) ? avgLuma / max(float3(AS_EPSILON_SAFE, AS_EPSILON_SAFE, AS_EPSILON_SAFE), avgColor) : float3(1.0, 1.0, 1.0);
-            
-            // Apply white balance with user-controlled strength
-            // Using float3(1.0, 1.0, 1.0) as identity vector - no correction
-            float3 identityCorrection = float3(1.0, 1.0, 1.0);
-            float3 balancedColor = originalColor * lerp(identityCorrection, correction, WhiteBalanceStrength);
-            
-            // Then apply luminance adjustment with RGB ratio method
-            luma = Luminance(balancedColor);
-            colorRatio = (luma > AS_EPSILON_SAFE) ? balancedColor / luma : 1.0;
-            adjustedColor = normalizedLuma * colorRatio;
-            break;
-    }
+      // 9. Apply color preservation using our helper function
+    float3 adjustedColor = TransformColorWithPreservation(originalColor, normalizedLuma, params.ColorPreservationMode, WhiteBalanceStrength, texcoord);
 
-    // Apply selective shadow lifting with color preservation
+    // 10. Apply selective shadow lifting with color preservation
     if (params.AutoLiftShadows) {
         adjustedColor = ApplyShadowLift(adjustedColor, params.AutoLiftThreshold, params.ShadowLift);
     }
     
-    // Apply debug visualization if enabled
+    // 11. Apply debug visualization if enabled
     if (DebugMode != DEBUG_OFF) {
         float3 debugResult = GenerateDebugView(originalColor, adjustedColor, blackPoint, whitePoint, texcoord, DebugMode, DebugOpacity);
         return float4(debugResult, 1.0);
