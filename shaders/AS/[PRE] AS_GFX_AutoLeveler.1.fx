@@ -51,9 +51,8 @@
  * - Midtone Bias below 1.0 brightens midtones, above 1.0 darkens them
  * - Turn on heatmap debug view to see where adjustments are most significant
  * - For video, use higher temporal smoothing (0.9+) to avoid flickering
- * 
- * TRANSITION STABILITY TIPS:
- * - For smoother gameplay: Set Analysis Frequency to 10-30 frames and increase Stability Threshold
+ *  * TRANSITION STABILITY TIPS:
+ * - For smoother gameplay: Set Analysis Frequency to 10-30 and increase Stability Threshold
  * - For cutscenes/video: Use Max Adjustment Rate 0.001-0.005 for very smooth transitions
  * - For static photography: Keep defaults or lower Stability Threshold to 0 for precise adjustments
  * - When using high Analysis Frequency, lower Max Adjustment Rate to prevent large jumps
@@ -180,7 +179,7 @@ uniform float ContrastAmount < ui_type = "slider"; ui_label = "Contrast"; ui_too
 uniform float TemporalSmoothing < ui_type = "slider"; ui_label = "Temporal Smoothing"; ui_tooltip = "Controls how quickly the adjustment adapts to scene changes (higher = slower/smoother)"; ui_category = "Advanced Options"; ui_category_closed = true; ui_min = AS_RANGE_ZERO_ONE_MIN; ui_max = 0.99; ui_step = 0.01; > = 0.8;
 
 // Transition Stability Controls
-uniform int AnalysisFrequency < ui_type = "drag"; ui_label = "Analysis Frequency"; ui_tooltip = "Analyze histogram every N frames (1 = every frame, higher = less frequent updates)"; ui_category = "Transition Stability"; ui_category_closed = true; ui_min = 1; ui_max = 60; ui_step = 1; > = 1;
+uniform int AnalysisFrequency < ui_type = "drag"; ui_label = "Analysis Frequency"; ui_tooltip = "Analyze histogram every N frames (1 = every frame, higher = less frequent updates, smoother transitions)"; ui_category = "Transition Stability"; ui_category_closed = true; ui_min = 1; ui_max = 60; ui_step = 1; > = 1;
 
 uniform float MaxAdjustmentRate < ui_type = "slider"; ui_label = "Max Adjustment Rate"; ui_tooltip = "Restricts how quickly black/white points can change per frame (lower = smoother transitions but slower response)"; ui_category = "Transition Stability"; ui_min = 0.001; ui_max = 0.1; ui_step = 0.001; > = 0.01;
 
@@ -705,7 +704,7 @@ float3 GenerateDebugView(float3 originalColor, float3 adjustedColor, float black
 // ============================================================================
 
 // Static variables for frame tracking and transitions
-static uint s_autoLevelerFrameCount = 0;
+static float s_autoLevelerLastAnalysisTime = 0.0;
 static float s_autoLevelerPrevAvgLuma = 0.0;
 static float s_autoLevelerSceneDifference = 0.0;
 static float s_autoLevelerAdaptiveSmoothing = 0.0;
@@ -714,9 +713,17 @@ static bool s_autoLevelerAnalyzeThisFrame = true;
 // First pass: Build histogram of current frame
 float4 PS_BuildHistogram(float4 vpos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target
 {
-    // Increment frame counter and determine if we analyze this frame
-    s_autoLevelerFrameCount = (s_autoLevelerFrameCount + 1) % 65536; // Prevent overflow
-    s_autoLevelerAnalyzeThisFrame = (s_autoLevelerFrameCount % AnalysisFrequency) == 0;
+    // Get current time and determine if we analyze this frame
+    float currentTime = AS_getTime();
+    float timeSinceLastAnalysis = currentTime - s_autoLevelerLastAnalysisTime;
+    float analysisInterval = float(AnalysisFrequency) / 60.0; // Convert to seconds (assuming default 60 fps)
+    
+    s_autoLevelerAnalyzeThisFrame = timeSinceLastAnalysis >= analysisInterval;
+    
+    // Update last analysis time if analyzing this frame
+    if (s_autoLevelerAnalyzeThisFrame) {
+        s_autoLevelerLastAnalysisTime = currentTime;
+    }
       // If not analyzing this frame, return zero (skip histogram building)
     if (!s_autoLevelerAnalyzeThisFrame && AnalysisFrequency > 1)
     {
