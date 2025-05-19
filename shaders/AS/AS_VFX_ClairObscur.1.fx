@@ -279,25 +279,25 @@ sampler PetalAtlas_Sampler { Texture = PetalAtlasTexture; AddressU = CLAMP; Addr
 // ---- Petal Appearance ----
 uniform float3 PetalColor < ui_type = "color"; ui_label = "Petal Color"; ui_category = "Petals"; > = float3(1.0, 1.0, 1.0);
 uniform float PetalBaseAlpha < ui_type = "slider"; ui_label = "Opacity"; ui_category = "Petals"; ui_min = 0.0; ui_max = 1.0; > = 1.0;
-uniform float PetalBaseSize < ui_type = "slider"; ui_label = "Size"; ui_category = "Petals"; ui_min = 0.001; ui_max = 0.5; ui_step=0.001; > = 0.110; 
-uniform float PetalSizeVariation < ui_type = "slider"; ui_label = "Size Variation"; ui_category = "Petals"; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; > = 1.0;
+uniform float PetalBaseSize < ui_type = "slider"; ui_label = "Size"; ui_category = "Petals"; ui_min = 0.001; ui_max = 0.5; ui_step=0.001; > = 0.06; 
+uniform float PetalSizeVariation < ui_type = "slider"; ui_label = "Size Variation"; ui_category = "Petals"; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; > = 0.75;
 uniform int PetalShadingMode < ui_type = "combo"; ui_label = "Overlapping Mode"; ui_category = "Petals"; ui_items = "Transparent Blend\0Opaque (Solid)\0"; ui_tooltip = "Choose how petals blend with the scene."; > = 1;
 uniform int PetalType < ui_type = "combo"; ui_label = "Petal Type"; ui_category = "Petals"; ui_items = "Roses\0Cherry Blossoms\0"; ui_tooltip = "Choose the type of petals to display."; > = 0;
 uniform int PetalVariety < ui_type = "slider"; ui_label = "Petal Variety"; ui_category = "Petals"; ui_min = 1; ui_max = 4; ui_tooltip = "Number of different petal sprites to use from the selected type (1 to 4)."; > = 2;
 
 // ---- Layers ----
-uniform float GlobalVoronoiDensity < ui_type = "slider"; ui_label = "Density"; ui_category = "Layers"; ui_min = 1.0; ui_max = 30.0; ui_step = 0.5; > = 7.0; 
-uniform int NumLayers < ui_type = "slider"; ui_label = "Number of Layers"; ui_category = "Layers"; ui_min = 1; ui_max = 30; > = 15;
-uniform float LayerSizeMod < ui_type = "slider"; ui_label = "Layer Size Progression"; ui_category = "Layers"; ui_tooltip = "How much size changes between layers (perspective effect)"; ui_min = 0.8; ui_max = 1.2; ui_step=0.01; > = 1.05;
+uniform float GlobalVoronoiDensity < ui_type = "slider"; ui_label = "Density"; ui_category = "Layers"; ui_min = 1.0; ui_max = 30.0; ui_step = 0.5; > = 5.0; 
+uniform int NumLayers < ui_type = "slider"; ui_label = "Number of Layers"; ui_category = "Layers"; ui_min = 1; ui_max = 30; > = 5;
+uniform float LayerSizeMod < ui_type = "slider"; ui_label = "Layer Size Progression"; ui_category = "Layers"; ui_tooltip = "How much size changes between layers (perspective effect)"; ui_min = 0.8; ui_max = 1.2; ui_step=0.01; > = 1.10;
 uniform float LayerAlphaMod < ui_type = "slider"; ui_label = "Layer Opacity Falloff"; ui_category = "Layers"; ui_tooltip = "How quickly opacity decreases with depth"; ui_min = 0.7; ui_max = 1.0; ui_step=0.01; > = 0.85;
 
 // ---- Movement & Animation ----
 uniform float SimulationSpeed < ui_type = "slider"; ui_label = "Animation Speed"; ui_category = "Movement"; ui_min = 0.0; ui_max = 2.0; > = 0.500;
 uniform float BasePetalSpinSpeed < ui_type = "slider"; ui_label = "Rotation Speed"; ui_category = "Movement"; ui_min = 0.0; ui_max = 10.0; > = 2.573;
-uniform float RotationVariationSpeed < ui_type = "slider"; ui_label = "Rotation Variation Speed"; ui_category = "Movement"; ui_tooltip = "Controls the speed of unpredictable rotation with noise-driven patterns"; ui_min = 0.0; ui_max = 2.0; > = 1.190;
+uniform float RotationVariationSpeed < ui_type = "slider"; ui_label = "Rotation Variation Speed"; ui_category = "Movement"; ui_tooltip = "Controls the speed of unpredictable rotation with noise-driven patterns"; ui_min = 0.0; ui_max = 2.0; > = 0.2;
 uniform float RotationVariationAmplitude < ui_type = "slider"; ui_label = "Rotation Variation Amplitude"; ui_category = "Movement"; ui_tooltip = "Controls the magnitude of rotation variation"; ui_min = 0.0; ui_max = 1.0; > = 0.650;
 uniform float BaseDriftSpeed < ui_type = "slider"; ui_label = "Drift Speed"; ui_category = "Movement"; ui_min = 0.0; ui_max = 2.0; ui_step=0.01; > = 0.90;
-uniform float2 UserDirection < ui_type = "slider"; ui_label = "Flow Direction"; ui_category = "Movement"; ui_min = -1.0; ui_max = 1.0; > = float2(-0.311, -0.571);
+uniform float2 UserDirection < ui_type = "slider"; ui_label = "Flow Direction"; ui_category = "Movement"; ui_min = -1.0; ui_max = 1.0; > = float2(-0.45, -0.45);
 uniform float BaseFlutterStrength < ui_type = "slider"; ui_label = "Flutter Intensity"; ui_category = "Movement"; ui_min = 0.0; ui_max = 0.2; ui_step = 0.005; > = 0.022;
 uniform float SwayMagnitude < ui_type = "slider"; ui_label = "Sway Amount"; ui_category = "Movement"; ui_min = 0.0; ui_max = 0.05; ui_step = 0.001; > = 0.005;
 uniform float Lifetime < ui_type = "slider"; ui_label = "Petal Lifespan"; ui_category = "Movement"; ui_min = 1.0; ui_max = 20.0; > = 10.000;
