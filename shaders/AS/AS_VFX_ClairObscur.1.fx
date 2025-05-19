@@ -276,11 +276,6 @@ sampler PetalAtlas_Sampler { Texture = PetalAtlasTexture; AddressU = CLAMP; Addr
 
 // --- UI Uniforms ---
 
-// ---- Stage Controls ----
-AS_STAGEDEPTH_UI(ClairObscur_StageDepth)
-AS_ROTATION_UI(ClairObscur_SnapRotation, ClairObscur_FineRotation)
-AS_POSITION_SCALE_UI(ClairObscur_Position, ClairObscur_Scale)
-
 // ---- Petal Appearance ----
 uniform float3 PetalColor < ui_type = "color"; ui_label = "Petal Color"; ui_category = "Petals"; > = float3(1.0, 1.0, 1.0);
 uniform float PetalBaseAlpha < ui_type = "slider"; ui_label = "Opacity"; ui_category = "Petals"; ui_min = 0.0; ui_max = 1.0; > = 1.0;
@@ -296,7 +291,6 @@ uniform int NumLayers < ui_type = "slider"; ui_label = "Number of Layers"; ui_ca
 uniform float LayerSizeMod < ui_type = "slider"; ui_label = "Layer Size Progression"; ui_category = "Layers"; ui_tooltip = "How much size changes between layers (perspective effect)"; ui_min = 0.8; ui_max = 1.2; ui_step=0.01; > = 1.05;
 uniform float LayerAlphaMod < ui_type = "slider"; ui_label = "Layer Opacity Falloff"; ui_category = "Layers"; ui_tooltip = "How quickly opacity decreases with depth"; ui_min = 0.7; ui_max = 1.0; ui_step=0.01; > = 0.85;
 
-
 // ---- Movement & Animation ----
 uniform float SimulationSpeed < ui_type = "slider"; ui_label = "Animation Speed"; ui_category = "Movement"; ui_min = 0.0; ui_max = 2.0; > = 0.500;
 uniform float BasePetalSpinSpeed < ui_type = "slider"; ui_label = "Rotation Speed"; ui_category = "Movement"; ui_min = 0.0; ui_max = 10.0; > = 2.573;
@@ -307,9 +301,6 @@ uniform float2 UserDirection < ui_type = "slider"; ui_label = "Flow Direction"; 
 uniform float BaseFlutterStrength < ui_type = "slider"; ui_label = "Flutter Intensity"; ui_category = "Movement"; ui_min = 0.0; ui_max = 0.2; ui_step = 0.005; > = 0.022;
 uniform float SwayMagnitude < ui_type = "slider"; ui_label = "Sway Amount"; ui_category = "Movement"; ui_min = 0.0; ui_max = 0.05; ui_step = 0.001; > = 0.005;
 uniform float Lifetime < ui_type = "slider"; ui_label = "Petal Lifespan"; ui_category = "Movement"; ui_min = 1.0; ui_max = 20.0; > = 10.000;
-
-// ---- Animation Controls ----
-AS_ANIMATION_UI(AnimationSpeed, AnimationKeyframe, "Animation")
 
 // ---- Entrance/Exit Effect ----
 uniform float FlipScaleMin < ui_type = "slider"; ui_label = "Edge Thinness"; ui_category = "Entrance/Exit Effect"; ui_tooltip = "How thin petals appear when entering/exiting the scene"; ui_min = 0.01; ui_max = 0.5; > = 0.167;
@@ -325,6 +316,13 @@ uniform float DensityCellRepeatScale < ui_type = "slider"; ui_label = "Density P
 uniform bool EnableBoundaryChecking < ui_label = "Fix Petal Cutoff"; ui_category = "Advanced"; ui_category_closed = true; ui_tooltip="Enable searching adjacent cells to prevent petal cutoff at boundaries"; > = true;
 uniform int BoundaryCheckLayers < ui_type = "slider"; ui_label = "Boundary Check Layers"; ui_category = "Advanced"; ui_category_closed = true; ui_min = 0; ui_max = 3; ui_tooltip="Number of neighboring cell layers to check (0=none, 1=immediate neighbors, 2=two layers deep, etc.)"; > = 0;
 uniform float BorderCheckMargin < ui_type = "slider"; ui_label = "Boundary Check Margin"; ui_category = "Advanced"; ui_category_closed = true; ui_min = 1.0; ui_max = 5.0; ui_tooltip="Controls how far to check for petals crossing cell boundaries (higher values prevent cutoff but may impact performance)"; > = 1.719;
+
+// ---- Animation Controls ----
+AS_ANIMATION_UI(AnimationSpeed, AnimationKeyframe, "Animation")
+
+// ---- Stage Controls ----
+AS_STAGEDEPTH_UI(ClairObscur_StageDepth)
+AS_ROTATION_UI(ClairObscur_SnapRotation, ClairObscur_FineRotation)
 
 // ---- Final Mix ----
 AS_BLENDMODE_UI(ClairObscur_BlendMode)
