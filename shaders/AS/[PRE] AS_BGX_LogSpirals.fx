@@ -142,7 +142,7 @@ uniform float AnimationScale <
     ui_min = ANIMATION_SCALE_MIN; 
     ui_max = ANIMATION_SCALE_MAX; 
     ui_step = 0.01; 
-    ui_tooltip = "Overall speed of all time-based animations.";
+    ui_tooltip = "Legacy animation control. Use Animation Speed in Animation Controls instead.";
     ui_category = "Spiral Controls"; 
 > = ANIMATION_SCALE_DEFAULT;
 
@@ -198,6 +198,12 @@ uniform float TransformSpeed2 <
     ui_tooltip = "Controls the second coordinate transformation animation speed."; 
     ui_category = "Transform Controls"; 
 > = TRANSFORM_SPEED2_DEFAULT;
+
+//------------------------------------------------------------------------------------------------
+// Animation Controls
+//------------------------------------------------------------------------------------------------
+AS_ANIMATION_SPEED_UI(LogSpiral_AnimationSpeed, "Animation Controls")
+AS_ANIMATION_KEYFRAME_UI(LogSpiral_AnimationKeyframe, "Animation Controls")
 
 //------------------------------------------------------------------------------------------------
 // Sphere Controls
@@ -547,10 +553,12 @@ float4 LogSpiralsPS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : SV
     );
       // Step 3: Apply position and scale
     float2 p_final = p_rotated / Scale - Position;    // Calculate the spiral effect
-    // Ensure modPolar is resolved by using the fully qualified name ASLogSpirals::modPolar
+    // Ensure modPolar is resolved by using the fully qualified name ASLogSpirals::modPolar    // Get animated time using standard animation control
+    float animatedTime = AS_getAnimationTime(LogSpiral_AnimationSpeed, LogSpiral_AnimationKeyframe);
+    
     float3 col = effect_render(
         p_final, 
-        AS_getTime(), // Base time
+        animatedTime, // Use standardized animation time
         anim_scale, SpiralExpansionRate, TransformSpeed1, TransformSpeed2,
         rot_speed, arm_twist, ColorHueFactor, GlowColorIntensity,
         FadeCycleSpeed, sphere_radius, SphereFadeRadiusScale,
