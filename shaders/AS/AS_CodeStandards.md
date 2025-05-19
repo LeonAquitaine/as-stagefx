@@ -60,6 +60,36 @@ These requirements are non-negotiable for all AS StageFX shaders:
    sampler EffectSampler { Texture = EffectBuffer; ... };
    ```
 
+7. **Named Parameter Range Constants**: All UI parameter min/max/default values MUST use named constants instead of magic numbers. These should be defined at the top of the file in the constants section using the naming format PARAMETER_MIN, PARAMETER_MAX, PARAMETER_DEFAULT.
+   ```hlsl
+   // CORRECT ✓
+   static const float RADIUS_MIN = 0.1;
+   static const float RADIUS_MAX = 1.0;
+   static const float RADIUS_DEFAULT = 0.5;
+   
+   uniform float Radius < ui_min = RADIUS_MIN; ui_max = RADIUS_MAX; /* other UI parameters */ > = RADIUS_DEFAULT;
+   
+   // INCORRECT ✗
+   uniform float Radius < ui_min = 0.1; ui_max = 1.0; /* other UI parameters */ > = 0.5;
+   ```
+
+8. **Standardized UI Section Organization**: Each shader MUST organize UI controls into standardized sections following the exact ordering specified in the Standard Code Structure section of this document. The Animation Controls, Stage Controls, and Final Mix sections MUST be implemented using the standard macros and structure detailed later in this document.
+
+7. **Named Parameter Range Constants**: All UI parameter min/max/default values MUST use named constants instead of magic numbers. These should be defined at the top of the file in the constants section using the naming format PARAMETER_MIN, PARAMETER_MAX, PARAMETER_DEFAULT.
+   ```hlsl
+   // CORRECT ✓
+   static const float RADIUS_MIN = 0.1;
+   static const float RADIUS_MAX = 1.0;
+   static const float RADIUS_DEFAULT = 0.5;
+   
+   uniform float Radius < ui_min = RADIUS_MIN; ui_max = RADIUS_MAX; /* other UI parameters */ > = RADIUS_DEFAULT;
+   
+   // INCORRECT ✗
+   uniform float Radius < ui_min = 0.1; ui_max = 1.0; /* other UI parameters */ > = 0.5;
+   ```
+
+8. **Standardized UI Section Organization**: Each shader MUST organize UI controls into standardized sections following the exact ordering specified in the Standard Code Structure section of this document. The Animation Controls, Stage Controls, and Final Mix sections MUST be implemented using the standard macros and structure detailed later in this document.
+
 ## Common Constants Reference
 
 The `AS_Utils.1.fxh` file provides standardized constants for various purposes:
@@ -247,6 +277,178 @@ Organize uniforms in this exact order:
 static const float PARAM_MIN = 0.1;
 static const float PARAM_MAX = 1.0;
 static const float PARAM_DEFAULT = 0.5; // Short explanation if needed
+```
+
+### Animation Controls Section
+This section must contain controls for both animation speed and keyframe position to allow users to either animate the effect or select a specific static frame. 
+
+Standard Animation Controls Section Format:
+```hlsl
+// ============================================================================
+// ANIMATION CONTROLS
+// ============================================================================
+
+// --- Animation Constants ---
+static const float ANIMATION_SPEED_MIN = 0.0;
+static const float ANIMATION_SPEED_MAX = 5.0;
+static const float ANIMATION_SPEED_DEFAULT = 1.0;
+
+static const float ANIMATION_KEYFRAME_MIN = 0.0;
+static const float ANIMATION_KEYFRAME_MAX = 100.0;
+static const float ANIMATION_KEYFRAME_DEFAULT = 0.0;
+
+// --- Using Standard Animation UI Macros ---
+// Option 1: Combined animation controls (both speed and keyframe)
+AS_ANIMATION_UI(AnimationSpeed, AnimationKeyframe, "Animation") 
+
+// Option 2: Separate animation controls
+// AS_ANIMATION_KEYFRAME_UI(AnimationKeyframe, "Animation")
+// AS_ANIMATION_SPEED_UI(AnimationSpeed, "Animation")
+```
+
+Standard Time Value Calculation:
+```hlsl
+// In the pixel shader:
+float time = AS_getAnimationTime(AnimationSpeed, AnimationKeyframe);
+
+// Optional audio reactivity for animation speed
+float animSpeed = AnimationSpeed;
+if (AudioTarget == TARGET_ANIMATION_SPEED) {
+    float audioValue = AS_applyAudioReactivity(1.0, AudioSource, AudioMult, true) - 1.0;
+    animSpeed = AnimationSpeed * (1.0 + audioValue);
+}
+time = AS_getAnimationTime(animSpeed, AnimationKeyframe);
+```
+
+### Stage Controls Section
+This section must include depth masking and other stage-related parameters in a standard format. All shaders should use the standardized stage control macros.
+
+Standard Stage Controls Section Format:
+```hlsl
+// ============================================================================
+// STAGE/POSITION CONTROLS
+// ============================================================================
+AS_POSITION_UI(EffectCenter) // Defines float2 EffectCenter; category "Position", default (0,0)
+AS_ROTATION_UI(SnapRotation, FineRotation) // Defines snap and fine rotation controls
+AS_STAGEDEPTH_UI(EffectDepth) // ui_category "Stage", creates float EffectDepth
+
+// Optional: If your effect needs perspective controls
+// AS_PERSPECTIVE_UI(PerspectiveAngles, PerspectiveZOffset, PerspectiveFocalLength, "Perspective")
+```
+
+Standard Stage Depth Implementation:
+```hlsl
+// In the pixel shader:
+float sceneDepth = ReShade::GetLinearizedDepth(texcoord);
+if (sceneDepth < EffectDepth - AS_DEPTH_EPSILON) {
+    return original; // Skip effect for pixels in front of the effect plane
+}
+```
+
+### Final Mix Section
+This section must include standardized blend mode and blend amount controls, allowing users to adjust how the effect is blended with the scene.
+
+Standard Final Mix Section Format:
+```hlsl
+// ============================================================================
+// FINAL MIX
+// ============================================================================
+AS_BLENDMODE_UI(BlendMode) // Default is Normal (0)
+AS_BLENDAMOUNT_UI(BlendAmount)
+
+// For effects that need a specific default blend mode:
+// AS_BLENDMODE_UI_DEFAULT(BlendMode, 3) // 3 = Additive
+```
+
+Standard Blend Implementation:
+```hlsl
+// In the pixel shader's return statement:
+return AS_applyBlendMode(BlendMode, original, effectColor, BlendAmount);
+```
+
+### Tunable Constants
+```hlsl
+// --- Tunable Constants ---
+static const float PARAM_MIN = 0.1;
+static const float PARAM_MAX = 1.0;
+static const float PARAM_DEFAULT = 0.5; // Short explanation if needed
+```
+
+### Animation Controls Section
+This section must contain controls for both animation speed and keyframe position to allow users to either animate the effect or select a specific static frame. 
+
+Standard Animation Controls Section Format:
+```hlsl
+// ============================================================================
+// ANIMATION CONTROLS
+// ============================================================================
+
+// --- Animation Constants ---
+static const float ANIMATION_SPEED_MIN = 0.0;
+static const float ANIMATION_SPEED_MAX = 5.0;
+static const float ANIMATION_SPEED_DEFAULT = 1.0;
+
+static const float ANIMATION_KEYFRAME_MIN = 0.0;
+static const float ANIMATION_KEYFRAME_MAX = 100.0;
+static const float ANIMATION_KEYFRAME_DEFAULT = 0.0;
+
+// --- Using Standard Animation UI Macros ---
+// Option 1: Combined animation controls (both speed and keyframe)
+AS_ANIMATION_UI(AnimationSpeed, AnimationKeyframe, "Animation") 
+
+// Option 2: Separate animation controls
+// AS_ANIMATION_KEYFRAME_UI(AnimationKeyframe, "Animation")
+// AS_ANIMATION_SPEED_UI(AnimationSpeed, "Animation")
+```
+
+Standard Time Value Calculation:
+```hlsl
+// In the pixel shader:
+float time = AS_getAnimationTime(AnimationSpeed, AnimationKeyframe);
+
+// Optional audio reactivity for animation speed
+float animSpeed = AnimationSpeed;
+if (AudioTarget == TARGET_ANIMATION_SPEED) {
+    animSpeed = AS_applyAudioReactivityEx(AnimationSpeed, AudioSource, AudioMultiplier, true, 1); // Mode 1 = additive
+}
+float time = AS_getAnimationTime(animSpeed, AnimationKeyframe);
+```
+
+### Stage Controls Section
+This section must contain controls for positioning the effect in 3D space including position coordinates, rotation (if applicable), and depth control.
+
+Standard Stage Controls Section Format:
+```hlsl
+// ============================================================================
+// STAGE CONTROLS
+// ============================================================================
+
+// Position controls (required)
+AS_POSITION_UI(EffectPosition) // ui_category "Position", creates float2 EffectPosition
+
+// Rotation controls (optional, omit if the effect doesn't support rotation)
+AS_ROTATION_UI(EffectSnapRotation, EffectFineRotation) // ui_category "Stage"
+
+// Depth control (required)
+AS_STAGEDEPTH_UI(EffectDepth) // ui_category "Stage", creates float EffectDepth
+```
+
+### Final Mix Section
+This section must contain controls for blending the effect with the original scene, including blend mode selection and strength/opacity control.
+
+Standard Final Mix Section Format:
+```hlsl
+// ============================================================================
+// FINAL MIX
+// ============================================================================
+
+// Blend mode selection - use one of these options:
+AS_BLENDMODE_UI(BlendMode) // Default is Normal (0)
+// Or with specific default:
+// AS_BLENDMODE_UI_DEFAULT(BlendMode, 3) // 3 = Additive
+
+// Blend strength/opacity control (required)
+AS_BLENDAMOUNT_UI(BlendAmount) // ui_category "Final Mix", creates float BlendAmount
 ```
 
 ### Pixel Shader Structure
@@ -729,4 +931,3 @@ For shaders that include time-based animation, use the following pattern to allo
    - When animation is running, the keyframe value should still be applied as an offset
    - This approach simplifies the UI by avoiding redundant "Enable Animation" checkboxes
    - Place the Keyframe control before the Speed control in the UI for logical user flow
-````
