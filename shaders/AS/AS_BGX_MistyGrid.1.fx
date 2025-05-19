@@ -125,15 +125,15 @@ uniform float ColorBrightness < ui_type = "slider"; ui_label = "Brightness"; ui_
 uniform float CameraSpeed < ui_type = "slider"; ui_label = "Camera Speed"; ui_tooltip = "Controls how fast the camera moves through the scene"; ui_category = "Camera"; ui_min = 0.0; ui_max = 2.0; > = 0.5;
 uniform float CameraZoom < ui_type = "slider"; ui_label = "Camera Zoom"; ui_tooltip = "Adjusts the camera field of view"; ui_category = "Camera"; ui_min = 0.5; ui_max = 2.0; > = 1.0;
 
-// Standard AS Controls
-AS_STAGEDEPTH_UI(EffectDepth)
-AS_POSITION_SCALE_UI(EffectPosition, EffectScale)
-AS_ROTATION_UI(EffectSnapRotation, EffectFineRotation)
-
 // Audio Reactivity
 AS_AUDIO_SOURCE_UI(AudioSource, "Audio Source", AS_AUDIO_VOLUME, "Audio Reactivity")
 AS_AUDIO_MULTIPLIER_UI(AudioMultiplier, "Audio Multiplier", 1.0, 2.0, "Audio Reactivity")
 uniform int AudioTarget < ui_type = "combo"; ui_label = "Audio Target"; ui_tooltip = "Select which parameter will react to audio"; ui_items = "Fractal Scale\0Folding Intensity\0Saturation\0Brightness\0Camera Zoom\0Animation Speed\0All\0"; ui_category = "Audio Reactivity"; > = 0;
+
+// Standard AS Controls
+AS_STAGEDEPTH_UI(EffectDepth)
+AS_ROTATION_UI(EffectSnapRotation, EffectFineRotation)
+AS_POSITION_SCALE_UI(EffectPosition, EffectScale)
 
 // Final Mix (Blend) Controls
 AS_BLENDMODE_UI(BlendMode)
