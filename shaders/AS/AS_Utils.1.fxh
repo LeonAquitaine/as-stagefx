@@ -179,7 +179,7 @@ static const int AS_DEBUG_PATTERN = 4;                  // Debug pattern display
 
 // --- Blend Constants ---
 #define AS_BLEND_NORMAL     0 // No blending
-#define AS_BLEND_ADDITIVE   1 // Additive blending
+#define AS_BLEND_LIGHTEN    5 // Lighter only
 
 // --- Display and Resolution Constants ---
 #ifndef __AS_DISPLAY_CONSTANTS

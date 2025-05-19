@@ -107,9 +107,6 @@ static const float VIGNETTE_SIZE = 1.2;        // Size factor for vignette
 // UNIFORMS - Following AS StageFX standards
 //------------------------------------------------------------------------------------------------
 
-// Animation Controls
-AS_ANIMATION_UI(AnimSpeed, AnimKeyframe, "Animation")
-
 // Fractal Parameters
 uniform float FractalScale < ui_type = "slider"; ui_label = "Fractal Scale"; ui_tooltip = "Controls the overall scale of the fractal pattern"; ui_category = "Fractal Parameters"; ui_min = 0.1; ui_max = 2.0; > = 0.7;
 uniform float FractalIterations < ui_type = "slider"; ui_label = "Detail Level"; ui_tooltip = "Controls the amount of detail in the fractal pattern"; ui_category = "Fractal Parameters"; ui_min = 1.0; ui_max = 5.0; ui_step = 1.0; > = 5.0;
@@ -129,6 +126,9 @@ uniform float CameraZoom < ui_type = "slider"; ui_label = "Camera Zoom"; ui_tool
 AS_AUDIO_SOURCE_UI(AudioSource, "Audio Source", AS_AUDIO_VOLUME, "Audio Reactivity")
 AS_AUDIO_MULTIPLIER_UI(AudioMultiplier, "Audio Multiplier", 1.0, 2.0, "Audio Reactivity")
 uniform int AudioTarget < ui_type = "combo"; ui_label = "Audio Target"; ui_tooltip = "Select which parameter will react to audio"; ui_items = "Fractal Scale\0Folding Intensity\0Saturation\0Brightness\0Camera Zoom\0Animation Speed\0All\0"; ui_category = "Audio Reactivity"; > = 0;
+
+// Animation Controls
+AS_ANIMATION_UI(AnimSpeed, AnimKeyframe, "Animation")
 
 // Standard AS Controls
 AS_STAGEDEPTH_UI(EffectDepth)

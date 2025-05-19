@@ -180,11 +180,11 @@ uniform int VUMeterSource < ui_type = "combo"; ui_label = "Source"; ui_items = "
 uniform float VUBarLogMultiplier < ui_type = "slider"; ui_label = "Frequency Boost"; ui_tooltip = "Boosts higher frequency bars logarithmically. 1.0 = no boost, higher = more boost."; ui_min = VUBARLOGMULTIPLIER_MIN; ui_max = VUBARLOGMULTIPLIER_MAX; ui_step = 0.01; ui_category = "Audio Reactivity"; > = VUBARLOGMULTIPLIER_DEFAULT;
 
 // --- Stage Depth ---
-uniform float StageDepth < ui_type = "slider"; ui_label = "Distance"; ui_tooltip = "Controls how far back the stage effect appears (lower = closer, higher = further)."; ui_min = STAGEDEPTH_MIN; ui_max = STAGEDEPTH_MAX; ui_step = 0.01; ui_category = "Stage Distance"; > = STAGEDEPTH_DEFAULT;
+AS_STAGEDEPTH_UI(StageDepth)
 
 // --- Blend ---
-uniform int BlendMode < ui_type = "combo"; ui_label = "Mode"; ui_items = "Normal\0Lighter Only\0Darker Only\0Additive\0Multiply\0Screen\0"; ui_category = "Final Mix"; > = 0;
-uniform float BlendAmount < ui_type = "slider"; ui_label = "Strength"; ui_min = BLENDAMOUNT_MIN; ui_max = BLENDAMOUNT_MAX; ui_category = "Final Mix"; > = BLENDAMOUNT_DEFAULT;
+AS_BLENDMODE_UI(BlendMode)
+AS_BLENDAMOUNT_UI(BlendAmount)
 
 // --- Debug ---
 uniform int DebugMode < ui_type = "combo"; ui_label = "View"; ui_items = "Off\0Block Glow\0Light Bursts\0Block Outlines\0"; ui_category = "Debug"; > = 0;

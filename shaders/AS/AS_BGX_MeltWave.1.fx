@@ -119,20 +119,20 @@ AS_DECLARE_CUSTOM_PALETTE(MeltWave_, "Palette & Style")
 uniform float ColorCycleSpeed < ui_type = "slider"; ui_label = "Palette Color Cycle Speed"; ui_tooltip = "Controls how fast palette colors cycle. 0 = static. Only active if not using original math colors."; ui_min = COLOR_CYCLE_SPEED_MIN; ui_max = COLOR_CYCLE_SPEED_MAX; ui_step = COLOR_CYCLE_SPEED_STEP; ui_category = "Palette & Style"; > = COLOR_CYCLE_SPEED_DEFAULT;
 uniform float3 BackgroundColor < ui_type = "color"; ui_label = "Background Color"; ui_tooltip = "Solid background color the effect is blended onto."; ui_category = "Palette & Style"; > = float3(0.0, 0.0, 0.0);
 
-// --- Animation Controls ---
-AS_ANIMATION_UI(AnimationSpeed, AnimationKeyframe, "Animation")
-
 // --- Audio Reactivity ---
 AS_AUDIO_SOURCE_UI(MeltWave_AudioSource, "Audio Source", AS_AUDIO_BASS, "Audio Reactivity")
 AS_AUDIO_MULTIPLIER_UI(MeltWave_AudioMultiplier, "Audio Multiplier", AUDIO_MULTIPLIER_DEFAULT, AUDIO_MULTIPLIER_MAX, "Audio Reactivity")
 uniform int MeltWave_AudioTarget < ui_type = "combo"; ui_label = "Audio Target"; ui_items = "Melt Intensity\0Animation Speed\0Brightness\0Zoom\0All\0"; ui_category = "Audio Reactivity"; > = 2;
 
-// --- Stage Controls ---
-AS_STAGEDEPTH_UI(EffectDepth)
-AS_ROTATION_UI(RotationSnap, RotationFine)
+// --- Animation Controls ---
+AS_ANIMATION_UI(AnimationSpeed, AnimationKeyframe, "Animation")
 
 // --- Position Controls ---
 AS_POSITION_SCALE_UI(Position, Scale)
+
+// --- Stage Controls ---
+AS_STAGEDEPTH_UI(EffectDepth)
+AS_ROTATION_UI(RotationSnap, RotationFine)
 
 // --- Final Mix ---
 AS_BLENDMODE_UI_DEFAULT(BlendMode, 0)

@@ -84,10 +84,6 @@ static float4 g_gc_currentEffectStyle; // Renamed from 'current_effect_state'
 // UI DECLARATIONS
 // ============================================================================
 
-// Animation Controls
-uniform float GlobalTimeScale < ui_type = "slider"; ui_label = "Global Time Scale"; ui_min = 0.0; ui_max = 5.0; ui_category = "Animation"; ui_tooltip = "Controls the overall speed of animations."; > = 1.0;
-AS_ANIMATION_KEYFRAME_UI(AnimationKeyframe, "Animation") // Added Keyframe control
-uniform float PathSpeed < ui_type = "slider"; ui_label = "Path Speed Multiplier"; ui_min = 0.0; ui_max = 3.0; ui_category = "Animation"; ui_tooltip = "Multiplies the speed of camera movement along the fractal path."; > = 1.0;
 
 // Palette & Style
 uniform float3 BaseRingColor < ui_type = "color"; ui_label = "Base Ring Color"; ui_category = "Palette & Style"; > = float3(1.0f, 0.65f, 0.25f);
@@ -105,6 +101,10 @@ AS_AUDIO_SOURCE_UI(GoldenClockwork_AudioSource, "Audio Source", AS_AUDIO_BEAT, "
 uniform float AudioReactivityAmount < ui_type = "slider"; ui_label = "Audio Reactivity Amount"; ui_min = 0.0; ui_max = 2.0; ui_category = "Audio Reactivity"; ui_tooltip = "General multiplier for how much audio affects the target parameter."; > = 1.0;
 uniform bool AudioReactPositive < ui_type = "checkbox"; ui_label = "Audio React Positive Only"; ui_category = "Audio Reactivity"; ui_tooltip = "If checked, audio makes the parameter increase. If unchecked, it can increase or decrease (centered)."; > = true;
 uniform int AudioReactiveTarget < ui_type = "combo"; ui_label = "Audio Reactive Target"; ui_items = "None\0Time Scale\0Path Speed\0Fractal Scale\0Kaleidoscope Strength\0Kaleidoscope Reps\0"; ui_category = "Audio Reactivity"; > = 0;
+
+// Animation Controls
+AS_ANIMATION_UI(GlobalTimeScale, AnimationKeyframe, "Animation") // Defines GoldenClockwork_AnimationSpeed
+uniform float PathSpeed < ui_type = "slider"; ui_label = "Path Speed Multiplier"; ui_min = 0.0; ui_max = 3.0; ui_category = "Animation"; ui_tooltip = "Multiplies the speed of camera movement along the fractal path."; > = 1.0;
 
 // Stage/Position Controls
 AS_STAGEDEPTH_UI(GoldenClockwork_EffectDepth)

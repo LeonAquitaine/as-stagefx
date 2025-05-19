@@ -142,11 +142,6 @@ uniform int AspectRatioPreset < ui_type = "combo"; ui_label = "Aspect Ratio Pres
 
 uniform float2 CustomAspectRatio < ui_type = "drag"; ui_label = "Custom Aspect Ratio"; ui_tooltip = "Set your own aspect ratio (X:Y)"; ui_category = "Aspect Ratio"; ui_min = AS_RANGE_SCALE_MIN; ui_max = AS_RANGE_SCALE_MAX * 2.0; ui_step = 0.01; > = float2(16.0, 9.0);
 
-// ============================= Position Controls =============================
-uniform float HorizontalOffset < ui_type = "drag"; ui_label = "Horizontal Position"; ui_tooltip = "Shift the frame horizontally"; ui_category = "Position"; ui_min = -AS_HALF; ui_max = AS_HALF; ui_step = 0.001; > = AS_RANGE_ZERO_ONE_MIN;
-
-uniform float VerticalOffset < ui_type = "drag"; ui_label = "Vertical Position"; ui_tooltip = "Shift the frame vertically"; ui_category = "Position"; ui_min = -AS_HALF; ui_max = AS_HALF; ui_step = 0.001; > = AS_RANGE_ZERO_ONE_MIN;
-
 // ============================= Appearance Controls =============================
 uniform float4 ClippedAreaColor < ui_type = "color"; ui_label = "Masked Area Color"; ui_tooltip = "Color for areas outside the selected aspect ratio"; ui_category = "Appearance"; > = float4(AS_RANGE_ZERO_ONE_MIN, AS_RANGE_ZERO_ONE_MIN, AS_RANGE_ZERO_ONE_MIN, AS_RANGE_OPACITY_MAX);
 
@@ -191,6 +186,9 @@ uniform bool PatternAdvanced < ui_label = "Advanced Pattern Controls"; ui_toolti
 uniform float PatternRotation < ui_type = "drag"; ui_label = "Pattern Rotation"; ui_tooltip = "Rotate the pattern (in degrees)"; ui_category = "Advanced Guide Options"; ui_min = AS_RANGE_ZERO_ONE_MIN; ui_max = AS_TWO_PI * AS_RADIANS_TO_DEGREES; ui_step = 0.5; > = AS_RANGE_ZERO_ONE_MIN;
 
 uniform float PatternComplexity < ui_type = "drag"; ui_label = "Pattern Complexity"; ui_tooltip = "Adjust the complexity of certain patterns"; ui_category = "Advanced Guide Options"; ui_category_closed = true; ui_min = AS_RANGE_SCALE_DEFAULT; ui_max = AS_RANGE_SCALE_MAX * 2.0; ui_step = 0.1; > = 3.0;
+
+// ============================= Position Controls =============================
+AS_POSITION_UI(EffectPosition) // Standard position control
 
 // Guide type constants (hundreds place = main type, ones place = subtype)
 #define GUIDE_NONE 0
@@ -548,8 +546,8 @@ float3 DrawBorder(float2 texcoord, float3 origColor, float3 guideColor, float2 b
     
     if (aspectRatio > ReShade::AspectRatio) {
         // Wider aspect ratio - draw horizontal borders
-        float topEdge = borderSize.y + VerticalOffset;
-        float bottomEdge = 1.0 - borderSize.y + VerticalOffset;
+        float topEdge = borderSize.y + EffectPosition.y;
+        float bottomEdge = 1.0 - borderSize.y + EffectPosition.y;
         
         // Draw the horizontal borders exactly at the crop edges
         if ((abs(texcoord.y - topEdge) < borderWidthY) || 
@@ -558,8 +556,8 @@ float3 DrawBorder(float2 texcoord, float3 origColor, float3 guideColor, float2 b
     }
     else {
         // Taller aspect ratio - draw vertical borders
-        float leftEdge = borderSize.x + HorizontalOffset;
-        float rightEdge = 1.0 - borderSize.x + HorizontalOffset;
+        float leftEdge = borderSize.x + EffectPosition.x;
+        float rightEdge = 1.0 - borderSize.x + EffectPosition.x;
         
         // Draw the vertical borders exactly at the crop edges
         if ((abs(texcoord.x - leftEdge) < borderWidthX) || 
@@ -579,14 +577,14 @@ float3 DrawGuides(float2 texcoord, float3 originalColor, float3 guideColor, floa
     if (aspectRatio > ReShade::AspectRatio) {
         // Wider aspect ratio than screen - black bars on top and bottom
         borderSize.y = (1.0 - (ReShade::AspectRatio / aspectRatio)) / 2.0;
-        isInFrame = (texcoord.y >= borderSize.y + VerticalOffset) && 
-                   (texcoord.y <= 1.0 - borderSize.y + VerticalOffset);
+        isInFrame = (texcoord.y >= borderSize.y + EffectPosition.y) && 
+                   (texcoord.y <= 1.0 - borderSize.y + EffectPosition.y);
     }
     else {
         // Taller or equal aspect ratio - black bars on sides
         borderSize.x = (1.0 - (aspectRatio / ReShade::AspectRatio)) / 2.0;
-        isInFrame = (texcoord.x >= borderSize.x + HorizontalOffset) && 
-                   (texcoord.x <= 1.0 - borderSize.x + HorizontalOffset);
+        isInFrame = (texcoord.x >= borderSize.x + EffectPosition.x) && 
+                   (texcoord.x <= 1.0 - borderSize.x + EffectPosition.x);
     }
     
     // Get the guide configuration from the UI selection
@@ -604,7 +602,7 @@ float3 DrawGuides(float2 texcoord, float3 originalColor, float3 guideColor, floa
             texcoord, 
             borderSize, 
             aspectRatio, 
-            float2(HorizontalOffset, VerticalOffset)
+            EffectPosition
         );
         
         // Calculate pixel-width based threshold for grid lines with consistent physical width
@@ -866,15 +864,15 @@ float3 PS_AspectRatio(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV
     if (aspectRatio > ReShade::AspectRatio) {
         // Wider aspect ratio than screen - black bars on top and bottom
         borderSize.y = (1.0 - (ReShade::AspectRatio / aspectRatio)) / 2.0;
-        float topEdge = borderSize.y + VerticalOffset;
-        float bottomEdge = 1.0 - borderSize.y + VerticalOffset;
+        float topEdge = borderSize.y + EffectPosition.y;
+        float bottomEdge = 1.0 - borderSize.y + EffectPosition.y;
         isInFrame = (texcoord.y >= topEdge) && (texcoord.y <= bottomEdge);
     }
     else {
         // Taller or equal aspect ratio - black bars on sides
         borderSize.x = (1.0 - (aspectRatio / ReShade::AspectRatio)) / 2.0;
-        float leftEdge = borderSize.x + HorizontalOffset;
-        float rightEdge = 1.0 - borderSize.x + HorizontalOffset;
+        float leftEdge = borderSize.x + EffectPosition.x;
+        float rightEdge = 1.0 - borderSize.x + EffectPosition.x;
         isInFrame = (texcoord.x >= leftEdge) && (texcoord.x <= rightEdge);
     }    // Save the original color before applying effects
     float3 originalColor = color;

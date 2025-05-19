@@ -73,9 +73,6 @@ static const float COLOR_INTENSITY_DEFAULT = 1.0; static const float COLOR_INTEN
 static const float EPSILON = 1e-5f; static const float HALF_POINT = 0.5f; // Removed PI and TWOPI, use AS_PI and AS_TWO_PI from AS_Utils
 
 // --- UI Uniform Definitions ---
-AS_STAGEDEPTH_UI(EffectDepth)
-AS_ROTATION_UI(EffectSnapRotation, EffectFineRotation)
-AS_POSITION_SCALE_UI(Position, Scale)
 uniform int UI_Iterations < ui_type = "slider"; ui_label = "Fractal Iterations"; ui_min = ITERATIONS_MIN; ui_max = ITERATIONS_MAX; ui_category = "Fractal Parameters"; > = ITERATIONS_DEFAULT;
 uniform float UI_Formuparam < ui_type = "slider"; ui_label = "Fractal Parameter"; ui_min = FORMUPARAM_MIN; ui_max = FORMUPARAM_MAX; ui_step = FORMUPARAM_STEP; ui_category = "Fractal Parameters"; > = FORMUPARAM_DEFAULT;
 uniform float UI_Tile < ui_type = "slider"; ui_label = "Tiling / Domain Repetition"; ui_min = TILE_MIN; ui_max = TILE_MAX; ui_step = TILE_STEP; ui_category = "Fractal Parameters"; > = TILE_DEFAULT;
@@ -99,6 +96,9 @@ uniform float FractalRotationSpeed < ui_type = "slider"; ui_label = "Fractal XY 
 AS_AUDIO_SOURCE_UI(Cosmos_AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity") 
 AS_AUDIO_MULTIPLIER_UI(Cosmos_AudioMultiplier, "Audio Intensity", AUDIO_MULTIPLIER_DEFAULT, AUDIO_MULTIPLIER_MAX, "Audio Reactivity") 
 uniform int Cosmos_AudioTarget < ui_type = "combo"; ui_label = "Audio Target Parameter"; ui_items = "None\0Fractal Parameter\0Brightness\0Dark Matter\0Saturation\0Camera Move Speed\0Fractal Rotation Speed\0"; ui_category = "Audio Reactivity"; > = AUDIO_TARGET_DEFAULT;
+AS_STAGEDEPTH_UI(EffectDepth)
+AS_ROTATION_UI(EffectSnapRotation, EffectFineRotation)
+AS_POSITION_SCALE_UI(Position, Scale)
 AS_BLENDMODE_UI(BlendMode)
 AS_BLENDAMOUNT_UI(BlendStrength)
 AS_DEBUG_MODE_UI("Off\0Show Audio Reactivity\0")

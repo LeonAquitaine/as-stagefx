@@ -135,18 +135,18 @@ uniform float GreenWeight < ui_type = "slider"; ui_label = "Green Channel Weight
 uniform float BlueWeight < ui_type = "slider"; ui_label = "Blue Channel Weight"; ui_tooltip = "Weight applied to the blue channel. Higher values produce stronger blue color."; ui_min = BLUE_WEIGHT_MIN; ui_max = BLUE_WEIGHT_MAX; ui_step = BLUE_WEIGHT_STEP; ui_category = "Color"; > = BLUE_WEIGHT_DEFAULT;
 uniform float3 BackgroundColor < ui_type = "color"; ui_label = "Background Color"; ui_tooltip = "Base color for the background of the effect."; ui_category = "Color"; > = BACKGROUND_COLOR_DEFAULT;
 
-// --- Animation ---
-AS_ANIMATION_UI(AnimationSpeed, AnimationKeyframe, "Animation")
-
 // --- Audio Reactivity ---
 AS_AUDIO_SOURCE_UI(BlueCorona_AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
 AS_AUDIO_MULTIPLIER_UI(BlueCorona_AudioMultiplier, "Audio Intensity", AUDIO_MULTIPLIER_DEFAULT, AUDIO_MULTIPLIER_MAX, "Audio Reactivity")
 uniform int BlueCorona_AudioTarget < ui_type = "combo"; ui_label = "Audio Target Parameter"; ui_items = "None\0Animation Speed\0Pattern Scale\0Flow Multiplier\0Red Weight\0Green Weight\0Blue Weight\0Background Brightness\0Iteration Count (Inverse)\0"; ui_category = "Audio Reactivity"; > = AUDIO_TARGET_DEFAULT;
 
+// --- Animation ---
+AS_ANIMATION_UI(AnimationSpeed, AnimationKeyframe, "Animation")
+
 // --- Stage/Position ---
+AS_POSITION_SCALE_UI(Position, Scale)
 AS_STAGEDEPTH_UI(EffectDepth)
 AS_ROTATION_UI(EffectSnapRotation, EffectFineRotation)
-AS_POSITION_SCALE_UI(Position, Scale)
 
 // --- Final Mix ---
 AS_BLENDMODE_UI(BlendMode)

@@ -87,7 +87,7 @@ static const float DEFAULT_BIAS_LARGE_PARTICLES = 0.1;
 
 // Layer 1 (Fine Motes) Defaults
 static const float DEFAULT_L1_DENSITY_THRESHOLD = 0.02;
-static const float DEFAULT_L1_GRID_CELL_SIZE = 10.0;
+static const float DEFAULT_L1_GRID_CELL_SIZE = 34.0;
 static const float DEFAULT_L1_MIN_SIZE = 0.0005;
 static const float DEFAULT_L1_MAX_SIZE = 0.01;
 static const float DEFAULT_L1_MIN_ALPHA = 0.05;
@@ -97,9 +97,9 @@ static const float DEFAULT_L1_MAX_ALPHA = 0.15;
 static const float DEFAULT_L2_DENSITY_THRESHOLD = 0.05;
 static const float DEFAULT_L2_GRID_CELL_SIZE = 64.0;
 static const float DEFAULT_L2_MIN_SIZE = 0.01;
-static const float DEFAULT_L2_MAX_SIZE = 0.1;
+static const float DEFAULT_L2_MAX_SIZE = 0.16;
 static const float DEFAULT_L2_MIN_ALPHA = 0.02;
-static const float DEFAULT_L2_MAX_ALPHA = 0.1;
+static const float DEFAULT_L2_MAX_ALPHA = 0.05;
 
 // Common Distribution Map Offset Defaults
 static const float DEFAULT_DIST_MAP_OFFSET_X = 0.0;

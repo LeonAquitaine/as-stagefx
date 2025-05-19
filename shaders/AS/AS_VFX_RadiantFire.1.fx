@@ -123,26 +123,28 @@ uniform float VelocityDamping < ui_type = "slider"; ui_label = "Velocity Damping
 uniform float GLSLTurbulenceAdvectionInfluence < ui_type = "slider"; ui_label = "Advection Influence"; ui_tooltip = "How much the GLSL turbulence pattern displaces advecting flames. Affected by Rotation."; ui_min = 0.0; ui_max = 0.1; ui_step = 0.001; ui_category = "Flame Physics"; > = DEFAULT_GLSL_TURBULENCE_ADVECTION_INFLUENCE;
 
 // --- Flame Appearance ---
-AS_PALETTE_SELECTION_UI(FlamePalette, "Color: Palette", AS_PALETTE_CUSTOM, "Flame Appearance") 
+AS_PALETTE_SELECTION_UI(FlamePalette, "Color: Palette", AS_PALETTE_FIRE, "Flame Appearance") 
 AS_DECLARE_CUSTOM_PALETTE(Flame, "Flame Appearance") // Label for custom palette colors set by AS_Utils
 uniform float FlameIntensity < ui_type = "slider"; ui_label = "Overall Intensity"; ui_tooltip = "Master brightness multiplier for the rendered flame."; ui_min = 0.0; ui_max = 10.0; ui_step = 0.01; ui_category = "Flame Appearance"; > = DEFAULT_FLAME_INTENSITY;
 uniform float FlameColorThresholdCore < ui_type = "slider"; ui_label = "Core Temperature"; ui_tooltip = "Temperature threshold for the flame's core color."; ui_min = 0.5; ui_max = 2.0; ui_step = 0.01; ui_category = "Flame Appearance"; > = DEFAULT_FLAME_COLOR_THRESHOLD_CORE;
 uniform float FlameColorThresholdMid < ui_type = "slider"; ui_label = "Mid Temperature"; ui_tooltip = "Temperature threshold for the flame's mid color."; ui_min = 0.1; ui_max = 1.0; ui_step = 0.01; ui_category = "Flame Appearance"; > = DEFAULT_FLAME_COLOR_THRESHOLD_MID;
 
 // --- Global Controls ---
-uniform float AnimationSpeed < ui_type = "slider"; ui_label = "Animation Speed"; ui_tooltip = "Controls the overall speed of the fire animation."; ui_min = 0.1f; ui_max = 3.0f; ui_step = 0.05f; ui_category = "Global Controls"; > = TIME_SCALE_NORMAL;
-uniform float2 FireRepulsionCenterPos < ui_type = "drag"; ui_label = "Repulsion Center (XY)"; ui_tooltip = "Normalized screen position (0-1) the fire radiates AWAY from."; ui_min = 0.0; ui_max = 1.0; ui_speed = 0.01; ui_category = "Global Controls"; > = DEFAULT_FIRE_REPULSION_CENTER_POS;
-AS_ROTATION_UI(EffectSnapRotation, EffectFineRotation) // Uses ui_category "Transform" from AS_Utils
+uniform float AnimationSpeed < ui_type = "slider"; ui_label = "Animation Speed"; ui_tooltip = "Controls the overall speed of the fire animation."; ui_min = 0.1f; ui_max = 3.0f; ui_step = 0.05f; ui_category = "Animation"; > = TIME_SCALE_NORMAL;
+uniform float2 FireRepulsionCenterPos < ui_type = "drag"; ui_label = "Repulsion Center (XY)"; ui_tooltip = "Normalized screen position (0-1) the fire radiates AWAY from."; ui_min = 0.0; ui_max = 1.0; ui_speed = 0.01; ui_category = "Animation"; > = DEFAULT_FIRE_REPULSION_CENTER_POS;
 
 // --- Subject & Edges ---
-uniform float SubjectDepthCutoff < ui_type = "slider"; ui_label = "Depth"; ui_tooltip = "Linear depth value to separate subject (closer) from background."; ui_min = 0.001; ui_max = 1.0; ui_step = 0.001; ui_category = "Stage"; > = DEFAULT_SUBJECT_DEPTH_CUTOFF;
+
+AS_STAGEDEPTH_UI(SubjectDepthCutoff)
 uniform float EdgeDetectionSensitivity < ui_type = "slider"; ui_label = "Depth Sensitivity"; ui_tooltip = "Sensitivity of edge detection based on depth changes."; ui_min = 1.0; ui_max = 200.0; ui_step = 1.0; ui_category = "Stage"; > = DEFAULT_EDGE_DETECTION_SENSITIVITY;
 uniform float EdgeSoftness < ui_type = "slider"; ui_label = "Depth Edge"; ui_tooltip = "Softness of the detected subject edges for fire generation."; ui_min = 0.001; ui_max = 0.5; ui_step = 0.001; ui_category = "Stage"; > = DEFAULT_EDGE_SOFTNESS;
 uniform float SourceInjectionStrength < ui_type = "slider"; ui_label = "Edge Fire Strength"; ui_tooltip = "Amount of 'heat' injected at subject edges to start flames."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Stage"; > = DEFAULT_SOURCE_INJECTION_STRENGTH;
-uniform bool OverlaySubject < ui_type = "bool"; ui_label = "Subject: Overlay on Fire"; ui_tooltip = "If checked, the original subject is drawn on top of the fire."; ui_category = "Subject & Edges"; > = DEFAULT_OVERLAY_SUBJECT;
+uniform bool OverlaySubject < ui_type = "bool"; ui_label = "Subject: Overlay on Fire"; ui_tooltip = "If checked, the original subject is drawn on top of the fire."; ui_category = "Stage"; > = DEFAULT_OVERLAY_SUBJECT;
+
+AS_ROTATION_UI(EffectSnapRotation, EffectFineRotation)
 
 // --- Output & Blending ---
-AS_BLENDMODE_UI_DEFAULT(OutputBlendMode, AS_BLEND_ADDITIVE) // Uses ui_category "Final Mix" from AS_Utils
+AS_BLENDMODE_UI_DEFAULT(OutputBlendMode, AS_BLEND_LIGHTEN) // Uses ui_category "Final Mix" from AS_Utils
 AS_BLENDAMOUNT_UI(OutputBlendAmount) // Uses ui_category "Final Mix" from AS_Utils
 
 // --- Debug ---

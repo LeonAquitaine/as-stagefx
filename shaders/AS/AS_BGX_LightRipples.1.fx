@@ -152,12 +152,12 @@ AS_AUDIO_MULTIPLIER_UI(LightRipples_AudioMultiplier, "Audio Intensity", AUDIO_MU
 uniform int LightRipples_AudioTarget < ui_type = "combo"; ui_label = "Audio Target Parameter"; ui_items = "None\0Animation Speed\0Distortion Amplitude (Time)\0Distortion Frequency (Distance)\0Line Brightness\0"; ui_category = "Audio Reactivity"; > = AUDIO_TARGET_DEFAULT;
 
 // --- Stage/Position ---
+AS_POSITION_SCALE_UI(Position, Scale)
 AS_STAGEDEPTH_UI(EffectDepth)
 AS_ROTATION_UI(EffectSnapRotation, EffectFineRotation)
-AS_POSITION_SCALE_UI(Position, Scale)
 
 // --- Final Mix ---
-AS_BLENDMODE_UI(BlendMode)
+AS_BLENDMODE_UI_DEFAULT(BlendMode, AS_BLEND_LIGHTEN)
 AS_BLENDAMOUNT_UI(BlendStrength)
 
 // --- Debug ---
