@@ -129,7 +129,7 @@ uniform int AspectRatioPreset <
                 "  [CM] 16:9 (HD/4K)\0"
                 "  [CM] 21:9 (Ultrawide)\0"
                 "  [CM] 2.39:1 (Anamorphic)\0";
-> = 0;
+> = 3;
 
 uniform float2 CustomAspectRatio <
     ui_type = "drag";
@@ -256,7 +256,7 @@ uniform float4 ClippedAreaColor <
     ui_label = "Masked Area Color";
     ui_tooltip = "Color for areas outside the selected aspect ratio";
     ui_category = "Appearance";
-> = float4(AS_RANGE_ZERO_ONE_MIN, AS_RANGE_ZERO_ONE_MIN, AS_RANGE_ZERO_ONE_MIN, AS_RANGE_OPACITY_MAX * 0.75);
+> = float4(AS_RANGE_ZERO_ONE_MIN, AS_RANGE_ZERO_ONE_MIN, AS_RANGE_ZERO_ONE_MIN, AS_RANGE_OPACITY_MAX);
 
 uniform float4 GuideColor <
     ui_type = "color";
