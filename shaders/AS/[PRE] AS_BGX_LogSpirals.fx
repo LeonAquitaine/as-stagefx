@@ -30,8 +30,8 @@
 // ============================================================================
 // TECHNIQUE GUARD - Prevents duplicate loading of the same shader
 // ============================================================================
-#ifndef __AS_BGX_LogSpirals_1_fx
-#define __AS_BGX_LogSpirals_1_fx
+#ifndef __AS_BGX_LogSpirals_fx
+#define __AS_BGX_LogSpirals_fx
 
 // ============================================================================
 // INCLUDES
@@ -51,6 +51,11 @@ static const float ALPHA_EPSILON = 0.00001f; // For safe division
 #define LOCAL_PI AS_PI
 #define LOCAL_TAU AS_TWO_PI
 #define ROT(a) float2x2(cos(a), sin(a), -sin(a), cos(a))
+
+// Additional constants to avoid magic numbers
+static const float REFLECTION_Z_BASE = 0.1f;     // Z value for reflection normal calculation
+static const float TANH_COLOR_FACTOR = 8.0f;     // Scaling for tanh color operation
+static const float COLOR_CYCLE_RATE_SCALE = 0.1f; // Scaling factor for color cycle speed
 
 // Helper Functions
 float modPolar(inout float2 p, float repetitions) {
@@ -202,8 +207,7 @@ uniform float TransformSpeed2 <
 //------------------------------------------------------------------------------------------------
 // Animation Controls
 //------------------------------------------------------------------------------------------------
-AS_ANIMATION_SPEED_UI(LogSpiral_AnimationSpeed, "Animation Controls")
-AS_ANIMATION_KEYFRAME_UI(LogSpiral_AnimationKeyframe, "Animation Controls")
+AS_ANIMATION_UI(AnimationSpeed, AnimationKeyframe, "Animation Controls")
 
 //------------------------------------------------------------------------------------------------
 // Sphere Controls
@@ -351,7 +355,7 @@ AS_AUDIO_MULTIPLIER_UI(Spiral_AudioMultiplier, "Audio Intensity", 1.0, 2.0, "Aud
 uniform int Spiral_AudioTarget < 
     ui_type = "combo"; 
     ui_label = "Audio Target Parameter"; 
-    ui_items = "None\0Animation Scale\0Global Rotation\0Arm Twist\0Sphere Size\0Brightness\0"; 
+    ui_items = "None\0Animation Speed\0Global Rotation\0Arm Twist\0Sphere Size\0Brightness\0"; 
     ui_category = "Audio Reactivity"; 
 > = 0;
 
@@ -395,7 +399,7 @@ float3 sphere(float3 col, float2x2 rot_matrix, float3 bcol, float2 p_sphere, flo
     float r_sq = r_sphere * r_sphere;
     float p_dot_p = dot(p_sphere, p_sphere);
     float z2 = r_sq - p_dot_p;
-    float3 rd_norm = -normalize(float3(p_sphere, 0.1f)); // 0.1f could be uniform "Reflection Z"
+    float3 rd_norm = -normalize(float3(p_sphere, REFLECTION_Z_BASE)); // Use constant instead of magic number
 
     if (z2 > 0.0f) {
         float z = sqrt(z2);
@@ -444,14 +448,15 @@ float3 effect_render(float2 p_eff, float time_eff,
                      float output_bright, float detail_glow_str,
                      float3 bg_color)
 {
-    float2 p_initial_transformed = transform_coords(p_eff, time_eff * anim_scale, trans_speed1, trans_speed2);
+    // Note: time_eff is already scaled by AnimationSpeed through AS_getAnimationTime
+    float2 p_initial_transformed = transform_coords(p_eff, time_eff, trans_speed1, trans_speed2);
     float2 np_eff = p_eff + float2(ReShade::PixelSize.x, ReShade::PixelSize.y);
-    float2 ntp_eff = transform_coords(np_eff, time_eff * anim_scale, trans_speed1, trans_speed2);
+    float2 ntp_eff = transform_coords(np_eff, time_eff, trans_speed1, trans_speed2);
     float aa = 2.0f * distance(p_initial_transformed, ntp_eff);
     
     float2 p_current = p_initial_transformed;
 
-    float ltm = anim_scale * time_eff; // Was 0.75f * time_param, now controlled by anim_scale
+    float ltm = time_eff; // Now using properly scaled animation time from AS_getAnimationTime
     float2x2 rot0 = ROT(global_rot_speed * ltm);  
     p_current = mul(rot0, p_current);
     
@@ -489,11 +494,9 @@ float3 effect_render(float2 p_eff, float time_eff,
     float2x2 combined_rotation = mul(mul(rot0, rot1), rot2);
 
     // Calculate sphere radius based on uniforms
-    float current_sphere_radius = lerp(sphere_base_r, sphere_base_r + sphere_fade_r_scale, fade) * w;
-
-    col_out = sphere(col_out, combined_rotation, ccol * lerp(0.25f, 1.0f, sqrt(saturate(fade))), 
+    float current_sphere_radius = lerp(sphere_base_r, sphere_base_r + sphere_fade_r_scale, fade) * w;    col_out = sphere(col_out, combined_rotation, ccol * lerp(0.25f, 1.0f, sqrt(saturate(fade))), 
                      p1, current_sphere_radius, aa / zz,
-                     spec_pow, spec_intens, ambient_lvl, 8.0f); // Pass 8.0f for tanh_bcol_factor, could be uniform
+                     spec_pow, spec_intens, ambient_lvl, TANH_COLOR_FACTOR); // Use constant instead of magic number
     col_out *= output_bright;
     col_out += gcol / max(gd, 0.001f);
     float aa_glow_val = aa * detail_glow_str; // Use DetailGlowStrength
@@ -521,9 +524,8 @@ float4 LogSpiralsPS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : SV
     if (depth < EffectDepth) {
         return originalColor;
     }
-    
-    // Apply audio reactivity to selected parameters
-    float anim_scale = AnimationScale;
+      // Apply audio reactivity to selected parameters
+    float anim_speed = AnimationSpeed;
     float rot_speed = GlobalRotationSpeed;
     float arm_twist = ArmTwistFactor;
     float sphere_radius = SphereBaseRadiusScale;
@@ -532,7 +534,7 @@ float4 LogSpiralsPS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : SV
     float audioReactivity = AS_applyAudioReactivity(1.0, Spiral_AudioSource, Spiral_AudioMultiplier, true);
     
     // Apply audio reactivity to targeted parameter
-    if (Spiral_AudioTarget == 1) anim_scale *= audioReactivity;
+    if (Spiral_AudioTarget == 1) anim_speed *= audioReactivity;
     else if (Spiral_AudioTarget == 2) rot_speed *= audioReactivity;
     else if (Spiral_AudioTarget == 3) arm_twist *= audioReactivity;
     else if (Spiral_AudioTarget == 4) sphere_radius *= audioReactivity;
@@ -553,13 +555,13 @@ float4 LogSpiralsPS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : SV
     );
       // Step 3: Apply position and scale
     float2 p_final = p_rotated / Scale - Position;    // Calculate the spiral effect
-    // Ensure modPolar is resolved by using the fully qualified name ASLogSpirals::modPolar    // Get animated time using standard animation control
-    float animatedTime = AS_getAnimationTime(LogSpiral_AnimationSpeed, LogSpiral_AnimationKeyframe);
-    
-    float3 col = effect_render(
+    // Ensure modPolar is resolved by using the fully qualified name ASLogSpirals::modPolar    // Get animated time using standard animation control with audio reactivity applied
+    float animatedTime = AS_getAnimationTime(anim_speed, AnimationKeyframe);
+      float3 col = effect_render(
         p_final, 
         animatedTime, // Use standardized animation time
-        anim_scale, SpiralExpansionRate, TransformSpeed1, TransformSpeed2,
+        1.0, // Pass 1.0 for anim_scale since time is already scaled by AnimationSpeed
+        SpiralExpansionRate, TransformSpeed1, TransformSpeed2,
         rot_speed, arm_twist, ColorHueFactor, GlowColorIntensity,
         FadeCycleSpeed, sphere_radius, SphereFadeRadiusScale,
         SpecularPower, SpecularIntensity, AmbientLightLevel,
@@ -577,13 +579,11 @@ float4 LogSpiralsPS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : SV
     } else {
         // Get normalized brightness for palette
         float intensity = length(col) / sqrt(3.0);
-        intensity = saturate(intensity);
-        
-        // Apply optional color cycling
+        intensity = saturate(intensity);        // Apply optional color cycling with standardized animation time
         float t = intensity;
         if (ColorCycleSpeed != 0.0) {
-            float cycleRate = ColorCycleSpeed * 0.1;
-            t = frac(t + cycleRate * AS_getTime());
+            float cycleRate = ColorCycleSpeed * COLOR_CYCLE_RATE_SCALE;
+            t = frac(t + cycleRate * animatedTime); // Use animatedTime instead of AS_getTime()
         }
         
         // Get color from palette system
@@ -635,4 +635,4 @@ technique AS_BGX_LogSpirals_Tech <
 
 } // end namespace ASLogSpirals
 
-#endif // __AS_BGX_LogSpirals_1_fx
+#endif // __AS_BGX_LogSpirals_fx
