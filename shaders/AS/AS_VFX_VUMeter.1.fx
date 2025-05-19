@@ -61,10 +61,6 @@ static const float BLENDAMOUNT_MIN = 0.0;
 static const float BLENDAMOUNT_MAX = 1.0;
 static const float BLENDAMOUNT_DEFAULT = 1.0;
 
-// --- UI Controls ---
-uniform float Zoom < ui_type = "slider"; ui_label = "Zoom"; ui_min = ZOOM_MIN; ui_max = ZOOM_MAX; ui_step = 0.01; ui_category = "Transform"; > = ZOOM_DEFAULT;
-uniform float2 Pan < ui_type = "slider"; ui_label = "Position"; ui_min = PAN_MIN; ui_max = PAN_MAX; ui_step = 0.01; ui_category = "Transform"; > = PAN_DEFAULT;
-
 // Use standard rotation controls from AS_Utils
 AS_ROTATION_UI(SnapRotate, FineRotate)
 
@@ -90,6 +86,11 @@ AS_DECLARE_CUSTOM_PALETTE(VUMeter_, "Appearance")
 
 // --- Stage Depth Controls ---
 AS_STAGEDEPTH_UI(StageDepth)
+
+// --- UI Controls ---
+uniform float Zoom < ui_type = "slider"; ui_label = "Zoom"; ui_min = ZOOM_MIN; ui_max = ZOOM_MAX; ui_step = 0.01; ui_category = "Transform"; > = ZOOM_DEFAULT;
+uniform float2 Pan < ui_type = "slider"; ui_label = "Position"; ui_min = PAN_MIN; ui_max = PAN_MAX; ui_step = 0.01; ui_category = "Transform"; > = PAN_DEFAULT;
+
 
 // --- Final Mix ---
 AS_BLENDMODE_UI_DEFAULT(BlendMode, 0)

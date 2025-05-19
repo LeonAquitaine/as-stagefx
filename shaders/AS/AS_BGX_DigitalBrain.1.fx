@@ -89,14 +89,7 @@ sampler DigitalBrain_NoiseSampler { Texture = DigitalBrain_NoiseTex; AddressU = 
 // UI DECLARATIONS
 // ============================================================================
 
-// Position & Stage Controls
-AS_POSITION_SCALE_UI(PositionOffset, Scale)
-AS_STAGEDEPTH_UI(StageDepth)
-AS_ROTATION_UI(SnapRotation, ManualRotation)
-
 // Animation Controls
-uniform float AnimationKeyframe < ui_type = "slider"; ui_label = "Animation Keyframe"; ui_tooltip = "Sets a specific point in time for the animation. Useful for finding and saving specific patterns."; ui_min = ANIMATION_KEYFRAME_MIN; ui_max = ANIMATION_KEYFRAME_MAX; ui_step = ANIMATION_KEYFRAME_STEP; ui_category = "Animation Controls"; > = ANIMATION_KEYFRAME_DEFAULT;
-uniform float AnimationSpeed < ui_type = "slider"; ui_label = "Animation Speed"; ui_tooltip = "Controls how fast the digital brain patterns evolve."; ui_min = 0.0; ui_max = 2.0; ui_step = 0.01; ui_category = "Animation Controls"; > = 1.0;
 uniform float CameraSpeed < ui_type = "slider"; ui_label = "Camera Speed"; ui_tooltip = "Controls how fast the camera moves through the pattern."; ui_min = CAMERA_SPEED_MIN; ui_max = CAMERA_SPEED_MAX; ui_step = CAMERA_SPEED_STEP; ui_category = "Animation Controls"; > = CAMERA_SPEED_DEFAULT;
 uniform float CameraMovementAmount < ui_type = "slider"; ui_label = "Camera Movement"; ui_tooltip = "Controls amplitude of camera movement animation."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Animation Controls"; > = 0.4;
 uniform float CameraRotationAmount < ui_type = "slider"; ui_label = "Camera Rotation"; ui_tooltip = "Controls amplitude of camera rotation animation."; ui_min = 0.0; ui_max = 2.0; ui_step = 0.01; ui_category = "Animation Controls"; > = 1.0;
@@ -129,14 +122,23 @@ uniform float ColorIntensity < ui_type = "slider"; ui_label = "Color Intensity";
 uniform bool UseClassicColors < ui_label = "Use Classic Blue Colors"; ui_tooltip = "Use the original blue-colored version instead of texture-based colors."; ui_category = "Color Settings"; > = false;
 uniform float3 ClassicColorBalance < ui_type = "slider"; ui_label = "Classic Color Balance"; ui_tooltip = "RGB balance for classic mode colors (higher values = stronger color)."; ui_min = 0.5; ui_max = 8.0; ui_step = 0.1; ui_category = "Color Settings"; > = float3(6.0, 4.0, 2.0);
 
-// Final Mix
-AS_BLENDMODE_UI(BlendMode)
-AS_BLENDAMOUNT_UI(BlendStrength)
 
 // Audio Reactivity
 AS_AUDIO_SOURCE_UI(DigitalBrain_AudioSource, "Audio Source", AS_AUDIO_BASS, "Audio Reactivity")
 AS_AUDIO_MULTIPLIER_UI(DigitalBrain_AudioMultiplier, "Audio Multiplier", AUDIO_MULTIPLIER_DEFAULT, AUDIO_MULTIPLIER_MAX, "Audio Reactivity")
 uniform int DigitalBrain_AudioTarget < ui_type = "combo"; ui_label = "Audio Target"; ui_items = "None\0Pattern Intensity\0Camera Movement\0Synapse Speed\0Camera Speed\0"; ui_category = "Audio Reactivity"; > = 0;
+
+AS_ANIMATION_SPEED_UI(AnimationSpeed, "Animation")
+AS_ANIMATION_KEYFRAME_UI(AnimationKeyframe, "Animation")
+
+// Position & Stage Controls
+AS_STAGEDEPTH_UI(StageDepth)
+AS_POSITION_SCALE_UI(PositionOffset, Scale)
+AS_ROTATION_UI(SnapRotation, ManualRotation)
+
+// Final Mix
+AS_BLENDMODE_UI(BlendMode)
+AS_BLENDAMOUNT_UI(BlendStrength)
 
 // Debug
 AS_DEBUG_MODE_UI("Off\0Pattern\0UV Coords\0Vignette\0Audio Reactivity\0")

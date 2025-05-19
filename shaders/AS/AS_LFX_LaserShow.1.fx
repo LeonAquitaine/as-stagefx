@@ -168,12 +168,6 @@ AS_AUDIO_SOURCE_UI(BlinkAudioSource, "Blinking Audio Source", AS_AUDIO_VOLUME, "
 AS_AUDIO_MULTIPLIER_UI(BlinkAudioMult, "Blinking Audio Multiplier", 1.0, 2.0, "Audio Reactivity")
 
 // ============================================================================
-// STAGE DISTANCE (DEPTH)
-// ============================================================================
-// Using standardized stage depth control
-AS_STAGEDEPTH_UI(StageDepth)
-
-// ============================================================================
 // NOISE (SMOKE)
 // ============================================================================
 uniform float NoiseScale < ui_type = "slider"; ui_label = "Noise Scale"; ui_min = NOISE_SCALE_MIN; ui_max = NOISE_SCALE_MAX; ui_step = 0.01; ui_category = "Smoke"; > = NOISE_SCALE_DEFAULT;
@@ -195,10 +189,14 @@ AS_AUDIO_SOURCE_UI(VortexAudioSource, "Vortex Audio Source", AS_AUDIO_BASS, "Vor
 AS_AUDIO_MULTIPLIER_UI(VortexAudioMult, "Vortex Audio Multiplier", 1.0, 5.0, "Vortex Controls")
 
 // ============================================================================
+// STAGE DISTANCE (DEPTH)
+// ============================================================================
+AS_STAGEDEPTH_UI(StageDepth)
+
+// ============================================================================
 // FINAL MIX
 // ============================================================================
-// Using standardized blend mode controls
-AS_BLENDMODE_UI_DEFAULT(BlendMode, 0)
+AS_BLENDMODE_UI_DEFAULT(BlendMode, AS_BLEND_LIGHTEN)
 AS_BLENDAMOUNT_UI(BlendAmount)
 
 // ============================================================================

@@ -85,6 +85,17 @@ This shader renders a seamless, soft, overlapping grid of light panels with vari
 </tr>
 <tr>
 <td width="50%">
+<h4>BGX: Light Ripples</h4>
+<h5><code>[AS] BGX: Light Ripples|AS_BGX_LightRipples.1.fx</code></h5>
+Creates a mesmerizing, rippling kaleidoscopic light pattern effect. Features dynamic distortion patterns with RGB channel separation, customizable pattern controls (amplitude, frequency, line brightness), selectable color modes (mathematical or palette-based with cycling), audio reactivity for key parameters (animation speed, distortion, brightness), and full rotation, position, and depth controls for scene integration.<br><br>
+Original: <a href="https://www.pouet.net/prod.php?which=57245" target="_new">"shader by Danilo Guanabara"</a>.
+</td>
+<td width="50%"><div style="text-align:center">
+</div>
+</td>
+</tr>
+<tr>
+<td width="50%">
 <h4>BGX: Liquid Chrome</h4>
 <h5><code>[AS] BGX: Liquid Chrome|AS_BGX_LiquidChrome.1.fx</code></h5>
 Creates dynamic, flowing psychedelic patterns reminiscent of liquid metal or chrome. This shader iteratively distorts screen coordinates, creating complex, flowing patterns with optional vertical stripe overlays for additional visual texture.

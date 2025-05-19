@@ -46,8 +46,6 @@
 // STANDARD CONTROLS
 // ============================================================================
 
-// --- Animation Controls ---
-AS_ANIMATION_KEYFRAME_UI(LiquidChrome_AnimationKeyframe, "Animation")
 
 // --- Audio Reactivity Controls ---
 AS_AUDIO_SOURCE_UI(LiquidChrome_AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
@@ -62,17 +60,7 @@ uniform int LiquidChrome_AudioTarget <
     ui_category = "Audio Reactivity";
 > = 2;
 
-// --- Stage Controls ---
-AS_STAGEDEPTH_UI(LiquidChrome_EffectDepth)
-AS_ROTATION_UI(LiquidChrome_SnapRotation, LiquidChrome_FineRotation)
-AS_POSITION_SCALE_UI(LiquidChrome_Position, LiquidChrome_Scale)
-
-// --- Blend Controls ---
-AS_BLENDMODE_UI(LiquidChrome_BlendMode)
-AS_BLENDAMOUNT_UI(LiquidChrome_BlendAmount)
-
 // --- Tunable Uniforms with Artist-Friendly Labels ---
-
 uniform float coord_scale <
     ui_type = "drag"; ui_min = 1.0; ui_max = 50.0; ui_step = 0.1;
     ui_label = "Pattern Detail Scale";
@@ -184,6 +172,18 @@ uniform float4 background_base_color <
     ui_tooltip = "Sets the color of the tint mixed in based on the final warped coordinates, affecting the overall image tone.";
     ui_category = "Color Tuning";
 > = float4(0.05, 0.07, 0.10, 0.0);
+
+// --- Animation Controls ---
+AS_ANIMATION_KEYFRAME_UI(LiquidChrome_AnimationKeyframe, "Animation")
+
+// --- Stage Controls ---
+AS_STAGEDEPTH_UI(LiquidChrome_EffectDepth)
+AS_ROTATION_UI(LiquidChrome_SnapRotation, LiquidChrome_FineRotation)
+AS_POSITION_SCALE_UI(LiquidChrome_Position, LiquidChrome_Scale)
+
+// --- Blend Controls ---
+AS_BLENDMODE_UI(LiquidChrome_BlendMode)
+AS_BLENDAMOUNT_UI(LiquidChrome_BlendAmount)
 
 // Internal constant for safety, not a UI tunable
 static const float SAFE_DENOMINATOR_EPSILON = 1e-6f;

@@ -131,7 +131,7 @@ AS_STAGEDEPTH_UI(StageDepth) // Renamed category
 AS_ROTATION_UI(GlobalSnapRotation, GlobalFineRotation) // Added global rotation
 
 // --- Blend Settings ---
-AS_BLENDMODE_UI_DEFAULT(BlendMode, 3)
+AS_BLENDMODE_UI_DEFAULT(BlendMode, AS_BLEND_LIGHTEN)
 AS_BLENDAMOUNT_UI(BlendAmount)
 
 // --- Debug Settings ---

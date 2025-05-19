@@ -143,13 +143,13 @@ AS_PALETTE_SELECTION_UI(PalettePreset, "Color Palette", AS_PALETTE_NEON, "Palett
 AS_DECLARE_CUSTOM_PALETTE(LightRipples_, "Palette & Style")
 uniform float ColorCycleSpeed < ui_type = "slider"; ui_label = "Color Cycle Speed"; ui_tooltip = "Controls how fast palette colors cycle. 0 = static."; ui_min = -COLOR_CYCLE_SPEED_MAX; ui_max = COLOR_CYCLE_SPEED_MAX; ui_step = 0.1; ui_category = "Palette & Style"; > = COLOR_CYCLE_SPEED_DEFAULT;
 
-// --- Animation ---
-AS_ANIMATION_UI(AnimationSpeed, AnimationKeyframe, "Animation")
-
 // --- Audio Reactivity ---
 AS_AUDIO_SOURCE_UI(LightRipples_AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
 AS_AUDIO_MULTIPLIER_UI(LightRipples_AudioMultiplier, "Audio Intensity", AUDIO_MULTIPLIER_DEFAULT, AUDIO_MULTIPLIER_MAX, "Audio Reactivity")
 uniform int LightRipples_AudioTarget < ui_type = "combo"; ui_label = "Audio Target Parameter"; ui_items = "None\0Animation Speed\0Distortion Amplitude (Time)\0Distortion Frequency (Distance)\0Line Brightness\0"; ui_category = "Audio Reactivity"; > = AUDIO_TARGET_DEFAULT;
+
+// --- Animation ---
+AS_ANIMATION_UI(AnimationSpeed, AnimationKeyframe, "Animation")
 
 // --- Stage/Position ---
 AS_POSITION_SCALE_UI(Position, Scale)

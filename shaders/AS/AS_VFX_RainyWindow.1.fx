@@ -91,12 +91,6 @@ sampler RainyWindow_BlurredBackgroundSampler { Texture = RainyWindow_BlurredBack
 // UI DECLARATIONS
 // ============================================================================
 
-// Position & Stage Controls
-AS_POSITION_SCALE_UI(PositionOffset, Scale)
-AS_ROTATION_UI(SnapRotation, FineRotation)
-AS_STAGEDEPTH_UI(StageDepth)
-AS_PERSPECTIVE_UI(PerspectiveAngles, PerspectiveZOffset, PerspectiveFocalLength, "Perspective") // Added Perspective Controls
-
 // Rain & Droplet Appearance
 uniform float RainAmount < ui_type = "slider"; ui_label = "Rain Amount"; ui_tooltip = "Controls overall rain intensity and thus influences blur levels."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Rain Appearance"; > = 0.7;
 uniform float DropAnimationSpeed < ui_type = "slider"; ui_label = "Drop Animation Speed"; ui_tooltip = "Controls how fast the raindrops move and animate."; ui_min = DROPLET_SPEED_MIN; ui_max = DROPLET_SPEED_MAX; ui_step = 0.01; ui_category = "Rain Appearance"; > = 0.2;
@@ -118,6 +112,13 @@ uniform float LightningIntensity < ui_type = "slider"; ui_label = "Lightning Int
 // Audio Reactivity
 AS_AUDIO_SOURCE_UI(RainAmount_AudioSource, "Rain Amount Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
 AS_AUDIO_MULTIPLIER_UI(RainAmount_AudioMultiplier, "Rain Amount Audio Intensity", 1.0, 2.0, "Audio Reactivity")
+
+AS_PERSPECTIVE_UI(PerspectiveAngles, PerspectiveZOffset, PerspectiveFocalLength, "Perspective") // Added Perspective Controls
+
+// Position & Stage Controls
+AS_STAGEDEPTH_UI(StageDepth)
+AS_POSITION_SCALE_UI(PositionOffset, Scale)
+AS_ROTATION_UI(SnapRotation, FineRotation)
 
 // Final Mix
 AS_BLENDMODE_UI(BlendMode)

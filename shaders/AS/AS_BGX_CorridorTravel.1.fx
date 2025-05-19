@@ -59,10 +59,6 @@ uniform int PR_Bounces < ui_type = "drag"; ui_min = 0; ui_max = 5; ui_step = 1; 
 // ============================================================================
 // ANIMATION CONTROLS
 // ============================================================================
-AS_ANIMATION_KEYFRAME_UI(CorridorTravel_AnimationKeyframe, "Animation")
-
-uniform float PR_OverallTimeScale < ui_type = "drag"; ui_min = 0.0; ui_max = 5.0; ui_step = 0.05; ui_label = "Global Speed"; ui_tooltip = "Overall speed multiplier for all time-based animations."; ui_category = "Animation"; > = 1.0f;
-
 // --- Time Stepping Parameters ---
 uniform float PR_CamTime_BaseSpeed < ui_type = "drag"; ui_min = 0.1; ui_max = 5.0; ui_step = 0.1; ui_label = "Forward Speed"; ui_tooltip = "Base movement speed through the corridor."; ui_category = "Animation"; > = 1.9f;
 uniform float PR_CamTime_TickPeriod < ui_type = "drag"; ui_min = 0.1; ui_max = 5.0; ui_step = 0.1; ui_label = "Tick Period"; ui_tooltip = "Period for the 'stepping' motion effect."; ui_category = "Animation"; > = 1.9f;
@@ -143,6 +139,9 @@ AS_AUDIO_SOURCE_UI(CorridorTravel_AudioSource, "Audio Source", AS_AUDIO_BEAT, "A
 AS_AUDIO_MULTIPLIER_UI(CorridorTravel_AudioMultiplier, "Audio Intensity", 1.0, 2.0, "Audio Reactivity")
 
 uniform int CorridorTravel_AudioTarget < ui_type = "combo"; ui_label = "Audio Target"; ui_tooltip = "Select which parameter will be modulated by audio"; ui_items = "None\0Global Speed\0Camera Animation\0Pattern Scale\0Emission Brightness\0"; ui_category = "Audio Reactivity"; > = 1;
+
+AS_ANIMATION_SPEED_UI(PR_OverallTimeScale, "Animation")
+AS_ANIMATION_KEYFRAME_UI(CorridorTravel_AnimationKeyframe, "Animation")
 
 // ============================================================================
 // STAGE CONTROLS
@@ -245,7 +244,7 @@ float4 PS_CorridorTravel(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0)
     float4 originalColor = tex2D(ReShade::BackBuffer, texcoord);
     
     // Apply standard animation time with keyframe support
-    float time = AS_getAnimationTime(1.0, CorridorTravel_AnimationKeyframe) * PR_OverallTimeScale;
+    float time = AS_getAnimationTime(PR_OverallTimeScale, CorridorTravel_AnimationKeyframe);
     time = AS_mod(time, 300.0f);
     
     // Apply audio reactivity based on selected target

@@ -47,7 +47,7 @@
 // ============================================================================
 
 // --- Audio Mirror Controls ---
-uniform int MirrorShape < ui_type = "combo"; ui_label = "Shape"; ui_items = "Circular\0Resolution-Relative\0"; ui_category = "Audio Mirror"; > = 0;
+uniform int MirrorShape < ui_type = "combo"; ui_label = "Shape"; ui_items = "Resolution-Relative\0Circular\0"; ui_category = "Audio Mirror"; > = 1;
 uniform float MirrorBaseRadius < ui_type = "slider"; ui_label = "Base Radius"; ui_tooltip = "Base radius of the mirror circle."; ui_min = 0.05; ui_max = 0.5; ui_step = 0.01; ui_category = "Audio Mirror"; > = 0.18;
 uniform float MirrorWaveFreq < ui_type = "slider"; ui_label = "Wave Freq"; ui_tooltip = "Frequency of the wave/ripple effect."; ui_min = 1.0; ui_max = 20.0; ui_step = 0.1; ui_category = "Audio Mirror"; > = 8.0;
 uniform float MirrorWaveStrength < ui_type = "slider"; ui_label = "Wave Strength"; ui_tooltip = "Strength of the wave/ripple distortion."; ui_min = 0.0; ui_max = 0.2; ui_step = 0.005; ui_category = "Audio Mirror"; > = 0.06;

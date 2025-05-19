@@ -121,8 +121,8 @@ AS_AUDIO_SOURCE_UI(BlockDensitySource, "Block Density Source", AS_AUDIO_MID, "Au
 AS_AUDIO_MULTIPLIER_UI(BlockDensityMult, "Block Density Impact", 1.0, 3.0, "Audio Reactivity") 
 
 // --- Stage Distance ---
-uniform float EffectDepth < ui_type = "slider"; ui_label = "Effect Depth"; ui_tooltip = "Adjusts where effects appear in relation to scene depth. Lower values = closer to camera."; ui_min = EFFECT_DEPTH_MIN; ui_max = EFFECT_DEPTH_MAX; ui_step = 0.01; ui_category = "Stage Distance"; > = EFFECT_DEPTH_DEFAULT;
-uniform float DepthFalloff < ui_type = "slider"; ui_label = "Depth Falloff"; ui_tooltip = "Controls how quickly the effect fades with distance."; ui_min = DEPTH_FALLOFF_MIN; ui_max = DEPTH_FALLOFF_MAX; ui_step = 0.1; ui_category = "Stage Distance"; > = DEPTH_FALLOFF_DEFAULT;
+AS_STAGEDEPTH_UI(EffectDepth)
+uniform float DepthFalloff < ui_type = "slider"; ui_label = "Depth Falloff"; ui_tooltip = "Controls how quickly the effect fades with distance."; ui_min = DEPTH_FALLOFF_MIN; ui_max = DEPTH_FALLOFF_MAX; ui_step = 0.1; ui_category = "Stage"; > = DEPTH_FALLOFF_DEFAULT;
 
 // --- Final Mix ---
 AS_BLENDMODE_UI_DEFAULT(BlendMode, 0)

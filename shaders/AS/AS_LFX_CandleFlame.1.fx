@@ -173,7 +173,7 @@ AS_ROTATION_UI(FlameSnapRotation, FlameFineRotation)
 // ============================================================================
 // FINAL MIX
 // ============================================================================
-AS_BLENDMODE_UI_DEFAULT(BlendMode, 1)
+AS_BLENDMODE_UI_DEFAULT(BlendMode, AS_BLEND_LIGHTEN)
 AS_BLENDAMOUNT_UI(BlendAmount)
 
 // ============================================================================
