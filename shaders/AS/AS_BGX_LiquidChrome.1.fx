@@ -174,6 +174,7 @@ uniform float4 background_base_color <
 > = float4(0.05, 0.07, 0.10, 0.0);
 
 // --- Animation Controls ---
+AS_ANIMATION_SPEED_UI(LiquidChrome_AnimationSpeed, "Animation")
 AS_ANIMATION_KEYFRAME_UI(LiquidChrome_AnimationKeyframe, "Animation")
 
 // --- Stage Controls ---
@@ -197,9 +198,8 @@ float4 PS_LiquidChrome(float4 vpos : SV_Position, float2 texcoord : TEXCOORD) : 
     
     // Early return based on depth
     if (depth < LiquidChrome_EffectDepth - AS_DEPTH_EPSILON)
-        return orig;
-      // Get animation time with keyframe support
-    float time = AS_getAnimationTime(1.0, LiquidChrome_AnimationKeyframe);
+        return orig;    // Get animation time with speed and keyframe support
+    float time = AS_getAnimationTime(LiquidChrome_AnimationSpeed, LiquidChrome_AnimationKeyframe);
     
     // Apply audio reactivity to selected parameter based on audio target
     float audioMod = AS_applyAudioReactivity(1.0, LiquidChrome_AudioSource, LiquidChrome_AudioMultiplier, true) - 1.0;
