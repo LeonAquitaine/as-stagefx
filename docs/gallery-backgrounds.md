@@ -85,6 +85,17 @@ This shader renders a seamless, soft, overlapping grid of light panels with vari
 </tr>
 <tr>
 <td width="50%">
+<h4>BGX: Log Spirals</h4>
+<h5><code>[AS] BGX: Log Spirals|AS_BGX_LogSpirals.1.fx</code></h5>
+Creates an organic spiral pattern based on logarithmic growth with animated spheres along the spiral arms. Features precise control over spiral expansion rate and animation, customizable sphere size with fade effects and specular highlights, color palette options with hue cycling and ambient glow, audio reactivity for multiple parameters (animation speed, rotation, arm twist, sphere size, brightness), and standard position/rotation/scale controls for scene integration.<br><br>
+Based on: <a href="https://www.shadertoy.com/view/msGXRD" target="_new">"Logarithmic spiral of spheres" by mrange</a>.
+</td>
+<td width="50%"><div style="text-align:center">
+</div>
+</td>
+</tr>
+<tr>
+<td width="50%">
 <h4>BGX: Light Ripples</h4>
 <h5><code>[AS] BGX: Light Ripples|AS_BGX_LightRipples.1.fx</code></h5>
 Creates a mesmerizing, rippling kaleidoscopic light pattern effect. Features dynamic distortion patterns with RGB channel separation, customizable pattern controls (amplitude, frequency, line brightness), selectable color modes (mathematical or palette-based with cycling), audio reactivity for key parameters (animation speed, distortion, brightness), and full rotation, position, and depth controls for scene integration.<br><br>
