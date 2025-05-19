@@ -53,25 +53,25 @@ namespace ASVignettePlus {
 // ============================================================================
 
 // --- Threshold Constants ---
-static const float ALPHA_EPSILON = 0.00001f;      // Minimum alpha threshold for processing
-static const float CENTER_COORD = 0.5f;           // Screen center coordinate
-static const float PERCENT_TO_NORMAL = 0.01f;     // Conversion from percentage to 0-1 range
-static const float FULL_OPACITY = 1.0f;           // Full opacity value
+static const float ALPHA_EPSILON = 0.00001f; // Minimum alpha threshold for processing
+static const float CENTER_COORD = 0.5f; // Screen center coordinate
+static const float PERCENT_TO_NORMAL = 0.01f; // Conversion from percentage to 0-1 range
+static const float FULL_OPACITY = 1.0f; // Full opacity value
 static const float3 BLACK_COLOR = float3(0.0, 0.0, 0.0); // Pure black color for debug views
 
 // --- Default Values ---
-static const float DEFAULT_FALLOFF_START = 10.0;  // Default falloff start (%)
-static const float DEFAULT_FALLOFF_END = 75.0;    // Default falloff end (%)
-static const float DEFAULT_PATTERN_SIZE = 0.03;   // Default pattern element size
+static const float DEFAULT_FALLOFF_START = 70.0; // Default falloff start (%)
+static const float DEFAULT_FALLOFF_END = 90.0; // Default falloff end (%)
+static const float DEFAULT_PATTERN_SIZE = 0.008; // Default pattern element size
 static const float DEFAULT_COVERAGE_BOOST = 1.05; // Default pattern coverage boost factor
 
 // --- UI Range Constants ---
-static const float MIN_FALLOFF = 0.0f;            // Minimum falloff percentage
-static const float MAX_FALLOFF = 100.0f;          // Maximum falloff percentage
-static const float MIN_PATTERN_SIZE = 0.001f;     // Minimum pattern element size
-static const float MAX_PATTERN_SIZE = 0.1f;       // Maximum pattern element size
-static const float MIN_COVERAGE_BOOST = 1.0f;     // Minimum pattern coverage boost
-static const float MAX_COVERAGE_BOOST = 1.2f;     // Maximum pattern coverage boost
+static const float MIN_FALLOFF = 0.0f; // Minimum falloff percentage
+static const float MAX_FALLOFF = 100.0f; // Maximum falloff percentage
+static const float MIN_PATTERN_SIZE = 0.001f; // Minimum pattern element size
+static const float MAX_PATTERN_SIZE = 0.1f; // Maximum pattern element size
+static const float MIN_COVERAGE_BOOST = 1.0f; // Minimum pattern coverage boost
+static const float MAX_COVERAGE_BOOST = 1.2f; // Maximum pattern coverage boost
 
 // --- Visual Style Constants ---
 static const int STYLE_SMOOTH_GRADIENT = 0;
@@ -81,8 +81,8 @@ static const int STYLE_LINES_PARALLEL = 3;
 
 // --- Mirror Style Constants ---
 static const int MIRROR_STYLE_NONE = 0;
-static const int MIRROR_STYLE_EDGE = 1;      // Effect emanates from edges inwards
-static const int MIRROR_STYLE_CENTER = 2;    // Effect emanates from center outwards
+static const int MIRROR_STYLE_EDGE = 1; // Effect emanates from edges inwards
+static const int MIRROR_STYLE_CENTER = 2; // Effect emanates from center outwards
 
 // --- Debug Mode Constants ---
 static const int DEBUG_OFF = 0;
@@ -97,35 +97,24 @@ static const int DEBUG_PATTERN_ONLY = 4;
 
 // --- Group I: Main Effect Style & Appearance ---
 uniform int EffectStyle < ui_type = "combo"; ui_label = "Visual Style"; ui_items = "Smooth Gradient\0Duotone: Circles\0Lines - Perpendicular\0Lines - Parallel\0"; ui_tooltip = "Selects the overall visual appearance of the effect."; ui_category = "Style"; > = STYLE_DUOTONE_CIRCLES;
-
 uniform float3 EffectColor < ui_type = "color"; ui_label = "Effect Color"; ui_tooltip = "The primary color used for the gradient or duotone patterns."; ui_category = "Style"; > = float3(0.0, 0.0, 0.0);
-
-uniform int MirrorStyle < 
-    ui_type = "combo"; 
-    ui_label = "Mirroring Style"; 
-    ui_items = "None\0Edge Mirrored (From Edges)\0Center Mirrored (From Center)\0"; 
-    ui_tooltip = "Selects how the directional effect is mirrored.\nNone: Standard directional effect.\nEdge Mirrored: Effect starts at outer edges and moves inwards.\nCenter Mirrored: Effect starts at the central axis and moves outwards."; 
-    ui_category = "Style"; 
-> = MIRROR_STYLE_NONE;
-
+uniform int MirrorStyle < ui_type = "combo"; ui_label = "Mirroring Style"; ui_items = "None\0Edge Mirrored (From Edges)\0Center Mirrored (From Center)\0"; ui_tooltip = "Selects how the directional effect is mirrored.\nNone: Standard directional effect.\nEdge Mirrored: Effect starts at outer edges and moves inwards.\nCenter Mirrored: Effect starts at the central axis and moves outwards."; ui_category = "Style"; > = MIRROR_STYLE_EDGE;
 uniform bool InvertAlpha < ui_type = "checkbox"; ui_label = "Invert Transparency"; ui_tooltip = "Flips the effect's opacity: solid areas become transparent, and vice-versa."; ui_category = "Style"; > = false;
 
 // --- Group II: Falloff Controls ---
 uniform float FalloffStart < ui_type = "slider"; ui_label = "Falloff Start (%)"; ui_min = MIN_FALLOFF; ui_max = MAX_FALLOFF; ui_step = 0.1; ui_tooltip = "Defines where the effect begins to transition from solid. Order of Start/End doesn't matter."; ui_category = "Falloff"; > = DEFAULT_FALLOFF_START;
-
 uniform float FalloffEnd < ui_type = "slider"; ui_label = "Falloff End (%)"; ui_min = MIN_FALLOFF; ui_max = MAX_FALLOFF; ui_step = 0.1; ui_tooltip = "Defines where the effect becomes fully transparent after transitioning. Order of Start/End doesn't matter."; ui_category = "Falloff"; > = DEFAULT_FALLOFF_END;
 
 // --- Group III: Pattern Specifics (for Duotone/Lines) ---
 uniform float PatternElementSize < ui_type = "slider"; ui_label = "Pattern Element Size / Spacing"; ui_tooltip = "For Duotone/Lines: Controls the base size of circles, or spacing of lines."; ui_min = MIN_PATTERN_SIZE; ui_max = MAX_PATTERN_SIZE; ui_step = 0.001; ui_category = "Pattern"; > = DEFAULT_PATTERN_SIZE;
-
 uniform float PatternCoverageBoost < ui_type = "slider"; ui_label = "Pattern Coverage Boost"; ui_tooltip = "For Duotone/Lines: Slightly enlarges elements in solid areas to ensure full coverage. 1.0 = no boost."; ui_min = MIN_COVERAGE_BOOST; ui_max = MAX_COVERAGE_BOOST; ui_step = 0.005; ui_category = "Pattern"; > = DEFAULT_COVERAGE_BOOST;
 
 // --- Group IV: Direction & Orientation ---
-// Standard rotation controls for AS StageFX
-AS_ROTATION_UI(SnapRotation, FineRotation)
-
 // --- Stage Depth Control ---
 AS_STAGEDEPTH_UI(EffectDepth)
+
+// Standard rotation controls for AS StageFX
+AS_ROTATION_UI(SnapRotation, FineRotation)
 
 // --- Final Mix Controls ---
 AS_BLENDMODE_UI(BlendMode)
@@ -147,7 +136,7 @@ float fmod_positive(float a, float b) {
 float2 HexGridRoundAxial(float2 fractionalAxial) { 
     float q = fractionalAxial.x;
     float r = fractionalAxial.y;
-    float s = -q - r;  // Third coordinate in axial system (q + r + s = 0)
+    float s = -q - r; // Third coordinate in axial system (q + r + s = 0)
     
     float qRound = round(q);
     float rRound = round(r);
