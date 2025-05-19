@@ -24,6 +24,11 @@
  * 4. Applies modular polar coordinate mapping for spiral arm generation
  * 5. Uses ACES tone mapping and sRGB conversion for visual quality
  *
+ * CREDITS:
+ * Based on: "Logarithmic spiral of spheres" by mrange (2023)
+ * Original: https://www.shadertoy.com/view/msGXRD
+ * Inspired by artwork from: https://twitter.com/MaxDrekker/status/1643694297605103630
+ * 
  * ===================================================================================
  */
 
