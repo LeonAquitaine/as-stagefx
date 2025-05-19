@@ -41,11 +41,20 @@ jobs:
           New-Item -ItemType Directory -Path "temp/release" -Force
           (Get-Content -Path "docs/template/release.md") -replace '\${VERSION}', "${{ env.VERSION }}" | Set-Content -Path "temp/release/release.md"
           
-      - name: Build packages
+      - name: Check for existing packages
         shell: pwsh
         run: |
-          # Run the package build script
-          .\build-packages.ps1
+          # Check that package ZIP files already exist
+          $zipFiles = Get-ChildItem -Path "packages" -Filter "*.zip"
+          if ($zipFiles.Count -eq 0) {
+            Write-Error "No ZIP files found in packages directory. Make sure you've already built the packages."
+            exit 1
+          } else {
+            Write-Output "Found $($zipFiles.Count) ZIP packages, using existing packages:"
+            foreach ($file in $zipFiles) {
+              Write-Output "  - $($file.Name)"
+            }
+          }
           
       - name: Create tag if it doesn't exist
         id: create_tag
