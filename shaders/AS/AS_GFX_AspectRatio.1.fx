@@ -54,21 +54,30 @@
 // ============================================================================
 // CONSTANTS
 // ============================================================================
-// Use constants from AS_Utils.1.fxh instead of redefining them
-// #define GOLDEN_RATIO 1.6180339887
-// #define AS_PI 3.14159265359
-// #define AS_TWO_PI 6.28318530718
+// Shader-specific constants
+#define AS_AR_GUIDE_INTENSITY_MIN 0.1
+#define AS_AR_GRID_WIDTH_MAX 20.0
+#define AS_AR_ACTION_SAFE_MARGIN 0.05
+#define AS_AR_TITLE_SAFE_MARGIN 0.1
+#define AS_AR_SPIRAL_SCALE_FACTOR 100.0
+#define AS_AR_SPIRAL_MIN_THICKNESS 0.001
+#define AS_AR_INTENSITY_STRONG 0.8
+#define AS_AR_INTENSITY_MEDIUM 0.7
+#define AS_AR_INTENSITY_WEAK 0.6
+
+// Grid size constants
+#define AS_AR_GRID_3X3 3
+#define AS_AR_GRID_4X4 4
+#define AS_AR_GRID_5X5 5
+#define AS_AR_GRID_6X6 6
 
 // ============================================================================
 // UI DECLARATIONS
 // ============================================================================
 
 // Aspect Ratio Selection
-uniform int AspectRatioPreset < 
-    ui_type = "combo";    ui_label = "Aspect Ratio Preset";
-    ui_tooltip = "Select from common aspect ratios or choose 'Custom' to define your own";
-    ui_category = "Aspect Ratio";
-    ui_items =  "Custom\0"               
+// ============================= Aspect Ratio Configuration =============================
+uniform int AspectRatioPreset < ui_type = "combo"; ui_label = "Aspect Ratio Preset"; ui_tooltip = "Select from common aspect ratios or choose 'Custom' to define your own"; ui_category = "Aspect Ratio"; ui_items = "Custom\0"
                 "Eorzea Collection\0"
                 "  [EC] Standard Image (3:5 Portrait)\0"
                 "  [EC] Standard Image (5:3 Landscape)\0"
@@ -131,22 +140,24 @@ uniform int AspectRatioPreset <
                 "  [CM] 2.39:1 (Anamorphic)\0";
 > = 3;
 
-uniform float2 CustomAspectRatio <
-    ui_type = "drag";
-    ui_label = "Custom Aspect Ratio";
-    ui_tooltip = "Set your own aspect ratio (X:Y)";
-    ui_category = "Aspect Ratio";
-    ui_min = AS_RANGE_SCALE_MIN; ui_max = AS_RANGE_SCALE_MAX * 2.0;
-    ui_step = 0.01;
-> = float2(16.0, 9.0);
+uniform float2 CustomAspectRatio < ui_type = "drag"; ui_label = "Custom Aspect Ratio"; ui_tooltip = "Set your own aspect ratio (X:Y)"; ui_category = "Aspect Ratio"; ui_min = AS_RANGE_SCALE_MIN; ui_max = AS_RANGE_SCALE_MAX * 2.0; ui_step = 0.01; > = float2(16.0, 9.0);
 
-// Guides and Grid Options
-uniform int GuideType <
-    ui_type = "combo";
-    ui_label = "Composition Guide";
-    ui_tooltip = "Optional grid overlay to help with composition";
-    ui_category = "Composition Guides";
-    ui_items = "None\0"
+// ============================= Position Controls =============================
+uniform float HorizontalOffset < ui_type = "drag"; ui_label = "Horizontal Position"; ui_tooltip = "Shift the frame horizontally"; ui_category = "Position"; ui_min = -AS_HALF; ui_max = AS_HALF; ui_step = 0.001; > = AS_RANGE_ZERO_ONE_MIN;
+
+uniform float VerticalOffset < ui_type = "drag"; ui_label = "Vertical Position"; ui_tooltip = "Shift the frame vertically"; ui_category = "Position"; ui_min = -AS_HALF; ui_max = AS_HALF; ui_step = 0.001; > = AS_RANGE_ZERO_ONE_MIN;
+
+// ============================= Appearance Controls =============================
+uniform float4 ClippedAreaColor < ui_type = "color"; ui_label = "Masked Area Color"; ui_tooltip = "Color for areas outside the selected aspect ratio"; ui_category = "Appearance"; > = float4(AS_RANGE_ZERO_ONE_MIN, AS_RANGE_ZERO_ONE_MIN, AS_RANGE_ZERO_ONE_MIN, AS_RANGE_OPACITY_MAX);
+
+uniform float4 GuideColor < ui_type = "color"; ui_label = "Guide Color"; ui_tooltip = "Color for the guide lines"; ui_category = "Appearance"; > = float4(AS_RANGE_ZERO_ONE_MAX, AS_RANGE_ZERO_ONE_MAX, AS_RANGE_ZERO_ONE_MAX, AS_HALF);
+
+uniform float GuideIntensity < ui_type = "drag"; ui_label = "Guide Intensity"; ui_tooltip = "Adjusts the opacity of composition guides"; ui_category = "Appearance"; ui_min = AS_AR_GUIDE_INTENSITY_MIN; ui_max = AS_RANGE_OPACITY_MAX; ui_step = 0.05; > = AS_RANGE_OPACITY_DEFAULT;
+
+uniform float GridWidth < ui_type = "drag"; ui_label = "Grid Width"; ui_tooltip = "Width of grid lines and border (in pixels)"; ui_category = "Appearance"; ui_min = AS_RANGE_SCALE_DEFAULT; ui_max = AS_AR_GRID_WIDTH_MAX; ui_step = 1.0; > = AS_RANGE_SCALE_DEFAULT;
+
+// ============================= Composition Guides =============================
+uniform int GuideType < ui_type = "combo"; ui_label = "Composition Guide"; ui_tooltip = "Optional grid overlay to help with composition"; ui_category = "Composition Guides"; ui_items = "None\0"
                "Basic Guides\0"
                "  Rule of Thirds\0"
                "  Golden Ratio\0"
@@ -173,6 +184,13 @@ uniform int GuideType <
                "  Grid 6×6\0"
                "  Safe Zones\0";
 > = 0;
+
+// ============================= Advanced Guide Options =============================
+uniform bool PatternAdvanced < ui_label = "Advanced Pattern Controls"; ui_tooltip = "Enable additional pattern customization"; ui_category = "Advanced Guide Options"; > = false;
+
+uniform float PatternRotation < ui_type = "drag"; ui_label = "Pattern Rotation"; ui_tooltip = "Rotate the pattern (in degrees)"; ui_category = "Advanced Guide Options"; ui_min = AS_RANGE_ZERO_ONE_MIN; ui_max = AS_TWO_PI * AS_RADIANS_TO_DEGREES; ui_step = 0.5; > = AS_RANGE_ZERO_ONE_MIN;
+
+uniform float PatternComplexity < ui_type = "drag"; ui_label = "Pattern Complexity"; ui_tooltip = "Adjust the complexity of certain patterns"; ui_category = "Advanced Guide Options"; ui_category_closed = true; ui_min = AS_RANGE_SCALE_DEFAULT; ui_max = AS_RANGE_SCALE_MAX * 2.0; ui_step = 0.1; > = 3.0;
 
 // Guide type constants (hundreds place = main type, ones place = subtype)
 #define GUIDE_NONE 0
@@ -250,82 +268,7 @@ int GetGuideValue() {
     }
 }
 
-// Appearance Controls
-uniform float4 ClippedAreaColor <
-    ui_type = "color";
-    ui_label = "Masked Area Color";
-    ui_tooltip = "Color for areas outside the selected aspect ratio";
-    ui_category = "Appearance";
-> = float4(AS_RANGE_ZERO_ONE_MIN, AS_RANGE_ZERO_ONE_MIN, AS_RANGE_ZERO_ONE_MIN, AS_RANGE_OPACITY_MAX);
-
-uniform float4 GuideColor <
-    ui_type = "color";
-    ui_label = "Guide Color";
-    ui_tooltip = "Color for the guide lines";
-    ui_category = "Appearance";
-> = float4(AS_RANGE_ZERO_ONE_MAX, AS_RANGE_ZERO_ONE_MAX, AS_RANGE_ZERO_ONE_MAX, AS_HALF);
-
-uniform float GuideIntensity <
-    ui_type = "drag";
-    ui_label = "Guide Intensity";
-    ui_tooltip = "Adjusts the opacity of composition guides";
-    ui_category = "Appearance";
-    ui_min = 0.1; ui_max = AS_RANGE_OPACITY_MAX;
-    ui_step = 0.05;
-> = AS_RANGE_OPACITY_DEFAULT;
-
-uniform bool PatternAdvanced <
-    ui_label = "Advanced Pattern Controls";
-    ui_tooltip = "Enable additional pattern customization";
-    ui_category = "Advanced Guide Options";
-> = false;
-
-uniform float PatternRotation <
-    ui_type = "drag";
-    ui_label = "Pattern Rotation";
-    ui_tooltip = "Rotate the pattern (in degrees)";
-    ui_category = "Advanced Guide Options";
-    ui_min = AS_RANGE_ZERO_ONE_MIN; ui_max = AS_TWO_PI * AS_RADIANS_TO_DEGREES;
-    ui_step = 0.5;
-> = AS_RANGE_ZERO_ONE_MIN;
-
-uniform float PatternComplexity <
-    ui_type = "drag";
-    ui_label = "Pattern Complexity";
-    ui_tooltip = "Adjust the complexity of certain patterns";
-    ui_category = "Advanced Guide Options";
-    ui_category_closed = true;
-    ui_min = AS_RANGE_SCALE_DEFAULT; ui_max = AS_RANGE_SCALE_MAX * 2.0;
-    ui_step = 0.1;
-> = 3.0;
-
-uniform float GridWidth <
-    ui_type = "drag";
-    ui_label = "Grid Width";
-    ui_tooltip = "Width of grid lines and border (in pixels)";
-    ui_category = "Appearance";
-    ui_min = AS_RANGE_SCALE_DEFAULT; ui_max = 20.0;
-    ui_step = 1.0;
-> = AS_RANGE_SCALE_DEFAULT;
-
-// Position Controls
-uniform float HorizontalOffset <
-    ui_type = "drag";
-    ui_label = "Horizontal Position";
-    ui_tooltip = "Shift the frame horizontally";
-    ui_category = "Position";
-    ui_min = -AS_HALF; ui_max = AS_HALF;
-    ui_step = 0.001;
-> = AS_RANGE_ZERO_ONE_MIN;
-
-uniform float VerticalOffset <
-    ui_type = "drag";
-    ui_label = "Vertical Position"; 
-    ui_tooltip = "Shift the frame vertically";
-    ui_category = "Position";
-    ui_min = -AS_HALF; ui_max = AS_HALF;
-    ui_step = 0.001;
-> = AS_RANGE_ZERO_ONE_MIN;
+// Constants moved to the CONSTANTS section
 
 // ============================================================================
 // HELPER FUNCTIONS
@@ -801,10 +744,9 @@ float3 DrawGuides(float2 texcoord, float3 originalColor, float3 guideColor, floa
                 // Calculate the ideal radius for a golden spiral at this angle
                 float b = log(phi) / (AS_PI * AS_HALF);
                 float idealRadius = 0.25 * exp(b * angle);
-                
-                // Calculate spiral thickness based on GridWidth
-                float spiralThickness = (GridWidth * 0.01) * length(float2(1.0/BUFFER_WIDTH, 1.0/BUFFER_HEIGHT)) * 100.0;
-                spiralThickness = max(spiralThickness, 0.001); // Minimum thickness
+                  // Calculate spiral thickness based on GridWidth
+                float spiralThickness = (GridWidth * 0.01) * length(float2(1.0/BUFFER_WIDTH, 1.0/BUFFER_HEIGHT)) * AS_AR_SPIRAL_SCALE_FACTOR;
+                spiralThickness = max(spiralThickness, AS_AR_SPIRAL_MIN_THICKNESS); // Minimum thickness
                 
                 if (abs(dist - idealRadius) < spiralThickness)
                     return lerp(originalColor, guideColor, GuideColor.a);
@@ -812,18 +754,16 @@ float3 DrawGuides(float2 texcoord, float3 originalColor, float3 guideColor, floa
                 // Draw the golden rectangles
                 float phiInv = 1.0 / phi;
                 
-                if (actualSubType == SPIRAL_LOWER_RIGHT) {
-                    if (IsPointOnLine(frameCoord.x, 1.0 - phiInv, gridWidth.x) || 
-                        IsPointOnLine(frameCoord.y, 1.0 - phiInv, gridWidth.y))
-                        return lerp(originalColor, guideColor, GuideColor.a * 0.7);
+                if (actualSubType == SPIRAL_LOWER_RIGHT) {                if (IsPointOnLine(frameCoord.x, AS_RANGE_ZERO_ONE_MAX - phiInv, gridWidth.x) || 
+                        IsPointOnLine(frameCoord.y, AS_RANGE_ZERO_ONE_MAX - phiInv, gridWidth.y))
+                        return lerp(originalColor, guideColor, GuideColor.a * AS_AR_INTENSITY_MEDIUM);
                 } else if (actualSubType == SPIRAL_UPPER_RIGHT) {
                     if (IsPointOnLine(frameCoord.x, 1.0 - phiInv, gridWidth.x) || 
                         IsPointOnLine(frameCoord.y, phiInv, gridWidth.y))
                         return lerp(originalColor, guideColor, GuideColor.a * 0.7);
-                } else if (actualSubType == SPIRAL_UPPER_LEFT) {
-                    if (IsPointOnLine(frameCoord.x, phiInv, gridWidth.x) || 
+                } else if (actualSubType == SPIRAL_UPPER_LEFT) {                if (IsPointOnLine(frameCoord.x, phiInv, gridWidth.x) || 
                         IsPointOnLine(frameCoord.y, phiInv, gridWidth.y))
-                        return lerp(originalColor, guideColor, GuideColor.a * 0.7);
+                        return lerp(originalColor, guideColor, GuideColor.a * AS_AR_INTENSITY_MEDIUM);
                 } else if (actualSubType == SPIRAL_LOWER_LEFT) {
                     if (IsPointOnLine(frameCoord.x, phiInv, gridWidth.x) || 
                         IsPointOnLine(frameCoord.y, 1.0 - phiInv, gridWidth.y))
@@ -845,29 +785,27 @@ float3 DrawGuides(float2 texcoord, float3 originalColor, float3 guideColor, floa
                 // Reciprocal
                 if (actualSubType > 0) {
                     // Vertical and horizontal center lines
-                    if (IsPointOnLine(frameCoord.x, 0.5, gridWidth.x * 0.7) || 
-                        IsPointOnLine(frameCoord.y, 0.5, gridWidth.y * 0.7))
-                        return lerp(originalColor, guideColor, GuideColor.a * 0.7);
+                        if (IsPointOnLine(frameCoord.x, AS_HALF, gridWidth.x * AS_AR_INTENSITY_MEDIUM) || 
+                        IsPointOnLine(frameCoord.y, AS_HALF, gridWidth.y * AS_AR_INTENSITY_MEDIUM))
+                        return lerp(originalColor, guideColor, GuideColor.a * AS_AR_INTENSITY_MEDIUM);
                     
                     // Additional diagonals for more complex armature
                     if (actualSubType > 1) {
                         // Reciprocal diagonals from the center
                         float centerDistY1 = abs((frameCoord.x - 0.5) * 2.0 - (frameCoord.y - 0.5));
                         float centerDistY2 = abs((frameCoord.x - 0.5) * 2.0 + (frameCoord.y - 0.5));
-                        
-                        if (centerDistY1 < diagonalWidth * 0.7 || centerDistY2 < diagonalWidth * 0.7)
-                            return lerp(originalColor, guideColor, GuideColor.a * 0.6);
+                                  if (centerDistY1 < diagonalWidth * AS_AR_INTENSITY_MEDIUM || centerDistY2 < diagonalWidth * AS_AR_INTENSITY_MEDIUM)
+                            return lerp(originalColor, guideColor, GuideColor.a * AS_AR_INTENSITY_WEAK);
                     }
                 }
                 break;
             }
-            
-            case 9: { // Grid
+              case 9: { // Grid
                 // Determine grid size based on SubType
-                int gridSize = 3; // Default to 3x3
-                if (actualSubType == 1) gridSize = 4; // 4x4
-                else if (actualSubType == 2) gridSize = 5; // 5x5
-                else if (actualSubType == 3) gridSize = 6; // 6x6
+                int gridSize = AS_AR_GRID_3X3; // Default to 3x3
+                if (actualSubType == 1) gridSize = AS_AR_GRID_4X4; // 4x4
+                else if (actualSubType == 2) gridSize = AS_AR_GRID_5X5; // 5x5
+                else if (actualSubType == 3) gridSize = AS_AR_GRID_6X6; // 6x6
                 
                 // Check if we're on a grid line
                 for (int i = 1; i < gridSize; i++) {
@@ -881,26 +819,25 @@ float3 DrawGuides(float2 texcoord, float3 originalColor, float3 guideColor, floa
                 break;
             }
             
-            case 10: { // Safe Zones
-                // Action Safe (90%)
-                float actionSafe = 0.05;
+            case 10: { // Safe Zones                // Action Safe (90%)
+                float actionSafe = AS_AR_ACTION_SAFE_MARGIN;
                 
                 // Title Safe (80%)
-                float titleSafe = 0.1;
+                float titleSafe = AS_AR_TITLE_SAFE_MARGIN;
                 
                 // Draw Action Safe zone
                 if (IsPointOnLine(frameCoord.x, actionSafe, gridWidth.x) || 
-                    IsPointOnLine(frameCoord.x, 1.0 - actionSafe, gridWidth.x) ||
+                    IsPointOnLine(frameCoord.x, AS_RANGE_ZERO_ONE_MAX - actionSafe, gridWidth.x) ||
                     IsPointOnLine(frameCoord.y, actionSafe, gridWidth.y) || 
-                    IsPointOnLine(frameCoord.y, 1.0 - actionSafe, gridWidth.y))
+                    IsPointOnLine(frameCoord.y, AS_RANGE_ZERO_ONE_MAX - actionSafe, gridWidth.y))
                     return lerp(originalColor, guideColor, GuideColor.a);
                 
                 // Draw Title Safe zone
                 if (IsPointOnLine(frameCoord.x, titleSafe, gridWidth.x) || 
-                    IsPointOnLine(frameCoord.x, 1.0 - titleSafe, gridWidth.x) ||
+                    IsPointOnLine(frameCoord.x, AS_RANGE_ZERO_ONE_MAX - titleSafe, gridWidth.x) ||
                     IsPointOnLine(frameCoord.y, titleSafe, gridWidth.y) || 
-                    IsPointOnLine(frameCoord.y, 1.0 - titleSafe, gridWidth.y))
-                    return lerp(originalColor, float3(1.0, 1.0, 0.5), GuideColor.a * 0.8);
+                    IsPointOnLine(frameCoord.y, AS_RANGE_ZERO_ONE_MAX - titleSafe, gridWidth.y))
+                    return lerp(originalColor, float3(AS_RANGE_ZERO_ONE_MAX, AS_RANGE_ZERO_ONE_MAX, AS_HALF), GuideColor.a * AS_AR_INTENSITY_STRONG);
                 break;
             }
         }    }
@@ -959,10 +896,7 @@ float3 PS_AspectRatio(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV
 // TECHNIQUE
 // ============================================================================
 
-technique AS_GFX_AspectRatio <
-    ui_label = "[AS] GFX: Aspect Ratio";
-    ui_tooltip = "Aspect ratio framing tool for precise subject positioning";
-> {
+technique AS_GFX_AspectRatio < ui_label = "[AS] GFX: Aspect Ratio"; ui_tooltip = "Aspect ratio framing tool for precise subject positioning"; > {
     pass {
         VertexShader = PostProcessVS;
         PixelShader = PS_AspectRatio;
