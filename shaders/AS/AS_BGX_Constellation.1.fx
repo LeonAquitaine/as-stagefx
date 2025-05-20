@@ -16,7 +16,6 @@
  * - Procedurally animated line connections
  * - Animated color palette with adjustable parameters
  * - Audio reactivity for gradient effects, line brightness, and sparkle magnitude
- * - Optional paper-like background pattern for artistic style
  * - Depth-aware rendering
  * - Standard blend options
  *
@@ -49,27 +48,6 @@ namespace ASConstellation {
 // ============================================================================
 // CONSTANTS
 // ============================================================================
-static const float AS_HALF = 0.5;
-// Using AS_PI and AS_EPSILON from AS_Utils.1.fxh
-
-//--------------------------------------------------------------------------------------
-// Texture Definition
-//--------------------------------------------------------------------------------------
-#define NOISE_TEX_WIDTH 512.0f
-#define NOISE_TEX_HEIGHT 512.0f
-#ifndef NOISE_TEXTURE_PATH_CONSTELLATION
-#define NOISE_TEXTURE_PATH_CONSTELLATION "perlin512x8CNoise.png" 
-#endif
-
-texture Constellation_NoiseTex < source = NOISE_TEXTURE_PATH_CONSTELLATION; ui_label = "Noise Pattern Texture"; ui_tooltip = "Texture used for randomizing strokes and fills (e.g., Perlin, Blue Noise)."; >
-{
-    Width = NOISE_TEX_WIDTH; Height = NOISE_TEX_HEIGHT; Format = RGBA8;
-};
-sampler Constellation_NoiseSampler { Texture = Constellation_NoiseTex; AddressU = REPEAT; AddressV = REPEAT; MinFilter = LINEAR; MagFilter = LINEAR; MipFilter = LINEAR; };
-
-// Resolution Macros (used by helper functions)
-#define Res1 float2(NOISE_TEX_WIDTH, NOISE_TEX_HEIGHT) 
-#define Res_Screen float2(BUFFER_WIDTH, BUFFER_HEIGHT)    
 
 // ============================================================================
 // TUNABLE CONSTANTS (Defaults and Ranges)
@@ -125,109 +103,6 @@ static const float PALETTE_COLOR_AMPLITUDE_DEFAULT = 0.25;
 static const float PALETTE_COLOR_BIAS_MIN = 0.0;
 static const float PALETTE_COLOR_BIAS_MAX = 1.0;
 static const float PALETTE_COLOR_BIAS_DEFAULT = 0.75;
-
-// --- Animation & Jitter ---
-static const float ANIMATION_WOBBLE_STRENGTH_MIN = 0.0;
-static const float ANIMATION_WOBBLE_STRENGTH_MAX = 20.0;
-static const float ANIMATION_WOBBLE_STRENGTH_DEFAULT = 0.0;
-
-static const float ANIMATION_WOBBLE_FREQ_MIN = 0.1;
-static const float ANIMATION_WOBBLE_FREQ_MAX = 5.0;
-static const float2 ANIMATION_WOBBLE_FREQ_DEFAULT = float2(2.56, 1.78);
-
-static const float EFFECT_SCALE_REF_HEIGHT_MIN = 100.0;
-static const float EFFECT_SCALE_REF_HEIGHT_MAX = 2160.0;
-static const float EFFECT_SCALE_REF_HEIGHT_DEFAULT = 1287.0;
-
-// --- Line Work & Strokes ---
-static const int NUM_STROKE_DIRECTIONS_MIN = 1;
-static const int NUM_STROKE_DIRECTIONS_MAX = 10;
-static const int NUM_STROKE_DIRECTIONS_DEFAULT = 7;
-
-static const int LINE_LENGTH_SAMPLES_MIN = 1;
-static const int LINE_LENGTH_SAMPLES_MAX = 32;
-static const int LINE_LENGTH_SAMPLES_DEFAULT = 16;
-
-static const float MAX_LINE_OPACITY_MIN = 0.0;
-static const float MAX_LINE_OPACITY_MAX = 0.2;
-static const float MAX_LINE_OPACITY_DEFAULT = 0.069;
-
-static const float LINE_LENGTH_SCALE_MIN = 0.1;
-static const float LINE_LENGTH_SCALE_MAX = 5.0;
-static const float LINE_LENGTH_SCALE_DEFAULT = 1.10;
-
-// --- Line Shading & Texture ---
-static const float LINE_DARKNESS_CURVE_MIN = 1.0;
-static const float LINE_DARKNESS_CURVE_MAX = 5.0;
-static const float LINE_DARKNESS_CURVE_DEFAULT = 3.0;
-
-static const float LINE_WORK_DENSITY_MIN = 0.5;
-static const float LINE_WORK_DENSITY_MAX = 4.0;
-static const float LINE_WORK_DENSITY_DEFAULT = 1.33;
-
-static const float LINE_TEXTURE_INFLUENCE_MIN = 0.0;
-static const float LINE_TEXTURE_INFLUENCE_MAX = 2.0;
-static const float LINE_TEXTURE_INFLUENCE_DEFAULT = 0.0;
-
-static const float LINE_TEXTURE_BASE_BRIGHTNESS_MIN = 0.0;
-static const float LINE_TEXTURE_BASE_BRIGHTNESS_MAX = 1.0;
-static const float LINE_TEXTURE_BASE_BRIGHTNESS_DEFAULT = 0.6;
-
-static const float LINE_TEXTURE_NOISE_SCALE_MIN = 0.1;
-static const float LINE_TEXTURE_NOISE_SCALE_MAX = 2.0;
-static const float LINE_TEXTURE_NOISE_SCALE_DEFAULT = 0.7;
-
-// --- Color Processing & Fill ---
-static const float MAIN_COLOR_DESAT_MIX_MIN = 0.0;
-static const float MAIN_COLOR_DESAT_MIX_MAX = 5.0;
-static const float MAIN_COLOR_DESAT_MIX_DEFAULT = 1.0;
-
-static const float MAIN_COLOR_BRIGHTNESS_CAP_MIN = 0.1;
-static const float MAIN_COLOR_BRIGHTNESS_CAP_MAX = 1.0;
-static const float MAIN_COLOR_BRIGHTNESS_CAP_DEFAULT = 0.62;
-
-static const float FILL_TEXTURE_EDGE_SOFT_MIN_MIN = 0.0;
-static const float FILL_TEXTURE_EDGE_SOFT_MIN_MAX = 1.0;
-static const float FILL_TEXTURE_EDGE_SOFT_MIN_DEFAULT = 0.65;
-
-static const float FILL_TEXTURE_EDGE_SOFT_MAX_MIN = 0.5;
-static const float FILL_TEXTURE_EDGE_SOFT_MAX_MAX = 1.5;
-static const float FILL_TEXTURE_EDGE_SOFT_MAX_DEFAULT = 0.88;
-
-static const float FILL_COLOR_BASE_FACTOR_MIN = 0.0;
-static const float FILL_COLOR_BASE_FACTOR_MAX = 1.0;
-static const float FILL_COLOR_BASE_FACTOR_DEFAULT = 0.37;
-
-static const float FILL_COLOR_OFFSET_FACTOR_MIN = 0.0;
-static const float FILL_COLOR_OFFSET_FACTOR_MAX = 1.0;
-static const float FILL_COLOR_OFFSET_FACTOR_DEFAULT = 0.29;
-
-static const float FILL_TEXTURE_NOISE_STRENGTH_MIN = 0.0;
-static const float FILL_TEXTURE_NOISE_STRENGTH_MAX = 2.0;
-static const float FILL_TEXTURE_NOISE_STRENGTH_DEFAULT = 0.96;
-
-static const float FILL_TEXTURE_NOISE_SCALE_MIN = 0.1;
-static const float FILL_TEXTURE_NOISE_SCALE_MAX = 2.0;
-static const float FILL_TEXTURE_NOISE_SCALE_DEFAULT = 1.79;
-
-static const float NOISE_LOOKUP_OVERALL_SCALE_MIN = 100.0;
-static const float NOISE_LOOKUP_OVERALL_SCALE_MAX = 4000.0;
-static const float NOISE_LOOKUP_OVERALL_SCALE_DEFAULT = 2500.0;
-
-// --- Paper Pattern ---
-static const float PAPER_PATTERN_FREQ_MIN = 0.01;
-static const float PAPER_PATTERN_FREQ_MAX = 0.5;
-static const float PAPER_PATTERN_FREQ_DEFAULT = 0.01;
-
-static const float PAPER_PATTERN_INTENSITY_MIN = 0.0;
-static const float PAPER_PATTERN_INTENSITY_MAX = 1.0;
-static const float PAPER_PATTERN_INTENSITY_DEFAULT = 0.36;
-
-static const float PAPER_PATTERN_SHARPNESS_MIN = 10.0;
-static const float PAPER_PATTERN_SHARPNESS_MAX = 200.0;
-static const float PAPER_PATTERN_SHARPNESS_DEFAULT = 80.0;
-
-static const float3 PAPER_PATTERN_TINT_DEFAULT = float3(64.0/255.0, 26.0/255.0, 26.0/255.0);
 
 // --- Audio Reactivity ---
 static const float AUDIO_GAIN_GRADIENT_MIN = 0.0;
@@ -368,18 +243,16 @@ float layer(float2 uv, float current_time_local, float current_LineCoreThickness
 // ============================================================================
 float4 PS_Constellation(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : SV_Target
 {
-    float4 originalColor = tex2D(ReShade::BackBuffer, texcoord);
-    float current_iTime = AS_getAnimationTime(TimeSpeed, TimeKeyframe);
+    float4 originalColor = tex2D(ReShade::BackBuffer, texcoord);    float current_iTime = AS_getAnimationTime(TimeSpeed, TimeKeyframe);
     float2 fragCoord = texcoord * ReShade::ScreenSize; 
     float2 uv = (fragCoord - 0.5f * ReShade::ScreenSize) / ReShade::ScreenSize.y;
     float gradient_base = uv.y; 
-    float2 mouse_offset_replacement = float2(0.0f, 0.0f); 
     float m_accum = 0.0f; 
     float t_anim_main = current_iTime * 0.1f; 
     float s_rot = sin(t_anim_main * 2.0f);
     float c_rot = cos(t_anim_main * 5.0f); 
     float2x2 rot_matrix = float2x2(c_rot, s_rot, -s_rot, c_rot); 
-    float2 uv_rotated = mul(uv, rot_matrix); 
+    float2 uv_rotated = mul(uv, rot_matrix);
 
     // Get master audio level once
     float master_audio_level = AS_getAudioSource(MasterAudioSource);
@@ -395,11 +268,10 @@ float4 PS_Constellation(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) 
 
     const float step_val = 1.0f / 4.0f;
     for (float i_layer = 0.0f; i_layer < (1.0f - step_val / 2.0f); i_layer += step_val) { 
-        float z_phase = frac(i_layer + t_anim_main);    
-        float size_mix = lerp(10.0f, 0.5f, z_phase);  
+        float z_phase = frac(i_layer + t_anim_main);        float size_mix = lerp(10.0f, 0.5f, z_phase);  
         float fade_mix = smoothstep(0.0f, 0.5f, z_phase) * smoothstep(1.0f, 0.8f, z_phase); 
         
-        m_accum += layer(uv_rotated * size_mix + i_layer * 20.0f - mouse_offset_replacement, 
+        m_accum += layer(uv_rotated * size_mix + i_layer * 20.0f, 
                          current_iTime, 
                          LineCoreThickness, // Base thickness
                          active_LineFalloffWidth, // Audio-modulated falloff
@@ -427,7 +299,7 @@ float4 PS_Constellation(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) 
 // TECHNIQUE
 // ============================================================================
 technique AS_BGX_Constellation <
-    ui_label = "AS BGX: Constellation";
+    ui_label = "[AS] BGX: Constellation";
     ui_tooltip = "Dynamic cosmic constellation pattern with twinkling stars and connecting lines.\n"
                  "Perfect for cosmic, night sky, or abstract network visualizations.";
 >
