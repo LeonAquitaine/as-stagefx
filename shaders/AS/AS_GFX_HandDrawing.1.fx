@@ -223,6 +223,7 @@ uniform float PaperPatternSharpness < ui_type = "slider"; ui_label = "Paper Patt
 // Stage & Depth
 //------------------------------------------------------------------------------------------------
 AS_STAGEDEPTH_UI(EffectDepth)
+uniform bool ReverseDepth < ui_label = "Reverse Depth"; ui_tooltip = "Reverses the depth detection method"; ui_category = "Stage"; > = false;
 
 //------------------------------------------------------------------------------------------------
 // Final Mix
@@ -389,14 +390,13 @@ float4 PS_HandDrawn(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : SV
         karo_pattern -= PaperPatternIntensity * PaperPatternTint * 
                        dot(exp(-s_karo * s_karo * PaperPatternSharpness), 1.0f.xx);
     }
-    
-    // Combine line work, fill colors, and paper pattern
+      // Combine line work, fill colors, and paper pattern
     float3 final_col = col_accum.x * col2_accum * karo_pattern;
       // Get scene depth
     float depth = ReShade::GetLinearizedDepth(texcoord);
     
-    // Apply depth-based masking
-    float depthMask = depth >= EffectDepth;
+    // Apply depth-based masking with optional reversal
+    float depthMask = ReverseDepth ? (depth <= EffectDepth) : (depth >= EffectDepth);
     
     // Apply blend mode and strength with depth consideration
     float3 blended = AS_ApplyBlend(final_col, originalColor.rgb, BlendMode);
