@@ -1,6 +1,6 @@
 /**
  * AS_BGX_Kaleidoscope.1.fx - Dynamic Fractal Kaleidoscope Pattern
- * Author: Leon Aquitaine (adapted from anonymous Shadertoy)
+ * Author: Leon Aquitaine (adapted from kishimisu's work)
  * License: Creative Commons Attribution 4.0 International
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
  * 
@@ -25,6 +25,12 @@
  * 4. Processes through a customizable color palette
  * 5. Applies audio reactivity to key animation parameters
  * 
+ * CREDITS:
+ * Based on "Shader Art Coding Introduction" by kishimisu (2023-05-20)
+ * This shader was originally created as educational material for introducing
+ * programmers to GLSL and shader programming in a creative coding context.
+ * Original tutorial: https://youtu.be/f4s1h2YETNY
+ * 
  * ===================================================================================
  */
 
@@ -39,6 +45,7 @@
 // ============================================================================
 #include "ReShade.fxh"
 #include "AS_Utils.1.fxh" // For AS_getTime(), AS_getAudioSource(), UI macros, AS_PI etc.
+#include "AS_Palette.1.fxh" // AS palette system
 
 namespace ASKaleidoscope {
 
@@ -146,7 +153,6 @@ uniform float FractalZoomPulseSpeed < ui_type = "drag"; ui_label = "Zoom Pulse S
 //------------------------------------------------------------------------------------------------
 // Wave Controls
 //------------------------------------------------------------------------------------------------
-uniform float PaletteCycleSpeed < ui_type = "drag"; ui_label = "Color Cycle Speed"; ui_tooltip = "How fast colors cycle through the palette."; ui_min = PALETTE_CYCLE_SPEED_MIN; ui_max = PALETTE_CYCLE_SPEED_MAX; ui_step = 0.01; ui_category = "Wave Parameters"; > = PALETTE_CYCLE_SPEED_DEFAULT;
 uniform float WaveMotionSpeed < ui_type = "drag"; ui_label = "Wave Motion Speed"; ui_tooltip = "How fast the tendril waves move."; ui_min = WAVE_MOTION_SPEED_MIN; ui_max = WAVE_MOTION_SPEED_MAX; ui_step = 0.01; ui_category = "Wave Parameters"; > = WAVE_MOTION_SPEED_DEFAULT;
 uniform float WaveFrequency < ui_type = "drag"; ui_label = "Wave Frequency"; ui_tooltip = "Frequency of the sine waves creating the tendrils."; ui_min = WAVE_FREQUENCY_MIN; ui_max = WAVE_FREQUENCY_MAX; ui_step = 0.1; ui_category = "Wave Parameters"; > = WAVE_FREQUENCY_DEFAULT;
 uniform float WaveAmplitude < ui_type = "drag"; ui_label = "Wave Amplitude"; ui_tooltip = "Controls intensity of wave patterns. Higher = sharper, more defined tendrils."; ui_min = 1.0; ui_max = 32.0; ui_step = 0.1; ui_category = "Wave Parameters"; > = 8.0;
@@ -161,10 +167,17 @@ uniform float GlobalPulsingZoomSpeed < ui_type = "drag"; ui_label = "Pattern Pul
 //------------------------------------------------------------------------------------------------
 // Color Palette Controls
 //------------------------------------------------------------------------------------------------
-uniform float3 PaletteA < ui_type = "color"; ui_label = "Color A (Offset)"; ui_tooltip = "Base color offset for the palette."; ui_category = "Color Palette"; > = float3(0.5, 0.5, 0.5);
-uniform float3 PaletteB < ui_type = "color"; ui_label = "Color B (Amplitude)"; ui_tooltip = "Color amplitude for the palette."; ui_category = "Color Palette"; > = float3(0.5, 0.5, 0.5);
-uniform float3 PaletteC < ui_type = "color"; ui_label = "Color C (Frequency)"; ui_tooltip = "Color frequency for the palette."; ui_category = "Color Palette"; > = float3(1.0, 1.0, 1.0);
-uniform float3 PaletteD < ui_type = "color"; ui_label = "Color D (Phase)"; ui_tooltip = "Color phase for the palette."; ui_category = "Color Palette"; > = float3(0.263, 0.416, 0.557);
+
+AS_PALETTE_SELECTION_UI(PaletteSelect, "Color Palette", AS_PALETTE_AURORA, "Color Palette")
+
+// Manually declare custom palette colors to set specific defaults for this shader
+uniform float3 ASKaleidoscopeCustomPaletteColor0 < ui_type = "color"; ui_label = "Custom Color 1 (Offset)"; ui_category = "Color Palette"; > = float3(0.5, 0.5, 0.5);
+uniform float3 ASKaleidoscopeCustomPaletteColor1 < ui_type = "color"; ui_label = "Custom Color 2 (Amplitude)"; ui_category = "Color Palette"; > = float3(0.5, 0.5, 0.5);
+uniform float3 ASKaleidoscopeCustomPaletteColor2 < ui_type = "color"; ui_label = "Custom Color 3 (Frequency)"; ui_category = "Color Palette"; > = float3(1.0, 1.0, 1.0);
+uniform float3 ASKaleidoscopeCustomPaletteColor3 < ui_type = "color"; ui_label = "Custom Color 4 (Phase)"; ui_category = "Color Palette"; > = float3(0.263, 0.416, 0.557);
+uniform float3 ASKaleidoscopeCustomPaletteColor4 < ui_type = "color"; ui_label = "Custom Color 5"; ui_category = "Color Palette"; > = float3(1.0, 0.0, 1.0); // Default Magenta for the 5th color
+
+uniform float PaletteCycleSpeed < ui_type = "drag"; ui_label = "Color Cycle Speed"; ui_tooltip = "How fast colors cycle through the palette."; ui_min = PALETTE_CYCLE_SPEED_MIN; ui_max = PALETTE_CYCLE_SPEED_MAX; ui_step = 0.01; ui_category = "Color Palette"; > = PALETTE_CYCLE_SPEED_DEFAULT;
 
 //------------------------------------------------------------------------------------------------
 // Stage & Depth
@@ -180,10 +193,6 @@ AS_BLENDAMOUNT_UI(BlendStrength)
 // ============================================================================
 // HELPER FUNCTIONS
 // ============================================================================
-float3 palette(float t) {
-    return PaletteA + PaletteB * cos(AS_TWO_PI * (PaletteC * t + PaletteD));
-}
-
 float2 kaleidoscope_transform(float2 uv, int sectors) {
     if (sectors <= 1) { 
         return uv;
@@ -274,7 +283,23 @@ float4 PS_Kaleidoscope(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) :
         
         // Calculate palette time based on position, iteration, and animation
         float paletteTime = length(baseUV) + (float)i * 0.4 + animationTime * PaletteCycleSpeed; 
-        float3 color = palette(paletteTime);
+        
+        // Get A, B, C, D components from the selected palette
+        float3 palA, palB, palC, palD;
+        if (PaletteSelect == AS_PALETTE_CUSTOM) {
+            palA = AS_GET_CUSTOM_PALETTE_COLOR(ASKaleidoscope, 0);
+            palB = AS_GET_CUSTOM_PALETTE_COLOR(ASKaleidoscope, 1);
+            palC = AS_GET_CUSTOM_PALETTE_COLOR(ASKaleidoscope, 2);
+            palD = AS_GET_CUSTOM_PALETTE_COLOR(ASKaleidoscope, 3);
+        } else {
+            palA = AS_getPaletteColor(PaletteSelect, 0);
+            palB = AS_getPaletteColor(PaletteSelect, 1);
+            palC = AS_getPaletteColor(PaletteSelect, 2);
+            palD = AS_getPaletteColor(PaletteSelect, 3);
+        }
+        
+        // Calculate color using the A, B, C, D components from the palette
+        float3 color = palA + palB * cos(AS_TWO_PI * (palC * paletteTime + palD));
         
         // Apply sine wave distortion with audio reactivity
         float waveEffect = sin(distance * WaveFrequency + animationTime * WaveMotionSpeed);
