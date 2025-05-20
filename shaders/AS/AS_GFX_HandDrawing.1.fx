@@ -83,23 +83,23 @@ sampler PencilDrawing_NoiseSampler { Texture = PencilDrawing_NoiseTex; AddressU 
 // ============================================================================
 static const float ANIMATION_WOBBLE_STRENGTH_MIN = 0.0;
 static const float ANIMATION_WOBBLE_STRENGTH_MAX = 20.0;
-static const float ANIMATION_WOBBLE_STRENGTH_DEFAULT = 4.0;
+static const float ANIMATION_WOBBLE_STRENGTH_DEFAULT = 0.0;
 
 static const float ANIMATION_WOBBLE_SPEED_MIN = 0.0;
 static const float ANIMATION_WOBBLE_SPEED_MAX = 5.0;
-static const float ANIMATION_WOBBLE_SPEED_DEFAULT = 1.0;
+static const float ANIMATION_WOBBLE_SPEED_DEFAULT = 0.0;
 
 static const float ANIMATION_WOBBLE_FREQ_MIN = 0.1;
 static const float ANIMATION_WOBBLE_FREQ_MAX = 5.0;
-static const float2 ANIMATION_WOBBLE_FREQ_DEFAULT = float2(1.0, 1.7);
+static const float2 ANIMATION_WOBBLE_FREQ_DEFAULT = float2(2.56, 1.78);
 
 static const float EFFECT_SCALE_REF_HEIGHT_MIN = 100.0;
 static const float EFFECT_SCALE_REF_HEIGHT_MAX = 2160.0;
-static const float EFFECT_SCALE_REF_HEIGHT_DEFAULT = 400.0;
+static const float EFFECT_SCALE_REF_HEIGHT_DEFAULT = 1287.0;
 
 static const int NUM_STROKE_DIRECTIONS_MIN = 1;
 static const int NUM_STROKE_DIRECTIONS_MAX = 10;
-static const int NUM_STROKE_DIRECTIONS_DEFAULT = 3;
+static const int NUM_STROKE_DIRECTIONS_DEFAULT = 7;
 
 static const int LINE_LENGTH_SAMPLES_MIN = 1;
 static const int LINE_LENGTH_SAMPLES_MAX = 32;
@@ -107,11 +107,11 @@ static const int LINE_LENGTH_SAMPLES_DEFAULT = 16;
 
 static const float MAX_LINE_OPACITY_MIN = 0.0;
 static const float MAX_LINE_OPACITY_MAX = 0.2;
-static const float MAX_LINE_OPACITY_DEFAULT = 0.05;
+static const float MAX_LINE_OPACITY_DEFAULT = 0.069;
 
 static const float LINE_LENGTH_SCALE_MIN = 0.1;
 static const float LINE_LENGTH_SCALE_MAX = 5.0;
-static const float LINE_LENGTH_SCALE_DEFAULT = 1.0;
+static const float LINE_LENGTH_SCALE_DEFAULT = 1.10;
 
 static const float LINE_DARKNESS_CURVE_MIN = 1.0;
 static const float LINE_DARKNESS_CURVE_MAX = 5.0;
@@ -123,7 +123,7 @@ static const float LINE_DENSITY_DEFAULT = 1.33; // ~1/0.75 from original
 
 static const float LINE_TEXTURE_INFLUENCE_MIN = 0.0;
 static const float LINE_TEXTURE_INFLUENCE_MAX = 2.0;
-static const float LINE_TEXTURE_INFLUENCE_DEFAULT = 0.8;
+static const float LINE_TEXTURE_INFLUENCE_DEFAULT = 0.0;
 
 static const float LINE_TEXTURE_BASE_BRIGHTNESS_MIN = 0.0;
 static const float LINE_TEXTURE_BASE_BRIGHTNESS_MAX = 1.0;
@@ -135,48 +135,48 @@ static const float LINE_TEXTURE_NOISE_SCALE_DEFAULT = 0.7;
 
 static const float MAIN_COLOR_DESAT_MIX_MIN = 0.0;
 static const float MAIN_COLOR_DESAT_MIX_MAX = 5.0;
-static const float MAIN_COLOR_DESAT_MIX_DEFAULT = 1.8;
+static const float MAIN_COLOR_DESAT_MIX_DEFAULT = 1.0;
 
 static const float MAIN_COLOR_BRIGHTNESS_CAP_MIN = 0.1;
 static const float MAIN_COLOR_BRIGHTNESS_CAP_MAX = 1.0;
-static const float MAIN_COLOR_BRIGHTNESS_CAP_DEFAULT = 0.7;
+static const float MAIN_COLOR_BRIGHTNESS_CAP_DEFAULT = 0.62;
 
-static const float FILL_TEXTURE_EDGE_SOFT_MIN_DEFAULT = 0.95;
-static const float FILL_TEXTURE_EDGE_SOFT_MAX_DEFAULT = 1.05;
+static const float FILL_TEXTURE_EDGE_SOFT_MIN_DEFAULT = 0.65;
+static const float FILL_TEXTURE_EDGE_SOFT_MAX_DEFAULT = 0.88;
 
 static const float FILL_COLOR_BASE_FACTOR_MIN = 0.0;
 static const float FILL_COLOR_BASE_FACTOR_MAX = 1.0;
-static const float FILL_COLOR_BASE_FACTOR_DEFAULT = 0.8;
+static const float FILL_COLOR_BASE_FACTOR_DEFAULT = 0.37;
 
 static const float FILL_COLOR_OFFSET_FACTOR_MIN = 0.0;
 static const float FILL_COLOR_OFFSET_FACTOR_MAX = 1.0;
-static const float FILL_COLOR_OFFSET_FACTOR_DEFAULT = 0.2;
+static const float FILL_COLOR_OFFSET_FACTOR_DEFAULT = 0.29;
 
 static const float FILL_TEXTURE_NOISE_STRENGTH_MIN = 0.0;
 static const float FILL_TEXTURE_NOISE_STRENGTH_MAX = 2.0;
-static const float FILL_TEXTURE_NOISE_STRENGTH_DEFAULT = 1.0;
+static const float FILL_TEXTURE_NOISE_STRENGTH_DEFAULT = 0.96;
 
 static const float FILL_TEXTURE_NOISE_SCALE_MIN = 0.1;
 static const float FILL_TEXTURE_NOISE_SCALE_MAX = 2.0;
-static const float FILL_TEXTURE_NOISE_SCALE_DEFAULT = 0.7;
+static const float FILL_TEXTURE_NOISE_SCALE_DEFAULT = 1.79;
 
 static const float NOISE_LOOKUP_SCALE_MIN = 100.0;
 static const float NOISE_LOOKUP_SCALE_MAX = 4000.0;
-static const float NOISE_LOOKUP_SCALE_DEFAULT = 1080.0;
+static const float NOISE_LOOKUP_SCALE_DEFAULT = 2500.0;
 
 static const float PAPER_PATTERN_FREQ_MIN = 0.01;
 static const float PAPER_PATTERN_FREQ_MAX = 0.5;
-static const float PAPER_PATTERN_FREQ_DEFAULT = 0.1;
+static const float PAPER_PATTERN_FREQ_DEFAULT = 0.01;
 
 static const float PAPER_PATTERN_INTENSITY_MIN = 0.0;
 static const float PAPER_PATTERN_INTENSITY_MAX = 1.0;
-static const float PAPER_PATTERN_INTENSITY_DEFAULT = 0.5;
+static const float PAPER_PATTERN_INTENSITY_DEFAULT = 0.36;
 
 static const float PAPER_PATTERN_SHARPNESS_MIN = 10.0;
 static const float PAPER_PATTERN_SHARPNESS_MAX = 200.0;
 static const float PAPER_PATTERN_SHARPNESS_DEFAULT = 80.0;
 
-static const float3 PAPER_PATTERN_TINT_DEFAULT = float3(0.25, 0.1, 0.1);
+static const float3 PAPER_PATTERN_TINT_DEFAULT = float3(64.0/255.0, 26.0/255.0, 26.0/255.0);
 
 // ============================================================================
 // UI DECLARATIONS - Organized by category
@@ -213,7 +213,7 @@ uniform float FillTextureNoiseScale < ui_type = "slider"; ui_label = "Fill Textu
 uniform float NoiseLookupOverallScale < ui_type = "slider"; ui_label = "Noise Lookup Overall Scale Reference"; ui_min = NOISE_LOOKUP_SCALE_MIN; ui_max = NOISE_LOOKUP_SCALE_MAX; ui_step = 10.0; ui_tooltip = "Reference value for noise UV scaling. Larger means noise samples are smaller/denser"; ui_category = "Color Processing & Fill"; > = NOISE_LOOKUP_SCALE_DEFAULT;
 
 // --- Paper & Background ---
-uniform bool EnablePaperPattern < ui_category = "Background & Paper"; ui_label = "Enable Paper Pattern"; ui_tooltip = "Toggles the underlying paper-like grid pattern"; > = true;
+uniform bool EnablePaperPattern < ui_category = "Background & Paper"; ui_label = "Enable Paper Pattern"; ui_tooltip = "Toggles the underlying paper-like grid pattern"; > = false;
 uniform float PaperPatternFrequency < ui_type = "slider"; ui_label = "Paper Pattern Frequency"; ui_min = PAPER_PATTERN_FREQ_MIN; ui_max = PAPER_PATTERN_FREQ_MAX; ui_step = 0.001; ui_tooltip = "Frequency of the 'karo' paper pattern"; ui_category = "Background & Paper"; > = PAPER_PATTERN_FREQ_DEFAULT;
 uniform float PaperPatternIntensity < ui_type = "slider"; ui_label = "Paper Pattern Intensity"; ui_min = PAPER_PATTERN_INTENSITY_MIN; ui_max = PAPER_PATTERN_INTENSITY_MAX; ui_step = 0.01; ui_tooltip = "Intensity of the 'karo' paper pattern"; ui_category = "Background & Paper"; > = PAPER_PATTERN_INTENSITY_DEFAULT;
 uniform float3 PaperPatternTint < ui_type = "color"; ui_label = "Paper Pattern Color Tint"; ui_tooltip = "Color tint of the paper pattern"; ui_category = "Background & Paper"; > = PAPER_PATTERN_TINT_DEFAULT;
