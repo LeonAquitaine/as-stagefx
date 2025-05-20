@@ -41,10 +41,12 @@ Effects are categorized as Background (BGX), Graphic (GFX), Lighting (LFX), and 
 | Shader                 | Description                                                                                                |
 | ---------------------- | ---------------------------------------------------------------------------------------------------------- |
 | **Blue Corona**        | Vibrant, abstract blue corona with fluid, dynamic motion and hypnotic, organic, plasma-like visuals. Customizable and audio-reactive. |
+| **Constellation**      | Creates an animated stellar constellation pattern with twinkling stars and connecting lines. Perfect for cosmic, night sky, or abstract network visualizations with a hand-drawn aesthetic. |
 | **Corridor Travel**    | Simulates an artistic flight through an abstract, glowing, patterned tunnel with pseudo-DOF, motion blur, and light bounce simulation. |
 | **Cosmic Kaleidoscope**| Renders a raymarched volumetric fractal (Mandelbox/Mandelbulb-like) with kaleidoscopic mirroring, audio reactivity, and palette-based coloring. |
 | **Digital Brain**      | Abstract visualization of a digital brain neural network with animated Voronoi patterns, neural-like connections, and electrical pulses. |
 | **Golden Clockwork**   | Intricate, animated golden clockwork or Apollonian fractal patterns with complex geometric designs and dynamic movement. |
+| **Kaleidoscope**       | Creates a vibrant, ever-evolving fractal kaleidoscope pattern with animated tendrils. Perfect for psychedelic, cosmic, or abstract backgrounds with a hypnotic quality. |
 | **Light Ripples**      | Mesmerizing, rippling kaleidoscopic light patterns with customizable distortion, animation, color palettes, and audio reactivity. |
 | **Light Wall**         | Renders a seamless, soft, overlapping grid of light panels with various built-in patterns, ideal for dance club/concert backdrops. Customizable and audio-reactive. |
 | **Liquid Chrome**      | Creates dynamic, flowing psychedelic patterns reminiscent of liquid metal or chrome, with optional vertical stripe overlays. |
