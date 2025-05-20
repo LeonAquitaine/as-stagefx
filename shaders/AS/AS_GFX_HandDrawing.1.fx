@@ -113,6 +113,10 @@ static const float LINE_LENGTH_SCALE_MIN = 0.1;
 static const float LINE_LENGTH_SCALE_MAX = 5.0;
 static const float LINE_LENGTH_SCALE_DEFAULT = 1.10;
 
+static const float EDGE_DETECTION_EPSILON_MIN = 0.1;
+static const float EDGE_DETECTION_EPSILON_MAX = 2.0;
+static const float EDGE_DETECTION_EPSILON_DEFAULT = 0.4;
+
 static const float LINE_DARKNESS_CURVE_MIN = 1.0;
 static const float LINE_DARKNESS_CURVE_MAX = 5.0;
 static const float LINE_DARKNESS_CURVE_DEFAULT = 3.0;
@@ -193,6 +197,7 @@ uniform int NumberOfStrokeDirections < ui_type = "slider"; ui_label = "Number of
 uniform int LineLengthSamples < ui_type = "slider"; ui_label = "Line Length (Samples per Direction)"; ui_min = LINE_LENGTH_SAMPLES_MIN; ui_max = LINE_LENGTH_SAMPLES_MAX; ui_step = 1; ui_tooltip = "Number of samples along each stroke direction, effectively line length. Affects detail and performance"; ui_category = "Line Work & Strokes"; > = LINE_LENGTH_SAMPLES_DEFAULT;
 uniform float MaxIndividualLineOpacity < ui_type = "slider"; ui_label = "Max Individual Line Opacity"; ui_min = MAX_LINE_OPACITY_MIN; ui_max = MAX_LINE_OPACITY_MAX; ui_step = 0.001; ui_tooltip = "Clamps the maximum opacity/intensity of a single calculated stroke fragment"; ui_category = "Line Work & Strokes"; > = MAX_LINE_OPACITY_DEFAULT;
 uniform float OverallLineLengthScale < ui_type = "slider"; ui_label = "Overall Line Length Scale"; ui_min = LINE_LENGTH_SCALE_MIN; ui_max = LINE_LENGTH_SCALE_MAX; ui_step = 0.01; ui_tooltip = "General multiplier for the length of stroke sampling lines"; ui_category = "Line Work & Strokes"; > = LINE_LENGTH_SCALE_DEFAULT;
+uniform float EdgeDetectionEpsilon < ui_type = "slider"; ui_label = "Edge Detection Sensitivity"; ui_min = EDGE_DETECTION_EPSILON_MIN; ui_max = EDGE_DETECTION_EPSILON_MAX; ui_step = 0.01; ui_tooltip = "Controls the sensitivity of edge detection. Lower values detect finer details but may increase noise"; ui_category = "Line Work & Strokes"; > = EDGE_DETECTION_EPSILON_DEFAULT;
 
 // --- Line Shading & Texture ---
 uniform float LineDarknessCurve < ui_type = "slider"; ui_label = "Line Darkness Curve (Exponent)"; ui_min = LINE_DARKNESS_CURVE_MIN; ui_max = LINE_DARKNESS_CURVE_MAX; ui_step = 0.1; ui_tooltip = "Exponent applied to the accumulated line color for darkening. Higher values = darker, sharper lines"; ui_category = "Line Shading & Texture"; > = LINE_DARKNESS_CURVE_DEFAULT;
@@ -336,13 +341,12 @@ float4 PS_HandDrawn(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : SV
 
             // Sample in both directions from center point
             for (float s_loop = -1.0f; s_loop <= 1.0f; s_loop += 2.0f)
-            {
-                // Calculate sampling positions
+            {                // Calculate sampling positions
                 float2 pos2 = pos_main + s_loop * dpos + dpos2;
                 float2 pos3 = pos_main + (s_loop * dpos + dpos2).yx * float2(1.0f, -1.0f) * 2.0f;
                 
-                // Get gradient at this position
-                g = getGrad(pos2, 0.4f);
+                // Get gradient at this position using the user-configurable epsilon
+                g = getGrad(pos2, EdgeDetectionEpsilon);
                 
                 // Calculate line intensity based on gradient alignment with stroke direction
                 fact = dot(g, v_stroke_dir) - 0.5f * abs(dot(g, v_stroke_dir.yx * float2(1.0f, -1.0f)));
