@@ -184,60 +184,39 @@ static const float3 PAPER_PATTERN_TINT_DEFAULT = float3(0.25, 0.1, 0.1);
 
 // --- Overall Effect & Animation ---
 uniform float AnimationWobbleStrength < ui_type = "slider"; ui_label = "Animation Wobble Strength"; ui_min = ANIMATION_WOBBLE_STRENGTH_MIN; ui_max = ANIMATION_WOBBLE_STRENGTH_MAX; ui_step = 0.1; ui_tooltip = "Overall strength of the coordinate jitter effect, making the image 'wobble'"; ui_category = "Animation & Jitter"; > = ANIMATION_WOBBLE_STRENGTH_DEFAULT;
-
 uniform float AnimationWobbleSpeed < ui_type = "slider"; ui_label = "Animation Wobble Speed"; ui_min = ANIMATION_WOBBLE_SPEED_MIN; ui_max = ANIMATION_WOBBLE_SPEED_MAX; ui_step = 0.01; ui_tooltip = "Speed of the wobble animation"; ui_category = "Animation & Jitter"; > = ANIMATION_WOBBLE_SPEED_DEFAULT;
-
 uniform float2 AnimationWobbleFrequency < ui_type = "drag"; ui_label = "Animation Wobble Pattern (X, Y Freq)"; ui_min = ANIMATION_WOBBLE_FREQ_MIN; ui_max = ANIMATION_WOBBLE_FREQ_MAX; ui_step = 0.01; ui_tooltip = "Frequency of sine waves for X and Y axis wobble"; ui_category = "Animation & Jitter"; > = ANIMATION_WOBBLE_FREQ_DEFAULT;
-
 uniform float EffectScaleReferenceHeight < ui_type = "slider"; ui_label = "Effect Scale Reference Height"; ui_min = EFFECT_SCALE_REF_HEIGHT_MIN; ui_max = EFFECT_SCALE_REF_HEIGHT_MAX; ui_step = 10.0; ui_tooltip = "Reference screen height for scaling effects like jitter and stroke length"; ui_category = "Animation & Jitter"; > = EFFECT_SCALE_REF_HEIGHT_DEFAULT;
 
 // --- Line Work & Strokes ---
 uniform int NumberOfStrokeDirections < ui_type = "slider"; ui_label = "Number of Stroke Directions"; ui_min = NUM_STROKE_DIRECTIONS_MIN; ui_max = NUM_STROKE_DIRECTIONS_MAX; ui_step = 1; ui_tooltip = "Number of different angles for hatching/strokes. Affects density and performance"; ui_category = "Line Work & Strokes"; > = NUM_STROKE_DIRECTIONS_DEFAULT;
-
 uniform int LineLengthSamples < ui_type = "slider"; ui_label = "Line Length (Samples per Direction)"; ui_min = LINE_LENGTH_SAMPLES_MIN; ui_max = LINE_LENGTH_SAMPLES_MAX; ui_step = 1; ui_tooltip = "Number of samples along each stroke direction, effectively line length. Affects detail and performance"; ui_category = "Line Work & Strokes"; > = LINE_LENGTH_SAMPLES_DEFAULT;
-
 uniform float MaxIndividualLineOpacity < ui_type = "slider"; ui_label = "Max Individual Line Opacity"; ui_min = MAX_LINE_OPACITY_MIN; ui_max = MAX_LINE_OPACITY_MAX; ui_step = 0.001; ui_tooltip = "Clamps the maximum opacity/intensity of a single calculated stroke fragment"; ui_category = "Line Work & Strokes"; > = MAX_LINE_OPACITY_DEFAULT;
-
 uniform float OverallLineLengthScale < ui_type = "slider"; ui_label = "Overall Line Length Scale"; ui_min = LINE_LENGTH_SCALE_MIN; ui_max = LINE_LENGTH_SCALE_MAX; ui_step = 0.01; ui_tooltip = "General multiplier for the length of stroke sampling lines"; ui_category = "Line Work & Strokes"; > = LINE_LENGTH_SCALE_DEFAULT;
 
 // --- Line Shading & Texture ---
 uniform float LineDarknessCurve < ui_type = "slider"; ui_label = "Line Darkness Curve (Exponent)"; ui_min = LINE_DARKNESS_CURVE_MIN; ui_max = LINE_DARKNESS_CURVE_MAX; ui_step = 0.1; ui_tooltip = "Exponent applied to the accumulated line color for darkening. Higher values = darker, sharper lines"; ui_category = "Line Shading & Texture"; > = LINE_DARKNESS_CURVE_DEFAULT;
-
 uniform float LineWorkDensity < ui_type = "slider"; ui_label = "Line Work Density"; ui_min = LINE_DENSITY_MIN; ui_max = LINE_DENSITY_MAX; ui_step = 0.01; ui_tooltip = "Adjusts the overall density of lines. Higher values = denser/darker strokes"; ui_category = "Line Shading & Texture"; > = LINE_DENSITY_DEFAULT;
-
 uniform float LineTextureInfluence < ui_type = "slider"; ui_label = "Line Texture Influence"; ui_min = LINE_TEXTURE_INFLUENCE_MIN; ui_max = LINE_TEXTURE_INFLUENCE_MAX; ui_step = 0.01; ui_tooltip = "Scales the effect of noise on line darkness variation"; ui_category = "Line Shading & Texture"; > = LINE_TEXTURE_INFLUENCE_DEFAULT;
-
 uniform float LineTextureBaseBrightness < ui_type = "slider"; ui_label = "Line Texture Base Brightness"; ui_min = LINE_TEXTURE_BASE_BRIGHTNESS_MIN; ui_max = LINE_TEXTURE_BASE_BRIGHTNESS_MAX; ui_step = 0.01; ui_tooltip = "Base value added to noise for line darkness variation"; ui_category = "Line Shading & Texture"; > = LINE_TEXTURE_BASE_BRIGHTNESS_DEFAULT;
-
 uniform float LineTextureNoiseScale < ui_type = "slider"; ui_label = "Line Texture Noise UV Scale"; ui_min = LINE_TEXTURE_NOISE_SCALE_MIN; ui_max = LINE_TEXTURE_NOISE_SCALE_MAX; ui_step = 0.01; ui_tooltip = "Scales UVs for the noise lookup that affects line darkness variation"; ui_category = "Line Shading & Texture"; > = LINE_TEXTURE_NOISE_SCALE_DEFAULT;
 
 // --- Color Processing & Fill ---
 uniform float MainColorDesaturationMix < ui_type = "slider"; ui_label = "Main Color Desaturation Mix"; ui_min = MAIN_COLOR_DESAT_MIX_MIN; ui_max = MAIN_COLOR_DESAT_MIX_MAX; ui_step = 0.01; ui_tooltip = "Mixing factor towards gray for the main colors extracted from the image"; ui_category = "Color Processing & Fill"; > = MAIN_COLOR_DESAT_MIX_DEFAULT;
-
 uniform float MainColorBrightnessCap < ui_type = "slider"; ui_label = "Main Color Brightness Cap"; ui_min = MAIN_COLOR_BRIGHTNESS_CAP_MIN; ui_max = MAIN_COLOR_BRIGHTNESS_CAP_MAX; ui_step = 0.01; ui_tooltip = "Maximum brightness after initial color filtering"; ui_category = "Color Processing & Fill"; > = MAIN_COLOR_BRIGHTNESS_CAP_DEFAULT;
-
 uniform float FillTextureEdgeSoftnessMin < ui_type = "slider"; ui_label = "Fill Texture Edge Softness (Min)"; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_tooltip = "Lower edge for smoothstep creating the textured fill"; ui_category = "Color Processing & Fill"; > = FILL_TEXTURE_EDGE_SOFT_MIN_DEFAULT;
-
 uniform float FillTextureEdgeSoftnessMax < ui_type = "slider"; ui_label = "Fill Texture Edge Softness (Max)"; ui_min = 0.5; ui_max = 1.5; ui_step = 0.01; ui_tooltip = "Upper edge for smoothstep creating the textured fill"; ui_category = "Color Processing & Fill"; > = FILL_TEXTURE_EDGE_SOFT_MAX_DEFAULT;
-
 uniform float FillColorBaseFactor < ui_type = "slider"; ui_label = "Fill Color Base Factor"; ui_min = FILL_COLOR_BASE_FACTOR_MIN; ui_max = FILL_COLOR_BASE_FACTOR_MAX; ui_step = 0.01; ui_tooltip = "Base color multiplier for the textured fill"; ui_category = "Color Processing & Fill"; > = FILL_COLOR_BASE_FACTOR_DEFAULT;
-
 uniform float FillColorOffsetFactor < ui_type = "slider"; ui_label = "Fill Color Offset Factor"; ui_min = FILL_COLOR_OFFSET_FACTOR_MIN; ui_max = FILL_COLOR_OFFSET_FACTOR_MAX; ui_step = 0.01; ui_tooltip = "Color offset added to the textured fill"; ui_category = "Color Processing & Fill"; > = FILL_COLOR_OFFSET_FACTOR_DEFAULT;
-
 uniform float FillTextureNoiseStrength < ui_type = "slider"; ui_label = "Fill Texture Noise Strength"; ui_min = FILL_TEXTURE_NOISE_STRENGTH_MIN; ui_max = FILL_TEXTURE_NOISE_STRENGTH_MAX; ui_step = 0.01; ui_tooltip = "Scales the noise contribution to the textured fill"; ui_category = "Color Processing & Fill"; > = FILL_TEXTURE_NOISE_STRENGTH_DEFAULT;
-
 uniform float FillTextureNoiseScale < ui_type = "slider"; ui_label = "Fill Texture Noise UV Scale"; ui_min = FILL_TEXTURE_NOISE_SCALE_MIN; ui_max = FILL_TEXTURE_NOISE_SCALE_MAX; ui_step = 0.01; ui_tooltip = "Scales UVs for the noise lookup affecting the textured fill"; ui_category = "Color Processing & Fill"; > = FILL_TEXTURE_NOISE_SCALE_DEFAULT;
-
 uniform float NoiseLookupOverallScale < ui_type = "slider"; ui_label = "Noise Lookup Overall Scale Reference"; ui_min = NOISE_LOOKUP_SCALE_MIN; ui_max = NOISE_LOOKUP_SCALE_MAX; ui_step = 10.0; ui_tooltip = "Reference value for noise UV scaling. Larger means noise samples are smaller/denser"; ui_category = "Color Processing & Fill"; > = NOISE_LOOKUP_SCALE_DEFAULT;
 
 // --- Paper & Background ---
 uniform bool EnablePaperPattern < ui_category = "Background & Paper"; ui_label = "Enable Paper Pattern"; ui_tooltip = "Toggles the underlying paper-like grid pattern"; > = true;
 uniform float PaperPatternFrequency < ui_type = "slider"; ui_label = "Paper Pattern Frequency"; ui_min = PAPER_PATTERN_FREQ_MIN; ui_max = PAPER_PATTERN_FREQ_MAX; ui_step = 0.001; ui_tooltip = "Frequency of the 'karo' paper pattern"; ui_category = "Background & Paper"; > = PAPER_PATTERN_FREQ_DEFAULT;
-
 uniform float PaperPatternIntensity < ui_type = "slider"; ui_label = "Paper Pattern Intensity"; ui_min = PAPER_PATTERN_INTENSITY_MIN; ui_max = PAPER_PATTERN_INTENSITY_MAX; ui_step = 0.01; ui_tooltip = "Intensity of the 'karo' paper pattern"; ui_category = "Background & Paper"; > = PAPER_PATTERN_INTENSITY_DEFAULT;
-
 uniform float3 PaperPatternTint < ui_type = "color"; ui_label = "Paper Pattern Color Tint"; ui_tooltip = "Color tint of the paper pattern"; ui_category = "Background & Paper"; > = PAPER_PATTERN_TINT_DEFAULT;
-
 uniform float PaperPatternSharpness < ui_type = "slider"; ui_label = "Paper Pattern Sharpness"; ui_min = PAPER_PATTERN_SHARPNESS_MIN; ui_max = PAPER_PATTERN_SHARPNESS_MAX; ui_step = 1.0; ui_tooltip = "Sharpness of the paper pattern lines"; ui_category = "Background & Paper"; > = PAPER_PATTERN_SHARPNESS_DEFAULT;
 
 //------------------------------------------------------------------------------------------------
