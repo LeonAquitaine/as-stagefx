@@ -213,11 +213,16 @@ uniform float FillTextureNoiseScale < ui_type = "slider"; ui_label = "Fill Textu
 uniform float NoiseLookupOverallScale < ui_type = "slider"; ui_label = "Noise Lookup Overall Scale Reference"; ui_min = NOISE_LOOKUP_SCALE_MIN; ui_max = NOISE_LOOKUP_SCALE_MAX; ui_step = 10.0; ui_tooltip = "Reference value for noise UV scaling. Larger means noise samples are smaller/denser"; ui_category = "Color Processing & Fill"; > = NOISE_LOOKUP_SCALE_DEFAULT;
 
 // --- Paper & Background ---
-uniform bool EnablePaperPattern < ui_category = "Background & Paper"; ui_label = "Enable Paper Pattern"; ui_tooltip = "Toggles the underlying paper-like grid pattern"; > = false;
+uniform bool EnablePaperPattern < ui_category = "Background & Paper"; ui_label = "Enable Paper Pattern"; ui_tooltip = "Toggles the underlying paper-like grid pattern"; > = true;
 uniform float PaperPatternFrequency < ui_type = "slider"; ui_label = "Paper Pattern Frequency"; ui_min = PAPER_PATTERN_FREQ_MIN; ui_max = PAPER_PATTERN_FREQ_MAX; ui_step = 0.001; ui_tooltip = "Frequency of the 'karo' paper pattern"; ui_category = "Background & Paper"; > = PAPER_PATTERN_FREQ_DEFAULT;
 uniform float PaperPatternIntensity < ui_type = "slider"; ui_label = "Paper Pattern Intensity"; ui_min = PAPER_PATTERN_INTENSITY_MIN; ui_max = PAPER_PATTERN_INTENSITY_MAX; ui_step = 0.01; ui_tooltip = "Intensity of the 'karo' paper pattern"; ui_category = "Background & Paper"; > = PAPER_PATTERN_INTENSITY_DEFAULT;
 uniform float3 PaperPatternTint < ui_type = "color"; ui_label = "Paper Pattern Color Tint"; ui_tooltip = "Color tint of the paper pattern"; ui_category = "Background & Paper"; > = PAPER_PATTERN_TINT_DEFAULT;
 uniform float PaperPatternSharpness < ui_type = "slider"; ui_label = "Paper Pattern Sharpness"; ui_min = PAPER_PATTERN_SHARPNESS_MIN; ui_max = PAPER_PATTERN_SHARPNESS_MAX; ui_step = 1.0; ui_tooltip = "Sharpness of the paper pattern lines"; ui_category = "Background & Paper"; > = PAPER_PATTERN_SHARPNESS_DEFAULT;
+
+//------------------------------------------------------------------------------------------------
+// Stage & Depth
+//------------------------------------------------------------------------------------------------
+AS_STAGEDEPTH_UI(EffectDepth)
 
 //------------------------------------------------------------------------------------------------
 // Final Mix
@@ -387,10 +392,15 @@ float4 PS_HandDrawn(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : SV
     
     // Combine line work, fill colors, and paper pattern
     float3 final_col = col_accum.x * col2_accum * karo_pattern;
+      // Get scene depth
+    float depth = ReShade::GetLinearizedDepth(texcoord);
     
-    // Apply blend mode and strength
+    // Apply depth-based masking
+    float depthMask = depth >= EffectDepth;
+    
+    // Apply blend mode and strength with depth consideration
     float3 blended = AS_ApplyBlend(final_col, originalColor.rgb, BlendMode);
-    return float4(lerp(originalColor.rgb, blended, BlendStrength), 1.0f);
+    return float4(lerp(originalColor.rgb, blended, BlendStrength * depthMask), 1.0f);
 }
 
 // ============================================================================
