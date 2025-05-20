@@ -51,6 +51,17 @@ Based on: <a href="https://www.shadertoy.com/view/MXccR4" target="_new">"cosmos 
 </tr>
 <tr>
 <td width="50%">
+<h4>BGX: Constellation</h4>
+<h5><code>[AS] BGX: Constellation|AS_BGX_Constellation.1.fx</code></h5>
+Creates an animated stellar constellation pattern with twinkling stars and connecting lines. Perfect for cosmic, night sky, or abstract network visualizations with a hand-drawn aesthetic. Features dynamic constellation lines with customizable thickness and falloff; twinkling star points with adjustable sparkle properties; procedurally animated line connections; animated color palette with adjustable parameters; audio reactivity for zoom, gradient effects, line brightness, and sparkle magnitude; depth-aware rendering; and standard blend options.<br><br>
+Based on: <a href="https://www.shadertoy.com/view/slfGzf" target="_new">"Old Joseph" by jairoandre (2021-06-01)</a>.
+</td>
+<td width="50%"><div style="text-align:center">
+</div>
+</td>
+</tr>
+<tr>
+<td width="50%">
 <h4>BGX: Digital Brain</h4>
 <h5><code>[AS] BGX: Digital Brain|AS_BGX_DigitalBrain.1.fx</code></h5>
 Creates an abstract visualization of a "digital brain" with evolving Voronoi patterns and neural-like connections. The effect simulates an organic electronic network with dynamic light paths that mimic neural activity in a stylized, technological manner. Features dynamic Voronoi-based pattern generation, animated "electrical" pulses simulating synaptic activity, color modulation based on noise texture for organic variation, advanced vignette controls, pre-optimized pattern stretching, classic and texture-based coloring options, customizable animation and pattern controls, and depth-aware rendering with standard blending.<br><br>
@@ -68,7 +79,19 @@ Based on: <a href="https://www.shadertoy.com/view/4sl3Dr" target="_new">original
 Renders a mesmerizing and intricate animated background effect reminiscent of golden clockwork mechanisms or Apollonian gasket-like fractal patterns. The effect features complex, evolving geometric designs with a characteristic golden color palette. Features procedurally generated Apollonian fractal patterns, dynamic animation driven by time, a golden color scheme with lighting and shading effects, depth-like progression through fractal layers, kaleidoscopic and mirroring options for pattern variation, resolution-independent rendering, and UI controls for animation (speed, keyframe, path speed), palette, fractal/kaleidoscope parameters, audio reactivity, stage controls (position, scale, rotation, depth), and blending.
 </td>
 <td width="50%"><div style="text-align:center">
+</div>
 <img src="https://github.com/user-attachments/assets/583dfe11-c8b6-4e34-ad79-35d875ce32c6"/>
+</div>
+</td>
+</tr>
+<tr>
+<td width="50%">
+<h4>BGX: Kaleidoscope</h4>
+<h5><code>[AS] BGX: Kaleidoscope|AS_BGX_Kaleidoscope.1.fx</code></h5>
+Creates a vibrant, ever-evolving fractal kaleidoscope pattern with animated tendrils. Perfect for psychedelic, cosmic, or abstract backgrounds with a hypnotic quality. Features adjustable kaleidoscope mirror count for symmetry control; fractal zoom and pattern rotation with animation controls; customizable wave parameters and color palette; audio reactivity for zoom, wave intensity, and pattern rotation; depth-aware rendering; and standard blend options.<br><br>
+Based on: <a href="https://youtu.be/f4s1h2YETNY" target="_new">"Shader Art Coding Introduction" by kishimisu (2023-05-20)</a>.
+</td>
+<td width="50%"><div style="text-align:center">
 </div>
 </td>
 </tr>
