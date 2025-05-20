@@ -92,6 +92,18 @@ Inspired by: The hexagonal grid implementation is adapted from <a href="https://
 Awaiting preview image.
 </div></td>
 </tr>
+<tr>
+<td width="50%">
+<h4>GFX: Hand Drawing</h4>
+<h5><code>[AS] GFX: Hand Drawing|AS_GFX_HandDrawing.1.fx</code></h5>
+Transforms your scene into a stylized hand-drawn sketch or technical ink illustration with distinct linework and cross-hatching patterns. Features sophisticated line generation with customizable stroke directions and length, textured fills based on original image colors with noise-based variation, animated "wobble" effect for an authentic hand-drawn feel, optional paper-like background pattern, depth-aware rendering with standard blending, and comprehensive controls for fine-tuning every aspect of the effect. Perfect for artistic transformations, comic/manga styles, or technical illustrations.<br><br>
+Based on: <a href="https://www.shadertoy.com/view/XtVGD1" target="_new">"notebook drawings" by Flockaroo (2016)</a>.
+</td>
+<td width="50%"><div style="text-align:center">
+<!-- Awaiting preview image. -->
+Awaiting preview image.
+</div></td>
+</tr>
 </table>
 
 ---
