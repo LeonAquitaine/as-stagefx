@@ -1,6 +1,6 @@
 /**
  * AS_GFX_HandDrawing.1.fx - Stylized Hand-Drawn Artistic Effect
- * Author: Leon Aquitaine (based on the original concept shader)
+ * Author: Leon Aquitaine
  * License: Creative Commons Attribution 4.0 International
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
  * 
@@ -25,6 +25,10 @@
  * 4. Applies subtle animation to create an organic, living sketch appearance
  * 5. Overlays optional paper texture grid for added traditional media feel
  *
+ * CREDITS:
+ * Based on: "notebook drawings" by Flockaroo (2016)
+ * Original: https://www.shadertoy.com/view/XtVGD1
+ * 
  * ===================================================================================
  */
 
@@ -52,6 +56,9 @@ static const float EPSILON = 0.0001f;
 //--------------------------------------------------------------------------------------
 // Texture Definition (User can change NOISE_TEXTURE_PATH_HANDDRAWN before compilation or in UI)
 //--------------------------------------------------------------------------------------
+// Define Noise Texture Dimensions (User should adjust these if NOISE_TEXTURE_PATH_HANDDRAWN points to a texture of different size)
+#define NOISE_TEX_WIDTH 512.0f
+#define NOISE_TEX_HEIGHT 512.0f
 #ifndef NOISE_TEXTURE_PATH_HANDDRAWN
 #define NOISE_TEXTURE_PATH_HANDDRAWN "perlin512x8CNoise.png" // Default noise texture
 #endif
@@ -59,16 +66,13 @@ static const float EPSILON = 0.0001f;
 texture PencilDrawing_NoiseTex < source = NOISE_TEXTURE_PATH_HANDDRAWN; ui_label = "Noise Pattern Texture"; ui_tooltip = "Texture used for randomizing strokes and fills (e.g., Perlin, Blue Noise)."; >
 {
     // Default attributes if texture not found or specified, actual size is less critical with defines below
-    Width = 512; Height = 512; Format = RGBA8;
+    Width = NOISE_TEX_WIDTH; Height = NOISE_TEX_HEIGHT; Format = RGBA8;
 };
 sampler PencilDrawing_NoiseSampler { Texture = PencilDrawing_NoiseTex; AddressU = REPEAT; AddressV = REPEAT; MinFilter = LINEAR; MagFilter = LINEAR; MipFilter = LINEAR; };
 
 //--------------------------------------------------------------------------------------
 // Global Defines & Constants
 //--------------------------------------------------------------------------------------
-// Define Noise Texture Dimensions (User should adjust these if NOISE_TEXTURE_PATH_HANDDRAWN points to a texture of different size)
-#define NOISE_TEX_WIDTH 512.0f
-#define NOISE_TEX_HEIGHT 512.0f
 
 // Resolution Macros (used by helper functions)
 #define Res1 float2(NOISE_TEX_WIDTH, NOISE_TEX_HEIGHT) // Noise Texture Resolution
@@ -179,8 +183,6 @@ static const float3 PAPER_PATTERN_TINT_DEFAULT = float3(0.25, 0.1, 0.1);
 // ============================================================================
 
 // --- Overall Effect & Animation ---
-uniform bool EnablePaperPattern < ui_category = "Background & Paper"; ui_label = "Enable Paper Pattern"; ui_tooltip = "Toggles the underlying paper-like grid pattern"; > = true;
-
 uniform float AnimationWobbleStrength < ui_type = "slider"; ui_label = "Animation Wobble Strength"; ui_min = ANIMATION_WOBBLE_STRENGTH_MIN; ui_max = ANIMATION_WOBBLE_STRENGTH_MAX; ui_step = 0.1; ui_tooltip = "Overall strength of the coordinate jitter effect, making the image 'wobble'"; ui_category = "Animation & Jitter"; > = ANIMATION_WOBBLE_STRENGTH_DEFAULT;
 
 uniform float AnimationWobbleSpeed < ui_type = "slider"; ui_label = "Animation Wobble Speed"; ui_min = ANIMATION_WOBBLE_SPEED_MIN; ui_max = ANIMATION_WOBBLE_SPEED_MAX; ui_step = 0.01; ui_tooltip = "Speed of the wobble animation"; ui_category = "Animation & Jitter"; > = ANIMATION_WOBBLE_SPEED_DEFAULT;
@@ -229,6 +231,7 @@ uniform float FillTextureNoiseScale < ui_type = "slider"; ui_label = "Fill Textu
 uniform float NoiseLookupOverallScale < ui_type = "slider"; ui_label = "Noise Lookup Overall Scale Reference"; ui_min = NOISE_LOOKUP_SCALE_MIN; ui_max = NOISE_LOOKUP_SCALE_MAX; ui_step = 10.0; ui_tooltip = "Reference value for noise UV scaling. Larger means noise samples are smaller/denser"; ui_category = "Color Processing & Fill"; > = NOISE_LOOKUP_SCALE_DEFAULT;
 
 // --- Paper & Background ---
+uniform bool EnablePaperPattern < ui_category = "Background & Paper"; ui_label = "Enable Paper Pattern"; ui_tooltip = "Toggles the underlying paper-like grid pattern"; > = true;
 uniform float PaperPatternFrequency < ui_type = "slider"; ui_label = "Paper Pattern Frequency"; ui_min = PAPER_PATTERN_FREQ_MIN; ui_max = PAPER_PATTERN_FREQ_MAX; ui_step = 0.001; ui_tooltip = "Frequency of the 'karo' paper pattern"; ui_category = "Background & Paper"; > = PAPER_PATTERN_FREQ_DEFAULT;
 
 uniform float PaperPatternIntensity < ui_type = "slider"; ui_label = "Paper Pattern Intensity"; ui_min = PAPER_PATTERN_INTENSITY_MIN; ui_max = PAPER_PATTERN_INTENSITY_MAX; ui_step = 0.01; ui_tooltip = "Intensity of the 'karo' paper pattern"; ui_category = "Background & Paper"; > = PAPER_PATTERN_INTENSITY_DEFAULT;
