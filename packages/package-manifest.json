@@ -1,11 +1,11 @@
 ﻿{
-    "buildDate":  "2025-05-19T15:23:14Z",
-    "version":  "1.7.5",
+    "buildDate":  "2025-05-20T01:01:40Z",
+    "version":  "1.7.7",
     "packages":  [
                      {
-                         "version":  "1.7.5",
-                         "shaderCount":  13,
-                         "textureDependencyCount":  2,
+                         "version":  "1.7.7",
+                         "shaderCount":  14,
+                         "textureDependencyCount":  3,
                          "name":  "AS_StageFX_VisualEffects",
                          "fxhDependencyCount":  4,
                          "description":  "Complete collection of visual effects (Requires Essentials)",
@@ -17,12 +17,14 @@
                                                           "AS_Perspective.1.fxh"
                                                       ],
                                               "textures":  [
+                                                               "perlin512x8CNoise.png",
                                                                "AS_petals.atlas.png",
                                                                "perlin512x8Noise.png"
                                                            ]
                                           },
                          "shaders":  [
                                          "AS_GFX_AspectRatio.1.fx",
+                                         "AS_GFX_HandDrawing.1.fx",
                                          "AS_LFX_CandleFlame.1.fx",
                                          "AS_VFX_ClairObscur.1.fx",
                                          "AS_VFX_DigitalArtifacts.1.fx",
@@ -38,8 +40,8 @@
                                      ]
                      },
                      {
-                         "version":  "1.7.5",
-                         "shaderCount":  44,
+                         "version":  "1.7.7",
+                         "shaderCount":  46,
                          "textureDependencyCount":  3,
                          "name":  "AS_StageFX",
                          "fxhDependencyCount":  5,
@@ -67,6 +69,7 @@
                                          "AS_BGX_LightRipples.1.fx",
                                          "AS_BGX_LightWall.1.fx",
                                          "AS_BGX_LiquidChrome.1.fx",
+                                         "AS_BGX_LogSpirals.1.fx",
                                          "AS_BGX_MeltWave.1.fx",
                                          "AS_BGX_MistyGrid.1.fx",
                                          "AS_BGX_PastRacer.1.fx",
@@ -78,6 +81,7 @@
                                          "AS_BGX_WavySquiggles.1.fx",
                                          "AS_BGX_ZippyZaps.1.fx",
                                          "AS_GFX_AspectRatio.1.fx",
+                                         "AS_GFX_HandDrawing.1.fx",
                                          "AS_GFX_MultiLayerHalftone.1.fx",
                                          "AS_GFX_VignettePlus.1.fx",
                                          "AS_LFX_CandleFlame.1.fx",
@@ -106,7 +110,7 @@
                                      ]
                      },
                      {
-                         "version":  "1.7.5",
+                         "version":  "1.7.7",
                          "shaderCount":  16,
                          "textureDependencyCount":  0,
                          "name":  "AS_StageFX_Essentials",
@@ -143,8 +147,8 @@
                                      ]
                      },
                      {
-                         "version":  "1.7.5",
-                         "shaderCount":  15,
+                         "version":  "1.7.7",
+                         "shaderCount":  16,
                          "textureDependencyCount":  1,
                          "name":  "AS_StageFX_Backgrounds",
                          "fxhDependencyCount":  3,
@@ -167,6 +171,7 @@
                                          "AS_BGX_GoldenClockwork.1.fx",
                                          "AS_BGX_LightWall.1.fx",
                                          "AS_BGX_LiquidChrome.1.fx",
+                                         "AS_BGX_LogSpirals.1.fx",
                                          "AS_BGX_MeltWave.1.fx",
                                          "AS_BGX_MistyGrid.1.fx",
                                          "AS_BGX_PastRacer.1.fx",
