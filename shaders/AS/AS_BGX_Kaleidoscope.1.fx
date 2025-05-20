@@ -146,38 +146,38 @@ uniform float AudioGain_Rotation < ui_type = "slider"; ui_label = "Pattern Rotat
 //------------------------------------------------------------------------------------------------
 // Fractal Pattern Controls
 //------------------------------------------------------------------------------------------------
-uniform float FractalZoomBase < ui_type = "drag"; ui_label = "Base Zoom Factor"; ui_tooltip = "Base zoom for the fractal UV transformation."; ui_min = FRACTAL_ZOOM_BASE_MIN; ui_max = FRACTAL_ZOOM_BASE_MAX; ui_step = 0.01; ui_category = "Fractal Pattern"; > = FRACTAL_ZOOM_BASE_DEFAULT;
-uniform float FractalZoomPulseStrength < ui_type = "drag"; ui_label = "Zoom Pulse Strength"; ui_tooltip = "Amount the fractal zoom pulses over time. Added to Base Zoom."; ui_min = FRACTAL_ZOOM_PULSE_STRENGTH_MIN; ui_max = FRACTAL_ZOOM_PULSE_STRENGTH_MAX; ui_step = 0.01; ui_category = "Fractal Pattern"; > = FRACTAL_ZOOM_PULSE_STRENGTH_DEFAULT;
-uniform float FractalZoomPulseSpeed < ui_type = "drag"; ui_label = "Zoom Pulse Speed"; ui_tooltip = "Speed of the fractal zoom pulsation (relative to Master Animation Time)."; ui_min = FRACTAL_ZOOM_PULSE_SPEED_MIN; ui_max = FRACTAL_ZOOM_PULSE_SPEED_MAX; ui_step = 0.01; ui_category = "Fractal Pattern"; > = FRACTAL_ZOOM_PULSE_SPEED_DEFAULT;
+uniform float FractalZoomBase < ui_type = "slider"; ui_label = "Base Zoom Factor"; ui_tooltip = "Base zoom for the fractal UV transformation."; ui_min = FRACTAL_ZOOM_BASE_MIN; ui_max = FRACTAL_ZOOM_BASE_MAX; ui_step = 0.01; ui_category = "Fractal Pattern"; > = FRACTAL_ZOOM_BASE_DEFAULT;
+uniform float FractalZoomPulseStrength < ui_type = "slider"; ui_label = "Zoom Pulse Strength"; ui_tooltip = "Amount the fractal zoom pulses over time. Added to Base Zoom."; ui_min = FRACTAL_ZOOM_PULSE_STRENGTH_MIN; ui_max = FRACTAL_ZOOM_PULSE_STRENGTH_MAX; ui_step = 0.01; ui_category = "Fractal Pattern"; > = FRACTAL_ZOOM_PULSE_STRENGTH_DEFAULT;
+uniform float FractalZoomPulseSpeed < ui_type = "slider"; ui_label = "Zoom Pulse Speed"; ui_tooltip = "Speed of the fractal zoom pulsation (relative to Master Animation Time)."; ui_min = FRACTAL_ZOOM_PULSE_SPEED_MIN; ui_max = FRACTAL_ZOOM_PULSE_SPEED_MAX; ui_step = 0.01; ui_category = "Fractal Pattern"; > = FRACTAL_ZOOM_PULSE_SPEED_DEFAULT;
 
 //------------------------------------------------------------------------------------------------
 // Wave Controls
 //------------------------------------------------------------------------------------------------
-uniform float WaveMotionSpeed < ui_type = "drag"; ui_label = "Wave Motion Speed"; ui_tooltip = "How fast the tendril waves move."; ui_min = WAVE_MOTION_SPEED_MIN; ui_max = WAVE_MOTION_SPEED_MAX; ui_step = 0.01; ui_category = "Wave Parameters"; > = WAVE_MOTION_SPEED_DEFAULT;
-uniform float WaveFrequency < ui_type = "drag"; ui_label = "Wave Frequency"; ui_tooltip = "Frequency of the sine waves creating the tendrils."; ui_min = WAVE_FREQUENCY_MIN; ui_max = WAVE_FREQUENCY_MAX; ui_step = 0.1; ui_category = "Wave Parameters"; > = WAVE_FREQUENCY_DEFAULT;
-uniform float WaveAmplitude < ui_type = "drag"; ui_label = "Wave Amplitude"; ui_tooltip = "Controls intensity of wave patterns. Higher = sharper, more defined tendrils."; ui_min = 1.0; ui_max = 32.0; ui_step = 0.1; ui_category = "Wave Parameters"; > = 8.0;
+uniform float WaveMotionSpeed < ui_type = "slider"; ui_label = "Wave Motion Speed"; ui_tooltip = "How fast the tendril waves move."; ui_min = WAVE_MOTION_SPEED_MIN; ui_max = WAVE_MOTION_SPEED_MAX; ui_step = 0.01; ui_category = "Wave Parameters"; > = WAVE_MOTION_SPEED_DEFAULT;
+uniform float WaveFrequency < ui_type = "slider"; ui_label = "Wave Frequency"; ui_tooltip = "Frequency of the sine waves creating the tendrils."; ui_min = WAVE_FREQUENCY_MIN; ui_max = WAVE_FREQUENCY_MAX; ui_step = 0.1; ui_category = "Wave Parameters"; > = WAVE_FREQUENCY_DEFAULT;
+uniform float WaveAmplitude < ui_type = "slider"; ui_label = "Wave Amplitude"; ui_tooltip = "Controls intensity of wave patterns. Higher = sharper, more defined tendrils."; ui_min = 1.0; ui_max = 32.0; ui_step = 0.1; ui_category = "Wave Parameters"; > = 8.0;
 
 //------------------------------------------------------------------------------------------------
 // Pattern Motion Controls
 //------------------------------------------------------------------------------------------------
-uniform float BasePatternRotationSpeed < ui_type = "drag"; ui_label = "Pattern Rotation Speed"; ui_tooltip = "Speed of rotation for the base pattern inside the kaleidoscope mirrors."; ui_min = PATTERN_ROTATION_SPEED_MIN; ui_max = PATTERN_ROTATION_SPEED_MAX; ui_step = 0.1; ui_category = "Pattern Motion"; > = PATTERN_ROTATION_SPEED_DEFAULT;
-uniform float GlobalPulsingZoomStrength < ui_type = "drag"; ui_label = "Pattern Pulsing Zoom Strength"; ui_tooltip = "Strength of the pulsing zoom effect applied to the base pattern."; ui_min = PATTERN_PULSING_ZOOM_STRENGTH_MIN; ui_max = PATTERN_PULSING_ZOOM_STRENGTH_MAX; ui_step = 0.01; ui_category = "Pattern Motion"; > = PATTERN_PULSING_ZOOM_STRENGTH_DEFAULT;
-uniform float GlobalPulsingZoomSpeed < ui_type = "drag"; ui_label = "Pattern Pulsing Zoom Speed"; ui_tooltip = "Speed of the pulsing zoom effect."; ui_min = PATTERN_PULSING_ZOOM_SPEED_MIN; ui_max = PATTERN_PULSING_ZOOM_SPEED_MAX; ui_step = 0.01; ui_category = "Pattern Motion"; > = PATTERN_PULSING_ZOOM_SPEED_DEFAULT;
+uniform float BasePatternRotationSpeed < ui_type = "slider"; ui_label = "Pattern Rotation Speed"; ui_tooltip = "Speed of rotation for the base pattern inside the kaleidoscope mirrors."; ui_min = PATTERN_ROTATION_SPEED_MIN; ui_max = PATTERN_ROTATION_SPEED_MAX; ui_step = 0.1; ui_category = "Pattern Motion"; > = PATTERN_ROTATION_SPEED_DEFAULT;
+uniform float GlobalPulsingZoomStrength < ui_type = "slider"; ui_label = "Pattern Pulsing Zoom Strength"; ui_tooltip = "Strength of the pulsing zoom effect applied to the base pattern."; ui_min = PATTERN_PULSING_ZOOM_STRENGTH_MIN; ui_max = PATTERN_PULSING_ZOOM_STRENGTH_MAX; ui_step = 0.01; ui_category = "Pattern Motion"; > = PATTERN_PULSING_ZOOM_STRENGTH_DEFAULT;
+uniform float GlobalPulsingZoomSpeed < ui_type = "slider"; ui_label = "Pattern Pulsing Zoom Speed"; ui_tooltip = "Speed of the pulsing zoom effect."; ui_min = PATTERN_PULSING_ZOOM_SPEED_MIN; ui_max = PATTERN_PULSING_ZOOM_SPEED_MAX; ui_step = 0.01; ui_category = "Pattern Motion"; > = PATTERN_PULSING_ZOOM_SPEED_DEFAULT;
 
 //------------------------------------------------------------------------------------------------
 // Color Palette Controls
 //------------------------------------------------------------------------------------------------
 
-AS_PALETTE_SELECTION_UI(PaletteSelect, "Color Palette", AS_PALETTE_AURORA, "Color Palette")
+AS_PALETTE_SELECTION_UI(PaletteSelect, "Color Palette", AS_PALETTE_CUSTOM, "Color Palette")
 
 // Manually declare custom palette colors to set specific defaults for this shader
 uniform float3 ASKaleidoscopeCustomPaletteColor0 < ui_type = "color"; ui_label = "Custom Color 1 (Offset)"; ui_category = "Color Palette"; > = float3(0.5, 0.5, 0.5);
 uniform float3 ASKaleidoscopeCustomPaletteColor1 < ui_type = "color"; ui_label = "Custom Color 2 (Amplitude)"; ui_category = "Color Palette"; > = float3(0.5, 0.5, 0.5);
 uniform float3 ASKaleidoscopeCustomPaletteColor2 < ui_type = "color"; ui_label = "Custom Color 3 (Frequency)"; ui_category = "Color Palette"; > = float3(1.0, 1.0, 1.0);
 uniform float3 ASKaleidoscopeCustomPaletteColor3 < ui_type = "color"; ui_label = "Custom Color 4 (Phase)"; ui_category = "Color Palette"; > = float3(0.263, 0.416, 0.557);
-uniform float3 ASKaleidoscopeCustomPaletteColor4 < ui_type = "color"; ui_label = "Custom Color 5"; ui_category = "Color Palette"; > = float3(1.0, 0.0, 1.0); // Default Magenta for the 5th color
+uniform float3 ASKaleidoscopeCustomPaletteColor4 < ui_type = "color"; ui_label = "Custom Color 5 (Background)"; ui_category = "Color Palette"; > = float3(0.0, 0.0, 0.0); // Default Black for the 5th color
 
-uniform float PaletteCycleSpeed < ui_type = "drag"; ui_label = "Color Cycle Speed"; ui_tooltip = "How fast colors cycle through the palette."; ui_min = PALETTE_CYCLE_SPEED_MIN; ui_max = PALETTE_CYCLE_SPEED_MAX; ui_step = 0.01; ui_category = "Color Palette"; > = PALETTE_CYCLE_SPEED_DEFAULT;
+uniform float PaletteCycleSpeed < ui_type = "slider"; ui_label = "Color Cycle Speed"; ui_tooltip = "How fast colors cycle through the palette."; ui_min = PALETTE_CYCLE_SPEED_MIN; ui_max = PALETTE_CYCLE_SPEED_MAX; ui_step = 0.01; ui_category = "Color Palette"; > = PALETTE_CYCLE_SPEED_DEFAULT;
 
 //------------------------------------------------------------------------------------------------
 // Stage & Depth
@@ -250,7 +250,15 @@ float4 PS_Kaleidoscope(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) :
     
     // Store original UV for fractal calculation
     float2 baseUV = normalizedUV; 
-    float3 finalColor = float3(0.0, 0.0, 0.0);
+    
+    // Initialize finalColor with the 5th palette color (background)
+    float3 backgroundColor;
+    if (PaletteSelect == AS_PALETTE_CUSTOM) {
+        backgroundColor = AS_GET_CUSTOM_PALETTE_COLOR(ASKaleidoscope, 4);
+    } else {
+        backgroundColor = AS_getPaletteColor(PaletteSelect, 4);
+    }
+    float3 finalColor = backgroundColor;
     
     // Calculate fractal zoom with audio reactivity
     float audioModulatedZoom = FractalZoomBase;
