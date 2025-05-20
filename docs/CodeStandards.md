@@ -1,8 +1,3 @@
-/** * AS_CodeStandards.md - Coding Standards for AS StageFX Shaders
- * Author: Leon Aquitaine
- * Updated: May 10, 2025
- */
-
 # AS StageFX Code Standards
 
 ## ⚠️ CRITICAL STANDARDS ⚠️
