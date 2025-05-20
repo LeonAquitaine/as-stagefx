@@ -1,9 +1,9 @@
 ﻿{
-    "buildDate":  "2025-05-20T01:01:40Z",
-    "version":  "1.7.7",
+    "buildDate":  "2025-05-20T12:33:53Z",
+    "version":  "1.7.8",
     "packages":  [
                      {
-                         "version":  "1.7.7",
+                         "version":  "1.7.8",
                          "shaderCount":  14,
                          "textureDependencyCount":  3,
                          "name":  "AS_StageFX_VisualEffects",
@@ -40,8 +40,8 @@
                                      ]
                      },
                      {
-                         "version":  "1.7.7",
-                         "shaderCount":  46,
+                         "version":  "1.7.8",
+                         "shaderCount":  48,
                          "textureDependencyCount":  3,
                          "name":  "AS_StageFX",
                          "fxhDependencyCount":  5,
@@ -62,10 +62,12 @@
                                           },
                          "shaders":  [
                                          "AS_BGX_BlueCorona.1.fx",
+                                         "AS_BGX_Constellation.1.fx",
                                          "AS_BGX_CorridorTravel.1.fx",
                                          "AS_BGX_CosmicKaleidoscope.1.fx",
                                          "AS_BGX_DigitalBrain.1.fx",
                                          "AS_BGX_GoldenClockwork.1.fx",
+                                         "AS_BGX_Kaleidoscope.1.fx",
                                          "AS_BGX_LightRipples.1.fx",
                                          "AS_BGX_LightWall.1.fx",
                                          "AS_BGX_LiquidChrome.1.fx",
@@ -110,7 +112,7 @@
                                      ]
                      },
                      {
-                         "version":  "1.7.7",
+                         "version":  "1.7.8",
                          "shaderCount":  16,
                          "textureDependencyCount":  0,
                          "name":  "AS_StageFX_Essentials",
@@ -147,8 +149,8 @@
                                      ]
                      },
                      {
-                         "version":  "1.7.7",
-                         "shaderCount":  16,
+                         "version":  "1.7.8",
+                         "shaderCount":  18,
                          "textureDependencyCount":  1,
                          "name":  "AS_StageFX_Backgrounds",
                          "fxhDependencyCount":  3,
@@ -165,10 +167,12 @@
                                           },
                          "shaders":  [
                                          "AS_BGX_BlueCorona.1.fx",
+                                         "AS_BGX_Constellation.1.fx",
                                          "AS_BGX_CorridorTravel.1.fx",
                                          "AS_BGX_CosmicKaleidoscope.1.fx",
                                          "AS_BGX_DigitalBrain.1.fx",
                                          "AS_BGX_GoldenClockwork.1.fx",
+                                         "AS_BGX_Kaleidoscope.1.fx",
                                          "AS_BGX_LightWall.1.fx",
                                          "AS_BGX_LiquidChrome.1.fx",
                                          "AS_BGX_LogSpirals.1.fx",
