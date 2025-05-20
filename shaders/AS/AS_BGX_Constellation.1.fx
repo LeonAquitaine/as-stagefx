@@ -26,6 +26,7 @@
  * 4. Combines multiple layers at different scales for a parallax depth effect
  * 5. Processes color based on animated palette parameters
  * 
+ * Based on 'Old Joseph' by jairoandre (2021-06-01) - https://www.shadertoy.com/view/slfGzf
  * Inspired by: Art of Code (YouTube)
  * 
  * ===================================================================================
