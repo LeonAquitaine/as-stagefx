@@ -182,14 +182,14 @@ STICKER_UI(4, false, float2(POSITION_DEFAULT, POSITION_DEFAULT - 0.2), SCALE_DEF
 // ============================================================================
 uniform int BoomSticker_AudioAffect < ui_type = "combo"; ui_label = "Audio Affects"; ui_items = "Opacity\0Scale\0"; ui_category = "Audio Reactivity"; > = 1;
 
-// Use the standard AS_AUDIO_SOURCE_UI macro to select audio source
-AS_AUDIO_SOURCE_UI(BoomSticker_AudioSource, "Audio Source", AS_AUDIO_VOLUME, "Audio Reactivity")
-AS_AUDIO_MULTIPLIER_UI(BoomSticker_AudioIntensity, "Audio Intensity", AUDIO_INTENSITY_DEFAULT, AUDIO_INTENSITY_MAX, "Audio Reactivity")
+// Use the standard AS_AUDIO_UI macro to select audio source
+AS_AUDIO_UI(BoomSticker_AudioSource, "Audio Source", AS_AUDIO_VOLUME, "Audio Reactivity")
+AS_AUDIO_MULT_UI(BoomSticker_AudioIntensity, "Audio Intensity", AUDIO_INTENSITY_DEFAULT, AUDIO_INTENSITY_MAX, "Audio Reactivity")
 
 // ============================================================================
 // DEBUG
 // ============================================================================
-AS_DEBUG_MODE_UI("Off\0Beat\0Depth\0Audio Source\0")
+AS_DEBUG_UI("Off\0Beat\0Depth\0Audio Source\0")
 
 // ============================================================================
 // BLENDING
@@ -462,3 +462,4 @@ technique AS_BoomSticker < ui_label = "[AS] VFX: BoomSticker"; ui_tooltip = "Mul
 }
 
 #endif // __AS_VFX_BoomSticker_1_fx
+

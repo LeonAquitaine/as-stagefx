@@ -124,8 +124,8 @@ uniform float3 ClassicColorBalance < ui_type = "slider"; ui_label = "Classic Col
 
 
 // Audio Reactivity
-AS_AUDIO_SOURCE_UI(DigitalBrain_AudioSource, "Audio Source", AS_AUDIO_BASS, "Audio Reactivity")
-AS_AUDIO_MULTIPLIER_UI(DigitalBrain_AudioMultiplier, "Audio Multiplier", AUDIO_MULTIPLIER_DEFAULT, AUDIO_MULTIPLIER_MAX, "Audio Reactivity")
+AS_AUDIO_UI(DigitalBrain_AudioSource, "Audio Source", AS_AUDIO_BASS, "Audio Reactivity")
+AS_AUDIO_MULT_UI(DigitalBrain_AudioMultiplier, "Audio Multiplier", AUDIO_MULTIPLIER_DEFAULT, AUDIO_MULTIPLIER_MAX, "Audio Reactivity")
 uniform int DigitalBrain_AudioTarget < ui_type = "combo"; ui_label = "Audio Target"; ui_items = "None\0Pattern Intensity\0Camera Movement\0Synapse Speed\0Camera Speed\0"; ui_category = "Audio Reactivity"; > = 0;
 
 AS_ANIMATION_SPEED_UI(AnimationSpeed, "Animation")
@@ -141,7 +141,7 @@ AS_BLENDMODE_UI(BlendMode)
 AS_BLENDAMOUNT_UI(BlendStrength)
 
 // Debug
-AS_DEBUG_MODE_UI("Off\0Pattern\0UV Coords\0Vignette\0Audio Reactivity\0")
+AS_DEBUG_UI("Off\0Pattern\0UV Coords\0Vignette\0Audio Reactivity\0")
 
 // ============================================================================
 // HELPER FUNCTIONS
@@ -394,7 +394,7 @@ float4 PS_DigitalBrain(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) :
     }
     
     // Apply the standard blend function for final output
-    float3 blendedColor = AS_ApplyBlend(col, originalColor.rgb, BlendMode);
+    float3 blendedColor = AS_applyBlend(col, originalColor.rgb, BlendMode);
     return float4(lerp(originalColor.rgb, blendedColor, BlendStrength), originalColor.a);
 }
 
@@ -416,3 +416,4 @@ technique AS_BGX_DigitalBrain <
 }
 
 #endif // __AS_BGX_DigitalBrain_1_fx
+

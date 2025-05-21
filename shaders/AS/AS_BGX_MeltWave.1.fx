@@ -120,8 +120,8 @@ uniform float ColorCycleSpeed < ui_type = "slider"; ui_label = "Palette Color Cy
 uniform float3 BackgroundColor < ui_type = "color"; ui_label = "Background Color"; ui_tooltip = "Solid background color the effect is blended onto."; ui_category = "Palette & Style"; > = float3(0.0, 0.0, 0.0);
 
 // --- Audio Reactivity ---
-AS_AUDIO_SOURCE_UI(MeltWave_AudioSource, "Audio Source", AS_AUDIO_BASS, "Audio Reactivity")
-AS_AUDIO_MULTIPLIER_UI(MeltWave_AudioMultiplier, "Audio Multiplier", AUDIO_MULTIPLIER_DEFAULT, AUDIO_MULTIPLIER_MAX, "Audio Reactivity")
+AS_AUDIO_UI(MeltWave_AudioSource, "Audio Source", AS_AUDIO_BASS, "Audio Reactivity")
+AS_AUDIO_MULT_UI(MeltWave_AudioMultiplier, "Audio Multiplier", AUDIO_MULTIPLIER_DEFAULT, AUDIO_MULTIPLIER_MAX, "Audio Reactivity")
 uniform int MeltWave_AudioTarget < ui_type = "combo"; ui_label = "Audio Target"; ui_items = "Melt Intensity\0Animation Speed\0Brightness\0Zoom\0All\0"; ui_category = "Audio Reactivity"; > = 2;
 
 // --- Animation Controls ---
@@ -139,7 +139,7 @@ AS_BLENDMODE_UI_DEFAULT(BlendMode, 0)
 AS_BLENDAMOUNT_UI(BlendAmount)
 
 // --- Debug ---
-AS_DEBUG_MODE_UI("Off\0Show Audio Reactivity\0")
+AS_DEBUG_UI("Off\0Show Audio Reactivity\0")
 
 // ============================================================================
 // HELPER FUNCTIONS
@@ -207,14 +207,14 @@ float4 PS_MeltWave(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Ta
     
     // --- Coordinate Transformation: Center → Rotate → Position/Scale ---
     float aspectRatio = ReShade::AspectRatio;
-    float2 centered = AS_getCenteredCoord(texcoord, aspectRatio); // Centered, aspect-corrected
+    float2 centered = AS_centerCoord(texcoord, aspectRatio); // Centered, aspect-corrected
     // Apply rotation around center
     float rotation = AS_getRotationRadians(RotationSnap, RotationFine);
     float s = sin(-rotation);
     float c = cos(-rotation);
     float2 rotated = float2(centered.x * c - centered.y * s, centered.x * s + centered.y * c);
     // Now apply position and scale
-    float2 p = AS_applyPositionAndScale(rotated, Position, Scale);
+    float2 p = AS_applyPosScale(rotated, Position, Scale);
     p *= 2.0; // Expand to -2 to 2 range for effect intensity
     // Apply aspect ratio correction for resolution independence
     p.x /= aspectRatio;
@@ -271,7 +271,7 @@ float4 PS_MeltWave(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Ta
     float4 effectColor = float4(processed_col, extrusion);
     
     // Blend with UI BackgroundColor using standard AS blend function
-    float3 blendedColor = AS_ApplyBlend(effectColor.rgb, BackgroundColor, BlendMode);
+    float3 blendedColor = AS_applyBlend(effectColor.rgb, BackgroundColor, BlendMode);
     float3 finalColor = lerp(BackgroundColor, blendedColor, BlendAmount * effectColor.a);
     
     // Debug mode handling
@@ -302,3 +302,5 @@ technique AS_BGX_MeltWave < ui_label="[AS] BGX: Melt Wave"; ui_tooltip = "Genera
 }
 
 #endif // __AS_BGX_MeltWave_1_fx
+
+

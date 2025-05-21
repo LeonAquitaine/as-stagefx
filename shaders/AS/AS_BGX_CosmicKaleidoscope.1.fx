@@ -93,15 +93,15 @@ uniform float AnimationKeyframe < ui_type = "slider"; ui_label = "Animation Keyf
 uniform float AnimationSpeed < ui_type = "slider"; ui_label = "Time Speed (Evolution)"; ui_min = ANIMATION_SPEED_MIN; ui_max = ANIMATION_SPEED_MAX; ui_step = ANIMATION_SPEED_STEP; ui_category = "Animation"; > = ANIMATION_SPEED_DEFAULT;
 uniform float CameraMoveSpeed < ui_type = "slider"; ui_label = "Camera Movement Speed"; ui_min = CAMERA_MOVE_SPEED_MIN; ui_max = CAMERA_MOVE_SPEED_MAX; ui_step = CAMERA_MOVE_SPEED_STEP; ui_category = "Animation"; > = CAMERA_MOVE_SPEED_DEFAULT;
 uniform float FractalRotationSpeed < ui_type = "slider"; ui_label = "Fractal XY Rotation Speed"; ui_tooltip = "Speed of the internal XY rotation applied during raymarching."; ui_min = FRACTAL_ROTATION_SPEED_MIN; ui_max = FRACTAL_ROTATION_SPEED_MAX; ui_step = FRACTAL_ROTATION_SPEED_STEP; ui_category = "Animation"; > = FRACTAL_ROTATION_SPEED_DEFAULT; 
-AS_AUDIO_SOURCE_UI(Cosmos_AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity") 
-AS_AUDIO_MULTIPLIER_UI(Cosmos_AudioMultiplier, "Audio Intensity", AUDIO_MULTIPLIER_DEFAULT, AUDIO_MULTIPLIER_MAX, "Audio Reactivity") 
+AS_AUDIO_UI(Cosmos_AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity") 
+AS_AUDIO_MULT_UI(Cosmos_AudioMultiplier, "Audio Intensity", AUDIO_MULTIPLIER_DEFAULT, AUDIO_MULTIPLIER_MAX, "Audio Reactivity") 
 uniform int Cosmos_AudioTarget < ui_type = "combo"; ui_label = "Audio Target Parameter"; ui_items = "None\0Fractal Parameter\0Brightness\0Dark Matter\0Saturation\0Camera Move Speed\0Fractal Rotation Speed\0"; ui_category = "Audio Reactivity"; > = AUDIO_TARGET_DEFAULT;
 AS_STAGEDEPTH_UI(EffectDepth)
 AS_ROTATION_UI(EffectSnapRotation, EffectFineRotation)
 AS_POSITION_SCALE_UI(Position, Scale)
 AS_BLENDMODE_UI(BlendMode)
 AS_BLENDAMOUNT_UI(BlendStrength)
-AS_DEBUG_MODE_UI("Off\0Show Audio Reactivity\0")
+AS_DEBUG_UI("Off\0Show Audio Reactivity\0")
 
 // ============================================================================
 // HELPER FUNCTIONS
@@ -268,7 +268,7 @@ float4 ASCosmicKaleidoscopePS(float4 vpos : SV_POSITION, float2 texcoord : TEXCO
     effectColor.rgb = saturate(finalRGB); 
 
     // --- Final Blending & Debug ---
-    float4 finalColor = float4(AS_ApplyBlend(effectColor.rgb, originalColor.rgb, BlendMode), 1.0f);
+    float4 finalColor = float4(AS_applyBlend(effectColor.rgb, originalColor.rgb, BlendMode), 1.0f);
     finalColor = lerp(originalColor, finalColor, BlendStrength);
     
     if (DebugMode != AS_DEBUG_OFF) {
@@ -299,3 +299,5 @@ technique AS_BGX_CosmicKaleidoscope < ui_label="[AS] BGX: Cosmic Kaleidoscope"; 
 }
 
 #endif // __AS_BGX_CosmicKaleidoscope_1_fx
+
+

@@ -78,31 +78,31 @@ uniform float4 Layer##index##_BackgroundColor < ui_type = "color"; ui_label = "B
 // Layer 1 controls
 HALFTONE_LAYER_UI(1, true, ISOLATE_BRIGHTNESS, 1.0, 50.0, 
                  PATTERN_DOT_ROUND, 50.0, AS_RANGE_BLEND_DEFAULT, 45.0,
-                 float4(AS_RANGE_ZERO_ONE_MIN, AS_RANGE_ZERO_ONE_MIN, AS_RANGE_ZERO_ONE_MIN, AS_RANGE_OPACITY_DEFAULT), 
+                 float4(AS_RANGE_ZERO_ONE_MIN, AS_RANGE_ZERO_ONE_MIN, AS_RANGE_ZERO_ONE_MIN, AS_OP_DEFAULT), 
                  float4(AS_RANGE_ZERO_ONE_MAX, AS_RANGE_ZERO_ONE_MAX, AS_RANGE_ZERO_ONE_MAX, AS_RANGE_ZERO_ONE_MIN))
 
 // Layer 2 controls                 
 HALFTONE_LAYER_UI(2, false, ISOLATE_BRIGHTNESS, 50.0, 75.0, 
                  PATTERN_LINE, 60.0, AS_RANGE_BLEND_DEFAULT, AS_HALF_PI * AS_RADIANS_TO_DEGREES,
-                 float4(AS_RANGE_ZERO_ONE_MIN, AS_RANGE_ZERO_ONE_MIN, AS_RANGE_ZERO_ONE_MIN, AS_RANGE_OPACITY_DEFAULT), 
+                 float4(AS_RANGE_ZERO_ONE_MIN, AS_RANGE_ZERO_ONE_MIN, AS_RANGE_ZERO_ONE_MIN, AS_OP_DEFAULT), 
                  float4(AS_RANGE_ZERO_ONE_MAX, AS_RANGE_ZERO_ONE_MAX, AS_RANGE_ZERO_ONE_MAX, AS_RANGE_ZERO_ONE_MIN))
 
 // Layer 3 controls
 HALFTONE_LAYER_UI(3, false, ISOLATE_HUE, 10.0, 40.0, 
                  PATTERN_CROSSHATCH, 40.0, AS_RANGE_BLEND_DEFAULT, 30.0,
-                 float4(AS_RANGE_ZERO_ONE_MIN, AS_RANGE_ZERO_ONE_MIN, AS_RANGE_ZERO_ONE_MIN, AS_RANGE_OPACITY_DEFAULT), 
+                 float4(AS_RANGE_ZERO_ONE_MIN, AS_RANGE_ZERO_ONE_MIN, AS_RANGE_ZERO_ONE_MIN, AS_OP_DEFAULT), 
                  float4(AS_RANGE_ZERO_ONE_MAX, AS_RANGE_ZERO_ONE_MAX, AS_RANGE_ZERO_ONE_MAX, AS_RANGE_ZERO_ONE_MIN))
 
 // Layer 4 controls
 HALFTONE_LAYER_UI(4, false, ISOLATE_BRIGHTNESS, 75.0, AS_RANGE_ZERO_ONE_MAX * 100.0, 
                  PATTERN_DOT_SQUARE, 30.0, AS_RANGE_BLEND_DEFAULT, 60.0,
-                 float4(AS_RANGE_ZERO_ONE_MIN, AS_RANGE_ZERO_ONE_MIN, AS_RANGE_ZERO_ONE_MIN, AS_RANGE_OPACITY_DEFAULT), 
+                 float4(AS_RANGE_ZERO_ONE_MIN, AS_RANGE_ZERO_ONE_MIN, AS_RANGE_ZERO_ONE_MIN, AS_OP_DEFAULT), 
                  float4(AS_RANGE_ZERO_ONE_MAX, AS_RANGE_ZERO_ONE_MAX, AS_RANGE_ZERO_ONE_MAX, AS_RANGE_ZERO_ONE_MIN))
 
 // ============================================================================
 // DEBUG
 // ============================================================================
-AS_DEBUG_MODE_UI("Off\0Layers\0Metrics\0")
+AS_DEBUG_UI("Off\0Layers\0Metrics\0")
 
 // ============================================================================
 // HELPER FUNCTIONS
@@ -402,3 +402,4 @@ technique AS_MultiLayerHalftone <
 }
 
 #endif // __AS_GFX_MultiLayerHalftone_1_fx
+

@@ -109,8 +109,8 @@ uniform float RotationSpeed < ui_type = "slider"; ui_label = "Rotation Speed"; u
 // ============================================================================
 // AUDIO REACTIVITY (Example Setup)
 // ============================================================================
-AS_AUDIO_SOURCE_UI(Ring_AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity") // Removed extra 'true' argument
-AS_AUDIO_MULTIPLIER_UI(Ring_AudioMultiplier, "Intensity", 0.1, 2.0, "Audio Reactivity")
+AS_AUDIO_UI(Ring_AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity") // Removed extra 'true' argument
+AS_AUDIO_MULT_UI(Ring_AudioMultiplier, "Intensity", 0.1, 2.0, "Audio Reactivity")
 uniform int AudioTarget < ui_type = "combo"; ui_label = "Audio Target Parameter"; ui_tooltip = "Select parameter affected by audio"; ui_items = "None\0Radius\0Thickness\0Color Intensity\0"; ui_category = "Audio Reactivity"; > = 1;
 
 // ============================================================================
@@ -134,7 +134,7 @@ AS_BLENDAMOUNT_UI(BlendAmount)
 // ============================================================================
 // DEBUG
 // ============================================================================
-AS_DEBUG_MODE_UI("Normal\0Screen Distance\0Angle\0Texture UVs\0Depth Check\0Ring Alpha\0") // Removed extra 'true' argument
+AS_DEBUG_UI("Normal\0Screen Distance\0Angle\0Texture UVs\0Depth Check\0Ring Alpha\0") // Removed extra 'true' argument
 
 // ============================================================================
 // HELPER FUNCTIONS
@@ -294,7 +294,7 @@ float4 PS_ScreenRing(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_
                 // Incorporate the texture's alpha channel into the final alpha calculation
                 float finalAlpha = ringFactor * texColor.a * BlendAmount;
 
-                float3 blendedColor = AS_ApplyBlend(ringColor, orig.rgb, BlendMode);
+                float3 blendedColor = AS_applyBlend(ringColor, orig.rgb, BlendMode);
 
                 finalResult = float4(lerp(orig.rgb, blendedColor, finalAlpha), orig.a);
             }
@@ -372,3 +372,4 @@ technique AS_VFX_ScreenRing <
 }
 
 #endif // __AS_VFX_ScreenRing_1_fx
+

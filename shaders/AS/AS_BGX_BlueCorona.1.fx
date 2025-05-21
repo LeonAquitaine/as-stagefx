@@ -136,8 +136,8 @@ uniform float BlueWeight < ui_type = "slider"; ui_label = "Blue Channel Weight";
 uniform float3 BackgroundColor < ui_type = "color"; ui_label = "Background Color"; ui_tooltip = "Base color for the background of the effect."; ui_category = "Color"; > = BACKGROUND_COLOR_DEFAULT;
 
 // --- Audio Reactivity ---
-AS_AUDIO_SOURCE_UI(BlueCorona_AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
-AS_AUDIO_MULTIPLIER_UI(BlueCorona_AudioMultiplier, "Audio Intensity", AUDIO_MULTIPLIER_DEFAULT, AUDIO_MULTIPLIER_MAX, "Audio Reactivity")
+AS_AUDIO_UI(BlueCorona_AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
+AS_AUDIO_MULT_UI(BlueCorona_AudioMultiplier, "Audio Intensity", AUDIO_MULTIPLIER_DEFAULT, AUDIO_MULTIPLIER_MAX, "Audio Reactivity")
 uniform int BlueCorona_AudioTarget < ui_type = "combo"; ui_label = "Audio Target Parameter"; ui_items = "None\0Animation Speed\0Pattern Scale\0Flow Multiplier\0Red Weight\0Green Weight\0Blue Weight\0Background Brightness\0Iteration Count (Inverse)\0"; ui_category = "Audio Reactivity"; > = AUDIO_TARGET_DEFAULT;
 
 // --- Animation ---
@@ -153,7 +153,7 @@ AS_BLENDMODE_UI(BlendMode)
 AS_BLENDAMOUNT_UI(BlendStrength)
 
 // --- Debug ---
-AS_DEBUG_MODE_UI("Off\0Show Audio Reactivity\0")
+AS_DEBUG_UI("Off\0Show Audio Reactivity\0")
 
 // ============================================================================
 // PIXEL SHADER
@@ -272,7 +272,7 @@ float4 BlueCoronaPS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD) : SV_
     float4 effectColor = float4(effectColorRGB, 1.0);
     
     // --- Final Blending & Debug ---
-    float4 finalColor = float4(AS_ApplyBlend(effectColor.rgb,originalColor.rgb, BlendMode), 1.0);
+    float4 finalColor = float4(AS_applyBlend(effectColor.rgb,originalColor.rgb, BlendMode), 1.0);
     finalColor = lerp(originalColor, finalColor, BlendStrength);
     
     // Show debug overlay if enabled
@@ -307,3 +307,4 @@ technique AS_BGX_BlueCorona < ui_label="[AS] BGX: Blue Corona"; ui_tooltip="Crea
 }
 
 #endif // __AS_BGX_BlueCorona_1_fx
+

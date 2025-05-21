@@ -97,7 +97,7 @@ AS_BLENDMODE_UI_DEFAULT(BlendMode, 0)
 AS_BLENDAMOUNT_UI(BlendAmount)
 
 // --- Debug ---
-AS_DEBUG_MODE_UI("Normal\0Wave Distortion\0Depth Map\0Reflection Horizon\0Wave Scale Factor\0Reflection Coord Y\0") // Updated Debug Mode
+AS_DEBUG_UI("Normal\0Wave Distortion\0Depth Map\0Reflection Horizon\0Wave Scale Factor\0Reflection Coord Y\0") // Updated Debug Mode
 
 // ============================================================================
 // HELPER FUNCTIONS
@@ -225,7 +225,7 @@ float4 PS_WaterSurface(float4 vpos : SV_Position, float2 texcoord : TEXCOORD) : 
 
     // --- Blending ---
     float3 waterWithReflection = lerp(WaterColor, reflectionColor.rgb, ReflectionIntensity * WaterTransparency);
-    float3 blendedColor = AS_ApplyBlend(waterWithReflection, originalColor.rgb, BlendMode);
+    float3 blendedColor = AS_applyBlend(waterWithReflection, originalColor.rgb, BlendMode);
     float3 result = lerp(originalColor.rgb, blendedColor, edgeFade * BlendAmount);
 
     // Normal Mode Output
@@ -248,3 +248,5 @@ technique AS_VFX_WaterSurface < ui_label = "[AS] VFX: Water Surface"; ui_tooltip
 }
 
 #endif // __AS_VFX_WaterSurface_1_fx
+
+

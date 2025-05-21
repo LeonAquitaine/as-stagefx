@@ -403,7 +403,7 @@ float4 PS_HandDrawn(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : SV
     float depthMask = ReverseDepth ? (depth <= EffectDepth) : (depth >= EffectDepth);
     
     // Apply blend mode and strength with depth consideration
-    float3 blended = AS_ApplyBlend(final_col, originalColor.rgb, BlendMode);
+    float3 blended = AS_applyBlend(final_col, originalColor.rgb, BlendMode);
     return float4(lerp(originalColor.rgb, blended, BlendStrength * depthMask), 1.0f);
 }
 
@@ -425,3 +425,5 @@ technique AS_GFX_HandDrawing <
 } // namespace ASHandDrawing
 
 #endif // __AS_GFX_HandDrawing_fx
+
+

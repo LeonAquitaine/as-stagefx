@@ -150,8 +150,8 @@ uniform float Tanh_Divisor < ui_type = "slider"; ui_label = "Arc Smoothness"; ui
 uniform float U_Update_A_Mix_Factor < ui_type = "slider"; ui_label = "Arc Flow Factor"; ui_tooltip = "Controls how the arcs flow and connect with each other. Higher values create more chaotic flow patterns."; ui_min = U_UPDATE_A_MIX_FACTOR_MIN; ui_max = U_UPDATE_A_MIX_FACTOR_MAX; ui_step = U_UPDATE_A_MIX_FACTOR_STEP; ui_category = "Animation"; > = U_UPDATE_A_MIX_FACTOR_DEFAULT;
 
 // --- Audio Reactivity ---
-AS_AUDIO_SOURCE_UI(Zippy_AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
-AS_AUDIO_MULTIPLIER_UI(Zippy_AudioMultiplier, "Audio Intensity", AUDIO_MULTIPLIER_DEFAULT, AUDIO_MULTIPLIER_MAX, "Audio Reactivity")
+AS_AUDIO_UI(Zippy_AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
+AS_AUDIO_MULT_UI(Zippy_AudioMultiplier, "Audio Intensity", AUDIO_MULTIPLIER_DEFAULT, AUDIO_MULTIPLIER_MAX, "Audio Reactivity")
 uniform int Zippy_AudioTarget < ui_type = "combo"; ui_label = "Audio Target Parameter"; ui_items = "None\0Arc Growth Rate\0Arc Flow Factor\0Main Color Numerator\0"; ui_category = "Audio Reactivity"; > = AUDIO_TARGET_DEFAULT;
 
 // --- Palette & Style ---
@@ -171,7 +171,7 @@ AS_BLENDMODE_UI(BlendMode)
 AS_BLENDAMOUNT_UI(BlendStrength)
 
 // --- Debug ---
-AS_DEBUG_MODE_UI("Off\0Show Audio Reactivity\0")
+AS_DEBUG_UI("Off\0Show Audio Reactivity\0")
 
 // --- Internal Constants ---
 static const float EPSILON = 1e-6f;                // Small value to prevent division by zero
@@ -404,7 +404,7 @@ float4 ShaderToyPS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD0) : SV_
     o = float4(finalRGB, 1.0f);
 
     // Blend with original color using standard blend mode function
-    float3 blendedColor = AS_ApplyBlend(finalRGB, originalColor.rgb, BlendMode);
+    float3 blendedColor = AS_applyBlend(finalRGB, originalColor.rgb, BlendMode);
     float4 finalColor = float4(lerp(originalColor.rgb, blendedColor, BlendStrength), originalColor.a);
     
     // Show debug overlay if enabled
@@ -441,3 +441,5 @@ technique AS_BGX_ZippyZaps <ui_label="[AS] BGX: ZippyZaps"; ui_tooltip="Creates 
 }
 
 #endif // __AS_BGX_ZippyZaps_1_fx
+
+

@@ -118,3 +118,5 @@ float2 AS_applyPerspectiveTransform(float2 texcoord, float2 rotation_angles_deg,
 }
 
 #endif // __AS_Perspective_1_fx
+
+

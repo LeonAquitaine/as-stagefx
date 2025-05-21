@@ -48,8 +48,8 @@
 
 
 // --- Audio Reactivity Controls ---
-AS_AUDIO_SOURCE_UI(LiquidChrome_AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
-AS_AUDIO_MULTIPLIER_UI(LiquidChrome_AudioMultiplier, "Audio Intensity", 1.0, 2.0, "Audio Reactivity")
+AS_AUDIO_UI(LiquidChrome_AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
+AS_AUDIO_MULT_UI(LiquidChrome_AudioMultiplier, "Audio Intensity", 1.0, 2.0, "Audio Reactivity")
 
 // --- Audio Target Selection ---
 uniform int LiquidChrome_AudioTarget <
@@ -293,7 +293,7 @@ float4 PS_LiquidChrome(float4 vpos : SV_Position, float2 texcoord : TEXCOORD) : 
       float4 result = float4(color, 1.0f);
     
     // Blend with original using selected blend mode and opacity
-    float4 blended = float4(AS_ApplyBlend(result.rgb, orig.rgb, LiquidChrome_BlendMode), 1.0f);
+    float4 blended = float4(AS_applyBlend(result.rgb, orig.rgb, LiquidChrome_BlendMode), 1.0f);
     return lerp(orig, blended, LiquidChrome_BlendAmount);
 }
 
@@ -311,5 +311,7 @@ technique AS_BGX_LiquidChrome <
 }
 
 #endif // __AS_BGX_LiquidChrome_1_fx
+
+
 
 

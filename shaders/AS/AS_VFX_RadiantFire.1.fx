@@ -26,6 +26,8 @@
 // ============================================================================
 // TEXTURES & SAMPLERS for Flame Buffer (Ping-Pong Style)
 // ============================================================================
+// TODO: Convert to AS_CREATE_TEX_SAMPLER once the macro supports UI attributes
+// for texture elements. Currently kept as separate declarations due to UI requirements.
 
 texture FlameStateBuffer_A < ui_label = "Flame State Buffer A (Persistent)"; >
 {
@@ -148,7 +150,7 @@ AS_BLENDMODE_UI_DEFAULT(OutputBlendMode, AS_BLEND_LIGHTEN) // Uses ui_category "
 AS_BLENDAMOUNT_UI(OutputBlendAmount) // Uses ui_category "Final Mix" from AS_Utils
 
 // --- Debug ---
-AS_DEBUG_MODE_UI("Off\0Subject Mask\0Edge Factor\0Flame Buffer Temp (R)\0Flame Buffer Vel (GB)\0Turbulence Displacement (Rotated RG)\0Rotated Buoyancy Dir\0") // Corrected separator
+AS_DEBUG_UI("Off\0Subject Mask\0Edge Factor\0Flame Buffer Temp (R)\0Flame Buffer Vel (GB)\0Turbulence Displacement (Rotated RG)\0Rotated Buoyancy Dir\0") // Corrected separator
 
 // ============================================================================
 // HELPER FUNCTIONS
@@ -359,7 +361,7 @@ float4 RenderFlamePS(float4 vpos : SV_Position, float2 texcoord : TexCoord) : SV
     
     float4 finalColorWithAlpha = float4(finalOutputColor, 1.0f);
     float4 baseSceneColorWithAlpha = float4(baseSceneColor, 1.0f); 
-    return AS_ApplyBlend(finalColorWithAlpha, baseSceneColorWithAlpha, OutputBlendMode, OutputBlendAmount);
+    return AS_applyBlend(finalColorWithAlpha, baseSceneColorWithAlpha, OutputBlendMode, OutputBlendAmount);
 }
 
 // ============================================================================
@@ -394,3 +396,5 @@ technique AS_VFX_RadiantFire <
 } // namespace ASRadiantFire
 
 #endif // __AS_VFX_RadiantFire_1_fx_v2_9 // Updated guard
+
+

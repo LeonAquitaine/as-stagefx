@@ -121,7 +121,7 @@ AS_BLENDMODE_UI(BlendMode)
 AS_BLENDAMOUNT_UI(BlendAmount)
 
 // --- Debug ---
-AS_DEBUG_MODE_UI("Off\0Mask\0Falloff\0Pattern\0Pattern Only\0")
+AS_DEBUG_UI("Off\0Mask\0Falloff\0Pattern\0Pattern Only\0")
 
 //------------------------------------------------------------------------------------------------
 // Helper Functions
@@ -424,7 +424,7 @@ float4 VignettePlusPS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : 
     // Apply blend mode if amount is less than full
     if (BlendAmount < FULL_OPACITY) {
         float4 background = float4(original_color, FULL_OPACITY);
-        final_color = AS_ApplyBlend(effect_result, background, BlendMode, BlendAmount);
+        final_color = AS_applyBlend(effect_result, background, BlendMode, BlendAmount);
     }
     
     // Handle debug modes
@@ -459,3 +459,4 @@ technique AS_GFX_VignettePlus < ui_label = "[AS] GFX: Vignette Plus"; ui_tooltip
 } // namespace ASVignettePlus
 
 #endif // __AS_GFX_VignettePlus_1_fx
+

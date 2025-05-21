@@ -144,8 +144,8 @@ AS_DECLARE_CUSTOM_PALETTE(LightRipples_, "Palette & Style")
 uniform float ColorCycleSpeed < ui_type = "slider"; ui_label = "Color Cycle Speed"; ui_tooltip = "Controls how fast palette colors cycle. 0 = static."; ui_min = -COLOR_CYCLE_SPEED_MAX; ui_max = COLOR_CYCLE_SPEED_MAX; ui_step = 0.1; ui_category = "Palette & Style"; > = COLOR_CYCLE_SPEED_DEFAULT;
 
 // --- Audio Reactivity ---
-AS_AUDIO_SOURCE_UI(LightRipples_AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
-AS_AUDIO_MULTIPLIER_UI(LightRipples_AudioMultiplier, "Audio Intensity", AUDIO_MULTIPLIER_DEFAULT, AUDIO_MULTIPLIER_MAX, "Audio Reactivity")
+AS_AUDIO_UI(LightRipples_AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
+AS_AUDIO_MULT_UI(LightRipples_AudioMultiplier, "Audio Intensity", AUDIO_MULTIPLIER_DEFAULT, AUDIO_MULTIPLIER_MAX, "Audio Reactivity")
 uniform int LightRipples_AudioTarget < ui_type = "combo"; ui_label = "Audio Target Parameter"; ui_items = "None\0Animation Speed\0Distortion Amplitude (Time)\0Distortion Frequency (Distance)\0Line Brightness\0"; ui_category = "Audio Reactivity"; > = AUDIO_TARGET_DEFAULT;
 
 // --- Animation ---
@@ -161,7 +161,7 @@ AS_BLENDMODE_UI_DEFAULT(BlendMode, AS_BLEND_LIGHTEN)
 AS_BLENDAMOUNT_UI(BlendStrength)
 
 // --- Debug ---
-AS_DEBUG_MODE_UI("Off\0Show Audio Reactivity\0")
+AS_DEBUG_UI("Off\0Show Audio Reactivity\0")
 
 // ============================================================================
 // HELPER FUNCTIONS
@@ -300,7 +300,7 @@ float4 LightRipplesPS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD0) : 
     float4 effectColor = float4(finalRGB, 1.0f);
 
     // --- Final Blending & Debug ---
-    float4 finalColor = float4(AS_ApplyBlend(effectColor.rgb, originalColor.rgb, BlendMode), 1.0f);
+    float4 finalColor = float4(AS_applyBlend(effectColor.rgb, originalColor.rgb, BlendMode), 1.0f);
     finalColor = lerp(originalColor, finalColor, BlendStrength);
     
     // Show debug overlay if enabled
@@ -335,3 +335,5 @@ technique AS_BGX_LightRipples < ui_label="[AS] BGX: Light Ripples"; ui_tooltip="
 }
 
 #endif // __AS_BGX_LightRipples_1_fx
+
+

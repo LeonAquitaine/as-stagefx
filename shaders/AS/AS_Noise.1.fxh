@@ -94,7 +94,7 @@ float3 AS_hash33(float3 p3) {
 
 // --- Value Noise ---
 // 2D Value noise (simplified)
-float AS_ValueNoise2D(float2 p) {
+float AS_valueNoise2D(float2 p) {
     float2 i = floor(p);
     float2 f = frac(p);
     
@@ -112,8 +112,8 @@ float AS_ValueNoise2D(float2 p) {
 }
 
 // Animatable version of Value noise
-float AS_ValueNoise2D_Animated(float2 p, float time) {
-    return AS_ValueNoise2D(p + time);
+float AS_valueNoise2DA(float2 p, float time) {
+    return AS_valueNoise2D(p + time);
 }
 
 // ============================================================================
@@ -146,7 +146,7 @@ float AS_PerlinNoise2D(float2 p) {
 }
 
 // Animatable version of Perlin noise
-float AS_PerlinNoise2D_Animated(float2 p, float time) {
+float AS_PerlinNoise2DA(float2 p, float time) {
     return AS_PerlinNoise2D(p + time);
 }
 
@@ -184,7 +184,7 @@ float AS_PerlinNoise3D(float3 p) {
 }
 
 // Animatable version of 3D Perlin noise
-float AS_PerlinNoise3D_Animated(float3 p, float time) {
+float AS_PerlinNoise3DA(float3 p, float time) {
     // Add time to z-coordinate for smooth animation
     return AS_PerlinNoise3D(p + float3(0.0, 0.0, time));
 }
@@ -217,7 +217,7 @@ float AS_Fbm2D(float2 p) {
 }
 
 // Animated version of FBM
-float AS_Fbm2D_Animated(float2 p, float time, int octaves, float lacunarity, float gain) {
+float AS_Fbm2DA(float2 p, float time, int octaves, float lacunarity, float gain) {
     float sum = 0.0;
     float amp = 1.0;
     float freq = 1.0;
@@ -236,8 +236,8 @@ float AS_Fbm2D_Animated(float2 p, float time, int octaves, float lacunarity, flo
 }
 
 // Simplified animated FBM with default parameters
-float AS_Fbm2D_Animated(float2 p, float time) {
-    return AS_Fbm2D_Animated(p, time, 5, 2.0, 0.5);
+float AS_Fbm2DA(float2 p, float time) {
+    return AS_Fbm2DA(p, time, 5, 2.0, 0.5);
 }
 
 // ============================================================================
@@ -270,17 +270,17 @@ float AS_DomainWarpedNoise2D(float2 p, float intensity, float scale) {
 }
 
 // Animated domain warping
-float2 AS_DomainWarp2D_Animated(float2 p, float time, float intensity, float scale) {
+float2 AS_DomainWarp2DA(float2 p, float time, float intensity, float scale) {
     // First layer of deformation with time
     float2 offset1 = float2(
-        AS_PerlinNoise2D_Animated(p * scale, time * 0.3),
-        AS_PerlinNoise2D_Animated(p * scale + float2(5.2, 1.3), time * 0.4)
+        AS_PerlinNoise2DA(p * scale, time * 0.3),
+        AS_PerlinNoise2DA(p * scale + float2(5.2, 1.3), time * 0.4)
     );
     
     // Second layer using deformed coordinates for more complexity
     float2 offset2 = float2(
-        AS_PerlinNoise2D_Animated((p + offset1 * intensity * 0.5) * scale * 2.0, time * 0.5),
-        AS_PerlinNoise2D_Animated((p + offset1 * intensity * 0.5) * scale * 2.0 + float2(9.8, 3.7), time * 0.6)
+        AS_PerlinNoise2DA((p + offset1 * intensity * 0.5) * scale * 2.0, time * 0.5),
+        AS_PerlinNoise2DA((p + offset1 * intensity * 0.5) * scale * 2.0 + float2(9.8, 3.7), time * 0.6)
     );
     
     // Return warped coordinates
@@ -288,8 +288,8 @@ float2 AS_DomainWarp2D_Animated(float2 p, float time, float intensity, float sca
 }
 
 // Sample Perlin noise with animated domain warping applied
-float AS_DomainWarpedNoise2D_Animated(float2 p, float time, float intensity, float scale) {
-    float2 warped = AS_DomainWarp2D_Animated(p, time, intensity, scale);
+float AS_DomainWarpedNoise2DA(float2 p, float time, float intensity, float scale) {
+    float2 warped = AS_DomainWarp2DA(p, time, intensity, scale);
     return AS_PerlinNoise2D(warped);
 }
 
@@ -299,7 +299,7 @@ float AS_DomainWarpedNoise2D_Animated(float2 p, float time, float intensity, flo
 
 // --- Voronoi Noise ---
 // Cellular/Voronoi noise creates cell-like patterns
-float AS_VoronoiNoise2D(float2 p, out float2 cellPoint) {
+float AS_voronoiNoise2D(float2 p, out float2 cellPoint) {
     float2 i = floor(p);
     float2 f = frac(p);
     
@@ -327,13 +327,13 @@ float AS_VoronoiNoise2D(float2 p, out float2 cellPoint) {
 }
 
 // Simplified version without returning cell point
-float AS_VoronoiNoise2D(float2 p) {
+float AS_voronoiNoise2D(float2 p) {
     float2 cellPoint;
-    return AS_VoronoiNoise2D(p, cellPoint);
+    return AS_voronoiNoise2D(p, cellPoint);
 }
 
 // Advanced Voronoi with distance and cell color
-float4 AS_VoronoiNoise2D_Detailed(float2 p) {
+float4 AS_voronoiNoise2D_Detailed(float2 p) {
     float2 i = floor(p);
     float2 f = frac(p);
     
@@ -365,7 +365,7 @@ float4 AS_VoronoiNoise2D_Detailed(float2 p) {
 }
 
 // Animated Voronoi
-float AS_VoronoiNoise2D_Animated(float2 p, float time) {
+float AS_VoronoiNoise2DA(float2 p, float time) {
     // Add a time-based offset to the points within cells
     float2 i = floor(p);
     float2 f = frac(p);
@@ -483,9 +483,9 @@ float AS_CloudPattern(float2 p, float coverage, float sharpness) {
 }
 
 // Animated cloud pattern
-float AS_CloudPattern_Animated(float2 p, float time, float coverage, float sharpness) {
+float AS_CloudPatternA(float2 p, float time, float coverage, float sharpness) {
     // Use animated FBM for moving clouds
-    float n = AS_Fbm2D_Animated(p, time);
+    float n = AS_Fbm2DA(p, time);
     
     // Apply sharpness and coverage control
     return saturate(pow(n + coverage, sharpness));
@@ -498,7 +498,7 @@ float AS_MarblePattern(float2 p, float scale, float sharpness) {
 }
 
 // Animated marble pattern
-float AS_MarblePattern_Animated(float2 p, float time, float scale, float sharpness) {
+float AS_MarblePatternA(float2 p, float time, float scale, float sharpness) {
     // Add time-based movement
     p.y += time * 0.1;
     float n = AS_PerlinNoise2D(p) * scale;
@@ -540,3 +540,4 @@ float AS_NoiseOctave(float2 p, int octave) {
 }
 
 #endif // __AS_Noise_1_fxh
+

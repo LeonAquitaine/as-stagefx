@@ -123,8 +123,8 @@ uniform float CameraSpeed < ui_type = "slider"; ui_label = "Camera Speed"; ui_to
 uniform float CameraZoom < ui_type = "slider"; ui_label = "Camera Zoom"; ui_tooltip = "Adjusts the camera field of view"; ui_category = "Camera"; ui_min = 0.5; ui_max = 2.0; > = 1.0;
 
 // Audio Reactivity
-AS_AUDIO_SOURCE_UI(AudioSource, "Audio Source", AS_AUDIO_VOLUME, "Audio Reactivity")
-AS_AUDIO_MULTIPLIER_UI(AudioMultiplier, "Audio Multiplier", 1.0, 2.0, "Audio Reactivity")
+AS_AUDIO_UI(AudioSource, "Audio Source", AS_AUDIO_VOLUME, "Audio Reactivity")
+AS_AUDIO_MULT_UI(AudioMultiplier, "Audio Multiplier", 1.0, 2.0, "Audio Reactivity")
 uniform int AudioTarget < ui_type = "combo"; ui_label = "Audio Target"; ui_tooltip = "Select which parameter will react to audio"; ui_items = "Fractal Scale\0Folding Intensity\0Saturation\0Brightness\0Camera Zoom\0Animation Speed\0All\0"; ui_category = "Audio Reactivity"; > = 0;
 
 // Animation Controls
@@ -140,7 +140,7 @@ AS_BLENDMODE_UI(BlendMode)
 AS_BLENDAMOUNT_UI(BlendAmount)
 
 // Debug Controls  
-AS_DEBUG_MODE_UI("Off\0Show Accumulator 1\0Show Accumulator 2\0Show Accumulator 3\0Show Raw Distance\0Show Audio Reactivity\0")
+AS_DEBUG_UI("Off\0Show Accumulator 1\0Show Accumulator 2\0Show Accumulator 3\0Show Raw Distance\0Show Audio Reactivity\0")
 
 //------------------------------------------------------------------------------------------------
 // Helper Functions
@@ -260,7 +260,7 @@ void cam_hlsl(inout float3 p, float effect_time, float rotationAngle) {
 //------------------------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------------------------
-// Note: We're using the standard AS_ApplyBlend function from AS_Utils.1.fxh instead of a custom implementation
+// Note: We're using the standard AS_applyBlend function from AS_Utils.1.fxh instead of a custom implementation
 //------------------------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------------------------
@@ -308,7 +308,7 @@ float4 MainPS(float4 vpos : SV_Position, float2 texcoord : TexCoord) : SV_Target
     // Apply standard AS coordinate transformations
     float2 centerCoord = texcoord - 0.5; // Center coords
     centerCoord.x *= ReShade::AspectRatio; // Correct aspect ratio
-    centerCoord = AS_applyPositionAndScale(centerCoord, EffectPosition, EffectScale);
+    centerCoord = AS_applyPosScale(centerCoord, EffectPosition, EffectScale);
 
     // Initialize accumulators for this pixel
     float at_accumulator = 0.0;
@@ -449,7 +449,7 @@ float4 MainPS(float4 vpos : SV_Position, float2 texcoord : TexCoord) : SV_Target
         }
     }    // Final composition
     float4 result = float4(final_color, 1.0);
-    result = AS_ApplyBlend(result, background, BlendMode, BlendAmount);
+    result = AS_applyBlend(result, background, BlendMode, BlendAmount);
     
     return result;
 }
@@ -470,3 +470,5 @@ technique AS_BGX_MistyGrid <
 }
 
 #endif // __AS_BGX_MistyGrid_1_fx
+
+

@@ -160,8 +160,8 @@ uniform float NoiseScale < ui_type = "slider"; ui_min = NOISE_SCALE_MIN; ui_max 
 // ============================================================================
 // AUDIO REACTIVITY
 // ============================================================================
-AS_AUDIO_SOURCE_UI(Flame_AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
-AS_AUDIO_MULTIPLIER_UI(Flame_AudioMultiplier, "Intensity", 1.0, 2.0, "Audio Reactivity")
+AS_AUDIO_UI(Flame_AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
+AS_AUDIO_MULT_UI(Flame_AudioMultiplier, "Intensity", 1.0, 2.0, "Audio Reactivity")
 
 uniform int AudioTarget < ui_type = "combo"; ui_label = "Audio Target Parameter"; ui_tooltip = "Select which parameter will be affected by audio reactivity"; ui_items = "Flame Height\0Flame Power\0Sway Angle\0All Parameters\0"; ui_category = "Audio Reactivity"; > = 0; // Default to Flame Height
 
@@ -179,7 +179,7 @@ AS_BLENDAMOUNT_UI(BlendAmount)
 // ============================================================================
 // DEBUG
 // ============================================================================
-AS_DEBUG_MODE_UI("Off\0Shape\0Audio\0Color\0")
+AS_DEBUG_UI("Off\0Shape\0Audio\0Color\0")
 
 // ============================================================================
 // NAMESPACE & HELPERS
@@ -505,7 +505,7 @@ float4 PS_ProceduralDepthPlaneFlame(float4 pos : SV_Position, float2 uv : TEXCOO
 
             // --- Apply Effect ---
             if (flame.a > 0.0) {
-                float3 blended = AS_ApplyBlend(flame.rgb * flame.a, finalResult.rgb, BlendMode);
+                float3 blended = AS_applyBlend(flame.rgb * flame.a, finalResult.rgb, BlendMode);
                 finalResult = float4(lerp(finalResult.rgb, blended, BlendAmount), orig.a);
             }
         }
@@ -535,3 +535,4 @@ technique AS_LFX_CandleFlame < ui_label = "[AS] LFX: Candle Flame"; ui_tooltip =
 }
 
 #endif // __AS_LFX_CandleFlame_1_fx
+

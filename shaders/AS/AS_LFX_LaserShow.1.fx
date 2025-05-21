@@ -162,10 +162,10 @@ AS_SWAYANGLE_UI(SwayAngle, "Animation")
 // ============================================================================
 // AUDIO REACTIVITY
 // ============================================================================
-AS_AUDIO_SOURCE_UI(FanAudioSource, "Fanning Audio Source", AS_AUDIO_OFF, "Audio Reactivity")
-AS_AUDIO_MULTIPLIER_UI(FanAudioMult, "Fanning Audio Multiplier", 1.0, 2.0, "Audio Reactivity")
-AS_AUDIO_SOURCE_UI(BlinkAudioSource, "Blinking Audio Source", AS_AUDIO_VOLUME, "Audio Reactivity")
-AS_AUDIO_MULTIPLIER_UI(BlinkAudioMult, "Blinking Audio Multiplier", 1.0, 2.0, "Audio Reactivity")
+AS_AUDIO_UI(FanAudioSource, "Fanning Audio Source", AS_AUDIO_OFF, "Audio Reactivity")
+AS_AUDIO_MULT_UI(FanAudioMult, "Fanning Audio Multiplier", 1.0, 2.0, "Audio Reactivity")
+AS_AUDIO_UI(BlinkAudioSource, "Blinking Audio Source", AS_AUDIO_VOLUME, "Audio Reactivity")
+AS_AUDIO_MULT_UI(BlinkAudioMult, "Blinking Audio Multiplier", 1.0, 2.0, "Audio Reactivity")
 
 // ============================================================================
 // NOISE (SMOKE)
@@ -185,8 +185,8 @@ uniform int VortexCount < ui_type = "slider"; ui_label = "Number of Vortices"; u
 uniform float2 VortexDirection < ui_type = "slider"; ui_label = "Vortex Direction (X,Y)"; ui_min = -1.0; ui_max = 1.0; ui_category = "Vortex Controls"; ui_tooltip = "Controls the general direction of vortex movement"; > = float2(1.0, 0.0);
 
 // Audio reactivity for vortices
-AS_AUDIO_SOURCE_UI(VortexAudioSource, "Vortex Audio Source", AS_AUDIO_BASS, "Vortex Controls")
-AS_AUDIO_MULTIPLIER_UI(VortexAudioMult, "Vortex Audio Multiplier", 1.0, 5.0, "Vortex Controls")
+AS_AUDIO_UI(VortexAudioSource, "Vortex Audio Source", AS_AUDIO_BASS, "Vortex Controls")
+AS_AUDIO_MULT_UI(VortexAudioMult, "Vortex Audio Multiplier", 1.0, 5.0, "Vortex Controls")
 
 // ============================================================================
 // STAGE DISTANCE (DEPTH)
@@ -202,7 +202,7 @@ AS_BLENDAMOUNT_UI(BlendAmount)
 // ============================================================================
 // DEBUG
 // ============================================================================
-AS_DEBUG_MODE_UI("Off\0Smoke\0Audio\0Laser\0")
+AS_DEBUG_UI("Off\0Smoke\0Audio\0Laser\0")
 
 // ============================================================================
 // SYSTEM UNIFORMS
@@ -377,7 +377,7 @@ float4 PS_LaserShow(float4 pos : SV_Position, float2 texcoord : TexCoord) : SV_T
     float4 outColor = AS_debugOutput(DebugMode, orig, maskDbg, audioDbg, laserDbg);
     if (DebugMode == 0) {
         // Use standard blend function from AS_Utils with blend amount
-        float3 blended = AS_ApplyBlend(effect.rgb, orig.rgb, BlendMode);
+        float3 blended = AS_applyBlend(effect.rgb, orig.rgb, BlendMode);
         // Apply blend amount for final mix
         outColor = float4(lerp(orig.rgb, blended, BlendAmount), orig.a);
     }
@@ -395,3 +395,5 @@ technique AS_LaserShow < ui_label = "[AS] LFX: Laser Show"; ui_tooltip = "Audio-
 }
 
 #endif // __AS_LFX_LaserShow_1_fx
+
+

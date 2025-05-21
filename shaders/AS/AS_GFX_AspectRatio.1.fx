@@ -143,11 +143,11 @@ uniform int AspectRatioPreset < ui_type = "combo"; ui_label = "Aspect Ratio Pres
 uniform float2 CustomAspectRatio < ui_type = "drag"; ui_label = "Custom Aspect Ratio"; ui_tooltip = "Set your own aspect ratio (X:Y)"; ui_category = "Aspect Ratio"; ui_min = AS_RANGE_SCALE_MIN; ui_max = AS_RANGE_SCALE_MAX * 2.0; ui_step = 0.01; > = float2(16.0, 9.0);
 
 // ============================= Appearance Controls =============================
-uniform float4 ClippedAreaColor < ui_type = "color"; ui_label = "Masked Area Color"; ui_tooltip = "Color for areas outside the selected aspect ratio"; ui_category = "Appearance"; > = float4(AS_RANGE_ZERO_ONE_MIN, AS_RANGE_ZERO_ONE_MIN, AS_RANGE_ZERO_ONE_MIN, AS_RANGE_OPACITY_MAX);
+uniform float4 ClippedAreaColor < ui_type = "color"; ui_label = "Masked Area Color"; ui_tooltip = "Color for areas outside the selected aspect ratio"; ui_category = "Appearance"; > = float4(AS_RANGE_ZERO_ONE_MIN, AS_RANGE_ZERO_ONE_MIN, AS_RANGE_ZERO_ONE_MIN, AS_OP_MAX);
 
 uniform float4 GuideColor < ui_type = "color"; ui_label = "Guide Color"; ui_tooltip = "Color for the guide lines"; ui_category = "Appearance"; > = float4(AS_RANGE_ZERO_ONE_MAX, AS_RANGE_ZERO_ONE_MAX, AS_RANGE_ZERO_ONE_MAX, AS_HALF);
 
-uniform float GuideIntensity < ui_type = "drag"; ui_label = "Guide Intensity"; ui_tooltip = "Adjusts the opacity of composition guides"; ui_category = "Appearance"; ui_min = AS_AR_GUIDE_INTENSITY_MIN; ui_max = AS_RANGE_OPACITY_MAX; ui_step = 0.05; > = AS_RANGE_OPACITY_DEFAULT;
+uniform float GuideIntensity < ui_type = "drag"; ui_label = "Guide Intensity"; ui_tooltip = "Adjusts the opacity of composition guides"; ui_category = "Appearance"; ui_min = AS_AR_GUIDE_INTENSITY_MIN; ui_max = AS_OP_MAX; ui_step = 0.05; > = AS_OP_DEFAULT;
 
 uniform float GridWidth < ui_type = "drag"; ui_label = "Grid Width"; ui_tooltip = "Width of grid lines and border (in pixels)"; ui_category = "Appearance"; ui_min = AS_RANGE_SCALE_DEFAULT; ui_max = AS_AR_GRID_WIDTH_MAX; ui_step = 1.0; > = AS_RANGE_SCALE_DEFAULT;
 
@@ -188,7 +188,7 @@ uniform float PatternRotation < ui_type = "drag"; ui_label = "Pattern Rotation";
 uniform float PatternComplexity < ui_type = "drag"; ui_label = "Pattern Complexity"; ui_tooltip = "Adjust the complexity of certain patterns"; ui_category = "Advanced Guide Options"; ui_category_closed = true; ui_min = AS_RANGE_SCALE_DEFAULT; ui_max = AS_RANGE_SCALE_MAX * 2.0; ui_step = 0.1; > = 3.0;
 
 // ============================= Position Controls =============================
-AS_POSITION_UI(EffectPosition) // Standard position control
+AS_POS_UI(EffectPosition) // Standard position control
 
 // Guide type constants (hundreds place = main type, ones place = subtype)
 #define GUIDE_NONE 0
@@ -902,3 +902,5 @@ technique AS_GFX_AspectRatio < ui_label = "[AS] GFX: Aspect Ratio"; ui_tooltip =
 }
 
 #endif // __AS_GFX_AspectRatio_1_fx
+
+

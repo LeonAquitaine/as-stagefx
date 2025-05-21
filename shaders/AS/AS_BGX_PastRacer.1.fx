@@ -142,8 +142,8 @@ uniform float S1AnimSpeed < ui_type = "drag"; ui_min = 0.1; ui_max = 5.0; ui_ste
 
 // --- Audio Reactivity ---
 uniform float FFTMultiplier < ui_type = "drag"; ui_min = 0.0; ui_max = 100.0; ui_step = 1.0; ui_label = "Box Height Audio Strength"; ui_tooltip = "Multiplies the audio frequency band value, affecting Scene 0's box heights."; ui_category = "Audio Reactivity"; > = DEFAULT_FFT_MULTIPLIER;
-AS_AUDIO_SOURCE_UI(S0FlareAudioSource, "Flare Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
-AS_AUDIO_MULTIPLIER_UI(S0FlareAudioMultiplier, "Flare Audio Intensity", AS_RANGE_AUDIO_MULT_DEFAULT, AS_RANGE_AUDIO_MULT_MAX, "Audio Reactivity")
+AS_AUDIO_UI(S0FlareAudioSource, "Flare Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
+AS_AUDIO_MULT_UI(S0FlareAudioMultiplier, "Flare Audio Intensity", AS_RANGE_AUDIO_MULT_DEFAULT, AS_RANGE_AUDIO_MULT_MAX, "Audio Reactivity")
 
 // --- Lighting & Effects ---
 uniform float LightIntensity < ui_type = "drag"; ui_min = 0.1; ui_max = 20.0; ui_step = 0.1; ui_label = "Light Intensity"; ui_tooltip = "Brightness multiplier for the main light source"; ui_category = "Lighting & Effects"; > = DEFAULT_LIGHT_INTENSITY;
@@ -169,12 +169,12 @@ float2 GetRepeatID2(float2 val, float2 period) { return floor(val / period + 0.5
 // --- Audio Analysis ---
 float GetFFTValue(float2 audioUV) {
     float fftSampleCoord = (frac(audioUV.x * 10.0f) + frac(audioUV.y)) * 0.1f; 
-    int numBands = AS_getNumFrequencyBands();
+    int numBands = AS_getFreqBands();
     if (numBands <= 0) return 0.0f * FFTMultiplier;
     float normalizedBandSelector = saturate(fftSampleCoord / 0.2f); 
     int bandIndex = (int)floor(normalizedBandSelector * (float)(numBands - 1)); 
     bandIndex = clamp(bandIndex, 0, numBands - 1); 
-    float fftAmplitude = AS_getFrequencyBand(bandIndex);
+    float fftAmplitude = AS_getFreq(bandIndex);
     return fftAmplitude * FFTMultiplier; 
 }
 
@@ -539,3 +539,4 @@ technique AS_BGX_PastRacer_Corridor <
     }
 }
 #endif
+

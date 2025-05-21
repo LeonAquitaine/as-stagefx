@@ -143,7 +143,7 @@ uniform float Zoom < ui_type = "drag"; ui_label = "Zoom"; ui_tooltip = "Adjust t
 //------------------------------------------------------------------------------------------------
 // Audio Reactivity
 //------------------------------------------------------------------------------------------------
-AS_AUDIO_SOURCE_UI(MasterAudioSource, "Audio Source", AS_AUDIO_BASS, "Audio Reactivity")
+AS_AUDIO_UI(MasterAudioSource, "Audio Source", AS_AUDIO_BASS, "Audio Reactivity")
 
 uniform float AudioGain_GradientEffect < ui_type = "slider"; ui_label = "Gradient"; ui_tooltip = "How much audio affects the color gradient subtraction."; ui_min = AUDIO_GAIN_GRADIENT_MIN; ui_max = AUDIO_GAIN_GRADIENT_MAX; ui_step = 0.01; ui_category = "Audio Reactivity"; > = AUDIO_GAIN_GRADIENT_DEFAULT;
 uniform float AudioGain_LineBrightness < ui_type = "slider"; ui_label = "Line Brightness"; ui_tooltip = "How much audio affects overall line brightness."; ui_min = AUDIO_GAIN_LINE_BRIGHTNESS_MIN; ui_max = AUDIO_GAIN_LINE_BRIGHTNESS_MAX; ui_step = 0.01; ui_category = "Audio Reactivity"; > = AUDIO_GAIN_LINE_BRIGHTNESS_DEFAULT;
@@ -311,7 +311,7 @@ float4 PS_Constellation(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) 
     float depthMask = depth >= EffectDepth;
     
     // Blend the final color with the original scene
-    float3 blended = AS_ApplyBlend(saturate(finalColor), originalColor.rgb, BlendMode);
+    float3 blended = AS_applyBlend(saturate(finalColor), originalColor.rgb, BlendMode);
     return float4(lerp(originalColor.rgb, blended, BlendStrength * depthMask), 1.0f);
 }
 
@@ -334,3 +334,5 @@ technique AS_BGX_Constellation <
 } // namespace ASConstellation
 
 #endif // __AS_BGX_Constellation_1_fx
+
+
