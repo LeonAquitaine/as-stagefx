@@ -51,6 +51,7 @@ Creates a hypnotic, crystalline fractal structure with dynamic animation and col
 Original: <a href="https://www.shadertoy.com/view/lcl3z2" target="_new">"Time Crystal" by raphaeljmu</a>.
 </td>
 <td width="50%"><div style="text-align:center">
+<img src="https://github.com/user-attachments/assets/ffec219a-b0c2-481a-a1c4-125ad699c8f8">
 </div></td>
 </tr>
 </table>
