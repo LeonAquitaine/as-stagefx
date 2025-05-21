@@ -29,6 +29,7 @@ Creates a mesmerizing, rippling kaleidoscopic light pattern effect. Suitable as 
 Original: <a href="https://www.pouet.net/prod.php?which=57245" target="_new">Shader by Danilo Guanabara</a>.
 </td>
 <td width="50%"><div style="text-align:center">
+<img src="https://github.com/user-attachments/assets/99bc3c0c-caac-4060-883c-079d92419abc">
 </div></td>
 </tr>
 <tr>
