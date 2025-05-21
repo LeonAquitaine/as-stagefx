@@ -411,7 +411,7 @@ float4 PS_HandDrawn(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : SV
 // TECHNIQUE DEFINITION
 // ============================================================================
 technique AS_GFX_HandDrawing <
-    ui_label = "AS GFX: Hand Drawing";
+    ui_label = "[AS] GFX: Hand Drawing";
     ui_tooltip = "Transforms your scene into a stylized hand-drawn sketch or technical illustration";
 >
 {
