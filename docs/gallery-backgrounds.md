@@ -93,6 +93,7 @@ Creates a vibrant, ever-evolving fractal kaleidoscope pattern with animated tend
 Based on: <a href="https://youtu.be/f4s1h2YETNY" target="_new">"Shader Art Coding Introduction" by kishimisu (2023-05-20)</a>.
 </td>
 <td width="50%"><div style="text-align:center">
+<img src="https://github.com/user-attachments/assets/8bd0fdee-77a8-40d6-be9f-1708186e5590">
 </div>
 </td>
 </tr>
