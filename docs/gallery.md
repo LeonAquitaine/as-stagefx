@@ -88,8 +88,7 @@ A vignette shader that provides multiple visual styles and customizable pattern 
 Inspired by: The hexagonal grid implementation is adapted from <a href="https://www.shadertoy.com/view/XfjyWG" target="_new">"hexagonal wipe" by blandprix</a>.
 </td>
 <td width="50%"><div style="text-align:center">
-<!-- Awaiting preview image. -->
-Awaiting preview image.
+<img src="https://github.com/user-attachments/assets/bf471099-9c4a-423b-ae1f-fae2f83d924a">
 </div></td>
 </tr>
 <tr>
@@ -100,8 +99,7 @@ Transforms your scene into a stylized hand-drawn sketch or technical ink illustr
 Based on: <a href="https://www.shadertoy.com/view/XtVGD1" target="_new">"notebook drawings" by Flockaroo (2016)</a>.
 </td>
 <td width="50%"><div style="text-align:center">
-<!-- Awaiting preview image. -->
-Awaiting preview image.
+<img src="https://github.com/user-attachments/assets/4074ac6b-a385-4e0f-9d9a-c4d5dd0117cd">
 </div></td>
 </tr>
 </table>
