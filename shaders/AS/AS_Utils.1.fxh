@@ -862,4 +862,56 @@ uniform float name < ui_type = "slider"; ui_label = "Strength"; ui_tooltip = "Co
 
 #endif // __AS_BLEND_UI_INCLUDED
 
+// ============================================================================
+// TEXTURE & SAMPLER CREATION
+// ============================================================================
+#ifndef __AS_TEXTURES_INCLUDED
+#define __AS_TEXTURES_INCLUDED
+
+// --- Texture Creation Macro ---
+// Creates a texture2D resource with specified dimensions, format and mip levels
+#define AS_CREATE_TEXTURE(TEXTURE_NAME, SIZE, FORMAT, LEVELS) \
+    texture2D TEXTURE_NAME \
+    { \
+        Width = SIZE.x; \
+        Height = SIZE.y; \
+        Format = FORMAT; \
+        MipLevels = LEVELS; \
+    };
+
+// --- Sampler Creation Macro ---
+// Creates a sampler2D for a texture with specified filtering and address modes
+#define AS_CREATE_SAMPLER(SAMPLER_NAME, TEXTURE, FILTER, ADDRESS) \
+    sampler2D SAMPLER_NAME \
+    { \
+        Texture = TEXTURE; \
+        MagFilter = FILTER; \
+        MinFilter = FILTER; \
+        MipFilter = FILTER; \
+        AddressU = ADDRESS; \
+        AddressV = ADDRESS; \
+    };
+
+// --- Combined Texture & Sampler Creation Macro ---
+// Creates both a texture2D resource and its associated sampler in a single macro call
+#define AS_CREATE_TEXTURE_AND_SAMPLER(TEXTURE_NAME, SAMPLER_NAME, SIZE, FORMAT, LEVELS, FILTER, ADDRESS) \
+    texture2D TEXTURE_NAME \
+    { \
+        Width = SIZE.x; \
+        Height = SIZE.y; \
+        Format = FORMAT; \
+        MipLevels = LEVELS; \
+    }; \
+    sampler2D SAMPLER_NAME \
+    { \
+        Texture = TEXTURE_NAME; \
+        MagFilter = FILTER; \
+        MinFilter = FILTER; \
+        MipFilter = FILTER; \
+        AddressU = ADDRESS; \
+        AddressV = ADDRESS; \
+    };
+
+#endif // __AS_TEXTURES_INCLUDED
+
 #endif // __AS_Utils_1_fxh
