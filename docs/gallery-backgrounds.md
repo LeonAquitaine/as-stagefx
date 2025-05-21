@@ -57,7 +57,7 @@ Creates an animated stellar constellation pattern with twinkling stars and conne
 Based on: <a href="https://www.shadertoy.com/view/slfGzf" target="_new">"Old Joseph" by jairoandre (2021-06-01)</a>.
 </td>
 <td width="50%"><div style="text-align:center">
-<img src="https://github.com/user-attachments/assets/7f72ea28-2390-47af-9617-646bec3de992">
+<img src="https://github.com/user-attachments/assets/8a7e8736-c23c-47eb-a753-c44ffc101b71">
 </div>
 </td>
 </tr>
