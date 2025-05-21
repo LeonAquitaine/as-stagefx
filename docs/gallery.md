@@ -65,8 +65,7 @@ Original: <a href="https://www.shadertoy.com/view/lcl3z2" target="_new">"Time Cr
 A versatile aspect ratio framing tool designed to help position subjects for social media posts, photography, and video composition. Features preset aspect ratios for common social media and photography formats (1:1, 16:9, 4:5, etc.), custom aspect ratio input, adjustable clipped area color and opacity, optional composition guides (rule of thirds, golden ratio, center lines), horizontal/vertical alignment controls, and adjustable border appearance. Perfect for precise subject positioning and consistent framing across platforms.
 </td>
 <td width="50%"><div style="text-align:center">
-<!-- Awaiting preview image. -->
-Awaiting preview image.
+<img src="https://github.com/user-attachments/assets/6c622f56-edf8-4dc7-a18d-52995e846237">
 </div></td>
 </tr>
 <tr>
