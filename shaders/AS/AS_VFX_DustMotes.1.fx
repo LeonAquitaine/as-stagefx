@@ -158,8 +158,8 @@ uniform float BacklightColorBleed < ui_type = "slider"; ui_label = "Color Bleed"
 uniform float ParticleAreaBlurAmount < ui_type = "slider"; ui_label = "Particle Area: Blur Amount (UV)"; ui_tooltip = "Blurs the final image in areas covered by particles (0=none). Small UV offsets like 0.001-0.005."; ui_min = 0.0; ui_max = 0.01; ui_step = 0.0001; ui_category = "Effects"; > = DEFAULT_OVERALL_PARTICLE_BLUR_AMOUNT;
 
 // --- Audio Reactivity ---
-AS_AUDIO_SOURCE_UI(DustMotes_AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
-AS_AUDIO_MULTIPLIER_UI(DustMotes_AudioMultiplier, "Audio Intensity", 1.0, 2.0, "Audio Reactivity")
+AS_AUDIO_UI(DustMotes_AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
+AS_AUDIO_MULT_UI(DustMotes_AudioMultiplier, "Audio Intensity", 1.0, 2.0, "Audio Reactivity")
 uniform int DustMotes_AudioTarget < ui_type = "combo"; ui_label = "Audio Target Parameter"; ui_tooltip = "Select which parameter will be affected by audio reactivity"; ui_items = "Particle Size\0Particle Opacity\0Blur Amount\0"; ui_category = "Audio Reactivity"; > = DEFAULT_AUDIO_TARGET;
 
 // --- Stage Controls ---
@@ -170,7 +170,7 @@ AS_BLENDMODE_UI_DEFAULT(BlendMode, 0)
 AS_BLENDAMOUNT_UI(BlendAmount)
 
 // --- Debug ---
-AS_DEBUG_MODE_UI("Off\0Audio\0Depth\0Particles Only\0")
+AS_DEBUG_UI("Off\0Audio\0Depth\0Particles Only\0")
 
 
 //------------------------------------------------------------------------------------------------
@@ -432,3 +432,5 @@ technique AS_VFX_DustMotes < ui_label = "[AS] VFX: Dust Motes"; ui_tooltip = "Si
 } // namespace ASDustMotes
 
 #endif // __AS_VFX_DustMotes_1_fx
+
+

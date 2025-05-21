@@ -61,7 +61,7 @@ static const float AS_GOLDEN_RATIO = 1.6180339887498948482045868343656f;
 
 // Physics & graphics constants
 static const float AS_EPSILON = 1e-6f;          // Very small number to avoid division by zero
-static const float AS_EPSILON_SAFE = 1e-5f;     // Slightly larger epsilon for screen-space operations
+static const float AS_EPS_SAFE = 1e-5f;     // Slightly larger epsilon for screen-space operations
 static const float AS_DEGREES_TO_RADIANS = AS_PI / 180.0f;
 static const float AS_RADIANS_TO_DEGREES = 180.0f / AS_PI;
 
@@ -104,9 +104,9 @@ static const float AS_EDGE_AA = 0.05f;          // Standard anti-aliasing edge s
 #endif
 
 // Animation timing constants
-static const float AS_ANIMATION_SPEED_SLOW = 0.5f;       // Slow animation speed multiplier
-static const float AS_ANIMATION_SPEED_NORMAL = 1.0f;     // Normal animation speed multiplier  
-static const float AS_ANIMATION_SPEED_FAST = 2.0f;       // Fast animation speed multiplier
+static const float AS_ANIM_SLOW = 0.5f;       // Slow animation speed multiplier
+static const float AS_ANIM_NORMAL = 1.0f;     // Normal animation speed multiplier  
+static const float AS_ANIM_FAST = 2.0f;       // Fast animation speed multiplier
 
 // Timing constants
 static const float AS_TIME_1_SECOND = 1.0f;              // 1 second of animation time
@@ -125,9 +125,9 @@ static const float AS_RANGE_ZERO_ONE_MAX = 1.0f;         // Common maximum for n
 static const float AS_RANGE_NEG_ONE_ONE_MIN = -1.0f;     // Common minimum for bipolar normalized parameters
 static const float AS_RANGE_NEG_ONE_ONE_MAX = 1.0f;      // Common maximum for bipolar normalized parameters
 
-static const float AS_RANGE_OPACITY_MIN = 0.0f;          // Minimum for opacity parameters
-static const float AS_RANGE_OPACITY_MAX = 1.0f;          // Maximum for opacity parameters
-static const float AS_RANGE_OPACITY_DEFAULT = 1.0f;      // Default for opacity parameters
+static const float AS_OP_MIN = 0.0f;          // Minimum for opacity parameters
+static const float AS_OP_MAX = 1.0f;          // Maximum for opacity parameters
+static const float AS_OP_DEFAULT = 1.0f;      // Default for opacity parameters
 
 static const float AS_RANGE_BLEND_MIN = 0.0f;            // Minimum for blend amount parameters
 static const float AS_RANGE_BLEND_MAX = 1.0f;            // Maximum for blend amount parameters
@@ -194,16 +194,16 @@ static const float AS_RESOLUTION_SCALE = 1080.0f / BUFFER_HEIGHT; // Resolution 
 
 // --- UI Control Macros ---
 // Define standard audio source control (reuse this macro for each audio reactive parameter)
-#define AS_AUDIO_SOURCE_UI(name, label, defaultSource, category) \
+#define AS_AUDIO_UI(name, label, defaultSource, category) \
 uniform int name < ui_type = "combo"; ui_label = label; ui_items = AS_AUDIO_SOURCE_ITEMS; ui_category = category; > = defaultSource;
 
 // Define standard multiplier control for audio reactivity
-#define AS_AUDIO_MULTIPLIER_UI(name, label, defaultValue, maxValue, category) \
+#define AS_AUDIO_MULT_UI(name, label, defaultValue, maxValue, category) \
 uniform float name < ui_type = "slider"; ui_label = label; ui_tooltip = "Controls how much the selected audio source affects this parameter."; ui_min = 0.0; ui_max = maxValue; ui_step = 0.05; ui_category = category; > = defaultValue;
 
 // --- Debug Mode Standardization ---
 // --- Debug UI Macro ---
-#define AS_DEBUG_MODE_UI(items) \
+#define AS_DEBUG_UI(items) \
 uniform int DebugMode < ui_type = "combo"; ui_label = "Debug View"; ui_tooltip = "Show various visualization modes for debugging."; ui_items = items; ui_category = "Debug"; > = 0;
 
 // --- Debug Helper Functions ---
@@ -236,7 +236,7 @@ uniform float name < ui_type = "slider"; ui_label = "Sway Angle"; ui_tooltip = "
 
 // --- Position UI Macros ---
 // Creates a standardized position control (as float2)
-#define AS_POSITION_UI(name) \
+#define AS_POS_UI(name) \
 uniform float2 name < ui_type = "drag"; ui_label = "Position"; ui_tooltip = "Position of the effect center (X,Y)."; ui_min = AS_POSITION_MIN; ui_max = AS_POSITION_MAX; ui_step = AS_POSITION_STEP; ui_category = "Position"; > = float2(AS_POSITION_DEFAULT, AS_POSITION_DEFAULT);
 
 // Creates a standardized scale control
@@ -255,7 +255,7 @@ uniform float scaleName < ui_type = "slider"; ui_label = "Scale"; ui_tooltip = "
 //   pos: Position offset as float2(x, y) with range (-1.5 to 1.5)
 //   scale: Scaling factor (0.1 to 5.0)
 // Returns: Transformed coordinates
-float2 AS_applyPositionAndScale(float2 coord, float2 pos, float scale) {
+float2 AS_applyPosScale(float2 coord, float2 pos, float scale) {
     // Apply position offset (Y is inverted in screen space)
     coord.x -= pos.x;
     coord.y += pos.y;
@@ -268,7 +268,7 @@ float2 AS_applyPositionAndScale(float2 coord, float2 pos, float scale) {
 //   texcoord: Original normalized texcoord (0-1 range)
 //   aspectRatio: Width/height ratio of the screen
 // Returns: Centered coordinates corrected for aspect ratio
-float2 AS_getCenteredCoord(float2 texcoord, float aspectRatio) {
+float2 AS_centerCoord(float2 texcoord, float aspectRatio) {
     float2 centered = texcoord - 0.5;
     
     // Apply aspect ratio correction
@@ -295,10 +295,10 @@ float2 AS_transformCoord(float2 texcoord, float2 pos, float scale, float rotatio
     float aspectRatio = ReShade::AspectRatio;
     
     // Center and apply aspect ratio correction
-    float2 centered = AS_getCenteredCoord(texcoord, aspectRatio);
+    float2 centered = AS_centerCoord(texcoord, aspectRatio);
     
     // Apply position and scale
-    float2 positioned = AS_applyPositionAndScale(centered, pos, scale);
+    float2 positioned = AS_applyPosScale(centered, pos, scale);
       // Apply rotation if needed
     if (abs(rotation) > AS_EPSILON) {
         float s = sin(rotation);
@@ -365,7 +365,7 @@ float fmod(float x, float y) {
 //              4: Multiply
 //              5: Screen
 // Returns: The blended float3 color.
-float3 AS_ApplyBlend(float3 fgColor, float3 bgColor, int blendMode) {
+float3 AS_applyBlend(float3 fgColor, float3 bgColor, int blendMode) {
     
     float3 outColor = ComHeaders::Blending::Blend(blendMode, bgColor, fgColor, 1.0);
     return outColor.rgb; 
@@ -384,10 +384,10 @@ float3 AS_ApplyBlend(float3 fgColor, float3 bgColor, int blendMode) {
 //              5: Screen
 //   blendOpacity: Overall opacity of the foreground effect layer (0.0 to 1.0).
 // Returns: The blended float4 color. The alpha channel of the result is taken from bgColor.a.
-float4 AS_ApplyBlend(float4 fgColor, float4 bgColor, int blendMode, float blendOpacity) {
+float4 AS_applyBlend(float4 fgColor, float4 bgColor, int blendMode, float blendOpacity) {
     
     // Call the 3-parameter version for RGB blending
-    float3 effect_rgb = AS_ApplyBlend(fgColor.rgb, bgColor.rgb, blendMode);
+    float3 effect_rgb = AS_applyBlend(fgColor.rgb, bgColor.rgb, blendMode);
 
     // Combine fgColor.a (per-pixel effect alpha) and blendOpacity (overall layer opacity)
     float final_opacity = saturate(fgColor.a * blendOpacity);
@@ -430,7 +430,7 @@ float AS_getTime() {
 
 // --- Listeningway Helpers ---
 // Returns number of available frequency bands
-int AS_getNumFrequencyBands() {
+int AS_getFreqBands() {
 #if defined(__LISTENINGWAY_INSTALLED) && defined(LISTENINGWAY_NUM_BANDS)
     return LISTENINGWAY_NUM_BANDS;
 #else
@@ -439,9 +439,9 @@ int AS_getNumFrequencyBands() {
 }
 
 // Get frequency band value safely with bounds checking
-float AS_getFrequencyBand(int index) {
+float AS_getFreq(int index) {
 #if defined(__LISTENINGWAY_INSTALLED)
-    int numBands = AS_getNumFrequencyBands();
+    int numBands = AS_getFreqBands();
     // Safely clamp the index to valid range
     int safeIndex = clamp(index, 0, numBands - 1);
     return Listeningway_FreqBands[safeIndex];
@@ -456,7 +456,7 @@ int AS_mapAngleToBand(float angleRadians, int repetitions) {
     float normalizedAngle = AS_mod(angleRadians, AS_TWO_PI) / AS_TWO_PI;
 
     // Scale by number of bands and repetitions
-    int numBands = AS_getNumFrequencyBands();
+    int numBands = AS_getFreqBands();
     if (numBands <= 0) return 0; // Avoid division by zero if no bands
     int totalBands = numBands * max(1, repetitions); // Ensure at least 1 repetition
 
@@ -466,7 +466,7 @@ int AS_mapAngleToBand(float angleRadians, int repetitions) {
 }
 
 // Returns VU meter value from specified source
-float AS_getVUMeterValue(int source) {
+float AS_getVU(int source) {
 #if defined(__LISTENINGWAY_INSTALLED)
     if (source == 0) return Listeningway_Volume;
     if (source == 1) return Listeningway_Beat;
@@ -486,7 +486,7 @@ float AS_getAudioSource(int source) {
     if (source == AS_AUDIO_VOLUME) return Listeningway_Volume; // Volume
     if (source == AS_AUDIO_BEAT)   return Listeningway_Beat;   // Beat
 
-    int numBands = AS_getNumFrequencyBands();
+    int numBands = AS_getFreqBands();
     if (numBands <= 1) return 0.0; // Safety check
 
     if (source == AS_AUDIO_BASS) {
@@ -835,7 +835,7 @@ uniform float name < ui_type = "slider"; ui_label = "Strength"; ui_tooltip = "Co
 
 // --- Combined Texture & Sampler Creation Macro ---
 // Creates both a texture2D resource and its associated sampler in a single macro call
-#define AS_CREATE_TEXTURE_AND_SAMPLER(TEXTURE_NAME, SAMPLER_NAME, SIZE, FORMAT, LEVELS, FILTER, ADDRESS) \
+#define AS_CREATE_TEX_SAMPLER(TEXTURE_NAME, SAMPLER_NAME, SIZE, FORMAT, LEVELS, FILTER, ADDRESS) \
     texture2D TEXTURE_NAME \
     { \
         Width = SIZE.x; \
@@ -854,3 +854,5 @@ uniform float name < ui_type = "slider"; ui_label = "Strength"; ui_tooltip = "Co
     };
 
 #endif // __AS_Utils_1_fxh
+
+

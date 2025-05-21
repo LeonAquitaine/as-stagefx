@@ -151,8 +151,8 @@ uniform float ColorCycleSpeed < ui_type = "slider"; ui_label = "Color Cycle Spee
 AS_ANIMATION_UI(AnimationSpeed, AnimationKeyframe, "Animation")
 
 // --- Audio Reactivity ---
-AS_AUDIO_SOURCE_UI(WavySquares_AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
-AS_AUDIO_MULTIPLIER_UI(WavySquares_AudioMultiplier, "Audio Intensity", AUDIO_MULTIPLIER_DEFAULT, AUDIO_MULTIPLIER_MAX, "Audio Reactivity")
+AS_AUDIO_UI(WavySquares_AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
+AS_AUDIO_MULT_UI(WavySquares_AudioMultiplier, "Audio Intensity", AUDIO_MULTIPLIER_DEFAULT, AUDIO_MULTIPLIER_MAX, "Audio Reactivity")
 uniform int WavySquares_AudioTarget < ui_type = "combo"; ui_label = "Audio Target Parameter"; ui_items = "None\0Animation Speed\0Wave Amplitude\0Wave Frequency\0Tile Scale\0Box Size\0Box Roundness\0Shape Variation\0"; ui_category = "Audio Reactivity"; > = AUDIO_TARGET_DEFAULT;
 
 // --- Stage/Position ---
@@ -165,7 +165,7 @@ AS_BLENDMODE_UI(BlendMode)
 AS_BLENDAMOUNT_UI(BlendStrength)
 
 // --- Debug ---
-AS_DEBUG_MODE_UI("Off\0Show Audio Reactivity\0")
+AS_DEBUG_UI("Off\0Show Audio Reactivity\0")
 
 // ============================================================================
 // HELPER FUNCTIONS
@@ -333,7 +333,7 @@ float4 WavySquaresPS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD) : SV
     float4 effectColor = float4(finalRGB, 1.0);
     
     // --- Final Blending & Debug ---
-    float4 finalColor = float4(AS_ApplyBlend(effectColor.rgb, originalColor.rgb, BlendMode), 1.0);
+    float4 finalColor = float4(AS_applyBlend(effectColor.rgb, originalColor.rgb, BlendMode), 1.0);
     finalColor = lerp(originalColor, finalColor, BlendStrength);
     
     // Show debug overlay if enabled
@@ -368,3 +368,5 @@ technique AS_BGX_WavySquares < ui_label="[AS] BGX: Wavy Squares"; ui_tooltip="Dy
 }
 
 #endif // __AS_BGX_WavySquares_1_fx
+
+

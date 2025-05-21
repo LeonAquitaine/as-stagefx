@@ -937,3 +937,4 @@ technique FlutteringPetals <
 }
 
 #endif // __AS_VFX_ClairObscur_1_fx
+

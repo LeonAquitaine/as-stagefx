@@ -346,8 +346,8 @@ int getPatternValue(int x, int y) {
     if (PatternPreset == 12) return PATTERN_ARROWLEFT[py * PATTERN_SIZE + px];
     // Dynamic: VU Meter pattern (now at position 13)
     if (PatternPreset == 13) {
-        // Use AS_getFrequencyBand from AS_Utils which handles fallbacks
-        float band = saturate(AS_getFrequencyBand(px) * pow(VUBarLogMultiplier, px)); // Logarithmic boost
+        // Use AS_getFreq from AS_Utils which handles fallbacks
+        float band = saturate(AS_getFreq(px) * pow(VUBarLogMultiplier, px)); // Logarithmic boost
         int bandHeight = (int)round(band * (PATTERN_SIZE));
         if ((PATTERN_SIZE - 1 - py) < bandHeight) return 1;
         else return 0;
@@ -443,7 +443,7 @@ float cruxRayV(float2 local) {
     // Vertical ray: thin line, from hotspot to cell edge, gradient from hotspot to edge, brightness set by BeamLength.y, length modulated by VU
     float thickness = 0.012;
     float v = 1.0 - smoothstep(0.0, thickness, abs(local.x));
-    float vu = AS_getVUMeterValue(VUMeterSource);
+    float vu = AS_getVU(VUMeterSource);
     float rayLen = saturate(BeamLength.y * vu) * 0.5; // 0 = no ray, 1 = full cell height
     float distFromHotspot = abs(local.y);
     float grad = (rayLen > 0.0 && distFromHotspot <= rayLen) ? 1.0 - (distFromHotspot / rayLen) : 0.0;
@@ -454,7 +454,7 @@ float cruxRayH(float2 local) {
     // Horizontal ray: thin line, from hotspot to cell edge, gradient from hotspot to edge, brightness set by BeamLength.x, length modulated by VU
     float thickness = 0.012;
     float h = 1.0 - smoothstep(0.0, thickness, abs(local.y));
-    float vu = AS_getVUMeterValue(VUMeterSource);
+    float vu = AS_getVU(VUMeterSource);
     float rayLen = saturate(BeamLength.x * vu) * 0.5; // 0 = no ray, 1 = full cell width
     float distFromHotspot = abs(local.x);
     float grad = (rayLen > 0.0 && distFromHotspot <= rayLen) ? 1.0 - (distFromHotspot / rayLen) : 0.0;
@@ -482,7 +482,7 @@ float3 renderLavaLampGrid(float2 uv) {
         t = wave;
     } else if (VisualizationMode == 2) {
         // VU Meter: color changes according to Listeningway data
-        float vu = AS_getVUMeterValue(VUMeterSource);
+        float vu = AS_getVU(VUMeterSource);
         t = saturate(vu + PALETTE_VU_ANIM * sin(cell_idx.x + cell_idx.y + time * PALETTE_VU_FREQ));
     } else {
         // VU Wave: color waves per cell, radiating from grid center, modulated by Listeningway
@@ -490,7 +490,7 @@ float3 renderLavaLampGrid(float2 uv) {
         float2 cell_rel = cell_idx - grid_center;
         float dist = length(cell_rel);
         float angle = atan2(cell_rel.y, cell_rel.x);
-        float vu = AS_getVUMeterValue(VUMeterSource);
+        float vu = AS_getVU(VUMeterSource);
         float wave = 0.5 + 0.5 * sin(dist * 2.5 + angle * 2.0 - time * 1.5 + vu * 4.0);
         t = wave;
     }
@@ -552,7 +552,7 @@ float4 PS_StageGrid(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_T
     if (sceneDepth < StageDepth - 0.0005)
         return orig;
     fx = saturate(fx);
-    float3 blended = AS_ApplyBlend(fx, orig.rgb, BlendMode);
+    float3 blended = AS_applyBlend(fx, orig.rgb, BlendMode);
     float3 result = lerp(orig.rgb, blended, BlendAmount);
     return float4(result, orig.a);
 }
@@ -565,4 +565,6 @@ technique AS_LightWall < ui_label = "[AS] BGX: Light Wall"; ui_tooltip = "Soft g
 }
 
 #endif // __AS_BGX_LightWall_1_fx
+
+
 

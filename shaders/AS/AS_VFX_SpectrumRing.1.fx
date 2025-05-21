@@ -75,9 +75,9 @@ uniform float Fade < ui_type = "slider"; ui_label = "Fade"; ui_tooltip = "Edge f
 uniform int Shape < ui_type = "combo"; ui_label = "Shape"; ui_items = "Screen-Relative\0Circular\0"; ui_category = "Effect-Specific Appearance"; > = 1;
 
 // --- Audio Reactivity ---
-AS_AUDIO_SOURCE_UI(AlphaSource, "Transparency Source", AS_AUDIO_BEAT, "Audio Reactivity")
-AS_AUDIO_SOURCE_UI(RadiusSource, "Radius Source", AS_AUDIO_BEAT, "Audio Reactivity")
-AS_AUDIO_MULTIPLIER_UI(RadiusMult, "Radius Impact", 0.5, 2.0, "Audio Reactivity")
+AS_AUDIO_UI(AlphaSource, "Transparency Source", AS_AUDIO_BEAT, "Audio Reactivity")
+AS_AUDIO_UI(RadiusSource, "Radius Source", AS_AUDIO_BEAT, "Audio Reactivity")
+AS_AUDIO_MULT_UI(RadiusMult, "Radius Impact", 0.5, 2.0, "Audio Reactivity")
 uniform int BandTarget < ui_type = "combo"; ui_label = "Band Target"; ui_tooltip = "What property to adjust based on band intensity"; ui_items = "Radius\0Thickness\0"; ui_category = "Audio Reactivity"; > = 0;
 uniform float BandMult < ui_type = "slider"; ui_label = "Band Impact"; ui_tooltip = "How strongly the selected frequency band affects the target property."; ui_min = BANDMULT_MIN; ui_max = BANDMULT_MAX; ui_step = 0.1; ui_category = "Audio Reactivity"; > = BANDMULT_DEFAULT;
 
@@ -89,7 +89,7 @@ AS_BLENDMODE_UI_DEFAULT(BlendMode, 0)
 AS_BLENDAMOUNT_UI(BlendAmount)
 
 // --- Debug ---
-AS_DEBUG_MODE_UI("Off\0Bands\0")
+AS_DEBUG_UI("Off\0Bands\0")
 
 // --- Helper Functions ---
 float3 SpectrumRing_getPaletteColor(float t) {    if (ColorPattern == AS_PALETTE_CUSTOM) {
@@ -146,13 +146,13 @@ float4 PS_SpectrumRing(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : S
     int realRepetitions = 1 << Repetitions;
     
     // Map angle to bar index
-    float barStep = AS_TWO_PI / float(realRepetitions * max(1, AS_getNumFrequencyBands()));
+    float barStep = AS_TWO_PI / float(realRepetitions * max(1, AS_getFreqBands()));
     float barIdxF = AS_mod(angle + AS_PI, AS_TWO_PI) / barStep;
     int barIdx = int(floor(barIdxF));
     
     // Calculate frequency index based on pattern type
     int freqIdx;
-    int numBands = max(1, min(AS_getNumFrequencyBands(), 32)); // Ensure at least 1 band
+    int numBands = max(1, min(AS_getFreqBands(), 32)); // Ensure at least 1 band
     
     if (PatternStyle == 0) {
         // Linear pattern - simple modulo
@@ -178,7 +178,7 @@ float4 PS_SpectrumRing(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : S
     } else {
         // Use standardized frequency band access function from AS_Utils
         // This will automatically handle different band sizes and provide graceful fallback
-        bandValue = AS_getFrequencyBand(freqIdx);
+        bandValue = AS_getFreq(freqIdx);
     }
     
     // Apply audio reactivity to radius
@@ -223,7 +223,7 @@ float4 PS_SpectrumRing(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : S
     }
     
     // Apply blend mode and blend amount
-    float3 blended = AS_ApplyBlend(color, orig.rgb, BlendMode);
+    float3 blended = AS_applyBlend(color, orig.rgb, BlendMode);
     float blendAlpha = edge * mask * alpha * BlendAmount;
     
     return float4(lerp(orig.rgb, blended, blendAlpha), 1.0);
@@ -237,3 +237,5 @@ technique AS_SpectrumRing < ui_label = "[AS] VFX: Spectrum Ring"; ui_tooltip = "
 }
 
 #endif // __AS_VFX_SpectrumRing_1_fx
+
+

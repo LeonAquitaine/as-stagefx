@@ -97,7 +97,7 @@ uniform float KaleidoscopeStrength < ui_type = "slider"; ui_label = "Kaleidoscop
 uniform float KaleidoscopeRepetitions < ui_type = "slider"; ui_label = "Kaleidoscope Repetitions"; ui_min = 2.0; ui_max = 30.0; ui_step = 1.0; ui_category = "Kaleidoscope"; ui_tooltip = "Sets the number of repetitions for the kaleidoscope effect. Applied if an effect style with kaleidoscope is active."; > = 10.0;
 
 // Audio Reactivity
-AS_AUDIO_SOURCE_UI(GoldenClockwork_AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity") // Defines GoldenClockwork_AudioSource
+AS_AUDIO_UI(GoldenClockwork_AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity") // Defines GoldenClockwork_AudioSource
 uniform float AudioReactivityAmount < ui_type = "slider"; ui_label = "Audio Reactivity Amount"; ui_min = 0.0; ui_max = 2.0; ui_category = "Audio Reactivity"; ui_tooltip = "General multiplier for how much audio affects the target parameter."; > = 1.0;
 uniform bool AudioReactPositive < ui_type = "checkbox"; ui_label = "Audio React Positive Only"; ui_category = "Audio Reactivity"; ui_tooltip = "If checked, audio makes the parameter increase. If unchecked, it can increase or decrease (centered)."; > = true;
 uniform int AudioReactiveTarget < ui_type = "combo"; ui_label = "Audio Reactive Target"; ui_items = "None\0Time Scale\0Path Speed\0Fractal Scale\0Kaleidoscope Strength\0Kaleidoscope Reps\0"; ui_category = "Audio Reactivity"; > = 0;
@@ -500,7 +500,7 @@ float4 PS_GoldenApollian(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0)
 
     float3 blended_col = col;
     if (GoldenClockwork_BlendMode > 0 && BlendOpacity > 0.001) {
-        blended_col = AS_ApplyBlend(col, back_col, GoldenClockwork_BlendMode); 
+        blended_col = AS_applyBlend(col, back_col, GoldenClockwork_BlendMode); 
     }
     
     return float4(blended_col, BlendOpacity);
@@ -527,3 +527,4 @@ technique GoldenApollian_Tech <
 }
 
 #endif // __AS_BGX_GoldenClockwork_1_fx
+

@@ -105,3 +105,4 @@ static const float3 AS_PALETTES[(AS_PALETTE_COUNT-1) * AS_PALETTE_COLORS] = {
 #define AS_PALETTE_ITEMS "Custom\0Classic VU\0Blue\0Sunset\0Neon\0Retro\0Bluewave\0Bright Lights\0Disco\0Electronica\0Industrial\0Metal\0Monotone\0Pastel Pop\0Redline\0Rainbow\0Fire\0Aqua\0Viridis\0Deep Purple\0Groovy\0Vaporwave\0Aurora\0Electric\0Mystic Night\0"
 
 #endif // __AS_Palette_Styles_1_fxh
+

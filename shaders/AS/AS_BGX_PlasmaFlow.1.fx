@@ -95,12 +95,12 @@ uniform float PlasmaSpeed < ui_type = "slider"; ui_label = "Speed"; ui_tooltip =
 
 // --- Audio Reactivity ---
 
-AS_AUDIO_SOURCE_UI(AudioMoveSource, "Movement Source", AS_AUDIO_OFF, "Audio Reactivity")
-AS_AUDIO_MULTIPLIER_UI(AudioMoveMult, "Movement Strength", 1.0, 4.0, "Audio Reactivity")
-AS_AUDIO_SOURCE_UI(AudioColorSource, "Color Source", AS_AUDIO_BASS, "Audio Reactivity")
-AS_AUDIO_MULTIPLIER_UI(AudioColorMult, "Color Strength", 1.0, 4.0, "Audio Reactivity")
-AS_AUDIO_SOURCE_UI(AudioComplexitySource, "Complexity Source", AS_AUDIO_VOLUME, "Audio Reactivity")
-AS_AUDIO_MULTIPLIER_UI(AudioComplexityMult, "Complexity Strength", 1.0, 4.0, "Audio Reactivity")
+AS_AUDIO_UI(AudioMoveSource, "Movement Source", AS_AUDIO_OFF, "Audio Reactivity")
+AS_AUDIO_MULT_UI(AudioMoveMult, "Movement Strength", 1.0, 4.0, "Audio Reactivity")
+AS_AUDIO_UI(AudioColorSource, "Color Source", AS_AUDIO_BASS, "Audio Reactivity")
+AS_AUDIO_MULT_UI(AudioColorMult, "Color Strength", 1.0, 4.0, "Audio Reactivity")
+AS_AUDIO_UI(AudioComplexitySource, "Complexity Source", AS_AUDIO_VOLUME, "Audio Reactivity")
+AS_AUDIO_MULT_UI(AudioComplexityMult, "Complexity Strength", 1.0, 4.0, "Audio Reactivity")
 
 // --- Color & Style ---
 uniform float ColorCycleSpeed < ui_type = "slider"; ui_label = "Color Cycle Speed"; ui_tooltip = "Controls how fast colors cycle when using palette colors. 0 = static"; ui_min = -1.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Color & Style"; ui_spacing = 1; > = 0.05;
@@ -113,7 +113,7 @@ AS_BLENDMODE_UI_DEFAULT(BlendMode, 0)
 AS_BLENDAMOUNT_UI(BlendAmount)
 
 // --- Debug ---
-AS_DEBUG_MODE_UI("Off\0Noise\0DomainWarp\0Audio\0")
+AS_DEBUG_UI("Off\0Noise\0DomainWarp\0Audio\0")
 
 // --- System Uniforms ---
 
@@ -215,7 +215,7 @@ float4 PS_PlasmaFlow(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_
     if (DebugMode == 3) return float4(colorAudio.xxx, 1.0); // Audio
 
     // --- Blending ---
-    float3 finalColor = AS_ApplyBlend(plasmaColor, orig.rgb, BlendMode);
+    float3 finalColor = AS_applyBlend(plasmaColor, orig.rgb, BlendMode);
     finalColor = lerp(orig.rgb, finalColor, BlendAmount);
 
     return float4(finalColor, 1.0);
@@ -229,4 +229,6 @@ technique AS_PlasmaFlow_1 < ui_label = "[AS] BGX: Plasma Flow"; ui_tooltip = "Au
 }
 
 #endif // __AS_BGX_PlasmaFlow_1_fx
+
+
 

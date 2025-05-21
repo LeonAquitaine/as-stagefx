@@ -135,7 +135,7 @@ AS_BLENDMODE_UI_DEFAULT(BlendMode, AS_BLEND_LIGHTEN)
 AS_BLENDAMOUNT_UI(BlendAmount)
 
 // --- Debug Settings ---
-AS_DEBUG_MODE_UI("Off\0Spotlights\0Bokeh\0")
+AS_DEBUG_UI("Off\0Spotlights\0Bokeh\0")
 
 // ============================================================================
 // HELPER FUNCTIONS & STRUCTURES
@@ -433,7 +433,7 @@ float4 PS_Spotlights(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_
     fx = saturate(fx);
     
     // Apply appropriate blend mode
-    float3 blended = AS_ApplyBlend(fx, orig.rgb, BlendMode);
+    float3 blended = AS_applyBlend(fx, orig.rgb, BlendMode);
     float3 result = lerp(orig.rgb, blended, BlendAmount);
     
     return float4(result, orig.a);
@@ -447,3 +447,5 @@ technique AS_StageSpotlights < ui_label = "[AS] LFX: Stage Spotlights"; ui_toolt
 }
 
 #endif // __AS_LFX_StageSpotlights_1_fx
+
+

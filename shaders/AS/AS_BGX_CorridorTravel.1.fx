@@ -135,8 +135,8 @@ uniform float PR_MotionBlurTimeDelta < ui_type = "drag"; ui_min = 0.0; ui_max = 
 // ============================================================================
 // AUDIO REACTIVITY
 // ============================================================================
-AS_AUDIO_SOURCE_UI(CorridorTravel_AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
-AS_AUDIO_MULTIPLIER_UI(CorridorTravel_AudioMultiplier, "Audio Intensity", 1.0, 2.0, "Audio Reactivity")
+AS_AUDIO_UI(CorridorTravel_AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
+AS_AUDIO_MULT_UI(CorridorTravel_AudioMultiplier, "Audio Intensity", 1.0, 2.0, "Audio Reactivity")
 
 uniform int CorridorTravel_AudioTarget < ui_type = "combo"; ui_label = "Audio Target"; ui_tooltip = "Select which parameter will be modulated by audio"; ui_items = "None\0Global Speed\0Camera Animation\0Pattern Scale\0Emission Brightness\0"; ui_category = "Audio Reactivity"; > = 1;
 
@@ -379,7 +379,7 @@ float4 PS_CorridorTravel(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0)
     total_color = pow(total_color, 1.0f / PR_Gamma);
       // Apply standard AS blending between effect and original color
     float4 effectColor = float4(total_color, 1.0);
-    float4 finalColor = float4(AS_ApplyBlend(effectColor.rgb, originalColor.rgb, CorridorTravel_BlendMode), 1.0);
+    float4 finalColor = float4(AS_applyBlend(effectColor.rgb, originalColor.rgb, CorridorTravel_BlendMode), 1.0);
     finalColor = lerp(originalColor, finalColor, CorridorTravel_BlendAmount);
         
     return finalColor;
@@ -403,3 +403,4 @@ technique AS_BGX_CorridorTravel <
 }
 
 #endif // __AS_BGX_CorridorTravel_1_fx
+

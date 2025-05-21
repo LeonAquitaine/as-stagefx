@@ -106,3 +106,5 @@ uniform float3 prefix##CustomPaletteColor4 < ui_type = "color"; ui_label = "Cust
     )
 
 #endif // __AS_Palettes_1_fxh
+
+

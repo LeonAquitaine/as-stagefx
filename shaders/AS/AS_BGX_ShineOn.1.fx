@@ -234,8 +234,8 @@ uniform float SmoothstepMax < ui_type = "slider"; ui_label = "Main Contrast Max"
 uniform float PowExponentScale < ui_type = "slider"; ui_label = "Crystal Exponent Scale"; ui_tooltip = "Scales the exponent vector derived from crystal(). Affects brightness/color."; ui_min = POW_EXPONENT_SCALE_MIN; ui_max = POW_EXPONENT_SCALE_MAX; ui_step = POW_EXPONENT_SCALE_STEP; ui_category = "Color Parameters"; > = POW_EXPONENT_SCALE_DEFAULT;
 
 // --- Audio Reactivity ---
-AS_AUDIO_SOURCE_UI(ShineOn_AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
-AS_AUDIO_MULTIPLIER_UI(ShineOn_AudioMultiplier, "Audio Intensity", AUDIO_MULTIPLIER_DEFAULT, AUDIO_MULTIPLIER_MAX, "Audio Reactivity")
+AS_AUDIO_UI(ShineOn_AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
+AS_AUDIO_MULT_UI(ShineOn_AudioMultiplier, "Audio Intensity", AUDIO_MULTIPLIER_DEFAULT, AUDIO_MULTIPLIER_MAX, "Audio Reactivity")
 uniform int ShineOn_AudioTarget < ui_type = "combo"; ui_label = "Audio Target Parameter"; ui_items = "None\0Animation Speed\0Crystal Size\0Crystal Color Amp\0Crystal Time Factor\0"; ui_tooltip = "Which parameter should respond to audio"; ui_category = "Audio Reactivity"; > = AUDIO_TARGET_DEFAULT;
 
 // --- Final Mix ---
@@ -243,7 +243,7 @@ AS_BLENDMODE_UI(BlendMode)
 AS_BLENDAMOUNT_UI(BlendStrength)
 
 // --- Debug ---
-AS_DEBUG_MODE_UI("Off\0Show Audio Reactivity\0")
+AS_DEBUG_UI("Off\0Show Audio Reactivity\0")
 
 // ============================================================================
 // HELPER FUNCTIONS
@@ -402,7 +402,7 @@ float4 ASShineOnPS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD0) : SV_
     
     // Final output with blend
     float4 effectColor = float4(saturate(fragC), 1.0f);
-    float4 finalColor = float4(AS_ApplyBlend(effectColor.rgb, originalColor.rgb, BlendMode), 1.0f);
+    float4 finalColor = float4(AS_applyBlend(effectColor.rgb, originalColor.rgb, BlendMode), 1.0f);
     finalColor = lerp(originalColor, finalColor, BlendStrength);
     
     // Debug overlay if enabled
@@ -442,3 +442,4 @@ technique AS_BGX_ShineOn < ui_label = "[AS] BGX: Shine On"; ui_tooltip = "Dynami
 } // namespace ASShineOn
 
 #endif // __AS_BGX_ShineOn_1_fx
+

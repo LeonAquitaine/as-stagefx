@@ -158,12 +158,12 @@ uniform bool BloomDither < ui_label = "Dither"; ui_tooltip = "Adds subtle noise 
 // ============================================================================
 // AUDIO REACTIVITY
 // ============================================================================
-AS_AUDIO_SOURCE_UI(Listeningway_SparkleSource, "Sparkle Source", AS_AUDIO_BEAT, "Audio Reactivity")
-AS_AUDIO_MULTIPLIER_UI(Listeningway_SparkleMultiplier, "Sparkle Intensity", 1.5, 5.0, "Audio Reactivity")
-AS_AUDIO_SOURCE_UI(Listeningway_BloomSource, "Bloom Source", AS_AUDIO_OFF, "Audio Reactivity")
-AS_AUDIO_MULTIPLIER_UI(Listeningway_BloomMultiplier, "Bloom Intensity", 10.0, 10.0, "Audio Reactivity")
-AS_AUDIO_SOURCE_UI(Listeningway_TimeScaleSource, "Time Source", AS_AUDIO_OFF, "Audio Reactivity")
-AS_AUDIO_MULTIPLIER_UI(Listeningway_TimeScaleBand1Multiplier, "Time Intensity", 1.0, 5.0, "Audio Reactivity")
+AS_AUDIO_UI(Listeningway_SparkleSource, "Sparkle Source", AS_AUDIO_BEAT, "Audio Reactivity")
+AS_AUDIO_MULT_UI(Listeningway_SparkleMultiplier, "Sparkle Intensity", 1.5, 5.0, "Audio Reactivity")
+AS_AUDIO_UI(Listeningway_BloomSource, "Bloom Source", AS_AUDIO_OFF, "Audio Reactivity")
+AS_AUDIO_MULT_UI(Listeningway_BloomMultiplier, "Bloom Intensity", 10.0, 10.0, "Audio Reactivity")
+AS_AUDIO_UI(Listeningway_TimeScaleSource, "Time Source", AS_AUDIO_OFF, "Audio Reactivity")
+AS_AUDIO_MULT_UI(Listeningway_TimeScaleBand1Multiplier, "Time Intensity", 1.0, 5.0, "Audio Reactivity")
 
 // ============================================================================
 // COLOR SETTINGS
@@ -191,21 +191,13 @@ AS_BLENDAMOUNT_UI(BlendAmount)
 // ============================================================================
 // DEBUG
 // ============================================================================
-AS_DEBUG_MODE_UI("Off\0Depth\0Normal\0Sparkle\0Mask\0Force On\0")
+AS_DEBUG_UI("Off\0Depth\0Normal\0Sparkle\0Mask\0Force On\0")
 
 // ============================================================================
 // TEXTURES AND SAMPLERS
 // ============================================================================
-texture SparkleBloom_SparkleRT { Width = BUFFER_WIDTH; Height = BUFFER_HEIGHT; Format = RGBA16F; };
-sampler SparkleBloom_SparkleSampler { Texture = SparkleBloom_SparkleRT; };
-
-texture SparkleBloom_BloomRT { Width = BUFFER_WIDTH / 2; Height = BUFFER_HEIGHT / 2; Format = RGBA16F; };
-sampler SparkleBloom_BloomSampler { 
-    Texture = SparkleBloom_BloomRT;
-    MagFilter = LINEAR;
-    MinFilter = LINEAR;
-    MipFilter = LINEAR;
-};
+AS_CREATE_TEX_SAMPLER(SparkleBloom_SparkleRT, SparkleBloom_SparkleSampler, float2(BUFFER_WIDTH, BUFFER_HEIGHT), RGBA16F, 1, POINT, CLAMP)
+AS_CREATE_TEX_SAMPLER(SparkleBloom_BloomRT, SparkleBloom_BloomSampler, float2(BUFFER_WIDTH / 2, BUFFER_HEIGHT / 2), RGBA16F, 1, LINEAR, CLAMP)
 
 /*-----------------------------.
 | :: Helper Functions and Constants |
@@ -550,7 +542,7 @@ float4 PS_BloomV(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Targ
     result += sparkles + bloom;
     
     // Apply blend mode and amount
-    float3 blendedColor = AS_ApplyBlend(result, originalColor.rgb, BlendMode);
+    float3 blendedColor = AS_applyBlend(result, originalColor.rgb, BlendMode);
     result = lerp(originalColor.rgb, blendedColor, DebugMode == 5 ? 1.0 : BlendAmount);
     
     return float4(result, originalColor.a);
@@ -579,3 +571,4 @@ technique AS_SparkleBloom < ui_label = "[AS] VFX: Sparkle Bloom"; ui_tooltip = "
 }
 
 #endif // __AS_VFX_SparkleBloom_1_fx
+

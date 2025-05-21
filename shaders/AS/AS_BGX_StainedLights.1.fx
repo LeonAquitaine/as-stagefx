@@ -119,8 +119,8 @@ uniform float AnimationKeyframe < ui_type = "slider"; ui_label = "Animation Keyf
 uniform float AnimationSpeed < ui_type = "slider"; ui_label = "Animation Speed"; ui_tooltip = "Controls the speed at which the pattern evolves. Set to 0 to pause animation and use keyframe only."; ui_min = ANIMATION_SPEED_MIN; ui_max = ANIMATION_SPEED_MAX; ui_step = ANIMATION_SPEED_STEP; ui_category = "Animation"; > = ANIMATION_SPEED_DEFAULT;
 
 // --- Audio Reactivity ---
-AS_AUDIO_SOURCE_UI(StainedLights_AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
-AS_AUDIO_MULTIPLIER_UI(StainedLights_AudioMultiplier, "Audio Intensity", AUDIO_MULTIPLIER_DEFAULT, AUDIO_MULTIPLIER_MAX, "Audio Reactivity")
+AS_AUDIO_UI(StainedLights_AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
+AS_AUDIO_MULT_UI(StainedLights_AudioMultiplier, "Audio Intensity", AUDIO_MULTIPLIER_DEFAULT, AUDIO_MULTIPLIER_MAX, "Audio Reactivity")
 uniform int StainedLights_AudioTarget < ui_type = "combo"; ui_label = "Audio Target Parameter"; ui_items = "None\0Animation Speed\0Pattern Scale\0Edge Curvature\0"; ui_category = "Audio Reactivity"; > = AUDIO_TARGET_DEFAULT;
 
 // --- Post Processing ---
@@ -132,7 +132,7 @@ AS_BLENDMODE_UI(BlendMode)
 AS_BLENDAMOUNT_UI(BlendStrength)
 
 // --- Debug ---
-AS_DEBUG_MODE_UI("Off\0Show Audio Reactivity\0")
+AS_DEBUG_UI("Off\0Show Audio Reactivity\0")
 
 // ============================================================================
 // HELPER FUNCTIONS
@@ -242,7 +242,7 @@ float4 StainedLightsPS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) :
     o.a = 1.0; // Ensure alpha is 1 after all color operations
 
     // Blend with original scene
-    float4 finalColor = float4(AS_ApplyBlend(o.rgb, originalColor.rgb, BlendMode), 1.0);
+    float4 finalColor = float4(AS_applyBlend(o.rgb, originalColor.rgb, BlendMode), 1.0);
     finalColor = lerp(originalColor, finalColor, BlendStrength);
     
     // Show debug overlay if enabled
@@ -277,3 +277,4 @@ technique AS_BGX_StainedLights < ui_label="[AS] BGX: Stained Lights"; ui_tooltip
 }
 
 #endif // __AS_BGX_StainedLights_1_fx
+

@@ -84,34 +84,30 @@ uniform bool bEcho_ManualCapture < ui_type = "bool"; ui_label = "Drop Trail Mark
 
 // --- Beat Synchronization ---
 
-AS_AUDIO_SOURCE_UI(Echo_TimingSource, "Rhythm Source", AS_AUDIO_BEAT, "Beat Synchronization")
-AS_AUDIO_MULTIPLIER_UI(Echo_TimingMult, "Beat Impact", 0.5, 1.0, "Beat Synchronization")
-AS_AUDIO_SOURCE_UI(Echo_IntensitySource, "Energy Source", AS_AUDIO_BEAT, "Beat Synchronization")
-AS_AUDIO_MULTIPLIER_UI(Echo_IntensityMult, "Energy Boost", 0.5, 2.0, "Beat Synchronization")
+AS_AUDIO_UI(Echo_TimingSource, "Rhythm Source", AS_AUDIO_BEAT, "Beat Synchronization")
+AS_AUDIO_MULT_UI(Echo_TimingMult, "Beat Impact", 0.5, 1.0, "Beat Synchronization")
+AS_AUDIO_UI(Echo_IntensitySource, "Energy Source", AS_AUDIO_BEAT, "Beat Synchronization")
+AS_AUDIO_MULT_UI(Echo_IntensityMult, "Energy Boost", 0.5, 2.0, "Beat Synchronization")
 
 // --- Final Composition and Debug (moved to end) ---
 AS_BLENDMODE_UI_DEFAULT(BlendMode, 0)
 AS_BLENDAMOUNT_UI(BlendAmount)
 
 // --- Debug Mode Uniform ---
-AS_DEBUG_MODE_UI("Off\0Depth Mask\0Echo Buffer\0Linear Depth\0")
+AS_DEBUG_UI("Off\0Depth Mask\0Echo Buffer\0Linear Depth\0")
 
 // Add frame counter for frame-based capture mode
 // --- Variables to track beat detection ---
 uniform float TimeBeatValue < source = "listeningway"; listeningway_property = "beat"; >;
 
 // --- Textures and Samplers ---
-texture MotionTrails_AccumBuffer { Width = BUFFER_WIDTH; Height = BUFFER_HEIGHT; Format = RGBA8; };
-sampler MotionTrails_AccumBufferSampler { Texture = MotionTrails_AccumBuffer; };
+AS_CREATE_TEX_SAMPLER(MotionTrails_AccumBuffer, MotionTrails_AccumBufferSampler, float2(BUFFER_WIDTH, BUFFER_HEIGHT), RGBA8, 1, POINT, CLAMP)
 
-texture MotionTrails_AccumTempBuffer { Width = BUFFER_WIDTH; Height = BUFFER_HEIGHT; Format = RGBA8; };
-sampler MotionTrails_AccumTempBufferSampler { Texture = MotionTrails_AccumTempBuffer; };
+AS_CREATE_TEX_SAMPLER(MotionTrails_AccumTempBuffer, MotionTrails_AccumTempBufferSampler, float2(BUFFER_WIDTH, BUFFER_HEIGHT), RGBA8, 1, POINT, CLAMP)
 
-texture MotionTrails_TimingBuffer { Width = BUFFER_WIDTH; Height = BUFFER_HEIGHT; Format = RG32F; };
-sampler MotionTrails_TimingBufferSampler { Texture = MotionTrails_TimingBuffer; };
+AS_CREATE_TEX_SAMPLER(MotionTrails_TimingBuffer, MotionTrails_TimingBufferSampler, float2(BUFFER_WIDTH, BUFFER_HEIGHT), RG32F, 1, POINT, CLAMP)
 
-texture MotionTrails_TimingPrevBuffer { Width = BUFFER_WIDTH; Height = BUFFER_HEIGHT; Format = RG32F; }; 
-sampler MotionTrails_TimingPrevBufferSampler { Texture = MotionTrails_TimingPrevBuffer; };
+AS_CREATE_TEX_SAMPLER(MotionTrails_TimingPrevBuffer, MotionTrails_TimingPrevBufferSampler, float2(BUFFER_WIDTH, BUFFER_HEIGHT), RG32F, 1, POINT, CLAMP)
 
 // --- Pixel Shader: Pass 1 (Timing and Capture State Update) ---
 void PS_TimingCaptureUpdate(
@@ -258,7 +254,7 @@ void PS_EchoComposite(
     float3 echoEffect = echoColor.rgb;
     
     // --- Apply blend mode using AS_Utils helper ---
-    float3 blendedResult = AS_ApplyBlend(echoEffect, originalColor.rgb, BlendMode);
+    float3 blendedResult = AS_applyBlend(echoEffect, originalColor.rgb, BlendMode);
     
     // --- Final blend with original using user-defined strength ---
     float3 finalResult = lerp(originalColor.rgb, blendedResult, BlendAmount * echoColor.a);
@@ -337,3 +333,4 @@ technique AS_MotionTrails_1 <
 }
 
 #endif // __AS_VFX_MotionTrails_1_fx
+

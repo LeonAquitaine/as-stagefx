@@ -195,8 +195,8 @@ uniform float ColorCycleSpeed < ui_type = "slider"; ui_label = "Color Cycle Spee
 //------------------------------------------------------------------------------------------------
 // Audio Reactivity
 //------------------------------------------------------------------------------------------------
-AS_AUDIO_SOURCE_UI(Spiral_AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
-AS_AUDIO_MULTIPLIER_UI(Spiral_AudioMultiplier, "Audio Intensity", 1.0, 2.0, "Audio Reactivity")
+AS_AUDIO_UI(Spiral_AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
+AS_AUDIO_MULT_UI(Spiral_AudioMultiplier, "Audio Intensity", 1.0, 2.0, "Audio Reactivity")
 uniform int Spiral_AudioTarget < 
     ui_type = "combo"; 
     ui_label = "Audio Target Parameter"; 
@@ -225,7 +225,7 @@ AS_BLENDAMOUNT_UI(BlendStrength)
 //------------------------------------------------------------------------------------------------
 // Debug
 //------------------------------------------------------------------------------------------------
-AS_DEBUG_MODE_UI("Off\0Show Audio Reactivity\0")
+AS_DEBUG_UI("Off\0Show Audio Reactivity\0")
 
 // Helper functions
 float forward_exp(float l, float exp_base) { // Pass expansion base
@@ -451,7 +451,7 @@ float4 LogSpiralsPS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : SV
     float4 effectColor = float4(final_color, 1.0f);
     
     // Apply blend mode and strength
-    float4 finalColor = float4(AS_ApplyBlend(effectColor.rgb, originalColor.rgb, BlendMode), 1.0);
+    float4 finalColor = float4(AS_applyBlend(effectColor.rgb, originalColor.rgb, BlendMode), 1.0);
     finalColor = lerp(originalColor, finalColor, BlendStrength);
     
     // Show debug overlay if enabled
@@ -486,3 +486,4 @@ technique AS_BGX_LogSpirals_Tech <
 } // end namespace ASLogSpirals
 
 #endif // __AS_BGX_LogSpirals_fx
+

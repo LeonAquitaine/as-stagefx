@@ -137,7 +137,7 @@ uniform int Sectors < ui_type = "slider"; ui_label = "Mirrors"; ui_tooltip = "Nu
 //------------------------------------------------------------------------------------------------
 // Audio Reactivity
 //------------------------------------------------------------------------------------------------
-AS_AUDIO_SOURCE_UI(MasterAudioSource, "Audio Source", AS_AUDIO_BASS, "Audio Reactivity")
+AS_AUDIO_UI(MasterAudioSource, "Audio Source", AS_AUDIO_BASS, "Audio Reactivity")
 
 uniform float AudioGain_FractalZoom < ui_type = "slider"; ui_label = "Fractal Zoom"; ui_tooltip = "How much audio affects the fractal zoom. Higher = more pulsing with audio."; ui_min = AUDIO_GAIN_FRACTAL_ZOOM_MIN; ui_max = AUDIO_GAIN_FRACTAL_ZOOM_MAX; ui_step = 0.01; ui_category = "Audio Reactivity"; > = AUDIO_GAIN_FRACTAL_ZOOM_DEFAULT;
 uniform float AudioGain_WaveAmplitude < ui_type = "slider"; ui_label = "Wave Amplitude"; ui_tooltip = "How much audio affects the wave amplitude. Higher = more intense tendril motion with audio."; ui_min = AUDIO_GAIN_WAVE_AMPLITUDE_MIN; ui_max = AUDIO_GAIN_WAVE_AMPLITUDE_MAX; ui_step = 0.1; ui_category = "Audio Reactivity"; > = AUDIO_GAIN_WAVE_AMPLITUDE_DEFAULT;
@@ -326,7 +326,7 @@ float4 PS_Kaleidoscope(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) :
     float depthMask = depth >= EffectDepth;
     
     // Blend the final color with the original scene
-    float3 blended = AS_ApplyBlend(saturate(finalColor), originalColor.rgb, BlendMode);
+    float3 blended = AS_applyBlend(saturate(finalColor), originalColor.rgb, BlendMode);
     
     return float4(lerp(originalColor.rgb, blended, BlendStrength * depthMask), 1.0);
 }
@@ -350,3 +350,5 @@ technique AS_BGX_Kaleidoscope <
 } // namespace ASKaleidoscope
 
 #endif // __AS_BGX_Kaleidoscope_1_fx
+
+

@@ -67,8 +67,8 @@ uniform float3 BorderColor < ui_type = "color"; ui_label = "Border Color"; ui_to
 // ============================================================================
 // AUDIO REACTIVITY
 // ============================================================================
-AS_AUDIO_SOURCE_UI(Grid_AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
-AS_AUDIO_MULTIPLIER_UI(Grid_AudioMultiplier, "Intensity", 0.1, 4.0, "Audio Reactivity")
+AS_AUDIO_UI(Grid_AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
+AS_AUDIO_MULT_UI(Grid_AudioMultiplier, "Intensity", 0.1, 4.0, "Audio Reactivity")
 
 uniform int AudioTarget < ui_type = "combo"; ui_label = "Audio Target Parameter"; ui_tooltip = "Select which parameter will be affected by audio reactivity"; ui_items = "None\0Cell Size\0Border Thickness\0Chamfer Size\0Border + Chamfer\0"; ui_category = "Audio Reactivity"; > = 1;
 
@@ -87,7 +87,7 @@ AS_BLENDAMOUNT_UI(BlendAmount)
 // ============================================================================
 // DEBUG
 // ============================================================================
-AS_DEBUG_MODE_UI("Normal\0Grid Cell Index\0Final Border Mask\0Cell Center Sample Points\0Square Border Mask\0Chamfer Mask\0") // Added more debug views
+AS_DEBUG_UI("Normal\0Grid Cell Index\0Final Border Mask\0Cell Center Sample Points\0Square Border Mask\0Chamfer Mask\0") // Added more debug views
 
 // ============================================================================
 // HELPER FUNCTIONS
@@ -301,7 +301,7 @@ float4 PS_TiltedGrid(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_
     }
 
     // --- Final Blending ---
-    float3 blendedColor = AS_ApplyBlend(finalColor, orig.rgb, BlendMode);
+    float3 blendedColor = AS_applyBlend(finalColor, orig.rgb, BlendMode);
     return float4(lerp(orig.rgb, blendedColor, BlendAmount), orig.a);
 }
 
@@ -318,3 +318,4 @@ technique AS_VFX_TiltedGrid < ui_label = "[AS] VFX: Tilted Grid"; ui_tooltip = "
 }
 
 #endif // __AS_VFX_TiltedGrid_1_fx
+

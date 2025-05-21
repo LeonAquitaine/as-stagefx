@@ -154,8 +154,8 @@ uniform float ColorCycleSpeed < ui_type = "slider"; ui_label = "Color Cycle Spee
 AS_ANIMATION_UI(AnimationSpeed, AnimationKeyframe, "Animation")
 
 // --- Audio Reactivity ---
-AS_AUDIO_SOURCE_UI(WavySquiggles_AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
-AS_AUDIO_MULTIPLIER_UI(WavySquiggles_AudioMultiplier, "Audio Intensity", AUDIO_MULTIPLIER_DEFAULT, AUDIO_MULTIPLIER_MAX, "Audio Reactivity")
+AS_AUDIO_UI(WavySquiggles_AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
+AS_AUDIO_MULT_UI(WavySquiggles_AudioMultiplier, "Audio Intensity", AUDIO_MULTIPLIER_DEFAULT, AUDIO_MULTIPLIER_MAX, "Audio Reactivity")
 uniform int WavySquiggles_AudioTarget < ui_type = "combo"; ui_label = "Audio Target Parameter"; ui_items = "None\0Animation Speed\0Rotation Influence\0Line Distance\0Line Thickness\0Line Smoothing\0Displacement Strength\0"; ui_category = "Audio Reactivity"; > = AUDIO_TARGET_DEFAULT;
 
 // --- Stage/Position ---
@@ -168,7 +168,7 @@ AS_BLENDMODE_UI(BlendMode)
 AS_BLENDAMOUNT_UI(BlendStrength)
 
 // --- Debug ---
-AS_DEBUG_MODE_UI("Off\0Show Audio Reactivity\0")
+AS_DEBUG_UI("Off\0Show Audio Reactivity\0")
 
 // ============================================================================
 // HELPER FUNCTIONS
@@ -334,7 +334,7 @@ float4 WavySquigglesPS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD) : 
     float4 effectColor = float4(finalRGB, 1.0);
     
     // --- Final Blending & Debug ---
-    float4 finalColor = float4(AS_ApplyBlend(effectColor.rgb, originalColor.rgb, BlendMode), 1.0);
+    float4 finalColor = float4(AS_applyBlend(effectColor.rgb, originalColor.rgb, BlendMode), 1.0);
     finalColor = lerp(originalColor, finalColor, BlendStrength);
     
     // Show debug overlay if enabled
@@ -369,3 +369,4 @@ technique AS_BGX_WavySquiggles < ui_label="[AS] BGX: Wavy Squiggles"; ui_tooltip
 }
 
 #endif // __AS_BGX_WavySquiggles_1_fx
+

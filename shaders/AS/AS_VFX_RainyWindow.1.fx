@@ -77,14 +77,12 @@ static const float LIGHTNING_FREQ_APOCALYPSE = 4.0f;
 // ============================================================================
 // TEXTURES AND SAMPLERS
 // ============================================================================
-texture RainyWindow_EffectMapTarget { Width = BUFFER_WIDTH; Height = BUFFER_HEIGHT; Format = RGBA16F; }; // R=focus_val, GB=normal.xy, A=drop_coverage
-sampler RainyWindow_EffectMapSampler { Texture = RainyWindow_EffectMapTarget; };
+// R=focus_val, GB=normal.xy, A=drop_coverage
+AS_CREATE_TEX_SAMPLER(RainyWindow_EffectMapTarget, RainyWindow_EffectMapSampler, float2(BUFFER_WIDTH, BUFFER_HEIGHT), RGBA16F, 1, POINT, CLAMP)
 
-texture RainyWindow_HorizontalBlurTarget { Width = BUFFER_WIDTH; Height = BUFFER_HEIGHT; Format = RGBA8; };
-sampler RainyWindow_HorizontalBlurSampler { Texture = RainyWindow_HorizontalBlurTarget; };
+AS_CREATE_TEX_SAMPLER(RainyWindow_HorizontalBlurTarget, RainyWindow_HorizontalBlurSampler, float2(BUFFER_WIDTH, BUFFER_HEIGHT), RGBA8, 1, POINT, CLAMP)
 
-texture RainyWindow_BlurredBackgroundTarget { Width = BUFFER_WIDTH; Height = BUFFER_HEIGHT; Format = RGBA8; };
-sampler RainyWindow_BlurredBackgroundSampler { Texture = RainyWindow_BlurredBackgroundTarget; };
+AS_CREATE_TEX_SAMPLER(RainyWindow_BlurredBackgroundTarget, RainyWindow_BlurredBackgroundSampler, float2(BUFFER_WIDTH, BUFFER_HEIGHT), RGBA8, 1, POINT, CLAMP)
 
 
 // ============================================================================
@@ -110,8 +108,8 @@ uniform int LightningFrequency < ui_type = "combo"; ui_label = "Lightning Freque
 uniform float LightningIntensity < ui_type = "slider"; ui_label = "Lightning Intensity"; ui_tooltip = "Controls the brightness of lightning flashes."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Special Effects"; > = 0.5;
 
 // Audio Reactivity
-AS_AUDIO_SOURCE_UI(RainAmount_AudioSource, "Rain Amount Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
-AS_AUDIO_MULTIPLIER_UI(RainAmount_AudioMultiplier, "Rain Amount Audio Intensity", 1.0, 2.0, "Audio Reactivity")
+AS_AUDIO_UI(RainAmount_AudioSource, "Rain Amount Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
+AS_AUDIO_MULT_UI(RainAmount_AudioMultiplier, "Rain Amount Audio Intensity", 1.0, 2.0, "Audio Reactivity")
 
 AS_PERSPECTIVE_UI(PerspectiveAngles, PerspectiveZOffset, PerspectiveFocalLength, "Perspective") // Added Perspective Controls
 
@@ -125,7 +123,7 @@ AS_BLENDMODE_UI(BlendMode)
 AS_BLENDAMOUNT_UI(BlendStrength)
 
 // Debug Controls
-AS_DEBUG_MODE_UI("Off\0Show Focus Val\0Show Normals\0Show Coverage\0")
+AS_DEBUG_UI("Off\0Show Focus Val\0Show Normals\0Show Coverage\0")
 
 
 // ============================================================================
@@ -386,7 +384,7 @@ float4 FinalCompositePS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) 
         final_pixel_color_lit += final_pixel_color_lit * lightning_flicker * LightningIntensity;
     }
     
-    float3 result_blended = AS_ApplyBlend(final_pixel_color_lit, original_scene_color.rgb, BlendMode);
+    float3 result_blended = AS_applyBlend(final_pixel_color_lit, original_scene_color.rgb, BlendMode);
     return float4(lerp(original_scene_color.rgb, result_blended, BlendStrength), original_scene_color.a);
 }
 
@@ -422,3 +420,5 @@ technique AS_VFX_RainyWindow <
 }
 
 #endif // __AS_VFX_RainyWindow_1_fx
+
+

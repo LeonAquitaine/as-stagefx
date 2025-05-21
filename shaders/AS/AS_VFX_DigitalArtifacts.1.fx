@@ -102,23 +102,23 @@ uniform float ScanlineFrequency < ui_type = "slider"; ui_label = "Scanline Frequ
 uniform float RGBSplitAmount < ui_type = "slider"; ui_label = "RGB Split Amount"; ui_tooltip = "Controls the amount of RGB channel separation."; ui_min = RGB_SPLIT_MIN; ui_max = RGB_SPLIT_MAX; ui_step = 0.001; ui_category = "Hologram Parameters"; ui_category_closed = true; > = RGB_SPLIT_DEFAULT;
 
 // --- Audio Reactivity: General ---
-AS_AUDIO_SOURCE_UI(IntensitySource, "Intensity Source", AS_AUDIO_BEAT, "Audio Reactivity")
-AS_AUDIO_MULTIPLIER_UI(IntensityMult, "Intensity Impact", 2.0, 5.0, "Audio Reactivity")
+AS_AUDIO_UI(IntensitySource, "Intensity Source", AS_AUDIO_BEAT, "Audio Reactivity")
+AS_AUDIO_MULT_UI(IntensityMult, "Intensity Impact", 2.0, 5.0, "Audio Reactivity")
 
 // --- Audio Reactivity: Parameters ---
-AS_AUDIO_SOURCE_UI(ParameterSource, "Parameter Source", AS_AUDIO_BASS, "Audio Reactivity")
-AS_AUDIO_MULTIPLIER_UI(ParameterMult, "Parameter Impact", 1.0, 3.0, "Audio Reactivity")
+AS_AUDIO_UI(ParameterSource, "Parameter Source", AS_AUDIO_BASS, "Audio Reactivity")
+AS_AUDIO_MULT_UI(ParameterMult, "Parameter Impact", 1.0, 3.0, "Audio Reactivity")
 
 // --- Audio Reactivity: Hologram Specific ---
-AS_AUDIO_SOURCE_UI(ScanlineSource, "Scanline Source", AS_AUDIO_BEAT, "Audio Reactivity") 
-AS_AUDIO_MULTIPLIER_UI(ScanlineIntensity, "Scanline Intensity", 0.35, 1.0, "Audio Reactivity") 
+AS_AUDIO_UI(ScanlineSource, "Scanline Source", AS_AUDIO_BEAT, "Audio Reactivity") 
+AS_AUDIO_MULT_UI(ScanlineIntensity, "Scanline Intensity", 0.35, 1.0, "Audio Reactivity") 
 
-AS_AUDIO_SOURCE_UI(RGBSplitSource, "RGB Split Source", AS_AUDIO_BEAT, "Audio Reactivity") 
-AS_AUDIO_MULTIPLIER_UI(RGBSplitMult, "RGB Split Intensity", 1.0, 3.0, "Audio Reactivity") 
+AS_AUDIO_UI(RGBSplitSource, "RGB Split Source", AS_AUDIO_BEAT, "Audio Reactivity") 
+AS_AUDIO_MULT_UI(RGBSplitMult, "RGB Split Intensity", 1.0, 3.0, "Audio Reactivity") 
 
 // --- Audio Reactivity: Block Density ---
-AS_AUDIO_SOURCE_UI(BlockDensitySource, "Block Density Source", AS_AUDIO_MID, "Audio Reactivity") 
-AS_AUDIO_MULTIPLIER_UI(BlockDensityMult, "Block Density Impact", 1.0, 3.0, "Audio Reactivity") 
+AS_AUDIO_UI(BlockDensitySource, "Block Density Source", AS_AUDIO_MID, "Audio Reactivity") 
+AS_AUDIO_MULT_UI(BlockDensityMult, "Block Density Impact", 1.0, 3.0, "Audio Reactivity") 
 
 // --- Stage Distance ---
 AS_STAGEDEPTH_UI(EffectDepth)
@@ -129,7 +129,7 @@ AS_BLENDMODE_UI_DEFAULT(BlendMode, 0)
 AS_BLENDAMOUNT_UI(BlendAmount)
 
 // --- Debug ---
-AS_DEBUG_MODE_UI("Off\0Depth Mask\0Effect Only\0Audio\0")
+AS_DEBUG_UI("Off\0Depth Mask\0Effect Only\0Audio\0")
 
 // --- System Uniforms ---
 uniform float2 mousePosition < source = "mousepoint"; >;
@@ -393,7 +393,7 @@ float4 PS_DigitalArtifacts(float4 pos : SV_Position, float2 texcoord : TEXCOORD)
     }
     
     // Apply blend mode and depth mask
-    float3 blendedColor = AS_ApplyBlend(effectColor, originalColor.rgb, BlendMode);
+    float3 blendedColor = AS_applyBlend(effectColor, originalColor.rgb, BlendMode);
     return float4(lerp(originalColor.rgb, blendedColor, depthMask * BlendAmount), originalColor.a);
 }
 
@@ -405,3 +405,4 @@ technique AS_DigitalArtifacts < ui_label = "[AS] VFX: Digital Artifacts"; ui_too
 }
 
 #endif // __AS_VFX_DigitalArtifacts_1_fx
+

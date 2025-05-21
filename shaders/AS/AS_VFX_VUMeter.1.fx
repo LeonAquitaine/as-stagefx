@@ -20,7 +20,7 @@
  *
  * IMPLEMENTATION OVERVIEW:
  * 1. User selects mode, palette, and appearance controls
- * 2. Audio frequency data is accessed via AS_getFrequencyBand with optional smoothing
+ * 2. Audio frequency data is accessed via AS_getFreq with optional smoothing
  * 3. Bars/lines/dots are drawn using palette color by value
  * 4. Effect is zoomed/panned as needed and integrated with the scene
  * 
@@ -99,7 +99,7 @@ AS_BLENDAMOUNT_UI(BlendAmount)
 // --- Helper Functions ---
 namespace AS_VUMeterBG {
     float getSmoothedBand(int i, int bands) {
-        return saturate(AS_getFrequencyBand(i)) * Sensibility;
+        return saturate(AS_getFreq(i)) * Sensibility;
     }    float3 getPaletteColorByValue(float value) {
         if (PaletteMode == AS_PALETTE_CUSTOM) {
             return AS_GET_INTERPOLATED_CUSTOM_COLOR(VUMeter_, value);
@@ -151,7 +151,7 @@ float4 PS_VUMeterBG(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_T
     float2 uv = rotatedUV + center;
 
     float4 bg = float4(0, 0, 0, BackgroundAlpha);
-    int bands = 32; // Using AS_getFrequencyBand which handles all band sizes
+    int bands = 32; // Using AS_getFreq which handles all band sizes
     float barGap = BarGap;
     float barWidth = BarWidth;
     float roundness = BarRoundness;
@@ -276,7 +276,7 @@ float4 PS_VUMeterBG(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_T
     }
     // At the end, blend with the original scene
     float4 orig = tex2D(ReShade::BackBuffer, texcoord);
-    float3 blended = AS_ApplyBlend(effectColor.rgb, orig.rgb, BlendMode);
+    float3 blended = AS_applyBlend(effectColor.rgb, orig.rgb, BlendMode);
     float3 result = lerp(orig.rgb, blended, BlendAmount * effectColor.a);
     return float4(result, orig.a);
 }
@@ -289,3 +289,5 @@ technique AS_VUMeterBG < ui_label = "[AS] VFX: VU Meter"; ui_tooltip = "Displays
 }
 
 #endif // __AS_VFX_VUMeter_1_fx
+
+

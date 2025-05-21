@@ -58,16 +58,16 @@ uniform float MirrorReflectStrength < ui_type = "slider"; ui_label = "Mirror Str
 // AUDIO REACTIVITY
 // ============================================================================
 
-AS_AUDIO_SOURCE_UI(MirrorAudioSource, "Radius Source", AS_AUDIO_VOLUME, "Audio Reactivity")
-AS_AUDIO_MULTIPLIER_UI(MirrorRadiusAudioMult, "Radius Strength", 0.12, 0.5, "Audio Reactivity")
+AS_AUDIO_UI(MirrorAudioSource, "Radius Source", AS_AUDIO_VOLUME, "Audio Reactivity")
+AS_AUDIO_MULT_UI(MirrorRadiusAudioMult, "Radius Strength", 0.12, 0.5, "Audio Reactivity")
 
-AS_AUDIO_SOURCE_UI(MirrorWaveAudioSource, "Wave Source", AS_AUDIO_BEAT, "Audio Reactivity")
-AS_AUDIO_MULTIPLIER_UI(MirrorWaveAudioMult, "Wave Strength", 0.3, 1.0, "Audio Reactivity")
+AS_AUDIO_UI(MirrorWaveAudioSource, "Wave Source", AS_AUDIO_BEAT, "Audio Reactivity")
+AS_AUDIO_MULT_UI(MirrorWaveAudioMult, "Wave Strength", 0.3, 1.0, "Audio Reactivity")
 
 // ============================================================================
 // STAGE/POSITION CONTROLS
 // ============================================================================
-AS_POSITION_UI(WarpCenter) // Defines float2 WarpCenter; category "Position", default (0,0)
+AS_POS_UI(WarpCenter) // Defines float2 WarpCenter; category "Position", default (0,0)
 // AS_ROTATION_UI(WarpSnapRotation, WarpFineRotation) // Removed rotation controls
 AS_STAGEDEPTH_UI(WarpDepth) // Defines float WarpDepth; category "Stage", default 0.05
 
@@ -80,7 +80,7 @@ AS_BLENDAMOUNT_UI(BlendAmount)
 // ============================================================================
 // DEBUG
 // ============================================================================
-AS_DEBUG_MODE_UI("Off\0Audio Levels\0Warp Pattern\0")
+AS_DEBUG_UI("Off\0Audio Levels\0Warp Pattern\0")
 
 // ============================================================================
 // MAIN PIXEL SHADER
@@ -169,10 +169,10 @@ float4 PS_AudioMirror(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV
     // --- Debug and Final Output --- 
     if (DebugMode == 1) return float4(mask.xxx, 1.0); // Show mask
     if (DebugMode == 2) return float4(audio.xxx, 1.0); // Show audio level for MirrorAudioSource
-    // Note: DebugMode for "Warp Pattern" (value 2 in AS_DEBUG_MODE_UI) would typically show 'final_texcoord_to_sample' or similar.
+    // Note: DebugMode for "Warp Pattern" (value 2 in AS_DEBUG_UI) would typically show 'final_texcoord_to_sample' or similar.
     // For now, re-using audio display for DebugMode == 2.
 
-    float3 blended = AS_ApplyBlend(scene.rgb, orig.rgb, BlendMode);
+    float3 blended = AS_applyBlend(scene.rgb, orig.rgb, BlendMode);
     float3 final_color = lerp(orig.rgb, blended, BlendAmount);
     return float4(final_color, orig.a);
 }
@@ -185,3 +185,5 @@ technique AS_Warp < ui_label = "[AS] VFX: Warp Distort"; ui_tooltip = "Creates a
 }
 
 #endif // __AS_VFX_WarpDistort_1_fx
+
+
