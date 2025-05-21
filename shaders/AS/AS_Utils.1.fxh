@@ -50,8 +50,6 @@
 // ============================================================================
 // --- Math Constants ---
 // Standard mathematical constants for consistent use across all shaders
-#ifndef __AS_MATH_CONSTANTS
-#define __AS_MATH_CONSTANTS
 // Core mathematical constants
 static const float AS_PI = 3.1415926535897932384626433832795f;
 static const float AS_TWO_PI = 6.2831853071795864769252867665590f;
@@ -77,7 +75,6 @@ static const float AS_SQRT_TWO = 1.4142135623730950488016887242097f; // Square r
 // Depth testing constants 
 static const float AS_DEPTH_EPSILON = 0.0005f;  // Standard depth epsilon for z-fighting prevention
 static const float AS_EDGE_AA = 0.05f;          // Standard anti-aliasing edge size for smoothstep
-#endif // __AS_MATH_CONSTANTS
 
 // ============================================================================
 // UI STANDARDIZATION & MACROS
@@ -85,9 +82,6 @@ static const float AS_EDGE_AA = 0.05f;          // Standard anti-aliasing edge s
 
 // --- Listeningway Integration ---
 // These macros help with consistent Listeningway integration across all shaders
-#ifndef __AS_LISTENINGWAY_INCLUDED
-#define __AS_LISTENINGWAY_INCLUDED
-
 // Define a complete fallback implementation for Listeningway
 #ifndef __LISTENINGWAY_INSTALLED
     // Since we're not including ListeningwayUniforms.fxh anymore,
@@ -109,8 +103,6 @@ static const float AS_EDGE_AA = 0.05f;          // Standard anti-aliasing edge s
     uniform float Listeningway_TotalPhases120Hz < source = "listeningway_totalphases120hz"; > = 0.0f;
 #endif
 
-#ifndef __AS_ANIMATION_CONSTANTS
-#define __AS_ANIMATION_CONSTANTS
 // Animation timing constants
 static const float AS_ANIMATION_SPEED_SLOW = 0.5f;       // Slow animation speed multiplier
 static const float AS_ANIMATION_SPEED_NORMAL = 1.0f;     // Normal animation speed multiplier  
@@ -125,10 +117,6 @@ static const float AS_TIME_QUARTER_SECOND = 0.25f;       // 0.25 seconds of anim
 static const float AS_PATTERN_FREQ_LOW = 2.0f;           // Low frequency for animation patterns
 static const float AS_PATTERN_FREQ_MED = 5.0f;           // Medium frequency for animation patterns
 static const float AS_PATTERN_FREQ_HIGH = 10.0f;         // High frequency for animation patterns
-#endif // __AS_ANIMATION_CONSTANTS
-
-#ifndef __AS_COMMON_UI_RANGES
-#define __AS_COMMON_UI_RANGES
 
 // Standard UI ranges for commonly used parameters
 static const float AS_RANGE_ZERO_ONE_MIN = 0.0f;         // Common minimum for normalized parameters
@@ -159,17 +147,12 @@ static const float AS_RANGE_SPEED_MIN = 0.0f;            // Minimum for speed pa
 static const float AS_RANGE_SPEED_MAX = 5.0f;            // Maximum for speed parameters
 static const float AS_RANGE_SPEED_DEFAULT = 1.0f;        // Default for speed parameters
 
-#endif // __AS_COMMON_UI_RANGES
-
 // Debug mode constants
-#ifndef __AS_DEBUG_CONSTANTS
-#define __AS_DEBUG_CONSTANTS
 static const int AS_DEBUG_OFF = 0;                      // Debug mode off
 static const int AS_DEBUG_MASK = 1;                     // Debug mask display
 static const int AS_DEBUG_DEPTH = 2;                    // Debug depth display
 static const int AS_DEBUG_AUDIO = 3;                    // Debug audio display
 static const int AS_DEBUG_PATTERN = 4;                  // Debug pattern display
-#endif // __AS_DEBUG_CONSTANTS
 
 // --- Audio Constants ---
 #define AS_AUDIO_OFF     0  // Audio source disabled
@@ -182,8 +165,6 @@ static const int AS_DEBUG_PATTERN = 4;                  // Debug pattern display
 #define AS_BLEND_LIGHTEN    5 // Lighter only
 
 // --- Display and Resolution Constants ---
-#ifndef __AS_DISPLAY_CONSTANTS
-#define __AS_DISPLAY_CONSTANTS
 static const float AS_RESOLUTION_BASE_HEIGHT = 1080.0f;  // Standard height for scaling calculations
 static const float AS_RESOLUTION_BASE_WIDTH = 1920.0f;   // Standard width for scaling calculations
 static const float AS_STANDARD_ASPECT_RATIO = 16.0f/9.0f; // Standard aspect ratio for reference
@@ -197,7 +178,7 @@ static const float AS_UI_POSITION_SCALE = 0.5f;  // Position scaling factor for 
 static const float AS_SCREEN_CENTER_X = 0.5f;    // Screen center X coordinate
 static const float AS_SCREEN_CENTER_Y = 0.5f;    // Screen center Y coordinate
 static const float AS_RESOLUTION_SCALE = 1080.0f / BUFFER_HEIGHT; // Resolution scaling factor
-#endif // __AS_DISPLAY_CONSTANTS
+
 #define AS_AUDIO_BASS    4  // Low frequency band
 #define AS_AUDIO_TREBLE  5  // High frequency band
 #define AS_AUDIO_MID     6  // Mid frequency band
@@ -220,12 +201,7 @@ uniform int name < ui_type = "combo"; ui_label = label; ui_items = AS_AUDIO_SOUR
 #define AS_AUDIO_MULTIPLIER_UI(name, label, defaultValue, maxValue, category) \
 uniform float name < ui_type = "slider"; ui_label = label; ui_tooltip = "Controls how much the selected audio source affects this parameter."; ui_min = 0.0; ui_max = maxValue; ui_step = 0.05; ui_category = category; > = defaultValue;
 
-#endif // __AS_LISTENINGWAY_INCLUDED
-
 // --- Debug Mode Standardization ---
-#ifndef __AS_DEBUG_MODE_INCLUDED
-#define __AS_DEBUG_MODE_INCLUDED
-
 // --- Debug UI Macro ---
 #define AS_DEBUG_MODE_UI(items) \
 uniform int DebugMode < ui_type = "combo"; ui_label = "Debug View"; ui_tooltip = "Show various visualization modes for debugging."; ui_items = items; ui_category = "Debug"; > = 0;
@@ -238,12 +214,7 @@ bool AS_isDebugMode(int currentMode, int targetMode) {
 // Standard "Off" value for debug modes
 #define AS_DEBUG_OFF 0
 
-#endif // __AS_DEBUG_MODE_INCLUDED
-
 // --- Sway Animation UI Standardization ---
-#ifndef __AS_SWAY_UI_INCLUDED
-#define __AS_SWAY_UI_INCLUDED
-
 // --- Sway UI Macros ---
 #define AS_SWAYSPEED_UI(name, category) \
 uniform float name < ui_type = "slider"; ui_label = "Sway Speed"; ui_tooltip = "Controls the speed of the swaying animation"; ui_min = 0.0; ui_max = 5.0; ui_step = 0.01; ui_category = category; > = 1.0;
@@ -251,12 +222,7 @@ uniform float name < ui_type = "slider"; ui_label = "Sway Speed"; ui_tooltip = "
 #define AS_SWAYANGLE_UI(name, category) \
 uniform float name < ui_type = "slider"; ui_label = "Sway Angle"; ui_tooltip = "Maximum angle of the swaying in degrees"; ui_min = 0.0; ui_max = 180.0; ui_step = 1.0; ui_category = category; > = 15.0;
 
-#endif // __AS_SWAY_UI_INCLUDED
-
 // --- Position and Scale UI Standardization ---
-#ifndef __AS_POSITION_UI_INCLUDED
-#define __AS_POSITION_UI_INCLUDED
-
 // --- Position Constants ---
 #define AS_POSITION_MIN -1.5f
 #define AS_POSITION_MAX 1.5f
@@ -361,8 +327,6 @@ float2 AS_rotate2D(float2 p, float a)
         p.x * s + p.y * c
     );
 }
-
-#endif // __AS_POSITION_UI_INCLUDED
 
 // --- Math Helpers ---
 // NOTE: AS_mod must be defined before any function that uses it (such as AS_mapAngleToBand)
@@ -570,9 +534,6 @@ float AS_applyAudioReactivityEx(float baseValue, int audioSource, float multipli
 // ============================================================================
 
 // --- Rotation UI Standardization ---
-#ifndef __AS_ROTATION_UI_INCLUDED
-#define __AS_ROTATION_UI_INCLUDED
-
 // --- Rotation UI Macro ---
 // Creates a standardized pair of rotation controls (snap + fine) that appear on the same line
 #define AS_ROTATION_UI(snapName, fineName) \
@@ -586,12 +547,7 @@ float AS_getRotationRadians(int snapRotation, float fineRotation) {
     return (snapAngle + fineRotation) * (AS_PI / 180.0);
 }
 
-#endif // __AS_ROTATION_UI_INCLUDED
-
 // --- Animation UI Standardization ---
-#ifndef __AS_ANIMATION_UI_INCLUDED
-#define __AS_ANIMATION_UI_INCLUDED
-
 // --- Animation Constants ---
 #define AS_ANIMATION_SPEED_MIN 0.0
 #define AS_ANIMATION_SPEED_MAX 5.0
@@ -632,8 +588,6 @@ float AS_getAnimationTime(float speed, float keyframe) {
     // Otherwise use animated time plus keyframe offset
     return (AS_getTime() * speed) + keyframe;
 }
-
-#endif // __AS_ANIMATION_UI_INCLUDED
 
 // --- Math Helpers ---
 // Corrects UV coordinates for non-square aspect ratios
@@ -836,18 +790,10 @@ float AS_starMask(float2 p, float size, float points, float angle) {
 // STAGE DEPTH & BLEND UI HELPERS
 // ============================================================================
 
-#ifndef __AS_STAGEDEPTH_UI_INCLUDED
-#define __AS_STAGEDEPTH_UI_INCLUDED
-
 #define AS_STAGEDEPTH_UI(name) \
 uniform float name < ui_type = "slider"; ui_label = "Effect Depth"; ui_tooltip = "Controls how far back the stage effect appears (Linear Depth 0-1)."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Stage"; > = 0.05;
 
-#endif // __AS_STAGEDEPTH_UI_INCLUDED
-
 // --- Blend Mode UI Standardization ---
-#ifndef __AS_BLEND_UI_INCLUDED
-#define __AS_BLEND_UI_INCLUDED
-
 // --- Blend Mode UI Macro with default value ---
 #define AS_BLENDMODE_UI_DEFAULT(name, defaultMode) \
 BLENDING_COMBO(name, "Mode", "Select how the effect will mix with the background.", "Final Mix", false, 0, defaultMode);
@@ -860,14 +806,9 @@ BLENDING_COMBO(name, "Mode", "Select how the effect will mix with the background
 #define AS_BLENDAMOUNT_UI(name) \
 uniform float name < ui_type = "slider"; ui_label = "Strength"; ui_tooltip = "Controls the overall intensity/opacity of the effect blend."; ui_min = 0.0; ui_max = 1.0; ui_category = "Final Mix"; > = 1.0;
 
-#endif // __AS_BLEND_UI_INCLUDED
-
 // ============================================================================
 // TEXTURE & SAMPLER CREATION
 // ============================================================================
-#ifndef __AS_TEXTURES_INCLUDED
-#define __AS_TEXTURES_INCLUDED
-
 // --- Texture Creation Macro ---
 // Creates a texture2D resource with specified dimensions, format and mip levels
 #define AS_CREATE_TEXTURE(TEXTURE_NAME, SIZE, FORMAT, LEVELS) \
@@ -911,7 +852,5 @@ uniform float name < ui_type = "slider"; ui_label = "Strength"; ui_tooltip = "Co
         AddressU = ADDRESS; \
         AddressV = ADDRESS; \
     };
-
-#endif // __AS_TEXTURES_INCLUDED
 
 #endif // __AS_Utils_1_fxh
