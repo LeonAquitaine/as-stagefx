@@ -40,6 +40,7 @@ Creates dynamic and colorful patterns reminiscent of stained glass illuminated b
 Inspired by: <a href="https://www.shadertoy.com/view/WlsSzM" target="_new">"Stained Lights" by 104</a>.
 </td>
 <td width="50%"><div style="text-align:center">
+<img src="https://github.com/user-attachments/assets/45b96d92-dedd-45ec-8007-69efb93c3786">
 </div></td>
 </tr>
 <tr>
