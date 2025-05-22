@@ -44,7 +44,7 @@
 // INCLUDES
 // ============================================================================
 #include "ReShade.fxh"
-#include "AS_Utils.1.fxh" // For AS_PI, AS_applyBlendMode, etc.
+#include "AS_Utils.1.fxh" // For AS_PI, AS_applyBlend, etc.
 
 // ============================================================================
 // CONSTANTS
@@ -141,7 +141,7 @@ uniform float LuminanceSoftSplit < ui_type = "slider"; ui_label = "Tone Separati
     ui_category = "Tone Segmentation"; > = TONE_SOFT_SPLIT_DEFAULT;
 
 // --- Shadow Adjustments ---
-uniform bool EnableShadows < ui_type = "checkbox"; ui_label = "Enable";
+uniform bool EnableShadows < ui_type = "checkbox"; ui_label = "Enable Shadow Adjustments";
     ui_tooltip = "Enable color adjustments for the shadow region.";
     ui_category = "Shadow Adjustments"; ui_category_closed = true; > = true;
 
@@ -161,7 +161,7 @@ uniform float Lightness_Shadows < ui_type = "slider"; ui_label = "Lightness";
     ui_category = "Shadow Adjustments"; ui_category_closed = true; > = LIGHTNESS_DEFAULT;
 
 // --- Midtone Adjustments ---
-uniform bool EnableMidtones < ui_type = "checkbox"; ui_label = "Enable";
+uniform bool EnableMidtones < ui_type = "checkbox"; ui_label = "Enable Midtone Adjustments";
     ui_tooltip = "Enable color adjustments for the midtone region.";
     ui_category = "Midtone Adjustments"; ui_category_closed = true; > = true;
 
@@ -181,7 +181,7 @@ uniform float Lightness_Midtones < ui_type = "slider"; ui_label = "Lightness";
     ui_category = "Midtone Adjustments"; ui_category_closed = true; > = LIGHTNESS_DEFAULT;
 
 // --- Highlight Adjustments ---
-uniform bool EnableHighlights < ui_type = "checkbox"; ui_label = "Enable";
+uniform bool EnableHighlights < ui_type = "checkbox"; ui_label = "Enable Highlight Adjustments";
     ui_tooltip = "Enable color adjustments for the highlight region.";
     ui_category = "Highlight Adjustments"; ui_category_closed = true; > = true;
 
@@ -201,7 +201,7 @@ uniform float Lightness_Highlights < ui_type = "slider"; ui_label = "Lightness";
     ui_category = "Highlight Adjustments"; ui_category_closed = true; > = LIGHTNESS_DEFAULT;
 
 // --- Skin Tone Protection ---
-uniform bool EnableSkinToneProtection < ui_type = "checkbox"; ui_label = "Enable";
+uniform bool EnableSkinToneProtection < ui_type = "checkbox"; ui_label = "Enable Skin Tone Protection";
     ui_tooltip = "Protect skin tones from hue shifts. Assumes skin tones are in the defined range.";
     ui_category = "Skin Tone Protection"; ui_category_closed = true; > = false;
 
@@ -346,7 +346,6 @@ float4 PS_ColorBalancer(float4 pos : SV_Position, float2 texcoord : TexCoord) : 
     }
 
     // --- Tone Segmentation ---
-    // Use pixel's original luminance for segmentation, not potentially adjusted lightness
     float scene_lum = dot(original_color_rgb, float3(0.299, 0.587, 0.114)); 
     float Ws, Wm, Wh; // Shadow, Midtone, Highlight weights
     get_tonal_weights(scene_lum, ShadowThreshold, HighlightThreshold, LuminanceSoftSplit, Ws, Wm, Wh);
@@ -372,112 +371,59 @@ float4 PS_ColorBalancer(float4 pos : SV_Position, float2 texcoord : TexCoord) : 
             target_hue_S = norm_hue(H_comp - 30.0); target_hue_M = H1; target_hue_H = norm_hue(H_comp + 30.0);
         } else if (active_scheme == SCHEME_TETRADIC) { // Square: H, H+90, H+180, H+270
             target_hue_S = norm_hue(H1 + 90.0); target_hue_M = H1; target_hue_H = norm_hue(H1 + 270.0); 
-            // Example: S=H2(Base+90), M=H1(Base), H=H4(Base+270). H3(Base+180) is unused or could be for another region.
         }
     }
 
-    // --- Apply Adjustments Per Region ---
-    float3 final_hsl = current_hsl;
+    // --- Apply Adjustments Per Region (Weighted Sum Method) ---
+    float eff_h_S, eff_s_S, eff_l_S; // Effective HSL for Shadows
+    float eff_h_M, eff_s_M, eff_l_M; // Effective HSL for Midtones
+    float eff_h_H, eff_s_H, eff_l_H; // Effective HSL for Highlights
 
-    // Shadows
-    if (EnableShadows && Ws > 0.001) {
-        float h_s = (active_scheme == SCHEME_MANUAL) ? norm_hue(original_hue + HueShift_Shadows) : target_hue_S;
-        float s_s = original_sat * S_sat;
-        float l_s = original_lum * S_light;
-        
-        if (EnableSkinToneProtection) {
-            if (SkinProtect_HueMin < SkinProtect_HueMax && original_hue >= SkinProtect_HueMin && original_hue <= SkinProtect_HueMax) {
-                 float factor = 1.0 - smoothstep(0.0, SkinProtect_Falloff, min(original_hue - SkinProtect_HueMin, SkinProtect_HueMax - original_hue));
-                 h_s = lerp(h_s, original_hue, factor);
-            } // Basic non-wrapping skin protection for now
-        }
-        final_hsl = lerp(final_hsl, float3(h_s, s_s, l_s), Ws);
-    }
-
-    // Midtones
-    if (EnableMidtones && Wm > 0.001) {
-        float h_m = (active_scheme == SCHEME_MANUAL) ? norm_hue(original_hue + HueShift_Midtones) : target_hue_M;
-        float s_m = original_sat * M_sat;
-        float l_m = original_lum * M_light;
-
-        if (EnableSkinToneProtection) {
-             if (SkinProtect_HueMin < SkinProtect_HueMax && original_hue >= SkinProtect_HueMin && original_hue <= SkinProtect_HueMax) {
-                 float factor = 1.0 - smoothstep(0.0, SkinProtect_Falloff, min(original_hue - SkinProtect_HueMin, SkinProtect_HueMax - original_hue));
-                 h_m = lerp(h_m, original_hue, factor);
-            }
-        }
-        // When lerping HSL, ensure it's done carefully if regions fully replace.
-        // Here, we are blending the final HSL based on weights.
-        // This requires careful thought: are we blending HSL values, or RGB results of HSL adjustments?
-        // Blending HSL values is simpler to implement first.
-        float3 mid_hsl_adjusted = float3(h_m, s_m, l_m);
-        if (Ws < 0.999) { // If not fully shadow
-             final_hsl = lerp(final_hsl, mid_hsl_adjusted, Wm / (Wm + Wh + 0.00001)); // Weighted average for remaining part
-        } else { // If only midtones contribute after shadows (unlikely with current weight calc)
-            final_hsl = mid_hsl_adjusted;
-        }
-    }
-    
-    // Highlights
-    if (EnableHighlights && Wh > 0.001) {
-        float h_h = (active_scheme == SCHEME_MANUAL) ? norm_hue(original_hue + HueShift_Highlights) : target_hue_H;
-        float s_h = original_sat * H_sat;
-        float l_h = original_lum * H_light;
-
-        if (EnableSkinToneProtection) {
-             if (SkinProtect_HueMin < SkinProtect_HueMax && original_hue >= SkinProtect_HueMin && original_hue <= SkinProtect_HueMax) {
-                 float factor = 1.0 - smoothstep(0.0, SkinProtect_Falloff, min(original_hue - SkinProtect_HueMin, SkinProtect_HueMax - original_hue));
-                 h_h = lerp(h_h, original_hue, factor);
-            }
-        }
-        float3 high_hsl_adjusted = float3(h_h, s_h, l_h);
-         if (Ws + Wm < 0.999) { // If not fully shadow/mid
-            final_hsl = lerp(final_hsl, high_hsl_adjusted, Wh / (Wh + 0.00001)); // Only highlight contribution to remaining part
-        } else {
-            final_hsl = high_hsl_adjusted;
-        }
-    }
-    
-    // The HSL blending logic above is a bit naive. A better approach is to calculate the adjusted HSL for each component
-    // (S, M, H) and then combine them using the weights.
-    float final_h = original_hue;
-    float final_s = original_sat;
-    float final_l = original_lum;
-
-    // Shadow Contribution
-    float h_s_target = (active_scheme == SCHEME_MANUAL) ? norm_hue(original_hue + HueShift_Shadows) : target_hue_S;
+    // Shadow region
+    eff_h_S = (active_scheme == SCHEME_MANUAL) ? norm_hue(original_hue + HueShift_Shadows) : target_hue_S;
     if (EnableSkinToneProtection && SkinProtect_HueMin < SkinProtect_HueMax && original_hue >= SkinProtect_HueMin && original_hue <= SkinProtect_HueMax) {
         float factor = 1.0 - smoothstep(0.0, SkinProtect_Falloff, min(original_hue - SkinProtect_HueMin, SkinProtect_HueMax - original_hue));
-        h_s_target = lerp(h_s_target, original_hue, factor);
+        eff_h_S = lerp(eff_h_S, original_hue, factor);
     }
-    final_h = lerp(final_h, EnableShadows ? h_s_target : original_hue, Ws);
-    final_s = lerp(final_s, EnableShadows ? original_sat * S_sat : original_sat, Ws);
-    final_l = lerp(final_l, EnableShadows ? original_lum * S_light : original_lum, Ws);
+    eff_s_S = original_sat * S_sat;
+    eff_l_S = original_lum * S_light;
+    if (!EnableShadows) {
+        eff_h_S = original_hue; eff_s_S = original_sat; eff_l_S = original_lum;
+    }
 
-    // Midtone Contribution
-    float h_m_target = (active_scheme == SCHEME_MANUAL) ? norm_hue(original_hue + HueShift_Midtones) : target_hue_M;
-     if (EnableSkinToneProtection && SkinProtect_HueMin < SkinProtect_HueMax && original_hue >= SkinProtect_HueMin && original_hue <= SkinProtect_HueMax) {
-        float factor = 1.0 - smoothstep(0.0, SkinProtect_Falloff, min(original_hue - SkinProtect_HueMin, SkinProtect_HueMax - original_hue));
-        h_m_target = lerp(h_m_target, original_hue, factor);
-    }
-    final_h = lerp(final_h, EnableMidtones ? h_m_target : original_hue, Wm);
-    final_s = lerp(final_s, EnableMidtones ? original_sat * M_sat : original_sat, Wm);
-    final_l = lerp(final_l, EnableMidtones ? original_lum * M_light : original_lum, Wm);
-    
-    // Highlight Contribution
-    float h_h_target = (active_scheme == SCHEME_MANUAL) ? norm_hue(original_hue + HueShift_Highlights) : target_hue_H;
+    // Midtone region
+    eff_h_M = (active_scheme == SCHEME_MANUAL) ? norm_hue(original_hue + HueShift_Midtones) : target_hue_M;
     if (EnableSkinToneProtection && SkinProtect_HueMin < SkinProtect_HueMax && original_hue >= SkinProtect_HueMin && original_hue <= SkinProtect_HueMax) {
         float factor = 1.0 - smoothstep(0.0, SkinProtect_Falloff, min(original_hue - SkinProtect_HueMin, SkinProtect_HueMax - original_hue));
-        h_h_target = lerp(h_h_target, original_hue, factor);
+        eff_h_M = lerp(eff_h_M, original_hue, factor);
     }
-    final_h = lerp(final_h, EnableHighlights ? h_h_target : original_hue, Wh);
-    final_s = lerp(final_s, EnableHighlights ? original_sat * H_sat : original_sat, Wh);
-    final_l = lerp(final_l, EnableHighlights ? original_lum * H_light : original_lum, Wh);
+    eff_s_M = original_sat * M_sat;
+    eff_l_M = original_lum * M_light;
+    if (!EnableMidtones) {
+        eff_h_M = original_hue; eff_s_M = original_sat; eff_l_M = original_lum;
+    }
+
+    // Highlight region
+    eff_h_H = (active_scheme == SCHEME_MANUAL) ? norm_hue(original_hue + HueShift_Highlights) : target_hue_H;
+    if (EnableSkinToneProtection && SkinProtect_HueMin < SkinProtect_HueMax && original_hue >= SkinProtect_HueMin && original_hue <= SkinProtect_HueMax) {
+        float factor = 1.0 - smoothstep(0.0, SkinProtect_Falloff, min(original_hue - SkinProtect_HueMin, SkinProtect_HueMax - original_hue));
+        eff_h_H = lerp(eff_h_H, original_hue, factor);
+    }
+    eff_s_H = original_sat * H_sat;
+    eff_l_H = original_lum * H_light;
+    if (!EnableHighlights) {
+        eff_h_H = original_hue; eff_s_H = original_sat; eff_l_H = original_lum;
+    }
+
+    // Combine using weights (Ws, Wm, Wh are normalized in get_tonal_weights to sum to 1.0)
+    float final_h = Ws * eff_h_S + Wm * eff_h_M + Wh * eff_h_H;
+    float final_s = Ws * eff_s_S + Wm * eff_s_M + Wh * eff_s_H;
+    float final_l = Ws * eff_l_S + Wm * eff_l_M + Wh * eff_l_H;
     
-    final_hsl = float3(norm_hue(final_h), saturate(final_s), saturate(final_l));
+    float3 blended_hsl = float3(norm_hue(final_h), saturate(final_s), saturate(final_l));
 
     // --- Convert back to RGB and apply final mix ---
-    float3 final_color_rgb = hsl_to_rgb(final_hsl);
+    float3 final_color_rgb = hsl_to_rgb(blended_hsl); // Use the new blended_hsl
     
     // Corrected blend function call
     return AS_applyBlend(float4(final_color_rgb, 1.0), float4(original_color_rgb, 1.0), BlendMode, BlendAmount);
