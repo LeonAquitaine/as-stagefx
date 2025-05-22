@@ -1,8 +1,43 @@
-#ifndef __AS_VFX_ProteanClouds_1_fx
-#define __AS_VFX_ProteanClouds_1_fx
+/**
+ * AS_BGX_ProteanClouds.1.fx - Dynamic Volumetric Cloud Formation
+ * Author: Leon Aquitaine (based on original by Nimitz/Kali)
+ * License: Creative Commons Attribution 4.0 International
+ * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
+ * 
+ * ===================================================================================
+ *
+ * DESCRIPTION:
+ * Renders dynamic, evolving volumetric clouds through raymarching techniques. Creates
+ * an immersive, abstract cloudscape with dynamic color variations and realistic lighting.
+ *
+ * FEATURES:
+ * - High-quality volumetric cloud formations rendered with raymarching
+ * - Customizable cloud density, shape, and detail
+ * - Dynamic camera movement with adjustable path and sway
+ * - Sophisticated internal lighting and self-shadowing
+ * - Color palette system with customizable parameters
+ * - Audio reactivity for multiple cloud parameters
+ * - Resolution-independent rendering with precise position controls
+ *
+ * IMPLEMENTATION OVERVIEW:
+ * 1. Raymarches a 3D density field with FBM-like noise functions
+ * 2. Calculates cloud density from transformed noise patterns
+ * 3. Applies dynamic lighting with self-shadows for volumetric feel
+ * 4. Adds atmospheric fog with distance and color controls
+ * 5. Uses camera animation along a procedural path for immersion
+ *
+ * ===================================================================================
+ */
+
+// ============================================================================
+// TECHNIQUE GUARD - Prevents duplicate loading of the same shader
+// ============================================================================
+#ifndef __AS_BGX_ProteanClouds_1_fx
+#define __AS_BGX_ProteanClouds_1_fx
 
 #include "ReShade.fxh"
 #include "AS_Utils.1.fxh" 
+#include "AS_Palette.1.fxh"
 
 // Global Parameters
 static float g_prm1;
@@ -211,4 +246,4 @@ technique ProteanClouds_Artist_V2 // Incremented version name
 }
 
 
-#endif // __AS_VFX_ProteanClouds_1_fx
+#endif // __AS_BGX_ProteanClouds_1_fx
