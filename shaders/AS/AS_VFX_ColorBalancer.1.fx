@@ -104,6 +104,13 @@ static const int SCHEME_SPLIT_COMPLEMENTARY = 3;
 static const int SCHEME_TETRADIC = 4; // Square Tetradic
 static const int SCHEME_MANUAL = 5;
 
+// Harmony Role Assignment IDs
+static const int ROLE_ORIGINAL_HUE = 0;
+static const int ROLE_HARMONY_1 = 1; // Typically Base Hue
+static const int ROLE_HARMONY_2 = 2; // Typically second harmony color
+static const int ROLE_HARMONY_3 = 3; // Typically third harmony color
+static const int ROLE_HARMONY_4 = 4; // Typically fourth harmony color (for Tetradic)
+
 // ============================================================================
 // UI DECLARATIONS
 // ============================================================================
@@ -116,13 +123,44 @@ uniform int PresetSelector < ui_type = "combo"; ui_label = "Cinematic Preset";
 
 uniform int ColorScheme < ui_type = "combo"; ui_label = "Color Harmony Scheme";
     ui_items = "Complementary\0Analogous (30° spread)\0Triadic (120° spread)\0Split-Complementary\0Tetradic (Square, 90° spread)\0* Manual Hue Shifts\0";
-    ui_tooltip = "Select the color harmony model to apply. Manual mode uses direct hue shifts per region.";
+    ui_tooltip = "Select the color harmony model. Manual mode uses direct hue shifts. For schemes, 'Harmony Color X' assignments map as follows:\n"
+                 "Complementary: C1=Base, C2=Complement (Base+180°)\n"
+                 "Analogous: C1=Base, C2=Base-30°, C3=Base+30°\n"
+                 "Triadic: C1=Base, C2=Base+120°, C3=Base+240°\n"
+                 "Split-Complementary: C1=Base, C2=Complement-30°, C3=Complement+30°\n"
+                 "Tetradic (Square): C1=Base, C2=Base+90°, C3=Base+180°, C4=Base+270°";
+    ui_text = "Defines the color relationship rule. See tooltip for 'Harmony Color X' details per scheme.";
     ui_category = "Palette & Style"; > = SCHEME_COMPLEMENTARY;
 
 uniform float BaseHue < ui_type = "slider"; ui_label = "Base Hue";
     ui_min = BASE_HUE_MIN; ui_max = BASE_HUE_MAX; ui_step = 0.1;
     ui_tooltip = "Primary color anchor for the harmony scheme (in degrees).";
+    ui_text = "The main hue (0-360°) that anchors the selected color scheme calculations.";
     ui_category = "Palette & Style"; > = BASE_HUE_DEFAULT;
+
+uniform bool UseCustomHarmonyAssignment < ui_type = "checkbox"; ui_label = "Use Custom Harmony Color Assignment";
+    ui_tooltip = "OFF: All tonal regions primarily target the Base Hue (Harmony Color 1 from the selected scheme), with individual Hue Shifts applied as offsets. ON: Enables detailed assignment of any calculated harmony color (or original hue) to each tonal region using the 'Harmony Color Assignment' dropdowns below.";
+    ui_text = "Toggle between simple (Base Hue for all regions + offsets) and advanced (per-region selection of scheme colors) modes.";
+    ui_category = "Palette & Style"; > = false;
+
+// --- Harmony Color Assignment ---
+uniform int ShadowsHarmonyRoleAssignment < ui_type = "combo"; ui_label = "Shadows Use";
+    ui_items = "Original Pixel Hue\0Harmony Color 1\0Harmony Color 2\0Harmony Color 3\0Harmony Color 4\0";
+    ui_tooltip = "Assigns a calculated harmony color (or original pixel hue) to the Shadows region. The meaning of 'Harmony Color X' depends on the selected Color Harmony Scheme.";
+    ui_text = "Maps a harmony color (from selected scheme) or original hue to shadows.";
+    ui_category = "Harmony Color Assignment"; ui_category_closed = true; > = ROLE_HARMONY_2; // Default for Complementary: Shadows = Complement
+
+uniform int MidtonesHarmonyRoleAssignment < ui_type = "combo"; ui_label = "Midtones Use";
+    ui_items = "Original Pixel Hue\0Harmony Color 1\0Harmony Color 2\0Harmony Color 3\0Harmony Color 4\0";
+    ui_tooltip = "Assigns a calculated harmony color (or original pixel hue) to the Midtones region. The meaning of 'Harmony Color X' depends on the selected Color Harmony Scheme.";
+    ui_text = "Maps a harmony color (from selected scheme) or original hue to midtones.";
+    ui_category = "Harmony Color Assignment"; ui_category_closed = true; > = ROLE_HARMONY_1; // Default for Complementary: Midtones = Base
+
+uniform int HighlightsHarmonyRoleAssignment < ui_type = "combo"; ui_label = "Highlights Use";
+    ui_items = "Original Pixel Hue\0Harmony Color 1\0Harmony Color 2\0Harmony Color 3\0Harmony Color 4\0";
+    ui_tooltip = "Assigns a calculated harmony color (or original pixel hue) to the Highlights region. The meaning of 'Harmony Color X' depends on the selected Color Harmony Scheme.";
+    ui_text = "Maps a harmony color (from selected scheme) or original hue to highlights.";
+    ui_category = "Harmony Color Assignment"; ui_category_closed = true; > = ROLE_HARMONY_1; // Default for Complementary: Highlights = Base
 
 // --- Tone Segmentation ---
 uniform float ShadowThreshold < ui_type = "slider"; ui_label = "Shadows Upper Threshold";
@@ -138,6 +176,7 @@ uniform float HighlightThreshold < ui_type = "slider"; ui_label = "Highlights Lo
 uniform float LuminanceSoftSplit < ui_type = "slider"; ui_label = "Tone Separation Softness";
     ui_min = TONE_SOFT_SPLIT_MIN; ui_max = TONE_SOFT_SPLIT_MAX; ui_step = 0.01;
     ui_tooltip = "Controls the softness (transition width) between shadow, midtone, and highlight regions.";
+    ui_text = "Adjusts the smoothness of transitions between tonal regions. Higher values = softer blends.";
     ui_category = "Tone Segmentation"; > = TONE_SOFT_SPLIT_DEFAULT;
 
 // --- Shadow Adjustments ---
@@ -148,6 +187,7 @@ uniform bool EnableShadows < ui_type = "checkbox"; ui_label = "Enable Shadow Adj
 uniform float HueShift_Shadows < ui_type = "slider"; ui_label = "* Manual Hue Shift";
     ui_min = HUE_SHIFT_MIN; ui_max = HUE_SHIFT_MAX; ui_step = 0.1;
     ui_tooltip = "Hue Shift for shadows. If Scheme is Manual, this is a direct shift from original. Otherwise, it's an additional offset to the harmony target hue.";
+    ui_text = "Shift hue for shadows. Behavior depends on Color Scheme (direct if Manual, offset if scheme-based).";
     ui_category = "Shadow Adjustments"; ui_category_closed = true; > = HUE_SHIFT_DEFAULT;
 
 uniform float Saturation_Shadows < ui_type = "slider"; ui_label = "Saturation";
@@ -168,6 +208,7 @@ uniform bool EnableMidtones < ui_type = "checkbox"; ui_label = "Enable Midtone A
 uniform float HueShift_Midtones < ui_type = "slider"; ui_label = "* Manual Hue Shift";
     ui_min = HUE_SHIFT_MIN; ui_max = HUE_SHIFT_MAX; ui_step = 0.1;
     ui_tooltip = "Hue Shift for midtones. If Scheme is Manual, this is a direct shift from original. Otherwise, it's an additional offset to the harmony target hue.";
+    ui_text = "Shift hue for midtones. Behavior depends on Color Scheme (direct if Manual, offset if scheme-based).";
     ui_category = "Midtone Adjustments"; ui_category_closed = true; > = HUE_SHIFT_DEFAULT;
 
 uniform float Saturation_Midtones < ui_type = "slider"; ui_label = "Saturation";
@@ -188,6 +229,7 @@ uniform bool EnableHighlights < ui_type = "checkbox"; ui_label = "Enable Highlig
 uniform float HueShift_Highlights < ui_type = "slider"; ui_label = "* Manual Hue Shift";
     ui_min = HUE_SHIFT_MIN; ui_max = HUE_SHIFT_MAX; ui_step = 0.1;
     ui_tooltip = "Hue Shift for highlights. If Scheme is Manual, this is a direct shift from original. Otherwise, it's an additional offset to the harmony target hue.";
+    ui_text = "Shift hue for highlights. Behavior depends on Color Scheme (direct if Manual, offset if scheme-based).";
     ui_category = "Highlight Adjustments"; ui_category_closed = true; > = HUE_SHIFT_DEFAULT;
 
 uniform float Saturation_Highlights < ui_type = "slider"; ui_label = "Saturation";
@@ -208,11 +250,13 @@ uniform bool EnableSkinToneProtection < ui_type = "checkbox"; ui_label = "Enable
 uniform float SkinProtect_HueMin < ui_type = "slider"; ui_label = "Hue Min";
     ui_min = SKIN_PROTECT_HUE_MIN_RANGE; ui_max = SKIN_PROTECT_HUE_MAX_RANGE; ui_step = 0.1;
     ui_tooltip = "Minimum hue for skin tone protection range (degrees). If Min > Max, the range wraps around 360/0.";
+    ui_text = "Start of protected hue range. If Min > Max, range wraps around 0/360 (e.g., 350 to 20).";
     ui_category = "Skin Tone Protection"; ui_category_closed = true; > = SKIN_PROTECT_HUE_DEFAULT_MIN;
 
 uniform float SkinProtect_HueMax < ui_type = "slider"; ui_label = "Hue Max";
     ui_min = SKIN_PROTECT_HUE_MIN_RANGE; ui_max = SKIN_PROTECT_HUE_MAX_RANGE; ui_step = 0.1;
     ui_tooltip = "Maximum hue for skin tone protection range (degrees).";
+    ui_text = "End of protected hue range. See 'Hue Min' for wrap-around behavior.";
     ui_category = "Skin Tone Protection"; ui_category_closed = true; > = SKIN_PROTECT_HUE_DEFAULT_MAX;
 
 uniform float SkinProtect_Falloff < ui_type = "slider"; ui_label = "Falloff";
@@ -392,17 +436,61 @@ float4 PS_ColorBalancer(float4 pos : SV_Position, float2 texcoord : TexCoord) : 
     if (active_scheme != SCHEME_MANUAL) {
         float H1 = active_base_hue;
         float H_comp = norm_hue(H1 + 180.0);
-        
+        float H_analog_minus = norm_hue(H1 - 30.0);
+        float H_analog_plus = norm_hue(H1 + 30.0);
+        float H_triad_1 = norm_hue(H1 + 120.0);
+        float H_triad_2 = norm_hue(H1 + 240.0);
+        float H_split_comp_minus = norm_hue(H_comp - 30.0);
+        float H_split_comp_plus = norm_hue(H_comp + 30.0);
+        float H_tetra_1 = norm_hue(H1 + 90.0);
+        float H_tetra_2 = H_comp; // same as norm_hue(H1 + 180.0)
+        float H_tetra_3 = norm_hue(H1 + 270.0);
+
+        float harmony_colors[4]; // Max 4 harmony colors needed for Tetradic
+        harmony_colors[0] = H1; // Harmony Color 1 is always BaseHue
+
         if (active_scheme == SCHEME_COMPLEMENTARY) {
-            target_hue_S = H_comp; target_hue_M = H1; target_hue_H = H1;
+            harmony_colors[1] = H_comp; // Harmony Color 2
         } else if (active_scheme == SCHEME_ANALOGOUS) {
-            target_hue_S = norm_hue(H1 - 30.0); target_hue_M = H1; target_hue_H = norm_hue(H1 + 30.0);
+            harmony_colors[1] = H_analog_minus; // Harmony Color 2
+            harmony_colors[2] = H_analog_plus;  // Harmony Color 3
         } else if (active_scheme == SCHEME_TRIADIC) {
-            target_hue_S = norm_hue(H1 + 120.0); target_hue_M = H1; target_hue_H = norm_hue(H1 + 240.0);
+            harmony_colors[1] = H_triad_1;      // Harmony Color 2
+            harmony_colors[2] = H_triad_2;      // Harmony Color 3
         } else if (active_scheme == SCHEME_SPLIT_COMPLEMENTARY) {
-            target_hue_S = norm_hue(H_comp - 30.0); target_hue_M = H1; target_hue_H = norm_hue(H_comp + 30.0);
+            harmony_colors[1] = H_split_comp_minus; // Harmony Color 2
+            harmony_colors[2] = H_split_comp_plus;  // Harmony Color 3
         } else if (active_scheme == SCHEME_TETRADIC) { // Square: H, H+90, H+180, H+270
-            target_hue_S = norm_hue(H1 + 90.0); target_hue_M = H1; target_hue_H = norm_hue(H1 + 270.0); 
+            harmony_colors[1] = H_tetra_1;      // Harmony Color 2
+            harmony_colors[2] = H_tetra_2;      // Harmony Color 3
+            harmony_colors[3] = H_tetra_3;      // Harmony Color 4
+        }
+
+        if (UseCustomHarmonyAssignment) { // If ON, use the detailed dropdowns
+            // Assign to Shadows
+            if (ShadowsHarmonyRoleAssignment == ROLE_ORIGINAL_HUE) target_hue_S = original_hue;
+            else if (ShadowsHarmonyRoleAssignment == ROLE_HARMONY_1) target_hue_S = harmony_colors[0];
+            else if (ShadowsHarmonyRoleAssignment == ROLE_HARMONY_2) target_hue_S = harmony_colors[1];
+            else if (ShadowsHarmonyRoleAssignment == ROLE_HARMONY_3) target_hue_S = harmony_colors[2];
+            else if (ShadowsHarmonyRoleAssignment == ROLE_HARMONY_4) target_hue_S = harmony_colors[3];
+
+            // Assign to Midtones
+            if (MidtonesHarmonyRoleAssignment == ROLE_ORIGINAL_HUE) target_hue_M = original_hue;
+            else if (MidtonesHarmonyRoleAssignment == ROLE_HARMONY_1) target_hue_M = harmony_colors[0];
+            else if (MidtonesHarmonyRoleAssignment == ROLE_HARMONY_2) target_hue_M = harmony_colors[1];
+            else if (MidtonesHarmonyRoleAssignment == ROLE_HARMONY_3) target_hue_M = harmony_colors[2];
+            else if (MidtonesHarmonyRoleAssignment == ROLE_HARMONY_4) target_hue_M = harmony_colors[3];
+
+            // Assign to Highlights
+            if (HighlightsHarmonyRoleAssignment == ROLE_ORIGINAL_HUE) target_hue_H = original_hue;
+            else if (HighlightsHarmonyRoleAssignment == ROLE_HARMONY_1) target_hue_H = harmony_colors[0];
+            else if (HighlightsHarmonyRoleAssignment == ROLE_HARMONY_2) target_hue_H = harmony_colors[1];
+            else if (HighlightsHarmonyRoleAssignment == ROLE_HARMONY_3) target_hue_H = harmony_colors[2]; 
+            else if (HighlightsHarmonyRoleAssignment == ROLE_HARMONY_4) target_hue_H = harmony_colors[3];
+        } else { // UseCustomHarmonyAssignment is OFF: All regions target Harmony Color 1 (BaseHue)
+            target_hue_S = harmony_colors[0];
+            target_hue_M = harmony_colors[0];
+            target_hue_H = harmony_colors[0];
         }
     }
 
