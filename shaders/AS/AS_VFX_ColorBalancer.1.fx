@@ -207,7 +207,7 @@ uniform bool EnableSkinToneProtection < ui_type = "checkbox"; ui_label = "Enable
 
 uniform float SkinProtect_HueMin < ui_type = "slider"; ui_label = "Hue Min";
     ui_min = SKIN_PROTECT_HUE_MIN_RANGE; ui_max = SKIN_PROTECT_HUE_MAX_RANGE; ui_step = 0.1;
-    ui_tooltip = "Minimum hue for skin tone protection range (degrees). Ensure Min < Max for non-wrapping range.";
+    ui_tooltip = "Minimum hue for skin tone protection range (degrees). If Min > Max, the range wraps around 360/0.";
     ui_category = "Skin Tone Protection"; ui_category_closed = true; > = SKIN_PROTECT_HUE_DEFAULT_MIN;
 
 uniform float SkinProtect_HueMax < ui_type = "slider"; ui_label = "Hue Max";
@@ -232,6 +232,12 @@ uniform bool DebugShowToneMasks < ui_type = "checkbox"; ui_label = "Show Tone Ma
 // ============================================================================
 // HELPER FUNCTIONS
 // ============================================================================
+
+// Helper function to convert sRGB to linear RGB (approximate)
+// Could be part of AS_Utils.fxh
+float3 AS_srgb_to_linear(float3 c_srgb) {
+    return pow(abs(c_srgb), 2.2); // abs to handle potential negative inputs, though color usually isn't
+}
 
 // Normalize hue to 0-360 range
 float norm_hue(float h) {
@@ -287,6 +293,29 @@ float3 hsl_to_rgb(float3 hsl) {
     return float3(r, g, b);
 }
 
+// Helper function for robust weighted averaging of HSL values, especially hue.
+// Could be part of AS_Utils.fxh
+float3 blend_hsl_weighted(float3 hsl1, float w1, float3 hsl2, float w2, float3 hsl3, float w3) {
+    // Convert hues to vectors for robust averaging
+    float h1_rad = radians(hsl1.x);
+    float h2_rad = radians(hsl2.x);
+    float h3_rad = radians(hsl3.x);
+
+    // Weighted sum of vectors
+    float avg_cos = w1 * cos(h1_rad) + w2 * cos(h2_rad) + w3 * cos(h3_rad);
+    float avg_sin = w1 * sin(h1_rad) + w2 * sin(h2_rad) + w3 * sin(h3_rad);
+
+    // Convert average vector back to hue angle
+    float final_h = degrees(atan2(avg_sin, avg_cos));
+    final_h = norm_hue(final_h); // Ensure 0-360
+
+    // Average saturation and lightness directly using weights
+    float final_s = w1 * hsl1.y + w2 * hsl2.y + w3 * hsl3.y;
+    float final_l = w1 * hsl1.z + w2 * hsl2.z + w3 * hsl3.z;
+    
+    return float3(final_h, final_s, final_l);
+}
+
 // Calculate tonal masks
 void get_tonal_weights(float lum, float shadow_T, float highlight_T, float softness, out float Ws, out float Wm, out float Wh)
 {
@@ -316,7 +345,7 @@ float4 PS_ColorBalancer(float4 pos : SV_Position, float2 texcoord : TexCoord) : 
     float3 current_hsl = rgb_to_hsl(original_color_rgb);
     float original_hue = current_hsl.x;
     float original_sat = current_hsl.y;
-    float original_lum = current_hsl.z;
+    float original_lum = current_hsl.z; // This is L from sRGB HSL, used for direct L adjustments
 
     // --- Apply Presets ---
     int active_scheme = ColorScheme;
@@ -346,7 +375,10 @@ float4 PS_ColorBalancer(float4 pos : SV_Position, float2 texcoord : TexCoord) : 
     }
 
     // --- Tone Segmentation ---
-    float scene_lum = dot(original_color_rgb, float3(0.299, 0.587, 0.114)); 
+    // Convert sRGB to Linear for perceptually accurate luminance calculation
+    float3 linear_color_rgb = AS_srgb_to_linear(original_color_rgb);
+    float scene_lum = dot(linear_color_rgb, float3(0.2126, 0.7152, 0.0722)); // Luminance from linear RGB for segmentation
+    
     float Ws, Wm, Wh; // Shadow, Midtone, Highlight weights
     get_tonal_weights(scene_lum, ShadowThreshold, HighlightThreshold, LuminanceSoftSplit, Ws, Wm, Wh);
 
@@ -381,9 +413,24 @@ float4 PS_ColorBalancer(float4 pos : SV_Position, float2 texcoord : TexCoord) : 
 
     // Shadow region
     eff_h_S = (active_scheme == SCHEME_MANUAL) ? norm_hue(original_hue + HueShift_Shadows) : target_hue_S;
-    if (EnableSkinToneProtection && SkinProtect_HueMin < SkinProtect_HueMax && original_hue >= SkinProtect_HueMin && original_hue <= SkinProtect_HueMax) {
-        float factor = 1.0 - smoothstep(0.0, SkinProtect_Falloff, min(original_hue - SkinProtect_HueMin, SkinProtect_HueMax - original_hue));
-        eff_h_S = lerp(eff_h_S, original_hue, factor);
+    if (EnableSkinToneProtection) {
+        bool is_hue_in_protected_range = (SkinProtect_HueMin <= SkinProtect_HueMax) ?
+                                         (original_hue >= SkinProtect_HueMin && original_hue <= SkinProtect_HueMax) :
+                                         (original_hue >= SkinProtect_HueMin || original_hue <= SkinProtect_HueMax);
+        if (is_hue_in_protected_range) {
+            float dist_val;
+            if (SkinProtect_HueMin <= SkinProtect_HueMax) { // Non-wrapped range
+                dist_val = min(original_hue - SkinProtect_HueMin, SkinProtect_HueMax - original_hue);
+            } else { // Wrapped range
+                if (original_hue >= SkinProtect_HueMin) { // e.g., hue is 355, range 350-10. dist to 350.
+                    dist_val = original_hue - SkinProtect_HueMin;
+                } else { // e.g., hue is 5, range 350-10. dist to 10.
+                    dist_val = SkinProtect_HueMax - original_hue;
+                }
+            }
+            float protection_blend_factor = 1.0 - smoothstep(0.0, SkinProtect_Falloff, dist_val);
+            eff_h_S = lerp(eff_h_S, original_hue, protection_blend_factor);
+        }
     }
     eff_s_S = original_sat * S_sat;
     eff_l_S = original_lum * S_light;
@@ -393,9 +440,24 @@ float4 PS_ColorBalancer(float4 pos : SV_Position, float2 texcoord : TexCoord) : 
 
     // Midtone region
     eff_h_M = (active_scheme == SCHEME_MANUAL) ? norm_hue(original_hue + HueShift_Midtones) : target_hue_M;
-    if (EnableSkinToneProtection && SkinProtect_HueMin < SkinProtect_HueMax && original_hue >= SkinProtect_HueMin && original_hue <= SkinProtect_HueMax) {
-        float factor = 1.0 - smoothstep(0.0, SkinProtect_Falloff, min(original_hue - SkinProtect_HueMin, SkinProtect_HueMax - original_hue));
-        eff_h_M = lerp(eff_h_M, original_hue, factor);
+    if (EnableSkinToneProtection) {
+        bool is_hue_in_protected_range = (SkinProtect_HueMin <= SkinProtect_HueMax) ?
+                                         (original_hue >= SkinProtect_HueMin && original_hue <= SkinProtect_HueMax) :
+                                         (original_hue >= SkinProtect_HueMin || original_hue <= SkinProtect_HueMax);
+        if (is_hue_in_protected_range) {
+            float dist_val;
+            if (SkinProtect_HueMin <= SkinProtect_HueMax) { // Non-wrapped range
+                dist_val = min(original_hue - SkinProtect_HueMin, SkinProtect_HueMax - original_hue);
+            } else { // Wrapped range
+                if (original_hue >= SkinProtect_HueMin) {
+                    dist_val = original_hue - SkinProtect_HueMin;
+                } else {
+                    dist_val = SkinProtect_HueMax - original_hue;
+                }
+            }
+            float protection_blend_factor = 1.0 - smoothstep(0.0, SkinProtect_Falloff, dist_val);
+            eff_h_M = lerp(eff_h_M, original_hue, protection_blend_factor);
+        }
     }
     eff_s_M = original_sat * M_sat;
     eff_l_M = original_lum * M_light;
@@ -405,9 +467,24 @@ float4 PS_ColorBalancer(float4 pos : SV_Position, float2 texcoord : TexCoord) : 
 
     // Highlight region
     eff_h_H = (active_scheme == SCHEME_MANUAL) ? norm_hue(original_hue + HueShift_Highlights) : target_hue_H;
-    if (EnableSkinToneProtection && SkinProtect_HueMin < SkinProtect_HueMax && original_hue >= SkinProtect_HueMin && original_hue <= SkinProtect_HueMax) {
-        float factor = 1.0 - smoothstep(0.0, SkinProtect_Falloff, min(original_hue - SkinProtect_HueMin, SkinProtect_HueMax - original_hue));
-        eff_h_H = lerp(eff_h_H, original_hue, factor);
+    if (EnableSkinToneProtection) {
+        bool is_hue_in_protected_range = (SkinProtect_HueMin <= SkinProtect_HueMax) ?
+                                         (original_hue >= SkinProtect_HueMin && original_hue <= SkinProtect_HueMax) :
+                                         (original_hue >= SkinProtect_HueMin || original_hue <= SkinProtect_HueMax);
+        if (is_hue_in_protected_range) {
+            float dist_val;
+            if (SkinProtect_HueMin <= SkinProtect_HueMax) { // Non-wrapped range
+                dist_val = min(original_hue - SkinProtect_HueMin, SkinProtect_HueMax - original_hue);
+            } else { // Wrapped range
+                if (original_hue >= SkinProtect_HueMin) {
+                    dist_val = original_hue - SkinProtect_HueMin;
+                } else {
+                    dist_val = SkinProtect_HueMax - original_hue;
+                }
+            }
+            float protection_blend_factor = 1.0 - smoothstep(0.0, SkinProtect_Falloff, dist_val);
+            eff_h_H = lerp(eff_h_H, original_hue, protection_blend_factor);
+        }
     }
     eff_s_H = original_sat * H_sat;
     eff_l_H = original_lum * H_light;
@@ -416,11 +493,14 @@ float4 PS_ColorBalancer(float4 pos : SV_Position, float2 texcoord : TexCoord) : 
     }
 
     // Combine using weights (Ws, Wm, Wh are normalized in get_tonal_weights to sum to 1.0)
-    float final_h = Ws * eff_h_S + Wm * eff_h_M + Wh * eff_h_H;
-    float final_s = Ws * eff_s_S + Wm * eff_s_M + Wh * eff_s_H;
-    float final_l = Ws * eff_l_S + Wm * eff_l_M + Wh * eff_l_H;
+    // Store effective HSL per region before blending
+    float3 hsl_S_eff = float3(eff_h_S, eff_s_S, eff_l_S);
+    float3 hsl_M_eff = float3(eff_h_M, eff_s_M, eff_l_M);
+    float3 hsl_H_eff = float3(eff_h_H, eff_s_H, eff_l_H);
+
+    float3 blended_hsl_values = blend_hsl_weighted(hsl_S_eff, Ws, hsl_M_eff, Wm, hsl_H_eff, Wh);
     
-    float3 blended_hsl = float3(norm_hue(final_h), saturate(final_s), saturate(final_l));
+    float3 blended_hsl = float3(blended_hsl_values.x, saturate(blended_hsl_values.y), saturate(blended_hsl_values.z));
 
     // --- Convert back to RGB and apply final mix ---
     float3 final_color_rgb = hsl_to_rgb(blended_hsl); // Use the new blended_hsl
