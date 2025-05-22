@@ -147,7 +147,7 @@ uniform bool EnableShadows < ui_type = "checkbox"; ui_label = "Enable Shadow Adj
 
 uniform float HueShift_Shadows < ui_type = "slider"; ui_label = "* Manual Hue Shift";
     ui_min = HUE_SHIFT_MIN; ui_max = HUE_SHIFT_MAX; ui_step = 0.1;
-    ui_tooltip = "Manual Hue Shift for shadows (degrees). Only active if Color Scheme is \'* Manual Hue Shifts\'.";
+    ui_tooltip = "Hue Shift for shadows. If Scheme is Manual, this is a direct shift from original. Otherwise, it's an additional offset to the harmony target hue.";
     ui_category = "Shadow Adjustments"; ui_category_closed = true; > = HUE_SHIFT_DEFAULT;
 
 uniform float Saturation_Shadows < ui_type = "slider"; ui_label = "Saturation";
@@ -167,7 +167,7 @@ uniform bool EnableMidtones < ui_type = "checkbox"; ui_label = "Enable Midtone A
 
 uniform float HueShift_Midtones < ui_type = "slider"; ui_label = "* Manual Hue Shift";
     ui_min = HUE_SHIFT_MIN; ui_max = HUE_SHIFT_MAX; ui_step = 0.1;
-    ui_tooltip = "Manual Hue Shift for midtones (degrees). Only active if Color Scheme is \'* Manual Hue Shifts\'.";
+    ui_tooltip = "Hue Shift for midtones. If Scheme is Manual, this is a direct shift from original. Otherwise, it's an additional offset to the harmony target hue.";
     ui_category = "Midtone Adjustments"; ui_category_closed = true; > = HUE_SHIFT_DEFAULT;
 
 uniform float Saturation_Midtones < ui_type = "slider"; ui_label = "Saturation";
@@ -187,7 +187,7 @@ uniform bool EnableHighlights < ui_type = "checkbox"; ui_label = "Enable Highlig
 
 uniform float HueShift_Highlights < ui_type = "slider"; ui_label = "* Manual Hue Shift";
     ui_min = HUE_SHIFT_MIN; ui_max = HUE_SHIFT_MAX; ui_step = 0.1;
-    ui_tooltip = "Manual Hue Shift for highlights (degrees). Only active if Color Scheme is \'* Manual Hue Shifts\'.";
+    ui_tooltip = "Hue Shift for highlights. If Scheme is Manual, this is a direct shift from original. Otherwise, it's an additional offset to the harmony target hue.";
     ui_category = "Highlight Adjustments"; ui_category_closed = true; > = HUE_SHIFT_DEFAULT;
 
 uniform float Saturation_Highlights < ui_type = "slider"; ui_label = "Saturation";
@@ -217,7 +217,7 @@ uniform float SkinProtect_HueMax < ui_type = "slider"; ui_label = "Hue Max";
 
 uniform float SkinProtect_Falloff < ui_type = "slider"; ui_label = "Falloff";
     ui_min = SKIN_PROTECT_FALLOFF_MIN; ui_max = SKIN_PROTECT_FALLOFF_MAX; ui_step = 0.1;
-    ui_tooltip = "Softness of the transition for skin tone protection (degrees).";
+    ui_tooltip = "Distance (in degrees) from the Hue Min/Max boundaries inwards, over which skin protection transitions from full strength (at the boundary) to no strength (further inside).";
     ui_category = "Skin Tone Protection"; ui_category_closed = true; > = SKIN_PROTECT_FALLOFF_DEFAULT;
 
 // --- Final Mix ---
@@ -412,7 +412,7 @@ float4 PS_ColorBalancer(float4 pos : SV_Position, float2 texcoord : TexCoord) : 
     float eff_h_H, eff_s_H, eff_l_H; // Effective HSL for Highlights
 
     // Shadow region
-    eff_h_S = (active_scheme == SCHEME_MANUAL) ? norm_hue(original_hue + HueShift_Shadows) : target_hue_S;
+    eff_h_S = (active_scheme == SCHEME_MANUAL) ? norm_hue(original_hue + HueShift_Shadows) : norm_hue(target_hue_S + HueShift_Shadows);
     if (EnableSkinToneProtection) {
         bool is_hue_in_protected_range = (SkinProtect_HueMin <= SkinProtect_HueMax) ?
                                          (original_hue >= SkinProtect_HueMin && original_hue <= SkinProtect_HueMax) :
@@ -439,7 +439,7 @@ float4 PS_ColorBalancer(float4 pos : SV_Position, float2 texcoord : TexCoord) : 
     }
 
     // Midtone region
-    eff_h_M = (active_scheme == SCHEME_MANUAL) ? norm_hue(original_hue + HueShift_Midtones) : target_hue_M;
+    eff_h_M = (active_scheme == SCHEME_MANUAL) ? norm_hue(original_hue + HueShift_Midtones) : norm_hue(target_hue_M + HueShift_Midtones);
     if (EnableSkinToneProtection) {
         bool is_hue_in_protected_range = (SkinProtect_HueMin <= SkinProtect_HueMax) ?
                                          (original_hue >= SkinProtect_HueMin && original_hue <= SkinProtect_HueMax) :
@@ -466,7 +466,7 @@ float4 PS_ColorBalancer(float4 pos : SV_Position, float2 texcoord : TexCoord) : 
     }
 
     // Highlight region
-    eff_h_H = (active_scheme == SCHEME_MANUAL) ? norm_hue(original_hue + HueShift_Highlights) : target_hue_H;
+    eff_h_H = (active_scheme == SCHEME_MANUAL) ? norm_hue(original_hue + HueShift_Highlights) : norm_hue(target_hue_H + HueShift_Highlights);
     if (EnableSkinToneProtection) {
         bool is_hue_in_protected_range = (SkinProtect_HueMin <= SkinProtect_HueMax) ?
                                          (original_hue >= SkinProtect_HueMin && original_hue <= SkinProtect_HueMax) :
