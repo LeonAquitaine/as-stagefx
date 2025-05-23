@@ -78,7 +78,8 @@ Inspired by: <a href="https://www.shadertoy.com/view/ltffzl" target="_new">"Hear
 <td width="50%">
 <h4>VFX: Radiant Fire</h4>
 <h5><code>[AS] VFX: Radiant Fire|AS_VFX_RadiantFire.1.fx</code></h5>
-A fire simulation that generates flames radiating from subject edges. Rotation affects the direction of internal physics forces.
+A fire simulation that generates flames radiating from subject edges. Rotation affects the direction of internal physics forces.<br/><br/>
+Inspired by <a href='https://www.shadertoy.com/view/WXX3RH'>'Fire [326]' by Xor</a>
 </td>
 <td width="50%"><div style="text-align:center">
 </div>
