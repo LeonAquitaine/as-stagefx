@@ -15,7 +15,7 @@ This gallery provides detailed descriptions and visual examples of the visual ef
 <table>
 <tr>
 <td width="50%">
-<h4>LFX: Candle Flame</h4>
+<h4>LFX: Candle Flame ✨</h4>
 <h5><code>[AS] LFX: Candle Flame|AS_LFX_CandleFlame.1.fx</code></h5>
 Generates animated procedural candle flames with realistic shape and color gradients, rendered at a specific depth plane. Features procedural shape/color gradient (customizable palette), depth-plane rendering, extensive control over shape, color, animation speed, sway, flicker, audio reactivity (intensity/movement), and resolution-independent rendering. Supports multiple instances.
 </td>
@@ -32,7 +32,7 @@ Generates animated procedural candle flames with realistic shape and color gradi
 <table>
 <tr>
 <td width="50%">
-<h4>VFX: Clair Obscur</h4>
+<h4>VFX: Clair Obscur ⚡</h4>
 <h5><code>[AS] VFX: Clair Obscur|AS_VFX_ClairObscur.1.fx</code></h5>
 Creates a beautiful cascade of floating petals with realistic movement and organic animation. This effect simulates petals drifting through the air with natural rotation variation and elegant entrance/exit effects.<br/><br/>
 Petal Textures:  
@@ -46,7 +46,7 @@ Petal Textures:
 </tr>
 <tr>
 <td width="50%">
-<h4>VFX: Digital Artifacts</h4>
+<h4>VFX: Digital Artifacts ✨</h4>
 <h5><code>[AS] VFX: Digital Artifacts|AS_VFX_DigitalArtifacts.1.fx</code></h5>
 Creates stylized digital artifacts, glitch effects, and hologram visuals positionable in 3D space. Features multiple effect types (hologram, blocks, scanlines, RGB shifts, noise), audio-reactive intensity, depth-controlled positioning, customizable colors/timing, and blend modes.
 </td>
@@ -56,7 +56,7 @@ Creates stylized digital artifacts, glitch effects, and hologram visuals positio
 </tr>
 <tr>
 <td width="50%">
-<h4>VFX: Dust Motes</h4>
+<h4>VFX: Dust Motes ⚡</h4>
 <h5><code>[AS] VFX: Dust Motes|AS_VFX_DustMotes.1.fx</code></h5>
 Simulates static, sharp-bordered dust motes using two independent particle layers. A blur effect is applied to the final image in areas covered by particles. Supports depth masking, rotation, audio reactivity and standard AS blending modes.
 </td>
@@ -65,7 +65,7 @@ Simulates static, sharp-bordered dust motes using two independent particle layer
 </tr>
 <tr>
 <td width="50%">
-<h4>VFX: Rainy Window</h4>
+<h4>VFX: Rainy Window ⚡</h4>
 <h5><code>[AS] VFX: Rainy Window|AS_VFX_RainyWindow.1.fx</code></h5>
 Simulates an immersive rainy window with animated water droplets, realistic trails, and frost. Features dynamic raindrop movement, customizable blur/frost, audio-reactive storm intensity, optional lightning flashes, and resolution independence.<br><br>
 Inspired by: <a href="https://www.shadertoy.com/view/ltffzl" target="_new">"Heartfelt" by Martijn Steinrucken (BigWings)</a>.
@@ -76,7 +76,7 @@ Inspired by: <a href="https://www.shadertoy.com/view/ltffzl" target="_new">"Hear
 </tr>
 <tr>
 <td width="50%">
-<h4>VFX: Radiant Fire</h4>
+<h4>VFX: Radiant Fire ✨</h4>
 <h5><code>[AS] VFX: Radiant Fire|AS_VFX_RadiantFire.1.fx</code></h5>
 A fire simulation that generates flames radiating from subject edges. Rotation affects the direction of internal physics forces.
 </td>
@@ -87,7 +87,7 @@ A fire simulation that generates flames radiating from subject edges. Rotation a
 </tr>
 <tr>
 <td width="50%">
-<h4>VFX: Screen Ring</h4>
+<h4>VFX: Screen Ring ✨</h4>
 <h5><code>[AS] VFX: Screen Ring|AS_VFX_ScreenRing.1.fx</code></h5>
 Draws a textured ring or band in screen space at a specified position and depth, occluded by closer scene geometry. Features customizable radius, thickness, texture mapping with rotation, depth occlusion, blend modes, and debug visualization.
 </td>
@@ -96,7 +96,7 @@ Draws a textured ring or band in screen space at a specified position and depth,
 </tr>
 <tr>
 <td width="50%">
-<h4>VFX: Spectrum Ring</h4>
+<h4>VFX: Spectrum Ring ✨</h4>
 <h5><code>[AS] VFX: Spectrum Ring|AS_VFX_SpectrumRing.1.fx</code></h5>
 Creates a stylized, audio-reactive circular frequency spectrum visualizer mapping all Listeningway audio bands to a ring. Features a blue-to-yellow color gradient by intensity, selectable repetitions (2-16), linear or mirrored patterns, and smooth centered animation.
 </td>
@@ -106,7 +106,7 @@ Creates a stylized, audio-reactive circular frequency spectrum visualizer mappin
 </tr>
 <tr>
 <td width="50%">
-<h4>VFX: Tilted Grid</h4>
+<h4>VFX: Tilted Grid ✨</h4>
 <h5><code>[AS] VFX: Tilted Grid|AS_VFX_TiltedGrid.1.fx</code></h5>
 Creates a rotatable grid that pixelates the image and adds adjustable borders between grid cells. Corner chamfers are overlaid independently. Each cell captures the color from its center position. Features adjustable grid size, customizable border color/thickness, customizable corner chamfer size, rotation controls, depth masking, audio reactivity, and resolution-independent rendering.
 </td>
@@ -116,7 +116,7 @@ Creates a rotatable grid that pixelates the image and adds adjustable borders be
 </tr>
 <tr>
 <td width="50%">
-<h4>VFX: VU Meter</h4>
+<h4>VFX: VU Meter ⚡</h4>
 <h5><code>[AS] VU Meter|AS_VFX_VUMeter.1.fx</code></h5>
 Creates an audio-reactive VU meter visualization with multiple display styles (vertical/horizontal bars, line, dots, classic VU). Features customizable appearance with various palettes, adjustable bar width/spacing/roundness, zoom/pan controls, and audio sensitivity settings.
 </td>
@@ -126,7 +126,7 @@ Creates an audio-reactive VU meter visualization with multiple display styles (v
 </tr>
 <tr>
 <td width="50%">
-<h4>VFX: Warp Distort</h4>
+<h4>VFX: Warp Distort ✨</h4>
 <h5><code>[AS] VFX: Warp Distort|AS_VFX_WarpDistort.1.fx</code></h5>
 This shader creates a customizable mirrored or wavy warp effect that pulses and distorts in sync with audio. The effect's position and depth are adjustable using standardized controls. Features include options for a truly circular or resolution-relative warp shape, audio-reactive pulsing for radius and wave/ripple effects, user-selectable audio sources, and adjustable mirror strength, wave frequency, and edge softness. Position and depth are controlled via standardized UI elements.
 </td>
@@ -136,7 +136,7 @@ This shader creates a customizable mirrored or wavy warp effect that pulses and 
 </tr>
 <tr>
 <td width="50%">
-<h4>VFX: Water Surface</h4>
+<h4>VFX: Water Surface ✨</h4>
 <h5><code>[AS] VFX: Water Surface|AS_VFX_WaterSurface.1.fx</code></h5>
 Creates a water surface where reflection start points are determined by object depth—distant objects reflect at the horizon, closer ones lower. Features a configurable water level, animated waves with perspective scaling, adjustable reflection parameters (including vertical compression), and customizable water color/transparency. Ideal for scenes with water, pools, or reflective floors.
 </td>
