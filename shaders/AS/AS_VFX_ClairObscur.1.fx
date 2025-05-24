@@ -4,6 +4,11 @@
  * License: Creative Commons Attribution 4.0 International
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
  * 
+ * CREDITS:
+ * Original: "[RGR] Hearts" by deeplo (2021-02-13)
+ * Source: https://www.shadertoy.com/view/ttcBRs
+ * Adapted for ReShade with enhanced controls and AS StageFX framework integration.
+ * 
  * ===================================================================================
  *
  * DESCRIPTION: * Creates a beautiful cascade of floating petals with realistic movement and organic animation.
