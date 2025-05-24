@@ -3,10 +3,16 @@
  * Author: Leon Aquitaine
  * License: Creative Commons Attribution 4.0 International
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
- * * ===================================================================================
+ * 
+ * CREDITS:
+ * Original: "301's Fire Shader - Remix 3" by mu6k (2016-07-27)
+ * Source: https://www.shadertoy.com/view/4ttGWM
+ * Adapted for ReShade with enhanced controls and AS StageFX framework integration.
+ * 
+ * ===================================================================================
  *
  * DESCRIPTION:
- * A GPU-based fire simulation that generates flames radiating from subject edges.
+ * A fire simulation that generates flames radiating from subject edges.
  * Rotation now affects the direction of internal physics forces.
  */
 
