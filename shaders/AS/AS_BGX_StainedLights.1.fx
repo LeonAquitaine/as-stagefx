@@ -2,10 +2,11 @@
  * AS_BGX_StainedLights.1.fx - Stained Glass Light Patterns
  * Author: Leon Aquitaine
  * License: Creative Commons Attribution 4.0 International
- * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
- * 
- * Inspired by "Stained Lights"
- * Original Concept by 104 (https://www.shadertoy.com/view/WlsSzM)
+ * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution. * 
+ * CREDITS:
+ * Original: "Stained Lights" by 104 (2019-07-06)
+ * Source: https://www.shadertoy.com/view/WlsSzM
+ * Adapted for ReShade with enhanced controls and AS StageFX framework integration.
  * 
  * ===================================================================================
  *
