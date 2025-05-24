@@ -23,28 +23,6 @@ This document lists all external sources, original authors, and inspiration cred
 - **Original Title**: "cosmos in crystal"
 - **Source**: https://www.shadertoy.com/view/MXccR4
 
-### AS_BGX_ZippyZaps.1.fx - Dynamic Lightning/Electric Effects
-- **Original Author**: SnoopethDuckDuck
-- **Original Title**: "Zippy Zaps"
-- **Source**: https://www.shadertoy.com/view/XXyGzh
-
-### AS_BGX_WavySquiggles.1.fx - Interactive 2.5D Squiggle Patterns
-- **Original Author**: SnoopethDuckDuck
-- **Original Title**: "Interactive 2.5D Squiggles"
-- **Source**: https://www.shadertoy.com/view/7sBfDD
-
-### AS_VFX_RainyWindow.1.fx - Rainy Window Effect
-- **Source**: ShaderToy
-- **URL**: https://www.shadertoy.com/view/ltffzl
-
-### AS_GFX_VignettePlus.1.fx - Enhanced Vignette Effect
-- **Original Author**: blandprix
-- **Creation Date**: 2024-08-06
-- **Source**: https://www.shadertoy.com/view/XfjyWG
-
-### AS_GFX_HandDrawing.1.fx - Hand-Drawn Effect
-- **Source**: https://www.shadertoy.com/view/XtVGD1
-
 ### AS_BGX_LogSpirals.1.fx - Dynamic Logarithmic Spiral Effect
 - **Original Author**: mrange
 - **Original Title**: "Logarithmic spirals tweaked"
@@ -71,6 +49,42 @@ This document lists all external sources, original authors, and inspiration cred
 - **Original Title**: "Time Crystal"
 - **Creation Date**: 2023-12-22
 - **Source**: https://www.shadertoy.com/view/lcl3z2
+
+### AS_BGX_WavySquiggles.1.fx - Interactive 2.5D Squiggle Patterns
+- **Original Author**: SnoopethDuckDuck
+- **Original Title**: "Interactive 2.5D Squiggles"
+- **Source**: https://www.shadertoy.com/view/7sBfDD
+
+### AS_BGX_ZippyZaps.1.fx - Dynamic Lightning/Electric Effects
+- **Original Author**: SnoopethDuckDuck
+- **Original Title**: "Zippy Zaps"
+- **Source**: https://www.shadertoy.com/view/XXyGzh
+
+### AS_GFX_HandDrawing.1.fx - Hand-Drawn Effect
+- **Source**: https://www.shadertoy.com/view/XtVGD1
+
+### AS_GFX_VignettePlus.1.fx - Enhanced Vignette Effect
+- **Original Author**: blandprix
+- **Creation Date**: 2024-08-06
+- **Source**: https://www.shadertoy.com/view/XfjyWG
+
+### AS_VFX_ClairObscur.1.fx - Hearts/Petals Effect
+- **Original Author**: deeplo
+- **Original Title**: "[RGR] Hearts"
+- **Creation Date**: 2021-02-13
+- **Source**: https://www.shadertoy.com/view/ttcBRs
+
+### AS_VFX_RadiantFire.1.fx - Fire Simulation Effect
+- **Original Author**: mu6k
+- **Original Title**: "301's Fire Shader - Remix 3"
+- **Creation Date**: 2016-07-27
+- **Source**: https://www.shadertoy.com/view/4ttGWM
+
+### AS_VFX_RainyWindow.1.fx - Rainy Window Effect
+- **Original Author**: BigWings
+- **Original Title**: "Heartfelt"
+- **Creation Date**: 2017-12-17
+- **Source**: https://www.shadertoy.com/view/ltffzl
 
 ---
 
@@ -131,11 +145,14 @@ This document lists all external sources, original authors, and inspiration cred
 - **Original Author**: jetlab
 - **Source Type**: Original GLSL
 
-### AS_BGX_ShineOn.1.fx - Shine Effect
-- **Source**: Translated from Shadertoy
-
 ### AS_BGX_WavySquares.1.fx - Wavy Square Patterns
 - **Source**: Adapted from GLSL shader
+
+### AS_VFX_BoomSticker.1.fx - Depth-Aware Texture Overlay
+- **Original Author**: Marot Satil
+- **Original Title**: "StageDepth.fx"
+- **Creation Date**: 2019
+- **Notes**: Heavily inspired by the original depth masking implementation
 
 ---
 
@@ -149,13 +166,10 @@ The following shaders are original creations with no external sources:
 - AS_GFX_MultiLayerHalftone.1.fx
 - AS_LFX_LaserShow.1.fx
 - AS_LFX_StageSpotlights.1.fx
-- AS_VFX_BoomSticker.1.fx
-- AS_VFX_ClairObscur.1.fx
 - AS_VFX_ColorBalancer.1.fx
 - AS_VFX_DigitalArtifacts.1.fx
 - AS_VFX_DustMotes.1.fx
 - AS_VFX_MotionTrails.1.fx
-- AS_VFX_RadiantFire.1.fx
 - AS_VFX_ScreenRing.1.fx
 - AS_VFX_SparkleBloom.1.fx
 - AS_VFX_SpectrumRing.1.fx
