@@ -98,6 +98,13 @@ uniform float Vignette_EdgeBrightness < ui_category="Fog & Post FX"; ui_type="dr
 uniform float Vignette_CenterBoost < ui_category="Fog & Post FX"; ui_type="drag"; ui_min=0.0; ui_max=1.0; ui_step=0.01; ui_label="Vignette Center Boost"; > = 0.7f;
 
 
+// ============================================================================
+// UI DECLARATIONS
+// ============================================================================
+
+// Tunable Constants
+uniform float Light_DistanceOffset < ui_type = "slider"; ui_label = "Light Distance Offset"; ui_min = 0.0; ui_max = 10.0; ui_step = 0.1; ui_category = "Lighting"; > = 2.5;
+
 //--------------------------------------------------------------------------------------
 // HELPER FUNCTIONS
 //--------------------------------------------------------------------------------------
@@ -136,8 +143,6 @@ float2 map(float3 p) { // Removed 'in', uses g_iTime_global_for_map, g_prm1, g_b
 
 float4 render(float3 ro, float3 rd, float time_for_render_logic) { // Removed 'in'
     float4 rez = 0.0f.xxxx; 
-    // Light_DistanceOffset not yet defined as uniform, using const for now
-    const float Light_DistanceOffset = 8.0f; // Placeholder, make this a UI uniform
     float3 lpos = float3(disp(time_for_render_logic + Light_DistanceOffset, 1.0f) * 0.5f, time_for_render_logic + Light_DistanceOffset);
     float t = 1.5f; 
     float fogT = 0.0f; 
