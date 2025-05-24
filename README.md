@@ -6,7 +6,6 @@
    
   <img src="https://img.shields.io/github/downloads/LeonAquitaine/as-stagefx/total?label=Downloads" alt="Downloads"/>
   <img src="https://img.shields.io/github/v/release/LeonAquitaine/as-stagefx?label=Latest%20Release" alt="Latest Release"/>
-  <img src="https://img.shields.io/github/license/LeonAquitaine/as-stagefx" alt="License"/>
   <img src="https://img.shields.io/github/languages/top/LeonAquitaine/as-stagefx" alt="Top Language"/>
   <img src="https://img.shields.io/github/last-commit/LeonAquitaine/as-stagefx" alt="Last Commit"/>
   <img src="https://img.shields.io/github/languages/code-size/LeonAquitaine/as-stagefx" alt="Code Size"/>
