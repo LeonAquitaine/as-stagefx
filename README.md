@@ -71,7 +71,7 @@ Shaders are marked with an icon to give a general idea of their processing inten
 | **AS_BGX_TimeCrystal** ✨ | Hypnotic, crystalline fractal structure with dynamic animation, color cycling, and audio reactivity. |
 | **AS_BGX_WavySquares** ✨ | Hypnotic pattern of wavy, animated, transforming square tiles with dynamic size changes. Audio-reactive and depth-aware. |
 | **AS_BGX_WavySquiggles** ✨ | Mesmerizing pattern of adaptive wavy lines forming intricate, rotating designs. Audio-reactive and depth-aware. |
-| **AS_BGX_Wisps** 🔥 | (Description missing in current README, assuming it's a background effect) |
+| **AS_BGX_Wisps** 🔥 | Dynamic, ethereal wisp-like patterns with customizable audio reactivity. |
 | **AS_BGX_ZippyZaps** ⚡ | Dynamic electric arcs/lightning patterns with procedural generation, audio reactivity, and 3D positioning. |
 | **ProteanClouds_Artist_V2** 💀 | (Description missing in current README, assuming it's a background effect) |
 
