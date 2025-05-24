@@ -2,8 +2,9 @@
  * AS_GFX_ArtDecoFrame.1.fx - Art Deco/Nouveau Frame Generator
  * Author: Leon Aquitaine (with additions by AI)
  *
- * Changelog (v12.1 - Addressed compiler error X3507):
- * - Initialized 'result' variable at the start of drawCentralTower.
+ * Changelog (v12.1 base, with targeted corner diamond placement fix):
+ * - Corner diamonds' centers are now placed exactly at the inner edge of the
+ * main frame's tramline border.
  */
 
 #include "ReShade.fxh"
@@ -31,8 +32,16 @@ float sdBox(float2 p, float2 b) {
 }
 
 float sdThickLineSegment(float2 p, float2 a, float2 b, float thickness) {
-    float2 pa = p - a, ba = b - a;
-    float h = clamp(dot(pa, ba) / dot(ba, ba), 0.0, 1.0);
+    float2 pa = p - a;
+    float2 ba = b - a;
+    float dot_ba_ba = dot(ba, ba);
+
+    // Corrected from v13.3 to handle zero-length segments
+    if (dot_ba_ba < 0.000001) { 
+        return length(pa) - thickness * 0.5; 
+    }
+
+    float h = clamp(dot(pa, ba) / dot_ba_ba, 0.0, 1.0);
     return length(pa - ba * h) - thickness * 0.5;
 }
 
@@ -82,6 +91,7 @@ uniform float FanYOffset < ui_label="Fan Y Offset (from screen center)"; ui_type
 
 
 // === Drawing Functions ===
+// (Using the versions from the code you provided, assuming they were preferred)
 float drawSingleTramlineSDF(float2 p_eval, float2 line_center_half_size, float line_actual_thickness) {
     float sdf_line_center = sdBox(p_eval, line_center_half_size);
     return saturate(1.0 - smoothstep(
@@ -116,9 +126,10 @@ float4 drawSolidElementWithTramlines(
     }
      if (num_tram == 0) { inner_edge_of_last_drawn_tramline_hs = outer_box_half_size; }
 
-    float2 fill_area_half_size = inner_edge_of_last_drawn_tramline_hs;
+    float2 fill_area_half_size = inner_edge_of_last_drawn_tramline_hs; // Fill up to this calculated inner edge
     float sdf_fill_area = sdBox(p_eval, fill_area_half_size);
     float fill_alpha = smoothstep(F_EDGE, -F_EDGE, sdf_fill_area);
+    // This coloring makes fill primary, then tramlines overlay it.
     final_color = lerp(lerp(fill_c, line_c, tramlines_total_alpha), fill_c, fill_alpha);
 
     float2 detail_line_center_half_size = max(0.0.xx, fill_area_half_size - detail_pad - detail_lw * 0.5);
@@ -126,6 +137,7 @@ float4 drawSolidElementWithTramlines(
     float detail_line_alpha = saturate(1.0 - smoothstep(detail_lw * 0.5 - F_EDGE, detail_lw * 0.5 + F_EDGE, abs(sdf_detail_line_center)));
     float3 detail_line_color_val = lerp(fill_c, line_c, 0.5); 
     final_color = lerp(final_color, detail_line_color_val, detail_line_alpha);
+    
     float combined_total_alpha = fill_alpha;
      if (fill_alpha < 0.1) { combined_total_alpha = saturate(tramlines_total_alpha + detail_line_alpha); }
     return float4(final_color, combined_total_alpha);
@@ -148,24 +160,27 @@ float4 drawComplexDiamond(
         float current_line_actual_thickness = (i == num_tram - 1 && num_tram > 0) ? last_tram_thick : tram_standard_thick;
         float2 line_center_hs = max(0.0.xx, diamond_outer_half_size - current_offset_main - current_line_actual_thickness * 0.5);
         float tram_alpha = drawSingleTramlineSDF(p_eval, line_center_hs, current_line_actual_thickness);
-        tramlines_total_alpha = max(tramlines_total_alpha, tram_alpha);
+        tramlines_total_alpha = max(tramlines_total_alpha, tram_alpha); // Accumulate max alpha for tramlines
         current_offset_main += current_line_actual_thickness + tram_space;
          if (i == num_tram -1) { inner_edge_of_last_drawn_tramline_hs_diamond = max(0.0.xx, diamond_outer_half_size - current_offset_main + tram_space); }
     }
     if (num_tram == 0) { inner_edge_of_last_drawn_tramline_hs_diamond = diamond_outer_half_size; }
 
     float fill_alpha = smoothstep(F_EDGE, -F_EDGE, sdBox(p_eval, inner_edge_of_last_drawn_tramline_hs_diamond));
-    final_color = lerp(lerp(fill_c, line_c, tramlines_total_alpha), fill_c, fill_alpha);
+    final_color = lerp(lerp(fill_c, line_c, tramlines_total_alpha), fill_c, fill_alpha); // Same coloring as box
+
     float3 detail_lines_color_val = lerp(fill_c, line_c, 0.5);
     float2 inlay1_center_half_size = max(0.0.xx, inner_edge_of_last_drawn_tramline_hs_diamond - detail_pad - detail_lw * 0.5);
     float sdf_inlay1_center = sdBox(p_eval, inlay1_center_half_size);
     float alpha_inlay1_line = saturate(1.0 - smoothstep(detail_lw * 0.5 - F_EDGE, detail_lw * 0.5 + F_EDGE, abs(sdf_inlay1_center)));
     final_color = lerp(final_color, detail_lines_color_val, alpha_inlay1_line);
+    
     float offset_for_line2_center = detail_pad + detail_lw + detail_pad; 
     float2 inlay2_center_half_size = max(0.0.xx, inner_edge_of_last_drawn_tramline_hs_diamond - offset_for_line2_center - detail_lw * 0.5);
     float sdf_inlay2_center = sdBox(p_eval, inlay2_center_half_size);
     float alpha_inlay2_line = saturate(1.0 - smoothstep(detail_lw * 0.5 - F_EDGE, detail_lw * 0.5 + F_EDGE, abs(sdf_inlay2_center)));
     final_color = lerp(final_color, detail_lines_color_val, alpha_inlay2_line);
+    
     float combined_total_alpha = fill_alpha;
      if (fill_alpha < 0.1) { combined_total_alpha = saturate(tramlines_total_alpha + alpha_inlay1_line + alpha_inlay2_line); }
     return float4(final_color, combined_total_alpha);
@@ -176,8 +191,10 @@ float4 drawFan(float2 p_screen, float2 fan_origin_uv, float y_direction_multipli
                float line_thick, float3 line_c)
 {
     float min_dist_to_line = 10.0;
+    if (line_count <= 0) return float4(line_c, 0.0);
+
     for (int i = 0; i < line_count; ++i) {
-        float t = (line_count == 1) ? 0.5 : float(i) / float(line_count - 1); // Avoid div by zero if line_count is 1
+        float t = (line_count == 1) ? 0.5 : float(i) / float(line_count - 1); 
         float angle = spread_rad * (t - 0.5); 
         float2 dir = float2(sin(angle), cos(angle) * y_direction_multiplier);
         float2 start_point = fan_origin_uv + dir * base_radius;
@@ -204,8 +221,8 @@ struct TowerOutput { float4 color_alpha; };
 TowerOutput drawCentralTower(float2 p_local_base_centered, float2 half_size, float chamfer_fraction, 
                              float3 fill_c, float3 line_c)
 {
-    TowerOutput result; // Initialize at the start
-    result.color_alpha = float4(0,0,0,0); // Default value
+    TowerOutput result; 
+    result.color_alpha = float4(0,0,0,0); 
 
     float2 p_detail_sym = float2(abs(p_local_base_centered.x), p_local_base_centered.y);
     float sdf_base_box = sdBox(p_detail_sym, half_size);
@@ -245,6 +262,7 @@ float4 drawSecondaryTower(float2 p_local_base_centered, float2 half_size, float 
     return float4(color, fill_alpha);
 }
 
+
 // === Main Pixel Shader ===
 float4 PS_Main(float4 pos : SV_Position, float2 uv : TEXCOORD) : SV_Target
 {
@@ -252,7 +270,7 @@ float4 PS_Main(float4 pos : SV_Position, float2 uv : TEXCOORD) : SV_Target
     float2 sq_base = SquareSpaceUV(uv);
 
     float main_diamond_sdf = sdBox(abs(rotate(sq_base, M_PI / 4.0)), DiamondScalarSize);
-    float diamond_clip_mask = smoothstep(F_EDGE*2.0, -F_EDGE*2.0, -main_diamond_sdf);
+    float diamond_clip_mask = 1.0 - smoothstep(0.0, F_EDGE, main_diamond_sdf); // Corrected mask
 
     if (FanEnable && FansBehindDiamond) {
         float top_fan_y_dir = MirrorFansGlobally ? -1.0 : 1.0;
@@ -266,14 +284,44 @@ float4 PS_Main(float4 pos : SV_Position, float2 uv : TEXCOORD) : SV_Target
     float4 diamond_elem = drawComplexDiamond(sq_base, DiamondScalarSize, FrameFillColor, FrameLineColor, NumTramlines, TramlineIndividualThickness, BorderThickness, TramlineSpacing, DetailPadding, DetailLineWidth);
     output_color.rgb = lerp(output_color.rgb, diamond_elem.rgb, diamond_elem.a);
 
-    float2 left_cd_uv_offset = float2(MainSize.x, 0.0); 
-    float4 left_corner_diamond_elem = drawComplexDiamond(sq_base + left_cd_uv_offset, CornerDiamondScalarHalfSize, FrameFillColor, FrameLineColor, NumTramlines, TramlineIndividualThickness, BorderThickness, TramlineSpacing, DetailPadding, DetailLineWidth);
+    // --- Corner Diamonds Placement ---
+    // Calculate the x-coordinate of the main frame's actual inner visual edge (after all its tramlines)
+    float2 main_box_outer_hs_for_calc = MainSize;
+    float temp_current_offset_for_main_box_inner_edge = 0.0;
+    float2 main_box_inner_tram_edge_hs = main_box_outer_hs_for_calc; // Default if NumTramlines is 0
+
+    if (NumTramlines > 0) { // Check to prevent issues if NumTramlines could be 0, though UI min is 1
+        for (int i = 0; i < NumTramlines; ++i) {
+            float current_line_thick = (i == NumTramlines - 1) ? BorderThickness : TramlineIndividualThickness;
+            temp_current_offset_for_main_box_inner_edge += current_line_thick;
+            if (i < NumTramlines - 1) { // Add spacing if it's not the very last thickness being added
+                temp_current_offset_for_main_box_inner_edge += TramlineSpacing;
+            }
+        }
+        main_box_inner_tram_edge_hs = max(0.0.xx, main_box_outer_hs_for_calc - temp_current_offset_for_main_box_inner_edge);
+    }
+    float corner_diamond_target_center_x = main_box_inner_tram_edge_hs.x;
+
+
+    // Left Corner Diamond
+    float2 left_cd_pos = float2(-corner_diamond_target_center_x, 0.0); 
+    float4 left_corner_diamond_elem = drawComplexDiamond(sq_base - left_cd_pos, CornerDiamondScalarHalfSize, FrameFillColor, FrameLineColor, NumTramlines, TramlineIndividualThickness, BorderThickness, TramlineSpacing, DetailPadding, DetailLineWidth);
     output_color.rgb = lerp(output_color.rgb, left_corner_diamond_elem.rgb, left_corner_diamond_elem.a);
-    float2 right_cd_uv_offset = float2(MainSize.x, 0.0); 
-    float4 right_corner_diamond_elem = drawComplexDiamond(sq_base - right_cd_uv_offset, CornerDiamondScalarHalfSize, FrameFillColor, FrameLineColor, NumTramlines, TramlineIndividualThickness, BorderThickness, TramlineSpacing, DetailPadding, DetailLineWidth);
+
+    // Right Corner Diamond
+    float2 right_cd_pos = float2(corner_diamond_target_center_x, 0.0); 
+    float4 right_corner_diamond_elem = drawComplexDiamond(sq_base - right_cd_pos, CornerDiamondScalarHalfSize, FrameFillColor, FrameLineColor, NumTramlines, TramlineIndividualThickness, BorderThickness, TramlineSpacing, DetailPadding, DetailLineWidth);
     output_color.rgb = lerp(output_color.rgb, right_corner_diamond_elem.rgb, right_corner_diamond_elem.a);
 
-    if (FanEnable && !FansBehindDiamond) {
+
+    // --- Boxes drawn AFTER main diamond and corner diamonds ---
+    float4 sub_box_elem = drawSolidElementWithTramlines(sq_base, SubSize, false, NumTramlines, TramlineIndividualThickness, BorderThickness, TramlineSpacing, DetailPadding, DetailLineWidth, FrameFillColor, FrameLineColor);
+    output_color.rgb = lerp(output_color.rgb, sub_box_elem.rgb, sub_box_elem.a);
+    float4 main_box_elem = drawSolidElementWithTramlines(sq_base, MainSize, false, NumTramlines, TramlineIndividualThickness, BorderThickness, TramlineSpacing, DetailPadding, DetailLineWidth, FrameFillColor, FrameLineColor);
+    output_color.rgb = lerp(output_color.rgb, main_box_elem.rgb, main_box_elem.a);
+
+    // --- Fans drawn AFTER boxes if !FansBehindDiamond, so they appear on top of boxes (but clipped by diamond) ---
+    if (FanEnable && !FansBehindDiamond) { 
         float top_fan_y_dir = MirrorFansGlobally ? -1.0 : 1.0;
         float bottom_fan_y_dir = MirrorFansGlobally ? 1.0 : -1.0;
         float4 upper_fan = drawFan(sq_base, float2(0.0, FanYOffset), top_fan_y_dir, FanLineCount, FanSpreadDegrees * M_PI / 180.0, FanBaseRadius, FanLength, FanLineThickness, FrameLineColor);
@@ -284,11 +332,7 @@ float4 PS_Main(float4 pos : SV_Position, float2 uv : TEXCOORD) : SV_Target
         output_color.rgb = lerp(output_color.rgb, lower_fan.rgb, lower_fan.a);
     }
     
-    float4 sub_box_elem = drawSolidElementWithTramlines(sq_base, SubSize, false, NumTramlines, TramlineIndividualThickness, BorderThickness, TramlineSpacing, DetailPadding, DetailLineWidth, FrameFillColor, FrameLineColor);
-    output_color.rgb = lerp(output_color.rgb, sub_box_elem.rgb, sub_box_elem.a);
-    float4 main_box_elem = drawSolidElementWithTramlines(sq_base, MainSize, false, NumTramlines, TramlineIndividualThickness, BorderThickness, TramlineSpacing, DetailPadding, DetailLineWidth, FrameFillColor, FrameLineColor);
-    output_color.rgb = lerp(output_color.rgb, main_box_elem.rgb, main_box_elem.a);
-    
+    // --- Towers drawn last ---
     float tower_base_y_offset = -CentralTowerSize.y; 
     float secondary_tower_base_y_in_sq_base = -SecondaryTowerSize.y;
     float2 central_tower_local_uv = float2(sq_base.x, sq_base.y - tower_base_y_offset);
