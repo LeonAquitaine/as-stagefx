@@ -32,6 +32,15 @@ Generates animated procedural candle flames with realistic shape and color gradi
 <table>
 <tr>
 <td width="50%">
+<h4>VFX: Color Balancer ✨</h4>
+<h5><code>[AS] VFX: Color Balancer|AS_VFX_ColorBalancer.1.fx</code></h5>
+Enables colorists and videographers to apply classic cinematic color harmony models (complementary, analogous, triadic, split-complementary, tetradic) to live visuals or video production. It offers flexible color manipulation across shadows, midtones, and highlights, allowing for sophisticated color grading that maintains natural-looking skin tones while dramatically enhancing the overall visual impact.
+</td>
+<td width="50%"><div style="text-align:center">
+</div></td>
+</tr>
+<tr>
+<td width="50%">
 <h4>VFX: Clair Obscur ⚡</h4>
 <h5><code>[AS] VFX: Clair Obscur|AS_VFX_ClairObscur.1.fx</code></h5>
 Creates a beautiful cascade of floating petals with realistic movement and organic animation. This effect simulates petals drifting through the air with natural rotation variation and elegant entrance/exit effects.<br/><br/>
