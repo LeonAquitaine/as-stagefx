@@ -182,4 +182,4 @@ Isolates foreground subjects based on depth and applies customizable borders and
 
 ---
 
-*For more detailed information about installation, updates, and credits, please refer to the [main README](../README.md).*
+*For more detailed information about installation, updates, and credits, please refer to the [main README](../README.md). Complete external source attribution is available in [AS_StageFX_Credits.md](../AS_StageFX_Credits.md).*
