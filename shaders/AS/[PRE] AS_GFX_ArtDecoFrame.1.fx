@@ -63,29 +63,29 @@ float sdThickLineSegment(float2 p, float2 a, float2 b, float thickness) {
 // (Using exact UI from your provided "v12.1" file)
 uniform float3 FrameFillColor < ui_label="Frame Fill Color"; ui_type="color"; > = float3(0.05, 0.05, 0.05);
 uniform float3 FrameLineColor < ui_label="Frame Line Color"; ui_type="color"; > = float3(0.9, 0.75, 0.35);
-uniform float BorderThickness < ui_label="Last Tramline Thickness"; ui_type="drag"; ui_min=0.001; ui_max=0.1; > = 0.02;
-uniform float DetailPadding < ui_label="Detail Line Padding (from inner tramline)"; ui_type="drag"; ui_min=0.001; ui_max=0.2; > = 0.01;
-uniform float DetailLineWidth < ui_label="Detail Line Thickness"; ui_type="drag"; ui_min=0.001; ui_max=0.05; > = 0.005;
+uniform float BorderThickness < ui_label="Last Tramline Thickness"; ui_type="slider"; ui_min=0.001; ui_max=0.1; > = 0.02;
+uniform float DetailPadding < ui_label="Detail Line Padding (from inner tramline)"; ui_type="slider"; ui_min=0.001; ui_max=0.2; > = 0.01;
+uniform float DetailLineWidth < ui_label="Detail Line Thickness"; ui_type="slider"; ui_min=0.001; ui_max=0.05; > = 0.005;
 uniform int NumTramlines < ui_label="Number of Tramlines"; ui_type="slider"; ui_min=1; ui_max=5; > = 3;
-uniform float TramlineIndividualThickness < ui_label="Standard Tramline Thickness"; ui_type="drag"; ui_min=0.0005; ui_max=0.01; > = 0.0015;
-uniform float TramlineSpacing < ui_label="Tramline Spacing"; ui_type="drag"; ui_min=0.001; ui_max=0.02; > = 0.003;
-uniform float2 MainSize < ui_label="Main Frame Half-Size"; ui_type="drag"; ui_min=0.05; ui_max=2.0; > = float2(0.7, 0.5);
-uniform float2 SubSize < ui_label="Subframe Half-Size"; ui_type="drag"; ui_min=0.05; ui_max=2.0; > = float2(0.4, 0.35);
-uniform float DiamondScalarSize < ui_label="Main Diamond Half-Size (Scalar)"; ui_type="drag"; ui_min=0.05; ui_max=3.0; > = 0.9;
-uniform float CornerDiamondScalarHalfSize < ui_label="Corner Diamond Half-Size"; ui_type="drag"; ui_min=0.02; ui_max=1.0; > = 0.2;
-uniform float2 CentralTowerSize < ui_label="Central Tower Half-Size (W, H)"; ui_type="drag"; ui_min=0.025; ui_max=0.75; > = float2(0.1, 0.4);
-uniform float CentralTowerChamfer < ui_label="Central Tower Chamfer (0-1, extent from side)"; ui_type="drag"; ui_min=0.0; ui_max=1.0; > = 0.5;
-uniform float2 SecondaryTowerSize < ui_label="Secondary Tower Half-Size (W, H)"; ui_type="drag"; ui_min=0.01; ui_max=0.5; > = float2(0.05, 0.25);
-uniform float SecondaryTowerOffsetX < ui_label="Secondary Towers Offset X (from center)"; ui_type="drag"; ui_min=0.0; ui_max=1.0; > = 0.2;
+uniform float TramlineIndividualThickness < ui_label="Standard Tramline Thickness"; ui_type="slider"; ui_min=0.0005; ui_max=0.01; > = 0.0015;
+uniform float TramlineSpacing < ui_label="Tramline Spacing"; ui_type="slider"; ui_min=0.001; ui_max=0.02; > = 0.003;
+uniform float2 MainSize < ui_label="Main Frame Half-Size"; ui_type="slider"; ui_min=0.05; ui_max=2.0; > = float2(0.7, 0.5);
+uniform float2 SubSize < ui_label="Subframe Half-Size"; ui_type="slider"; ui_min=0.05; ui_max=2.0; > = float2(0.4, 0.35);
+uniform float DiamondScalarSize < ui_label="Main Diamond Half-Size (Scalar)"; ui_type="slider"; ui_min=0.05; ui_max=3.0; > = 0.9;
+uniform float CornerDiamondScalarHalfSize < ui_label="Corner Diamond Half-Size"; ui_type="slider"; ui_min=0.02; ui_max=1.0; > = 0.2;
+uniform float2 CentralTowerSize < ui_label="Central Tower Half-Size (W, H)"; ui_type="slider"; ui_min=0.025; ui_max=0.75; > = float2(0.1, 0.4);
+uniform float CentralTowerChamfer < ui_label="Central Tower Chamfer (0-1, extent from side)"; ui_type="slider"; ui_min=0.0; ui_max=1.0; > = 0.5;
+uniform float2 SecondaryTowerSize < ui_label="Secondary Tower Half-Size (W, H)"; ui_type="slider"; ui_min=0.01; ui_max=0.5; > = float2(0.05, 0.25);
+uniform float SecondaryTowerOffsetX < ui_label="Secondary Towers Offset X (from center)"; ui_type="slider"; ui_min=0.0; ui_max=1.0; > = 0.2;
 uniform bool FanEnable <ui_label="Enable Fans"; ui_type="checkbox";> = true;
 uniform bool MirrorFansGlobally <ui_label="Mirror Fans Globally"; ui_type="checkbox";> = false; 
 uniform bool FansBehindDiamond <ui_label="Render Fans Behind Diamond"; ui_type="checkbox";> = false; 
 uniform int FanLineCount < ui_label="Fan Line Count (per fan)"; ui_type="slider"; ui_min=3; ui_max=50; > = 25;
-uniform float FanSpreadDegrees < ui_label="Fan Spread (Degrees)"; ui_type="drag"; ui_min=10.0; ui_max=180.0; > = 90.0;
-uniform float FanBaseRadius < ui_label="Fan Base Radius (Offset from Origin)"; ui_type="drag"; ui_min=0.0; ui_max=0.5; > = 0.05;
-uniform float FanLength < ui_label="Fan Line Length"; ui_type="drag"; ui_min=0.1; ui_max=2.0; > = 0.6;
-uniform float FanLineThickness < ui_label="Fan Line Thickness"; ui_type="drag"; ui_min=0.0005; ui_max=0.005; > = 0.001;
-uniform float FanYOffset < ui_label="Fan Y Offset (from screen center)"; ui_type="drag"; ui_min=0.0; ui_max=1.0; > = 0.45;
+uniform float FanSpreadDegrees < ui_label="Fan Spread (Degrees)"; ui_type="slider"; ui_min=10.0; ui_max=180.0; > = 90.0;
+uniform float FanBaseRadius < ui_label="Fan Base Radius (Offset from Origin)"; ui_type="slider"; ui_min=0.0; ui_max=0.5; > = 0.05;
+uniform float FanLength < ui_label="Fan Line Length"; ui_type="slider"; ui_min=0.1; ui_max=2.0; > = 0.6;
+uniform float FanLineThickness < ui_label="Fan Line Thickness"; ui_type="slider"; ui_min=0.0005; ui_max=0.005; > = 0.001;
+uniform float FanYOffset < ui_label="Fan Y Offset (from screen center)"; ui_type="slider"; ui_min=0.0; ui_max=1.0; > = 0.45;
 
 
 // === Drawing Functions ===
