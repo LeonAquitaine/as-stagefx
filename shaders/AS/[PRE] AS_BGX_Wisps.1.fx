@@ -328,13 +328,20 @@ float4 PS_Wisps(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : SV_Tar
     float2 fragCoord = vpos.xy; 
     float2 R_screen = float2(BUFFER_WIDTH, BUFFER_HEIGHT);
 
+    // Normalize fragCoord to [-1, 1] range, correcting for aspect ratio
+    float2 ndc = (fragCoord.xy / R_screen.xy) * 2.0 - 1.0;
+    ndc.y *= -1.0; // Flip Y for typical screen coordinates (optional, depends on convention)
+    float aspectRatio = R_screen.x / R_screen.y;
+
     float z_depth_current = 0.0f; 
     float r_reflect_val_current = 0.0f;         
     float d_step_val_current = 0.0f;            
     float3 p_sample_capture = 0.0f.xxx; 
 
     float4 OutputColor = float4(0.0f, 0.0f, 0.0f, 0.0f); 
-    float3 D_ray = normalize(float3(fragCoord.x * 2.0f - R_screen.x, fragCoord.y * 2.0f - R_screen.y, -R_screen.y * FOVFactor));
+    // Adjust D_ray construction using normalized coordinates
+    // Keep Z component logic similar, but base X,Y on aspect-corrected NDC
+    float3 D_ray = normalize(float3(ndc.x * aspectRatio, ndc.y, -1.0 * FOVFactor)); // Assuming FOVFactor is pre-adjusted or R_screen.y was the intended scale for Z
 
     float captured_d_step_val = 0.0f;
     float captured_z_depth = 0.0f;
@@ -446,7 +453,6 @@ float4 PS_Wisps(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : SV_Tar
     float4 originalColor = float4(tex2D(ReShade::BackBuffer, texcoord).rgb, 1.0);
     
     // Apply standard position and scale
-    float aspectRatio = BUFFER_WIDTH * BUFFER_RCP_HEIGHT;
     float2 centered = AS_centerCoord(texcoord, aspectRatio);
     float2 transformed = AS_applyPosScale(centered, Position, Scale);
     float distFromCenter = length(transformed);
