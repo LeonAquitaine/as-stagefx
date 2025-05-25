@@ -1,6 +1,6 @@
 /**
  * AS_GFX_ArtDecoFrame.1.fx - Art Deco/Nouveau Frame Generator with Procedural Gold Material
- * Author: Leon Aquitaine (with additions by AI)
+ * Author: Leon Aquitaine
  * License: Creative Commons Attribution 4.0 International
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
  * 
@@ -50,6 +50,7 @@ uniform float GoldMetallic < ui_label="Gold Metallic Intensity"; ui_type="slider
 uniform float GoldRoughness < ui_label="Gold Base Roughness"; ui_type="slider"; ui_min=0.01; ui_max=1.0; ui_category="Gold Material"; > = 0.2;
 uniform float NoiseScale < ui_label="Surface Noise Scale"; ui_type="slider"; ui_min=0.1; ui_max=20.0; ui_category="Gold Material"; > = 3.0;
 uniform float NoiseIntensity < ui_label="Surface Noise Intensity"; ui_type="slider"; ui_min=0.0; ui_max=2.0; ui_category="Gold Material"; > = 0.6;
+uniform float NoiseBrightness < ui_label="Surface Noise Brightness"; ui_type="slider"; ui_min=0.0; ui_max=2.0; ui_category="Gold Material"; > = 0.8;
 uniform float FresnelPower < ui_label="Fresnel Power"; ui_type="slider"; ui_min=0.1; ui_max=10.0; ui_category="Gold Material"; > = 5.0;
 uniform float3 FrameFillColorBackup < ui_label="Backup Frame Fill Color"; ui_type="color"; ui_category="Fallback Colors"; ui_category_closed=true; > = float3(0.05, 0.05, 0.05);
 uniform float3 FrameLineColorBackup < ui_label="Backup Frame Line Color"; ui_type="color"; ui_category="Fallback Colors"; ui_category_closed=true; > = float3(0.9, 0.75, 0.35);
@@ -141,10 +142,10 @@ float3 GenerateProceduralGold(float2 uv, bool isFill) {
     // Base gold color from HSV
     float3 baseGold = HSVtoRGB(float3(GoldHue, GoldSaturation, GoldBrightness));
     
-    // Generate surface noise using FBM with correct parameters
+    // Generate multiple layers of surface noise using FBM with correct parameters
     float surfaceNoise = AS_Fbm2D(uv * NoiseScale, 4, 2.0, 0.5);
     
-    // Apply noise to roughness variation with enhanced intensity
+    // Apply noise to roughness variation with MUCH enhanced intensity
     float roughnessVariation = GoldRoughness + (surfaceNoise - 0.5) * NoiseIntensity * 2.0;
     roughnessVariation = saturate(roughnessVariation);
     
@@ -158,17 +159,16 @@ float3 GenerateProceduralGold(float2 uv, bool isFill) {
     
     // Metallic reflection tint (cooler for highlights) with noise variation
     float3 metallicTint = lerp(baseGold, float3(1.0, 0.95, 0.8), noisyFresnelFactor * GoldMetallic);
-    
-    // Apply roughness and noise to metallic intensity
+      // Apply roughness and noise to metallic intensity
     float metallicIntensity = GoldMetallic * (1.0 - roughnessVariation * 0.5);
     metallicIntensity *= (1.0 + (surfaceNoise - 0.5) * NoiseIntensity * 0.5);
     metallicIntensity = saturate(metallicIntensity);
     
-    // Enhanced surface variation - make noise much more visible
-    float brightnessMod = 1.0 + (surfaceNoise - 0.5) * NoiseIntensity * 0.8;
+    // Enhanced surface brightness variation with dedicated brightness control
+    float brightnessMod = 1.0 + (surfaceNoise - 0.5) * NoiseBrightness;
     brightnessMod = saturate(brightnessMod);
     
-    // Apply noise to individual color channels for more dramatic variation
+    // Apply noise to individual color channels for MUCH more dramatic variation
     float3 noiseColorMod = float3(
         1.0 + (AS_Fbm2D(uv * NoiseScale + 0.1, 4, 2.0, 0.5) - 0.5) * NoiseIntensity * 0.4,
         1.0 + (AS_Fbm2D(uv * NoiseScale + 0.3, 4, 2.0, 0.5) - 0.5) * NoiseIntensity * 0.3,
@@ -176,7 +176,7 @@ float3 GenerateProceduralGold(float2 uv, bool isFill) {
     );
     noiseColorMod = saturate(noiseColorMod);
     
-    // Final gold color with enhanced surface variation
+    // Final gold color with ENHANCED surface variation
     float3 finalGold = lerp(baseGold, metallicTint, metallicIntensity);
     finalGold *= brightnessMod;
     finalGold *= noiseColorMod;
@@ -186,7 +186,7 @@ float3 GenerateProceduralGold(float2 uv, bool isFill) {
         // Fill areas are slightly darker and less metallic
         finalGold *= 0.7;
     } else {
-        // Line areas are brighter and more reflective with enhanced noise
+        // Line areas are brighter and more reflective with ENHANCED noise
         finalGold *= 1.2;
         float3 highlightColor = lerp(float3(1.0, 0.9, 0.7), float3(1.2, 1.0, 0.8), surfaceNoise);
         finalGold = lerp(finalGold, highlightColor, noisyFresnelFactor * 0.3);
