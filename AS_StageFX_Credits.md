@@ -74,6 +74,12 @@ This document lists all external sources, original authors, and inspiration cred
 - **Creation Date**: 2021-02-13
 - **Source**: https://www.shadertoy.com/view/ttcBRs
 
+### AS_VFX_CircularSpectrum.1.fx - Circular Audio Spectrum Dots Visualizer
+- **Original Author**: AIandDesign
+- **Original Title**: "Circular audio visualizer"
+- **Creation Date**: 2025-05-24
+- **Source**: https://www.shadertoy.com/view/tcyGW1
+
 ### AS_VFX_RadiantFire.1.fx - Fire Simulation Effect
 - **Original Author**: mu6k
 - **Original Title**: "301's Fire Shader - Remix 3"
