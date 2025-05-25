@@ -1,68 +1,58 @@
 /**
- * AS_GFX_ArtDecoFrame.1.fx - Art Deco/Nouveau Frame Generator
+ * AS_GFX_ArtDecoFrame.1.fx - Art Deco/Nouveau Frame Generator with Procedural Gold Material
  * Author: Leon Aquitaine (with additions by AI)
+ * License: Creative Commons Attribution 4.0 International
+ * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
+ * 
+ * ===================================================================================
  *
- * Changelog (v12.1 base, with targeted corner diamond placement fix + SquareSpaceUV defensive coding):
- * - Added defensive check in SquareSpaceUV for minDim being zero.
- * - Corner diamonds' centers are now placed exactly at the calculated inner edge of the
- * main frame's tramline border.
- * - Fan lines (when 'FansBehindDiamond' is false) are now clipped to the
- * inner edge of the main background diamond's innermost tramline.
+ * DESCRIPTION:
+ * Generates ornate Art Deco/Art Nouveau style decorative frames with realistic procedural gold material simulation.
+ * Creates geometric patterns with towers, diamonds, tramlines, and decorative fans, all rendered in authentic metallic gold.
+ *
+ * FEATURES:
+ * - Complex geometric frame construction with multiple layers and decorative elements
+ * - Procedural gold material with surface roughness, metallic reflections, and Fresnel effects
+ * - Configurable tramlines, towers, corner diamonds, and decorative fans
+ * - Real-time surface noise simulation for authentic gold texture variation
+ * - Customizable gold hue, saturation, brightness, and metallic properties
+ * - Resolution-independent rendering for consistent appearance across screen sizes
+ *
+ * IMPLEMENTATION OVERVIEW:
+ * 1. Constructs Art Deco frame geometry using signed distance field functions
+ * 2. Applies procedural gold material using HSV color space and fractal noise
+ * 3. Simulates surface imperfections with FBM noise for realistic metal appearance
+ * 4. Implements Fresnel effects for authentic metallic reflection behavior
+ * 5. Renders elements in proper Z-order: fans, diamonds, towers, and frame boxes
+ *
+ * ===================================================================================
  */
 
+// ============================================================================
+// TECHNIQUE GUARD - Prevents duplicate loading of the same shader
+// ============================================================================
+#ifndef __AS_GFX_ArtDecoFrame_1_fx
+#define __AS_GFX_ArtDecoFrame_1_fx
+
 #include "ReShade.fxh"
+#include "AS_Noise.1.fxh"
+#include "AS_Utils.1.fxh"
 
 #define M_PI 3.14159265358979323846
 #define F_EDGE 0.001
 
-// === Coordinate & SDF Helpers ===
-// Defensively recoded SquareSpaceUV
-float2 SquareSpaceUV(float2 uv) {
-    float bWidth = BUFFER_WIDTH;
-    float bHeight = BUFFER_HEIGHT;
-    float2 screenDimensions = float2(bWidth, bHeight);
-
-    float2 screenPos = uv * screenDimensions;
-    float minDim = min(bWidth, bHeight);
-    float2 screenCenter = 0.5 * screenDimensions;
-    float2 centeredPos = screenPos - screenCenter;
-
-    if (abs(minDim) < 0.0001) { // Defensive check against minDim being zero or extremely small
-        return float2(0.0, 0.0); 
-    }
-
-    float2 scaledPos = centeredPos / minDim;
-    return scaledPos * 2.0;
-}
-
-float2 rotate(float2 uv, float angle_rad) {
-    float s = sin(angle_rad);
-    float c = cos(angle_rad);
-    return float2(uv.x * c - uv.y * s, uv.x * s + uv.y * c);
-}
-
-float sdBox(float2 p, float2 b) {
-    float2 d = abs(p) - b;
-    return length(max(d, 0.0)) + min(max(d.x, d.y), 0.0);
-}
-
-float sdThickLineSegment(float2 p, float2 a, float2 b, float thickness) {
-    float2 pa = p - a;
-    float2 ba = b - a;
-    float dot_ba_ba = dot(ba, ba);
-
-    if (dot_ba_ba < 0.000001) { 
-        return length(pa) - thickness * 0.5; 
-    }
-
-    float h = clamp(dot(pa, ba) / dot_ba_ba, 0.0, 1.0);
-    return length(pa - ba * h) - thickness * 0.5;
-}
-
 // === UI Controls ===
-// (Using exact UI from your provided "v12.1" file)
-uniform float3 FrameFillColor < ui_label="Frame Fill Color"; ui_type="color"; > = float3(0.05, 0.05, 0.05);
-uniform float3 FrameLineColor < ui_label="Frame Line Color"; ui_type="color"; > = float3(0.9, 0.75, 0.35);
+// Gold Material Properties
+uniform float GoldHue < ui_label="Gold Hue"; ui_type="slider"; ui_min=0.0; ui_max=360.0; ui_category="Gold Material"; > = 45.0;
+uniform float GoldSaturation < ui_label="Gold Saturation"; ui_type="slider"; ui_min=0.0; ui_max=1.0; ui_category="Gold Material"; > = 0.8;
+uniform float GoldBrightness < ui_label="Gold Brightness"; ui_type="slider"; ui_min=0.0; ui_max=2.0; ui_category="Gold Material"; > = 0.85;
+uniform float GoldMetallic < ui_label="Gold Metallic Intensity"; ui_type="slider"; ui_min=0.0; ui_max=1.0; ui_category="Gold Material"; > = 0.9;
+uniform float GoldRoughness < ui_label="Gold Base Roughness"; ui_type="slider"; ui_min=0.01; ui_max=1.0; ui_category="Gold Material"; > = 0.2;
+uniform float NoiseScale < ui_label="Surface Noise Scale"; ui_type="slider"; ui_min=0.1; ui_max=20.0; ui_category="Gold Material"; > = 3.0;
+uniform float NoiseIntensity < ui_label="Surface Noise Intensity"; ui_type="slider"; ui_min=0.0; ui_max=2.0; ui_category="Gold Material"; > = 0.6;
+uniform float FresnelPower < ui_label="Fresnel Power"; ui_type="slider"; ui_min=0.1; ui_max=10.0; ui_category="Gold Material"; > = 5.0;
+uniform float3 FrameFillColorBackup < ui_label="Backup Frame Fill Color"; ui_type="color"; ui_category="Fallback Colors"; ui_category_closed=true; > = float3(0.05, 0.05, 0.05);
+uniform float3 FrameLineColorBackup < ui_label="Backup Frame Line Color"; ui_type="color"; ui_category="Fallback Colors"; ui_category_closed=true; > = float3(0.9, 0.75, 0.35);
 uniform float BorderThickness < ui_label="Last Tramline Thickness"; ui_type="slider"; ui_min=0.001; ui_max=0.1; > = 0.02;
 uniform float DetailPadding < ui_label="Detail Line Padding (from inner tramline)"; ui_type="slider"; ui_min=0.001; ui_max=0.2; > = 0.01;
 uniform float DetailLineWidth < ui_label="Detail Line Thickness"; ui_type="slider"; ui_min=0.001; ui_max=0.05; > = 0.005;
@@ -73,9 +63,9 @@ uniform float2 MainSize < ui_label="Main Frame Half-Size"; ui_type="slider"; ui_
 uniform float2 SubSize < ui_label="Subframe Half-Size"; ui_type="slider"; ui_min=0.05; ui_max=2.0; > = float2(0.4, 0.35);
 uniform float DiamondScalarSize < ui_label="Main Diamond Half-Size (Scalar)"; ui_type="slider"; ui_min=0.05; ui_max=3.0; > = 0.9;
 uniform float CornerDiamondScalarHalfSize < ui_label="Corner Diamond Half-Size"; ui_type="slider"; ui_min=0.02; ui_max=1.0; > = 0.2;
-uniform float2 CentralTowerSize < ui_label="Central Tower Half-Size (W, H)"; ui_type="slider"; ui_min=0.025; ui_max=0.75; > = float2(0.1, 0.4);
-uniform float CentralTowerChamfer < ui_label="Central Tower Chamfer (0-1, extent from side)"; ui_type="slider"; ui_min=0.0; ui_max=1.0; > = 0.5;
-uniform float2 SecondaryTowerSize < ui_label="Secondary Tower Half-Size (W, H)"; ui_type="slider"; ui_min=0.01; ui_max=0.5; > = float2(0.05, 0.25);
+uniform float2 CentralTowerSize < ui_label="Central Tower (Half-W, Total H)"; ui_type="slider"; ui_min=0.025; ui_max=1.5; > = float2(0.1, 0.8); 
+uniform float CentralTowerChamfer < ui_label="Central Tower Chamfer (0-1, of Half-W)"; ui_type="slider"; ui_min=0.0; ui_max=1.0; > = 0.5;
+uniform float2 SecondaryTowerSize < ui_label="Secondary Tower (Half-W, Total H)"; ui_type="slider"; ui_min=0.01; ui_max=1.0; > = float2(0.05, 0.5); 
 uniform float SecondaryTowerOffsetX < ui_label="Secondary Towers Offset X (from center)"; ui_type="slider"; ui_min=0.0; ui_max=1.0; > = 0.2;
 uniform bool FanEnable <ui_label="Enable Fans"; ui_type="checkbox";> = true;
 uniform bool MirrorFansGlobally <ui_label="Mirror Fans Globally"; ui_type="checkbox";> = false; 
@@ -87,9 +77,125 @@ uniform float FanLength < ui_label="Fan Line Length"; ui_type="slider"; ui_min=0
 uniform float FanLineThickness < ui_label="Fan Line Thickness"; ui_type="slider"; ui_min=0.0005; ui_max=0.005; > = 0.001;
 uniform float FanYOffset < ui_label="Fan Y Offset (from screen center)"; ui_type="slider"; ui_min=0.0; ui_max=1.0; > = 0.45;
 
+// === Coordinate & SDF Helpers ===
+float2 SquareSpaceUV(float2 uv) {
+    float bWidth = BUFFER_WIDTH;
+    float bHeight = BUFFER_HEIGHT;
+    float2 screenDimensions = float2(bWidth, bHeight);
+    float2 screenPos = uv * screenDimensions;
+    float minDim = min(bWidth, bHeight);
+    float2 screenCenter = 0.5 * screenDimensions;
+    float2 centeredPos = screenPos - screenCenter;
+    if (abs(minDim) < 0.0001) { return float2(0.0, 0.0); }
+    float2 scaledPos = centeredPos / minDim;
+    return scaledPos * 2.0;
+}
+
+float2 rotate(float2 uv, float angle_rad) {
+    float s = sin(angle_rad);
+    float c = cos(angle_rad);
+    return float2(uv.x * c - uv.y * s, uv.x * s + uv.y * c);
+}
+
+float sdBox(float2 p, float2 b) { // p is relative to box center, b is half-size
+    float2 d = abs(p) - b;
+    return length(max(d, 0.0)) + min(max(d.x, d.y), 0.0);
+}
+
+float sdThickLineSegment(float2 p, float2 a, float2 b, float thickness) {
+    float2 pa = p - a; float2 ba = b - a;
+    float dot_ba_ba = dot(ba, ba);
+    if (dot_ba_ba < 0.000001) { return length(pa) - thickness * 0.5; }
+    float h = clamp(dot(pa, ba) / dot_ba_ba, 0.0, 1.0);
+    return length(pa - ba * h) - thickness * 0.5;
+}
+
+// === Procedural Gold Material System ===
+float3 HSVtoRGB(float3 hsv) {
+    float h = hsv.x / 60.0;
+    float s = hsv.y;
+    float v = hsv.z;
+    float c = v * s;
+    float x = c * (1.0 - abs(fmod(h, 2.0) - 1.0));
+    float m = v - c;
+    
+    float3 rgb;
+    if (h < 1.0) rgb = float3(c, x, 0);
+    else if (h < 2.0) rgb = float3(x, c, 0);
+    else if (h < 3.0) rgb = float3(0, c, x);
+    else if (h < 4.0) rgb = float3(0, x, c);
+    else if (h < 5.0) rgb = float3(x, 0, c);
+    else rgb = float3(c, 0, x);
+    
+    return rgb + m;
+}
+
+float CalculateFresnelFactor(float2 uv, float2 center, float power) {
+    float2 toCenter = normalize(uv - center);
+    float2 normal = float2(0, 1); // Assume upward normal for simplicity
+    float cosTheta = abs(dot(toCenter, normal));
+    return pow(1.0 - cosTheta, power);
+}
+
+float3 GenerateProceduralGold(float2 uv, bool isFill) {
+    // Base gold color from HSV
+    float3 baseGold = HSVtoRGB(float3(GoldHue, GoldSaturation, GoldBrightness));
+    
+    // Generate surface noise using FBM with correct parameters
+    float surfaceNoise = AS_Fbm2D(uv * NoiseScale, 4, 2.0, 0.5);
+    
+    // Apply noise to roughness variation with enhanced intensity
+    float roughnessVariation = GoldRoughness + (surfaceNoise - 0.5) * NoiseIntensity * 2.0;
+    roughnessVariation = saturate(roughnessVariation);
+    
+    // Calculate Fresnel effect for metallic appearance
+    float2 screenCenter = float2(0.5, 0.5);
+    float fresnelFactor = CalculateFresnelFactor(uv, screenCenter, FresnelPower);
+    
+    // Apply noise to modify Fresnel intensity for surface variation
+    float noisyFresnelFactor = fresnelFactor * (1.0 + (surfaceNoise - 0.5) * NoiseIntensity);
+    noisyFresnelFactor = saturate(noisyFresnelFactor);
+    
+    // Metallic reflection tint (cooler for highlights) with noise variation
+    float3 metallicTint = lerp(baseGold, float3(1.0, 0.95, 0.8), noisyFresnelFactor * GoldMetallic);
+    
+    // Apply roughness and noise to metallic intensity
+    float metallicIntensity = GoldMetallic * (1.0 - roughnessVariation * 0.5);
+    metallicIntensity *= (1.0 + (surfaceNoise - 0.5) * NoiseIntensity * 0.5);
+    metallicIntensity = saturate(metallicIntensity);
+    
+    // Enhanced surface variation - make noise much more visible
+    float brightnessMod = 1.0 + (surfaceNoise - 0.5) * NoiseIntensity * 0.8;
+    brightnessMod = saturate(brightnessMod);
+    
+    // Apply noise to individual color channels for more dramatic variation
+    float3 noiseColorMod = float3(
+        1.0 + (AS_Fbm2D(uv * NoiseScale + 0.1, 4, 2.0, 0.5) - 0.5) * NoiseIntensity * 0.4,
+        1.0 + (AS_Fbm2D(uv * NoiseScale + 0.3, 4, 2.0, 0.5) - 0.5) * NoiseIntensity * 0.3,
+        1.0 + (AS_Fbm2D(uv * NoiseScale + 0.7, 4, 2.0, 0.5) - 0.5) * NoiseIntensity * 0.2
+    );
+    noiseColorMod = saturate(noiseColorMod);
+    
+    // Final gold color with enhanced surface variation
+    float3 finalGold = lerp(baseGold, metallicTint, metallicIntensity);
+    finalGold *= brightnessMod;
+    finalGold *= noiseColorMod;
+    
+    // Differentiate fill vs line colors
+    if (isFill) {
+        // Fill areas are slightly darker and less metallic
+        finalGold *= 0.7;
+    } else {
+        // Line areas are brighter and more reflective with enhanced noise
+        finalGold *= 1.2;
+        float3 highlightColor = lerp(float3(1.0, 0.9, 0.7), float3(1.2, 1.0, 0.8), surfaceNoise);
+        finalGold = lerp(finalGold, highlightColor, noisyFresnelFactor * 0.3);
+    }
+    
+    return saturate(finalGold);
+}
 
 // === Drawing Functions ===
-// (Using the exact drawing functions from the "v12.1" code you provided)
 float drawSingleTramlineSDF(float2 p_eval, float2 line_center_half_size, float line_actual_thickness) {
     float sdf_line_center = sdBox(p_eval, line_center_half_size);
     return saturate(1.0 - smoothstep(
@@ -187,8 +293,11 @@ float4 drawFan(float2 p_screen, float2 fan_origin_uv, float y_direction_multipli
                int line_count, float spread_rad, float base_radius, float line_length, 
                float line_thick, float3 line_c)
 {
-    float min_dist_to_line = 10.0;
-    if (line_count <= 0) return float4(line_c, 0.0);
+    if (line_count <= 0) { // Explicit early return
+        return float4(line_c, 0.0);
+    }
+
+    float min_dist_to_line = 10.0; 
 
     for (int i = 0; i < line_count; ++i) {
         float t = (line_count == 1) ? 0.5 : float(i) / float(line_count - 1); 
@@ -199,75 +308,90 @@ float4 drawFan(float2 p_screen, float2 fan_origin_uv, float y_direction_multipli
         float current_line_sdf = sdThickLineSegment(p_screen, start_point, end_point, line_thick);
         min_dist_to_line = min(min_dist_to_line, current_line_sdf);
     }
+    
     float fan_alpha = saturate(1.0 - smoothstep(0.0, F_EDGE*2.0, min_dist_to_line));
-    return float4(line_c, fan_alpha);
+    float4 result_color = float4(line_c, fan_alpha);
+    return result_color; 
 }
 
-float GetChamferYAtX(float x_offset_from_center, float tower_half_width, float tower_half_height, float chamfer_val_fraction) {
-    if (chamfer_val_fraction < 0.001) return tower_half_height;
-    float horizontal_extent_of_slope = tower_half_width * saturate(chamfer_val_fraction);
-    float flat_top_half_width = tower_half_width - horizontal_extent_of_slope;
-    if (abs(x_offset_from_center) <= flat_top_half_width) return tower_half_height;
-    float x_pos_on_slope = abs(x_offset_from_center) - flat_top_half_width; 
-    float y_drop = x_pos_on_slope; 
-    return tower_half_height - y_drop;
+float GetCentralTowerChamferedTopY(float x_abs_local, float tower_half_w, float tower_total_h, float chamfer_h_extent_ratio) {
+    if (chamfer_h_extent_ratio < 0.001 || tower_half_w < 0.0001) return tower_total_h; 
+    float chamfer_x_reach_from_side = tower_half_w * saturate(chamfer_h_extent_ratio); 
+    float flat_top_half_width = max(0.0, tower_half_w - chamfer_x_reach_from_side); 
+    if (x_abs_local <= flat_top_half_width) { return tower_total_h; 
+    } else if (x_abs_local <= tower_half_w) {
+        float x_on_slope = x_abs_local - flat_top_half_width; 
+        float y_drop = x_on_slope; 
+        return tower_total_h - y_drop;
+    }
+    return tower_total_h - chamfer_x_reach_from_side; 
 }
 
 struct TowerOutput { float4 color_alpha; };
 
-TowerOutput drawCentralTower(float2 p_local_base_centered, float2 half_size, float chamfer_fraction, 
-                             float3 fill_c, float3 line_c)
-{
+TowerOutput drawCentralTower(
+    float2 p_screen_uv,                 
+    float2 tower_base_center_sq_base,   
+    float2 tower_dims,                  // X is HALF-WIDTH, Y is TOTAL HEIGHT (from UI)
+    float chamfer_ratio, 
+    float3 fill_c, float3 line_c
+) {
     TowerOutput result; 
     result.color_alpha = float4(0,0,0,0); 
 
-    float2 p_detail_sym = float2(abs(p_local_base_centered.x), p_local_base_centered.y);
-    float sdf_base_box = sdBox(p_detail_sym, half_size);
-    float chamfer_cut_line_sdf = -1.0; 
+    float2 p_local_to_base = p_screen_uv - tower_base_center_sq_base; 
 
-    if (chamfer_fraction > 0.001) {
-        float y_on_chamfer_line = GetChamferYAtX(p_detail_sym.x, half_size.x, half_size.y, chamfer_fraction);
-        float flat_top_half_width = half_size.x * (1.0 - saturate(chamfer_fraction));
-        if (p_detail_sym.x > flat_top_half_width) { 
-            chamfer_cut_line_sdf = p_detail_sym.y - y_on_chamfer_line;
-        }
-    }
+    float2 p_for_sdBox = p_local_to_base - float2(0, tower_dims.y / 2.0);
+    float2 box_half_dims_for_sdf = float2(tower_dims.x, tower_dims.y / 2.0);
+    float sdf_base_box = sdBox(float2(abs(p_for_sdBox.x), p_for_sdBox.y), box_half_dims_for_sdf);
 
-    float sdf_final_shape = sdf_base_box;
-    if (chamfer_cut_line_sdf > -0.5) { 
-      sdf_final_shape = max(sdf_base_box, chamfer_cut_line_sdf);
-    }
+    float chamfer_ceiling_y = GetCentralTowerChamferedTopY(abs(p_local_to_base.x), tower_dims.x, tower_dims.y, chamfer_ratio);
+    float sdf_chamfer_cut = p_local_to_base.y - chamfer_ceiling_y;
 
+    float sdf_final_shape = max(sdf_base_box, sdf_chamfer_cut);
+    
     float fill_alpha = smoothstep(F_EDGE, -F_EDGE, sdf_final_shape);
     float3 color = fill_c;
-    float line_alpha = smoothstep(F_EDGE, 0.0, abs(sdf_final_shape));
+    float line_alpha = smoothstep(F_EDGE, 0.0, abs(sdf_final_shape)); 
     color = lerp(color, line_c, line_alpha);
     
     result.color_alpha = float4(color, fill_alpha); 
     return result;
 }
 
-float4 drawSecondaryTower(float2 p_local_base_centered, float2 half_size, float max_y_clip_local,
-                          float3 fill_c, float3 line_c)
-{
-    float sdf_base_box = sdBox(p_local_base_centered, half_size);
-    float sdf_clipped = max(sdf_base_box, p_local_base_centered.y - max_y_clip_local);
-    float fill_alpha = smoothstep(F_EDGE, -F_EDGE, sdf_clipped);
+float4 drawSecondaryTower(
+    float2 p_screen_uv, float2 tower_base_center_sq_base, float2 tower_dims, 
+    float max_y_clip_from_its_base, bool is_left_tower_of_pair, float3 fill_c, float3 line_c
+) {
+    float2 p_local_to_base = p_screen_uv - tower_base_center_sq_base; 
+    float2 p_for_sdBox = p_local_to_base - float2(0, tower_dims.y / 2.0);
+    float2 box_half_dims_for_sdf = float2(tower_dims.x, tower_dims.y / 2.0);
+    float sdf_base_box = sdBox(float2(abs(p_for_sdBox.x), p_for_sdBox.y), box_half_dims_for_sdf);
+    float sdf_slant_cut;
+    float total_height = tower_dims.y;
+    float half_width = tower_dims.x;
+    float slope = is_left_tower_of_pair ? -1.0 : 1.0; 
+    float x_inner_top_corner_local = is_left_tower_of_pair ? half_width : -half_width;
+    float y_intercept_slant = total_height - slope * x_inner_top_corner_local;
+    sdf_slant_cut = p_local_to_base.y - (slope * p_local_to_base.x + y_intercept_slant);
+    float sdf_shape_with_slant = max(sdf_base_box, sdf_slant_cut);
+    float sdf_overall_top_clip = p_local_to_base.y - max_y_clip_from_its_base;
+    float sdf_final_shape = max(sdf_shape_with_slant, sdf_overall_top_clip);
+    float fill_alpha = smoothstep(F_EDGE, -F_EDGE, sdf_final_shape);
     float3 color = fill_c;
-    float line_alpha = smoothstep(F_EDGE, 0.0, abs(sdf_clipped));
+    float line_alpha = smoothstep(F_EDGE, 0.0, abs(sdf_final_shape));
     color = lerp(color, line_c, line_alpha);
     return float4(color, fill_alpha);
 }
 
 
 // === Main Pixel Shader ===
-// (Using the PS_Main from your "v12.1" file, which includes the fan clipping fix and corner diamond placement fix)
 float4 PS_Main(float4 pos : SV_Position, float2 uv : TEXCOORD) : SV_Target
 {
     float4 output_color = tex2D(ReShade::BackBuffer, uv);
-    float2 sq_base = SquareSpaceUV(uv); // MODIFIED SquareSpaceUV above
+    float2 sq_base = SquareSpaceUV(uv);
 
-    // --- Calculate Main Diamond's INNER void for precise fan clipping ---
+    // Calculate Main Diamond's INNER void for precise fan clipping
     float2 main_diamond_outer_hs_for_clip_calc = float2(DiamondScalarSize, DiamondScalarSize);
     float temp_offset_for_diamond_clip = 0.0;
     float2 main_diamond_inner_void_hs_for_clip = main_diamond_outer_hs_for_clip_calc; 
@@ -275,35 +399,34 @@ float4 PS_Main(float4 pos : SV_Position, float2 uv : TEXCOORD) : SV_Target
         for (int i_clip = 0; i_clip < NumTramlines; ++i_clip) {
             float current_line_thick_clip = (i_clip == NumTramlines - 1) ? BorderThickness : TramlineIndividualThickness;
             temp_offset_for_diamond_clip += current_line_thick_clip;
-            if (i_clip < NumTramlines - 1) {
-                temp_offset_for_diamond_clip += TramlineSpacing;
-            }
+            if (i_clip < NumTramlines - 1) { temp_offset_for_diamond_clip += TramlineSpacing; }
         }
         main_diamond_inner_void_hs_for_clip = max(0.0.xx, main_diamond_outer_hs_for_clip_calc - temp_offset_for_diamond_clip);
     }
-    // Expand clip mask slightly to visually meet the center of the innermost tramline
     float2 fan_clip_mask_hs = main_diamond_inner_void_hs_for_clip + BorderThickness * 0.5;
     float main_diamond_clipping_sdf = sdBox(abs(rotate(sq_base, M_PI / 4.0)), fan_clip_mask_hs);
     float diamond_clip_mask = 1.0 - smoothstep(0.0, F_EDGE, main_diamond_clipping_sdf);
 
-    // --- Determine effective FanLength based on clipping mode ---
     float effective_fan_length = FanLength;
-    if (FanEnable && !FansBehindDiamond) {
-        effective_fan_length += BorderThickness * 0.5; 
-    }
+    if (FanEnable && !FansBehindDiamond) { effective_fan_length += BorderThickness * 0.5; }
 
+    // --- Render Order ---    // 1. Fans if "Behind Diamond"
     if (FanEnable && FansBehindDiamond) {
         float top_fan_y_dir = MirrorFansGlobally ? -1.0 : 1.0;
         float bottom_fan_y_dir = MirrorFansGlobally ? 1.0 : -1.0;
-        float4 upper_fan = drawFan(sq_base, float2(0.0, FanYOffset), top_fan_y_dir, FanLineCount, FanSpreadDegrees * M_PI / 180.0, FanBaseRadius, FanLength, FanLineThickness, FrameLineColor);
+        float3 goldLineColor = GenerateProceduralGold(uv, false);
+        float4 upper_fan = drawFan(sq_base, float2(0.0, FanYOffset), top_fan_y_dir, FanLineCount, FanSpreadDegrees * M_PI / 180.0, FanBaseRadius, FanLength, FanLineThickness, goldLineColor);
         output_color.rgb = lerp(output_color.rgb, upper_fan.rgb, upper_fan.a);
-        float4 lower_fan = drawFan(sq_base, float2(0.0, -FanYOffset), bottom_fan_y_dir, FanLineCount, FanSpreadDegrees * M_PI / 180.0, FanBaseRadius, FanLength, FanLineThickness, FrameLineColor);
-        output_color.rgb = lerp(output_color.rgb, lower_fan.rgb, lower_fan.a);
-    }
-
-    float4 diamond_elem = drawComplexDiamond(sq_base, DiamondScalarSize, FrameFillColor, FrameLineColor, NumTramlines, TramlineIndividualThickness, BorderThickness, TramlineSpacing, DetailPadding, DetailLineWidth);
+        float4 lower_fan = drawFan(sq_base, float2(0.0, -FanYOffset), bottom_fan_y_dir, FanLineCount, FanSpreadDegrees * M_PI / 180.0, FanBaseRadius, FanLength, FanLineThickness, goldLineColor);
+        output_color.rgb = lerp(output_color.rgb, lower_fan.rgb, lower_fan.a);    }    // 2. Main Diamond
+    float3 fillColor = FrameFillColorBackup; // Keep original dark background
+    float3 goldLineColor = GenerateProceduralGold(uv, false); // Only lines get gold
+    float4 diamond_elem = drawComplexDiamond(sq_base, DiamondScalarSize, fillColor, goldLineColor, NumTramlines, TramlineIndividualThickness, BorderThickness, TramlineSpacing, DetailPadding, DetailLineWidth);
     output_color.rgb = lerp(output_color.rgb, diamond_elem.rgb, diamond_elem.a);
 
+    // Define fill and line colors for towers and boxes
+    float3 goldFillColor = FrameFillColorBackup; // Fill areas use dark background color
+    // goldLineColor already defined above for lines// 3. Corner Diamonds
     float2 main_box_outer_hs_for_corner_calc = MainSize;
     float temp_offset_for_main_box_inner_edge = 0.0;
     float2 main_box_inner_tram_edge_hs = main_box_outer_hs_for_corner_calc; 
@@ -311,54 +434,65 @@ float4 PS_Main(float4 pos : SV_Position, float2 uv : TEXCOORD) : SV_Target
         for (int i_main_box = 0; i_main_box < NumTramlines; ++i_main_box) {
             float current_line_thick_main = (i_main_box == NumTramlines - 1) ? BorderThickness : TramlineIndividualThickness;
             temp_offset_for_main_box_inner_edge += current_line_thick_main;
-            if (i_main_box < NumTramlines - 1) {
-                temp_offset_for_main_box_inner_edge += TramlineSpacing;
-            }
+            if (i_main_box < NumTramlines - 1) { temp_offset_for_main_box_inner_edge += TramlineSpacing;}
         }
         main_box_inner_tram_edge_hs = max(0.0.xx, main_box_outer_hs_for_corner_calc - temp_offset_for_main_box_inner_edge);
-    }
-    float corner_diamond_target_center_x = main_box_inner_tram_edge_hs.x;
-
-    float2 left_cd_pos = float2(-corner_diamond_target_center_x, 0.0); 
-    float4 left_corner_diamond_elem = drawComplexDiamond(sq_base - left_cd_pos, CornerDiamondScalarHalfSize, FrameFillColor, FrameLineColor, NumTramlines, TramlineIndividualThickness, BorderThickness, TramlineSpacing, DetailPadding, DetailLineWidth);
+    }    float corner_diamond_target_center_x = main_box_inner_tram_edge_hs.x;
+    float2 left_cd_pos_center_sq_base = float2(-corner_diamond_target_center_x, 0.0); 
+    float4 left_corner_diamond_elem = drawComplexDiamond(sq_base - left_cd_pos_center_sq_base, CornerDiamondScalarHalfSize, fillColor, goldLineColor, NumTramlines, TramlineIndividualThickness, BorderThickness, TramlineSpacing, DetailPadding, DetailLineWidth);
     output_color.rgb = lerp(output_color.rgb, left_corner_diamond_elem.rgb, left_corner_diamond_elem.a);
-    float2 right_cd_pos = float2(corner_diamond_target_center_x, 0.0); 
-    float4 right_corner_diamond_elem = drawComplexDiamond(sq_base - right_cd_pos, CornerDiamondScalarHalfSize, FrameFillColor, FrameLineColor, NumTramlines, TramlineIndividualThickness, BorderThickness, TramlineSpacing, DetailPadding, DetailLineWidth);
+    float2 right_cd_pos_center_sq_base = float2(corner_diamond_target_center_x, 0.0); 
+    float4 right_corner_diamond_elem = drawComplexDiamond(sq_base - right_cd_pos_center_sq_base, CornerDiamondScalarHalfSize, fillColor, goldLineColor, NumTramlines, TramlineIndividualThickness, BorderThickness, TramlineSpacing, DetailPadding, DetailLineWidth);
     output_color.rgb = lerp(output_color.rgb, right_corner_diamond_elem.rgb, right_corner_diamond_elem.a);
 
-    float4 sub_box_elem = drawSolidElementWithTramlines(sq_base, SubSize, false, NumTramlines, TramlineIndividualThickness, BorderThickness, TramlineSpacing, DetailPadding, DetailLineWidth, FrameFillColor, FrameLineColor);
-    output_color.rgb = lerp(output_color.rgb, sub_box_elem.rgb, sub_box_elem.a);
-    float4 main_box_elem = drawSolidElementWithTramlines(sq_base, MainSize, false, NumTramlines, TramlineIndividualThickness, BorderThickness, TramlineSpacing, DetailPadding, DetailLineWidth, FrameFillColor, FrameLineColor);
-    output_color.rgb = lerp(output_color.rgb, main_box_elem.rgb, main_box_elem.a);
+    // 4. Towers (Central and Secondary) 
+    float central_tower_y_base_on_screen = -CentralTowerSize.y / 2.0; 
+    float2 central_tower_base_center_sq_base_param = float2(0.0, central_tower_y_base_on_screen);  // Used _param here
+      TowerOutput central_tower = drawCentralTower(sq_base, 
+                                                 central_tower_base_center_sq_base_param, // Used _param here
+                                                 CentralTowerSize, 
+                                                 CentralTowerChamfer, 
+                                                 goldFillColor, goldLineColor);
+    
+    float secondary_tower_y_base_on_screen = -SecondaryTowerSize.y / 2.0; 
 
+    float ct_top_y_at_stl_x_from_ct_base = GetCentralTowerChamferedTopY(
+        abs(-SecondaryTowerOffsetX - central_tower_base_center_sq_base_param.x), // Used _param here
+        CentralTowerSize.x, CentralTowerSize.y, CentralTowerChamfer);
+    float max_y_clip_L_local = (ct_top_y_at_stl_x_from_ct_base + central_tower_base_center_sq_base_param.y) // Used _param here
+                             - (secondary_tower_y_base_on_screen); 
+                                        
+    float ct_top_y_at_str_x_from_ct_base = GetCentralTowerChamferedTopY(
+        abs(SecondaryTowerOffsetX - central_tower_base_center_sq_base_param.x), // Used _param here
+        CentralTowerSize.x, CentralTowerSize.y, CentralTowerChamfer);
+    float max_y_clip_R_local = (ct_top_y_at_str_x_from_ct_base + central_tower_base_center_sq_base_param.y) // Used _param here
+                             - (secondary_tower_y_base_on_screen);    float2 sec_tower_l_base_center_sq_base_param = float2(-SecondaryTowerOffsetX, secondary_tower_y_base_on_screen);
+    float4 sec_tower_l_elem = drawSecondaryTower(sq_base, sec_tower_l_base_center_sq_base_param, 
+                                                 SecondaryTowerSize, max_y_clip_L_local, true, goldFillColor, goldLineColor);
+    
+    float2 sec_tower_r_base_center_sq_base_param = float2(SecondaryTowerOffsetX, secondary_tower_y_base_on_screen);
+    float4 sec_tower_r_elem = drawSecondaryTower(sq_base, sec_tower_r_base_center_sq_base_param,
+                                                 SecondaryTowerSize, max_y_clip_R_local, false, goldFillColor, goldLineColor);
+    
+    output_color.rgb = lerp(output_color.rgb, sec_tower_l_elem.rgb, sec_tower_l_elem.a);
+    output_color.rgb = lerp(output_color.rgb, sec_tower_r_elem.rgb, sec_tower_r_elem.a);
+    output_color.rgb = lerp(output_color.rgb, central_tower.color_alpha.rgb, central_tower.color_alpha.a);    // 5. Boxes (Main and Sub)
+    float4 sub_box_elem = drawSolidElementWithTramlines(sq_base, SubSize, false, NumTramlines, TramlineIndividualThickness, BorderThickness, TramlineSpacing, DetailPadding, DetailLineWidth, goldFillColor, goldLineColor);
+    output_color.rgb = lerp(output_color.rgb, sub_box_elem.rgb, sub_box_elem.a);
+    float4 main_box_elem = drawSolidElementWithTramlines(sq_base, MainSize, false, NumTramlines, TramlineIndividualThickness, BorderThickness, TramlineSpacing, DetailPadding, DetailLineWidth, goldFillColor, goldLineColor);
+    output_color.rgb = lerp(output_color.rgb, main_box_elem.rgb, main_box_elem.a);    // 6. Fans if NOT "Behind Diamond"
     if (FanEnable && !FansBehindDiamond) { 
         float top_fan_y_dir = MirrorFansGlobally ? -1.0 : 1.0;
         float bottom_fan_y_dir = MirrorFansGlobally ? 1.0 : -1.0;
-        float4 upper_fan = drawFan(sq_base, float2(0.0, FanYOffset), top_fan_y_dir, FanLineCount, FanSpreadDegrees * M_PI / 180.0, FanBaseRadius, effective_fan_length, FanLineThickness, FrameLineColor);
+        float3 goldLineColorFans = GenerateProceduralGold(uv, false);
+        float4 upper_fan = drawFan(sq_base, float2(0.0, FanYOffset), top_fan_y_dir, FanLineCount, FanSpreadDegrees * M_PI / 180.0, FanBaseRadius, effective_fan_length, FanLineThickness, goldLineColorFans);
         upper_fan.a *= diamond_clip_mask; 
         output_color.rgb = lerp(output_color.rgb, upper_fan.rgb, upper_fan.a);
-        float4 lower_fan = drawFan(sq_base, float2(0.0, -FanYOffset), bottom_fan_y_dir, FanLineCount, FanSpreadDegrees * M_PI / 180.0, FanBaseRadius, effective_fan_length, FanLineThickness, FrameLineColor);
+        float4 lower_fan = drawFan(sq_base, float2(0.0, -FanYOffset), bottom_fan_y_dir, FanLineCount, FanSpreadDegrees * M_PI / 180.0, FanBaseRadius, effective_fan_length, FanLineThickness, goldLineColorFans);
         lower_fan.a *= diamond_clip_mask; 
         output_color.rgb = lerp(output_color.rgb, lower_fan.rgb, lower_fan.a);
     }
     
-    float tower_base_y_offset = -CentralTowerSize.y; 
-    float secondary_tower_base_y_in_sq_base = -SecondaryTowerSize.y;
-    float2 central_tower_local_uv = float2(sq_base.x, sq_base.y - tower_base_y_offset);
-    TowerOutput central_tower = drawCentralTower(central_tower_local_uv, CentralTowerSize, CentralTowerChamfer, FrameFillColor, FrameLineColor);
-    float central_tower_effective_base_y_sq = tower_base_y_offset;
-    float clip_y_secondary_l_abs_sq_base = GetChamferYAtX(-SecondaryTowerOffsetX, CentralTowerSize.x, CentralTowerSize.y, CentralTowerChamfer) + central_tower_effective_base_y_sq;
-    float clip_y_secondary_r_abs_sq_base = GetChamferYAtX( SecondaryTowerOffsetX, CentralTowerSize.x, CentralTowerSize.y, CentralTowerChamfer) + central_tower_effective_base_y_sq;
-    float max_y_local_secondary_l = clip_y_secondary_l_abs_sq_base - secondary_tower_base_y_in_sq_base;
-    float max_y_local_secondary_r = clip_y_secondary_r_abs_sq_base - secondary_tower_base_y_in_sq_base;
-    float2 sec_tower_l_local_uv = float2(sq_base.x + SecondaryTowerOffsetX, sq_base.y - secondary_tower_base_y_in_sq_base);
-    float4 sec_tower_l_elem = drawSecondaryTower(sec_tower_l_local_uv, SecondaryTowerSize, max_y_local_secondary_l, FrameFillColor, FrameLineColor);
-    output_color.rgb = lerp(output_color.rgb, sec_tower_l_elem.rgb, sec_tower_l_elem.a);
-    float2 sec_tower_r_local_uv = float2(sq_base.x - SecondaryTowerOffsetX, sq_base.y - secondary_tower_base_y_in_sq_base);
-    float4 sec_tower_r_elem = drawSecondaryTower(sec_tower_r_local_uv, SecondaryTowerSize, max_y_local_secondary_r, FrameFillColor, FrameLineColor);
-    output_color.rgb = lerp(output_color.rgb, sec_tower_r_elem.rgb, sec_tower_r_elem.a);
-    output_color.rgb = lerp(output_color.rgb, central_tower.color_alpha.rgb, central_tower.color_alpha.a);
-
     return output_color;
 }
 
@@ -371,3 +505,5 @@ technique ArtDecoFrame
         PixelShader = PS_Main;
     }
 }
+
+#endif
