@@ -129,6 +129,7 @@ uniform float BloomFalloff < ui_label = "Bloom Falloff Rate"; ui_tooltip = "How 
 
 // --- Stage Controls ---
 AS_STAGEDEPTH_UI(EffectDepth) 
+AS_ROTATION_UI(SnapRotation, FineRotation)
 
 // --- Final Mix ---
 AS_BLENDMODE_UI_DEFAULT(BlendMode, 3) 
@@ -180,12 +181,14 @@ float getMirroredFreqBand(float spoke_angle_rad, bool mirror_active)
 float4 PS_CircularSpectrumDots(float4 vpos : SV_Position, float2 texcoord : TexCoord) : SV_Target
 {
     float4 originalColor = tex2D(ReShade::BackBuffer, texcoord);
-    float sceneDepth = ReShade::GetLinearizedDepth(texcoord);
-
-    if (sceneDepth < EffectDepth - AS_DEPTH_EPSILON) 
+    float sceneDepth = ReShade::GetLinearizedDepth(texcoord);    if (sceneDepth < EffectDepth - AS_DEPTH_EPSILON) 
     {
-        return originalColor;
-    }    float2 uv = AS_transformCoord(texcoord, EffectCenter, EffectScale, 0.0);
+                return originalColor;
+    }    // FIXED: Use standard AS coordinate transformation instead of custom 4-step process
+    // This ensures proper positioning where UI coordinates (-1,-1) to (+1,+1) map correctly
+    // to the central square of the screen regardless of aspect ratio
+    float globalRotation = AS_getRotationRadians(SnapRotation, FineRotation);
+    float2 uv = AS_transformCoord(texcoord, EffectCenter, EffectScale, globalRotation);
 
     // Level-of-detail optimization: reduce quality for pixels far from center
     float2 center_offset = uv - float2(0.0, 0.0);
