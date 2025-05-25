@@ -21,18 +21,18 @@
  * - Position, scale, and depth controls.
  * - Standard AS-StageFX blend modes.
  * - Adjustable bloom effect for glow.
- *
- * IMPLEMENTATION OVERVIEW:
+ * * IMPLEMENTATION OVERVIEW:
  * 1. Transforms screen coordinates using EffectCenter and EffectScale.
  * 2. Performs depth culling based on EffectDepth.
  * 3. Iterates through each visual "spoke" (angular division).
- * 4. For each spoke, determines its audio amplitude (with optional mirroring).
- * 5. Calculates how many "dots" should be lit along that spoke.
- * 6. For each lit dot, fetches an interpolated color from the selected AS_Palette 
+ * 4. For each spoke, determines its audio amplitude using interpolated frequency band sampling.
+ * 5. Interpolates between adjacent frequency bands for smooth transitions when spokes > bands.
+ * 6. Calculates how many "dots" should be lit along that spoke.
+ * 7. For each lit dot, fetches an interpolated color from the selected AS_Palette 
  * (predefined or custom) based on its radial position and amplitude.
- * 7. Renders the dot if the pixel is close to the dot's center, using a circular falloff.
- * 8. Applies a multi-layer bloom effect, also using palette colors.
- * 9. Blends the final visualizer with the scene using standard AS_StageFX blend controls.
+ * 8. Renders the dot if the pixel is close to the dot's center, using a circular falloff.
+ * 9. Applies a multi-layer bloom effect, also using palette colors.
+ * 10. Blends the final visualizer with the scene using standard AS_StageFX blend controls.
  *
  * CREDITS:
  * Inspired by "Circular audio visualizer" by AIandDesign (2025-05-24)
@@ -135,14 +135,14 @@ AS_BLENDMODE_UI_DEFAULT(BlendMode, 3)
 AS_BLENDAMOUNT_UI(BlendAmount)        
 
 // ============================================================================
-// HELPER FUNCTION for Mirrored Audio Band Fetching
+// HELPER FUNCTION for Interpolated Audio Band Fetching
 // ============================================================================
 float getMirroredFreqBand(float spoke_angle_rad, bool mirror_active)
 {
-    int num_actual_bands = AS_getFreqBands(); // From AS_Utils.1.fxh
+    int num_actual_bands = AS_getFreqBands();
     if (num_actual_bands <= 0) return 0.0f;
 
-    float normalized_angle_around_circle = AS_mod(spoke_angle_rad, AS_TWO_PI) / AS_TWO_PI; //
+    float normalized_angle_around_circle = AS_mod(spoke_angle_rad, AS_TWO_PI) / AS_TWO_PI;
 
     float effective_progress_for_band_lookup;
     if (mirror_active)
@@ -156,13 +156,22 @@ float getMirroredFreqBand(float spoke_angle_rad, bool mirror_active)
     
     effective_progress_for_band_lookup = saturate(effective_progress_for_band_lookup);
 
-    int selected_data_band_index = clamp(
-        (int)round(effective_progress_for_band_lookup * (num_actual_bands - 1)), 
-        0, 
-        num_actual_bands - 1
-    );
+    // Calculate exact floating-point band position for interpolation
+    float exact_band_position = effective_progress_for_band_lookup * (num_actual_bands - 1);
     
-    return AS_getFreq(selected_data_band_index); // From AS_Utils.1.fxh
+    // Get the two adjacent band indices
+    int band_index_low = clamp((int)floor(exact_band_position), 0, num_actual_bands - 1);
+    int band_index_high = clamp(band_index_low + 1, 0, num_actual_bands - 1);
+    
+    // Calculate interpolation factor
+    float interpolation_factor = exact_band_position - floor(exact_band_position);
+    
+    // Get values from both bands
+    float freq_low = AS_getFreq(band_index_low);
+    float freq_high = AS_getFreq(band_index_high);
+    
+    // Interpolate between the two frequency values
+    return lerp(freq_low, freq_high, interpolation_factor);
 }
 
 // ============================================================================
@@ -176,16 +185,15 @@ float4 PS_CircularSpectrumDots(float4 vpos : SV_Position, float2 texcoord : TexC
     if (sceneDepth < EffectDepth - AS_DEPTH_EPSILON) 
     {
         return originalColor;
-    }
-
-    float2 uv = AS_transformCoord(texcoord, EffectCenter, EffectScale, 0.0);
+    }    float2 uv = AS_transformCoord(texcoord, EffectCenter, EffectScale, 0.0);
 
     // Level-of-detail optimization: reduce quality for pixels far from center
     float2 center_offset = uv - float2(0.0, 0.0);
     float distance_from_center = length(center_offset);
     
     // Calculate LOD factor (1.0 = full quality, 0.5 = half quality, etc.)
-    float lod_distance_threshold = 0.3 / EffectScale; // Adjust this for LOD transition
+    // Fixed: Use a fixed LOD threshold that doesn't scale with EffectScale
+    float lod_distance_threshold = 0.4; // Fixed threshold in UV space
     float lod_factor = saturate(1.0 - (distance_from_center - lod_distance_threshold) / lod_distance_threshold);
     lod_factor = max(0.25, lod_factor); // Minimum 25% quality to avoid complete falloff
     
@@ -196,9 +204,9 @@ float4 PS_CircularSpectrumDots(float4 vpos : SV_Position, float2 texcoord : TexC
     float3 effectColor = 0.0; 
     float3 bloomAccumulator = 0.0;
 
-    // Pre-calculate constants
-    float innerRadius = 0.1 / EffectScale; 
-    float base_radial_step_size = 0.02 / EffectScale; 
+    // Pre-calculate constants - Fixed: Scale these values WITH EffectScale, not against it
+    float innerRadius = 0.1 * EffectScale; 
+    float base_radial_step_size = 0.02 * EffectScale; 
     float dot_base_diameter = base_radial_step_size;
     float actual_radial_step = base_radial_step_size * (1.0 + RadialGapMultiplier * 0.25); 
     float bandAngleWidth = AS_TWO_PI / float(effective_num_spokes);
@@ -206,9 +214,8 @@ float4 PS_CircularSpectrumDots(float4 vpos : SV_Position, float2 texcoord : TexC
     // Pre-calculate dot radius and squared radius for distance checks
     float current_dot_radius = (dot_base_diameter * 0.45) * DotSizeMultiplier;
     float dot_radius_sq = current_dot_radius * current_dot_radius;
-    
-    // Pre-calculate bloom constants
-    float baseBloomEffectSize = 0.02 / EffectScale; 
+      // Pre-calculate bloom constants
+    float baseBloomEffectSize = 0.02 * EffectScale;
     float scaledBloomVisualSize = baseBloomEffectSize * (BloomSize / 50.0);
     float bloom_falloff_1 = BloomFalloff / scaledBloomVisualSize;
     float bloom_falloff_2 = (BloomFalloff * 0.5) / (scaledBloomVisualSize * 2.0);
