@@ -13,10 +13,12 @@
  * FEATURES:
  * - Complex geometric frame construction with multiple layers and decorative elements
  * - Procedural gold material with surface roughness, metallic reflections, and Fresnel effects
- * - Configurable tramlines, towers, corner diamonds, and decorative fans
+ * - Configurable tramlines, towers, corner diamonds, and decorative fans with mirroring support
  * - Real-time surface noise simulation for authentic gold texture variation
- * - Customizable gold hue, saturation, brightness, and metallic properties
- * - Resolution-independent rendering for consistent appearance across screen sizes
+ * - Audio reactivity for dynamic animation and parameter control
+ * - Stage depth masking for proper 3D scene integration
+ * - Customizable animation speed and keyframe positioning
+ * - Standard blend modes for seamless scene compositing
  *
  * IMPLEMENTATION OVERVIEW:
  * 1. Constructs Art Deco frame geometry using signed distance field functions
@@ -24,10 +26,11 @@
  * 3. Simulates surface imperfections with FBM noise for realistic metal appearance
  * 4. Implements Fresnel effects for authentic metallic reflection behavior
  * 5. Renders elements in proper Z-order: fans, diamonds, towers, and frame boxes
+ * 6. Integrates audio reactivity and stage depth controls for dynamic effects
  *
  * ===================================================================================
  */
-
+ 
 // ============================================================================
 // TECHNIQUE GUARD - Prevents duplicate loading of the same shader
 // ============================================================================
