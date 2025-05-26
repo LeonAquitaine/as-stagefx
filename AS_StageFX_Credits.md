@@ -36,6 +36,7 @@ This document lists all external sources, original authors, and inspiration cred
 - **Source**: https://www.shadertoy.com/view/XsX3zl
 
 ### AS_BGX_ShineOn.1.fx - Shine Effect
+- **Original Title**: "Shine Effect"
 - **Source**: Translated from Shadertoy
 
 ### AS_BGX_StainedLights.1.fx - Stained Glass Light Patterns
@@ -61,10 +62,12 @@ This document lists all external sources, original authors, and inspiration cred
 - **Source**: https://www.shadertoy.com/view/XXyGzh
 
 ### AS_GFX_HandDrawing.1.fx - Hand-Drawn Effect
+- **Original Title**: "Hand-Drawn Effect"
 - **Source**: https://www.shadertoy.com/view/XtVGD1
 
 ### AS_GFX_VignettePlus.1.fx - Enhanced Vignette Effect
 - **Original Author**: blandprix
+- **Original Title**: "Enhanced Vignette Effect"
 - **Creation Date**: 2024-08-06
 - **Source**: https://www.shadertoy.com/view/XfjyWG
 
@@ -98,15 +101,18 @@ This document lists all external sources, original authors, and inspiration cred
 
 ### AS_LFX_CandleFlame.1.fx - Animated Candle Flame
 - **Original Author**: FencerDevLog
-- **Original Title**: "Godot 4: Candle flame shader (tutorial)"
+- **Original Title**: "Godot 4: Candle flame shader"
 - **Source Platform**: Godot Engine
+- **Source**: https://www.youtube.com/watch?v=6ZZVwbzE8cw
 - **Creator's Patreon**: https://www.patreon.com/c/FencerDevLog/posts
 
 ### AS_VFX_TiltedGrid.1.fx - Tilted Grid Pattern Effect
-- **Inspiration**: "Godot 4: Tilted Grid Effect Tutorial" by FencerDevLog
+- **Original Author**: FencerDevLog
+- **Original Title**: "Godot 4: Tilted Grid Effect"
 - **Source Platform**: Godot Engine
 
 ### AS_VFX_WaterSurface.1.fx - Water Surface Reflection
+- **Original Title**: "Water Surface"
 - **Source**: Adapted from Godot shader
 - **Notes**: Creates water surface where reflection start points are based on object depth.
 
@@ -116,6 +122,7 @@ This document lists all external sources, original authors, and inspiration cred
 
 ### AS_BGX_Constellation.1.fx - Dynamic Cosmic Constellation Pattern
 - **Original Author**: Art of Code
+- **Original Title**: "Constellation"
 - **Notes**: Adapted with enhancements for constellation patterns and twinkling effects.
 
 ---
@@ -124,6 +131,7 @@ This document lists all external sources, original authors, and inspiration cred
 
 ### AS_BGX_DigitalBrain.1.fx - Digital Brain Visualization
 - **Original Author**: srtuss (2013)
+- **Original Title**: "Digital Brain"
 - **Source Type**: Original GLSL
 
 ### AS_BGX_GoldenClockwork.1.fx - Golden Mechanical Patterns
@@ -133,26 +141,34 @@ This document lists all external sources, original authors, and inspiration cred
 
 ### AS_BGX_Kaleidoscope.1.fx - Kaleidoscope Effect
 - **Original Author**: kishimisu
+- **Original Title**: "Kaleidoscope"
 - **Notes**: Adapted from kishimisu's work.
 
 ### AS_BGX_LightRipples.1.fx - Dynamic Light Ripple Effect
+- **Original Title**: "Light Ripples"
 - **Sources**: Translated from Shadertoy/Pouet
+- **Source**: https://www.pouet.net/prod.php?which=57245
 - **Notes**: Combined inspiration from multiple sources.
 
 ### AS_BGX_LiquidChrome.1.fx - Liquid Chrome Effect
 - **Original Author**: iamsaitam
+- **Original Title**: "Liquid Chrome"
+- **Source**: https://neort.io/art/bkm813c3p9f7drq1j86g
 - **Notes**: Adapted.
 
 ### AS_BGX_MistyGrid.1.fx - Misty Grid Background
 - **Original Author**: NuSan
-- **Original Title**: "Misty Grid" shader
+- **Original Title**: "Misty Grid"
 
 ### AS_BGX_PastRacer.1.fx - Retro Racing Effect
 - **Original Author**: jetlab
+- **Original Title**: "past racer"
 - **Source Type**: Original GLSL
 
 ### AS_BGX_WavySquares.1.fx - Wavy Square Patterns
 - **Source**: Adapted from GLSL shader
+- **Original Title**: "Square Tiling Example E"
+- **Source**: https://www.shadertoy.com/view/NdfBzn
 
 ### AS_VFX_BoomSticker.1.fx - Depth-Aware Texture Overlay
 - **Original Author**: Marot Satil
@@ -193,6 +209,6 @@ For commercial use, please verify licensing terms with original creators where a
 
 ---
 
-**Compilation Date**: May 23, 2025  
+**Compilation Date**: May 25, 2025  
 **AS-StageFX Version**: 1.0  
 **Maintainer**: Leon Aquitaine
