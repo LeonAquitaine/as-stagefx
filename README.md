@@ -1,27 +1,10 @@
 # AS-StageFX for ReShade
 
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/e8b32c91-071d-490c-8c07-903738a8d3a0"/><br/><br/>
+[![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)
 
-   
-  <img src="https://img.shields.io/github/downloads/LeonAquitaine/as-stagefx/total?label=Downloads" alt="Downloads"/>
-  <img src="https://img.shields.io/github/v/release/LeonAquitaine/as-stagefx?label=Latest%20Release" alt="Latest Release"/>
-  <img src="https://img.shields.io/github/languages/top/LeonAquitaine/as-stagefx" alt="Top Language"/>
-  <img src="https://img.shields.io/github/last-commit/LeonAquitaine/as-stagefx" alt="Last Commit"/>
-  <img src="https://img.shields.io/github/languages/code-size/LeonAquitaine/as-stagefx" alt="Code Size"/>
-</p>
+![Listeningway](https://github.com/user-attachments/assets/e8b32c91-071d-490c-8c07-903738a8d3a0)
 
-<p align="center">
-  <!-- Replace the src below with your actual image path or URL -->
-  <!-- <img src="path/to/your/image.png" alt="Project Image" width="400"/> -->
-</p>
-
-<p align="center">
-  A suite of dynamic, audio-reactive visual effect shaders for ReShade, optimized for video production and virtual performance art.
-</p>
-
-
-
+**A suite of dynamic, audio-reactive visual effect shaders for ReShade, optimized for video production and virtual performance art.**
 
 ---
 
