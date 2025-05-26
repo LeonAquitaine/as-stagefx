@@ -574,7 +574,10 @@ float4 PS_ColorBalancer(float4 pos : SV_Position, float2 texcoord : TexCoord) : 
 // ============================================================================
 // TECHNIQUE
 // ============================================================================
-technique AS_VFX_ColorBalancer < ui_tooltip = "Applies cinematic color harmony models across tonal ranges."; >
+technique AS_VFX_ColorBalancer < 
+    ui_label = "[AS] VFX: Color Balancer"; 
+    ui_tooltip = "Applies cinematic color harmony models across tonal ranges."; 
+>
 {
     pass
     {
