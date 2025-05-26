@@ -1,10 +1,10 @@
 ﻿{
-    "buildDate":  "2025-05-23T20:09:08Z",
-    "version":  "1.7.9",
+    "buildDate":  "2025-05-25T21:40:07Z",
+    "version":  "1.7.10",
     "packages":  [
                      {
-                         "version":  "1.7.9",
-                         "shaderCount":  15,
+                         "version":  "1.7.10",
+                         "shaderCount":  16,
                          "textureDependencyCount":  3,
                          "name":  "AS_StageFX_VisualEffects",
                          "fxhDependencyCount":  4,
@@ -26,6 +26,7 @@
                                          "AS_GFX_AspectRatio.1.fx",
                                          "AS_GFX_HandDrawing.1.fx",
                                          "AS_LFX_CandleFlame.1.fx",
+                                         "AS_VFX_CircularSpectrum.1.fx",
                                          "AS_VFX_ClairObscur.1.fx",
                                          "AS_VFX_ColorBalancer.1.fx",
                                          "AS_VFX_DigitalArtifacts.1.fx",
@@ -41,8 +42,8 @@
                                      ]
                      },
                      {
-                         "version":  "1.7.9",
-                         "shaderCount":  49,
+                         "version":  "1.7.10",
+                         "shaderCount":  50,
                          "textureDependencyCount":  3,
                          "name":  "AS_StageFX",
                          "fxhDependencyCount":  5,
@@ -96,6 +97,7 @@
                                          "AS_Perspective.1.fxh",
                                          "AS_Utils.1.fxh",
                                          "AS_VFX_BoomSticker.1.fx",
+                                         "AS_VFX_CircularSpectrum.1.fx",
                                          "AS_VFX_ClairObscur.1.fx",
                                          "AS_VFX_ColorBalancer.1.fx",
                                          "AS_VFX_DigitalArtifacts.1.fx",
@@ -114,7 +116,7 @@
                                      ]
                      },
                      {
-                         "version":  "1.7.9",
+                         "version":  "1.7.10",
                          "shaderCount":  16,
                          "textureDependencyCount":  0,
                          "name":  "AS_StageFX_Essentials",
@@ -151,7 +153,7 @@
                                      ]
                      },
                      {
-                         "version":  "1.7.9",
+                         "version":  "1.7.10",
                          "shaderCount":  18,
                          "textureDependencyCount":  1,
                          "name":  "AS_StageFX_Backgrounds",
