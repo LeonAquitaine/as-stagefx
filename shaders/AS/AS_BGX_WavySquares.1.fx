@@ -28,8 +28,8 @@
  * IMPLEMENTATION OVERVIEW:
  * 1. Applies wave distortion to the coordinate space
  * 2. Creates a tiling pattern with varied square arrangements
- * 3. Modulates square sizes with time and position
- * 4. Uses signed distance fields to render rounded squares * 5. Applies color based on position and time
+ * 3. Modulates square sizes with time and position * 4. Uses signed distance fields to render rounded squares
+ * 5. Applies color based on position and time
  * 6. Integrates with standard AS palette system for coloring
  * 
  * ===================================================================================
