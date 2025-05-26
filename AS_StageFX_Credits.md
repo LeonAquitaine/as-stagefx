@@ -116,10 +116,6 @@ This document lists all external sources, original authors, and inspiration cred
 - **Source**: Adapted from Godot shader
 - **Notes**: Creates water surface where reflection start points are based on object depth.
 
----
-
-## Shadertoy Adaptations
-
 ### AS_BGX_Constellation.1.fx - Dynamic Cosmic Constellation Pattern
 - **Original Author**: jairoandre
 - **Original Title**: "Old Joseph"
