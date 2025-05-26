@@ -1,10 +1,19 @@
 # AS-StageFX for ReShade
 
-[![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)
-
 ![Listeningway](https://github.com/user-attachments/assets/e8b32c91-071d-490c-8c07-903738a8d3a0)
 
 **A suite of dynamic, audio-reactive visual effect shaders for ReShade, optimized for video production and virtual performance art.**
+
+---
+
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/LeonAquitaine/as-stagefx)
+![GitHub all releases](https://img.shields.io/github/downloads/LeonAquitaine/as-stagefx/total)
+[![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)
+![GitHub last commit](https://img.shields.io/github/last-commit/LeonAquitaine/as-stagefx/dev)
+![Code Size](https://img.shields.io/github/languages/code-size/LeonAquitaine/as-stagefx)
+![GitHub top language](https://img.shields.io/github/languages/top/LeonAquitaine/as-stagefx)
+![GitHub issues](https://img.shields.io/github/issues/LeonAquitaine/as-stagefx)
+![GitHub contributors](https://img.shields.io/github/contributors/LeonAquitaine/as-stagefx)
 
 ---
 
