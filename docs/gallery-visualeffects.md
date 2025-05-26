@@ -1,6 +1,6 @@
 # AS-StageFX Shader Gallery - Visual Effects Package
 
-This gallery provides detailed descriptions and visual examples of the **20 effects** (3 Lighting + 17 Visual) included in the **AS_StageFX_VisualEffects** package. These effects range from lighting simulation and audio visualization to particle systems and post-processing tools.
+This gallery provides detailed descriptions and visual examples of the **21 effects** (3 Lighting + 18 Visual) included in the **AS_StageFX_VisualEffects** package. These effects range from lighting simulation and audio visualization to particle systems and post-processing tools.
 
 For installation instructions and general information, please refer to the [main README](../README.md).
 
@@ -32,6 +32,17 @@ Generates animated procedural candle flames with realistic shape and color gradi
 ## Visual Effects (VFX)
 
 <table>
+<tr>
+<td width="50%">
+<h4>VFX: Focused Chaos 🔥</h4>
+<h5><code>[AS] VFX: Focused Chaos|AS_VFX_FocusedChaos.1.fx</code></h5>
+Creates a visually complex and dynamic abstract effect resembling a focused point of chaotic energy or a swirling cosmic vortex. Features dynamic, animated vortex pattern using 3D Simplex Noise and FBM, transparent background blending with the game scene, customizable animation speed and keyframing, extensive artistic controls for swirl, noise, color, and alpha falloff, dithering option to reduce color banding artifacts, and subtle domain warping to improve noise pattern quality.<br><br>
+Original: <a href="https://www.shadertoy.com/view/lcfyDj" target="_new">"BlackHole (swirl, portal)" by misterprada</a> with additional inspiration from <a href="https://x.com/cmzw_/status/1787147460772864188" target="_new">celestianmaze's work</a>.
+</td>
+<td width="50%"><div style="text-align:center">
+<img src="https://github.com/user-attachments/assets/placeholder-image"/>
+</div></td>
+</tr>
 <tr>
 <td width="50%">
 <h4>VFX: Circular Spectrum ⚡</h4>
