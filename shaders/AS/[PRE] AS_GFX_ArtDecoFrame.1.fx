@@ -87,6 +87,16 @@ uniform float3 FrameLineColorBackup < ui_label="Fallback Line Color"; ui_type="c
 AS_AUDIO_UI(AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
 AS_AUDIO_MULT_UI(AudioMultiplier, "Audio Intensity", 1.0, 4.0, "Audio Reactivity")
 
+// Audio reactivity targets
+uniform int AudioTarget < ui_type = "combo"; ui_label = "Audio Target"; ui_tooltip = "Which parameter reacts to audio input"; ui_category = "Audio Reactivity";
+    ui_items = "None\0Gold Brightness\0Gold Noise Intensity\0Gold Fresnel Power\0Gold Surface Detail\0"; > = 0;
+
+// ============================================================================
+// PALETTE SYSTEM  
+// ============================================================================
+AS_PALETTE_SELECTION_UI(PalettePreset, "Color Palette", AS_PALETTE_METAL, "Palette & Style")
+uniform float PaletteColorBlend < ui_type = "slider"; ui_label = "Palette Blend"; ui_tooltip = "Controls how much palette colors affect the gold material"; ui_min = 0.0; ui_max = 1.0; ui_category = "Palette & Style"; > = 0.3;
+
 // Stage Controls
 AS_STAGEDEPTH_UI(EffectDepth)
 AS_ROTATION_UI(SnapRotation, FineRotation)
@@ -156,40 +166,72 @@ float CalculateFresnelFactor(float2 uv, float2 center, float power) {
 }
 
 float3 GenerateProceduralGold(float2 uv, bool isFill) {
-    // Base gold color from HSV
-    float3 baseGold = HSVtoRGB(float3(GoldHue, GoldSaturation, GoldBrightness));
+    // Resolution independence - normalize to 1080p baseline
+    float resolutionScale = (float)BUFFER_HEIGHT / 1080.0;
+    float2 scaledUV = uv * resolutionScale;
+    
+    // Audio reactivity processing - only for gold parameters
+    float goldBrightness_final = GoldBrightness;
+    float noiseIntensity_final = NoiseIntensity;
+    float fresnelPower_final = FresnelPower;
+    float noiseBrightness_final = NoiseBrightness;
+    
+    if (AudioTarget > 0) {
+        float audioValue = AS_applyAudioReactivity(1.0, AudioSource, AudioMultiplier, true) - 1.0;
+        
+        if (AudioTarget == 1) { // Gold Brightness
+            goldBrightness_final = GoldBrightness + (GoldBrightness * audioValue * 0.5);
+        }
+        else if (AudioTarget == 2) { // Gold Noise Intensity
+            noiseIntensity_final = NoiseIntensity + (NoiseIntensity * audioValue * 0.8);
+        }
+        else if (AudioTarget == 3) { // Gold Fresnel Power
+            fresnelPower_final = FresnelPower + (FresnelPower * audioValue * 0.3);
+        }
+        else if (AudioTarget == 4) { // Gold Surface Detail
+            noiseBrightness_final = NoiseBrightness + (NoiseBrightness * audioValue * 0.6);
+        }
+    }
+    
+    // Clamp values to reasonable ranges
+    goldBrightness_final = saturate(goldBrightness_final);
+    noiseIntensity_final = saturate(noiseIntensity_final);
+    fresnelPower_final = clamp(fresnelPower_final, 0.1, 20.0);
+    noiseBrightness_final = saturate(noiseBrightness_final);
+    
+    // Base gold color from HSV using audio-modified brightness
+    float3 baseGold = HSVtoRGB(float3(GoldHue, GoldSaturation, goldBrightness_final));
     
     // Generate multiple layers of surface noise using FBM with correct parameters
-    float surfaceNoise = AS_Fbm2D(uv * NoiseScale, 4, 2.0, 0.5);
+    float surfaceNoise = AS_Fbm2D(scaledUV * NoiseScale, 4, 2.0, 0.5);
     
-    // Apply noise to roughness variation with MUCH enhanced intensity
-    float roughnessVariation = GoldRoughness + (surfaceNoise - 0.5) * NoiseIntensity * 2.0;
+    // Apply noise to roughness variation with audio-modified intensity
+    float roughnessVariation = GoldRoughness + (surfaceNoise - 0.5) * noiseIntensity_final * 2.0;
     roughnessVariation = saturate(roughnessVariation);
     
-    // Calculate Fresnel effect for metallic appearance
+    // Calculate Fresnel effect for metallic appearance with audio-modified power
     float2 screenCenter = float2(0.5, 0.5);
-    float fresnelFactor = CalculateFresnelFactor(uv, screenCenter, FresnelPower);
-    
-    // Apply noise to modify Fresnel intensity for surface variation
-    float noisyFresnelFactor = fresnelFactor * (1.0 + (surfaceNoise - 0.5) * NoiseIntensity);
+    float fresnelFactor = CalculateFresnelFactor(uv, screenCenter, fresnelPower_final);
+      // Apply noise to modify Fresnel intensity for surface variation with audio-modified intensity
+    float noisyFresnelFactor = fresnelFactor * (1.0 + (surfaceNoise - 0.5) * noiseIntensity_final);
     noisyFresnelFactor = saturate(noisyFresnelFactor);
     
     // Metallic reflection tint (cooler for highlights) with noise variation
     float3 metallicTint = lerp(baseGold, float3(1.0, 0.95, 0.8), noisyFresnelFactor * GoldMetallic);
       // Apply roughness and noise to metallic intensity
     float metallicIntensity = GoldMetallic * (1.0 - roughnessVariation * 0.5);
-    metallicIntensity *= (1.0 + (surfaceNoise - 0.5) * NoiseIntensity * 0.5);
+    metallicIntensity *= (1.0 + (surfaceNoise - 0.5) * noiseIntensity_final * 0.5);
     metallicIntensity = saturate(metallicIntensity);
     
-    // Enhanced surface brightness variation with dedicated brightness control
-    float brightnessMod = 1.0 + (surfaceNoise - 0.5) * NoiseBrightness;
+    // Enhanced surface brightness variation with audio-modified brightness control
+    float brightnessMod = 1.0 + (surfaceNoise - 0.5) * noiseBrightness_final;
     brightnessMod = saturate(brightnessMod);
     
-    // Apply noise to individual color channels for MUCH more dramatic variation
+    // Apply noise to individual color channels with audio-modified intensity
     float3 noiseColorMod = float3(
-        1.0 + (AS_Fbm2D(uv * NoiseScale + 0.1, 4, 2.0, 0.5) - 0.5) * NoiseIntensity * 0.4,
-        1.0 + (AS_Fbm2D(uv * NoiseScale + 0.3, 4, 2.0, 0.5) - 0.5) * NoiseIntensity * 0.3,
-        1.0 + (AS_Fbm2D(uv * NoiseScale + 0.7, 4, 2.0, 0.5) - 0.5) * NoiseIntensity * 0.2
+        1.0 + (AS_Fbm2D(scaledUV * NoiseScale + 0.1, 4, 2.0, 0.5) - 0.5) * noiseIntensity_final * 0.4,
+        1.0 + (AS_Fbm2D(scaledUV * NoiseScale + 0.3, 4, 2.0, 0.5) - 0.5) * noiseIntensity_final * 0.3,
+        1.0 + (AS_Fbm2D(scaledUV * NoiseScale + 0.7, 4, 2.0, 0.5) - 0.5) * noiseIntensity_final * 0.2
     );
     noiseColorMod = saturate(noiseColorMod);
     
@@ -336,7 +378,15 @@ float4 drawFan(float2 p_screen, float2 fan_origin_uv, float y_direction_multipli
 float4 PS_Main(float4 pos : SV_Position, float2 uv : TEXCOORD) : SV_Target
 {
     float4 output_color = tex2D(ReShade::BackBuffer, uv);
-    float2 sq_base = SquareSpaceUV(uv);
+    
+    // Apply rotation if enabled
+    float2 workingUV = uv;
+    if (SnapRotation != 0 || FineRotation != 0.0) {
+        float totalRotation = (SnapRotation * 90.0 + FineRotation) * AS_PI / 180.0;
+        workingUV = AS_rotate2D(uv - 0.5, totalRotation) + 0.5;
+    }
+    
+    float2 sq_base = SquareSpaceUV(workingUV);
 
     // Calculate Main Diamond's INNER void for precise fan clipping
     float2 main_diamond_outer_hs_for_clip_calc = float2(DiamondScalarSize, DiamondScalarSize);
@@ -361,13 +411,13 @@ float4 PS_Main(float4 pos : SV_Position, float2 uv : TEXCOORD) : SV_Target
     if (FanEnable && FansBehindDiamond) {
         float top_fan_y_dir = MirrorFansGlobally ? -1.0 : 1.0;
         float bottom_fan_y_dir = MirrorFansGlobally ? 1.0 : -1.0;
-        float3 goldLineColor = GenerateProceduralGold(uv, false);
+        float3 goldLineColor = GenerateProceduralGold(workingUV, false);
         float4 upper_fan = drawFan(sq_base, float2(0.0, FanYOffset), top_fan_y_dir, FanLineCount, FanSpreadDegrees * AS_PI / 180.0, FanBaseRadius, FanLength, FanLineThickness, goldLineColor);
         output_color.rgb = lerp(output_color.rgb, upper_fan.rgb, upper_fan.a);
         float4 lower_fan = drawFan(sq_base, float2(0.0, -FanYOffset), bottom_fan_y_dir, FanLineCount, FanSpreadDegrees * AS_PI / 180.0, FanBaseRadius, FanLength, FanLineThickness, goldLineColor);
         output_color.rgb = lerp(output_color.rgb, lower_fan.rgb, lower_fan.a);    }    // 2. Main Diamond
     float3 fillColor = FrameFillColorBackup; // Keep original dark background
-    float3 goldLineColor = GenerateProceduralGold(uv, false); // Only lines get gold
+    float3 goldLineColor = GenerateProceduralGold(workingUV, false); // Only lines get gold
     float4 diamond_elem = drawComplexDiamond(sq_base, DiamondScalarSize, fillColor, goldLineColor, NumTramlines, TramlineIndividualThickness, BorderThickness, TramlineSpacing, DetailPadding, DetailLineWidth);
     output_color.rgb = lerp(output_color.rgb, diamond_elem.rgb, diamond_elem.a);
 
@@ -399,14 +449,35 @@ float4 PS_Main(float4 pos : SV_Position, float2 uv : TEXCOORD) : SV_Target
     if (FanEnable && !FansBehindDiamond) { 
         float top_fan_y_dir = MirrorFansGlobally ? -1.0 : 1.0;
         float bottom_fan_y_dir = MirrorFansGlobally ? 1.0 : -1.0;
-        float3 goldLineColorFans = GenerateProceduralGold(uv, false);
+        float3 goldLineColorFans = GenerateProceduralGold(workingUV, false);
         float4 upper_fan = drawFan(sq_base, float2(0.0, FanYOffset), top_fan_y_dir, FanLineCount, FanSpreadDegrees * AS_PI / 180.0, FanBaseRadius, effective_fan_length, FanLineThickness, goldLineColorFans);
         upper_fan.a *= diamond_clip_mask; 
         output_color.rgb = lerp(output_color.rgb, upper_fan.rgb, upper_fan.a);
-        float4 lower_fan = drawFan(sq_base, float2(0.0, -FanYOffset), bottom_fan_y_dir, FanLineCount, FanSpreadDegrees * AS_PI / 180.0, FanBaseRadius, effective_fan_length, FanLineThickness, goldLineColorFans);
-        lower_fan.a *= diamond_clip_mask; 
+        float4 lower_fan = drawFan(sq_base, float2(0.0, -FanYOffset), bottom_fan_y_dir, FanLineCount, FanSpreadDegrees * AS_PI / 180.0, FanBaseRadius, effective_fan_length, FanLineThickness, goldLineColorFans);        lower_fan.a *= diamond_clip_mask; 
         output_color.rgb = lerp(output_color.rgb, lower_fan.rgb, lower_fan.a);
-    }
+    }      // === PALETTE INTEGRATION ===
+    // Use gold surface noise as palette coordinate for cohesive color integration
+    float2 scaledUV = workingUV * ((float)BUFFER_HEIGHT / 1080.0);
+    float paletteNoise = AS_Fbm2D(scaledUV * NoiseScale, 4, 2.0, 0.5);
+    float3 paletteColor = AS_getInterpolatedColor(PalettePreset, paletteNoise);
+    
+    // Apply palette tinting to gold elements based on material properties
+    float3 goldElements = output_color.rgb - tex2D(ReShade::BackBuffer, uv).rgb;
+    float goldMask = saturate(length(goldElements));
+    
+    // Blend palette color with existing gold, preserving metallic qualities
+    output_color.rgb = lerp(output_color.rgb, 
+                           lerp(output_color.rgb, paletteColor * output_color.rgb, 0.3), 
+                           goldMask * PaletteColorBlend);
+      // === STAGE DEPTH AND FINAL PROCESSING ===
+    // Apply stage depth masking
+    float sceneDepth = ReShade::GetLinearizedDepth(uv);
+    float depthMask = AS_depthMask(sceneDepth, EffectDepth, 1.0, 1.0);
+    output_color.a *= depthMask;
+    
+    // Apply blend mode with background
+    float4 background = tex2D(ReShade::BackBuffer, uv);
+    output_color = AS_applyBlend(background, output_color, BlendMode, BlendAmount);
     
     return output_color;
 }
