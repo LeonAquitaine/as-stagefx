@@ -50,9 +50,9 @@ Shaders are marked with an icon to give a general idea of their processing inten
 
 | Icon | Category      | Count | GPU Time (ms) | Use Cases                                                                 |
 | :--: | ------------- | :---: | :-----------: | ------------------------------------------------------------------------- |
-|  ✨  | Light         |  31   |    < 0.5      | Everyday use, stacking multiple effects, older hardware.                    |
-|  ⚡  | Moderate      |   7   |   0.5 - 2.5   | General purpose, good balance of quality and performance.                   |
-|  🔥  | Heavy         |   3   |   2.5 - 10.0  | High-impact visuals, use sparingly if performance is critical.              |
+|  ✨  | Light         |  34   |    < 0.5      | Everyday use, stacking multiple effects, older hardware.                    |
+|  ⚡  | Moderate      |   9   |   0.5 - 2.5   | General purpose, good balance of quality and performance.                   |
+|  🔥  | Heavy         |   4   |   2.5 - 10.0  | High-impact visuals, use sparingly if performance is critical.              |
 |  💀  | Very Heavy    |   1   |    > 10.0     | Cinematic shots, offline rendering, or very powerful hardware. Demanding. |
 
 ### Background Effects (BGX)
