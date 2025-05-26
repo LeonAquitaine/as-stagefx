@@ -1,6 +1,6 @@
 # AS-StageFX Shader Gallery - Backgrounds Package
 
-This gallery provides detailed descriptions and visual examples of the **21 background effects** included in the **AS_StageFX_Backgrounds** package. These dynamic, audio-reactive backgrounds range from cosmic and abstract patterns to flowing animations and crystalline structures.
+This gallery provides detailed descriptions and visual examples of the **23 background effects** included in the **AS_StageFX_Backgrounds** package. These dynamic, audio-reactive backgrounds range from cosmic and abstract patterns to flowing animations and crystalline structures.
 
 For installation instructions and general information, please refer to the [main README](../README.md).
 
@@ -15,6 +15,30 @@ For installation instructions and general information, please refer to the [main
 ## Background Effects (BGX)
 
 <table>
+<tr>
+<td width="50%">
+<h4>BGX: Protean Clouds 🔥</h4>
+<h5><code>[AS] BGX: Protean Clouds|AS_BGX_ProteanClouds.1.fx</code></h5>
+Renders dynamic, evolving volumetric clouds through raymarching techniques. Creates an immersive, abstract cloudscape with dynamic color variations and realistic lighting. Features high-quality volumetric cloud formations, customizable cloud density, shape, and detail, dynamic camera movement with adjustable path and sway, sophisticated internal lighting and self-shadowing, color palette system with customizable parameters, audio reactivity for multiple cloud parameters, and resolution-independent rendering with precise position controls.<br><br>
+Original: <a href="https://www.shadertoy.com/view/3l23Rh" target="_new">"Protean clouds" by nimitz</a>.
+</td>
+<td width="50%">
+<img src="https://github.com/user-attachments/assets/placeholder-image"/>
+<div style="text-align:center">
+</div></td>
+</tr>
+<tr>
+<td width="50%">
+<h4>BGX: Sunset Clouds 🔥</h4>
+<h5><code>[AS] BGX: Sunset Clouds|AS_BGX_SunsetClouds.1.fx</code></h5>
+Renders an animated scene of clouds at sunset using raymarching to create volumetric cloud effects with dynamic lighting and turbulence. Features raymarched volumetric clouds, animated turbulence effect, dynamic sunset coloring that changes over time, and tunable parameters for iterations, animation speed, and visual details.<br><br>
+Original: <a href="https://www.shadertoy.com/view/wXjSRt" target="_new">"Sunset [280]" by Xor</a>.
+</td>
+<td width="50%">
+<img src="https://github.com/user-attachments/assets/placeholder-image"/>
+<div style="text-align:center">
+</div></td>
+</tr>
 <tr>
 <td width="50%">
 <h4>BGX: Blue Corona 🔥</h4>
