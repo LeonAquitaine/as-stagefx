@@ -132,7 +132,7 @@ AS_STAGEDEPTH_UI(EffectDepth)
 AS_ROTATION_UI(SnapRotation, FineRotation)
 
 // --- Final Mix ---
-AS_BLENDMODE_UI_DEFAULT(BlendMode, 3) 
+AS_BLENDMODE_UI_DEFAULT(BlendMode, AS_BLEND_LIGHTEN) 
 AS_BLENDAMOUNT_UI(BlendAmount)        
 
 // ============================================================================
@@ -184,11 +184,33 @@ float4 PS_CircularSpectrumDots(float4 vpos : SV_Position, float2 texcoord : TexC
     float sceneDepth = ReShade::GetLinearizedDepth(texcoord);    if (sceneDepth < EffectDepth - AS_DEPTH_EPSILON) 
     {
                 return originalColor;
-    }    // FIXED: Use standard AS coordinate transformation instead of custom 4-step process
-    // This ensures proper positioning where UI coordinates (-1,-1) to (+1,+1) map correctly
-    // to the central square of the screen regardless of aspect ratio
+    }    // CORRECTED: Implement proper AS coordinate transformation following AS standards
+    float aspectRatio = ReShade::AspectRatio;
+    
+    // Step 1: Convert texcoord to centered screen coordinates [-0.5, 0.5] range
+    float2 screen_coords;
+    if (aspectRatio >= 1.0) { // Wider or square
+        screen_coords.x = (texcoord.x - 0.5) * aspectRatio;
+        screen_coords.y = texcoord.y - 0.5;
+    } else { // Taller
+        screen_coords.x = texcoord.x - 0.5;
+        screen_coords.y = (texcoord.y - 0.5) / aspectRatio;
+    }
+
+    // Step 2: Apply inverse global rotation to screen_coords
     float globalRotation = AS_getRotationRadians(SnapRotation, FineRotation);
-    float2 uv = AS_transformCoord(texcoord, EffectCenter, EffectScale, globalRotation);
+    float sinRot = sin(-globalRotation);
+    float cosRot = cos(-globalRotation);
+    float2 rotated_screen_coords;
+    rotated_screen_coords.x = screen_coords.x * cosRot - screen_coords.y * sinRot;
+    rotated_screen_coords.y = screen_coords.x * sinRot + screen_coords.y * cosRot;
+
+    // Step 3: Map UI position to screen_coords system using AS standard scaling
+    float2 effect_screen_coords = EffectCenter * AS_UI_POSITION_SCALE; // 0.5 scaling factor
+
+    // Step 4: Calculate relative position and apply scaling
+    float2 diff = rotated_screen_coords - effect_screen_coords;
+    float2 uv = diff / max(EffectScale, AS_EPSILON); // Apply scale (prevent division by zero)
 
     // Level-of-detail optimization: reduce quality for pixels far from center
     float2 center_offset = uv - float2(0.0, 0.0);
