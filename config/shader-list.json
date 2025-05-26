@@ -1,5 +1,49 @@
-{
-  "shaders": [
+{  "shaders": [
+    {
+      "credits": {
+        "originalName": "Protean clouds",
+        "link": "https://www.shadertoy.com/view/3l23Rh",
+        "author": "nimitz",
+        "platform": "Shadertoy",
+        "creationDate": "2019-05-27",
+        "license": "Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License",
+        "adaptedBy": "Leon Aquitaine"
+      },
+      "name": "AS_BGX_ProteanClouds.1",
+      "performance": "Heavy",
+      "filename": "[PRE] AS_BGX_ProteanClouds.1.fx",
+      "author": "Leon Aquitaine"
+    },
+    {
+      "credits": {
+        "originalName": "Sunset [280]",
+        "link": "https://www.shadertoy.com/view/wXjSRt",
+        "author": "Xor",
+        "platform": "Shadertoy",
+        "creationDate": "2025-05-05",
+        "adaptedBy": "Leon Aquitaine"
+      },
+      "name": "AS_BGX_SunsetClouds.1",
+      "performance": "Moderate",
+      "filename": "[PRE] AS_BGX_SunsetClouds.1.fx",
+      "author": "Leon Aquitaine"
+    },
+    {
+      "credits": {
+        "originalName": "BlackHole (swirl, portal)",
+        "link": "https://www.shadertoy.com/view/lcfyDj",
+        "author": "misterprada",
+        "platform": "Shadertoy",
+        "creationDate": "2024-07-22",
+        "twitterReference": "https://x.com/cmzw_/status/1787147460772864188",
+        "additionalCredit": "celestianmaze",
+        "adaptedBy": "Leon Aquitaine"
+      },
+      "name": "AS_VFX_FocusedChaos.1",
+      "performance": "Moderate",
+      "filename": "[PRE] AS_VFX_FocusedChaos.1.fx",
+      "author": "Leon Aquitaine"
+    },
     {
       "credits": {
         "originalName": "Blue Corona",
@@ -12,7 +56,7 @@
       "performance": "Heavy",
       "filename": "AS_BGX_BlueCorona.1.fx",
       "author": "Leon Aquitaine"
-    },    {
+    },{
       "credits": {
         "originalName": "Old Joseph",
         "link": "https://www.shadertoy.com/view/slfGzf",
