@@ -32,6 +32,16 @@ Generates animated procedural candle flames with realistic shape and color gradi
 <table>
 <tr>
 <td width="50%">
+<h4>VFX: Circular Spectrum ✨</h4>
+<h5><code>[AS] VFX: Circular Spectrum|AS_VFX_CircularSpectrum.1.fx</code></h5>
+Creates a circular audio spectrum visualizer with dots of light radiating from the center. The number and color of dots react to audio frequency bands, creating a dynamic visual representation of music. Features customizable palette support (including custom palettes), mirrored or linear frequency mapping, adjustable dot size and spacing, bloom effects, audio sensitivity controls, and depth masking for 3D positioning.<br><br>
+Inspired by: <a href="https://www.shadertoy.com/view/tcyGW1" target="_new">"Circular audio visualizer" by AIandDesign</a>.
+</td>
+<td width="50%"><div style="text-align:center">
+</div></td>
+</tr>
+<tr>
+<td width="50%">
 <h4>VFX: Color Balancer ✨</h4>
 <h5><code>[AS] VFX: Color Balancer|AS_VFX_ColorBalancer.1.fx</code></h5>
 Enables colorists and videographers to apply classic cinematic color harmony models (complementary, analogous, triadic, split-complementary, tetradic) to live visuals or video production. It offers flexible color manipulation across shadows, midtones, and highlights, allowing for sophisticated color grading that maintains natural-looking skin tones while dramatically enhancing the overall visual impact.
