@@ -1,0 +1,218 @@
+/**
+ * AS_BGX_SunsetClouds.1.fx - Animated Sunset Clouds with Raymarching
+ * Author: Leon Aquitaine
+ * License: Creative Commons Attribution 4.0 International
+ *
+ * ===================================================================================
+ *
+ * DESCRIPTION:
+ * This shader renders an animated scene of clouds at sunset. It uses raymarching
+ * to create volumetric cloud effects with dynamic lighting and turbulence.
+ * The colors shift and blend to simulate the hues of a sunset.
+ *
+ * FEATURES:
+ * - Raymarched volumetric clouds.
+ * - Animated turbulence effect on clouds.
+ * - Dynamic sunset coloring that changes over time.
+ * - Tunable parameters for iterations, animation speed, and visual details.
+ *
+ * IMPLEMENTATION OVERVIEW:
+ * 1. Sets up a ray direction based on screen coordinates.
+ * 2. Iteratively marches a ray through the scene.
+ * 3. For each step, calculates a sample point 'p'.
+ * 4. Applies a turbulence effect to 'p' using multiple sine wave layers.
+ * 5. Computes a signed distance function (SDF) based on 'p.y' to define cloud shapes.
+ * 6. Adjusts the raymarch step distance based on the SDF (smaller steps inside clouds).
+ * 7. Accumulates color based on the SDF, point 'p', and time, creating cloud lighting and sunset hues.
+ * 8. Applies a tanh-based tonemapping to the final accumulated color.
+ * 
+ * Based on:
+ * "Sunset [280]" by @XorDev
+ * https://www.shadertoy.com/view/wXjSRt
+ * Original tweet shader: https://x.com/XorDev/status/1918764164153049480
+ *
+ * ===================================================================================
+ */
+
+// ============================================================================
+// TECHNIQUE GUARD - Prevents duplicate loading of the same shader
+// ============================================================================
+#ifndef __AS_BGX_SUNSETCLOUDS_1_FX
+#define __AS_BGX_SUNSETCLOUDS_1_FX
+
+// ============================================================================
+// INCLUDES
+// ============================================================================
+#include "ReShade.fxh"
+#include "AS_Utils.1.fxh" 
+
+// ============================================================================
+// TUNABLE CONSTANTS (for UI limits and defaults)
+// ============================================================================
+
+// --- Animation ---
+static const float ANIMATION_SPEED_MIN = 0.0;
+static const float ANIMATION_SPEED_MAX = 5.0;
+static const float ANIMATION_SPEED_DEFAULT = 1.0;
+static const float ANIMATION_KEYFRAME_MIN = 0.0;
+static const float ANIMATION_KEYFRAME_MAX = 1000.0;
+static const float ANIMATION_KEYFRAME_DEFAULT = 0.0;
+
+// --- Cloud Shape & Detail ---
+static const float CLOUD_ALTITUDE_MIN = 0.0;
+static const float CLOUD_ALTITUDE_MAX = 1.0;
+static const float CLOUD_ALTITUDE_DEFAULT = 0.3; // Was SdfCloudLevel
+static const int CLOUD_DETAIL_MIN = 20;
+static const int CLOUD_DETAIL_MAX = 200;
+static const int CLOUD_DETAIL_DEFAULT = 100; // Was RaymarchIterations
+
+// --- Cloud Dynamics (Turbulence) ---
+static const float TURBULENCE_SCALE_START_MIN = 1.0;
+static const float TURBULENCE_SCALE_START_MAX = 10.0;
+static const float TURBULENCE_SCALE_START_DEFAULT = 5.0; // Was TurbulenceInitD
+static const float TURBULENCE_SCALE_END_MIN = 50.0;
+static const float TURBULENCE_SCALE_END_MAX = 400.0;
+static const float TURBULENCE_SCALE_END_DEFAULT = 200.0; // Was TurbulenceMaxD
+static const float TURBULENCE_INTENSITY_MIN = 0.0;
+static const float TURBULENCE_INTENSITY_MAX = 2.0;
+static const float TURBULENCE_INTENSITY_DEFAULT = 0.6; // Was TurbulenceStrength
+static const float TURBULENCE_ANIM_FACTOR_MIN = 0.0;
+static const float TURBULENCE_ANIM_FACTOR_MAX = 1.0;
+static const float TURBULENCE_ANIM_FACTOR_DEFAULT = 0.2; // Was TurbulenceTimeFactor
+
+// --- Raymarch Step (Advanced) ---
+static const float MARCH_STEP_BASE_MIN = 0.001;
+static const float MARCH_STEP_BASE_MAX = 0.1;
+static const float MARCH_STEP_BASE_DEFAULT = 0.005;
+static const float MARCH_SDF_INFLUENCE_MIN = 0.0;
+static const float MARCH_SDF_INFLUENCE_MAX = 1.0;
+static const float MARCH_SDF_INFLUENCE_DEFAULT = 0.2; // Was MarchSdfScale
+static const float MARCH_SDF_DIVISOR_MIN = 1.0;
+static const float MARCH_SDF_DIVISOR_MAX = 10.0;
+static const float MARCH_SDF_DIVISOR_DEFAULT = 4.0;
+
+// --- Sunset Colors ---
+static const float COLOR_ANIM_FACTOR_MIN = 0.0;
+static const float COLOR_ANIM_FACTOR_MAX = 2.0;
+static const float COLOR_ANIM_FACTOR_DEFAULT = 0.5; // Was ColorTimeFactor
+static const float COLOR_PHASE_R_MIN = 0.0;
+static const float COLOR_PHASE_R_MAX = 10.0;
+static const float COLOR_PHASE_R_DEFAULT = 3.0;
+static const float COLOR_PHASE_G_MIN = 0.0;
+static const float COLOR_PHASE_G_MAX = 10.0;
+static const float COLOR_PHASE_G_DEFAULT = 4.0;
+static const float COLOR_PHASE_B_MIN = 0.0;
+static const float COLOR_PHASE_B_MAX = 10.0;
+static const float COLOR_PHASE_B_DEFAULT = 5.0;
+static const float COLOR_BRIGHTNESS_ADD_MIN = 0.0;
+static const float COLOR_BRIGHTNESS_ADD_MAX = 3.0;
+static const float COLOR_BRIGHTNESS_ADD_DEFAULT = 1.5; // Was ColorAdd
+// Advanced Color Modulators
+static const float COLOR_SDF_MOD_MIN = 0.01;
+static const float COLOR_SDF_MOD_MAX = 0.5;
+static const float COLOR_SDF_MOD_DEFAULT = 0.07; // Was ColorSdfDiv
+static const float COLOR_EXP_SDF_MOD_MIN = 0.01;
+static const float COLOR_EXP_SDF_MOD_MAX = 0.5;
+static const float COLOR_EXP_SDF_MOD_DEFAULT = 0.1; // Was ColorExpSdfDiv
+
+// --- Final Look (Tonemapping) ---
+static const float TONEMAP_EXPOSURE_MIN = 1e7;
+static const float TONEMAP_EXPOSURE_MAX = 1e9;
+static const float TONEMAP_EXPOSURE_DEFAULT = 4e8; // Was TonemapStrength
+
+// ============================================================================
+// UI DECLARATIONS
+// ============================================================================
+
+// --- Animation Controls ---
+uniform float AnimationSpeed < ui_type = "slider"; ui_label = "Animation Speed"; ui_tooltip = "Overall speed of cloud and color evolution."; ui_min = ANIMATION_SPEED_MIN; ui_max = ANIMATION_SPEED_MAX; ui_step = 0.01; ui_category = "Animation"; > = ANIMATION_SPEED_DEFAULT;
+uniform float AnimationKeyframe < ui_type = "slider"; ui_label = "Time Offset"; ui_tooltip = "Manually scrub through the animation timeline."; ui_min = ANIMATION_KEYFRAME_MIN; ui_max = ANIMATION_KEYFRAME_MAX; ui_step = 0.1; ui_category = "Animation"; > = ANIMATION_KEYFRAME_DEFAULT;
+
+// --- Cloud Shape & Detail ---
+uniform float CloudAltitude < ui_type = "slider"; ui_label = "Cloud Altitude"; ui_tooltip = "Adjusts the general height and density of the cloud layer."; ui_min = CLOUD_ALTITUDE_MIN; ui_max = CLOUD_ALTITUDE_MAX; ui_step = 0.01; ui_category = "Cloud Shape"; > = CLOUD_ALTITUDE_DEFAULT;
+uniform int CloudDetail < ui_type = "slider"; ui_label = "Cloud Detail"; ui_tooltip = "Number of rendering steps. Higher values give more detail but impact performance."; ui_min = CLOUD_DETAIL_MIN; ui_max = CLOUD_DETAIL_MAX; ui_category = "Cloud Shape"; > = CLOUD_DETAIL_DEFAULT;
+
+// --- Cloud Dynamics ---
+uniform float TurbulenceIntensity < ui_type = "slider"; ui_label = "Turbulence Intensity"; ui_tooltip = "How much the clouds are distorted and swirled."; ui_min = TURBULENCE_INTENSITY_MIN; ui_max = TURBULENCE_INTENSITY_MAX; ui_step = 0.01; ui_category = "Cloud Dynamics"; > = TURBULENCE_INTENSITY_DEFAULT;
+uniform float TurbulenceAnimFactor < ui_type = "slider"; ui_label = "Turbulence Animation Speed"; ui_tooltip = "How quickly the turbulence pattern evolves over time."; ui_min = TURBULENCE_ANIM_FACTOR_MIN; ui_max = TURBULENCE_ANIM_FACTOR_MAX; ui_step = 0.01; ui_category = "Cloud Dynamics"; > = TURBULENCE_ANIM_FACTOR_DEFAULT;
+uniform float TurbulenceScaleStart < ui_type = "slider"; ui_label = "Turbulence Scale (Start)"; ui_tooltip = "Initial size of turbulence details."; ui_min = TURBULENCE_SCALE_START_MIN; ui_max = TURBULENCE_SCALE_START_MAX; ui_step = 0.1; ui_category = "Cloud Dynamics"; > = TURBULENCE_SCALE_START_DEFAULT;
+uniform float TurbulenceScaleEnd < ui_type = "slider"; ui_label = "Turbulence Scale (End)"; ui_tooltip = "Maximum size of turbulence details."; ui_min = TURBULENCE_SCALE_END_MIN; ui_max = TURBULENCE_SCALE_END_MAX; ui_step = 1.0; ui_category = "Cloud Dynamics"; > = TURBULENCE_SCALE_END_DEFAULT;
+
+// --- Sunset Colors ---
+uniform float3 ColorPhase < ui_type = "slider"; ui_label = "Color Phases (RGB)"; ui_tooltip = "Adjusts the phase shifts for red, green, and blue color components, affecting the sunset hues."; ui_min = COLOR_PHASE_R_MIN; ui_max = COLOR_PHASE_B_MAX; ui_step = 0.1; ui_category = "Sunset Colors"; > = float3(COLOR_PHASE_R_DEFAULT, COLOR_PHASE_G_DEFAULT, COLOR_PHASE_B_DEFAULT);
+uniform float ColorAnimationSpeed < ui_type = "slider"; ui_label = "Color Animation Speed"; ui_tooltip = "How quickly the sunset colors shift and change."; ui_min = COLOR_ANIM_FACTOR_MIN; ui_max = COLOR_ANIM_FACTOR_MAX; ui_step = 0.01; ui_category = "Sunset Colors"; > = COLOR_ANIM_FACTOR_DEFAULT;
+uniform float ColorBrightnessBoost < ui_type = "slider"; ui_label = "Brightness Boost"; ui_tooltip = "Adds an overall brightness to the cloud colors."; ui_min = COLOR_BRIGHTNESS_ADD_MIN; ui_max = COLOR_BRIGHTNESS_ADD_MAX; ui_step = 0.01; ui_category = "Sunset Colors"; > = COLOR_BRIGHTNESS_ADD_DEFAULT;
+
+// --- Final Look ---
+uniform float Exposure < ui_type = "slider"; ui_label = "Exposure"; ui_tooltip = "Overall exposure/brightness control for the final image."; ui_min = TONEMAP_EXPOSURE_MIN; ui_max = TONEMAP_EXPOSURE_MAX; ui_step = 1e6; ui_category = "Final Look"; > = TONEMAP_EXPOSURE_DEFAULT;
+
+// --- Advanced Settings (Category Closed by Default) ---
+uniform float AdvMarchStepBase < ui_type = "slider"; ui_label = "Raymarch: Base Step"; ui_tooltip = "Base step size for raymarching. Smaller is more accurate but slower."; ui_min = MARCH_STEP_BASE_MIN; ui_max = MARCH_STEP_BASE_MAX; ui_step = 0.001; ui_category = "Advanced Settings"; ui_category_closed = true; > = MARCH_STEP_BASE_DEFAULT;
+uniform float AdvMarchSDFInfluence < ui_type = "slider"; ui_label = "Raymarch: SDF Influence"; ui_tooltip = "How much cloud density affects raymarching step size."; ui_min = MARCH_SDF_INFLUENCE_MIN; ui_max = MARCH_SDF_INFLUENCE_MAX; ui_step = 0.01; ui_category = "Advanced Settings"; ui_category_closed = true; > = MARCH_SDF_INFLUENCE_DEFAULT;
+uniform float AdvMarchSDFDivisor < ui_type = "slider"; ui_label = "Raymarch: SDF Divisor"; ui_tooltip = "Divisor for SDF influence on step size."; ui_min = MARCH_SDF_DIVISOR_MIN; ui_max = MARCH_SDF_DIVISOR_MAX; ui_step = 0.1; ui_category = "Advanced Settings"; ui_category_closed = true; > = MARCH_SDF_DIVISOR_DEFAULT;
+uniform float AdvColorSDFMod < ui_type = "slider"; ui_label = "Color: SDF Modulator"; ui_tooltip = "How cloud density modulates the primary color calculation."; ui_min = COLOR_SDF_MOD_MIN; ui_max = COLOR_SDF_MOD_MAX; ui_step = 0.001; ui_category = "Advanced Settings"; ui_category_closed = true; > = COLOR_SDF_MOD_DEFAULT;
+uniform float AdvColorExpSDFMod < ui_type = "slider"; ui_label = "Color: Exponential SDF Modulator"; ui_tooltip = "How cloud density modulates the exponential (glow) part of color."; ui_min = COLOR_EXP_SDF_MOD_MIN; ui_max = COLOR_EXP_SDF_MOD_MAX; ui_step = 0.001; ui_category = "Advanced Settings"; ui_category_closed = true; > = COLOR_EXP_SDF_MOD_DEFAULT;
+
+
+// ============================================================================
+// PIXEL SHADER
+// ============================================================================
+float4 AS_BGX_SunsetClouds_PS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : SV_Target
+{
+    float time = AS_getTime() * AnimationSpeed + AnimationKeyframe;
+    float2 iResolution = float2(BUFFER_WIDTH, BUFFER_HEIGHT);
+    float2 fragCoord = vpos.xy;
+
+    float iter_i = 0.0;
+    float depth_z = 0.0;
+    float step_dist_d_loop;
+    float current_march_step_d;
+    float signed_dist_s;
+
+    float4 outputColor = float4(0.0, 0.0, 0.0, 0.0);
+
+    float3 rayDir = normalize(float3( (2.0 * fragCoord.x - iResolution.x),
+                                      (iResolution.y - 2.0 * fragCoord.y),
+                                      -iResolution.y) );
+
+    for (iter_i = 0.0; iter_i < CloudDetail; iter_i++) // Using CloudDetail UI
+    {
+        float3 p = depth_z * rayDir;
+        step_dist_d_loop = TurbulenceScaleStart; // Using TurbulenceScaleStart UI
+        while(step_dist_d_loop < TurbulenceScaleEnd) // Using TurbulenceScaleEnd UI
+        {
+            p += TurbulenceIntensity * sin(p.yzx * step_dist_d_loop - TurbulenceAnimFactor * time) / step_dist_d_loop; // Using UI variables
+            step_dist_d_loop *= 2.0;
+        }
+
+        signed_dist_s = CloudAltitude - abs(p.y); // Using CloudAltitude UI
+        current_march_step_d = AdvMarchStepBase + max(signed_dist_s, -signed_dist_s * AdvMarchSDFInfluence) / AdvMarchSDFDivisor; // Using Advanced UI
+        depth_z += current_march_step_d;
+
+        float4 current_color_phases = float4(ColorPhase.r, ColorPhase.g, ColorPhase.b, 0.0); // Using ColorPhase UI
+        outputColor += (cos(signed_dist_s / AdvColorSDFMod + p.x + ColorAnimationSpeed * time - current_color_phases) + ColorBrightnessBoost) // Using UI variables
+                       * exp(signed_dist_s / AdvColorExpSDFMod) / current_march_step_d; // Using Advanced UI
+    }
+
+    outputColor = tanh(outputColor * outputColor / Exposure); // Using Exposure UI
+    outputColor.a = 1.0;
+
+    return outputColor;
+}
+
+// ============================================================================
+// TECHNIQUE
+// ============================================================================
+technique AS_BGX_SunsetClouds <
+    ui_label = "[AS] BGX: Sunset Clouds";
+    ui_tooltip = "Renders animated volumetric clouds at sunset, ported from a GLSL shader by @XorDev. Uses raymarching for cloud rendering.";
+>
+{
+    pass
+    {
+        VertexShader = PostProcessVS;
+        PixelShader = AS_BGX_SunsetClouds_PS;
+    }
+}
+
+#endif // __AS_BGX_SUNSETCLOUDS_1_FX
