@@ -40,7 +40,7 @@ AS-StageFX provides a collection of performant, customizable, and audio-reactive
 
 ## Available Shaders
 
-AS-StageFX includes **45 shaders** across four categories: **21 Background (BGX)**, **4 Graphic (GFX)**, **3 Lighting (LFX)**, and **17 Visual (VFX)** effects.
+AS-StageFX includes **48 shaders** across four categories: **23 Background (BGX)**, **4 Graphic (GFX)**, **3 Lighting (LFX)**, and **18 Visual (VFX)** effects.
 
 **Detailed descriptions and examples: [Shader Gallery](docs/gallery.md).**
 
