@@ -12,11 +12,12 @@
       "performance": "Heavy",
       "filename": "AS_BGX_BlueCorona.1.fx",
       "author": "Leon Aquitaine"
-    },
-    {
+    },    {
       "credits": {
-        "originalName": "Constellation",
-        "author": "Art of Code",
+        "originalName": "Old Joseph",
+        "link": "https://www.shadertoy.com/view/slfGzf",
+        "author": "jairoandre",
+        "platform": "Shadertoy",
         "adaptedBy": "Leon Aquitaine"
       },
       "name": "AS_BGX_Constellation.1",

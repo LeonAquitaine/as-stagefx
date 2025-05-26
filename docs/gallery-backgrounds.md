@@ -1,11 +1,13 @@
 # AS-StageFX Shader Gallery - Backgrounds Package
 
-This gallery provides detailed descriptions and visual examples of the background effects included in the **AS_StageFX_Backgrounds** package. For installation instructions and general information, please refer to the [main README](../README.md).
+This gallery provides detailed descriptions and visual examples of the **21 background effects** included in the **AS_StageFX_Backgrounds** package. These dynamic, audio-reactive backgrounds range from cosmic and abstract patterns to flowing animations and crystalline structures.
+
+For installation instructions and general information, please refer to the [main README](../README.md).
 
 > **Note:** This package requires the [AS_StageFX_Essentials](./gallery.md) package to be installed.
 
 > **Looking for other packages?**
-> - [Essentials Gallery](./gallery.md) - Core library files and essential effects
+> - [Essentials Gallery](./gallery.md) - Core library files and essential effects  
 > - [Visual Effects Gallery](./gallery-visualeffects.md) - Complete collection of visual effects
 
 ---
@@ -15,7 +17,7 @@ This gallery provides detailed descriptions and visual examples of the backgroun
 <table>
 <tr>
 <td width="50%">
-<h4>BGX: Blue Corona ✨</h4>
+<h4>BGX: Blue Corona 🔥</h4>
 <h5><code>[AS] BGX: Blue Corona|AS_BGX_BlueCorona.1.fx</code></h5>
 Creates a vibrant, abstract blue corona effect with fluid, dynamic motion. The effect generates hypnotic patterns through iterative mathematical transformations, resulting in organic, plasma-like visuals with a predominantly blue color scheme. Features abstract, organic blue corona patterns; smooth fluid-like animation; customizable iteration count/pattern scale; animation speed/flow controls; intuitive color controls; customizable background color; audio reactivity (multiple targets); depth-aware rendering; and standard position, rotation, scale, and blending options.<br><br>
 Original: <a href="https://www.shadertoy.com/view/XfKGWV" target="_new">"Blue Corona" by SnoopethDuckDuck</a>.
@@ -220,7 +222,7 @@ Original: <a href="https://www.shadertoy.com/view/7sBfDD" target="_new">"Interac
 <h4>BGX: Zippy Zaps ⚡</h4>
 <h5><code>[AS] BGX: Zippy Zaps|AS_BGX_ZippyZaps.1.fx</code></h5>
 Creates dynamic electric arcs and lightning patterns for a striking background effect. This effect generates procedural electric-like patterns that appear behind objects in the scene, creating an energetic, dynamic background with complete control over appearance and animation. Features animated electric/lightning arcs with procedural generation; fully customizable colors, intensity, and animation parameters; resolution-independent rendering; audio reactivity; depth-aware rendering; and adjustable rotation/positioning in 3D space.<br><br>
-Original: Shader by SnoopethDuckDuck (ShaderToy link pending).
+Original: <a href="https://www.shadertoy.com/view/XXyGzh" target="_new">"Zippy Zaps" by SnoopethDuckDuck</a>.
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://github.com/user-attachments/assets/f32eebde-9c76-49ab-ab6e-50bc4fdeaf2f"/>

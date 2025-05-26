@@ -1,6 +1,8 @@
 # AS-StageFX Shader Gallery - Visual Effects Package
 
-This gallery provides detailed descriptions and visual examples of the visual effects included in the **AS_StageFX_VisualEffects** package. For installation instructions and general information, please refer to the [main README](../README.md).
+This gallery provides detailed descriptions and visual examples of the **20 effects** (3 Lighting + 17 Visual) included in the **AS_StageFX_VisualEffects** package. These effects range from lighting simulation and audio visualization to particle systems and post-processing tools.
+
+For installation instructions and general information, please refer to the [main README](../README.md).
 
 > **Note:** This package requires the [AS_StageFX_Essentials](./gallery.md) package to be installed.
 
@@ -32,7 +34,7 @@ Generates animated procedural candle flames with realistic shape and color gradi
 <table>
 <tr>
 <td width="50%">
-<h4>VFX: Circular Spectrum ✨</h4>
+<h4>VFX: Circular Spectrum ⚡</h4>
 <h5><code>[AS] VFX: Circular Spectrum|AS_VFX_CircularSpectrum.1.fx</code></h5>
 Creates a circular audio spectrum visualizer with dots of light radiating from the center. The number and color of dots react to audio frequency bands, creating a dynamic visual representation of music. Features customizable palette support (including custom palettes), mirrored or linear frequency mapping, adjustable dot size and spacing, bloom effects, audio sensitivity controls, and depth masking for 3D positioning.<br><br>
 Inspired by: <a href="https://www.shadertoy.com/view/tcyGW1" target="_new">"Circular audio visualizer" by AIandDesign</a>.
@@ -98,7 +100,7 @@ Inspired by: <a href="https://www.shadertoy.com/view/ltffzl" target="_new">"Hear
 <h4>VFX: Radiant Fire ✨</h4>
 <h5><code>[AS] VFX: Radiant Fire|AS_VFX_RadiantFire.1.fx</code></h5>
 A fire simulation that generates flames radiating from subject edges. Rotation affects the direction of internal physics forces.<br/><br/>
-Inspired by <a href='https://www.shadertoy.com/view/WXX3RH'>'Fire [326]' by Xor</a>
+Original: <a href='https://www.shadertoy.com/view/4ttGWM' target='_new'>"301's Fire Shader - Remix 3" by mu6k</a>
 </td>
 <td width="50%"><div style="text-align:center">
 </div>

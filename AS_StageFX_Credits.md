@@ -118,14 +118,18 @@ This document lists all external sources, original authors, and inspiration cred
 
 ---
 
-## Art of Code Adaptations
+## Shadertoy Adaptations
 
 ### AS_BGX_Constellation.1.fx - Dynamic Cosmic Constellation Pattern
-- **Original Author**: Art of Code
-- **Original Title**: "Constellation"
-- **Notes**: Adapted with enhancements for constellation patterns and twinkling effects.
+- **Original Author**: jairoandre
+- **Original Title**: "Old Joseph"
+- **Source**: [Shadertoy](https://www.shadertoy.com/view/slfGzf)
+- **Publication Date**: 2021-06-01
+- **Notes**: Adapted with enhancements for constellation patterns and twinkling effects. Inspired by Art of Code tutorials.
 
 ---
+
+## Art of Code Adaptations
 
 ## Other GLSL/Community Sources
 
