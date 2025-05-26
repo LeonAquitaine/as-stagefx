@@ -92,8 +92,8 @@ AS_STAGEDEPTH_UI(name)           // Stage depth control (0.0 to 1.0)
 
 // Animation & Audio
 AS_ANIMATION_UI(speed, keyframe, category)        // Combined speed+keyframe
-AS_AUDIO_SOURCE_UI(name, label, default, cat)    // Audio source dropdown
-AS_AUDIO_MULTIPLIER_UI(name, label, min, max, cat) // Audio intensity
+AS_AUDIO_UI(name, label, default, cat)    // Audio source dropdown
+AS_AUDIO_MULT_UI(name, label, defaultValue, maxValue, cat) // Audio intensity
 
 // Blending & Style
 AS_BLENDMODE_UI(name)            // Blend mode combo (default Normal)
@@ -295,8 +295,8 @@ if (PaletteSelection == AS_PALETTE_CUSTOM) {
 
 ### Standard Audio Controls:
 ```hlsl
-AS_AUDIO_SOURCE_UI(AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
-AS_AUDIO_MULTIPLIER_UI(AudioMultiplier, "Intensity", 1.0, 2.0, "Audio Reactivity")
+AS_AUDIO_UI(AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
+AS_AUDIO_MULT_UI(AudioMultiplier, "Audio Intensity", 1.0, 4.0, "Audio Reactivity")
 
 // Parameter-specific targeting
 uniform int AudioTarget < ui_type = "combo"; ui_label = "Audio Target";
