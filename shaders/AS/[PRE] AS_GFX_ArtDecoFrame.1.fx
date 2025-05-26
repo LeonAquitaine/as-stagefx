@@ -6,14 +6,13 @@
  * 
  * ===================================================================================
  *
- * DESCRIPTION:
- * Generates ornate Art Deco/Art Nouveau style decorative frames with realistic procedural gold material simulation.
- * Creates geometric patterns with towers, diamonds, tramlines, and decorative fans, all rendered in authentic metallic gold.
+ * DESCRIPTION: * Generates ornate Art Deco/Art Nouveau style decorative frames with realistic procedural gold material simulation.
+ * Creates geometric patterns with diamonds, tramlines, and decorative fans, all rendered in authentic metallic gold.
  *
  * FEATURES:
  * - Complex geometric frame construction with multiple layers and decorative elements
  * - Procedural gold material with surface roughness, metallic reflections, and Fresnel effects
- * - Configurable tramlines, towers, corner diamonds, and decorative fans with mirroring support
+ * - Configurable tramlines, corner diamonds, and decorative fans with mirroring support
  * - Real-time surface noise simulation for authentic gold texture variation
  * - Audio reactivity for dynamic animation and parameter control
  * - Stage depth masking for proper 3D scene integration
@@ -25,7 +24,7 @@
  * 2. Applies procedural gold material using HSV color space and fractal noise
  * 3. Simulates surface imperfections with FBM noise for realistic metal appearance
  * 4. Implements Fresnel effects for authentic metallic reflection behavior
- * 5. Renders elements in proper Z-order: fans, diamonds, towers, and frame boxes
+ * 5. Renders elements in proper Z-order: fans, diamonds, and frame boxes
  * 6. Integrates audio reactivity and stage depth controls for dynamic effects
  *
  * ===================================================================================
@@ -63,10 +62,7 @@ uniform float2 SubSize < ui_label="Inner Frame"; ui_type="slider"; ui_min=0.05; 
 // Decorative Elements - Diamonds, Towers & Fans
 uniform float DiamondScalarSize < ui_label="Center Diamond Size"; ui_type="slider"; ui_min=0.05; ui_max=3.0; ui_category="Decorative Elements"; > = 0.9;
 uniform float CornerDiamondScalarHalfSize < ui_label="Corner Diamond Size"; ui_type="slider"; ui_min=0.02; ui_max=1.0; ui_category="Decorative Elements"; > = 0.2;
-uniform float2 CentralTowerSize < ui_label="Center Tower"; ui_type="slider"; ui_min=0.025; ui_max=1.5; ui_category="Decorative Elements"; > = float2(0.1, 0.8); 
-uniform float CentralTowerChamfer < ui_label="Tower Taper"; ui_type="slider"; ui_min=0.0; ui_max=1.0; ui_category="Decorative Elements"; > = 0.5;
-uniform float2 SecondaryTowerSize < ui_label="Side Towers"; ui_type="slider"; ui_min=0.01; ui_max=1.0; ui_category="Decorative Elements"; > = float2(0.05, 0.5); 
-uniform float SecondaryTowerOffsetX < ui_label="Side Tower Spread"; ui_type="slider"; ui_min=0.0; ui_max=1.0; ui_category="Decorative Elements"; > = 0.2;
+
 uniform bool FanEnable < ui_label="Enable Fans"; ui_type="checkbox"; ui_category="Decorative Elements"; > = true;
 uniform bool MirrorFansGlobally < ui_label="Mirror Fans"; ui_type="checkbox"; ui_category="Decorative Elements"; > = false; 
 uniform bool FansBehindDiamond < ui_label="Fans Behind Diamond"; ui_type="checkbox"; ui_category="Decorative Elements"; > = false; 
@@ -323,75 +319,7 @@ float4 drawFan(float2 p_screen, float2 fan_origin_uv, float y_direction_multipli
     return result_color; 
 }
 
-float GetCentralTowerChamferedTopY(float x_abs_local, float tower_half_w, float tower_total_h, float chamfer_h_extent_ratio) {
-    if (chamfer_h_extent_ratio < 0.001 || tower_half_w < 0.0001) return tower_total_h; 
-    float chamfer_x_reach_from_side = tower_half_w * saturate(chamfer_h_extent_ratio); 
-    float flat_top_half_width = max(0.0, tower_half_w - chamfer_x_reach_from_side); 
-    if (x_abs_local <= flat_top_half_width) { return tower_total_h; 
-    } else if (x_abs_local <= tower_half_w) {
-        float x_on_slope = x_abs_local - flat_top_half_width; 
-        float y_drop = x_on_slope; 
-        return tower_total_h - y_drop;
-    }
-    return tower_total_h - chamfer_x_reach_from_side; 
-}
 
-struct TowerOutput { float4 color_alpha; };
-
-TowerOutput drawCentralTower(
-    float2 p_screen_uv,                 
-    float2 tower_base_center_sq_base,   
-    float2 tower_dims,                  // X is HALF-WIDTH, Y is TOTAL HEIGHT (from UI)
-    float chamfer_ratio, 
-    float3 fill_c, float3 line_c
-) {
-    TowerOutput result; 
-    result.color_alpha = float4(0,0,0,0); 
-
-    float2 p_local_to_base = p_screen_uv - tower_base_center_sq_base; 
-
-    float2 p_for_sdBox = p_local_to_base - float2(0, tower_dims.y / 2.0);
-    float2 box_half_dims_for_sdf = float2(tower_dims.x, tower_dims.y / 2.0);
-    float sdf_base_box = sdBox(float2(abs(p_for_sdBox.x), p_for_sdBox.y), box_half_dims_for_sdf);
-
-    float chamfer_ceiling_y = GetCentralTowerChamferedTopY(abs(p_local_to_base.x), tower_dims.x, tower_dims.y, chamfer_ratio);
-    float sdf_chamfer_cut = p_local_to_base.y - chamfer_ceiling_y;
-
-    float sdf_final_shape = max(sdf_base_box, sdf_chamfer_cut);
-    
-    float fill_alpha = smoothstep(F_EDGE, -F_EDGE, sdf_final_shape);
-    float3 color = fill_c;
-    float line_alpha = smoothstep(F_EDGE, 0.0, abs(sdf_final_shape)); 
-    color = lerp(color, line_c, line_alpha);
-    
-    result.color_alpha = float4(color, fill_alpha); 
-    return result;
-}
-
-float4 drawSecondaryTower(
-    float2 p_screen_uv, float2 tower_base_center_sq_base, float2 tower_dims, 
-    float max_y_clip_from_its_base, bool is_left_tower_of_pair, float3 fill_c, float3 line_c
-) {
-    float2 p_local_to_base = p_screen_uv - tower_base_center_sq_base; 
-    float2 p_for_sdBox = p_local_to_base - float2(0, tower_dims.y / 2.0);
-    float2 box_half_dims_for_sdf = float2(tower_dims.x, tower_dims.y / 2.0);
-    float sdf_base_box = sdBox(float2(abs(p_for_sdBox.x), p_for_sdBox.y), box_half_dims_for_sdf);
-    float sdf_slant_cut;
-    float total_height = tower_dims.y;
-    float half_width = tower_dims.x;
-    float slope = is_left_tower_of_pair ? -1.0 : 1.0; 
-    float x_inner_top_corner_local = is_left_tower_of_pair ? half_width : -half_width;
-    float y_intercept_slant = total_height - slope * x_inner_top_corner_local;
-    sdf_slant_cut = p_local_to_base.y - (slope * p_local_to_base.x + y_intercept_slant);
-    float sdf_shape_with_slant = max(sdf_base_box, sdf_slant_cut);
-    float sdf_overall_top_clip = p_local_to_base.y - max_y_clip_from_its_base;
-    float sdf_final_shape = max(sdf_shape_with_slant, sdf_overall_top_clip);
-    float fill_alpha = smoothstep(F_EDGE, -F_EDGE, sdf_final_shape);
-    float3 color = fill_c;
-    float line_alpha = smoothstep(F_EDGE, 0.0, abs(sdf_final_shape));
-    color = lerp(color, line_c, line_alpha);
-    return float4(color, fill_alpha);
-}
 
 
 // === Main Pixel Shader ===
@@ -449,47 +377,15 @@ float4 PS_Main(float4 pos : SV_Position, float2 uv : TEXCOORD) : SV_Target
     }    float corner_diamond_target_center_x = main_box_inner_tram_edge_hs.x;
     float2 left_cd_pos_center_sq_base = float2(-corner_diamond_target_center_x, 0.0); 
     float4 left_corner_diamond_elem = drawComplexDiamond(sq_base - left_cd_pos_center_sq_base, CornerDiamondScalarHalfSize, fillColor, goldLineColor, NumTramlines, TramlineIndividualThickness, BorderThickness, TramlineSpacing, DetailPadding, DetailLineWidth);
-    output_color.rgb = lerp(output_color.rgb, left_corner_diamond_elem.rgb, left_corner_diamond_elem.a);
-    float2 right_cd_pos_center_sq_base = float2(corner_diamond_target_center_x, 0.0); 
+    output_color.rgb = lerp(output_color.rgb, left_corner_diamond_elem.rgb, left_corner_diamond_elem.a);    float2 right_cd_pos_center_sq_base = float2(corner_diamond_target_center_x, 0.0); 
     float4 right_corner_diamond_elem = drawComplexDiamond(sq_base - right_cd_pos_center_sq_base, CornerDiamondScalarHalfSize, fillColor, goldLineColor, NumTramlines, TramlineIndividualThickness, BorderThickness, TramlineSpacing, DetailPadding, DetailLineWidth);
     output_color.rgb = lerp(output_color.rgb, right_corner_diamond_elem.rgb, right_corner_diamond_elem.a);
 
-    // 4. Towers (Central and Secondary) 
-    float central_tower_y_base_on_screen = -CentralTowerSize.y / 2.0; 
-    float2 central_tower_base_center_sq_base_param = float2(0.0, central_tower_y_base_on_screen);  // Used _param here
-      TowerOutput central_tower = drawCentralTower(sq_base, 
-                                                 central_tower_base_center_sq_base_param, // Used _param here
-                                                 CentralTowerSize, 
-                                                 CentralTowerChamfer, 
-                                                 goldFillColor, goldLineColor);
-    
-    float secondary_tower_y_base_on_screen = -SecondaryTowerSize.y / 2.0; 
-
-    float ct_top_y_at_stl_x_from_ct_base = GetCentralTowerChamferedTopY(
-        abs(-SecondaryTowerOffsetX - central_tower_base_center_sq_base_param.x), // Used _param here
-        CentralTowerSize.x, CentralTowerSize.y, CentralTowerChamfer);
-    float max_y_clip_L_local = (ct_top_y_at_stl_x_from_ct_base + central_tower_base_center_sq_base_param.y) // Used _param here
-                             - (secondary_tower_y_base_on_screen); 
-                                        
-    float ct_top_y_at_str_x_from_ct_base = GetCentralTowerChamferedTopY(
-        abs(SecondaryTowerOffsetX - central_tower_base_center_sq_base_param.x), // Used _param here
-        CentralTowerSize.x, CentralTowerSize.y, CentralTowerChamfer);
-    float max_y_clip_R_local = (ct_top_y_at_str_x_from_ct_base + central_tower_base_center_sq_base_param.y) // Used _param here
-                             - (secondary_tower_y_base_on_screen);    float2 sec_tower_l_base_center_sq_base_param = float2(-SecondaryTowerOffsetX, secondary_tower_y_base_on_screen);
-    float4 sec_tower_l_elem = drawSecondaryTower(sq_base, sec_tower_l_base_center_sq_base_param, 
-                                                 SecondaryTowerSize, max_y_clip_L_local, true, goldFillColor, goldLineColor);
-    
-    float2 sec_tower_r_base_center_sq_base_param = float2(SecondaryTowerOffsetX, secondary_tower_y_base_on_screen);
-    float4 sec_tower_r_elem = drawSecondaryTower(sq_base, sec_tower_r_base_center_sq_base_param,
-                                                 SecondaryTowerSize, max_y_clip_R_local, false, goldFillColor, goldLineColor);
-    
-    output_color.rgb = lerp(output_color.rgb, sec_tower_l_elem.rgb, sec_tower_l_elem.a);
-    output_color.rgb = lerp(output_color.rgb, sec_tower_r_elem.rgb, sec_tower_r_elem.a);
-    output_color.rgb = lerp(output_color.rgb, central_tower.color_alpha.rgb, central_tower.color_alpha.a);    // 5. Boxes (Main and Sub)
+    // 4. Boxes (Main and Sub)
     float4 sub_box_elem = drawSolidElementWithTramlines(sq_base, SubSize, false, NumTramlines, TramlineIndividualThickness, BorderThickness, TramlineSpacing, DetailPadding, DetailLineWidth, goldFillColor, goldLineColor);
     output_color.rgb = lerp(output_color.rgb, sub_box_elem.rgb, sub_box_elem.a);
     float4 main_box_elem = drawSolidElementWithTramlines(sq_base, MainSize, false, NumTramlines, TramlineIndividualThickness, BorderThickness, TramlineSpacing, DetailPadding, DetailLineWidth, goldFillColor, goldLineColor);
-    output_color.rgb = lerp(output_color.rgb, main_box_elem.rgb, main_box_elem.a);    // 6. Fans if NOT "Behind Diamond"
+    output_color.rgb = lerp(output_color.rgb, main_box_elem.rgb, main_box_elem.a);    // 5. Fans if NOT "Behind Diamond"
     if (FanEnable && !FansBehindDiamond) { 
         float top_fan_y_dir = MirrorFansGlobally ? -1.0 : 1.0;
         float bottom_fan_y_dir = MirrorFansGlobally ? 1.0 : -1.0;
@@ -506,7 +402,10 @@ float4 PS_Main(float4 pos : SV_Position, float2 uv : TEXCOORD) : SV_Target
 }
 
 // === Technique ===
-technique ArtDecoFrame
+technique AS_GFX_ArtDecoFrame_1 < 
+    ui_label = "[AS] GFX: Art Deco Frame"; 
+    ui_tooltip = "Elegant Art Deco style decorative frame for UI composition."; 
+>
 {
     pass
     {
