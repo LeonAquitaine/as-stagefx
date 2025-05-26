@@ -39,9 +39,9 @@
 #include "ReShade.fxh"
 #include "AS_Noise.1.fxh"
 #include "AS_Utils.1.fxh"
+#include "AS_Palette.1.fxh"
 
-#define M_PI 3.14159265358979323846
-#define F_EDGE 0.001
+#define ARTDECO_BORDER_EDGE 0.001
 
 // === UI Controls ===
 // Gold Style - Main Visual Appearance
@@ -82,6 +82,18 @@ uniform float FanBaseRadius < ui_label="Fan Base Offset"; ui_type="slider"; ui_m
 uniform float FanLineThickness < ui_label="Fan Line Width"; ui_type="slider"; ui_min=0.0005; ui_max=0.005; ui_category="Advanced"; ui_category_closed=true; > = 0.001;
 uniform float3 FrameFillColorBackup < ui_label="Fallback Fill Color"; ui_type="color"; ui_category="Advanced"; ui_category_closed=true; > = float3(0.05, 0.05, 0.05);
 uniform float3 FrameLineColorBackup < ui_label="Fallback Line Color"; ui_type="color"; ui_category="Advanced"; ui_category_closed=true; > = float3(0.9, 0.75, 0.35);
+
+// Audio Reactivity
+AS_AUDIO_UI(AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
+AS_AUDIO_MULT_UI(AudioMultiplier, "Audio Intensity", 1.0, 4.0, "Audio Reactivity")
+
+// Stage Controls
+AS_STAGEDEPTH_UI(EffectDepth)
+AS_ROTATION_UI(SnapRotation, FineRotation)
+
+// Final Mix
+AS_BLENDMODE_UI_DEFAULT(BlendMode, AS_BLEND_NORMAL)
+AS_BLENDAMOUNT_UI(BlendAmount)
 
 // === Coordinate & SDF Helpers ===
 float2 SquareSpaceUV(float2 uv) {
@@ -202,10 +214,9 @@ float3 GenerateProceduralGold(float2 uv, bool isFill) {
 
 // === Drawing Functions ===
 float drawSingleTramlineSDF(float2 p_eval, float2 line_center_half_size, float line_actual_thickness) {
-    float sdf_line_center = sdBox(p_eval, line_center_half_size);
-    return saturate(1.0 - smoothstep(
-                            line_actual_thickness * 0.5 - F_EDGE,
-                            line_actual_thickness * 0.5 + F_EDGE,
+    float sdf_line_center = sdBox(p_eval, line_center_half_size);    return saturate(1.0 - smoothstep(
+                            line_actual_thickness * 0.5 - ARTDECO_BORDER_EDGE,
+                            line_actual_thickness * 0.5 + ARTDECO_BORDER_EDGE,
                             abs(sdf_line_center)
                          ));
 }
@@ -216,7 +227,7 @@ float4 drawSolidElementWithTramlines(
     float detail_pad, float detail_lw, float3 fill_c, float3 line_c                      
 )
 {
-    float2 p_eval = is_diamond ? abs(rotate(p, M_PI / 4.0)) : p; 
+    float2 p_eval = is_diamond ? abs(rotate(p, AS_PI / 4.0)) : p; 
     float3 final_color = fill_c; 
     float tramlines_total_alpha = 0.0;
     float current_offset_from_outer_edge = 0.0;
@@ -237,12 +248,12 @@ float4 drawSolidElementWithTramlines(
 
     float2 fill_area_half_size = inner_edge_of_last_drawn_tramline_hs;
     float sdf_fill_area = sdBox(p_eval, fill_area_half_size);
-    float fill_alpha = smoothstep(F_EDGE, -F_EDGE, sdf_fill_area);
+    float fill_alpha = smoothstep(ARTDECO_BORDER_EDGE, -ARTDECO_BORDER_EDGE, sdf_fill_area);
     final_color = lerp(lerp(fill_c, line_c, tramlines_total_alpha), fill_c, fill_alpha);
 
     float2 detail_line_center_half_size = max(0.0.xx, fill_area_half_size - detail_pad - detail_lw * 0.5);
     float sdf_detail_line_center = sdBox(p_eval, detail_line_center_half_size);
-    float detail_line_alpha = saturate(1.0 - smoothstep(detail_lw * 0.5 - F_EDGE, detail_lw * 0.5 + F_EDGE, abs(sdf_detail_line_center)));
+    float detail_line_alpha = saturate(1.0 - smoothstep(detail_lw * 0.5 - ARTDECO_BORDER_EDGE, detail_lw * 0.5 + ARTDECO_BORDER_EDGE, abs(sdf_detail_line_center)));
     float3 detail_line_color_val = lerp(fill_c, line_c, 0.5); 
     final_color = lerp(final_color, detail_line_color_val, detail_line_alpha);
     
@@ -258,7 +269,7 @@ float4 drawComplexDiamond(
 )
 {
     float2 diamond_outer_half_size = float2(diamond_scalar_half_size, diamond_scalar_half_size);
-    float2 p_eval = abs(rotate(p_orig, M_PI / 4.0)); 
+    float2 p_eval = abs(rotate(p_orig, AS_PI / 4.0)); 
     float3 final_color = fill_c;
     float tramlines_total_alpha = 0.0;
     float current_offset_main = 0.0;
@@ -274,19 +285,19 @@ float4 drawComplexDiamond(
     }
     if (num_tram == 0) { inner_edge_of_last_drawn_tramline_hs_diamond = diamond_outer_half_size; }
 
-    float fill_alpha = smoothstep(F_EDGE, -F_EDGE, sdBox(p_eval, inner_edge_of_last_drawn_tramline_hs_diamond));
+    float fill_alpha = smoothstep(ARTDECO_BORDER_EDGE, -ARTDECO_BORDER_EDGE, sdBox(p_eval, inner_edge_of_last_drawn_tramline_hs_diamond));
     final_color = lerp(lerp(fill_c, line_c, tramlines_total_alpha), fill_c, fill_alpha); 
 
     float3 detail_lines_color_val = lerp(fill_c, line_c, 0.5);
     float2 inlay1_center_half_size = max(0.0.xx, inner_edge_of_last_drawn_tramline_hs_diamond - detail_pad - detail_lw * 0.5);
     float sdf_inlay1_center = sdBox(p_eval, inlay1_center_half_size);
-    float alpha_inlay1_line = saturate(1.0 - smoothstep(detail_lw * 0.5 - F_EDGE, detail_lw * 0.5 + F_EDGE, abs(sdf_inlay1_center)));
+    float alpha_inlay1_line = saturate(1.0 - smoothstep(detail_lw * 0.5 - ARTDECO_BORDER_EDGE, detail_lw * 0.5 + ARTDECO_BORDER_EDGE, abs(sdf_inlay1_center)));
     final_color = lerp(final_color, detail_lines_color_val, alpha_inlay1_line);
     
     float offset_for_line2_center = detail_pad + detail_lw + detail_pad; 
     float2 inlay2_center_half_size = max(0.0.xx, inner_edge_of_last_drawn_tramline_hs_diamond - offset_for_line2_center - detail_lw * 0.5);
     float sdf_inlay2_center = sdBox(p_eval, inlay2_center_half_size);
-    float alpha_inlay2_line = saturate(1.0 - smoothstep(detail_lw * 0.5 - F_EDGE, detail_lw * 0.5 + F_EDGE, abs(sdf_inlay2_center)));
+    float alpha_inlay2_line = saturate(1.0 - smoothstep(detail_lw * 0.5 - ARTDECO_BORDER_EDGE, detail_lw * 0.5 + ARTDECO_BORDER_EDGE, abs(sdf_inlay2_center)));
     final_color = lerp(final_color, detail_lines_color_val, alpha_inlay2_line);
     
     float combined_total_alpha = fill_alpha;
@@ -312,9 +323,8 @@ float4 drawFan(float2 p_screen, float2 fan_origin_uv, float y_direction_multipli
         float2 end_point = fan_origin_uv + dir * (base_radius + line_length);
         float current_line_sdf = sdThickLineSegment(p_screen, start_point, end_point, line_thick);
         min_dist_to_line = min(min_dist_to_line, current_line_sdf);
-    }
-    
-    float fan_alpha = saturate(1.0 - smoothstep(0.0, F_EDGE*2.0, min_dist_to_line));
+    }    
+    float fan_alpha = saturate(1.0 - smoothstep(0.0, ARTDECO_BORDER_EDGE*2.0, min_dist_to_line));
     float4 result_color = float4(line_c, fan_alpha);
     return result_color; 
 }
@@ -341,8 +351,8 @@ float4 PS_Main(float4 pos : SV_Position, float2 uv : TEXCOORD) : SV_Target
         main_diamond_inner_void_hs_for_clip = max(0.0.xx, main_diamond_outer_hs_for_clip_calc - temp_offset_for_diamond_clip);
     }
     float2 fan_clip_mask_hs = main_diamond_inner_void_hs_for_clip + BorderThickness * 0.5;
-    float main_diamond_clipping_sdf = sdBox(abs(rotate(sq_base, M_PI / 4.0)), fan_clip_mask_hs);
-    float diamond_clip_mask = 1.0 - smoothstep(0.0, F_EDGE, main_diamond_clipping_sdf);
+    float main_diamond_clipping_sdf = sdBox(abs(rotate(sq_base, AS_PI / 4.0)), fan_clip_mask_hs);
+    float diamond_clip_mask = 1.0 - smoothstep(0.0, ARTDECO_BORDER_EDGE, main_diamond_clipping_sdf);
 
     float effective_fan_length = FanLength;
     if (FanEnable && !FansBehindDiamond) { effective_fan_length += BorderThickness * 0.5; }
@@ -352,9 +362,9 @@ float4 PS_Main(float4 pos : SV_Position, float2 uv : TEXCOORD) : SV_Target
         float top_fan_y_dir = MirrorFansGlobally ? -1.0 : 1.0;
         float bottom_fan_y_dir = MirrorFansGlobally ? 1.0 : -1.0;
         float3 goldLineColor = GenerateProceduralGold(uv, false);
-        float4 upper_fan = drawFan(sq_base, float2(0.0, FanYOffset), top_fan_y_dir, FanLineCount, FanSpreadDegrees * M_PI / 180.0, FanBaseRadius, FanLength, FanLineThickness, goldLineColor);
+        float4 upper_fan = drawFan(sq_base, float2(0.0, FanYOffset), top_fan_y_dir, FanLineCount, FanSpreadDegrees * AS_PI / 180.0, FanBaseRadius, FanLength, FanLineThickness, goldLineColor);
         output_color.rgb = lerp(output_color.rgb, upper_fan.rgb, upper_fan.a);
-        float4 lower_fan = drawFan(sq_base, float2(0.0, -FanYOffset), bottom_fan_y_dir, FanLineCount, FanSpreadDegrees * M_PI / 180.0, FanBaseRadius, FanLength, FanLineThickness, goldLineColor);
+        float4 lower_fan = drawFan(sq_base, float2(0.0, -FanYOffset), bottom_fan_y_dir, FanLineCount, FanSpreadDegrees * AS_PI / 180.0, FanBaseRadius, FanLength, FanLineThickness, goldLineColor);
         output_color.rgb = lerp(output_color.rgb, lower_fan.rgb, lower_fan.a);    }    // 2. Main Diamond
     float3 fillColor = FrameFillColorBackup; // Keep original dark background
     float3 goldLineColor = GenerateProceduralGold(uv, false); // Only lines get gold
@@ -390,10 +400,10 @@ float4 PS_Main(float4 pos : SV_Position, float2 uv : TEXCOORD) : SV_Target
         float top_fan_y_dir = MirrorFansGlobally ? -1.0 : 1.0;
         float bottom_fan_y_dir = MirrorFansGlobally ? 1.0 : -1.0;
         float3 goldLineColorFans = GenerateProceduralGold(uv, false);
-        float4 upper_fan = drawFan(sq_base, float2(0.0, FanYOffset), top_fan_y_dir, FanLineCount, FanSpreadDegrees * M_PI / 180.0, FanBaseRadius, effective_fan_length, FanLineThickness, goldLineColorFans);
+        float4 upper_fan = drawFan(sq_base, float2(0.0, FanYOffset), top_fan_y_dir, FanLineCount, FanSpreadDegrees * AS_PI / 180.0, FanBaseRadius, effective_fan_length, FanLineThickness, goldLineColorFans);
         upper_fan.a *= diamond_clip_mask; 
         output_color.rgb = lerp(output_color.rgb, upper_fan.rgb, upper_fan.a);
-        float4 lower_fan = drawFan(sq_base, float2(0.0, -FanYOffset), bottom_fan_y_dir, FanLineCount, FanSpreadDegrees * M_PI / 180.0, FanBaseRadius, effective_fan_length, FanLineThickness, goldLineColorFans);
+        float4 lower_fan = drawFan(sq_base, float2(0.0, -FanYOffset), bottom_fan_y_dir, FanLineCount, FanSpreadDegrees * AS_PI / 180.0, FanBaseRadius, effective_fan_length, FanLineThickness, goldLineColorFans);
         lower_fan.a *= diamond_clip_mask; 
         output_color.rgb = lerp(output_color.rgb, lower_fan.rgb, lower_fan.a);
     }
