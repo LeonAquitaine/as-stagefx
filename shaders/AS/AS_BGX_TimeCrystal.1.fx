@@ -2,11 +2,12 @@
  * AS_BGX_TimeCrystal.1.fx - Fractal crystalline structure effect
  * Author: Leon Aquitaine
  * License: Creative Commons Attribution 4.0 International
- * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution. * 
+ * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
+ * 
  * CREDITS:
- * Original: "Time Crystal" by raphaeljmu (2023-12-22)
- * Source: https://www.shadertoy.com/view/lcl3z2
- * Adapted for ReShade with enhanced controls and AS StageFX framework integration.
+ * Based on "Time Crystal" by raphaeljmu
+ * Shadertoy: https://www.shadertoy.com/view/lcl3z2
+ * Created: 2023-12-22
  * 
  * ===================================================================================
  *

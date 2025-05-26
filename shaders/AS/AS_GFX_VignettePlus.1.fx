@@ -4,6 +4,7 @@
  * License: Creative Commons Attribution 4.0 International
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
  * 
+ * CREDITS:
  * The hexagonal grid implementation is inspired by/adapted from the hexagonal wipe shader on Shadertoy:
  * https://www.shadertoy.com/view/XfjyWG created by blandprix (2024-08-06)
  * 

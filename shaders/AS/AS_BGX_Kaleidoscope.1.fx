@@ -1,8 +1,12 @@
 /**
  * AS_BGX_Kaleidoscope.1.fx - Dynamic Fractal Kaleidoscope Pattern
- * Author: Leon Aquitaine (adapted from kishimisu's work)
+ * Author: Leon Aquitaine
  * License: Creative Commons Attribution 4.0 International
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
+ * 
+ * CREDITS:
+ * Based on "Shader Art Coding Introduction" by kishimisu (2023-05-20)
+ * YouTube: https://youtu.be/f4s1h2YETNY
  * 
  * ===================================================================================
  *
@@ -17,19 +21,12 @@
  * - Audio reactivity for zoom, wave intensity, and pattern rotation
  * - Depth-aware rendering
  * - Standard blend options
- *
- * IMPLEMENTATION OVERVIEW:
+ * * IMPLEMENTATION OVERVIEW:
  * 1. Applies mirrored transformations to create kaleidoscope symmetry
  * 2. Generates an iterative fractal pattern with customizable zoom
  * 3. Uses sine-wave distortion to create flowing tendrils
  * 4. Processes through a customizable color palette
  * 5. Applies audio reactivity to key animation parameters
- * 
- * CREDITS:
- * Based on "Shader Art Coding Introduction" by kishimisu (2023-05-20)
- * This shader was originally created as educational material for introducing
- * programmers to GLSL and shader programming in a creative coding context.
- * Original tutorial: https://youtu.be/f4s1h2YETNY
  * 
  * ===================================================================================
  */

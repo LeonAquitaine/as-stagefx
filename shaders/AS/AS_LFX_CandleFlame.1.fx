@@ -1,8 +1,13 @@
 /**
  * AS_LFX_CandleFlame.1.fx - Procedural Candle Flame Effect
- * Author: Leon Aquitaine (Adapted from Godot shader by FencerDevLog)
+ * Author: Leon Aquitaine
  * License: Creative Commons Attribution 4.0 International
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
+ * 
+ * CREDITS:
+ * Based on "Godot 4: Candle flame shader (tutorial)" by FencerDevLog
+ * YouTube: https://www.youtube.com/watch?v=6ZZVwbzE8cw
+ * FencerDevLog's Patreon: https://www.patreon.com/c/FencerDevLog/posts
  * 
  * ===================================================================================
  *
@@ -26,10 +31,6 @@
  * 4. Applies color mapping based on vertical position (y=0 -> palette start, y=1 -> palette end)
  * 5. Adds noise-based flicker and audio reactivity
  * 6. Renders at specified depth plane with occlusion
- *
- * Original inspiration: "Godot 4: Candle flame shader (tutorial)" by FencerDevLog
- * Source: https://www.youtube.com/watch?v=6ZZVwbzE8cw
- * FencerDevLog's Patreon: https://www.patreon.com/c/FencerDevLog/posts
  * 
  * ===================================================================================
  */

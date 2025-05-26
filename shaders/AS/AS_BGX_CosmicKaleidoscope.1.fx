@@ -1,8 +1,12 @@
 /**
  * AS_BGX_CosmicKaleidoscope.1.fx - Volumetric Mandelbox/Mandelbulb-like fractal
- * Author: Leon Aquitaine (translated from Shadertoy)
+ * Author: Leon Aquitaine
  * License: Creative Commons Attribution 4.0 International
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
+ * 
+ * CREDITS:
+ * Based on "cosmos in crystal" by nayk
+ * Shadertoy: https://www.shadertoy.com/view/MXccR4
  * 
  * ===================================================================================
  *
@@ -23,10 +27,6 @@
  * 3. Implements domain repetition for tiling and kaleidoscope effects
  * 4. Accumulates color based on distance and iteration properties
  * 5. Applies rotation, audio reactivity and palette mapping
- *
- * Original Author: nayk (https://www.shadertoy.com/view/MXccR4)
- * Based on "cosmos in crystal" from Shadertoy: https://www.shadertoy.com/view/MXccR4
- * Adapted for ReShade by Leon Aquitaine
  * 
  * ===================================================================================
  */

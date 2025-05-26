@@ -1,8 +1,12 @@
 /**
  * AS_BGX_ZippyZaps.1.fx - Dynamic electricity/lightning-like background effect
- * Author: Leon Aquitaine (translated from Shadertoy)
+ * Author: Leon Aquitaine
  * License: Creative Commons Attribution 4.0 International
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
+ * 
+ * CREDITS:
+ * Based on "Zippy Zaps" by SnoopethDuckDuck
+ * Shadertoy: https://www.shadertoy.com/view/XXyGzh
  * 
  * ===================================================================================
  *
@@ -22,14 +26,9 @@
  * IMPLEMENTATION OVERVIEW:
  * 1. Uses iterative mathematical functions to generate dynamic lightning patterns
  * 2. Applies coordinate transformations to ensure resolution independence
- * 3. Creates electric arcs through trigonometric distortions and iterations
- * 4. Applies depth testing to integrate with the 3D scene
+ * 3. Creates electric arcs through trigonometric distortions and iterations * 4. Applies depth testing to integrate with the 3D scene
  * 5. Processes audio input for dynamic response to music
  *
- * Original Author: SnoopethDuckDuck (https://www.shadertoy.com/view/XXyGzh)
- * Based on "Zippy Zaps" from Shadertoy: https://www.shadertoy.com/view/XXyGzh
- * Adapted for ReShade by Leon Aquitaine
- * 
  * ===================================================================================
  */
 

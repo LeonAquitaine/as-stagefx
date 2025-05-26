@@ -1,5 +1,6 @@
 {
-  "shaders": [    {
+  "shaders": [
+    {
       "credits": {
         "originalName": "Blue Corona",
         "link": "https://www.shadertoy.com/view/XfKGWV",
@@ -11,10 +12,10 @@
       "performance": "Heavy",
       "filename": "AS_BGX_BlueCorona.1.fx",
       "author": "Leon Aquitaine"
-    },    {
+    },
+    {
       "credits": {
         "originalName": "Constellation",
-        "link": null,
         "author": "Art of Code",
         "adaptedBy": "Leon Aquitaine"
       },
@@ -22,7 +23,8 @@
       "performance": "Moderate",
       "filename": "AS_BGX_Constellation.1.fx",
       "author": "Leon Aquitaine"
-    },{
+    },
+    {
       "credits": {
         "originalName": "Corridor Travel",
         "link": "https://www.shadertoy.com/view/3sXyRN",
@@ -34,7 +36,8 @@
       "performance": "Heavy",
       "filename": "AS_BGX_CorridorTravel.1.fx",
       "author": "Leon Aquitaine"
-    },{
+    },
+    {
       "credits": {
         "originalName": "cosmos in crystal",
         "link": "https://www.shadertoy.com/view/MXccR4",
@@ -46,7 +49,8 @@
       "performance": "Moderate",
       "filename": "AS_BGX_CosmicKaleidoscope.1.fx",
       "author": "Leon Aquitaine"
-    },    {
+    },
+    {
       "credits": {
         "originalName": "Digital Brain",
         "link": "https://www.shadertoy.com/view/4sl3Dr",
@@ -59,10 +63,10 @@
       "performance": "Light",
       "filename": "AS_BGX_DigitalBrain.1.fx",
       "author": "Leon Aquitaine"
-    },    {
+    },
+    {
       "credits": {
         "originalName": "Golden apollian",
-        "link": null,
         "author": "mrange",
         "adaptedBy": "Leon Aquitaine"
       },
@@ -70,22 +74,24 @@
       "performance": "Light (estimated)",
       "filename": "AS_BGX_GoldenClockwork.1.fx",
       "author": "Leon Aquitaine"
-    },    {
+    },
+    {
       "credits": {
-        "originalName": "Kaleidoscope",
-        "link": null,
+        "originalName": "Shader Art Coding Introduction",
+        "link": "https://youtu.be/f4s1h2YETNY",
         "author": "kishimisu",
+        "platform": "YouTube",
         "adaptedBy": "Leon Aquitaine"
       },
       "name": "AS_BGX_Kaleidoscope.1",
       "performance": "Light",
       "filename": "AS_BGX_Kaleidoscope.1.fx",
       "author": "Leon Aquitaine"
-    },{
+    },
+    {
       "credits": {
         "originalName": "Light Ripples",
         "link": "https://www.pouet.net/prod.php?which=57245",
-        "author": null,
         "platform": "Pouet",
         "adaptedBy": "Leon Aquitaine"
       },
@@ -93,18 +99,17 @@
       "performance": "Light",
       "filename": "AS_BGX_LightRipples.1.fx",
       "author": "Leon Aquitaine"
-    },    {
+    },
+    {
       "credits": {
-        "originalName": null,
-        "link": null,
-        "author": null,
         "license": "Creative Commons Attribution 4.0 International"
       },
       "name": "AS_BGX_LightWall.1",
       "performance": "Light (estimated)",
       "filename": "AS_BGX_LightWall.1.fx",
       "author": "Leon Aquitaine"
-    },{
+    },
+    {
       "credits": {
         "originalName": "Liquid Chrome",
         "link": "https://neort.io/art/bkm813c3p9f7drq1j86g",
@@ -116,7 +121,8 @@
       "performance": "Light",
       "filename": "AS_BGX_LiquidChrome.1.fx",
       "author": "Leon Aquitaine"
-    },{
+    },
+    {
       "credits": {
         "originalName": "Logarithmic spirals tweaked",
         "link": "https://www.shadertoy.com/view/cdKXDV",
@@ -128,7 +134,8 @@
       "performance": "Light",
       "filename": "AS_BGX_LogSpirals.1.fx",
       "author": "Leon Aquitaine"
-    },    {
+    },
+    {
       "credits": {
         "originalName": "70s Melt",
         "link": "https://www.shadertoy.com/view/XsX3zl",
@@ -140,10 +147,10 @@
       "performance": "Light",
       "filename": "AS_BGX_MeltWave.1.fx",
       "author": "Leon Aquitaine"
-    },    {
+    },
+    {
       "credits": {
         "originalName": "Misty Grid",
-        "link": null,
         "author": "NuSan",
         "adaptedBy": "Leon Aquitaine"
       },
@@ -151,10 +158,10 @@
       "performance": "Heavy",
       "filename": "AS_BGX_MistyGrid.1.fx",
       "author": "Leon Aquitaine"
-    },    {
+    },
+    {
       "credits": {
         "originalName": "past racer",
-        "link": null,
         "author": "jetlab",
         "adaptedBy": "Leon Aquitaine"
       },
@@ -162,29 +169,27 @@
       "performance": "Moderate",
       "filename": "AS_BGX_PastRacer.1.fx",
       "author": "Leon Aquitaine"
-    },{
+    },
+    {
       "credits": {
-        "originalName": null,
-        "link": null,
-        "author": null,
         "license": "Creative Commons Attribution 4.0 International"
       },
       "name": "AS_BGX_PlasmaFlow.1",
       "performance": "Light",
       "filename": "AS_BGX_PlasmaFlow.1.fx",
       "author": "Leon Aquitaine"
-    },    {
+    },
+    {
       "credits": {
         "originalName": "Shine Effect",
-        "link": null,
-        "author": null,
         "license": "Creative Commons Attribution 4.0 International"
       },
       "name": "AS_BGX_ShineOn.1",
       "performance": "Light",
       "filename": "AS_BGX_ShineOn.1.fx",
       "author": "Leon Aquitaine"
-    },{
+    },
+    {
       "credits": {
         "originalName": "Stained Lights",
         "link": "https://www.shadertoy.com/view/WlsSzM",
@@ -196,7 +201,8 @@
       "performance": "Light",
       "filename": "AS_BGX_StainedLights.1.fx",
       "author": "Leon Aquitaine"
-    },    {
+    },
+    {
       "credits": {
         "originalName": "Time Crystal",
         "link": "https://www.shadertoy.com/view/lcl3z2",
@@ -208,11 +214,11 @@
       "performance": "Light",
       "filename": "AS_BGX_TimeCrystal.1.fx",
       "author": "Leon Aquitaine"
-    },    {
+    },
+    {
       "credits": {
         "originalName": "Square Tiling Example E",
         "link": "https://www.shadertoy.com/view/NdfBzn",
-        "author": null,
         "platform": "Shadertoy",
         "adaptedBy": "Leon Aquitaine"
       },
@@ -220,7 +226,8 @@
       "performance": "Light",
       "filename": "AS_BGX_WavySquares.1.fx",
       "author": "Leon Aquitaine"
-    },    {
+    },
+    {
       "credits": {
         "originalName": "Interactive 2.5D Squiggles",
         "link": "https://www.shadertoy.com/view/7sBfDD",
@@ -232,7 +239,8 @@
       "performance": "Light",
       "filename": "AS_BGX_WavySquiggles.1.fx",
       "author": "Leon Aquitaine"
-    },    {
+    },
+    {
       "credits": {
         "originalName": "Zippy Zaps",
         "link": "https://www.shadertoy.com/view/XXyGzh",
@@ -244,22 +252,21 @@
       "performance": "Moderate",
       "filename": "AS_BGX_ZippyZaps.1.fx",
       "author": "Leon Aquitaine"
-    },    {
+    },
+    {
       "credits": {
-        "originalName": null,
-        "link": null,
-        "author": null,
         "license": "Creative Commons Attribution 4.0 International"
       },
       "name": "AS_GFX_AspectRatio.1",
       "performance": "Light",
       "filename": "AS_GFX_AspectRatio.1.fx",
       "author": "Leon Aquitaine"
-    },{
+    },
+    {
       "credits": {
-        "originalName": "Hand-Drawn Effect",
+        "originalName": "notebook drawings",
         "link": "https://www.shadertoy.com/view/XtVGD1",
-        "author": null,
+        "author": "Flockaroo",
         "platform": "Shadertoy",
         "adaptedBy": "Leon Aquitaine"
       },
@@ -267,18 +274,17 @@
       "performance": "Very Heavy",
       "filename": "AS_GFX_HandDrawing.1.fx",
       "author": "Leon Aquitaine"
-    },    {
+    },
+    {
       "credits": {
-        "originalName": null,
-        "link": null,
-        "author": null,
         "license": "Creative Commons Attribution 4.0 International"
       },
       "name": "AS_GFX_MultiLayerHalftone.1",
       "performance": "Light",
       "filename": "AS_GFX_MultiLayerHalftone.1.fx",
       "author": "Leon Aquitaine"
-    },{
+    },
+    {
       "credits": {
         "originalName": "Enhanced Vignette Effect",
         "link": "https://www.shadertoy.com/view/XfjyWG",
@@ -290,7 +296,8 @@
       "performance": "Light",
       "filename": "AS_GFX_VignettePlus.1.fx",
       "author": "Leon Aquitaine"
-    },{
+    },
+    {
       "credits": {
         "originalName": "Godot 4: Candle flame shader",
         "link": "https://www.youtube.com/watch?v=6ZZVwbzE8cw",
@@ -305,32 +312,28 @@
       "performance": "Light",
       "filename": "AS_LFX_CandleFlame.1.fx",
       "author": "Leon Aquitaine"
-    },    {
+    },
+    {
       "credits": {
-        "originalName": null,
-        "link": null,
-        "author": null,
         "license": "Creative Commons Attribution 4.0 International"
       },
       "name": "AS_LFX_LaserShow.1",
       "performance": "Light",
       "filename": "AS_LFX_LaserShow.1.fx",
       "author": "Leon Aquitaine"
-    },    {
+    },
+    {
       "credits": {
-        "originalName": null,
-        "link": null,
-        "author": null,
         "license": "Creative Commons Attribution 4.0 International"
       },
       "name": "AS_LFX_StageSpotlights.1",
       "performance": "Light",
       "filename": "AS_LFX_StageSpotlights.1.fx",
       "author": "Leon Aquitaine"
-    },    {
+    },
+    {
       "credits": {
         "originalName": "StageDepth.fx",
-        "link": null,
         "author": "Marot Satil",
         "adaptedBy": "Leon Aquitaine"
       },
@@ -338,7 +341,8 @@
       "performance": "Light",
       "filename": "AS_VFX_BoomSticker.1.fx",
       "author": "Leon Aquitaine"
-    },{
+    },
+    {
       "credits": {
         "originalName": "Circular audio visualizer",
         "link": "https://www.shadertoy.com/view/tcyGW1",
@@ -350,7 +354,8 @@
       "performance": "Moderate",
       "filename": "AS_VFX_CircularSpectrum.1.fx",
       "author": "Leon Aquitaine"
-    },    {
+    },
+    {
       "credits": {
         "originalName": "[RGR] Hearts",
         "link": "https://www.shadertoy.com/view/ttcBRs",
@@ -362,51 +367,44 @@
       "performance": "Light (estimated)",
       "filename": "AS_VFX_ClairObscur.1.fx",
       "author": "Leon Aquitaine"
-    },    {
+    },
+    {
       "credits": {
-        "originalName": null,
-        "link": null,
-        "author": null,
         "license": "Creative Commons Attribution 4.0 International"
       },
       "name": "AS_VFX_ColorBalancer.1",
       "performance": "Light",
       "filename": "AS_VFX_ColorBalancer.1.fx",
       "author": "Leon Aquitaine"
-    },    {
+    },
+    {
       "credits": {
-        "originalName": null,
-        "link": null,
-        "author": null,
         "license": "Creative Commons Attribution 4.0 International"
       },
       "name": "AS_VFX_DigitalArtifacts.1",
       "performance": "Light",
       "filename": "AS_VFX_DigitalArtifacts.1.fx",
       "author": "Leon Aquitaine"
-    },    {
+    },
+    {
       "credits": {
-        "originalName": null,
-        "link": null,
-        "author": null,
         "license": "Creative Commons Attribution 4.0 International"
       },
       "name": "AS_VFX_DustMotes.1",
       "performance": "Moderate",
       "filename": "AS_VFX_DustMotes.1.fx",
       "author": "Leon Aquitaine"
-    },    {
+    },
+    {
       "credits": {
-        "originalName": null,
-        "link": null,
-        "author": null,
         "license": "Creative Commons Attribution 4.0 International"
       },
       "name": "AS_VFX_MotionTrails.1",
       "performance": "Light",
       "filename": "AS_VFX_MotionTrails.1.fx",
       "author": "Leon Aquitaine"
-    },{
+    },
+    {
       "credits": {
         "originalName": "301's Fire Shader - Remix 3",
         "link": "https://www.shadertoy.com/view/4ttGWM",
@@ -419,7 +417,8 @@
       "performance": "Light",
       "filename": "AS_VFX_RadiantFire.1.fx",
       "author": "Leon Aquitaine"
-    },{
+    },
+    {
       "credits": {
         "originalName": "Heartfelt",
         "link": "https://www.shadertoy.com/view/ltffzl",
@@ -436,54 +435,46 @@
       "performance": "Light",
       "filename": "AS_VFX_RainyWindow.1.fx",
       "author": "Leon Aquitaine"
-    },    {
+    },
+    {
       "credits": {
-        "originalName": null,
-        "link": null,
-        "author": null,
         "license": "Creative Commons Attribution 4.0 International"
       },
       "name": "AS_VFX_ScreenRing.1",
       "performance": "Light",
       "filename": "AS_VFX_ScreenRing.1.fx",
       "author": "Leon Aquitaine"
-    },    {
+    },
+    {
       "credits": {
-        "originalName": null,
-        "link": null,
-        "author": null,
         "license": "Creative Commons Attribution 4.0 International"
       },
       "name": "AS_VFX_SparkleBloom.1",
       "performance": "Moderate",
       "filename": "AS_VFX_SparkleBloom.1.fx",
       "author": "Leon Aquitaine"
-    },    {
+    },
+    {
       "credits": {
-        "originalName": null,
-        "link": null,
-        "author": null,
         "license": "Creative Commons Attribution 4.0 International"
       },
       "name": "AS_VFX_SpectrumRing.1",
       "performance": "Light",
       "filename": "AS_VFX_SpectrumRing.1.fx",
       "author": "Leon Aquitaine"
-    },    {
+    },
+    {
       "credits": {
-        "originalName": null,
-        "link": null,
-        "author": null,
         "license": "Creative Commons Attribution 4.0 International"
       },
       "name": "AS_VFX_StencilMask.1",
       "performance": "Light",
       "filename": "AS_VFX_StencilMask.1.fx",
       "author": "Leon Aquitaine"
-    },    {
+    },
+    {
       "credits": {
         "originalName": "Godot 4: Tilted Grid Effect",
-        "link": null,
         "author": "FencerDevLog",
         "platform": "Godot",
         "support": {
@@ -495,33 +486,28 @@
       "performance": "Light",
       "filename": "AS_VFX_TiltedGrid.1.fx",
       "author": "Leon Aquitaine"
-    },    {
+    },
+    {
       "credits": {
-        "originalName": null,
-        "link": null,
-        "author": null,
         "license": "Creative Commons Attribution 4.0 International"
       },
       "name": "AS_VFX_VUMeter.1",
       "performance": "Light",
       "filename": "AS_VFX_VUMeter.1.fx",
       "author": "Leon Aquitaine"
-    },    {
+    },
+    {
       "credits": {
-        "originalName": null,
-        "link": null,
-        "author": null,
         "license": "Creative Commons Attribution 4.0 International"
       },
       "name": "AS_VFX_WarpDistort.1",
       "performance": "Light",
       "filename": "AS_VFX_WarpDistort.1.fx",
       "author": "Leon Aquitaine"
-    },    {
+    },
+    {
       "credits": {
         "originalName": "Water Surface",
-        "link": null,
-        "author": null,
         "license": "Creative Commons Attribution 4.0 International"
       },
       "name": "AS_VFX_WaterSurface.1",
@@ -530,6 +516,6 @@
       "author": "Leon Aquitaine"
     }
   ],
-  "generated": "2025-05-25",
-  "count": 45
+  "count": 45,
+  "generated": "2025-05-26"
 }

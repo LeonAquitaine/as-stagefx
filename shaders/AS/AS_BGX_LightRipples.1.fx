@@ -1,8 +1,12 @@
 /**
  * AS_BGX_LightRipples.1.fx - Kaleidoscopic rippling light effect
- * Author: Leon Aquitaine (translated from Shadertoy/Pouet)
+ * Author: Leon Aquitaine
  * License: Creative Commons Attribution 4.0 International
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
+ * 
+ * CREDITS:
+ * Based on "Light Ripples" 
+ * Pouet: https://www.pouet.net/prod.php?which=57245
  * 
  * ===================================================================================
  *
@@ -24,14 +28,9 @@
  * IMPLEMENTATION OVERVIEW:
  * 1. Generates distortion patterns based on distance and time
  * 2. Applies channel-specific time offsets for RGB separation
- * 3. Creates cell-centered patterns with customizable intensity
- * 4. Processes color through mathematical or palette-based methods
+ * 3. Creates cell-centered patterns with customizable intensity * 4. Processes color through mathematical or palette-based methods
  * 5. Applies audio reactivity to key parameters
  * 
- * Original Author: Danilo Guanabara (https://www.pouet.net/prod.php?which=57245)
- * Based on shader from: https://www.pouet.net/prod.php?which=57245
- * Adapted for ReShade by Leon Aquitaine
- *
  * ===================================================================================
  */
 

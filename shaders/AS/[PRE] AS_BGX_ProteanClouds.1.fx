@@ -1,6 +1,6 @@
 /**
  * AS_BGX_ProteanClouds.1.fx - Dynamic Volumetric Cloud Formation
- * Author: Leon Aquitaine (based on original by Nimitz/Kali)
+ * Author: Leon Aquitaine
  * License: Creative Commons Attribution 4.0 International
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
  * 

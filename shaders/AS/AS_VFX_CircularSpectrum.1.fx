@@ -1,8 +1,12 @@
 /**
- * AS_VFX_CircularSpectrumDots.1.fx - Circular Audio Spectrum Dots Visualizer
+ * AS_VFX_CircularSpectrum.1.fx - Circular Audio Spectrum Dots Visualizer
  * Author: Leon Aquitaine
  * License: Creative Commons Attribution 4.0 International
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
+ * 
+ * CREDITS:
+ * Based on "Circular audio visualizer" by AIandDesign (2025-05-24)
+ * Shadertoy: https://www.shadertoy.com/view/tcyGW1
  *
  * ===================================================================================
  *
@@ -21,7 +25,8 @@
  * - Position, scale, and depth controls.
  * - Standard AS-StageFX blend modes.
  * - Adjustable bloom effect for glow.
- * * IMPLEMENTATION OVERVIEW:
+ *
+ * IMPLEMENTATION OVERVIEW:
  * 1. Transforms screen coordinates using EffectCenter and EffectScale.
  * 2. Performs depth culling based on EffectDepth.
  * 3. Iterates through each visual "spoke" (angular division).
@@ -33,10 +38,6 @@
  * 8. Renders the dot if the pixel is close to the dot's center, using a circular falloff.
  * 9. Applies a multi-layer bloom effect, also using palette colors.
  * 10. Blends the final visualizer with the scene using standard AS_StageFX blend controls.
- *
- * CREDITS:
- * Inspired by "Circular audio visualizer" by AIandDesign (2025-05-24)
- * https://www.shadertoy.com/view/tcyGW1
  *
  * ===================================================================================
  */

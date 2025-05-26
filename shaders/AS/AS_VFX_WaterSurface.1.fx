@@ -1,8 +1,11 @@
 /**
  * AS_VFX_WaterSurface.1.fx - Depth-based water reflection horizon
- * Author: Leon Aquitaine (Adapted from Godot shader)
+ * Author: Leon Aquitaine
  * License: Creative Commons Attribution 4.0 International
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
+ * 
+ * CREDITS:
+ * Adapted from Godot water shader techniques
  * 
  * ===================================================================================
  *

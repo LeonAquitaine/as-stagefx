@@ -1,16 +1,22 @@
 /**
  * AS_BGX_Constellation.1.fx - Dynamic Cosmic Constellation Pattern
- * Author: Leon Aquitaine (adapted from Art of Code)
+ * Author: Leon Aquitaine
  * License: Creative Commons Attribution 4.0 International
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
+ * 
+ * CREDITS:
+ * Based on 'Old Joseph' by jairoandre (2021-06-01)
+ * Shadertoy: https://www.shadertoy.com/view/slfGzf
+ * Inspired by: Art of Code (YouTube)
  * 
  * ===================================================================================
  *
  * DESCRIPTION:
- * Creates an animated stellar constellation pattern with twinkling stars and connecting Lines.
+ * Creates an animated stellar constellation pattern with twinkling stars and connecting lines.
  * Perfect for cosmic, night sky, or abstract network visualizations with a hand-drawn aesthetic.
- * * FEATURES:
- * - Dynamic constellation Lines with customizable thickness and falloff
+ *
+ * FEATURES:
+ * - Dynamic constellation lines with customizable thickness and falloff
  * - Twinkling star points with adjustable sparkle properties
  * - Procedurally animated line connections
  * - Animated color palette with adjustable parameters
@@ -24,9 +30,6 @@
  * 3. Applies twinkling effects to stars using sine-based animation
  * 4. Combines multiple layers at different scales for a parallax depth effect
  * 5. Processes color based on animated palette parameters
- * 
- * Based on 'Old Joseph' by jairoandre (2021-06-01) - https://www.shadertoy.com/view/slfGzf
- * Inspired by: Art of Code (YouTube)
  * 
  * ===================================================================================
  */

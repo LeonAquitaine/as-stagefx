@@ -4,6 +4,10 @@
  * License: Creative Commons Attribution 4.0 International
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
  * 
+ * CREDITS:
+ * Based on "Logarithmic spirals tweaked" by mrange (2023-04-16)
+ * Shadertoy: https://www.shadertoy.com/view/cdKXDV
+ * 
  * ===================================================================================
  *
  * DESCRIPTION:
@@ -23,10 +27,6 @@
  * 3. Implements sphere ray-marching for volumetric sphere rendering
  * 4. Applies modular polar coordinate mapping for spiral arm generation
  * 5. Uses ACES tone mapping and sRGB conversion for visual quality
- * * CREDITS:
- * Original: "Logarithmic spirals tweaked" by mrange (2023-04-16)
- * Source: https://www.shadertoy.com/view/cdKXDV
- * Adapted for ReShade with enhanced controls and AS StageFX framework integration.
  * 
  * ===================================================================================
  */

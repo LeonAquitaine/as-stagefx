@@ -21,7 +21,7 @@
  * 2. Maps noise to a user-defined color gradient
  * 3. Modulates parameters with audio (Listeningway)
  * 4. Blends with scene using standard blend modes
- *
+ * 
  * ===================================================================================
  */
 

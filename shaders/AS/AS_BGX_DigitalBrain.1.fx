@@ -1,9 +1,12 @@
 /**
  * AS_BGX_DigitalBrain.1.fx - Abstract digital brain visualization with animated Voronoi patterns
- * Author: Leon Aquitaine (shader port), Original GLSL by srtuss (2013)
- * Original ShaderToy: https://www.shadertoy.com/view/4sl3Dr
+ * Author: Leon Aquitaine
  * License: Creative Commons Attribution 4.0 International
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
+ * 
+ * CREDITS:
+ * Original: "Digital Brain" by srtuss (2013)
+ * Source: https://www.shadertoy.com/view/4sl3Dr
  * 
  * ===================================================================================
  *
@@ -11,7 +14,9 @@
  * Creates an abstract visualization of a "digital brain" with evolving Voronoi patterns and neural-like
  * connections. The effect simulates an organic electronic network with dynamic light paths that mimic
  * neural activity in a stylized, technological manner.
- * * FEATURES: * - Dynamic Voronoi-based pattern generation that mimics neural networks
+ *
+ * FEATURES:
+ * - Dynamic Voronoi-based pattern generation that mimics neural networks
  * - Animated "electrical" pulses that simulate synaptic activity
  * - Color modulation based on noise texture for organic variation
  * - Advanced vignette controls with shape adjustment
@@ -19,6 +24,8 @@
  * - Classic and texture-based coloring options
  * - Extensive animation and pattern controls for artistic expression
  * - Customizable noise texture for different pattern styles
+ * - Audio reactivity for dynamic parameter adjustments
+ * - Resolution-independent rendering maintains consistent appearance
  *
  * IMPLEMENTATION OVERVIEW:
  * 1. Generates layered Voronoi patterns with multiple octaves
@@ -26,6 +33,7 @@
  * 3. Uses noise texture to modulate color expression
  * 4. Combines multiple layers with different frequencies for organic feel
  * 5. Applies vignetting and intensity modulation for final output
+ * 6. Implements audio reactivity for various parameters
  *
  * ===================================================================================
  */

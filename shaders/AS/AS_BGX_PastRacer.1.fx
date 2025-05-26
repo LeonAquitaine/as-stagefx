@@ -1,9 +1,13 @@
 /**
  * AS_BGX_PastRacer.1.fx - Abstract procedural raymarching with audio reactivity
- * Author: Leon Aquitaine (original GLSL by jetlab)
- * Based on: "Outline 2020 Freestyle Live code" by NuSan (2020-05-23) - https://www.shadertoy.com/view/tsBBzG
+ * Author: Leon Aquitaine
  * License: Creative Commons Attribution 4.0 International
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
+ * 
+ * CREDITS:
+ * Based on "past racer" by jetlab
+ * Additional inspiration from "Outline 2020 Freestyle Live code" by NuSan
+ * Shadertoy: https://www.shadertoy.com/view/tsBBzG
  * 
  * ===================================================================================
  *
