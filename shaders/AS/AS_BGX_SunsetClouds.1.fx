@@ -47,6 +47,12 @@
 #include "AS_Utils.1.fxh" 
 
 // ============================================================================
+// COMPATIBILITY MACROS
+// ============================================================================
+// Approximation of tanh for compatibility with Shader Model 5 and below
+#define AS_TANH(x) ((2.0/(1.0+exp(-2.0*(x)))) - 1.0)
+
+// ============================================================================
 // TUNABLE CONSTANTS (for UI limits and defaults)
 // ============================================================================
 
@@ -163,19 +169,19 @@ float4 AS_BGX_SunsetClouds_PS(float4 vpos : SV_Position, float2 texcoord : TEXCO
     float2 iResolution = float2(BUFFER_WIDTH, BUFFER_HEIGHT);
     float2 fragCoord = vpos.xy;
 
-    float iter_i = 0.0;
+    int i = 0;
     float depth_z = 0.0;
     float step_dist_d_loop;
     float current_march_step_d;
-    float signed_dist_s;
+    float signed_dist_s;    float4 outputColor = float4(0.0, 0.0, 0.0, 0.0);
 
-    float4 outputColor = float4(0.0, 0.0, 0.0, 0.0);
-
+    // Maintain consistent aspect ratio by using screen width for normalization of both X and Y components
+    float aspectRatio = iResolution.x / iResolution.y;
     float3 rayDir = normalize(float3( (2.0 * fragCoord.x - iResolution.x),
-                                      (iResolution.y - 2.0 * fragCoord.y),
-                                      -iResolution.y) );
+                                      (iResolution.x - 2.0 * fragCoord.y * aspectRatio),
+                                      -iResolution.x) );
 
-    for (iter_i = 0.0; iter_i < CloudDetail; iter_i++) // Using CloudDetail UI
+    for (i = 0; i < CloudDetail; i++) // Using CloudDetail UI
     {
         float3 p = depth_z * rayDir;
         step_dist_d_loop = TurbulenceScaleStart; // Using TurbulenceScaleStart UI
@@ -194,7 +200,7 @@ float4 AS_BGX_SunsetClouds_PS(float4 vpos : SV_Position, float2 texcoord : TEXCO
                        * exp(signed_dist_s / AdvColorExpSDFMod) / current_march_step_d; // Using Advanced UI
     }
 
-    outputColor = tanh(outputColor * outputColor / Exposure); // Using Exposure UI
+    outputColor = AS_TANH(outputColor * outputColor / Exposure); // Using Exposure UI with compatible tanh approximation
     outputColor.a = 1.0;
 
     return outputColor;
