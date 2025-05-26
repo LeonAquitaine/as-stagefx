@@ -381,7 +381,7 @@ float4 PS_CircularSpectrumDots(float4 vpos : SV_Position, float2 texcoord : TexC
 // TECHNIQUE
 // ============================================================================
 technique AS_VFX_CircularSpectrum <
-    ui_name = "[AS] VFX: Circular Spectrum";
+    ui_label = "[AS] VFX: Circular Spectrum";
     ui_tooltip = "Displays a circular audio visualizer as dots of light using ListeningWay FreqBands and AS_Palette. Full AS-StageFX controls.";
 >
 {
