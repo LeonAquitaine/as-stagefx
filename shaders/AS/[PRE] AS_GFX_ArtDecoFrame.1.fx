@@ -283,12 +283,19 @@ uniform int AudioTarget < ui_type = "combo"; ui_label = "Audio Target"; ui_toolt
     ui_items = "None\0Gold Brightness\0Gold Noise Intensity\0Gold Fresnel Power\0Gold Surface Detail\0"; > = AUDIO_TARGET_DEFAULT;
 
 // ============================================================================
+// POSITION & SCALE CONTROLS
+// ============================================================================
+AS_POSITION_SCALE_UI(Position, Scale)
+
+// ============================================================================
 // PALETTE SYSTEM  
 // ============================================================================
 AS_PALETTE_SELECTION_UI(PalettePreset, "Color Palette", AS_PALETTE_METAL, "Palette & Style")
 uniform float PaletteColorBlend < ui_type = "slider"; ui_label = "Palette Blend"; ui_tooltip = "Controls how much palette colors affect the gold material"; ui_min = PALETTE_BLEND_MIN; ui_max = PALETTE_BLEND_MAX; ui_category = "Palette & Style"; > = PALETTE_BLEND_DEFAULT;
 
-// Stage Controls
+// ============================================================================
+// STAGE CONTROLS
+// ============================================================================
 AS_STAGEDEPTH_UI(EffectDepth)
 AS_ROTATION_UI(SnapRotation, FineRotation)
 
@@ -297,23 +304,35 @@ AS_BLENDMODE_UI_DEFAULT(BlendMode, AS_BLEND_NORMAL)
 AS_BLENDAMOUNT_UI(BlendAmount)
 
 // === Coordinate & SDF Helpers ===
-float2 SquareSpaceUV(float2 uv) {
-    float bWidth = BUFFER_WIDTH;
-    float bHeight = BUFFER_HEIGHT;
-    float2 screenDimensions = float2(bWidth, bHeight);
-    float2 screenPos = uv * screenDimensions;
-    float minDim = min(bWidth, bHeight);
-    float2 screenCenter = ARTDECO_SCREEN_CENTER_FACTOR * screenDimensions;
-    float2 centeredPos = screenPos - screenCenter;
-    if (abs(minDim) < ARTDECO_EPSILON) { return float2(0.0, 0.0); }
-    float2 scaledPos = centeredPos / minDim;
-    return scaledPos * ARTDECO_SQUARE_SPACE_SCALE;
-}
-
-float2 rotate(float2 uv, float angle_rad) {
-    float s = sin(angle_rad);
-    float c = cos(angle_rad);
-    return float2(uv.x * c - uv.y * s, uv.x * s + uv.y * c);
+// Helper function to transform coordinates according to the Implementation Guide rules
+float2 AS_getArtDecoCoords(float2 texcoord, float2 position, float scale, float rotation) {
+    // Step 1: Convert to normalized central square [-1,1] with aspect ratio correction
+    float aspectRatio = ReShade::AspectRatio;
+    float2 uv_norm;
+    if (aspectRatio >= 1.0) {
+        uv_norm.x = (texcoord.x - 0.5) * 2.0 * aspectRatio;
+        uv_norm.y = (texcoord.y - 0.5) * 2.0;
+    } else {
+        uv_norm.x = (texcoord.x - 0.5) * 2.0;
+        uv_norm.y = (texcoord.y - 0.5) * 2.0 / aspectRatio;
+    }
+    
+    // Step 2: Apply global rotation around screen center
+    if (abs(rotation) > AS_EPSILON) {
+        float sinRot = sin(-rotation), cosRot = cos(-rotation);
+        uv_norm = float2(
+            uv_norm.x * cosRot - uv_norm.y * sinRot,
+            uv_norm.x * sinRot + uv_norm.y * cosRot
+        );
+    }
+    
+    // Step 3: Apply position and scale directly in normalized central square space
+    // Position is applied with correct -1.5 to +1.5 range mapping
+    uv_norm.x = (uv_norm.x / scale) - position.x;  
+    uv_norm.y = (uv_norm.y / scale) + position.y;  // Note: Y is inverted in screen space
+    
+    // Step 4: Scale to Art Deco coordinate space (maintains aspect ratio independence)
+    return uv_norm * ARTDECO_SQUARE_SPACE_SCALE;
 }
 
 float sdBox(float2 p, float2 b) { // p is relative to box center, b is half-size
@@ -463,7 +482,7 @@ float4 drawSolidElementWithTramlines(
     float detail_pad, float detail_lw, float3 fill_c, float3 line_c                      
 )
 {
-    float2 p_eval = is_diamond ? abs(rotate(p, AS_QUARTER_PI)) : p; 
+    float2 p_eval = is_diamond ? abs(AS_rotate2D(p, AS_QUARTER_PI)) : p; 
     float3 final_color = fill_c; 
     float tramlines_total_alpha = 0.0;
     float current_offset_from_outer_edge = 0.0;
@@ -503,7 +522,7 @@ float4 drawComplexDiamond(
 )
 {
     float2 diamond_outer_half_size = float2(diamond_scalar_half_size, diamond_scalar_half_size);
-    float2 p_eval = abs(rotate(p_orig, AS_QUARTER_PI)); 
+    float2 p_eval = abs(AS_rotate2D(p_orig, AS_QUARTER_PI)); 
     float3 final_color = fill_c;
     float tramlines_total_alpha = 0.0;
     float current_offset_main = 0.0;
@@ -564,14 +583,11 @@ float4 drawFan(float2 p_screen, float2 fan_origin_uv, float y_direction_multipli
 float4 PS_Main(float4 pos : SV_Position, float2 uv : TEXCOORD) : SV_Target
 {
     float4 output_color = tex2D(ReShade::BackBuffer, uv);
-      // Apply rotation if enabled
-    float2 workingUV = uv;
-    if (SnapRotation != 0 || FineRotation != 0.0) {
-        float totalRotation = (SnapRotation * ARTDECO_SNAP_ROTATION_STEP + FineRotation) * ARTDECO_DEGREES_TO_RADIANS;
-        workingUV = AS_rotate2D(uv - AS_HALF, totalRotation) + AS_HALF;
-    }
+      // Calculate rotation using AS standard function
+    float totalRotation = AS_getRotationRadians(SnapRotation, FineRotation);
     
-    float2 sq_base = SquareSpaceUV(workingUV);
+    // Get Art Deco coordinates using AS standard transformation with Position and Scale
+    float2 sq_base = AS_getArtDecoCoords(uv, Position, Scale, totalRotation);
 
     // Calculate Main Diamond's INNER void for precise fan clipping
     float2 main_diamond_outer_hs_for_clip_calc = float2(DiamondScalarSize, DiamondScalarSize);
@@ -585,20 +601,20 @@ float4 PS_Main(float4 pos : SV_Position, float2 uv : TEXCOORD) : SV_Target
         }
         main_diamond_inner_void_hs_for_clip = max(0.0.xx, main_diamond_outer_hs_for_clip_calc - temp_offset_for_diamond_clip);
     }    float2 fan_clip_mask_hs = main_diamond_inner_void_hs_for_clip + BorderThickness * AS_HALF;
-    float main_diamond_clipping_sdf = sdBox(abs(rotate(sq_base, AS_QUARTER_PI)), fan_clip_mask_hs);
-    float diamond_clip_mask = 1.0 - smoothstep(0.0, ARTDECO_BORDER_EDGE, main_diamond_clipping_sdf);    float effective_fan_length = FanLength;
+    float main_diamond_clipping_sdf = sdBox(abs(AS_rotate2D(sq_base, AS_QUARTER_PI)), fan_clip_mask_hs);
+    float diamond_clip_mask = 1.0 - smoothstep(0.0, ARTDECO_BORDER_EDGE, main_diamond_clipping_sdf);float effective_fan_length = FanLength;
     if (FanEnable && !FansBehindDiamond) { effective_fan_length += BorderThickness * AS_HALF; }
 
     // --- Render Order ---    // 1. Fans if "Behind Diamond"
     if (FanEnable && FansBehindDiamond) {
         float top_fan_y_dir = MirrorFansGlobally ? -1.0 : 1.0;
         float bottom_fan_y_dir = MirrorFansGlobally ? 1.0 : -1.0;
-        float3 goldLineColor = GenerateProceduralGold(workingUV, false);        float4 upper_fan = drawFan(sq_base, float2(0.0, FanYOffset), top_fan_y_dir, FanLineCount, FanSpreadDegrees * ARTDECO_DEGREES_TO_RADIANS, FanBaseRadius, FanLength, FanLineThickness, goldLineColor);
+        float3 goldLineColor = GenerateProceduralGold(uv, false);float4 upper_fan = drawFan(sq_base, float2(0.0, FanYOffset), top_fan_y_dir, FanLineCount, FanSpreadDegrees * ARTDECO_DEGREES_TO_RADIANS, FanBaseRadius, FanLength, FanLineThickness, goldLineColor);
         output_color.rgb = lerp(output_color.rgb, upper_fan.rgb, upper_fan.a);
         float4 lower_fan = drawFan(sq_base, float2(0.0, -FanYOffset), bottom_fan_y_dir, FanLineCount, FanSpreadDegrees * ARTDECO_DEGREES_TO_RADIANS, FanBaseRadius, FanLength, FanLineThickness, goldLineColor);
         output_color.rgb = lerp(output_color.rgb, lower_fan.rgb, lower_fan.a);    }    // 2. Main Diamond
     float3 fillColor = FrameFillColorBackup; // Keep original dark background
-    float3 goldLineColor = GenerateProceduralGold(workingUV, false); // Only lines get gold
+    float3 goldLineColor = GenerateProceduralGold(uv, false); // Only lines get gold
     float4 diamond_elem = drawComplexDiamond(sq_base, DiamondScalarSize, fillColor, goldLineColor, NumTramlines, TramlineIndividualThickness, BorderThickness, TramlineSpacing, DetailPadding, DetailLineWidth);
     output_color.rgb = lerp(output_color.rgb, diamond_elem.rgb, diamond_elem.a);
 
@@ -630,14 +646,14 @@ float4 PS_Main(float4 pos : SV_Position, float2 uv : TEXCOORD) : SV_Target
     if (FanEnable && !FansBehindDiamond) { 
         float top_fan_y_dir = MirrorFansGlobally ? -1.0 : 1.0;
         float bottom_fan_y_dir = MirrorFansGlobally ? 1.0 : -1.0;
-        float3 goldLineColorFans = GenerateProceduralGold(workingUV, false);        float4 upper_fan = drawFan(sq_base, float2(0.0, FanYOffset), top_fan_y_dir, FanLineCount, FanSpreadDegrees * ARTDECO_DEGREES_TO_RADIANS, FanBaseRadius, effective_fan_length, FanLineThickness, goldLineColorFans);
+        float3 goldLineColorFans = GenerateProceduralGold(uv, false);float4 upper_fan = drawFan(sq_base, float2(0.0, FanYOffset), top_fan_y_dir, FanLineCount, FanSpreadDegrees * ARTDECO_DEGREES_TO_RADIANS, FanBaseRadius, effective_fan_length, FanLineThickness, goldLineColorFans);
         upper_fan.a *= diamond_clip_mask; 
         output_color.rgb = lerp(output_color.rgb, upper_fan.rgb, upper_fan.a);
         float4 lower_fan = drawFan(sq_base, float2(0.0, -FanYOffset), bottom_fan_y_dir, FanLineCount, FanSpreadDegrees * ARTDECO_DEGREES_TO_RADIANS, FanBaseRadius, effective_fan_length, FanLineThickness, goldLineColorFans);lower_fan.a *= diamond_clip_mask; 
         output_color.rgb = lerp(output_color.rgb, lower_fan.rgb, lower_fan.a);
     }    // === PALETTE INTEGRATION ===
     // Use gold surface noise as palette coordinate for cohesive color integration
-    float2 scaledUV = workingUV * ((float)BUFFER_HEIGHT / ARTDECO_PALETTE_RESOLUTION_BASE);
+    float2 scaledUV = uv * ((float)BUFFER_HEIGHT / ARTDECO_PALETTE_RESOLUTION_BASE);
     float paletteNoise = AS_Fbm2D(scaledUV * NoiseScale, ARTDECO_PALETTE_NOISE_OCTAVES, ARTDECO_PALETTE_NOISE_LACUNARITY, ARTDECO_PALETTE_NOISE_GAIN);
     float3 paletteColor = AS_getInterpolatedColor(PalettePreset, paletteNoise);
     
