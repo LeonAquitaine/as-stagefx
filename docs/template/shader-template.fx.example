@@ -1,0 +1,265 @@
+/**
+ * AS_[TYPECODE]_[EffectName].[Version].fx - [Brief Description]
+ * Author: [Author Name]
+ * License: Creative Commons Attribution 4.0 International
+ * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
+ * 
+ * CREDITS (Optional):
+ * Based on "[Original Title]" by [Original Author]
+ * [Platform]: [URL]
+ * 
+ * ===================================================================================
+ *
+ * DESCRIPTION:
+ * [2-3 sentences describing what the shader does and its primary purpose.
+ * This should clearly explain the visual effect and when it would be used.]
+ *
+ * FEATURES:
+ * - [Bullet point list of key capabilities]
+ * - [Each point should highlight a distinct feature]
+ * - [Include audio reactivity, customization options, etc.]
+ * - [Focus on user-facing features]
+ *
+ * IMPLEMENTATION OVERVIEW:
+ * 1. [Numbered steps explaining how the effect works technically]
+ * 2. [Brief explanation of the algorithm or approach]
+ * 3. [Mention key techniques or optimizations]
+ * 4. [Keep technical but understandable]
+ *
+ * ===================================================================================
+ */
+
+// ============================================================================
+// TECHNIQUE GUARD - Prevents duplicate loading of the same shader
+// ============================================================================
+#ifndef __AS_[TYPECODE]_[EffectName]_[Version]_fx
+#define __AS_[TYPECODE]_[EffectName]_[Version]_fx
+
+// ============================================================================
+// INCLUDES
+// ============================================================================
+#include "ReShade.fxh"
+#include "AS_Utils.1.fxh"
+// Optional includes based on shader needs:
+// #include "AS_Palette.1.fxh"     // For color palette support
+// #include "AS_Noise.1.fxh"       // For advanced noise functions
+// #include "AS_Perspective.1.fxh" // For 3D perspective effects
+
+// ============================================================================
+// NAMESPACE (Optional - use for complex shaders to avoid naming conflicts)
+// ============================================================================
+namespace AS[EffectName] {
+
+// ============================================================================
+// TUNABLE CONSTANTS (Defaults and Ranges)
+// ============================================================================
+
+// --- Pattern/Effect Parameters ---
+static const float PARAM_NAME_MIN = 0.0;
+static const float PARAM_NAME_MAX = 10.0;
+static const float PARAM_NAME_STEP = 0.1;
+static const float PARAM_NAME_DEFAULT = 5.0;
+
+// --- Color Constants ---
+static const float3 BASE_COLOR_DEFAULT = float3(1.0, 1.0, 1.0);
+
+// --- Animation Constants ---
+static const float ANIMATION_SPEED_MIN = AS_ANIMATION_SPEED_MIN;
+static const float ANIMATION_SPEED_MAX = AS_ANIMATION_SPEED_MAX;
+static const float ANIMATION_SPEED_DEFAULT = 1.0;
+
+// --- Audio Constants ---
+static const int AUDIO_TARGET_NONE = 0;
+static const int AUDIO_TARGET_PARAM1 = 1;
+static const int AUDIO_TARGET_PARAM2 = 2;
+static const float AUDIO_MULTIPLIER_DEFAULT = 1.0;
+static const float AUDIO_MULTIPLIER_MAX = 2.0;
+
+// --- Internal Constants ---
+static const float INTERNAL_CALCULATION_FACTOR = 0.001;
+
+// ============================================================================
+// TEXTURE DECLARATIONS (Optional - for texture-based effects)
+// ============================================================================
+/*
+// Example texture implementation with preprocessor customization
+#ifndef EFFECT_TEXTURE_PATH
+#define EFFECT_TEXTURE_PATH "default_texture.png"
+#endif
+
+texture EffectTexture < source = EFFECT_TEXTURE_PATH; ui_label = "Effect Texture"; > 
+{ Width = 256; Height = 256; Format = RGBA8; };
+
+sampler EffectTextureSampler { 
+    Texture = EffectTexture; 
+    AddressU = REPEAT; 
+    AddressV = REPEAT; 
+    MipFilter = LINEAR; 
+    MinFilter = LINEAR; 
+    MagFilter = LINEAR; 
+};
+*/
+
+// ============================================================================
+// UI DECLARATIONS (Organized in Standard Order)
+// ============================================================================
+
+// --- 1. Tunable Constants ---
+uniform float EffectIntensity < ui_type = "slider"; ui_label = "Effect Intensity"; ui_tooltip = "Controls the overall intensity of the effect."; ui_min = 0.0; ui_max = 2.0; ui_step = 0.01; ui_category = "Effect"; > = 1.0;
+
+// --- 2. Palette & Style (if using AS_Palette system) ---
+/*
+AS_PALETTE_SELECTION_UI(EffectPalette, "Color Palette", AS_PALETTE_FIRE, "Colors")
+AS_DECLARE_CUSTOM_PALETTE(Effect_, "Colors")
+uniform float PalettePosition < ui_type = "slider"; ui_label = "Palette Position"; ui_tooltip = "Position along the color palette."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Colors"; > = 0.5;
+*/
+
+// --- 3. Effect-Specific Parameters ---
+uniform float PatternScale < ui_type = "slider"; ui_label = "Pattern Scale"; ui_tooltip = "Controls the scale of the pattern."; ui_min = PARAM_NAME_MIN; ui_max = PARAM_NAME_MAX; ui_step = PARAM_NAME_STEP; ui_category = "Pattern"; > = PARAM_NAME_DEFAULT;
+
+// --- 4. Animation Controls ---
+AS_ANIMATION_UI(AnimationSpeed, AnimationKeyframe, "Animation")
+
+// --- 5. Audio Reactivity ---
+AS_AUDIO_UI(Effect_AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
+AS_AUDIO_MULT_UI(Effect_AudioMultiplier, "Audio Intensity", AUDIO_MULTIPLIER_DEFAULT, AUDIO_MULTIPLIER_MAX, "Audio Reactivity")
+uniform int Effect_AudioTarget < ui_type = "combo"; ui_label = "Audio Target Parameter"; ui_items = "None\0Effect Intensity\0Pattern Scale\0Animation Speed\0"; ui_category = "Audio Reactivity"; > = AUDIO_TARGET_NONE;
+
+// --- 6. Stage/Position Controls ---
+AS_POSITION_SCALE_UI(EffectCenter, EffectScale)
+AS_STAGEDEPTH_UI(EffectDepth)
+AS_ROTATION_UI(EffectRotationSnap, EffectRotationFine)
+
+// --- 7. Final Mix (Blend) ---
+AS_BLENDMODE_UI_DEFAULT(BlendMode, AS_BLEND_NORMAL)
+AS_BLENDAMOUNT_UI(BlendStrength)
+
+// --- 8. Debug Controls ---
+AS_DEBUG_UI("Off\0Show Audio Reactivity\0Show Coordinates\0")
+
+// ============================================================================
+// HELPER FUNCTIONS (Optional)
+// ============================================================================
+
+// Example helper function for coordinate transformation
+float2 transformCoordinates(float2 texcoord, float2 center, float scale, float rotation) {
+    // Center and apply aspect ratio correction
+    float2 coords = (texcoord - AS_HALF) * 2.0;
+    coords.x *= ReShade::AspectRatio;
+    
+    // Apply rotation around center
+    float sinRot, cosRot;
+    sincos(-rotation, sinRot, cosRot); // Negative for clockwise rotation
+    coords = float2(
+        coords.x * cosRot - coords.y * sinRot,
+        coords.x * sinRot + coords.y * cosRot
+    );
+    
+    // Apply position and scale
+    coords = coords / scale - center;
+    
+    return coords;
+}
+
+// Example helper function for audio-reactive parameter modification
+float applyAudioReactivity(float baseValue, int targetParam, float audioMultiplier, int audioSource, float scaleFactor = 1.0) {
+    if (Effect_AudioTarget != targetParam) return baseValue;
+    
+    float audioValue = AS_applyAudioReactivity(1.0, audioSource, audioMultiplier, true);
+    return baseValue * audioValue * scaleFactor;
+}
+
+// ============================================================================
+// PIXEL SHADER
+// ============================================================================
+float4 EffectPS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD) : SV_TARGET {
+    // Get original pixel color and depth
+    float4 originalColor = tex2D(ReShade::BackBuffer, texcoord);
+    float depth = ReShade::GetLinearizedDepth(texcoord);
+    
+    // Apply depth test (skip effect if object is closer than effect depth)
+    if (depth < EffectDepth) {
+        return originalColor;
+    }
+    
+    // --- AUDIO REACTIVITY APPLICATION ---
+    float effectIntensity = applyAudioReactivity(EffectIntensity, AUDIO_TARGET_PARAM1, Effect_AudioMultiplier, Effect_AudioSource);
+    float patternScale = applyAudioReactivity(PatternScale, AUDIO_TARGET_PARAM2, Effect_AudioMultiplier, Effect_AudioSource);
+    
+    // --- ANIMATION TIME CALCULATION ---
+    float time = AS_getAnimationTime(AnimationSpeed, AnimationKeyframe);
+    
+    // --- COORDINATE TRANSFORMATION ---
+    float rotation = AS_getRotationRadians(EffectRotationSnap, EffectRotationFine);
+    float2 coords = transformCoordinates(texcoord, EffectCenter, EffectScale, rotation);
+    
+    // --- MAIN EFFECT CALCULATION ---
+    // [Implement your main effect algorithm here]
+    // Example: Simple gradient based on distance from center
+    float distance = length(coords);
+    float effectValue = 1.0 - smoothstep(0.0, 1.0, distance);
+    effectValue *= effectIntensity;
+    
+    // --- COLOR GENERATION ---
+    // Option 1: Direct color calculation
+    float3 effectColor = float3(effectValue, effectValue * 0.5, effectValue * 0.8);
+    
+    // Option 2: Palette-based color (if using AS_Palette)
+    /*
+    float3 effectColor;
+    if (EffectPalette == AS_PALETTE_CUSTOM) {
+        effectColor = AS_GET_INTERPOLATED_CUSTOM_COLOR(Effect_, effectValue);
+    } else {
+        effectColor = AS_getInterpolatedColor(EffectPalette, effectValue);
+    }
+    */
+    
+    // Option 3: Texture-based color (if using textures)
+    /*
+    float2 textureUV = coords * 0.5 + 0.5; // Transform to [0,1] range
+    float3 textureColor = tex2D(EffectTextureSampler, textureUV).rgb;
+    float3 effectColor = textureColor * effectValue;
+    */
+    
+    // --- FINAL BLENDING ---
+    float4 effectPixel = float4(effectColor, effectValue);
+    float3 blendedColor = AS_applyBlend(effectPixel.rgb, originalColor.rgb, BlendMode);
+    float4 finalColor = float4(blendedColor, 1.0);
+    finalColor = lerp(originalColor, finalColor, BlendStrength);
+    
+    // --- DEBUG OVERLAY ---
+    if (DebugMode != AS_DEBUG_OFF) {
+        float4 debugOverlay = float4(0, 0, 0, 0);
+        float2 debugCenter = float2(0.1, 0.1);
+        float debugRadius = 0.08;
+        
+        if (DebugMode == 1) { // Show Audio Reactivity
+            float audioValue = AS_applyAudioReactivity(1.0, Effect_AudioSource, Effect_AudioMultiplier, true);
+            debugOverlay = float4(audioValue, audioValue, audioValue, 1.0);
+        } else if (DebugMode == 2) { // Show Coordinates
+            debugOverlay = float4(abs(coords), 0.0, 1.0);
+        }
+        
+        if (length(texcoord - debugCenter) < debugRadius) {
+            return debugOverlay;
+        }
+    }
+    
+    return finalColor;
+}
+
+} // namespace AS[EffectName] (if using namespace)
+
+// ============================================================================
+// TECHNIQUE
+// ============================================================================
+technique AS_[TYPECODE]_[EffectName] < ui_label="[AS] [TYPECODE]: [Effect Display Name]"; ui_tooltip="[Brief description of what this effect does]."; >
+{
+    pass
+    {
+        VertexShader = PostProcessVS;
+        PixelShader = AS[EffectName]::EffectPS; // Include namespace if used, otherwise just EffectPS
+    }
+}
+
+#endif // __AS_[TYPECODE]_[EffectName]_[Version]_fx
