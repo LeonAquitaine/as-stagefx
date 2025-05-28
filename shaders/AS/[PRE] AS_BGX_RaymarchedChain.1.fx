@@ -52,91 +52,142 @@
 // TUNABLE CONSTANTS & UI DEFINITIONS
 // ============================================================================
 
+// Pattern Constants
+#define PATH_SCALE_MIN 0.1
+#define PATH_SCALE_MAX 5.0
+#define PATH_SCALE_DEFAULT 1.0
+#define PATH_FREQ1_MIN 0.1
+#define PATH_FREQ1_MAX 3.0
+#define PATH_FREQ1_DEFAULT 1.0
+#define PATH_FREQ2_MIN 0.1
+#define PATH_FREQ2_MAX 3.0
+#define PATH_FREQ2_DEFAULT 1.0
+#define TORUS_MAIN_RADIUS_MIN 0.1
+#define TORUS_MAIN_RADIUS_MAX 2.0
+#define TORUS_MAIN_RADIUS_DEFAULT 0.5
+#define TORUS_TUBE_RADIUS_MIN 0.01
+#define TORUS_TUBE_RADIUS_MAX 0.5
+#define TORUS_TUBE_RADIUS_DEFAULT 0.1
+#define CHAIN_Z_SCALE_MIN 0.1
+#define CHAIN_Z_SCALE_MAX 5.0
+#define CHAIN_Z_SCALE_DEFAULT 1.0
+#define CHAIN_Z_OFFSET_MULT_MIN 0.0
+#define CHAIN_Z_OFFSET_MULT_MAX 3.0
+#define CHAIN_Z_OFFSET_MULT_DEFAULT 1.0
+
+// Color Constants
+#define COLOR_BASE_R_DEFAULT 1.0
+#define COLOR_BASE_G_DEFAULT 0.5
+#define COLOR_BASE_B_DEFAULT 0.0
+#define COLOR_ITER_MULT_MIN 0.0
+#define COLOR_ITER_MULT_MAX 2.0
+#define COLOR_ITER_MULT_DEFAULT 0.5
+#define COLOR_ITER_ADD_MIN -1.0
+#define COLOR_ITER_ADD_MAX 2.0
+#define COLOR_ITER_ADD_DEFAULT 0.0
+#define LIGHT_DOT_PRODUCT_MULT_MIN 0.0
+#define LIGHT_DOT_PRODUCT_MULT_MAX 2.0
+#define LIGHT_DOT_PRODUCT_MULT_DEFAULT 1.0
+#define LIGHT_AMBIENT_MIN 0.0
+#define LIGHT_AMBIENT_MAX 1.0
+#define LIGHT_AMBIENT_DEFAULT 0.1
+#define FINAL_COLOR_POW_MIN 0.1
+#define FINAL_COLOR_POW_MAX 3.0
+#define FINAL_COLOR_POW_DEFAULT 1.0
+#define FINAL_COLOR_MULT_MIN 0.0
+#define FINAL_COLOR_MULT_MAX 5.0
+#define FINAL_COLOR_MULT_DEFAULT 1.0
+#define FINAL_COLOR_SCALE_MIN 0.0
+#define FINAL_COLOR_SCALE_MAX 3.0
+#define FINAL_COLOR_SCALE_DEFAULT 1.0
+#define FINAL_COLOR_SUB_MIN 0.0
+#define FINAL_COLOR_SUB_MAX 2.0
+#define FINAL_COLOR_SUB_DEFAULT 0.0
+
+// Raymarching Constants
+#define RAYMARCH_STEPS_MIN 8
+#define RAYMARCH_STEPS_MAX 256
+#define RAYMARCH_STEPS_DEFAULT 64
+#define RAYMARCH_FAR_MIN 1.0
+#define RAYMARCH_FAR_MAX 20.0
+#define RAYMARCH_FAR_DEFAULT 10.0
+#define RAYMARCH_STEP_SCALE_MIN 0.1
+#define RAYMARCH_STEP_SCALE_MAX 2.0
+#define RAYMARCH_STEP_SCALE_DEFAULT 0.8
+#define RAYMARCH_HIT_THRESHOLD_MIN 0.00001
+#define RAYMARCH_HIT_THRESHOLD_MAX 0.01
+#define RAYMARCH_HIT_THRESHOLD_DEFAULT 0.001
+#define MAP_ITER_SCALE_MIN 0.5
+#define MAP_ITER_SCALE_MAX 3.0
+#define MAP_ITER_SCALE_DEFAULT 1.5
+#define MAP_ITER_SHRINK_MIN 0.1
+#define MAP_ITER_SHRINK_MAX 1.0
+#define MAP_ITER_SHRINK_DEFAULT 0.8
+#define MAP_ITERATIONS_MIN 1
+#define MAP_ITERATIONS_MAX 8
+#define MAP_ITERATIONS_DEFAULT 4
+
+// Animation Constants
+#define TIME_MULTIPLIER_MIN 0.0
+#define TIME_MULTIPLIER_MAX 5.0
+#define TIME_MULTIPLIER_DEFAULT 1.0
+
+// ============================================================================
+// UI CONTROLS
+// ============================================================================
+
+// Pattern Controls
+uniform float PathScale < ui_type = "slider"; ui_label = "Path Scale"; ui_min = PATH_SCALE_MIN; ui_max = PATH_SCALE_MAX; ui_category = "Pattern"; > = PATH_SCALE_DEFAULT;
+uniform float PathFreq1 < ui_type = "slider"; ui_label = "Path Frequency 1 (Sin)"; ui_min = PATH_FREQ1_MIN; ui_max = PATH_FREQ1_MAX; ui_category = "Pattern"; > = PATH_FREQ1_DEFAULT;
+uniform float PathFreq2 < ui_type = "slider"; ui_label = "Path Frequency 2 (Cos)"; ui_min = PATH_FREQ2_MIN; ui_max = PATH_FREQ2_MAX; ui_category = "Pattern"; > = PATH_FREQ2_DEFAULT;
+uniform float TorusMainRadius < ui_type = "slider"; ui_label = "Torus Main Radius"; ui_min = TORUS_MAIN_RADIUS_MIN; ui_max = TORUS_MAIN_RADIUS_MAX; ui_category = "Pattern"; > = TORUS_MAIN_RADIUS_DEFAULT;
+uniform float TorusTubeRadius < ui_type = "slider"; ui_label = "Torus Tube Radius"; ui_min = TORUS_TUBE_RADIUS_MIN; ui_max = TORUS_TUBE_RADIUS_MAX; ui_category = "Pattern"; > = TORUS_TUBE_RADIUS_DEFAULT;
+uniform float ChainZScale < ui_type = "slider"; ui_label = "Chain Z Scale"; ui_min = CHAIN_Z_SCALE_MIN; ui_max = CHAIN_Z_SCALE_MAX; ui_category = "Pattern"; > = CHAIN_Z_SCALE_DEFAULT;
+uniform float ChainZOffsetMultiplier < ui_type = "slider"; ui_label = "Chain Z Offset Multiplier (Time)"; ui_min = CHAIN_Z_OFFSET_MULT_MIN; ui_max = CHAIN_Z_OFFSET_MULT_MAX; ui_category = "Pattern"; > = CHAIN_Z_OFFSET_MULT_DEFAULT;
+
+// Colors
+uniform float3 BaseColorFactor < ui_type = "color"; ui_label = "Base Color Factor"; ui_category = "Colors"; > = float3(COLOR_BASE_R_DEFAULT, COLOR_BASE_G_DEFAULT, COLOR_BASE_B_DEFAULT);
+uniform float ColorIterMultiplier < ui_type = "slider"; ui_label = "Color Iteration Multiplier"; ui_min = COLOR_ITER_MULT_MIN; ui_max = COLOR_ITER_MULT_MAX; ui_category = "Colors"; > = COLOR_ITER_MULT_DEFAULT;
+uniform float ColorIterAdd < ui_type = "slider"; ui_label = "Color Iteration Add"; ui_min = COLOR_ITER_ADD_MIN; ui_max = COLOR_ITER_ADD_MAX; ui_category = "Colors"; > = COLOR_ITER_ADD_DEFAULT;
+uniform float LightDotProductMultiplier < ui_type = "slider"; ui_label = "Lighting Dot Product Multiplier"; ui_min = LIGHT_DOT_PRODUCT_MULT_MIN; ui_max = LIGHT_DOT_PRODUCT_MULT_MAX; ui_category = "Colors"; > = LIGHT_DOT_PRODUCT_MULT_DEFAULT;
+uniform float LightAmbient < ui_type = "slider"; ui_label = "Lighting Ambient"; ui_min = LIGHT_AMBIENT_MIN; ui_max = LIGHT_AMBIENT_MAX; ui_category = "Colors"; > = LIGHT_AMBIENT_DEFAULT;
+uniform float FinalColorPower < ui_type = "slider"; ui_label = "Final Color Power"; ui_min = FINAL_COLOR_POW_MIN; ui_max = FINAL_COLOR_POW_MAX; ui_category = "Colors"; > = FINAL_COLOR_POW_DEFAULT;
+uniform float FinalColorMultiplier < ui_type = "slider"; ui_label = "Final Color Multiplier"; ui_min = FINAL_COLOR_MULT_MIN; ui_max = FINAL_COLOR_MULT_MAX; ui_category = "Colors"; > = FINAL_COLOR_MULT_DEFAULT;
+uniform float FinalColorScale < ui_type = "slider"; ui_label = "Final Color Scale"; ui_min = FINAL_COLOR_SCALE_MIN; ui_max = FINAL_COLOR_SCALE_MAX; ui_category = "Colors"; > = FINAL_COLOR_SCALE_DEFAULT;
+uniform float FinalColorSubtract < ui_type = "slider"; ui_label = "Final Color Subtract"; ui_min = FINAL_COLOR_SUB_MIN; ui_max = FINAL_COLOR_SUB_MAX; ui_category = "Colors"; > = FINAL_COLOR_SUB_DEFAULT;
+uniform float4 BackgroundColor < ui_type = "color"; ui_label = "Background Color"; ui_category = "Colors"; > = float4(0.5, 0.5, 0.5, 1.0);
+
+// Raymarching Settings
+uniform int RaymarchSteps < ui_type = "slider"; ui_label = "Max Raymarch Steps"; ui_min = RAYMARCH_STEPS_MIN; ui_max = RAYMARCH_STEPS_MAX; ui_category = "Raymarching"; ui_category_closed = true; > = RAYMARCH_STEPS_DEFAULT;
+uniform float RaymarchFarPlane < ui_type = "slider"; ui_label = "Raymarch Far Plane"; ui_min = RAYMARCH_FAR_MIN; ui_max = RAYMARCH_FAR_MAX; ui_category = "Raymarching"; ui_category_closed = true; > = RAYMARCH_FAR_DEFAULT;
+uniform float RaymarchStepScale < ui_type = "slider"; ui_label = "Raymarch Step Scale"; ui_min = RAYMARCH_STEP_SCALE_MIN; ui_max = RAYMARCH_STEP_SCALE_MAX; ui_category = "Raymarching"; ui_category_closed = true; > = RAYMARCH_STEP_SCALE_DEFAULT;
+uniform float RaymarchHitThreshold < ui_type = "slider"; ui_label = "Raymarch Hit Threshold"; ui_min = RAYMARCH_HIT_THRESHOLD_MIN; ui_max = RAYMARCH_HIT_THRESHOLD_MAX; ui_category = "Raymarching"; ui_category_closed = true; > = RAYMARCH_HIT_THRESHOLD_DEFAULT;
+uniform float MapIterationScale < ui_type = "slider"; ui_label = "Map Iteration Scale (ss)"; ui_min = MAP_ITER_SCALE_MIN; ui_max = MAP_ITER_SCALE_MAX; ui_category = "Raymarching"; ui_category_closed = true; > = MAP_ITER_SCALE_DEFAULT;
+uniform float MapIterationShrink < ui_type = "slider"; ui_label = "Map Iteration Shrink (s)"; ui_min = MAP_ITER_SHRINK_MIN; ui_max = MAP_ITER_SHRINK_MAX; ui_category = "Raymarching"; ui_category_closed = true; > = MAP_ITER_SHRINK_DEFAULT;
+uniform int MapIterations < ui_type = "slider"; ui_label = "Map Iterations"; ui_min = MAP_ITERATIONS_MIN; ui_max = MAP_ITERATIONS_MAX; ui_step = 1; ui_category = "Raymarching"; ui_category_closed = true; > = MAP_ITERATIONS_DEFAULT;
+
 // Animation
-static const float ANIMATION_SPEED_MIN = 0.0f; static const float ANIMATION_SPEED_MAX = 5.0f; static const float ANIMATION_SPEED_DEFAULT = 1.0f;
-static const float ANIMATION_KEYFRAME_MIN = 0.0f; static const float ANIMATION_KEYFRAME_MAX = 100.0f; static const float ANIMATION_KEYFRAME_DEFAULT = 0.0f;
-static const float TIME_MULTIPLIER_MIN = 0.1f; static const float TIME_MULTIPLIER_MAX = 5.0f; static const float TIME_MULTIPLIER_DEFAULT = 2.0f;
 AS_ANIMATION_UI(AnimationSpeed, AnimationKeyframe, "Animation")
 uniform float TimeMultiplier < ui_type = "slider"; ui_label = "Global Time Multiplier"; ui_min = TIME_MULTIPLIER_MIN; ui_max = TIME_MULTIPLIER_MAX; ui_category = "Animation"; > = TIME_MULTIPLIER_DEFAULT;
 
-// Path Parameters
-static const float PATH_SCALE_MIN = 0.1f; static const float PATH_SCALE_MAX = 3.0f; static const float PATH_SCALE_DEFAULT = 1.3f;
-static const float PATH_FREQ1_MIN = 0.1f; static const float PATH_FREQ1_MAX = 2.0f; static const float PATH_FREQ1_DEFAULT = 0.3f;
-static const float PATH_FREQ2_MIN = 0.1f; static const float PATH_FREQ2_MAX = 2.0f; static const float PATH_FREQ2_DEFAULT = 0.5f;
-uniform float PathScale < ui_type = "slider"; ui_label = "Path Scale"; ui_min = PATH_SCALE_MIN; ui_max = PATH_SCALE_MAX; ui_category = "Path"; > = PATH_SCALE_DEFAULT;
-uniform float PathFreq1 < ui_type = "slider"; ui_label = "Path Frequency 1 (Sin)"; ui_min = PATH_FREQ1_MIN; ui_max = PATH_FREQ1_MAX; ui_category = "Path"; > = PATH_FREQ1_DEFAULT;
-uniform float PathFreq2 < ui_type = "slider"; ui_label = "Path Frequency 2 (Cos)"; ui_min = PATH_FREQ2_MIN; ui_max = PATH_FREQ2_MAX; ui_category = "Path"; > = PATH_FREQ2_DEFAULT;
-
-// Torus Geometry
-static const float TORUS_MAIN_RADIUS_MIN = 0.05f; static const float TORUS_MAIN_RADIUS_MAX = 1.0f; static const float TORUS_MAIN_RADIUS_DEFAULT = 0.28f;
-static const float TORUS_TUBE_RADIUS_MIN = 0.01f; static const float TORUS_TUBE_RADIUS_MAX = 0.5f; static const float TORUS_TUBE_RADIUS_DEFAULT = 0.07f;
-uniform float TorusMainRadius < ui_type = "slider"; ui_label = "Torus Main Radius"; ui_min = TORUS_MAIN_RADIUS_MIN; ui_max = TORUS_MAIN_RADIUS_MAX; ui_category = "Geometry"; > = TORUS_MAIN_RADIUS_DEFAULT;
-uniform float TorusTubeRadius < ui_type = "slider"; ui_label = "Torus Tube Radius"; ui_min = TORUS_TUBE_RADIUS_MIN; ui_max = TORUS_TUBE_RADIUS_MAX; ui_category = "Geometry"; > = TORUS_TUBE_RADIUS_DEFAULT;
-
-// Chain Parameters
-static const float CHAIN_Z_SCALE_MIN = 0.5f; static const float CHAIN_Z_SCALE_MAX = 3.0f; static const float CHAIN_Z_SCALE_DEFAULT = 1.5f;
-static const float CHAIN_Z_OFFSET_MULT_MIN = 0.5f; static const float CHAIN_Z_OFFSET_MULT_MAX = 5.0f; static const float CHAIN_Z_OFFSET_MULT_DEFAULT = 2.2f;
-uniform float ChainZScale < ui_type = "slider"; ui_label = "Chain Z Scale"; ui_min = CHAIN_Z_SCALE_MIN; ui_max = CHAIN_Z_SCALE_MAX; ui_category = "Geometry"; > = CHAIN_Z_SCALE_DEFAULT;
-uniform float ChainZOffsetMultiplier < ui_type = "slider"; ui_label = "Chain Z Offset Multiplier (Time)"; ui_min = CHAIN_Z_OFFSET_MULT_MIN; ui_max = CHAIN_Z_OFFSET_MULT_MAX; ui_category = "Geometry"; > = CHAIN_Z_OFFSET_MULT_DEFAULT;
-
-// Map Iteration Parameters
-static const float MAP_ITER_SCALE_MIN = 1.1f; static const float MAP_ITER_SCALE_MAX = 3.0f; static const float MAP_ITER_SCALE_DEFAULT = 1.5f;
-static const float MAP_ITER_SHRINK_MIN = 0.5f; static const float MAP_ITER_SHRINK_MAX = 2.0f; static const float MAP_ITER_SHRINK_DEFAULT = 1.0f;
-static const int MAP_ITERATIONS_MIN = 1; static const int MAP_ITERATIONS_MAX = 5; static const int MAP_ITERATIONS_DEFAULT = 2;
-uniform float MapIterationScale < ui_type = "slider"; ui_label = "Map Iteration Scale (ss)"; ui_min = MAP_ITER_SCALE_MIN; ui_max = MAP_ITER_SCALE_MAX; ui_category = "Raymarching"; > = MAP_ITER_SCALE_DEFAULT;
-uniform float MapIterationShrink < ui_type = "slider"; ui_label = "Map Iteration Shrink (s)"; ui_min = MAP_ITER_SHRINK_MIN; ui_max = MAP_ITER_SHRINK_MAX; ui_category = "Raymarching"; > = MAP_ITER_SHRINK_DEFAULT;
-uniform int MapIterations < ui_type = "slider"; ui_label = "Map Iterations"; ui_min = MAP_ITERATIONS_MIN; ui_max = MAP_ITERATIONS_MAX; ui_step = 1; ui_category = "Raymarching"; > = MAP_ITERATIONS_DEFAULT;
-
-// Raymarching
-static const int RAYMARCH_STEPS_MIN = 20; static const int RAYMARCH_STEPS_MAX = 300; static const int RAYMARCH_STEPS_DEFAULT = 200;
-static const float RAYMARCH_FAR_MIN = 10.0f; static const float RAYMARCH_FAR_MAX = 100.0f; static const float RAYMARCH_FAR_DEFAULT = 60.0f;
-static const float RAYMARCH_STEP_SCALE_MIN = 0.1f; static const float RAYMARCH_STEP_SCALE_MAX = 1.0f; static const float RAYMARCH_STEP_SCALE_DEFAULT = 0.5f;
-static const float RAYMARCH_HIT_THRESHOLD_MIN = 0.0001f; static const float RAYMARCH_HIT_THRESHOLD_MAX = 0.01f; static const float RAYMARCH_HIT_THRESHOLD_DEFAULT = 0.001f;
-uniform int RaymarchSteps < ui_type = "slider"; ui_label = "Max Raymarch Steps"; ui_min = RAYMARCH_STEPS_MIN; ui_max = RAYMARCH_STEPS_MAX; ui_category = "Raymarching"; > = RAYMARCH_STEPS_DEFAULT;
-uniform float RaymarchFarPlane < ui_type = "slider"; ui_label = "Raymarch Far Plane"; ui_min = RAYMARCH_FAR_MIN; ui_max = RAYMARCH_FAR_MAX; ui_category = "Raymarching"; > = RAYMARCH_FAR_DEFAULT;
-uniform float RaymarchStepScale < ui_type = "slider"; ui_label = "Raymarch Step Scale"; ui_min = RAYMARCH_STEP_SCALE_MIN; ui_max = RAYMARCH_STEP_SCALE_MAX; ui_category = "Raymarching"; > = RAYMARCH_STEP_SCALE_DEFAULT;
-uniform float RaymarchHitThreshold < ui_type = "slider"; ui_label = "Raymarch Hit Threshold"; ui_min = RAYMARCH_HIT_THRESHOLD_MIN; ui_max = RAYMARCH_HIT_THRESHOLD_MAX; ui_category = "Raymarching"; > = RAYMARCH_HIT_THRESHOLD_DEFAULT;
-
-// Coloring
-static const float COLOR_BASE_R_MIN = 0.0f; static const float COLOR_BASE_R_MAX = 1.0f; static const float COLOR_BASE_R_DEFAULT = 1.0f;
-static const float COLOR_BASE_G_MIN = 0.0f; static const float COLOR_BASE_G_MAX = 1.0f; static const float COLOR_BASE_G_DEFAULT = 0.75f;
-static const float COLOR_BASE_B_MIN = 0.0f; static const float COLOR_BASE_B_MAX = 1.0f; static const float COLOR_BASE_B_DEFAULT = 0.0f;
-static const float COLOR_ITER_MULT_MIN = 0.0f; static const float COLOR_ITER_MULT_MAX = 0.5f; static const float COLOR_ITER_MULT_DEFAULT = 0.125f;
-static const float COLOR_ITER_ADD_MIN = 0.0f; static const float COLOR_ITER_ADD_MAX = 0.5f; static const float COLOR_ITER_ADD_DEFAULT = 0.2f;
-static const float LIGHT_DOT_PRODUCT_MULT_MIN = 0.0f; static const float LIGHT_DOT_PRODUCT_MULT_MAX = 1.0f; static const float LIGHT_DOT_PRODUCT_MULT_DEFAULT = 0.1f;
-static const float LIGHT_AMBIENT_MIN = 0.0f; static const float LIGHT_AMBIENT_MAX = 1.0f; static const float LIGHT_AMBIENT_DEFAULT = 0.45f;
-static const float FINAL_COLOR_POW_MIN = 0.1f; static const float FINAL_COLOR_POW_MAX = 3.0f; static const float FINAL_COLOR_POW_DEFAULT = 0.7f;
-static const float FINAL_COLOR_MULT_MIN = 0.1f; static const float FINAL_COLOR_MULT_MAX = 5.0f; static const float FINAL_COLOR_MULT_DEFAULT = 1.6f;
-static const float FINAL_COLOR_SCALE_MIN = 0.1f; static const float FINAL_COLOR_SCALE_MAX = 10.0f; static const float FINAL_COLOR_SCALE_DEFAULT = 3.5f;
-static const float FINAL_COLOR_SUB_MIN = -1.0f; static const float FINAL_COLOR_SUB_MAX = 1.0f; static const float FINAL_COLOR_SUB_DEFAULT = -0.6f;
-
-uniform float3 BaseColorFactor < ui_type = "color"; ui_label = "Base Color Factor"; ui_category = "Color"; > = float3(COLOR_BASE_R_DEFAULT, COLOR_BASE_G_DEFAULT, COLOR_BASE_B_DEFAULT);
-uniform float ColorIterMultiplier < ui_type = "slider"; ui_label = "Color Iteration Multiplier"; ui_min = COLOR_ITER_MULT_MIN; ui_max = COLOR_ITER_MULT_MAX; ui_category = "Color"; > = COLOR_ITER_MULT_DEFAULT;
-uniform float ColorIterAdd < ui_type = "slider"; ui_label = "Color Iteration Add"; ui_min = COLOR_ITER_ADD_MIN; ui_max = COLOR_ITER_ADD_MAX; ui_category = "Color"; > = COLOR_ITER_ADD_DEFAULT;
-uniform float LightDotProductMultiplier < ui_type = "slider"; ui_label = "Lighting Dot Product Multiplier"; ui_min = LIGHT_DOT_PRODUCT_MULT_MIN; ui_max = LIGHT_DOT_PRODUCT_MULT_MAX; ui_category = "Color"; > = LIGHT_DOT_PRODUCT_MULT_DEFAULT;
-uniform float LightAmbient < ui_type = "slider"; ui_label = "Lighting Ambient"; ui_min = LIGHT_AMBIENT_MIN; ui_max = LIGHT_AMBIENT_MAX; ui_category = "Color"; > = LIGHT_AMBIENT_DEFAULT;
-uniform float FinalColorPower < ui_type = "slider"; ui_label = "Final Color Power"; ui_min = FINAL_COLOR_POW_MIN; ui_max = FINAL_COLOR_POW_MAX; ui_category = "Color"; > = FINAL_COLOR_POW_DEFAULT;
-uniform float FinalColorMultiplier < ui_type = "slider"; ui_label = "Final Color Multiplier"; ui_min = FINAL_COLOR_MULT_MIN; ui_max = FINAL_COLOR_MULT_MAX; ui_category = "Color"; > = FINAL_COLOR_MULT_DEFAULT;
-uniform float FinalColorScale < ui_type = "slider"; ui_label = "Final Color Scale"; ui_min = FINAL_COLOR_SCALE_MIN; ui_max = FINAL_COLOR_SCALE_MAX; ui_category = "Color"; > = FINAL_COLOR_SCALE_DEFAULT;
-uniform float FinalColorSubtract < ui_type = "slider"; ui_label = "Final Color Subtract"; ui_min = FINAL_COLOR_SUB_MIN; ui_max = FINAL_COLOR_SUB_MAX; ui_category = "Color"; > = FINAL_COLOR_SUB_DEFAULT;
-uniform float4 BackgroundColor < ui_type = "color"; ui_label = "Background Color"; ui_category = "Color"; > = float4(0.5, 0.5, 0.5, 1.0);
-
 // Camera Controls
-// Position and rotation controls affect the camera/view
-uniform float3 CameraPosition < ui_type = "drag"; ui_label = "Camera Position (XYZ)"; ui_tooltip = "Position of the camera in 3D space"; ui_min = -5.0; ui_max = 5.0; ui_step = 0.01; ui_category = "Camera"; > = float3(0.0, 0.0, -1.0);
-uniform float CameraPitch < ui_type = "slider"; ui_label = "Camera Pitch"; ui_tooltip = "Camera tilt up/down"; ui_min = -90.0; ui_max = 90.0; ui_step = 0.1; ui_category = "Camera"; > = 0.0;
-uniform float CameraYaw < ui_type = "slider"; ui_label = "Camera Yaw"; ui_tooltip = "Camera rotation left/right"; ui_min = -180.0; ui_max = 180.0; ui_step = 0.1; ui_category = "Camera"; > = 0.0;
+uniform float3 CameraPosition < ui_type = "drag"; ui_label = "Camera Position (XYZ)"; ui_tooltip = "Position of the camera in 3D space"; ui_min = -5.0; ui_max = 5.0; ui_step = 0.01; ui_category = "Camera"; ui_category_closed = true; > = float3(0.0, 0.0, -1.0);
+uniform float CameraPitch < ui_type = "slider"; ui_label = "Camera Pitch"; ui_tooltip = "Camera tilt up/down"; ui_min = -90.0; ui_max = 90.0; ui_step = 0.1; ui_category = "Camera"; ui_category_closed = true; > = 0.0;
+uniform float CameraYaw < ui_type = "slider"; ui_label = "Camera Yaw"; ui_tooltip = "Camera rotation left/right"; ui_min = -180.0; ui_max = 180.0; ui_step = 0.1; ui_category = "Camera"; ui_category_closed = true; > = 0.0;
 
 // Stage Controls
-AS_POS_UI(EffectCenter)       // Position in central square coordinate system
-AS_SCALE_UI(EffectScale)      // Scale factor (0.1 to 5.0)
+AS_POSITION_SCALE_UI(EffectCenter, EffectScale) // Combined position and scale controls
 AS_STAGEDEPTH_UI(EffectDepth) // Depth masking (0.0 to 1.0)
 AS_ROTATION_UI(EffectRotationSnap, EffectRotationFine) // Effect rotation controls
 
 // Final Mix
 AS_BLENDMODE_UI_DEFAULT(BlendMode, AS_BLEND_OPAQUE) // Use named constant instead of numeric value
-AS_BLENDAMOUNT_UI(BlendAmount)
+AS_BLENDAMOUNT_UI(BlendStrength)
 
+// ============================================================================
+// NAMESPACE
+// ============================================================================
+namespace ASRaymarchedChain {
 
 // ============================================================================
 // GLOBAL VARIABLES & HELPER FUNCTIONS
@@ -224,32 +275,15 @@ float3 get_normal(float3 p) {
 float4 PS_RaymarchedChain(float4 vpos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target {
     float4 original_color = tex2D(ReShade::BackBuffer, texcoord);
     ps_current_time = AS_getAnimationTime(AnimationSpeed, AnimationKeyframe) * TimeMultiplier;
-    
-    // Early depth check - skip effect if pixel is in front of EffectDepth
+      // Early depth check - skip effect if pixel is in front of EffectDepth
     float sceneDepth = ReShade::GetLinearizedDepth(texcoord);
     if (sceneDepth < EffectDepth - AS_DEPTH_EPSILON) {
         return original_color;
-    }    // 1. Convert to normalized central square [-1,1] with aspect ratio correction
-    float aspectRatio = ReShade::AspectRatio;
-    float2 uv_norm;
-    if (aspectRatio >= 1.0) {
-        uv_norm.x = (texcoord.x - 0.5) * 2.0 * aspectRatio;
-        uv_norm.y = (texcoord.y - 0.5) * 2.0;
-    } else {
-        uv_norm.x = (texcoord.x - 0.5) * 2.0;
-        uv_norm.y = (texcoord.y - 0.5) * 2.0 / aspectRatio;
     }
     
-    // 2. Apply effect rotation, position, and scale in the correct order
-    // First apply effect rotation (around screen center)
+    // Apply standard AS coordinate transformation
     float effect_rotation = AS_getRotationRadians(EffectRotationSnap, EffectRotationFine);
-    uv_norm = mul(uv_norm, fn_rot(effect_rotation));
-    
-    // Next apply effect position offset
-    uv_norm -= EffectCenter;
-    
-    // Finally apply effect scale
-    uv_norm /= EffectScale;
+    float2 uv_norm = AS_transformCoord(texcoord, EffectCenter, EffectScale, effect_rotation);
     
     // Camera setup
     float3 ro = CameraPosition; // Camera position from UI
@@ -284,10 +318,10 @@ float4 PS_RaymarchedChain(float4 vpos : SV_Position, float2 texcoord : TEXCOORD)
         col_final = BackgroundColor; // Use the full RGBA from background color
     }
 
-    col_final = saturate(col_final);
-
-    return AS_applyBlend(col_final, original_color, BlendMode, BlendAmount);
+    col_final = saturate(col_final);    return AS_applyBlend(col_final, original_color, BlendMode, BlendStrength);
 }
+
+} // namespace ASRaymarchedChain
 
 // ============================================================================
 // TECHNIQUE DEFINITION
@@ -296,10 +330,9 @@ technique AS_BGX_RaymarchedChain <
     ui_label = "[AS] BGX: Raymarched Chain";
     ui_tooltip = "Renders a raymarched scene of an animated, twisting chain of tori.\n"
                  "Original GLSL shader 'Corrente' by Elsio on Shadertoy.";
-> {
-    pass MainPass {
+> {    pass MainPass {
         VertexShader = PostProcessVS;
-        PixelShader = PS_RaymarchedChain;
+        PixelShader = ASRaymarchedChain::PS_RaymarchedChain;
     }
 }
 
