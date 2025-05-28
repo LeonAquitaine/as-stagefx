@@ -1,5 +1,27 @@
 # AS StageFX Implementation Guide
 
+## 🚀 QUICK START - USE THE TEMPLATES
+
+**New to AS StageFX development?** Start with our comprehensive templates:
+
+📂 **Template Location**: `docs/template/`
+- **`README.md`** - Quick start guide and template overview
+- **`shader-template.fx`** - Complete template with all features
+- **`bgx-template.fx`** - Background effects template
+- **`vfx-template.fx`** - Visual effects template  
+- **`lfx-template.fx`** - Lighting effects template
+- **`gfx-template.fx`** - Graphics/post-processing template
+
+**Recommended Workflow:**
+1. Copy the appropriate template for your effect type
+2. Replace placeholders (marked with `[BRACKETS]`)
+3. Implement your effect algorithm in the marked sections
+4. Test and validate using the built-in debug modes
+
+The templates include all required AS StageFX standards, UI patterns, and best practices. **Using the templates ensures compliance with all requirements below.**
+
+---
+
 ## ⚠️ CRITICAL REQUIREMENTS ⚠️
 
 **Essential Dependencies**: `AS_Utils.1.fxh`, `ReShade.fxh`  
