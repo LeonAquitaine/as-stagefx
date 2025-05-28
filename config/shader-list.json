@@ -47,6 +47,20 @@
     },
     {
       "credits": {
+        "originalName": "Corrente",
+        "link": "https://www.shadertoy.com/view/ctSfRV",
+        "author": "Elsio",
+        "platform": "Shadertoy",
+        "creationDate": "2023-10-08",
+        "adaptedBy": "Leon Aquitaine"
+      },
+      "name": "AS_BGX_RaymarchedChain.1",
+      "performance": "Heavy",
+        "filename": "AS_BGX_RaymarchedChain.1.fx",
+        "author": "Leon Aquitaine"
+    },
+    {
+      "credits": {
         "originalName": "Blue Corona",
         "link": "https://www.shadertoy.com/view/XfKGWV",
         "author": "SnoopethDuckDuck",
