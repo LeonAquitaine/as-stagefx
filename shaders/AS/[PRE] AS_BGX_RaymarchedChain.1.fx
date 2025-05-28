@@ -229,8 +229,7 @@ float4 PS_RaymarchedChain(float4 vpos : SV_Position, float2 texcoord : TEXCOORD)
     float sceneDepth = ReShade::GetLinearizedDepth(texcoord);
     if (sceneDepth < EffectDepth - AS_DEPTH_EPSILON) {
         return original_color;
-    }
-      // 1. Convert to normalized central square [-1,1] with aspect ratio correction
+    }    // 1. Convert to normalized central square [-1,1] with aspect ratio correction
     float aspectRatio = ReShade::AspectRatio;
     float2 uv_norm;
     if (aspectRatio >= 1.0) {
@@ -241,15 +240,15 @@ float4 PS_RaymarchedChain(float4 vpos : SV_Position, float2 texcoord : TEXCOORD)
         uv_norm.y = (texcoord.y - 0.5) * 2.0 / aspectRatio;
     }
     
-    // 2. Apply effect position, rotation, and scale
-    // First apply effect position offset
-    uv_norm -= EffectCenter;
-    
-    // Apply effect rotation (this rotates the effect itself, not just the camera view)
+    // 2. Apply effect rotation, position, and scale in the correct order
+    // First apply effect rotation (around screen center)
     float effect_rotation = AS_getRotationRadians(EffectRotationSnap, EffectRotationFine);
     uv_norm = mul(uv_norm, fn_rot(effect_rotation));
     
-    // Apply effect scale
+    // Next apply effect position offset
+    uv_norm -= EffectCenter;
+    
+    // Finally apply effect scale
     uv_norm /= EffectScale;
     
     // Camera setup
