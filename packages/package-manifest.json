@@ -1,9 +1,9 @@
 ﻿{
-    "buildDate":  "2025-05-26T11:47:24Z",
-    "version":  "1.7.11",
+    "buildDate":  "2025-05-27T22:37:09Z",
+    "version":  "1.7.12",
     "packages":  [
                      {
-                         "version":  "1.7.11",
+                         "version":  "1.7.12",
                          "shaderCount":  17,
                          "textureDependencyCount":  3,
                          "name":  "AS_StageFX_VisualEffects",
@@ -43,8 +43,8 @@
                                      ]
                      },
                      {
-                         "version":  "1.7.11",
-                         "shaderCount":  53,
+                         "version":  "1.7.12",
+                         "shaderCount":  54,
                          "textureDependencyCount":  3,
                          "name":  "AS_StageFX",
                          "fxhDependencyCount":  5,
@@ -80,6 +80,7 @@
                                          "AS_BGX_PastRacer.1.fx",
                                          "AS_BGX_PlasmaFlow.1.fx",
                                          "AS_BGX_ProteanClouds.1.fx",
+                                         "AS_BGX_RaymarchedChain.1.fx",
                                          "AS_BGX_ShineOn.1.fx",
                                          "AS_BGX_StainedLights.1.fx",
                                          "AS_BGX_SunsetClouds.1.fx",
@@ -120,7 +121,7 @@
                                      ]
                      },
                      {
-                         "version":  "1.7.11",
+                         "version":  "1.7.12",
                          "shaderCount":  16,
                          "textureDependencyCount":  0,
                          "name":  "AS_StageFX_Essentials",
@@ -157,8 +158,8 @@
                                      ]
                      },
                      {
-                         "version":  "1.7.11",
-                         "shaderCount":  20,
+                         "version":  "1.7.12",
+                         "shaderCount":  21,
                          "textureDependencyCount":  1,
                          "name":  "AS_StageFX_Backgrounds",
                          "fxhDependencyCount":  3,
@@ -189,6 +190,7 @@
                                          "AS_BGX_PastRacer.1.fx",
                                          "AS_BGX_PlasmaFlow.1.fx",
                                          "AS_BGX_ProteanClouds.1.fx",
+                                         "AS_BGX_RaymarchedChain.1.fx",
                                          "AS_BGX_ShineOn.1.fx",
                                          "AS_BGX_SunsetClouds.1.fx",
                                          "AS_BGX_WavySquares.1.fx",
