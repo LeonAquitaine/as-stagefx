@@ -136,44 +136,52 @@
 // UI CONTROLS
 // ============================================================================
 
-// Pattern Controls
-uniform float PathScale < ui_type = "slider"; ui_label = "Path Scale"; ui_min = PATH_SCALE_MIN; ui_max = PATH_SCALE_MAX; ui_category = "Pattern"; > = PATH_SCALE_DEFAULT;
-uniform float PathFreq1 < ui_type = "slider"; ui_label = "Path Frequency 1 (Sin)"; ui_min = PATH_FREQ1_MIN; ui_max = PATH_FREQ1_MAX; ui_category = "Pattern"; > = PATH_FREQ1_DEFAULT;
-uniform float PathFreq2 < ui_type = "slider"; ui_label = "Path Frequency 2 (Cos)"; ui_min = PATH_FREQ2_MIN; ui_max = PATH_FREQ2_MAX; ui_category = "Pattern"; > = PATH_FREQ2_DEFAULT;
-uniform float TorusMainRadius < ui_type = "slider"; ui_label = "Torus Main Radius"; ui_min = TORUS_MAIN_RADIUS_MIN; ui_max = TORUS_MAIN_RADIUS_MAX; ui_category = "Pattern"; > = TORUS_MAIN_RADIUS_DEFAULT;
-uniform float TorusTubeRadius < ui_type = "slider"; ui_label = "Torus Tube Radius"; ui_min = TORUS_TUBE_RADIUS_MIN; ui_max = TORUS_TUBE_RADIUS_MAX; ui_category = "Pattern"; > = TORUS_TUBE_RADIUS_DEFAULT;
-uniform float ChainZScale < ui_type = "slider"; ui_label = "Chain Z Scale"; ui_min = CHAIN_Z_SCALE_MIN; ui_max = CHAIN_Z_SCALE_MAX; ui_category = "Pattern"; > = CHAIN_Z_SCALE_DEFAULT;
-uniform float ChainZOffsetMultiplier < ui_type = "slider"; ui_label = "Chain Z Offset Multiplier (Time)"; ui_min = CHAIN_Z_OFFSET_MULT_MIN; ui_max = CHAIN_Z_OFFSET_MULT_MAX; ui_category = "Pattern"; > = CHAIN_Z_OFFSET_MULT_DEFAULT;
+// Chain Shape
+uniform float PathScale < ui_type = "slider"; ui_label = "Path Curvature"; ui_min = PATH_SCALE_MIN; ui_max = PATH_SCALE_MAX; ui_category = "Chain Shape"; > = PATH_SCALE_DEFAULT;
+uniform float PathFreq1 < ui_type = "slider"; ui_label = "Twist Rate X"; ui_min = PATH_FREQ1_MIN; ui_max = PATH_FREQ1_MAX; ui_category = "Chain Shape"; > = PATH_FREQ1_DEFAULT;
+uniform float PathFreq2 < ui_type = "slider"; ui_label = "Twist Rate Y"; ui_min = PATH_FREQ2_MIN; ui_max = PATH_FREQ2_MAX; ui_category = "Chain Shape"; > = PATH_FREQ2_DEFAULT;
+uniform float ChainZScale < ui_type = "slider"; ui_label = "Chain Density"; ui_min = CHAIN_Z_SCALE_MIN; ui_max = CHAIN_Z_SCALE_MAX; ui_category = "Chain Shape"; > = CHAIN_Z_SCALE_DEFAULT;
+uniform float ChainZOffsetMultiplier < ui_type = "slider"; ui_label = "Flow Speed"; ui_min = CHAIN_Z_OFFSET_MULT_MIN; ui_max = CHAIN_Z_OFFSET_MULT_MAX; ui_category = "Chain Shape"; > = CHAIN_Z_OFFSET_MULT_DEFAULT;
 
-// Colors
-uniform float3 BaseColorFactor < ui_type = "color"; ui_label = "Base Color Factor"; ui_category = "Colors"; > = float3(COLOR_BASE_R_DEFAULT, COLOR_BASE_G_DEFAULT, COLOR_BASE_B_DEFAULT);
-uniform float ColorIterMultiplier < ui_type = "slider"; ui_label = "Color Iteration Multiplier"; ui_min = COLOR_ITER_MULT_MIN; ui_max = COLOR_ITER_MULT_MAX; ui_category = "Colors"; > = COLOR_ITER_MULT_DEFAULT;
-uniform float ColorIterAdd < ui_type = "slider"; ui_label = "Color Iteration Add"; ui_min = COLOR_ITER_ADD_MIN; ui_max = COLOR_ITER_ADD_MAX; ui_category = "Colors"; > = COLOR_ITER_ADD_DEFAULT;
-uniform float LightDotProductMultiplier < ui_type = "slider"; ui_label = "Lighting Dot Product Multiplier"; ui_min = LIGHT_DOT_PRODUCT_MULT_MIN; ui_max = LIGHT_DOT_PRODUCT_MULT_MAX; ui_category = "Colors"; > = LIGHT_DOT_PRODUCT_MULT_DEFAULT;
-uniform float LightAmbient < ui_type = "slider"; ui_label = "Lighting Ambient"; ui_min = LIGHT_AMBIENT_MIN; ui_max = LIGHT_AMBIENT_MAX; ui_category = "Colors"; > = LIGHT_AMBIENT_DEFAULT;
-uniform float FinalColorPower < ui_type = "slider"; ui_label = "Final Color Power"; ui_min = FINAL_COLOR_POW_MIN; ui_max = FINAL_COLOR_POW_MAX; ui_category = "Colors"; > = FINAL_COLOR_POW_DEFAULT;
-uniform float FinalColorMultiplier < ui_type = "slider"; ui_label = "Final Color Multiplier"; ui_min = FINAL_COLOR_MULT_MIN; ui_max = FINAL_COLOR_MULT_MAX; ui_category = "Colors"; > = FINAL_COLOR_MULT_DEFAULT;
-uniform float FinalColorScale < ui_type = "slider"; ui_label = "Final Color Scale"; ui_min = FINAL_COLOR_SCALE_MIN; ui_max = FINAL_COLOR_SCALE_MAX; ui_category = "Colors"; > = FINAL_COLOR_SCALE_DEFAULT;
-uniform float FinalColorSubtract < ui_type = "slider"; ui_label = "Final Color Subtract"; ui_min = FINAL_COLOR_SUB_MIN; ui_max = FINAL_COLOR_SUB_MAX; ui_category = "Colors"; > = FINAL_COLOR_SUB_DEFAULT;
-uniform float4 BackgroundColor < ui_type = "color"; ui_label = "Background Color"; ui_category = "Colors"; > = float4(0.5, 0.5, 0.5, 1.0);
+// Link Size
+uniform float TorusMainRadius < ui_type = "slider"; ui_label = "Link Thickness"; ui_min = TORUS_MAIN_RADIUS_MIN; ui_max = TORUS_MAIN_RADIUS_MAX; ui_category = "Link Size"; > = TORUS_MAIN_RADIUS_DEFAULT;
+uniform float TorusTubeRadius < ui_type = "slider"; ui_label = "Link Width"; ui_min = TORUS_TUBE_RADIUS_MIN; ui_max = TORUS_TUBE_RADIUS_MAX; ui_category = "Link Size"; > = TORUS_TUBE_RADIUS_DEFAULT;
 
-// Raymarching Settings
-uniform int RaymarchSteps < ui_type = "slider"; ui_label = "Max Raymarch Steps"; ui_min = RAYMARCH_STEPS_MIN; ui_max = RAYMARCH_STEPS_MAX; ui_category = "Raymarching"; ui_category_closed = true; > = RAYMARCH_STEPS_DEFAULT;
-uniform float RaymarchFarPlane < ui_type = "slider"; ui_label = "Raymarch Far Plane"; ui_min = RAYMARCH_FAR_MIN; ui_max = RAYMARCH_FAR_MAX; ui_category = "Raymarching"; ui_category_closed = true; > = RAYMARCH_FAR_DEFAULT;
-uniform float RaymarchStepScale < ui_type = "slider"; ui_label = "Raymarch Step Scale"; ui_min = RAYMARCH_STEP_SCALE_MIN; ui_max = RAYMARCH_STEP_SCALE_MAX; ui_category = "Raymarching"; ui_category_closed = true; > = RAYMARCH_STEP_SCALE_DEFAULT;
-uniform float RaymarchHitThreshold < ui_type = "slider"; ui_label = "Raymarch Hit Threshold"; ui_min = RAYMARCH_HIT_THRESHOLD_MIN; ui_max = RAYMARCH_HIT_THRESHOLD_MAX; ui_category = "Raymarching"; ui_category_closed = true; > = RAYMARCH_HIT_THRESHOLD_DEFAULT;
-uniform float MapIterationScale < ui_type = "slider"; ui_label = "Map Iteration Scale (ss)"; ui_min = MAP_ITER_SCALE_MIN; ui_max = MAP_ITER_SCALE_MAX; ui_category = "Raymarching"; ui_category_closed = true; > = MAP_ITER_SCALE_DEFAULT;
-uniform float MapIterationShrink < ui_type = "slider"; ui_label = "Map Iteration Shrink (s)"; ui_min = MAP_ITER_SHRINK_MIN; ui_max = MAP_ITER_SHRINK_MAX; ui_category = "Raymarching"; ui_category_closed = true; > = MAP_ITER_SHRINK_DEFAULT;
-uniform int MapIterations < ui_type = "slider"; ui_label = "Map Iterations"; ui_min = MAP_ITERATIONS_MIN; ui_max = MAP_ITERATIONS_MAX; ui_step = 1; ui_category = "Raymarching"; ui_category_closed = true; > = MAP_ITERATIONS_DEFAULT;
+// Appearance
+uniform float3 BaseColorFactor < ui_type = "color"; ui_label = "Base Color"; ui_category = "Appearance"; > = float3(COLOR_BASE_R_DEFAULT, COLOR_BASE_G_DEFAULT, COLOR_BASE_B_DEFAULT);
+uniform float4 BackgroundColor < ui_type = "color"; ui_label = "Background Color"; ui_category = "Appearance"; > = float4(0.5, 0.5, 0.5, 1.0);
+uniform float ColorIterMultiplier < ui_type = "slider"; ui_label = "Color Variation"; ui_min = COLOR_ITER_MULT_MIN; ui_max = COLOR_ITER_MULT_MAX; ui_category = "Appearance"; > = COLOR_ITER_MULT_DEFAULT;
+uniform float ColorIterAdd < ui_type = "slider"; ui_label = "Brightness Offset"; ui_min = COLOR_ITER_ADD_MIN; ui_max = COLOR_ITER_ADD_MAX; ui_category = "Appearance"; > = COLOR_ITER_ADD_DEFAULT;
+
+// Lighting
+uniform float LightDotProductMultiplier < ui_type = "slider"; ui_label = "Light Intensity"; ui_min = LIGHT_DOT_PRODUCT_MULT_MIN; ui_max = LIGHT_DOT_PRODUCT_MULT_MAX; ui_category = "Lighting"; > = LIGHT_DOT_PRODUCT_MULT_DEFAULT;
+uniform float LightAmbient < ui_type = "slider"; ui_label = "Ambient Light"; ui_min = LIGHT_AMBIENT_MIN; ui_max = LIGHT_AMBIENT_MAX; ui_category = "Lighting"; > = LIGHT_AMBIENT_DEFAULT;
+
+// Color Grading
+uniform float FinalColorPower < ui_type = "slider"; ui_label = "Contrast"; ui_min = FINAL_COLOR_POW_MIN; ui_max = FINAL_COLOR_POW_MAX; ui_category = "Color Grading"; ui_category_closed = true; > = FINAL_COLOR_POW_DEFAULT;
+uniform float FinalColorMultiplier < ui_type = "slider"; ui_label = "Exposure"; ui_min = FINAL_COLOR_MULT_MIN; ui_max = FINAL_COLOR_MULT_MAX; ui_category = "Color Grading"; ui_category_closed = true; > = FINAL_COLOR_MULT_DEFAULT;
+uniform float FinalColorScale < ui_type = "slider"; ui_label = "Saturation"; ui_min = FINAL_COLOR_SCALE_MIN; ui_max = FINAL_COLOR_SCALE_MAX; ui_category = "Color Grading"; ui_category_closed = true; > = FINAL_COLOR_SCALE_DEFAULT;
+uniform float FinalColorSubtract < ui_type = "slider"; ui_label = "Black Level"; ui_min = FINAL_COLOR_SUB_MIN; ui_max = FINAL_COLOR_SUB_MAX; ui_category = "Color Grading"; ui_category_closed = true; > = FINAL_COLOR_SUB_DEFAULT;
+
+// Quality Settings
+uniform int RaymarchSteps < ui_type = "slider"; ui_label = "Detail Level"; ui_min = RAYMARCH_STEPS_MIN; ui_max = RAYMARCH_STEPS_MAX; ui_category = "Quality Settings"; ui_category_closed = true; > = RAYMARCH_STEPS_DEFAULT;
+uniform float RaymarchFarPlane < ui_type = "slider"; ui_label = "View Distance"; ui_min = RAYMARCH_FAR_MIN; ui_max = RAYMARCH_FAR_MAX; ui_category = "Quality Settings"; ui_category_closed = true; > = RAYMARCH_FAR_DEFAULT;
+uniform float RaymarchStepScale < ui_type = "slider"; ui_label = "Precision"; ui_min = RAYMARCH_STEP_SCALE_MIN; ui_max = RAYMARCH_STEP_SCALE_MAX; ui_category = "Quality Settings"; ui_category_closed = true; > = RAYMARCH_STEP_SCALE_DEFAULT;
+uniform float RaymarchHitThreshold < ui_type = "slider"; ui_label = "Surface Accuracy"; ui_min = RAYMARCH_HIT_THRESHOLD_MIN; ui_max = RAYMARCH_HIT_THRESHOLD_MAX; ui_category = "Quality Settings"; ui_category_closed = true; > = RAYMARCH_HIT_THRESHOLD_DEFAULT;
+
+// Chain Detail
+uniform float MapIterationScale < ui_type = "slider"; ui_label = "Link Complexity"; ui_min = MAP_ITER_SCALE_MIN; ui_max = MAP_ITER_SCALE_MAX; ui_category = "Chain Detail"; ui_category_closed = true; > = MAP_ITER_SCALE_DEFAULT;
+uniform float MapIterationShrink < ui_type = "slider"; ui_label = "Detail Scaling"; ui_min = MAP_ITER_SHRINK_MIN; ui_max = MAP_ITER_SHRINK_MAX; ui_category = "Chain Detail"; ui_category_closed = true; > = MAP_ITER_SHRINK_DEFAULT;
+uniform int MapIterations < ui_type = "slider"; ui_label = "Detail Layers"; ui_min = MAP_ITERATIONS_MIN; ui_max = MAP_ITERATIONS_MAX; ui_step = 1; ui_category = "Chain Detail"; ui_category_closed = true; > = MAP_ITERATIONS_DEFAULT;
 
 // Animation
 AS_ANIMATION_UI(AnimationSpeed, AnimationKeyframe, "Animation")
-uniform float TimeMultiplier < ui_type = "slider"; ui_label = "Global Time Multiplier"; ui_min = TIME_MULTIPLIER_MIN; ui_max = TIME_MULTIPLIER_MAX; ui_category = "Animation"; > = TIME_MULTIPLIER_DEFAULT;
+uniform float TimeMultiplier < ui_type = "slider"; ui_label = "Animation Speed"; ui_min = TIME_MULTIPLIER_MIN; ui_max = TIME_MULTIPLIER_MAX; ui_category = "Animation"; > = TIME_MULTIPLIER_DEFAULT;
 
-// Camera Controls
-uniform float3 CameraPosition < ui_type = "drag"; ui_label = "Camera Position (XYZ)"; ui_tooltip = "Position of the camera in 3D space"; ui_min = -5.0; ui_max = 5.0; ui_step = 0.01; ui_category = "Camera"; ui_category_closed = true; > = float3(0.0, 0.0, -1.0);
-uniform float CameraPitch < ui_type = "slider"; ui_label = "Camera Pitch"; ui_tooltip = "Camera tilt up/down"; ui_min = -90.0; ui_max = 90.0; ui_step = 0.1; ui_category = "Camera"; ui_category_closed = true; > = 0.0;
-uniform float CameraYaw < ui_type = "slider"; ui_label = "Camera Yaw"; ui_tooltip = "Camera rotation left/right"; ui_min = -180.0; ui_max = 180.0; ui_step = 0.1; ui_category = "Camera"; ui_category_closed = true; > = 0.0;
+// Camera View
+uniform float3 CameraPosition < ui_type = "drag"; ui_label = "Camera Position"; ui_tooltip = "Position of the camera in 3D space"; ui_min = -5.0; ui_max = 5.0; ui_step = 0.01; ui_category = "Camera View"; ui_category_closed = true; > = float3(0.0, 0.0, -1.0);
+uniform float CameraPitch < ui_type = "slider"; ui_label = "Look Up/Down"; ui_tooltip = "Camera tilt up/down"; ui_min = -90.0; ui_max = 90.0; ui_step = 0.1; ui_category = "Camera View"; ui_category_closed = true; > = 0.0;
+uniform float CameraYaw < ui_type = "slider"; ui_label = "Look Left/Right"; ui_tooltip = "Camera rotation left/right"; ui_min = -180.0; ui_max = 180.0; ui_step = 0.1; ui_category = "Camera View"; ui_category_closed = true; > = 0.0;
 
 // Stage Controls
 AS_POSITION_SCALE_UI(EffectCenter, EffectScale) // Combined position and scale controls
