@@ -162,6 +162,7 @@ static const int AS_DEBUG_PATTERN = 4;                  // Debug pattern display
 
 // --- Blend Constants ---
 #define AS_BLEND_NORMAL     0 // No blending
+#define AS_BLEND_OPAQUE     0 // Opaque blending
 #define AS_BLEND_LIGHTEN    5 // Lighter only
 
 // --- Display and Resolution Constants ---
