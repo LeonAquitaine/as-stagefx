@@ -4,9 +4,9 @@
  * License: Creative Commons Attribution 4.0 International
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
  * 
- * Original by:
- * "Blue Corona" by SnoopethDuckDuck
- * https://www.shadertoy.com/view/XfKGWV
+ * CREDITS:
+ * Based on "Blue Corona" by SnoopethDuckDuck
+ * Shadertoy: https://www.shadertoy.com/view/XfKGWV
  * 
  * ===================================================================================
  *
@@ -14,7 +14,8 @@
  * Creates a vibrant, abstract blue corona effect with fluid, dynamic motion.
  * The effect generates hypnotic patterns through iterative mathematical transformations,
  * resulting in organic, plasma-like visuals with a predominantly blue color scheme.
- * * FEATURES:
+ *
+ * FEATURES:
  * - Abstract, organic blue corona patterns
  * - Smooth fluid-like animation
  * - Customizable iteration count and pattern scale
@@ -31,10 +32,6 @@
  * 3. Applies exponential transformations to create the final colors
  * 4. Colors controlled through weighted channel components
  * 5. Integrates with standard AS features for positioning and animation
- * 
- * Core algorithm based on SnoopethDuckDuck's "Blue Corona" on Shadertoy
- * (https://www.shadertoy.com/view/XfKGWV), known for its terse, compact GLSL style,
- * adapted for ReShade with enhanced controls and standard AS StageFX framework integration.
  * 
  * ===================================================================================
  */

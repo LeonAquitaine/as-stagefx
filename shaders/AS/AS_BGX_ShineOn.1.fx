@@ -1,8 +1,12 @@
 /**
  * AS_BGX_ShineOn.1.fx - Fractal noise-based glow effect with crystal highlights
- * Author: Leon Aquitaine (translated from Shadertoy)
+ * Author: Leon Aquitaine
  * License: Creative Commons Attribution 4.0 International
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
+ * 
+ * CREDITS:
+ * Based on "Shine On" by emodeman
+ * Shadertoy: https://www.shadertoy.com/view/st23zw
  * 
  * ===================================================================================
  *
@@ -20,14 +24,9 @@
  *
  * IMPLEMENTATION OVERVIEW:
  * 1. Generates dynamic fractal Brownian motion noise patterns
- * 2. Applies multiple rotation and time-dependent transformations
- * 3. Creates animated crystal points that move across the screen
+ * 2. Applies multiple rotation and time-dependent transformations * 3. Creates animated crystal points that move across the screen
  * 4. Combines all elements with adjustable color transformations
  * 
- * Original Author: emodeman (https://www.shadertoy.com/view/st23zw)
- * Based on "Shine On" from Shadertoy: https://www.shadertoy.com/view/st23zw
- * Adapted for ReShade by Leon Aquitaine
- *
  * ===================================================================================
  */
 

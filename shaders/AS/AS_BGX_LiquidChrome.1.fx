@@ -1,8 +1,12 @@
 /**
  * AS_BGX_LiquidChrome.1.fx - Psychedelic Liquid Chrome Flowing Background
- * Author: Leon Aquitaine (Original by iamsaitam)
+ * Author: Leon Aquitaine
  * License: Creative Commons Attribution 4.0 International
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
+ * 
+ * CREDITS:
+ * Based on "Liquid Chrome" by iamsaitam
+ * Neort: https://neort.io/art/bkm813c3p9f7drq1j86g
  * 
  * ===================================================================================
  *
@@ -24,12 +28,9 @@
  * 1. Iteratively warps screen coordinates using sin/cos over time
  * 2. Calculates a color value based on warped coordinate lengths
  * 3. Optionally adds vertical stripe patterns through additional iterations
- * 4. Applies color phasing for psychedelic effects with fine-tune controls
- * 5. Modulates parameters with audio when enabled
+ * 4. Applies color phasing for psychedelic effects with fine-tune controls * 5. Modulates parameters with audio when enabled
  * 6. Provides standard rotation, position, scale, and blend features
  *
- * Original source: https://neort.io/art/bkm813c3p9f7drq1j86g - "liquid chrome" by iamsaitam
- * 
  * ===================================================================================
  */
 

@@ -4,6 +4,10 @@
  * License: Creative Commons Attribution 4.0 International
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
  * 
+ * CREDITS:
+ * Based on "70s Melt" by tomorrowevening (2013-08-12)
+ * Shadertoy: https://www.shadertoy.com/view/XsX3zl
+ * 
  * ===================================================================================
  *
  * DESCRIPTION:
@@ -17,18 +21,14 @@
  * - Dynamic time-based animation with keyframe support
  * - Audio reactivity that can be mapped to different effect parameters
  * - Resolution-independent transformation with position and rotation controls
- *  * IMPLEMENTATION OVERVIEW:
+ *
+ * IMPLEMENTATION OVERVIEW:
  * 1. Creates an iterative sine-based distortion effect on screen coordinates
  * 2. Uses cosine functions to modulate distortion parameters over time
  * 3. Generates RGB colors based on the distorted coordinates
  * 4. Applies either mathematical coloring or palette-based coloring
  * 5. Provides audio reactivity with selectable parameter targeting
  * 
- * CREDITS:
- * Original: "70s Melt" by tomorrowevening (2013-08-12)
- * Source: https://www.shadertoy.com/view/XsX3zl
- * Adapted for ReShade with enhanced controls and AS StageFX framework integration.
- *
  * ===================================================================================
  */
 

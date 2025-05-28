@@ -5,8 +5,8 @@
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
  * 
  * CREDITS:
- * Heavily inspired by: "StageDepth.fx" by Marot Satil (2019)
-  * 
+ * Inspired by "StageDepth.fx" by Marot Satil (2019)
+ * 
  * ===================================================================================
  *
  * DESCRIPTION:
@@ -17,7 +17,8 @@
  * - Audio reactivity for opacity and scale
  * - Customizable depth masking for each sticker
  * - Support for custom textures via preprocessor definition
- * * IMPLEMENTATION OVERVIEW:
+ *
+ * IMPLEMENTATION OVERVIEW:
  * 1. Applies transformation matrix to screen coordinates
  * 2. Samples from specified texture at transformed coordinates
  * 3. Applies audio reactivity to selected parameter (opacity or scale)

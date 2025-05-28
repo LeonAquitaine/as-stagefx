@@ -1,10 +1,10 @@
 ﻿{
-    "buildDate":  "2025-05-25T21:40:07Z",
-    "version":  "1.7.10",
+    "buildDate":  "2025-05-27T22:37:09Z",
+    "version":  "1.7.12",
     "packages":  [
                      {
-                         "version":  "1.7.10",
-                         "shaderCount":  16,
+                         "version":  "1.7.12",
+                         "shaderCount":  17,
                          "textureDependencyCount":  3,
                          "name":  "AS_StageFX_VisualEffects",
                          "fxhDependencyCount":  4,
@@ -31,6 +31,7 @@
                                          "AS_VFX_ColorBalancer.1.fx",
                                          "AS_VFX_DigitalArtifacts.1.fx",
                                          "AS_VFX_DustMotes.1.fx",
+                                         "AS_VFX_FocusedChaos.1.fx",
                                          "AS_VFX_RadiantFire.1.fx",
                                          "AS_VFX_RainyWindow.1.fx",
                                          "AS_VFX_ScreenRing.1.fx",
@@ -42,8 +43,8 @@
                                      ]
                      },
                      {
-                         "version":  "1.7.10",
-                         "shaderCount":  50,
+                         "version":  "1.7.12",
+                         "shaderCount":  54,
                          "textureDependencyCount":  3,
                          "name":  "AS_StageFX",
                          "fxhDependencyCount":  5,
@@ -78,8 +79,11 @@
                                          "AS_BGX_MistyGrid.1.fx",
                                          "AS_BGX_PastRacer.1.fx",
                                          "AS_BGX_PlasmaFlow.1.fx",
+                                         "AS_BGX_ProteanClouds.1.fx",
+                                         "AS_BGX_RaymarchedChain.1.fx",
                                          "AS_BGX_ShineOn.1.fx",
                                          "AS_BGX_StainedLights.1.fx",
+                                         "AS_BGX_SunsetClouds.1.fx",
                                          "AS_BGX_TimeCrystal.1.fx",
                                          "AS_BGX_WavySquares.1.fx",
                                          "AS_BGX_WavySquiggles.1.fx",
@@ -102,6 +106,7 @@
                                          "AS_VFX_ColorBalancer.1.fx",
                                          "AS_VFX_DigitalArtifacts.1.fx",
                                          "AS_VFX_DustMotes.1.fx",
+                                         "AS_VFX_FocusedChaos.1.fx",
                                          "AS_VFX_MotionTrails.1.fx",
                                          "AS_VFX_RadiantFire.1.fx",
                                          "AS_VFX_RainyWindow.1.fx",
@@ -116,7 +121,7 @@
                                      ]
                      },
                      {
-                         "version":  "1.7.10",
+                         "version":  "1.7.12",
                          "shaderCount":  16,
                          "textureDependencyCount":  0,
                          "name":  "AS_StageFX_Essentials",
@@ -153,8 +158,8 @@
                                      ]
                      },
                      {
-                         "version":  "1.7.10",
-                         "shaderCount":  18,
+                         "version":  "1.7.12",
+                         "shaderCount":  21,
                          "textureDependencyCount":  1,
                          "name":  "AS_StageFX_Backgrounds",
                          "fxhDependencyCount":  3,
@@ -184,7 +189,10 @@
                                          "AS_BGX_MistyGrid.1.fx",
                                          "AS_BGX_PastRacer.1.fx",
                                          "AS_BGX_PlasmaFlow.1.fx",
+                                         "AS_BGX_ProteanClouds.1.fx",
+                                         "AS_BGX_RaymarchedChain.1.fx",
                                          "AS_BGX_ShineOn.1.fx",
+                                         "AS_BGX_SunsetClouds.1.fx",
                                          "AS_BGX_WavySquares.1.fx",
                                          "AS_BGX_WavySquiggles.1.fx",
                                          "AS_BGX_ZippyZaps.1.fx"

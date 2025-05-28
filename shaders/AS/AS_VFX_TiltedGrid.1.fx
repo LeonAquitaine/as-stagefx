@@ -1,8 +1,11 @@
 /**
  * AS_VFX_TiltedGrid.1.fx - Rotatable grid effect with borders
  * Author: Leon Aquitaine
- * License: Creative Commons Attribution 4.0 International
- * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
+ * License: Creative Commons Attribution 4.0 International * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
+ * 
+ * CREDITS:
+ * Inspired by: "Godot 4: Tilted Grid Effect Tutorial" by FencerDevLog
+ * Tutorial URL: https://www.youtube.com/watch?v=Tfj6RDqXEHM
  * 
  * ===================================================================================
  *
@@ -25,9 +28,6 @@
  * 2. Samples pixel color from cell centers for pixelation effect
  * 3. Calculates square border mask and additive chamfer corner mask independently
  * 4. Combines cell color and final border mask with adjustable blend options
- * 
- * Inspired by: "Godot 4: Tilted Grid Effect Tutorial" by FencerDevLog
- * Tutorial URL: https://www.youtube.com/watch?v=Tfj6RDqXEHM
  *
  * ===================================================================================
  */

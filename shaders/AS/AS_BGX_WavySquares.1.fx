@@ -1,12 +1,12 @@
 /**
  * AS_BGX_WavySquares.1.fx - Wavy Squares Background
- * Author: Leon Aquitaine (adapted from GLSL shader)
+ * Author: Leon Aquitaine
  * License: Creative Commons Attribution 4.0 International
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
  * 
- * Original by:
- * "Square Tiling Example E" by SnoopethDuckDuck
- * https://www.shadertoy.com/view/NdfBzn
+ * CREDITS:
+ * Based on "Square Tiling Example E" by SnoopethDuckDuck
+ * Shadertoy: https://www.shadertoy.com/view/NdfBzn
  * 
  * ===================================================================================
  *
@@ -28,12 +28,11 @@
  * IMPLEMENTATION OVERVIEW:
  * 1. Applies wave distortion to the coordinate space
  * 2. Creates a tiling pattern with varied square arrangements
- * 3. Modulates square sizes with time and position
- * 4. Uses signed distance fields to render rounded squares
+ * 3. Modulates square sizes with time and position * 4. Uses signed distance fields to render rounded squares
  * 5. Applies color based on position and time
  * 6. Integrates with standard AS palette system for coloring
  * 
- * Core algorithm based on SnoopethDuckDuck's "Square Tiling Example E" on Shadertoy
+ * ===================================================================================
  * (https://www.shadertoy.com/view/NdfBzn), adapted for ReShade with additional features
  * and standard AS StageFX framework integration.
  * 

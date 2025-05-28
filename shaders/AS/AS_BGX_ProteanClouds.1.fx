@@ -260,7 +260,10 @@ float4 PS_ProteanClouds(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) 
 //--------------------------------------------------------------------------------------
 // Technique Definition
 //--------------------------------------------------------------------------------------
-technique ProteanClouds_Artist_V2 // Incremented version name
+technique AS_BGX_ProteanClouds_1 < 
+    ui_label = "[AS] BGX: Protean Clouds"; 
+    ui_tooltip = "Dynamic volumetric clouds with raymarching and impressive self-shadowing."; 
+>
 {
     pass
     {

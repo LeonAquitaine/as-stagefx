@@ -1,12 +1,12 @@
 /**
  * AS_BGX_WavySquiggles.1.fx - Wavy Squiggles Background
- * Author: Leon Aquitaine (adapted from GLSL shader)
+ * Author: Leon Aquitaine
  * License: Creative Commons Attribution 4.0 International
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
  * 
- * Original by:
- * "Interactive 2.5D Squiggles" by SnoopethDuckDuck
- * https://www.shadertoy.com/view/7sBfDD
+ * CREDITS:
+ * Based on "Interactive 2.5D Squiggles" by SnoopethDuckDuck
+ * Shadertoy: https://www.shadertoy.com/view/7sBfDD
  * 
  * ===================================================================================
  *
@@ -14,7 +14,8 @@
  * Creates a mesmerizing pattern of adaptive wavy lines that follow the mouse or fixed position.
  * The lines create intricate patterns that look like dynamic squiggly lines arranged around
  * a central point, with rotation applied based on direction.
- * * FEATURES:
+ *
+ * FEATURES:
  * - Position-reactive wavy line patterns
  * - Customizable line parameters (rotation influence, thickness, distance, smoothness)
  * - Optional color palettes with control over hue, saturation, and value
@@ -23,7 +24,8 @@
  * - Depth-aware rendering
  * - Adjustable rotation
  * - Standard position, scale, and blending options
- * * IMPLEMENTATION OVERVIEW:
+ *
+ * IMPLEMENTATION OVERVIEW:
  * 1. Calculates vector direction from center position to current pixel
  * 2. Applies optional displacement for off-center effects
  * 3. Uses angle and distance to create rotation patterns
@@ -31,9 +33,7 @@
  * 5. Controls line appearance with adjustable smoothness from hard edges to gradients
  * 6. Applies standard AS palette system for coloring
  * 
- * Core algorithm based on SnoopethDuckDuck's "Interactive 2.5D Squiggles" on Shadertoy
- * (https://www.shadertoy.com/view/7sBfDD), adapted for ReShade with additional features
- * and standard AS StageFX framework integration.
+ * ===================================================================================
  * 
  * ===================================================================================
  */

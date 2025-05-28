@@ -1,0 +1,157 @@
+// AS_BGX_[EffectName].1.fx - Background Effect Template
+// Replace [EffectName] with your effect name (e.g., "CosmicStorm")
+
+/**
+ * AS_BGX_[EffectName].1.fx - [Brief Description]
+ * Author: [Author Name]
+ * License: Creative Commons Attribution 4.0 International
+ */
+
+#ifndef __AS_BGX_[EffectName]_1_fx
+#define __AS_BGX_[EffectName]_1_fx
+
+#include "ReShade.fxh"
+#include "AS_Utils.1.fxh"
+#include "AS_Palette.1.fxh"  // For color palette support
+
+namespace AS[EffectName] {
+
+// ============================================================================
+// CONSTANTS
+// ============================================================================
+static const float PATTERN_SCALE_MIN = 1.0;
+static const float PATTERN_SCALE_MAX = 20.0;
+static const float PATTERN_SCALE_DEFAULT = 5.0;
+
+static const float ANIMATION_SPEED_DEFAULT = 1.0;
+static const float AUDIO_MULTIPLIER_DEFAULT = 1.0;
+
+// ============================================================================
+// UI CONTROLS
+// ============================================================================
+
+// Pattern Controls
+uniform float PatternScale < ui_type = "slider"; ui_label = "Pattern Scale"; ui_min = PATTERN_SCALE_MIN; ui_max = PATTERN_SCALE_MAX; ui_category = "Pattern"; > = PATTERN_SCALE_DEFAULT;
+uniform float PatternComplexity < ui_type = "slider"; ui_label = "Pattern Complexity"; ui_min = 1.0; ui_max = 10.0; ui_category = "Pattern"; > = 5.0;
+
+// Colors
+AS_PALETTE_SELECTION_UI(EffectPalette, "Color Palette", AS_PALETTE_FIRE, "Colors")
+AS_DECLARE_CUSTOM_PALETTE(Effect_, "Colors")
+uniform float3 BackgroundColor < ui_type = "color"; ui_label = "Background Color"; ui_category = "Colors"; > = float3(0.0, 0.0, 0.0);
+
+// Animation
+AS_ANIMATION_UI(AnimationSpeed, AnimationKeyframe, "Animation")
+
+// Audio Reactivity
+AS_AUDIO_UI(Effect_AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
+AS_AUDIO_MULT_UI(Effect_AudioMultiplier, "Audio Intensity", AUDIO_MULTIPLIER_DEFAULT, 2.0, "Audio Reactivity")
+uniform int Effect_AudioTarget < ui_type = "combo"; ui_label = "Audio Target"; ui_items = "None\0Pattern Scale\0Complexity\0Animation Speed\0"; ui_category = "Audio Reactivity"; > = 0;
+
+// Stage Controls
+AS_POSITION_SCALE_UI(EffectCenter, EffectScale)
+AS_STAGEDEPTH_UI(EffectDepth)
+AS_ROTATION_UI(EffectRotationSnap, EffectRotationFine)
+
+// Final Mix
+AS_BLENDMODE_UI_DEFAULT(BlendMode, AS_BLEND_NORMAL)
+AS_BLENDAMOUNT_UI(BlendStrength)
+
+// Debug
+AS_DEBUG_UI("Off\0Show Audio\0")
+
+// ============================================================================
+// PIXEL SHADER
+// ============================================================================
+float4 EffectPS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD) : SV_TARGET {
+    float4 originalColor = tex2D(ReShade::BackBuffer, texcoord);
+    float depth = ReShade::GetLinearizedDepth(texcoord);
+    
+    // Depth test - render behind scene objects
+    if (depth < EffectDepth) {
+        return originalColor;
+    }
+    
+    // Apply audio reactivity
+    float patternScale = PatternScale;
+    float complexity = PatternComplexity;
+    float animSpeed = AnimationSpeed;
+    
+    float audioValue = AS_applyAudioReactivity(1.0, Effect_AudioSource, Effect_AudioMultiplier, true);
+    if (Effect_AudioTarget == 1) patternScale *= audioValue;
+    else if (Effect_AudioTarget == 2) complexity *= audioValue;
+    else if (Effect_AudioTarget == 3) animSpeed *= audioValue;
+    
+    // Get animation time
+    float time = AS_getAnimationTime(animSpeed, AnimationKeyframe);
+    
+    // Transform coordinates
+    float rotation = AS_getRotationRadians(EffectRotationSnap, EffectRotationFine);
+    float2 coords = (texcoord - AS_HALF) * 2.0;
+    coords.x *= ReShade::AspectRatio;
+    
+    // Apply rotation
+    float sinRot, cosRot;
+    sincos(-rotation, sinRot, cosRot);
+    coords = float2(
+        coords.x * cosRot - coords.y * sinRot,
+        coords.x * sinRot + coords.y * cosRot
+    );
+    
+    // Apply position and scale
+    coords = coords / EffectScale - EffectCenter;
+    
+    // IMPLEMENT YOUR BACKGROUND PATTERN HERE
+    // Example: Simple noise-based pattern
+    float2 noiseCoords = coords * patternScale + time * 0.1;
+    float noiseValue = AS_PerlinNoise2D(noiseCoords);
+    
+    // Apply complexity (multiple octaves)
+    for (int i = 1; i < complexity; i++) {
+        noiseCoords *= 2.0;
+        noiseValue += AS_PerlinNoise2D(noiseCoords) / pow(2.0, i);
+    }
+    
+    noiseValue = saturate(noiseValue * 0.5 + 0.5);
+    
+    // Generate color from palette
+    float3 effectColor;
+    if (EffectPalette == AS_PALETTE_CUSTOM) {
+        effectColor = AS_GET_INTERPOLATED_CUSTOM_COLOR(Effect_, noiseValue);
+    } else {
+        effectColor = AS_getInterpolatedColor(EffectPalette, noiseValue);
+    }
+    
+    // Mix with background color
+    effectColor = lerp(BackgroundColor, effectColor, noiseValue);
+    
+    // Apply blending
+    float3 blendedColor = AS_applyBlend(effectColor, originalColor.rgb, BlendMode);
+    float4 finalColor = float4(blendedColor, 1.0);
+    finalColor = lerp(originalColor, finalColor, BlendStrength);
+    
+    // Debug overlay
+    if (DebugMode == 1) {
+        float2 debugCenter = float2(0.1, 0.1);
+        if (length(texcoord - debugCenter) < 0.08) {
+            return float4(audioValue, audioValue, audioValue, 1.0);
+        }
+    }
+    
+    return finalColor;
+}
+
+} // namespace AS[EffectName]
+
+// ============================================================================
+// TECHNIQUE
+// ============================================================================
+technique AS_BGX_[EffectName] < ui_label="[AS] BGX: [Effect Display Name]"; ui_tooltip="[Description of the background effect]"; >
+{
+    pass
+    {
+        VertexShader = PostProcessVS;
+        PixelShader = AS[EffectName]::EffectPS;
+    }
+}
+
+#endif // __AS_BGX_[EffectName]_1_fx

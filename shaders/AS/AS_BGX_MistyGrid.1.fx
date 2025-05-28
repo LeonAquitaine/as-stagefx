@@ -1,11 +1,13 @@
 /**
  * AS_BGX_MistyGrid.1.fx - Abstract Fractal Grid Background
- * Author: Leon Aquitaine (adapted from NuSan's "Misty Grid" shader)
+ * Author: Leon Aquitaine
  * License: Creative Commons Attribution 4.0 International
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
  * 
- * Original Shader: "Misty Grid" by NuSan (https://www.shadertoy.com/view/wl2Szd)
- * Created on: 2019-08-26
+ * CREDITS:
+ * Based on "Misty Grid" by NuSan
+ * Shadertoy: https://www.shadertoy.com/view/wl2Szd
+ * Created: 2019-08-26
  * 
  * ===================================================================================
  *

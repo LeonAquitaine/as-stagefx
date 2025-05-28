@@ -1,0 +1,217 @@
+// AS_LFX_[EffectName].1.fx - Lighting Effect Template
+// Replace [EffectName] with your effect name (e.g., "Fireflies")
+
+/**
+ * AS_LFX_[EffectName].1.fx - [Brief Description]
+ * Author: [Author Name]
+ * License: Creative Commons Attribution 4.0 International
+ */
+
+#ifndef __AS_LFX_[EffectName]_1_fx
+#define __AS_LFX_[EffectName]_1_fx
+
+#include "ReShade.fxh"
+#include "AS_Utils.1.fxh"
+#include "AS_Palette.1.fxh"
+
+namespace AS[EffectName] {
+
+// ============================================================================
+// CONSTANTS
+// ============================================================================
+static const int LIGHT_COUNT = 4; // Number of light instances
+
+static const float LIGHT_SIZE_MIN = 0.01;
+static const float LIGHT_SIZE_MAX = 0.3;
+static const float LIGHT_SIZE_DEFAULT = 0.1;
+
+static const float LIGHT_INTENSITY_MIN = 0.0;
+static const float LIGHT_INTENSITY_MAX = 2.0;
+static const float LIGHT_INTENSITY_DEFAULT = 1.0;
+
+// ============================================================================
+// LIGHT INSTANCE MACRO
+// ============================================================================
+#define LIGHT_UI(index, defaultEnable, defaultPosition, defaultSize, defaultIntensity, defaultDepth) \
+uniform bool Light##index##_Enable < ui_label = "Enable Light " #index; ui_category = "Light " #index; ui_category_closed = index > 1; > = defaultEnable; \
+uniform float2 Light##index##_Position < ui_type = "slider"; ui_label = "Position (X, Y)"; ui_min = -1.5; ui_max = 1.5; ui_step = 0.01; ui_category = "Light " #index; > = defaultPosition; \
+uniform float Light##index##_Size < ui_type = "slider"; ui_label = "Size"; ui_min = LIGHT_SIZE_MIN; ui_max = LIGHT_SIZE_MAX; ui_step = 0.01; ui_category = "Light " #index; > = defaultSize; \
+uniform float Light##index##_Intensity < ui_type = "slider"; ui_label = "Intensity"; ui_min = LIGHT_INTENSITY_MIN; ui_max = LIGHT_INTENSITY_MAX; ui_step = 0.01; ui_category = "Light " #index; > = defaultIntensity; \
+uniform float Light##index##_StageDepth < ui_type = "slider"; ui_label = "Depth"; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Light " #index; > = defaultDepth;
+
+// ============================================================================
+// LIGHT INSTANCES
+// ============================================================================
+LIGHT_UI(1, true, float2(0.0, 0.0), LIGHT_SIZE_DEFAULT, LIGHT_INTENSITY_DEFAULT, 0.05)
+LIGHT_UI(2, false, float2(0.3, 0.3), LIGHT_SIZE_DEFAULT, LIGHT_INTENSITY_DEFAULT, 0.05)
+LIGHT_UI(3, false, float2(-0.3, 0.3), LIGHT_SIZE_DEFAULT, LIGHT_INTENSITY_DEFAULT, 0.05)
+LIGHT_UI(4, false, float2(0.0, -0.3), LIGHT_SIZE_DEFAULT, LIGHT_INTENSITY_DEFAULT, 0.05)
+
+// ============================================================================
+// GLOBAL CONTROLS
+// ============================================================================
+
+// Appearance
+AS_PALETTE_SELECTION_UI(LightPalette, "Light Color Palette", AS_PALETTE_FIRE, "Appearance")
+AS_DECLARE_CUSTOM_PALETTE(Light_, "Appearance")
+uniform float LightFalloff < ui_type = "slider"; ui_label = "Light Falloff"; ui_tooltip = "Controls how quickly light fades with distance"; ui_min = 0.5; ui_max = 5.0; ui_category = "Appearance"; > = 2.0;
+uniform float BloomSize < ui_type = "slider"; ui_label = "Bloom Size"; ui_tooltip = "Size of the bloom/glow effect"; ui_min = 0.0; ui_max = 3.0; ui_category = "Appearance"; > = 1.0;
+
+// Animation
+AS_ANIMATION_UI(AnimationSpeed, AnimationKeyframe, "Animation")
+uniform float FlickerAmount < ui_type = "slider"; ui_label = "Flicker Amount"; ui_tooltip = "Amount of random flickering"; ui_min = 0.0; ui_max = 1.0; ui_category = "Animation"; > = 0.1;
+
+// Audio Reactivity
+AS_AUDIO_UI(Light_AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
+AS_AUDIO_MULT_UI(Light_AudioMultiplier, "Audio Intensity", 1.0, 2.0, "Audio Reactivity")
+uniform int Light_AudioTarget < ui_type = "combo"; ui_label = "Audio Target"; ui_items = "None\0Light Intensity\0Flicker Amount\0Bloom Size\0"; ui_category = "Audio Reactivity"; > = 0;
+
+// Final Mix
+AS_BLENDMODE_UI_DEFAULT(BlendMode, AS_BLEND_ADDITIVE)
+AS_BLENDAMOUNT_UI(BlendStrength)
+
+// Debug
+AS_DEBUG_UI("Off\0Show Audio\0Show Light Bounds\0")
+
+// ============================================================================
+// HELPER FUNCTIONS
+// ============================================================================
+
+// Calculate light contribution at a given position
+float3 calculateLight(float2 texcoord, float2 lightPos, float lightSize, float lightIntensity, float lightDepth, float time, int lightIndex) {
+    float depth = ReShade::GetLinearizedDepth(texcoord);
+    
+    // Skip if light is behind scene geometry
+    if (depth < lightDepth) {
+        return float3(0, 0, 0);
+    }
+    
+    // Transform coordinates to light space
+    float2 coords = texcoord - lightPos;
+    coords.x *= ReShade::AspectRatio; // Correct aspect ratio
+    
+    // Calculate distance from light center
+    float distance = length(coords) / lightSize;
+    
+    // Apply flicker using noise
+    float flicker = 1.0 + (AS_hash11(time + lightIndex) - 0.5) * FlickerAmount;
+    flicker = max(0.1, flicker); // Prevent complete darkness
+    
+    // Calculate light falloff
+    float attenuation = pow(1.0 / (1.0 + distance * LightFalloff), 2.0);
+    attenuation *= lightIntensity * flicker;
+    
+    // Add bloom effect
+    float bloom = 1.0 / (1.0 + distance * distance / (BloomSize * BloomSize));
+    attenuation += bloom * 0.3;
+    
+    // Get color from palette based on light intensity
+    float colorPos = saturate(attenuation);
+    float3 lightColor;
+    
+    if (LightPalette == AS_PALETTE_CUSTOM) {
+        lightColor = AS_GET_INTERPOLATED_CUSTOM_COLOR(Light_, colorPos);
+    } else {
+        lightColor = AS_getInterpolatedColor(LightPalette, colorPos);
+    }
+    
+    return lightColor * attenuation;
+}
+
+// ============================================================================
+// PIXEL SHADER
+// ============================================================================
+float4 EffectPS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD) : SV_TARGET {
+    float4 originalColor = tex2D(ReShade::BackBuffer, texcoord);
+    
+    // Apply audio reactivity to global parameters
+    float flickerAmount = FlickerAmount;
+    float bloomSize = BloomSize;
+    float audioValue = AS_applyAudioReactivity(1.0, Light_AudioSource, Light_AudioMultiplier, true);
+    
+    if (Light_AudioTarget == 2) flickerAmount *= audioValue;
+    else if (Light_AudioTarget == 3) bloomSize *= audioValue;
+    
+    // Get animation time
+    float time = AS_getAnimationTime(AnimationSpeed, AnimationKeyframe);
+    
+    // Accumulate light contributions
+    float3 totalLight = float3(0, 0, 0);
+    
+    // Light 1
+    if (Light1_Enable) {
+        float intensity = Light1_Intensity;
+        if (Light_AudioTarget == 1) intensity *= audioValue;
+        totalLight += calculateLight(texcoord, Light1_Position, Light1_Size, intensity, Light1_StageDepth, time, 1);
+    }
+    
+    // Light 2
+    if (Light2_Enable) {
+        float intensity = Light2_Intensity;
+        if (Light_AudioTarget == 1) intensity *= audioValue;
+        totalLight += calculateLight(texcoord, Light2_Position, Light2_Size, intensity, Light2_StageDepth, time, 2);
+    }
+    
+    // Light 3
+    if (Light3_Enable) {
+        float intensity = Light3_Intensity;
+        if (Light_AudioTarget == 1) intensity *= audioValue;
+        totalLight += calculateLight(texcoord, Light3_Position, Light3_Size, intensity, Light3_StageDepth, time, 3);
+    }
+    
+    // Light 4
+    if (Light4_Enable) {
+        float intensity = Light4_Intensity;
+        if (Light_AudioTarget == 1) intensity *= audioValue;
+        totalLight += calculateLight(texcoord, Light4_Position, Light4_Size, intensity, Light4_StageDepth, time, 4);
+    }
+    
+    // Apply blending
+    float3 blendedColor = AS_applyBlend(totalLight, originalColor.rgb, BlendMode);
+    float4 finalColor = float4(blendedColor, 1.0);
+    finalColor = lerp(originalColor, finalColor, BlendStrength);
+    
+    // Debug overlays
+    if (DebugMode == 1) { // Show Audio
+        float2 debugCenter = float2(0.1, 0.1);
+        if (length(texcoord - debugCenter) < 0.08) {
+            return float4(audioValue, audioValue, audioValue, 1.0);
+        }
+    } else if (DebugMode == 2) { // Show Light Bounds
+        // Draw circles around enabled lights
+        if (Light1_Enable) {
+            float dist = length(texcoord - Light1_Position) / Light1_Size;
+            if (abs(dist - 1.0) < 0.05) return float4(1, 0, 0, 1);
+        }
+        if (Light2_Enable) {
+            float dist = length(texcoord - Light2_Position) / Light2_Size;
+            if (abs(dist - 1.0) < 0.05) return float4(0, 1, 0, 1);
+        }
+        if (Light3_Enable) {
+            float dist = length(texcoord - Light3_Position) / Light3_Size;
+            if (abs(dist - 1.0) < 0.05) return float4(0, 0, 1, 1);
+        }
+        if (Light4_Enable) {
+            float dist = length(texcoord - Light4_Position) / Light4_Size;
+            if (abs(dist - 1.0) < 0.05) return float4(1, 1, 0, 1);
+        }
+    }
+    
+    return finalColor;
+}
+
+} // namespace AS[EffectName]
+
+// ============================================================================
+// TECHNIQUE
+// ============================================================================
+technique AS_LFX_[EffectName] < ui_label="[AS] LFX: [Effect Display Name]"; ui_tooltip="[Description of the lighting effect]"; >
+{
+    pass
+    {
+        VertexShader = PostProcessVS;
+        PixelShader = AS[EffectName]::EffectPS;
+    }
+}
+
+#endif // __AS_LFX_[EffectName]_1_fx

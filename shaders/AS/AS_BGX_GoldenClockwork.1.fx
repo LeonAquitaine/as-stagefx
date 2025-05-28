@@ -1,8 +1,13 @@
 /**
  * AS_BGX_GoldenClockwork.1.fx - Intricate Golden Apollonian Fractal Background
- * Author: Leon Aquitaine (Original GLSL by mrange, CC0: Golden apollian)
+ * Author: Leon Aquitaine
  * License: Creative Commons Attribution 4.0 International
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
+ * 
+ * CREDITS:
+ * Based on "Golden apollian" by mrange
+ * Shadertoy: https://www.shadertoy.com/view/WlcfRS
+ * Original License: CC0
  * 
  * ===================================================================================
  *
@@ -30,9 +35,6 @@
  * 7. The final color is post-processed for gamma correction and vignetting.
  * 8. UI controls allow customization of animation speed, pathing, colors, fractal style, kaleidoscope, audio reactivity, and blending.
  * 
- * Original GLSL: mrange (Licence CC0: Golden apollian)
- * Shadertoy Link: https://www.shadertoy.com/view/WlcfRS
- * Translated and adapted for ReShade by Leon Aquitaine.
  * ===================================================================================
  */
 
