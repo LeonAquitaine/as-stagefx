@@ -1,6 +1,6 @@
 /**
  * AS_BGX_RaymarchedChain.1.fx - Raymarched Animated Chain
- * Author: Leon Aquitaine (Adapted from Elsio on Shadertoy)
+ * Author: Leon Aquitaine
  * License: CC BY 4.0
  * Original Shader: "Corrente" by Elsio (https://www.shadertoy.com/view/ctSfRV)
  *
@@ -121,14 +121,20 @@ uniform float FinalColorScale < ui_type = "slider"; ui_label = "Final Color Scal
 uniform float FinalColorSubtract < ui_type = "slider"; ui_label = "Final Color Subtract"; ui_min = FINAL_COLOR_SUB_MIN; ui_max = FINAL_COLOR_SUB_MAX; ui_category = "Color"; > = FINAL_COLOR_SUB_DEFAULT;
 uniform float4 BackgroundColor < ui_type = "color"; ui_label = "Background Color"; ui_category = "Color"; > = float4(0.5, 0.5, 0.5, 1.0);
 
-// Camera & Stage Controls (Simplified: Rotation for Camera, Depth not used for BGX)
-AS_ROTATION_UI(SnapRotation, FineRotation) // For initial camera orientation
-// AS_POSITION_UI(EffectCenter) // Not directly used by this raymarcher's camera logic
-// AS_SCALE_UI(EffectScale)     // Not directly used by this raymarcher's camera logic
-// AS_STAGEDEPTH_UI(EffectDepth) // Typically not used for full-screen BGX effects
+// Camera Controls
+// Position and rotation controls affect the camera/view
+uniform float3 CameraPosition < ui_type = "drag"; ui_label = "Camera Position (XYZ)"; ui_tooltip = "Position of the camera in 3D space"; ui_min = -5.0; ui_max = 5.0; ui_step = 0.01; ui_category = "Camera"; > = float3(0.0, 0.0, -1.0);
+uniform float CameraPitch < ui_type = "slider"; ui_label = "Camera Pitch"; ui_tooltip = "Camera tilt up/down"; ui_min = -90.0; ui_max = 90.0; ui_step = 0.1; ui_category = "Camera"; > = 0.0;
+uniform float CameraYaw < ui_type = "slider"; ui_label = "Camera Yaw"; ui_tooltip = "Camera rotation left/right"; ui_min = -180.0; ui_max = 180.0; ui_step = 0.1; ui_category = "Camera"; > = 0.0;
+
+// Stage Controls
+AS_POS_UI(EffectCenter)       // Position in central square coordinate system
+AS_SCALE_UI(EffectScale)      // Scale factor (0.1 to 5.0)
+AS_STAGEDEPTH_UI(EffectDepth) // Depth masking (0.0 to 1.0)
+AS_ROTATION_UI(EffectRotationSnap, EffectRotationFine) // Effect rotation controls
 
 // Final Mix
-AS_BLENDMODE_UI_DEFAULT(BlendMode, 0) // AS_BLEND_OPAQUE should be defined in AS_Utils.1.fxh
+AS_BLENDMODE_UI_DEFAULT(BlendMode, AS_BLEND_OPAQUE) // Use named constant instead of numeric value
 AS_BLENDAMOUNT_UI(BlendAmount)
 
 
@@ -218,25 +224,44 @@ float3 get_normal(float3 p) {
 float4 PS_RaymarchedChain(float4 vpos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target {
     float4 original_color = tex2D(ReShade::BackBuffer, texcoord);
     ps_current_time = AS_getAnimationTime(AnimationSpeed, AnimationKeyframe) * TimeMultiplier;
-
-    float2 uv = (texcoord - 0.5) * 2.0; 
-    if (ReShade::AspectRatio >= 1.0) {
-        uv.x *= ReShade::AspectRatio;
-    } else {
-        uv.y /= ReShade::AspectRatio;
+    
+    // Early depth check - skip effect if pixel is in front of EffectDepth
+    float sceneDepth = ReShade::GetLinearizedDepth(texcoord);
+    if (sceneDepth < EffectDepth - AS_DEPTH_EPSILON) {
+        return original_color;
     }
-
-    // Camera
-    float3 ro = float3(0.0, 0.0, -1.0); 
-    float3 rd = normalize(float3(uv, 1.0)); 
-
-    float global_rotation_rad_yaw = AS_getRotationRadians(SnapRotation, FineRotation);
-    // Use a portion of the rotation for pitch to give some vertical movement, or make it a separate control
-    float global_rotation_rad_pitch = global_rotation_rad_yaw * 0.2; // Example: pitch is 20% of yaw
-
-    // Apply global rotation from UI
-    rd.yz = mul(rd.yz, fn_rot(global_rotation_rad_pitch)); 
-    rd.xz = mul(rd.xz, fn_rot(global_rotation_rad_yaw));
+      // 1. Convert to normalized central square [-1,1] with aspect ratio correction
+    float aspectRatio = ReShade::AspectRatio;
+    float2 uv_norm;
+    if (aspectRatio >= 1.0) {
+        uv_norm.x = (texcoord.x - 0.5) * 2.0 * aspectRatio;
+        uv_norm.y = (texcoord.y - 0.5) * 2.0;
+    } else {
+        uv_norm.x = (texcoord.x - 0.5) * 2.0;
+        uv_norm.y = (texcoord.y - 0.5) * 2.0 / aspectRatio;
+    }
+    
+    // 2. Apply effect position, rotation, and scale
+    // First apply effect position offset
+    uv_norm -= EffectCenter;
+    
+    // Apply effect rotation (this rotates the effect itself, not just the camera view)
+    float effect_rotation = AS_getRotationRadians(EffectRotationSnap, EffectRotationFine);
+    uv_norm = mul(uv_norm, fn_rot(effect_rotation));
+    
+    // Apply effect scale
+    uv_norm /= EffectScale;
+    
+    // Camera setup
+    float3 ro = CameraPosition; // Camera position from UI
+    float3 rd = normalize(float3(uv_norm.x, uv_norm.y, 1.0)); // Ray direction
+    
+    // Apply camera rotation to ray direction (in radians)
+    float camera_pitch_rad = CameraPitch * (AS_PI / 180.0);
+    float camera_yaw_rad = CameraYaw * (AS_PI / 180.0);
+    
+    rd.yz = mul(rd.yz, fn_rot(camera_pitch_rad)); 
+    rd.xz = mul(rd.xz, fn_rot(camera_yaw_rad));
 
 
     // Raymarching
