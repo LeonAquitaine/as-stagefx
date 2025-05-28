@@ -1,6 +1,6 @@
 # AS-StageFX Shader Gallery - Backgrounds Package
 
-This gallery provides detailed descriptions and visual examples of the **23 background effects** included in the **AS_StageFX_Backgrounds** package. These dynamic, audio-reactive backgrounds range from cosmic and abstract patterns to flowing animations and crystalline structures.
+This gallery provides detailed descriptions and visual examples of the **24 background effects** included in the **AS_StageFX_Backgrounds** package. These dynamic, audio-reactive backgrounds range from cosmic and abstract patterns to flowing animations and crystalline structures.
 
 For installation instructions and general information, please refer to the [main README](../README.md).
 
@@ -194,6 +194,18 @@ Based on: <a href="https://www.shadertoy.com/view/wl2Szd" target="_new">"Misty G
 A ray marching shader that generates one of two selectable abstract procedural scenes. Features domain repetition, custom transformations, and pseudo-random patterns. Scene geometry and flare effects can be reactive to audio frequency bands.
 </td>
 <td width="50%"><div style="text-align:center">
+</div></td>
+</tr>
+<tr>
+<td width="50%">
+<h4>BGX: Raymarched Chain 🔥</h4>
+<h5><code>[AS] BGX: Raymarched Chain|AS_BGX_RaymarchedChain.1.fx</code></h5>
+Renders a raymarched scene featuring an animated, endlessly twisting chain composed of interconnected torus shapes. The chain follows a procedurally defined path, and its segments rotate and evolve over time, creating a mesmerizing, complex visual. Features raymarched chain of torus shapes with procedural path animation, customizable animation speed and chain geometry, dynamic coloring based on raymarching depth and iteration, camera orientation controls, and standard AS-StageFX blending controls.<br><br>
+Original: <a href="https://www.shadertoy.com/view/ctSfRV" target="_new">"Corrente" by Elsio</a>.
+</td>
+<td width="50%">
+<img src="https://github.com/user-attachments/assets/placeholder-image"/>
+<div style="text-align:center">
 </div></td>
 </tr>
 <tr>
