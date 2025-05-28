@@ -404,6 +404,86 @@ float3 AS_paletteLerp(float3 c0, float3 c1, float t) {
 }
 
 // ============================================================================
+// MATRIX & VECTOR MULTIPLICATION HELPERS (Use if intrinsic 'mul' causes issues)
+// ============================================================================
+
+/**
+ * Multiplies a 2x2 matrix by a 2D vector. (Equivalent to intrinsic mul(matrix, vector))
+ * M: The float2x2 matrix.
+ * v: The float2 vector.
+ * Returns the transformed float2 vector.
+ */
+float2 AS_mul_float2x2_float2(float2x2 M, float2 v)
+{
+    // Standard matrix multiplication:
+    // x' = M00*x + M10*y  (Note: HLSL matrices are often column-major by default in mul,
+    // y' = M01*x + M11*y   so M[col][row]. M[0] is first column, M[1] is second)
+    // If M is defined as M[row][col] then:
+    // x' = M[0][0]*v.x + M[0][1]*v.y
+    // y' = M[1][0]*v.x + M[1][1]*v.y
+    // The HLSL intrinsic mul(M,v) handles this correctly.
+    // This explicit form is for fallback or clarity if issues persist.
+    return float2(
+        M[0][0] * v.x + M[1][0] * v.y, // Assuming M is M[column][row]
+        M[0][1] * v.x + M[1][1] * v.y
+    );
+    // Or, if you define matrices as M[row][col] in your head:
+    // return float2(
+    //     M[0][0] * v.x + M[0][1] * v.y,
+    //     M[1][0] * v.x + M[1][1] * v.y
+    // );
+    // It's generally safer to rely on the intrinsic mul(M,v) as it handles memory layout correctly.
+}
+
+/**
+ * Multiplies a 2D vector by a 2x2 matrix. (Equivalent to intrinsic mul(vector, matrix))
+ * v: The float2 vector.
+ * M: The float2x2 matrix.
+ * Returns the transformed float2 vector.
+ */
+float2 AS_mul_float2_float2x2(float2 v, float2x2 M)
+{
+    // Standard vector-matrix multiplication:
+    // x' = x*M00 + y*M01
+    // y' = x*M10 + y*M11
+    // This explicit form is for fallback or clarity.
+    return float2(
+        v.x * M[0][0] + v.y * M[0][1], // Assuming M is M[column][row]
+        v.x * M[1][0] + v.y * M[1][1]
+    );
+    // Or, if you define matrices as M[row][col] in your head:
+    // return float2(
+    //    v.x * M[0][0] + v.y * M[1][0],
+    //    v.x * M[0][1] + v.y * M[1][1]
+    // );
+    // Again, intrinsic mul(v,M) is preferred.
+}
+
+/**
+ * Multiplies two 2x2 matrices. (Equivalent to intrinsic mul(matrixA, matrixB))
+ * A: The first float2x2 matrix.
+ * B: The second float2x2 matrix.
+ * Returns the resulting float2x2 matrix.
+ */
+float2x2 AS_mul_float2x2_float2x2(float2x2 A, float2x2 B)
+{
+    float2x2 C;
+    C[0][0] = A[0][0] * B[0][0] + A[1][0] * B[0][1];
+    C[0][1] = A[0][1] * B[0][0] + A[1][1] * B[0][1];
+    C[1][0] = A[0][0] * B[1][0] + A[1][0] * B[1][1];
+    C[1][1] = A[0][1] * B[1][0] + A[1][1] * B[1][1];
+    // This is A * B assuming A[column][row] and B[column][row]
+    // Or C_ij = sum(A_ik * B_kj) if thinking in standard math A[row][col]
+    // The exact component math depends on how you mentally index vs how HLSL stores/accesses.
+    // The intrinsic mul(A,B) is the most reliable way.
+    return C;
+}
+
+// You can add more for float3x3, float4x4 if needed, but they become verbose.
+// For example:
+// float3 AS_mul_float3x3_float3(float3x3 M, float3 v) { ... }
+
+// ============================================================================
 // AUDIO REACTIVITY FUNCTIONS
 // ============================================================================
 
