@@ -40,7 +40,7 @@ AS-StageFX provides a collection of performant, customizable, and audio-reactive
 
 ## Available Shaders
 
-AS-StageFX includes **48 shaders** across four categories: **23 Background (BGX)**, **4 Graphic (GFX)**, **3 Lighting (LFX)**, and **18 Visual (VFX)** effects.
+AS-StageFX includes **49 shaders** across four categories: **24 Background (BGX)**, **4 Graphic (GFX)**, **3 Lighting (LFX)**, and **18 Visual (VFX)** effects.
 
 **Detailed descriptions and examples: [Shader Gallery](docs/gallery.md).**
 
@@ -52,7 +52,7 @@ Shaders are marked with an icon to give a general idea of their processing inten
 | :--: | ------------- | :---: | :-----------: | ------------------------------------------------------------------------- |
 |  ✨  | Light         |  34   |    < 0.5      | Everyday use, stacking multiple effects, older hardware.                    |
 |  ⚡  | Moderate      |   9   |   0.5 - 2.5   | General purpose, good balance of quality and performance.                   |
-|  🔥  | Heavy         |   4   |   2.5 - 10.0  | High-impact visuals, use sparingly if performance is critical.              |
+|  🔥  | Heavy         |   5   |   2.5 - 10.0  | High-impact visuals, use sparingly if performance is critical.              |
 |  💀  | Very Heavy    |   1   |    > 10.0     | Cinematic shots, offline rendering, or very powerful hardware. Demanding. |
 
 ### Background Effects (BGX)
@@ -73,6 +73,7 @@ Shaders are marked with an icon to give a general idea of their processing inten
 | **AS_BGX_MeltWave** ✨ | Flowing, warping psychedelic effect with sine-based distortions, palette system, keyframe animation, and audio reactivity. |
 | **AS_BGX_MistyGrid** 🔥 | Abstract fractal-based grid background with a misty, ethereal appearance using raymarching. Audio-reactive and customizable. |
 | **AS_BGX_PastRacer** ⚡ | Raymarched abstract procedural scene (2 selectable) with domain repetition, custom transformations, and audio-reactive geometry/flares. |
+| **AS_BGX_RaymarchedChain** 🔥 | Raymarched animated chain of interconnected torus shapes following a procedural path. Features dynamic rotation, customizable geometry, and sophisticated lighting with camera controls. |
 | **AS_BGX_PlasmaFlow** ✨ | Sophisticated, gentle, flexible plasma effect with procedural noise, domain warping, and customizable audio-reactive color gradients. |
 | **AS_BGX_ShineOn** ✨ | Dynamic, evolving fractal noise pattern with bright, sparkly, moving crystal highlights. Audio-reactive and depth-aware. |
 | **AS_BGX_StainedLights** ✨ | Dynamic, colorful patterns like stained glass with shifting light, blurred layers, and audio reactivity. |
