@@ -342,7 +342,7 @@ float4 PS_BrushStroke(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV
 // ============================================================================
 // TECHNIQUE DEFINITION
 // ============================================================================
-technique AS_GFX_BrushStroke < ui_tooltip = "Renders a configurable brush stroke band with highly textured, irregular edges, optional drop shadow, audio reactivity, and invert functionality for creative effects."; >
+technique AS_GFX_BrushStroke < ui_label = "[AS] GFX: Brush Stroke"; ui_tooltip = "Renders a configurable brush stroke band with highly textured, irregular edges, optional drop shadow, audio reactivity, and invert functionality for creative effects."; >
 {
     pass BrushStrokePass
     {
