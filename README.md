@@ -40,7 +40,7 @@ AS-StageFX provides a collection of performant, customizable, and audio-reactive
 
 ## Available Shaders
 
-AS-StageFX includes **49 shaders** across four categories: **24 Background (BGX)**, **4 Graphic (GFX)**, **3 Lighting (LFX)**, and **18 Visual (VFX)** effects.
+AS-StageFX includes **50 shaders** across four categories: **24 Background (BGX)**, **4 Graphic (GFX)**, **3 Lighting (LFX)**, and **19 Visual (VFX)** effects.
 
 **Detailed descriptions and examples: [Shader Gallery](docs/gallery.md).**
 
@@ -109,6 +109,7 @@ Shaders are marked with an icon to give a general idea of their processing inten
 | **AS_VFX_ColorBalancer** ✨ | Enables colorists and videographers to apply classic cinematic color harmony models (complementary, analogous, triadic, split-complementary, tetradic) to live visuals or video production. It offers flexible color manipulation across shadows, midtones, and highlights. |
 | **AS_VFX_DigitalArtifacts** ✨ | Stylized digital artifacts, glitch effects, and hologram visuals with 3D positioning and audio-reactive intensity. |
 | **AS_VFX_DustMotes** ⚡ | Simulates static, sharp-bordered dust motes using two independent particle layers with a blur effect. Audio-reactive and depth-masked. |
+| **AS_VFX_MotionFocus** ⚡ | Analyzes motion between frames to dynamically zoom towards and center on areas of detected movement with motion-weighted zoom centering and generous zoom limits. |
 | **AS_VFX_MotionTrails** ✨ | Creates striking, persistent motion trails based on depth, with multiple capture modes and audio reactivity. |
 | **AS_VFX_RadiantFire** ✨ | GPU-based fire simulation generating flames radiating from subject edges, with physics affected by rotation. |
 | **AS_VFX_RainyWindow** ✨ | Simulates a rainy window with animated droplets, trails, frost, and optional audio-reactive lightning. |

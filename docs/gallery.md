@@ -162,6 +162,16 @@ Creates striking, persistent motion trails ideal for music videos. Objects withi
 </tr>
 <tr>
 <td width="50%">
+<h4>VFX: Motion Focus ⚡</h4>
+<h5><code>[AS] VFX: Motion Focus|AS_VFX_MotionFocus.1.fx</code></h5>
+Analyzes inter-frame motion differences to dynamically adjust the viewport, zooming towards and centering on areas of detected movement. Features multi-pass motion analysis with temporal smoothing, adaptive decay for responsive adjustments, quadrant-based motion aggregation, motion-weighted zoom center calculation, generous zoom limits for dramatic effects, and edge correction to prevent sampling outside screen bounds.<br><br>
+Based on: "MotionFocus.fx" originally made by <strong>Ganossa</strong> and ported by <strong>IDDQD</strong>.
+</td>
+<td width="50%"><div style="text-align:center">
+</div></td>
+</tr>
+<tr>
+<td width="50%">
 <h4>VFX: Sparkle Bloom ⚡</h4>
 <h5><code>[AS] VFX: Sparkle Bloom|AS_VFX_SparkleBloom.1.fx</code></h5>
 Creates a realistic glitter/sparkle effect that dynamically responds to scene lighting, depth, and camera movement. Simulates tiny reflective particles with multi-layered Voronoi noise, customizable lifetime, depth masking, high-quality bloom, fresnel effect, blend modes, color options, and audio-reactive intensity/animation.

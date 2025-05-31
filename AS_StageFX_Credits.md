@@ -83,6 +83,12 @@ This document lists all external sources, original authors, and inspiration cred
 - **Creation Date**: 2025-05-24
 - **Source**: https://www.shadertoy.com/view/tcyGW1
 
+### AS_VFX_MotionFocus.1.fx - Motion-Based Camera Focus & Zoom
+- **Original Author**: Ganossa
+- **Original Title**: "MotionFocus.fx"
+- **Ported By**: IDDQD
+- **AS Adaptation**: Extensively rewritten and enhanced for AS StageFX framework with motion-centered zoom, improved UI, and enhanced functionality
+
 ### AS_VFX_RadiantFire.1.fx - Fire Simulation Effect
 - **Original Author**: mu6k
 - **Original Title**: "301's Fire Shader - Remix 3"
