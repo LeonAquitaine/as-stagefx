@@ -44,21 +44,21 @@
 // TEXTURES & SAMPLERS
 // ============================================================================
 
-texture MotionFocus_NormTex { Width = BUFFER_WIDTH / 2; Height = BUFFER_HEIGHT / 2; Format = RGBA8; };
-texture MotionFocus_PrevFrameTex { Width = BUFFER_WIDTH / 2; Height = BUFFER_HEIGHT / 2; Format = RGBA8; };
+texture NormTex { Width = BUFFER_WIDTH / 2; Height = BUFFER_HEIGHT / 2; Format = RGBA8; };
+texture PrevFrameTex { Width = BUFFER_WIDTH / 2; Height = BUFFER_HEIGHT / 2; Format = RGBA8; };
 
-texture MotionFocus_QuadFullTex { Width = BUFFER_WIDTH / 2; Height = BUFFER_HEIGHT / 2; Format = R32F; }; // Store motion intensity (single channel)
-texture MotionFocus_PrevMotionTex { Width = BUFFER_WIDTH / 2; Height = BUFFER_HEIGHT / 2; Format = R32F; };
+texture QuadFullTex { Width = BUFFER_WIDTH / 2; Height = BUFFER_HEIGHT / 2; Format = R32F; }; // Store motion intensity (single channel)
+texture PrevMotionTex { Width = BUFFER_WIDTH / 2; Height = BUFFER_HEIGHT / 2; Format = R32F; };
 
-texture MotionFocus_FocusTex { Width = 1; Height = 1; Format = RGBA32F; }; // Stores float4 quadrant motion intensity sums
+texture FocusTex { Width = 1; Height = 1; Format = RGBA32F; }; // Stores float4 quadrant motion intensity sums
 
-sampler MotionFocus_NormSampler { Texture = MotionFocus_NormTex; AddressU = CLAMP; AddressV = CLAMP; MinFilter = LINEAR; MagFilter = LINEAR; };
-sampler MotionFocus_PrevFrameSampler { Texture = MotionFocus_PrevFrameTex; AddressU = CLAMP; AddressV = CLAMP; MinFilter = LINEAR; MagFilter = LINEAR; };
+sampler NormSampler { Texture = NormTex; AddressU = CLAMP; AddressV = CLAMP; MinFilter = LINEAR; MagFilter = LINEAR; };
+sampler PrevFrameSampler { Texture = PrevFrameTex; AddressU = CLAMP; AddressV = CLAMP; MinFilter = LINEAR; MagFilter = LINEAR; };
 
-sampler MotionFocus_QuadFullSampler { Texture = MotionFocus_QuadFullTex; AddressU = CLAMP; AddressV = CLAMP; MinFilter = LINEAR; MagFilter = LINEAR; };
-sampler MotionFocus_PrevMotionSampler { Texture = MotionFocus_PrevMotionTex; AddressU = CLAMP; AddressV = CLAMP; MinFilter = LINEAR; MagFilter = LINEAR; };
+sampler QuadFullSampler { Texture = QuadFullTex; AddressU = CLAMP; AddressV = CLAMP; MinFilter = LINEAR; MagFilter = LINEAR; };
+sampler PrevMotionSampler { Texture = PrevMotionTex; AddressU = CLAMP; AddressV = CLAMP; MinFilter = LINEAR; MagFilter = LINEAR; };
 
-sampler MotionFocus_FocusSampler { Texture = MotionFocus_FocusTex; AddressU = CLAMP; AddressV = CLAMP; MinFilter = POINT; MagFilter = POINT; }; // Point for 1x1
+sampler FocusSampler { Texture = FocusTex; AddressU = CLAMP; AddressV = CLAMP; MinFilter = POINT; MagFilter = POINT; }; // Point for 1x1
 
 // ============================================================================
 // UI UNIFORMS
@@ -66,30 +66,30 @@ sampler MotionFocus_FocusSampler { Texture = MotionFocus_FocusTex; AddressU = CL
 
 // Category: Motion Focus - Main Controls
 // Basic strength controls for the overall effect.
-uniform float mfFocusStrength < ui_type = "slider"; ui_label = "Focus Strength"; ui_tooltip = "Controls how aggressively the camera follows areas of motion."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Motion Focus - Main Controls"; > = 0.5;
-uniform float mfZoomStrength < ui_type = "slider"; ui_label = "Zoom Strength"; ui_tooltip = "Controls the overall intensity of zooming towards areas of motion."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Motion Focus - Main Controls"; > = 0.5;
+uniform float FocusStrength < ui_type = "slider"; ui_label = "Focus Strength"; ui_tooltip = "Controls how aggressively the camera follows areas of motion."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Motion Focus - Main Controls"; > = 0.5;
+uniform float ZoomStrength < ui_type = "slider"; ui_label = "Zoom Strength"; ui_tooltip = "Controls the overall intensity of zooming towards areas of motion."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Motion Focus - Main Controls"; > = 0.5;
 
 // Category: Motion Focus - Detection Tuning
 // Fine-tune the sensitivity and responsiveness of the motion detection algorithm.
-uniform float mfMotionSmoothingFactor < ui_type = "slider"; ui_label = "Motion Smoothness"; ui_tooltip = "Controls temporal smoothing of motion. Higher = smoother, less responsive (more history). Lower = more responsive, potentially jittery."; ui_min = 0.800; ui_max = 0.999; ui_step = 0.001; ui_category = "Motion Focus - Detection Tuning"; > = 0.968;
+uniform float MotionSmoothness < ui_type = "slider"; ui_label = "Motion Smoothness"; ui_tooltip = "Controls temporal smoothing of motion. Higher = smoother, less responsive (more history). Lower = more responsive, potentially jittery."; ui_min = 0.800; ui_max = 0.999; ui_step = 0.001; ui_category = "Motion Focus - Detection Tuning"; > = 0.968;
 
-uniform float mfAdaptiveDecayBaseRate < ui_type = "slider"; ui_label = "Motion Fade Rate"; ui_tooltip = "Base rate at which detected motion intensity fades over time."; ui_min = 0.800; ui_max = 0.999; ui_step = 0.001; ui_category = "Motion Focus - Detection Tuning"; > = 0.978;
+uniform float MotionFadeRate < ui_type = "slider"; ui_label = "Motion Fade Rate"; ui_tooltip = "Base rate at which detected motion intensity fades over time."; ui_min = 0.800; ui_max = 0.999; ui_step = 0.001; ui_category = "Motion Focus - Detection Tuning"; > = 0.978;
 
-uniform float mfAdaptiveDecayStrength < ui_type = "slider"; ui_label = "Fade Sensitivity"; ui_tooltip = "How strongly motion changes affect the decay rate. Higher = more adaptive decay."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Motion Focus - Detection Tuning"; > = 0.2;
+uniform float FadeSensitivity < ui_type = "slider"; ui_label = "Fade Sensitivity"; ui_tooltip = "How strongly motion changes affect the decay rate. Higher = more adaptive decay."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Motion Focus - Detection Tuning"; > = 0.2;
 
-uniform float mfAdaptiveDecaySensitivity < ui_type = "slider"; ui_label = "Change Sensitivity"; ui_tooltip = "Sensitivity to motion changes for adapting the decay rate. Higher = adapts to smaller changes."; ui_min = 1000.0; ui_max = 1000000.0; ui_step = 1000.0; ui_category = "Motion Focus - Detection Tuning"; > = 100000.0;
+uniform float ChangeSensitivity < ui_type = "slider"; ui_label = "Change Sensitivity"; ui_tooltip = "Sensitivity to motion changes for adapting the decay rate. Higher = adapts to smaller changes."; ui_min = 1000.0; ui_max = 1000000.0; ui_step = 1000.0; ui_category = "Motion Focus - Detection Tuning"; > = 100000.0;
 
 // Category: Motion Focus - Zoom Dynamics
 // Control the behavior and limits of the zooming function.
-uniform float mfMaxZoomCap < ui_type = "slider"; ui_label = "Max Zoom Level"; ui_tooltip = "Limits how much the view can zoom in (e.g., 0.8 means the content will fill at least 1-0.8 = 20% of its original dimension)."; ui_min = 0.05; ui_max = 0.85; ui_step = 0.01; ui_category = "Motion Focus - Zoom Dynamics"; > = 0.6;
+uniform float MaxZoomLevel < ui_type = "slider"; ui_label = "Max Zoom Level"; ui_tooltip = "Limits how much the view can zoom in (e.g., 0.8 means the content will fill at least 1-0.8 = 20% of its original dimension)."; ui_min = 0.05; ui_max = 0.85; ui_step = 0.01; ui_category = "Motion Focus - Zoom Dynamics"; > = 0.6;
 
-uniform float mfBaseZoomMultiplier < ui_type = "slider"; ui_label = "Zoom Intensity"; ui_tooltip = "Overall scaling factor for the calculated zoom amount, applied before strength and cap."; ui_min = 0.1; ui_max = 2.0; ui_step = 0.05; ui_category = "Motion Focus - Zoom Dynamics"; > = 0.5;
+uniform float ZoomIntensity < ui_type = "slider"; ui_label = "Zoom Intensity"; ui_tooltip = "Overall scaling factor for the calculated zoom amount, applied before strength and cap."; ui_min = 0.1; ui_max = 2.0; ui_step = 0.05; ui_category = "Motion Focus - Zoom Dynamics"; > = 0.5;
 
 // Category: Motion Focus - Response & Shift Tuning
 // Adjust how the camera responds to global motion and motion distribution.
-uniform float mfGlobalMotionResponseScale < ui_type = "slider"; ui_label = "Global Motion Sensitivity"; ui_tooltip = "Scales overall motion input for zoom dampening. Higher = more sensitive to global motion for reducing zoom."; ui_min = 1.0; ui_max = 20.0; ui_step = 0.1; ui_category = "Motion Focus - Response & Shift Tuning"; > = 5.0;
+uniform float GlobalMotionSensitivity < ui_type = "slider"; ui_label = "Global Motion Sensitivity"; ui_tooltip = "Scales overall motion input for zoom dampening. Higher = more sensitive to global motion for reducing zoom."; ui_min = 1.0; ui_max = 20.0; ui_step = 0.1; ui_category = "Motion Focus - Response & Shift Tuning"; > = 5.0;
 
-uniform float mfDistributionFocusExponent < ui_type = "slider"; ui_label = "Focus Precision"; ui_tooltip = "Exponent for the focus distribution factor. Higher = camera shifts more aggressively towards concentrated motion."; ui_min = 1.0; ui_max = 5.0; ui_step = 0.1; ui_category = "Motion Focus - Response & Shift Tuning"; > = 3.0;
+uniform float FocusPrecision < ui_type = "slider"; ui_label = "Focus Precision"; ui_tooltip = "Exponent for the focus distribution factor. Higher = camera shifts more aggressively towards concentrated motion."; ui_min = 1.0; ui_max = 5.0; ui_step = 0.1; ui_category = "Motion Focus - Response & Shift Tuning"; > = 3.0;
 
 // Category: Motion Focus - Debug
 // Developer options for visualizing intermediate shader passes.
@@ -108,26 +108,26 @@ float4 PS_MotionFocusNorm(float4 pos : SV_Position, float2 texcoord : TEXCOORD) 
 // ============================================================================
 float PS_MotionFocusQuadFull(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target
 {
-    float3 current_frame_rgb = tex2D(MotionFocus_NormSampler, texcoord).rgb;
-    float3 prev_frame_rgb = tex2D(MotionFocus_PrevFrameSampler, texcoord).rgb;
+    float3 currentFrame = tex2D(NormSampler, texcoord).rgb;
+    float3 prevFrame = tex2D(PrevFrameSampler, texcoord).rgb;
 
-    float diff_from_prev_frame = (abs(current_frame_rgb.r - prev_frame_rgb.r) +
-                                  abs(current_frame_rgb.g - prev_frame_rgb.g) +
-                                  abs(current_frame_rgb.b - prev_frame_rgb.b)) / 3.0;
+    float frameDiff = (abs(currentFrame.r - prevFrame.r) +
+                       abs(currentFrame.g - prevFrame.g) +
+                       abs(currentFrame.b - prevFrame.b)) / 3.0;
 
-    float previous_pass_motion_value = tex2D(MotionFocus_PrevMotionSampler, texcoord).r;
+    float prevMotion = tex2D(PrevMotionSampler, texcoord).r;
 
     // Temporal Smoothing (Exponential Moving Average)
-    float smoothed_motion = mfMotionSmoothingFactor * previous_pass_motion_value + (1.0 - mfMotionSmoothingFactor) * diff_from_prev_frame;
+    float smoothedMotion = MotionSmoothness * prevMotion + (1.0 - MotionSmoothness) * frameDiff;
 
     // Adaptive Decay System
-    float motion_value_change = abs(smoothed_motion - previous_pass_motion_value);
-    float adaptive_decay_factor = mfAdaptiveDecayBaseRate - mfAdaptiveDecayStrength * max(1.0 - pow(1.0 - motion_value_change, 2.0) * mfAdaptiveDecaySensitivity, 0.0);
-    adaptive_decay_factor = clamp(adaptive_decay_factor, 0.0, 1.0); // Ensure decay factor is valid
+    float motionChange = abs(smoothedMotion - prevMotion);
+    float decayFactor = MotionFadeRate - FadeSensitivity * max(1.0 - pow(1.0 - motionChange, 2.0) * ChangeSensitivity, 0.0);
+    decayFactor = clamp(decayFactor, 0.0, 1.0); // Ensure decay factor is valid
 
-    float final_motion_intensity = adaptive_decay_factor * previous_pass_motion_value + (1.0 - adaptive_decay_factor) * diff_from_prev_frame;
+    float finalMotion = decayFactor * prevMotion + (1.0 - decayFactor) * frameDiff;
     
-    return final_motion_intensity;
+    return finalMotion;
 }
 
 // ============================================================================
@@ -139,36 +139,36 @@ float PS_MotionFocusQuadFull(float4 pos : SV_Position, float2 texcoord : TEXCOOR
 
 float4 PS_MotionFocus(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target // Only runs for the first pixel (1x1 texture)
 {
-    // quadrantMotionIntensitySums: x=top-left, y=top-right, z=bottom-left, w=bottom-right
-    float4 quadrantMotionIntensitySums = 0; 
+    // quadrantMotionSums: x=top-left, y=top-right, z=bottom-left, w=bottom-right
+    float4 quadrantMotionSums = 0; 
 
-    float uv_center_x = 0.5;
-    float uv_center_y = 0.5;
+    float centerX = 0.5;
+    float centerY = 0.5;
 
-    float uv_step_x = 1.0 / SAMPLE_GRID_X_COUNT;
-    float uv_step_y = 1.0 / SAMPLE_GRID_Y_COUNT;
+    float stepX = 1.0 / SAMPLE_GRID_X_COUNT;
+    float stepY = 1.0 / SAMPLE_GRID_Y_COUNT;
 
     for (int j = 0; j < SAMPLE_GRID_Y_COUNT; ++j)
     {
         for (int i = 0; i < SAMPLE_GRID_X_COUNT; ++i)
         {
-            float2 sample_uv = float2((i + 0.5) * uv_step_x, (j + 0.5) * uv_step_y);
-            float current_sample_motion_intensity = tex2Dlod(MotionFocus_QuadFullSampler, float4(sample_uv, 0, 0)).r;
+            float2 sampleUV = float2((i + 0.5) * stepX, (j + 0.5) * stepY);
+            float motionIntensity = tex2Dlod(QuadFullSampler, float4(sampleUV, 0, 0)).r;
 
-            if (sample_uv.x < uv_center_x && sample_uv.y < uv_center_y)
-                quadrantMotionIntensitySums.x += current_sample_motion_intensity; // Top-left
-            else if (sample_uv.x >= uv_center_x && sample_uv.y < uv_center_y)
-                quadrantMotionIntensitySums.y += current_sample_motion_intensity; // Top-right
-            else if (sample_uv.x < uv_center_x && sample_uv.y >= uv_center_y)
-                quadrantMotionIntensitySums.z += current_sample_motion_intensity; // Bottom-left
+            if (sampleUV.x < centerX && sampleUV.y < centerY)
+                quadrantMotionSums.x += motionIntensity; // Top-left
+            else if (sampleUV.x >= centerX && sampleUV.y < centerY)
+                quadrantMotionSums.y += motionIntensity; // Top-right
+            else if (sampleUV.x < centerX && sampleUV.y >= centerY)
+                quadrantMotionSums.z += motionIntensity; // Bottom-left
             else
-                quadrantMotionIntensitySums.w += current_sample_motion_intensity; // Bottom-right
+                quadrantMotionSums.w += motionIntensity; // Bottom-right
         }
     }
 
-    quadrantMotionIntensitySums /= (float)TOTAL_SAMPLES; // Normalize by total samples
+    quadrantMotionSums /= (float)TOTAL_SAMPLES; // Normalize by total samples
 
-    return quadrantMotionIntensitySums;
+    return quadrantMotionSums;
 }
 
 // ============================================================================
@@ -176,65 +176,57 @@ float4 PS_MotionFocus(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV
 // ============================================================================
 float4 PS_MotionFocusDisplay(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target
 {
-    float4 original_color = tex2D(ReShade::BackBuffer, texcoord);
-    // currentQuadrantMotion: .x=TL, .y=TR, .z=BL, .w=BR normalized motion intensity
-    float4 currentQuadrantMotion = tex2D(MotionFocus_FocusSampler, float2(AS_SCREEN_CENTER_X, AS_SCREEN_CENTER_Y));    if (DebugMode == 1) return tex2D(MotionFocus_QuadFullSampler, texcoord).xxxx; // Show full motion detection pass
+    float4 original_color = tex2D(ReShade::BackBuffer, texcoord);    // currentQuadrantMotion: .x=TL, .y=TR, .z=BL, .w=BR normalized motion intensity
+    float4 currentQuadrantMotion = tex2D(FocusSampler, float2(AS_SCREEN_CENTER_X, AS_SCREEN_CENTER_Y));    if (DebugMode == 1) return tex2D(QuadFullSampler, texcoord).xxxx; // Show full motion detection pass
     if (DebugMode == 2) return currentQuadrantMotion; // Show the RGBA values representing quadrant motions
 
     // Dominant Quadrant Intensity: The motion intensity of the most active quadrant.
-    float dominantQuadrantIntensity = max(currentQuadrantMotion.x, max(currentQuadrantMotion.y, max(currentQuadrantMotion.z, currentQuadrantMotion.w)));
-
-    // Focus Distribution Factor: How much the dominant quadrant stands out from the others. Higher if motion is concentrated.
+    float dominantQuadrantIntensity = max(currentQuadrantMotion.x, max(currentQuadrantMotion.y, max(currentQuadrantMotion.z, currentQuadrantMotion.w)));    // Focus Distribution Factor: How much the dominant quadrant stands out from the others. Higher if motion is concentrated.
     float focusDistributionFactor = 1.0;
-    float sum_all_quadrant_motions = currentQuadrantMotion.x + currentQuadrantMotion.y + currentQuadrantMotion.z + currentQuadrantMotion.w;
-    if (sum_all_quadrant_motions > AS_EPSILON) 
+    float sumAllQuadrantMotions = currentQuadrantMotion.x + currentQuadrantMotion.y + currentQuadrantMotion.z + currentQuadrantMotion.w;
+    if (sumAllQuadrantMotions > AS_EPSILON) 
     {
         if (dominantQuadrantIntensity == currentQuadrantMotion.x) focusDistributionFactor += dominantQuadrantIntensity - (currentQuadrantMotion.y + currentQuadrantMotion.z + currentQuadrantMotion.w) * AS_THIRD;
         else if (dominantQuadrantIntensity == currentQuadrantMotion.y) focusDistributionFactor += dominantQuadrantIntensity - (currentQuadrantMotion.x + currentQuadrantMotion.z + currentQuadrantMotion.w) * AS_THIRD;
         else if (dominantQuadrantIntensity == currentQuadrantMotion.z) focusDistributionFactor += dominantQuadrantIntensity - (currentQuadrantMotion.x + currentQuadrantMotion.y + currentQuadrantMotion.w) * AS_THIRD;
         else focusDistributionFactor += dominantQuadrantIntensity - (currentQuadrantMotion.x + currentQuadrantMotion.y + currentQuadrantMotion.z) * AS_THIRD;
         focusDistributionFactor = max(0.0, focusDistributionFactor); 
-    }
-
-    // Global Motion Influence: Factor that moderates zoom based on overall screen activity.
-    float average_total_motion = sum_all_quadrant_motions * AS_QUARTER;
-    float globalMotionInfluence = AS_HALF * max(1.0, min(2.0 - pow(saturate(average_total_motion * mfGlobalMotionResponseScale), 3.0), 2.0));    // Final Transformation Calculation
-    float2 finalZoomAmount = dominantQuadrantIntensity * focusDistributionFactor * globalMotionInfluence * mfZoomStrength * mfBaseZoomMultiplier; 
-    finalZoomAmount = min(finalZoomAmount, mfMaxZoomCap);// Calculate weighted center of motion based on quadrant intensities
+    }    // Global Motion Influence: Factor that moderates zoom based on overall screen activity.
+    float averageTotalMotion = sumAllQuadrantMotions * AS_QUARTER;
+    float globalMotionInfluence = AS_HALF * max(1.0, min(2.0 - pow(saturate(averageTotalMotion * GlobalMotionSensitivity), 3.0), 2.0));// Final Transformation Calculation
+    float2 finalZoomAmount = dominantQuadrantIntensity * focusDistributionFactor * globalMotionInfluence * ZoomStrength * ZoomIntensity; 
+    finalZoomAmount = min(finalZoomAmount, MaxZoomLevel);    // Calculate weighted center of motion based on quadrant intensities
     float2 motionCenter = float2(AS_SCREEN_CENTER_X, AS_SCREEN_CENTER_Y); // Default to screen center
     
-    if (sum_all_quadrant_motions > AS_EPSILON) {
+    if (sumAllQuadrantMotions > AS_EPSILON) {
         // Quadrant centers: TL(0.25,0.25), TR(0.75,0.25), BL(0.25,0.75), BR(0.75,0.75)
         motionCenter.x = (currentQuadrantMotion.x * 0.25 + currentQuadrantMotion.y * 0.75 + 
-                          currentQuadrantMotion.z * 0.25 + currentQuadrantMotion.w * 0.75) / sum_all_quadrant_motions;
+                          currentQuadrantMotion.z * 0.25 + currentQuadrantMotion.w * 0.75) / sumAllQuadrantMotions;
         motionCenter.y = (currentQuadrantMotion.x * 0.25 + currentQuadrantMotion.y * 0.25 + 
-                          currentQuadrantMotion.z * 0.75 + currentQuadrantMotion.w * 0.75) / sum_all_quadrant_motions;
-        
-        // Blend motion center with screen center based on focus distribution
+                          currentQuadrantMotion.z * 0.75 + currentQuadrantMotion.w * 0.75) / sumAllQuadrantMotions;
+          // Blend motion center with screen center based on focus distribution
         // More concentrated motion = use motion center more, distributed motion = stay closer to screen center
-        float centerBlendFactor = pow(focusDistributionFactor, 0.5) * mfFocusStrength;
+        float centerBlendFactor = pow(focusDistributionFactor, 0.5) * FocusStrength;
         motionCenter = lerp(float2(AS_SCREEN_CENTER_X, AS_SCREEN_CENTER_Y), motionCenter, centerBlendFactor);
-    }
-
-    float2 zoom_scale_factor = 1.0 - finalZoomAmount; 
+    }    float2 zoomScaleFactor = 1.0 - finalZoomAmount; 
     
     // Apply zoom transformation centered around the calculated motion center
-    float2 transformed_uv = (texcoord - motionCenter) * zoom_scale_factor + motionCenter;
+    float2 transformedUv = (texcoord - motionCenter) * zoomScaleFactor + motionCenter;
     
     // Edge Correction - recalculated for motion-centered zoom
-    float2 source_uv_at_screen_corner00 = (float2(0.0, 0.0) - motionCenter) / zoom_scale_factor + motionCenter;
-    float2 source_uv_at_screen_corner11 = (float2(1.0, 1.0) - motionCenter) / zoom_scale_factor + motionCenter;
+    float2 sourceUvAtScreenCorner00 = (float2(0.0, 0.0) - motionCenter) / zoomScaleFactor + motionCenter;
+    float2 sourceUvAtScreenCorner11 = (float2(1.0, 1.0) - motionCenter) / zoomScaleFactor + motionCenter;
 
-    float2 edge_correction_offset = 0;
-    if (source_uv_at_screen_corner00.x < 0.0) edge_correction_offset.x -= source_uv_at_screen_corner00.x * zoom_scale_factor.x;
-    if (source_uv_at_screen_corner11.x > 1.0) edge_correction_offset.x -= (source_uv_at_screen_corner11.x - 1.0) * zoom_scale_factor.x;
-    if (source_uv_at_screen_corner00.y < 0.0) edge_correction_offset.y -= source_uv_at_screen_corner00.y * zoom_scale_factor.y;
-    if (source_uv_at_screen_corner11.y > 1.0) edge_correction_offset.y -= (source_uv_at_screen_corner11.y - 1.0) * zoom_scale_factor.y;
+    float2 edgeCorrectionOffset = 0;
+    if (sourceUvAtScreenCorner00.x < 0.0) edgeCorrectionOffset.x -= sourceUvAtScreenCorner00.x * zoomScaleFactor.x;
+    if (sourceUvAtScreenCorner11.x > 1.0) edgeCorrectionOffset.x -= (sourceUvAtScreenCorner11.x - 1.0) * zoomScaleFactor.x;
+    if (sourceUvAtScreenCorner00.y < 0.0) edgeCorrectionOffset.y -= sourceUvAtScreenCorner00.y * zoomScaleFactor.y;
+    if (sourceUvAtScreenCorner11.y > 1.0) edgeCorrectionOffset.y -= (sourceUvAtScreenCorner11.y - 1.0) * zoomScaleFactor.y;
     
-    transformed_uv += edge_correction_offset;
-    transformed_uv = clamp(transformed_uv, AS_EPSILON, 1.0 - AS_EPSILON); 
+    transformedUv += edgeCorrectionOffset;
+    transformedUv = clamp(transformedUv, AS_EPSILON, 1.0 - AS_EPSILON); 
 
-    return tex2D(ReShade::BackBuffer, transformed_uv);
+    return tex2D(ReShade::BackBuffer, transformedUv);
 }
 
 // ============================================================================
@@ -242,12 +234,12 @@ float4 PS_MotionFocusDisplay(float4 pos : SV_Position, float2 texcoord : TEXCOOR
 // ============================================================================
 float4 PS_MotionFocusStorageNorm(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target 
 {
-    return tex2D(MotionFocus_NormSampler, texcoord);
+    return tex2D(NormSampler, texcoord);
 }
 
 float PS_MotionFocusStorageMotion(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target 
 {
-    return tex2D(MotionFocus_QuadFullSampler, texcoord).r;
+    return tex2D(QuadFullSampler, texcoord).r;
 }
 
 // ============================================================================
@@ -259,19 +251,19 @@ technique AS_VFX_MotionFocus < ui_tooltip = "Dynamically zooms towards detected 
     {
         VertexShader = PostProcessVS;
         PixelShader = PS_MotionFocusNorm;
-        RenderTarget = MotionFocus_NormTex;
+        RenderTarget = NormTex;
     }
     pass MotionFocusQuadFullPass
     {
         VertexShader = PostProcessVS;
         PixelShader = PS_MotionFocusQuadFull;
-        RenderTarget = MotionFocus_QuadFullTex;
+        RenderTarget = QuadFullTex;
     }
     pass MotionFocusCalcPass
     {
         VertexShader = PostProcessVS;
         PixelShader = PS_MotionFocus;
-        RenderTarget = MotionFocus_FocusTex;
+        RenderTarget = FocusTex;
     }
     pass MotionFocusDisplayPass
     {
@@ -282,13 +274,13 @@ technique AS_VFX_MotionFocus < ui_tooltip = "Dynamically zooms towards detected 
     {
         VertexShader = PostProcessVS;
         PixelShader = PS_MotionFocusStorageNorm;
-        RenderTarget = MotionFocus_PrevFrameTex;
+        RenderTarget = PrevFrameTex;
     }
     pass MotionFocusStorageMotionPass
     {
         VertexShader = PostProcessVS;
         PixelShader = PS_MotionFocusStorageMotion;
-        RenderTarget = MotionFocus_PrevMotionTex;
+        RenderTarget = PrevMotionTex;
     }
 }
 
