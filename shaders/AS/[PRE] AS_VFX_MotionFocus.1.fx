@@ -2,7 +2,12 @@
  * AS_VFX_MotionFocus.1.fx - Automatic Motion-Based Camera Focus & Zoom
  * Author: Leon Aquitaine
  * License: CC BY 4.0
- * * DESCRIPTION:
+ * 
+ * CREDITS:
+ * Based on MotionFocus.fx originally made by Ganossa and ported by IDDQD.
+ * This implementation has been extensively rewritten and enhanced for the AS StageFX framework.
+ *
+ * DESCRIPTION:
  * This shader analyzes inter-frame motion differences to dynamically adjust the viewport,
  * zooming towards and centering on areas of detected movement. It uses a multi-pass
  * approach to capture frames, detect motion, analyze motion distribution in quadrants,
