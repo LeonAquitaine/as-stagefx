@@ -1,6 +1,6 @@
 # AS-StageFX Shader Gallery - Visual Effects Package
 
-This gallery provides detailed descriptions and visual examples of the **21 effects** (3 Lighting + 18 Visual) included in the **AS_StageFX_VisualEffects** package. These effects range from lighting simulation and audio visualization to particle systems and post-processing tools.
+This gallery provides detailed descriptions and visual examples of the **22 effects** (3 Lighting + 19 Visual) included in the **AS_StageFX_VisualEffects** package. These effects range from lighting simulation and audio visualization to particle systems and post-processing tools.
 
 For installation instructions and general information, please refer to the [main README](../README.md).
 
@@ -91,6 +91,16 @@ Creates stylized digital artifacts, glitch effects, and hologram visuals positio
 <h4>VFX: Dust Motes ⚡</h4>
 <h5><code>[AS] VFX: Dust Motes|AS_VFX_DustMotes.1.fx</code></h5>
 Simulates static, sharp-bordered dust motes using two independent particle layers. A blur effect is applied to the final image in areas covered by particles. Supports depth masking, rotation, audio reactivity and standard AS blending modes.
+</td>
+<td width="50%"><div style="text-align:center">
+</div></td>
+</tr>
+<tr>
+<td width="50%">
+<h4>VFX: Motion Focus ⚡</h4>
+<h5><code>[AS] VFX: Motion Focus|AS_VFX_MotionFocus.1.fx</code></h5>
+Analyzes inter-frame motion differences to dynamically adjust the viewport, zooming towards and centering on areas of detected movement. Features multi-pass motion analysis with temporal smoothing, adaptive decay for responsive adjustments, quadrant-based motion aggregation, motion-weighted zoom center calculation, generous zoom limits for dramatic effects, and edge correction to prevent sampling outside screen bounds.<br><br>
+Based on: "MotionFocus.fx" originally made by <strong>Ganossa</strong> and ported by <strong>IDDQD</strong>.
 </td>
 <td width="50%"><div style="text-align:center">
 </div></td>
