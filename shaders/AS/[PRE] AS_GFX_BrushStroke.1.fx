@@ -1,6 +1,6 @@
 /**
  * AS_GFX_BrushStroke.1.fx - Stylized Brush Stroke Band Effect
- * Author: Gemini (Generated for User, based on RippedPaper)
+ * Author: Leon Aquitaine
  * License: CC BY 4.0
  *
  * ===================================================================================
@@ -149,39 +149,37 @@ float GetStrokeAlpha(
 {    float current_band_half_height = current_band_height * 0.5f;
     if (current_band_half_height < 0.0001f) current_band_half_height = 0.0001f; 
 
-    float s_rot = sin(current_rotation_radians);
-    float c_rot = cos(current_rotation_radians);
-
-    // Apply aspect ratio correction to texture coordinates before rotation
+    // Apply aspect ratio correction to texture coordinates and scale
     float2 centered_tc = current_texcoord - current_stroke_center;
     centered_tc.x *= ReShade::AspectRatio; // Correct for aspect ratio
     centered_tc /= current_stroke_scale; // Apply scale
     
-    float2 local_uv_rot; 
-    local_uv_rot.x = centered_tc.x * c_rot - centered_tc.y * s_rot;
-    local_uv_rot.y = centered_tc.x * s_rot + centered_tc.y * c_rot;
+    // Apply rotation in the aspect-corrected space
+    float2 local_uv = centered_tc;
+    if (abs(current_rotation_radians) > 0.001f) {
+        float s_rot = sin(current_rotation_radians);
+        float c_rot = cos(current_rotation_radians);
+        local_uv.x = centered_tc.x * c_rot - centered_tc.y * s_rot;
+        local_uv.y = centered_tc.x * s_rot + centered_tc.y * c_rot;
+    }
 
     int fbm_octaves = 4;
     float fbm_lacunarity = 2.0f;
     float fbm_gain = 0.5f;       
-    float fbm_amplitude_norm_factor = 1.0f + fbm_gain + pow(fbm_gain, 2) + pow(fbm_gain, 3);
-
-    float2 fbm_sample_coord = float2(local_uv_rot.x * current_stroke_shape_x, local_uv_rot.y * current_stroke_shape_y);
+    float fbm_amplitude_norm_factor = 1.0f + fbm_gain + pow(fbm_gain, 2) + pow(fbm_gain, 3);    float2 fbm_sample_coord = float2(local_uv.x * current_stroke_shape_x, local_uv.y * current_stroke_shape_y);
     float fbm_val = AS_Fbm2D(fbm_sample_coord, fbm_octaves, fbm_lacunarity, fbm_gain); 
     
     fbm_val = saturate((fbm_val / fbm_amplitude_norm_factor + 1.0f) * 0.5f);
     out_fbm_noise_contrasted = pow(fbm_val, current_ink_contrast); // Store for shading
 
-    float dist_y_norm = abs(local_uv_rot.y) / current_band_half_height;
+    float dist_y_norm = abs(local_uv.y) / current_band_half_height;
     float dynamic_threshold = lerp(current_min_ink_thresh_center, current_min_ink_thresh_edge, saturate(dist_y_norm));
 
     float calculated_alpha = smoothstep(dynamic_threshold - current_stroke_feather * 0.5f, 
                                       dynamic_threshold + current_stroke_feather * 0.5f, 
-                                      out_fbm_noise_contrasted);
-
-    float band_max_extent = current_band_half_height * (1.0f + current_edge_extend_factor);
+                                      out_fbm_noise_contrasted);    float band_max_extent = current_band_half_height * (1.0f + current_edge_extend_factor);
     float falloff_start = max(current_band_half_height * 0.99f, current_band_half_height - current_stroke_feather); 
-    float band_falloff_mask = 1.0f - smoothstep(falloff_start, band_max_extent, abs(local_uv_rot.y));
+    float band_falloff_mask = 1.0f - smoothstep(falloff_start, band_max_extent, abs(local_uv.y));
     
     return saturate(calculated_alpha * band_falloff_mask);
 }
@@ -199,19 +197,19 @@ float4 PS_BrushStroke(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV
         return original_color;
     }
     
-    float main_stroke_fbm_noise; // Will be filled by GetStrokeAlpha
-      // Get rotation in radians
+    // Get rotation in radians
     float rotation = AS_getRotationRadians(StrokeRotationSnap, StrokeRotationFine);
-
+    
     // Transform coordinates using AS standard coordinate system
     // Convert AS UI coordinates (-1.5 to 1.5, default 0,0) to screen coordinates (0.5 = center)
     float2 stroke_screen_position = float2(0.5, 0.5) + (StrokeCenter * 0.5);
-
-    // --- Shadow Pass ---
+    
+    float main_stroke_fbm_noise; // Will be filled by GetStrokeAlpha    // --- Shadow Pass ---
     float3 background_with_shadow = original_color.rgb;
     if (ShadowOpacity > 0.001f)
     {
-        float shadow_angle_rad = AS_radians(ShadowAngle); // Note: ShadowAngle is typically positive for down-right
+        // Shadow angle is relative to stroke rotation
+        float shadow_angle_rad = AS_radians(ShadowAngle + rotation);
         float2 shadow_offset_vector;
         // ShadowDistance is fraction of screen height. Correct X offset for aspect ratio.
         shadow_offset_vector.x = cos(shadow_angle_rad) * ShadowDistance / ReShade::AspectRatio; 
@@ -232,8 +230,7 @@ float4 PS_BrushStroke(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV
         if (shadow_casting_alpha > 0.001f)
         {
             background_with_shadow = lerp(background_with_shadow, ShadowColor, shadow_casting_alpha * ShadowOpacity);
-        }
-    }// --- Main Stroke Pass ---    
+        }    }// --- Main Stroke Pass ---    
     float stroke_alpha = GetStrokeAlpha(
         texcoord,
         stroke_screen_position, StrokeScale, rotation, BandHeight,
