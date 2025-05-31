@@ -459,14 +459,26 @@
       "credits": {
         "license": "Creative Commons Attribution 4.0 International"
       },
-      "name": "AS_VFX_MotionTrails.1",
-      "performance": "Light",
-      "filename": "AS_VFX_MotionTrails.1.fx",
-      "author": "Leon Aquitaine"
-    },
-    {
-      "credits": {
-        "originalName": "301's Fire Shader - Remix 3",
+      "name": "AS_VFX_MotionTrails.1",
+      "performance": "Light",
+      "filename": "AS_VFX_MotionTrails.1.fx",
+      "author": "Leon Aquitaine"
+    },
+    {
+      "credits": {
+        "originalName": "MotionFocus.fx",
+        "author": "Ganossa",
+        "portedBy": "IDDQD",
+        "adaptedBy": "Leon Aquitaine"
+      },
+      "name": "AS_VFX_MotionFocus.1",
+      "performance": "Moderate",
+      "filename": "[PRE] AS_VFX_MotionFocus.1.fx",
+      "author": "Leon Aquitaine"
+    },
+    {
+      "credits": {
+        "originalName": "301's Fire Shader - Remix 3",
         "link": "https://www.shadertoy.com/view/4ttGWM",
         "author": "mu6k",
         "platform": "Shadertoy",
@@ -574,8 +586,7 @@
       "performance": "Light",
       "filename": "AS_VFX_WaterSurface.1.fx",
       "author": "Leon Aquitaine"
-    }
-  ],
-  "count": 45,
-  "generated": "2025-05-26"
+    }  ],
+  "count": 46,
+  "generated": "2025-05-31"
 }
