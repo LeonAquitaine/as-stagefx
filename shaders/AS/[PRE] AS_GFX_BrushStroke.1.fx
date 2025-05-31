@@ -95,6 +95,8 @@ uniform float EdgeExtendFactor < ui_type = "slider"; ui_label = "Edge Extend Fac
 // --- Category: Colors ---
 uniform float3 StrokeColor < ui_type = "color"; ui_label = "Stroke Color"; ui_category = "Colors"; > = float3(0.1f, 0.1f, 0.1f); 
 
+uniform bool InvertStroke < ui_type = "input"; ui_label = "Invert Stroke"; ui_tooltip = "When enabled, stroke areas become transparent and non-stroke areas are filled with stroke color."; ui_category = "Colors"; > = false;
+
 static const float BRUSHSTROKE_SHADOW_INT_MIN = 0.0f;
 static const float BRUSHSTROKE_SHADOW_INT_MAX = 1.0f;
 static const float BRUSHSTROKE_SHADOW_INT_DEFAULT = 0.3f;
@@ -217,7 +219,6 @@ float4 PS_BrushStroke(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV
           float2 shadow_sample_texcoord = texcoord - shadow_offset_vector; // Sample from where caster would be
 
         float shadow_fbm_noise_value; // Dummy for shadow alpha calculation, not used for its shading
-
         float shadow_casting_alpha = GetStrokeAlpha(
             shadow_sample_texcoord,
             stroke_screen_position, StrokeScale, rotation, BandHeight,
@@ -227,10 +228,13 @@ float4 PS_BrushStroke(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV
             shadow_fbm_noise_value // out param
         );
         
-        if (shadow_casting_alpha > 0.001f)
+        // Apply invert logic to shadow as well
+        float final_shadow_alpha = InvertStroke ? (1.0 - shadow_casting_alpha) : shadow_casting_alpha;
+        
+        if (final_shadow_alpha > 0.001f)
         {
-            background_with_shadow = lerp(background_with_shadow, ShadowColor, shadow_casting_alpha * ShadowOpacity);
-        }    }// --- Main Stroke Pass ---    
+            background_with_shadow = lerp(background_with_shadow, ShadowColor, final_shadow_alpha * ShadowOpacity);
+        }}// --- Main Stroke Pass ---    
     float stroke_alpha = GetStrokeAlpha(
         texcoord,
         stroke_screen_position, StrokeScale, rotation, BandHeight,
@@ -246,9 +250,13 @@ float4 PS_BrushStroke(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV
         modified_stroke_color = lerp(modified_stroke_color, StrokeColor * (1.0f + StrokeTextureHighlightIntensity * 0.4f), saturate(main_stroke_fbm_noise * 1.5f - 0.5f) );
         modified_stroke_color = lerp(modified_stroke_color, StrokeColor * (1.0f - StrokeTextureShadowIntensity * 0.4f), saturate(0.5f - main_stroke_fbm_noise * 1.5f) );
         modified_stroke_color = saturate(modified_stroke_color);
-    }
-      // Apply blending
-    float3 effect_color = lerp(background_with_shadow, modified_stroke_color, stroke_alpha);
+    }      // Apply invert logic if enabled
+    float final_alpha = InvertStroke ? (1.0 - stroke_alpha) : stroke_alpha;
+    float3 final_stroke_color = InvertStroke ? modified_stroke_color : modified_stroke_color;
+    float3 final_background = InvertStroke ? background_with_shadow : background_with_shadow;
+    
+    // Apply blending
+    float3 effect_color = lerp(final_background, final_stroke_color, final_alpha);
     float3 blended_color = AS_applyBlend(effect_color, original_color.rgb, BlendMode);
     float4 final_color = lerp(original_color, float4(blended_color, 1.0), BlendStrength);
 
