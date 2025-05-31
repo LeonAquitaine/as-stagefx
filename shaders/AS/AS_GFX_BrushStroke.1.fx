@@ -141,6 +141,10 @@ uniform float ShadowAngle < ui_type = "slider"; ui_label = "Shadow Angle"; ui_to
 
 uniform float ShadowDistance < ui_type = "slider"; ui_label = "Shadow Distance"; ui_tooltip = "Screen-relative offset distance of the shadow (fraction of screen height)."; ui_min = BRUSHSTROKE_SHADOW_DIST_MIN; ui_max = BRUSHSTROKE_SHADOW_DIST_MAX; ui_step = 0.0005f; ui_category = "Shadow Settings"; > = BRUSHSTROKE_SHADOW_DIST_DEFAULT;
 
+uniform bool EnableCountershadow < ui_label = "Enable Countershadow"; ui_tooltip = "Adds a second shadow cast in the opposite direction for enhanced depth."; ui_category = "Shadow Settings"; > = false;
+
+uniform float3 CounterShadowColor < ui_type = "color"; ui_label = "Countershadow Color"; ui_category = "Shadow Settings"; > = float3(0.0f, 0.0f, 0.0f);
+
 // --- Category: Audio Reactivity ---
 AS_AUDIO_UI(AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
 AS_AUDIO_MULT_UI(AudioMultiplier, "Audio Intensity", 1.0, 2.0, "Audio Reactivity")
@@ -271,10 +275,44 @@ float4 PS_BrushStroke(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV
         
         // Apply invert logic to shadow as well
         float final_shadow_alpha = InvertStroke ? (1.0 - shadow_casting_alpha) : shadow_casting_alpha;
-        
-        if (final_shadow_alpha > 0.001f)
+          if (final_shadow_alpha > 0.001f)
         {
-            background_with_shadow = lerp(background_with_shadow, ShadowColor, final_shadow_alpha * current_shadow_opacity);        }}// --- Main Stroke Pass ---    
+            background_with_shadow = lerp(background_with_shadow, ShadowColor, final_shadow_alpha * current_shadow_opacity);        
+        }
+    }
+
+    // --- Countershadow Pass ---
+    if (EnableCountershadow && current_shadow_opacity > 0.001f)
+    {
+        // Countershadow angle is opposite to main shadow (180 degrees offset)
+        float countershadow_angle_rad = AS_radians(ShadowAngle + 180.0 + rotation);
+        float2 countershadow_offset_vector;
+        // Use same distance as main shadow, corrected for aspect ratio
+        countershadow_offset_vector.x = cos(countershadow_angle_rad) * ShadowDistance / ReShade::AspectRatio; 
+        countershadow_offset_vector.y = sin(countershadow_angle_rad) * ShadowDistance;
+          
+        float2 countershadow_sample_texcoord = texcoord - countershadow_offset_vector; // Sample from where caster would be
+
+        float countershadow_fbm_noise_value; // Dummy for countershadow alpha calculation, not used for its shading
+        float countershadow_casting_alpha = GetStrokeAlpha(
+            countershadow_sample_texcoord,
+            stroke_screen_position, StrokeScale, rotation, current_band_height,
+            StrokeShapeX, StrokeShapeY, current_ink_contrast,
+            MinInkThresholdAtCenter, MinInkThresholdAtEdge,
+            StrokeFeather, EdgeExtendFactor,
+            countershadow_fbm_noise_value // out param
+        );
+        
+        // Apply invert logic to countershadow as well
+        float final_countershadow_alpha = InvertStroke ? (1.0 - countershadow_casting_alpha) : countershadow_casting_alpha;
+        
+        if (final_countershadow_alpha > 0.001f)
+        {
+            background_with_shadow = lerp(background_with_shadow, CounterShadowColor, final_countershadow_alpha * current_shadow_opacity);        
+        }
+    }
+
+    // --- Main Stroke Pass ---
     float stroke_alpha = GetStrokeAlpha(
         texcoord,
         stroke_screen_position, StrokeScale, rotation, current_band_height,
