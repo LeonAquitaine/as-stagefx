@@ -6,31 +6,28 @@
  *
  * DESCRIPTION:
  * Simulates 2D volumetric light shafts (god rays) emanating from a user-defined light source.
- * Rays are occluded by scene geometry based on a configurable depth plane.
- * The effect is achieved in two passes: first, a light intensity map (with depth occlusion) is generated,
- * then rays are cast by radially blurring this map.
+ * The light source is considered to be at the specified 'EffectDepth'.
+ * Rays and direct light contributions are occluded by scene geometry closer to the camera than 'EffectDepth'.
  *
  * FEATURES:
  * - Interactive light source positioning.
  * - Adjustable light brightness, ray length, and number of ray samples.
- * - Depth-based occlusion of light rays by scene geometry.
- * - Optional direct lighting on scene elements.
+ * - Depth-based occlusion: Light source is at 'EffectDepth'; objects in front of this depth block light.
+ * - Optional direct lighting on scene elements (only if they are at/behind EffectDepth).
  * - Standard blending options for final composite.
  *
  * IMPLEMENTATION OVERVIEW:
  * 1. Threshold Pass:
  * - Calculates per-pixel distance to the light source in an aspect-corrected coordinate space.
- * - Determines light intensity based on an inverse square falloff.
- * - Retrieves scene depth and compares it to the user-defined EffectDepth.
- * - Applies minimal direct lighting to foreground objects (from BackBuffer).
- * - Stores a thresholded light intensity value into the alpha channel of a dedicated render target texture.
- * This intensity is scaled by a depth occlusion factor, becoming zero for areas in front of EffectDepth.
+ * - Retrieves scene depth and compares it to 'EffectDepth' (depth of the light source).
+ * - Calculates a depth_occlusion_factor (0 if surface is in front of EffectDepth, 1 if at/behind).
+ * - Base light attenuation (f_atten) is modulated by this depth_occlusion_factor. If surface is in front, f_atten becomes 0.
+ * - Stores a thresholded light intensity (derived from the now depth-occluded f_atten) into the alpha channel
+ * of a dedicated render target texture. This value is used by the blur pass to generate rays.
  * 2. Blur & Composite Pass:
- * - For each pixel, it samples along a line towards the light source in the previously generated
- * light intensity texture (which now includes depth occlusion).
- * - Accumulates these samples with an attenuation factor based on distance along the ray to create
- * the light shaft effect.
- * - A small random jitter is added to sample positions for a softer look.
+ * - (No change from previous version) For each pixel, it samples along a line towards the light source in the previously generated
+ * light intensity texture. Since this texture now has occlusion baked in, rays will appear correctly blocked.
+ * - Accumulates these samples with an attenuation factor to create the light shaft effect.
  * - The resulting rays are then blended with the original scene.
  */
 
@@ -52,12 +49,12 @@ sampler FakeVolumetricLight_ThresholdSampler { Texture = FakeVolumetricLight_Thr
 // ============================================================================
 
 // Light Source Settings
-AS_POS_UI(LightSourcePos) // "ui_label = Light Position" implicitly via macro
+AS_POS_UI(LightSourcePos)
 static const float LIGHT_BRIGHTNESS_MIN = 0.01; static const float LIGHT_BRIGHTNESS_MAX = 0.5; static const float LIGHT_BRIGHTNESS_DEFAULT = 0.1;
 uniform float LightBrightness < ui_type = "slider"; ui_label = "Light Source Brightness"; ui_tooltip = "Intensity of the light source for rays."; ui_min = LIGHT_BRIGHTNESS_MIN; ui_max = LIGHT_BRIGHTNESS_MAX; ui_category = "Light Source"; > = LIGHT_BRIGHTNESS_DEFAULT;
 
 static const float OBJECT_LIGHT_MIN = 0.0; static const float OBJECT_LIGHT_MAX = 0.2; static const float OBJECT_LIGHT_DEFAULT = 0.05;
-uniform float ObjectLightFactor < ui_type = "slider"; ui_label = "Object Direct Light Factor"; ui_tooltip = "How much direct light illuminates objects close to the source. Base effect from original shader."; ui_min = OBJECT_LIGHT_MIN; ui_max = OBJECT_LIGHT_MAX; ui_category = "Light Source"; > = OBJECT_LIGHT_DEFAULT;
+uniform float ObjectLightFactor < ui_type = "slider"; ui_label = "Object Direct Light Factor"; ui_tooltip = "How much direct light illuminates objects close to the source (if they are not in front of the light's depth plane)."; ui_min = OBJECT_LIGHT_MIN; ui_max = OBJECT_LIGHT_MAX; ui_category = "Light Source"; > = OBJECT_LIGHT_DEFAULT;
 
 static const float LIGHT_THRESHOLD_MIN_VAL = 0.0; static const float LIGHT_THRESHOLD_MAX_VAL = 1.0; static const float LIGHT_THRESHOLD_DEFAULT_MIN = 0.5; static const float LIGHT_THRESHOLD_DEFAULT_MAX = 0.51;
 uniform float LightThresholdMin < ui_type = "slider"; ui_label = "Ray Visibility Threshold Min"; ui_min = LIGHT_THRESHOLD_MIN_VAL; ui_max = LIGHT_THRESHOLD_MAX_VAL; ui_category = "Light Source"; > = LIGHT_THRESHOLD_DEFAULT_MIN;
@@ -74,25 +71,23 @@ static const float RAY_TIME_SCALE_MIN = 0.0; static const float RAY_TIME_SCALE_M
 uniform float RayRandomTimeScale < ui_type = "slider"; ui_label = "Ray Jitter Animation Speed"; ui_tooltip = "Speed of the random jitter animation for rays."; ui_min = RAY_TIME_SCALE_MIN; ui_max = RAY_TIME_SCALE_MAX; ui_category = "Ray Properties"; > = RAY_TIME_SCALE_DEFAULT;
 
 // Stage Controls
-AS_STAGEDEPTH_UI(EffectDepth) // Adds EffectDepth uniform
+AS_STAGEDEPTH_UI(EffectDepth) 
 
 // Final Mix
-AS_BLENDMODE_UI_DEFAULT(BlendMode, AS_BLEND_LIGHTEN)
+AS_BLENDMODE_UI_DEFAULT(BlendMode, AS_BLEND_LIGHTEN) 
 AS_BLENDAMOUNT_UI(BlendAmount)
 
 // ============================================================================
 // Helper Functions
 // ============================================================================
-
-// Converts texcoord (0-1) to an aspect-corrected centered space: X [-0.5*AR, 0.5*AR], Y [-0.5, 0.5] (for landscape)
 float2 GetAspectCorrectedCenteredUV(float2 tc)
 {
     float2 uv = tc - 0.5;
-    if (ReShade::AspectRatio >= 1.0) // Landscape or square
+    if (ReShade::AspectRatio >= 1.0) 
     {
         uv.x *= ReShade::AspectRatio;
     }
-    else // Portrait
+    else 
     {
         uv.y /= ReShade::AspectRatio;
     }
@@ -104,29 +99,45 @@ float2 GetAspectCorrectedCenteredUV(float2 tc)
 // ============================================================================
 float4 PS_FakeVolumetricLight_Threshold(float4 pos : SV_Position, float2 texcoord : TEXCOORD0) : SV_Target0
 {
-    float2 buffer_dim = float2(BUFFER_WIDTH, BUFFER_HEIGHT);
     float2 uvn = GetAspectCorrectedCenteredUV(texcoord);
 
     float2 light_pos_centered = LightSourcePos * 0.5;
     if (ReShade::AspectRatio >= 1.0) light_pos_centered.x *= ReShade::AspectRatio;
     else light_pos_centered.y /= ReShade::AspectRatio;
 
-    float dist_sq = dot(uvn - light_pos_centered, uvn - light_pos_centered);
-    float f_atten = LightBrightness / (dist_sq + AS_EPSILON);     float4 scene_sample = tex2D(ReShade::BackBuffer, texcoord);
-    float3 face_lighting = clamp(ObjectLightFactor * f_atten, 0.02, ObjectLightFactor * 0.5) * scene_sample.rgb;
-    float background_heuristic = 1.0 - saturate(scene_sample.a + dot(scene_sample.rgb, float3(0.33,0.33,0.33)));
-    float3 final_color = lerp(face_lighting, float3(f_atten, f_atten, f_atten), background_heuristic);
-    
-    // Depth Occlusion
+    // Depth Occlusion: Light source is at EffectDepth.
+    // Objects in front of EffectDepth block all light from this source.
     float sceneDepth = ReShade::GetLinearizedDepth(texcoord);
-    // depth_occlusion_factor is 1 if sceneDepth is > EffectDepth (behind), 0 if sceneDepth < EffectDepth (in front)
+    // depth_occlusion_factor is 1 if sceneDepth is >= EffectDepth (at or behind light source plane), 
+    // 0 if sceneDepth < EffectDepth (in front of light source plane).
     float depth_occlusion_factor = saturate(smoothstep(EffectDepth - AS_DEPTH_EPSILON, EffectDepth + AS_DEPTH_EPSILON, sceneDepth));
 
-    // Store thresholded light intensity in alpha channel, modulated by depth occlusion
-    float ray_alpha_base = lerp(0.0, smoothstep(LightThresholdMin, LightThresholdMax, f_atten), background_heuristic);
-    float ray_alpha_occluded = ray_alpha_base * depth_occlusion_factor;
+    float dist_sq = dot(uvn - light_pos_centered, uvn - light_pos_centered);
+    float base_f_atten = LightBrightness / (dist_sq + AS_EPSILON);
+    // Modulate light attenuation by depth: if surface is in front of light plane, f_atten is 0.
+    float f_atten = base_f_atten * depth_occlusion_factor;
     
-    return float4(final_color, ray_alpha_occluded);
+    float4 scene_sample = tex2D(ReShade::BackBuffer, texcoord); // Using ReShade::BackBuffer as per user confirmation
+
+    // Face lighting only applies if f_atten is non-zero (i.e., surface is not in front of light plane)
+    // Clamping min to 0.0, as f_atten might be 0.
+    float3 face_lighting_contribution = clamp(ObjectLightFactor * f_atten, 0.0, ObjectLightFactor * 0.5) * scene_sample.rgb;
+    
+    float background_heuristic = 1.0 - saturate(scene_sample.a + dot(scene_sample.rgb, float3(0.33,0.33,0.33)));
+    
+    // The color stored in RGB of the buffer. If f_atten is 0, this simplifies significantly.
+    // If an object is in front (f_atten=0), its face_lighting_contribution is 0.
+    // Then final_color becomes lerp(0, 0, background_heuristic) = 0 if it's background,
+    // or lerp(0, scene_sample.rgb (if face_lighting was defined as additive), ...)
+    // The original lerp was: lerp(face_lighting_direct_color, color_of_light_on_background, heuristic)
+    // Let's keep the original structure, f_atten being 0 handles occlusion naturally.
+    float3 final_color_rgb_part = lerp(face_lighting_contribution, float3(f_atten, f_atten, f_atten), background_heuristic);
+    
+    // Store thresholded light intensity in alpha channel.
+    // Since f_atten already includes depth_occlusion_factor, ray_alpha_base will be 0 if occluded.
+    float ray_alpha_base = lerp(0.0, smoothstep(LightThresholdMin, LightThresholdMax, f_atten), background_heuristic);
+    
+    return float4(final_color_rgb_part, ray_alpha_base);
 }
 
 // ============================================================================
@@ -134,7 +145,6 @@ float4 PS_FakeVolumetricLight_Threshold(float4 pos : SV_Position, float2 texcoor
 // ============================================================================
 float4 PS_FakeVolumetricLight_Composite(float4 pos : SV_Position, float2 texcoord : TEXCOORD0) : SV_Target0
 {
-    float2 buffer_dim = float2(BUFFER_WIDTH, BUFFER_HEIGHT);
     float2 uvn = GetAspectCorrectedCenteredUV(texcoord); 
 
     float2 light_pos_centered = LightSourcePos * 0.5;
@@ -151,6 +161,7 @@ float4 PS_FakeVolumetricLight_Composite(float4 pos : SV_Position, float2 texcoor
         float ray_progress = (float(i) / float(RaySteps));
         float2 sample_offset_along_ray = dir_to_light * ray_progress * RayLength;
         
+        // Using AS_hash22 as confirmed by user for their AS_Noise.1.fxh
         float2 random_jitter = (AS_hash22(pos.xy + current_time_seed + float(i)) - 0.5) * 0.01 * RayLength;
 
         float2 sample_pos_centered = uvn + sample_offset_along_ray + random_jitter;
@@ -180,14 +191,15 @@ float4 PS_FakeVolumetricLight_Composite(float4 pos : SV_Position, float2 texcoor
     {
         accumulated_rays.rgb /= accumulated_rays.a;
     }
-      float4 original_scene_color = tex2D(ReShade::BackBuffer, texcoord);
+    
+    float4 original_scene_color = tex2D(ReShade::BackBuffer, texcoord); // Using ReShade::BackBuffer
     return AS_applyBlend(float4(accumulated_rays.rgb, 1.0), original_scene_color, BlendMode, BlendAmount);
 }
 
 // ============================================================================
 // Technique Definition
 // ============================================================================
-technique AS_VFX_FakeVolumetricLight < ui_tooltip = "Simulates 2D volumetric light shafts (god rays) from a light source, with depth occlusion."; >
+technique AS_VFX_FakeVolumetricLight < ui_tooltip = "Simulates 2D volumetric light shafts. Light source at 'EffectDepth'; objects in front block light."; >
 {
     pass ThresholdPass
     {
