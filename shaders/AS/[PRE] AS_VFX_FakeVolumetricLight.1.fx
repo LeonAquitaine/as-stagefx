@@ -2,28 +2,33 @@
  * AS_VFX_FakeVolumetricLight.1.fx - 2D Volumetric Light Shafts with Depth Occlusion and Color Selection
  * Author: Leon Aquitaine
  * License: Creative Commons Attribution 4.0 International
+ * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
+ * 
+ * ===================================================================================
  *
  * DESCRIPTION:
  * Simulates 2D volumetric light shafts (god rays) of a selectable color, emanating from a user-defined light source.
- * The light source is considered to be at the specified 'EffectDepth'.
- * Rays and direct light contributions are occluded by scene geometry closer to the camera than 'EffectDepth'.
+ * The light source is considered to be at the specified 'EffectDepth'. Rays and direct light contributions are 
+ * occluded by scene geometry closer to the camera than 'EffectDepth'.
  *
  * FEATURES:
- * - Interactive light source positioning.
- * - User-selectable light color via palette system.
- * - Adjustable light brightness, ray length, and number of ray samples.
- * - Depth-based occlusion: Light source is at 'EffectDepth'; objects in front of this depth block light.
- * - Optional direct lighting on scene elements.
- * - Standard blending options for final composite.
+ * - Interactive light source positioning with depth-based occlusion
+ * - User-selectable light color via palette system or custom colors
+ * - Adjustable light brightness, ray length, and number of ray samples
+ * - Audio reactivity for light brightness, ray length, and jitter animation speed
+ * - Optional direct lighting on scene elements behind the depth plane
+ * - Standard blending options for final composite
+ * - Resolution-independent rendering
  *
  * IMPLEMENTATION OVERVIEW:
- * 1. Threshold Pass:
- * - (Largely unchanged) Calculates light intensity and occlusion, storing it in the alpha channel of a temporary buffer.
- * 2. Blur & Composite Pass:
- * - Samples the light intensity from the temporary buffer along rays.
- * - Retrieves the user-selected color via the AS_Palette system.
- * - Colors the accumulated ray intensity with the chosen color.
- * - Blends the final colored rays with the original scene.
+ * 1. Threshold Pass: Calculates light intensity and occlusion based on distance from light source
+ *    and scene depth, storing the result in a temporary buffer for ray sampling.
+ * 2. Blur & Composite Pass: Samples light intensity along rays from each pixel toward the light source,
+ *    applies user-selected colors, and composites the final god rays with the original scene.
+ * 3. Audio Integration: Light brightness, ray length, and animation speed can react to audio input
+ *    for dynamic, music-synchronized lighting effects.
+ *
+ * ===================================================================================
  */
 
 #ifndef __AS_VFX_FakeVolumetricLight_1_fx
@@ -32,7 +37,12 @@
 #include "ReShade.fxh"
 #include "AS_Utils.1.fxh"
 #include "AS_Noise.1.fxh"
-#include "AS_Palette.1.fxh" // Added for palette functions and UI
+#include "AS_Palette.1.fxh"
+
+// ============================================================================
+// Constants
+// ============================================================================
+static const float RAY_ATTENUATION_CURVE = 0.45; // Controls how rays fade along their length
 
 // ============================================================================
 // Render Target Textures & Samplers
@@ -41,40 +51,37 @@ texture FakeVolumetricLight_ThresholdBuffer { Width = BUFFER_WIDTH; Height = BUF
 sampler FakeVolumetricLight_ThresholdSampler { Texture = FakeVolumetricLight_ThresholdBuffer; };
 
 // ============================================================================
-// Tunable Constants & UI Definitions
+// UI Declarations
 // ============================================================================
 
-// Light Source Settings
-AS_POS_UI(LightSourcePos)
-static const float LIGHT_BRIGHTNESS_MIN = 0.01; static const float LIGHT_BRIGHTNESS_MAX = 0.5; static const float LIGHT_BRIGHTNESS_DEFAULT = 0.1;
-uniform float LightBrightness < ui_type = "slider"; ui_label = "Light Source Brightness"; ui_tooltip = "Intensity of the light source for rays."; ui_min = LIGHT_BRIGHTNESS_MIN; ui_max = LIGHT_BRIGHTNESS_MAX; ui_category = "Light Source"; > = LIGHT_BRIGHTNESS_DEFAULT;
-
-static const float OBJECT_LIGHT_MIN = 0.0; static const float OBJECT_LIGHT_MAX = 0.2; static const float OBJECT_LIGHT_DEFAULT = 0.05;
-uniform float ObjectLightFactor < ui_type = "slider"; ui_label = "Object Direct Light Factor"; ui_tooltip = "How much direct light illuminates objects close to the source (if they are not in front of the light's depth plane)."; ui_min = OBJECT_LIGHT_MIN; ui_max = OBJECT_LIGHT_MAX; ui_category = "Light Source"; > = OBJECT_LIGHT_DEFAULT;
-
-static const float LIGHT_THRESHOLD_MIN_VAL = 0.0; static const float LIGHT_THRESHOLD_MAX_VAL = 1.0; static const float LIGHT_THRESHOLD_DEFAULT_MIN = 0.5; static const float LIGHT_THRESHOLD_DEFAULT_MAX = 0.51;
-uniform float LightThresholdMin < ui_type = "slider"; ui_label = "Ray Visibility Threshold Min"; ui_min = LIGHT_THRESHOLD_MIN_VAL; ui_max = LIGHT_THRESHOLD_MAX_VAL; ui_category = "Light Source"; > = LIGHT_THRESHOLD_DEFAULT_MIN;
-uniform float LightThresholdMax < ui_type = "slider"; ui_label = "Ray Visibility Threshold Max"; ui_min = LIGHT_THRESHOLD_MIN_VAL; ui_max = LIGHT_THRESHOLD_MAX_VAL; ui_category = "Light Source"; > = LIGHT_THRESHOLD_DEFAULT_MAX;
-
-// Ray Casting Settings
-static const int RAY_STEPS_MIN = 5; static const int RAY_STEPS_MAX = 120; static const int RAY_STEPS_DEFAULT = 30;
-uniform int RaySteps < ui_type = "slider"; ui_label = "Ray Sample Steps"; ui_tooltip = "Number of samples along each ray. Higher is smoother but more expensive."; ui_min = RAY_STEPS_MIN; ui_max = RAY_STEPS_MAX; ui_category = "Ray Properties"; > = RAY_STEPS_DEFAULT;
-
-static const float RAY_LENGTH_MIN = 0.05; static const float RAY_LENGTH_MAX = 0.5; static const float RAY_LENGTH_DEFAULT = 0.25;
-uniform float RayLength < ui_type = "slider"; ui_label = "Ray Length Multiplier"; ui_tooltip = "Controls the length of the light rays."; ui_min = RAY_LENGTH_MIN; ui_max = RAY_LENGTH_MAX; ui_category = "Ray Properties"; > = RAY_LENGTH_DEFAULT;
-
-static const float RAY_TIME_SCALE_MIN = 0.0; static const float RAY_TIME_SCALE_MAX = 2000.0; static const float RAY_TIME_SCALE_DEFAULT = 1000.0;
-uniform float RayRandomTimeScale < ui_type = "slider"; ui_label = "Ray Jitter Animation Speed"; ui_tooltip = "Speed of the random jitter animation for rays."; ui_min = RAY_TIME_SCALE_MIN; ui_max = RAY_TIME_SCALE_MAX; ui_category = "Ray Properties"; > = RAY_TIME_SCALE_DEFAULT;
+// Tunable Constants
+uniform float LightBrightness < ui_type = "slider"; ui_label = "Light Source Brightness"; ui_tooltip = "Intensity of the light source for rays."; ui_min = 0.01; ui_max = 0.5; ui_category = "Tunable Constants"; > = 0.1;
+uniform float ObjectLightFactor < ui_type = "slider"; ui_label = "Object Direct Light Factor"; ui_tooltip = "How much direct light illuminates objects close to the source."; ui_min = 0.0; ui_max = 0.2; ui_category = "Tunable Constants"; > = 0.05;
+uniform float LightThresholdMin < ui_type = "slider"; ui_label = "Ray Visibility Threshold Min"; ui_min = 0.0; ui_max = 1.0; ui_category = "Tunable Constants"; > = 0.5;
+uniform float LightThresholdMax < ui_type = "slider"; ui_label = "Ray Visibility Threshold Max"; ui_min = 0.0; ui_max = 1.0; ui_category = "Tunable Constants"; > = 0.51;
 
 // Palette & Style
 AS_PALETTE_SELECTION_UI(LightColorPalette, "Light Color Source", AS_PALETTE_CUSTOM, "Palette & Style")
-AS_DECLARE_CUSTOM_PALETTE(LightRay, "Palette & Style") // Generates LightRayCustomPaletteColor0-4 uniforms
+AS_DECLARE_CUSTOM_PALETTE(LightRay, "Palette & Style")
 
-// Stage Controls
-AS_STAGEDEPTH_UI(EffectDepth) 
+// Effect-Specific Parameters
+uniform int RaySteps < ui_type = "slider"; ui_label = "Ray Sample Steps"; ui_tooltip = "Number of samples along each ray. Higher is smoother but more expensive."; ui_min = 5; ui_max = 120; ui_category = "Ray Properties"; > = 30;
+uniform float RayLength < ui_type = "slider"; ui_label = "Ray Length Multiplier"; ui_tooltip = "Controls the length of the light rays."; ui_min = 0.05; ui_max = 0.5; ui_category = "Ray Properties"; > = 0.25;
 
-// Final Mix
-AS_BLENDMODE_UI_DEFAULT(BlendMode, AS_BLEND_LIGHTEN) 
+// Animation Controls
+uniform float RayRandomTimeScale < ui_type = "slider"; ui_label = "Ray Jitter Animation Speed"; ui_tooltip = "Speed of the random jitter animation for rays."; ui_min = 0.0; ui_max = 2000.0; ui_category = "Animation"; > = 1000.0;
+
+// Audio Reactivity
+uniform int AudioSource < ui_type = "combo"; ui_label = "Audio Source"; ui_items = "Off\0Solid\0Volume\0Beat\0Bass\0Treble\0Mid\0"; ui_category = "Audio Reactivity"; ui_category_closed = true; > = 3;
+uniform int AudioTarget < ui_type = "combo"; ui_label = "Audio Target"; ui_items = "None\0Light Brightness\0Ray Length\0Jitter Speed\0"; ui_category = "Audio Reactivity"; ui_category_closed = true; > = 0;
+uniform float AudioMultiplier < ui_type = "slider"; ui_label = "Audio Multiplier"; ui_min = 0.0; ui_max = 2.0; ui_category = "Audio Reactivity"; ui_category_closed = true; > = 1.0;
+
+// Stage/Position Controls
+AS_POS_UI(LightSourcePos)
+AS_STAGEDEPTH_UI(EffectDepth)
+
+// Final Mix (Blend)
+AS_BLENDMODE_UI_DEFAULT(BlendMode, AS_BLEND_LIGHTEN)
 AS_BLENDAMOUNT_UI(BlendAmount)
 
 // ============================================================================
@@ -99,6 +106,13 @@ float2 GetAspectCorrectedCenteredUV(float2 tc)
 // ============================================================================
 float4 PS_FakeVolumetricLight_Threshold(float4 pos : SV_Position, float2 texcoord : TEXCOORD0) : SV_Target0
 {
+    // Apply audio reactivity to light brightness
+    float lightBrightness_final = LightBrightness;
+    if (AudioTarget == 1) {
+        float audioValue = AS_applyAudioReactivity(1.0, AudioSource, AudioMultiplier, true);
+        lightBrightness_final = LightBrightness * audioValue;
+    }
+
     float2 uvn = GetAspectCorrectedCenteredUV(texcoord);
 
     float2 light_pos_centered = LightSourcePos * 0.5;
@@ -109,7 +123,7 @@ float4 PS_FakeVolumetricLight_Threshold(float4 pos : SV_Position, float2 texcoor
     float depth_occlusion_factor = saturate(smoothstep(EffectDepth - AS_DEPTH_EPSILON, EffectDepth + AS_DEPTH_EPSILON, sceneDepth));
 
     float dist_sq = dot(uvn - light_pos_centered, uvn - light_pos_centered);
-    float base_f_atten = LightBrightness / (dist_sq + AS_EPSILON);
+    float base_f_atten = lightBrightness_final / (dist_sq + AS_EPSILON);
     float f_atten = base_f_atten * depth_occlusion_factor;
     
     float4 scene_sample = tex2D(ReShade::BackBuffer, texcoord); 
@@ -128,6 +142,18 @@ float4 PS_FakeVolumetricLight_Threshold(float4 pos : SV_Position, float2 texcoor
 // ============================================================================
 float4 PS_FakeVolumetricLight_Composite(float4 pos : SV_Position, float2 texcoord : TEXCOORD0) : SV_Target0
 {
+    // Apply audio reactivity to ray parameters
+    float rayLength_final = RayLength;
+    float rayTimeScale_final = RayRandomTimeScale;
+    
+    if (AudioTarget == 2) {
+        float audioValue = AS_applyAudioReactivity(1.0, AudioSource, AudioMultiplier, true);
+        rayLength_final = RayLength * audioValue;
+    } else if (AudioTarget == 3) {
+        float audioValue = AS_applyAudioReactivity(1.0, AudioSource, AudioMultiplier, true);
+        rayTimeScale_final = RayRandomTimeScale * audioValue;
+    }
+
     float2 uvn = GetAspectCorrectedCenteredUV(texcoord); 
 
     float2 light_pos_centered = LightSourcePos * 0.5;
@@ -135,9 +161,9 @@ float4 PS_FakeVolumetricLight_Composite(float4 pos : SV_Position, float2 texcoor
     else light_pos_centered.y /= ReShade::AspectRatio;
 
     float4 accumulated_rays = float4(0.0, 0.0, 0.0, 0.0);
-    float current_time_seed = AS_mod(AS_getTime() * RayRandomTimeScale, 200.0);
-
-    float2 dir_to_light = normalize(light_pos_centered - uvn);     // Get the chosen light color
+    float current_time_seed = AS_mod(AS_getTime() * rayTimeScale_final, 200.0);    float2 dir_to_light = normalize(light_pos_centered - uvn);
+    
+    // Get the chosen light color
     float3 chosen_light_color;
     if (LightColorPalette == AS_PALETTE_CUSTOM)
     {
@@ -152,9 +178,9 @@ float4 PS_FakeVolumetricLight_Composite(float4 pos : SV_Position, float2 texcoor
     for (int i = 0; i < RaySteps; i++)
     {
         float ray_progress = (float(i) / float(RaySteps));
-        float2 sample_offset_along_ray = dir_to_light * ray_progress * RayLength;
+        float2 sample_offset_along_ray = dir_to_light * ray_progress * rayLength_final;
         
-        float2 random_jitter = (AS_hash22(pos.xy + current_time_seed + float(i)) - 0.5) * 0.01 * RayLength;
+        float2 random_jitter = (AS_hash22(pos.xy + current_time_seed + float(i)) - 0.5) * 0.01 * rayLength_final;
 
         float2 sample_pos_centered = uvn + sample_offset_along_ray + random_jitter;
         
@@ -172,7 +198,7 @@ float4 PS_FakeVolumetricLight_Composite(float4 pos : SV_Position, float2 texcoor
         if (all(sample_tc >= 0.0) && all(sample_tc <= 1.0)) 
         {
             float light_intensity_at_sample = tex2D(FakeVolumetricLight_ThresholdSampler, sample_tc).a;
-            float attenuation_along_ray = 1.0 - pow(ray_progress, 0.45); 
+            float attenuation_along_ray = 1.0 - pow(ray_progress, RAY_ATTENUATION_CURVE); 
             
             // Apply chosen color to the ray intensity
             accumulated_rays.rgb += chosen_light_color * light_intensity_at_sample * attenuation_along_ray;
