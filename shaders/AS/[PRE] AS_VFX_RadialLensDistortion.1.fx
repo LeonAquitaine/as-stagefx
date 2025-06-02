@@ -2,7 +2,12 @@
  * AS_VFX_RadialLensDistortion.1.fx - Emulates Radial and Lens-Specific Distortions
  * Author: Leon Aquitaine
  * License: Creative Commons Attribution 4.0 International
- * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
+ * You are free to use, share, and adapt thi    if (abs(diff_uv.x) < AS_EPSILON && abs(diff_uv.y) < AS_EPSILON) { 
+        if (abs(lensDistortionStrength) < AS_EPSILON && abs(GlobalEffectStrength) < AS_EPSILON) {
+            return tex2Dlod(ReShade::BackBuffer, float4(texcoord, ZERO_LOD, ZERO_LOD));
+        }
+        return original_color_sample;
+    }der for any purpose, including commercially, as long as you provide attribution.
  *
  * ===================================================================================
  *
@@ -94,6 +99,14 @@ static const float3 PRESET_AC_PARAMS = float3(4.0f, 20.0f, 0.05f);
 static const float3 PRESET_HV_PARAMS = float3(15.0f, 25.0f, -0.15f);
 static const float3 PRESET_WA_PARAMS = float3(8.0f, 18.0f, -0.2f);
 
+// Calculation constants
+static const float CALCULATION_HALF = 0.5f;
+static const float UNITY_VALUE = 1.0f;
+static const float ZERO_LOD = 0.0f;
+static const int MIN_SAMPLE_COUNT = 1;
+static const float ANAMORPHIC_HORIZONTAL_X = 1.0f;
+static const float ANAMORPHIC_HORIZONTAL_Y = 0.0f;
+
 // ============================================================================
 // UI UNIFORMS
 // ============================================================================
@@ -154,27 +167,30 @@ AS_BLENDAMOUNT_UI(BlendAmount)
 // ============================================================================
 float4 PS_RadialLensDistortion(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target
 {
-    float base_active_blur_strength_pixels;
-    float base_active_aberration_pixels;
-    float lensDistortionStrength = 0.0f;
-    float current_overall_blur_strength;
-    float current_overall_aberration_strength;
+    // Effect strength calculation
+    float base_active_blur_strength_pixels, base_active_aberration_pixels;
+    float current_overall_blur_strength, current_overall_aberration_strength;
+    float lensDistortionStrength = ZERO_LOD;
+    
+    // Coordinate processing
     float2 texcoord_for_effect = texcoord;
-    float4 original_color_sample; // This will store the color (and alpha) at the current pixel (after geom distortion)
-    float2 effect_center_uv;
-    float2 diff_uv;
-    float2 diff_corrected_for_dist_calc; 
-    float dist_corrected;                
-    float focused_dist;                   
+    float2 effect_center_uv, diff_uv, diff_corrected_for_dist_calc;
     float2 screen_space_equivalent_diff;
-    float2 screen_space_radial_dir = float2(0.0f, 0.0f);
-    float2 screen_space_tangential_dir = float2(0.0f, 0.0f);
-    float final_blur_offset_pixels;      
-    float final_aberration_offset_pixels;
-    float r_accum = 0.0f, g_accum = 0.0f, b_accum = 0.0f, a_accum = 0.0f; // a_accum will average sampled alphas
+    float2 screen_space_radial_dir = float2(ZERO_LOD, ZERO_LOD);
+    float2 screen_space_tangential_dir = float2(ZERO_LOD, ZERO_LOD);
+    
+    // Distance and focus calculation
+    float dist_corrected, focused_dist;
+    float final_blur_offset_pixels, final_aberration_offset_pixels;
+    
+    // Sampling iteration
     int current_sample_count;
-    float4 calculated_effect_rgb; // The RGB result of blur/CA
+    float r_accum = ZERO_LOD, g_accum = ZERO_LOD, b_accum = ZERO_LOD, a_accum = ZERO_LOD;
     float2 r_ca_offset_uv, b_ca_offset_uv;
+    
+    // Color processing
+    float4 original_color_sample;
+    float4 calculated_effect_rgb;
 
     base_active_blur_strength_pixels = BlurStrength;
     base_active_aberration_pixels = AberrationAmount;
@@ -191,39 +207,36 @@ float4 PS_RadialLensDistortion(float4 pos : SV_Position, float2 texcoord : TEXCO
         base_active_blur_strength_pixels = PRESET_HV_PARAMS.x; base_active_aberration_pixels = PRESET_HV_PARAMS.y; lensDistortionStrength = PRESET_HV_PARAMS.z;
     } else if (LensModelPreset == LENS_PRESET_WIDE_ANGLE) {
         base_active_blur_strength_pixels = PRESET_WA_PARAMS.x; base_active_aberration_pixels = PRESET_WA_PARAMS.y; lensDistortionStrength = PRESET_WA_PARAMS.z;
-    }
-
-    current_overall_blur_strength = base_active_blur_strength_pixels * GlobalEffectStrength;
+    }    current_overall_blur_strength = base_active_blur_strength_pixels * GlobalEffectStrength;
     current_overall_aberration_strength = base_active_aberration_pixels * GlobalEffectStrength;
-
+    
     effect_center_uv = EffectCenterUV;
     if (abs(lensDistortionStrength) > AS_EPSILON) {
         float2 vec_from_center = texcoord - effect_center_uv;
         float2 vec_from_center_aspect_corrected = vec_from_center;
-        if (ReShade::AspectRatio > 1.0f) vec_from_center_aspect_corrected.x /= ReShade::AspectRatio;
+        if (ReShade::AspectRatio > UNITY_VALUE) vec_from_center_aspect_corrected.x /= ReShade::AspectRatio;
         else vec_from_center_aspect_corrected.y *= ReShade::AspectRatio;
         float r_aspect_corrected = length(vec_from_center_aspect_corrected);
-        vec_from_center *= (1.0f + lensDistortionStrength * r_aspect_corrected);
+        vec_from_center *= (UNITY_VALUE + lensDistortionStrength * r_aspect_corrected);
         texcoord_for_effect = effect_center_uv + vec_from_center;
         texcoord_for_effect = saturate(texcoord_for_effect);
-    }
-    original_color_sample = tex2Dlod(ReShade::BackBuffer, float4(texcoord_for_effect, 0.0f, 0.0f));
+    }    original_color_sample = tex2Dlod(ReShade::BackBuffer, float4(texcoord_for_effect, ZERO_LOD, ZERO_LOD));
 
     diff_uv = texcoord_for_effect - effect_center_uv;
-
-    if (abs(diff_uv.x) < AS_EPSILON && abs(diff_uv.y) < AS_EPSILON) { 
+    
+    if (abs(diff_uv.x) < AS_EPSILON && abs(diff_uv.y) < AS_EPSILON) {
         if (abs(lensDistortionStrength) < AS_EPSILON && abs(GlobalEffectStrength) < AS_EPSILON) 
-             return tex2Dlod(ReShade::BackBuffer, float4(texcoord, 0.0f, 0.0f));
+             return tex2Dlod(ReShade::BackBuffer, float4(texcoord, ZERO_LOD, ZERO_LOD));
         return original_color_sample;
     }
     
     diff_corrected_for_dist_calc = diff_uv;
-    if (ReShade::AspectRatio > 1.0f) diff_corrected_for_dist_calc.x /= ReShade::AspectRatio;
+    if (ReShade::AspectRatio > UNITY_VALUE) diff_corrected_for_dist_calc.x /= ReShade::AspectRatio;
     else diff_corrected_for_dist_calc.y *= ReShade::AspectRatio;
     dist_corrected = length(diff_corrected_for_dist_calc);
     focused_dist = pow(saturate(dist_corrected), EffectFocusExponent);
 
-    if (ReShade::AspectRatio >= 1.0f) {
+    if (ReShade::AspectRatio >= UNITY_VALUE) {
         screen_space_equivalent_diff.x = diff_uv.x * ReShade::AspectRatio;
         screen_space_equivalent_diff.y = diff_uv.y;
     } else {
@@ -235,63 +248,58 @@ float4 PS_RadialLensDistortion(float4 pos : SV_Position, float2 texcoord : TEXCO
         screen_space_radial_dir = normalize(screen_space_equivalent_diff);
     }
 
-    screen_space_tangential_dir = float2(-screen_space_radial_dir.y, screen_space_radial_dir.x);
-    final_blur_offset_pixels = current_overall_blur_strength * focused_dist;
+    screen_space_tangential_dir = float2(-screen_space_radial_dir.y, screen_space_radial_dir.x);    final_blur_offset_pixels = current_overall_blur_strength * focused_dist;
     final_aberration_offset_pixels = current_overall_aberration_strength * focused_dist;
     
     if (abs(final_blur_offset_pixels) < AS_EPSILON && abs(final_aberration_offset_pixels) < AS_EPSILON) {
         return original_color_sample;
-    }
-
-    current_sample_count = max(1, SampleCount);
-
+    }    current_sample_count = max(MIN_SAMPLE_COUNT, SampleCount);
+    
     [loop]
     for (int i = 0; i < current_sample_count; ++i)
     {
-        float sample_t_norm = (current_sample_count == 1) ? 0.0f : (float(i) - (current_sample_count - 1.0f) * 0.5f) / ((current_sample_count - 1.0f) * 0.5f);
+        // Calculate normalized sample position within the blur range
+        float sample_t_norm;
+        if (current_sample_count == MIN_SAMPLE_COUNT) {
+            sample_t_norm = ZERO_LOD;
+        } else {
+            float sample_offset = float(i) - (current_sample_count - UNITY_VALUE) * CALCULATION_HALF;
+            float sample_range = (current_sample_count - UNITY_VALUE) * CALCULATION_HALF;
+            sample_t_norm = sample_offset / sample_range;
+        }
 
         float2 blur_offset_vector_screen_units = screen_space_tangential_dir * sample_t_norm * final_blur_offset_pixels;
         float2 current_blur_offset_vector_uv = blur_offset_vector_screen_units * ReShade::PixelSize;
         float2 base_sample_uv = texcoord_for_effect + current_blur_offset_vector_uv;
-
+        
+        // Apply chromatic aberration direction
         float2 ca_effect_direction_screen_units; 
         if (LensModelPreset == LENS_PRESET_ANAMORPHIC_CINE) {
-            ca_effect_direction_screen_units = float2(1.0f, 0.0f); 
+            ca_effect_direction_screen_units = float2(ANAMORPHIC_HORIZONTAL_X, ANAMORPHIC_HORIZONTAL_Y); 
         } else {
-            ca_effect_direction_screen_units = screen_space_tangential_dir; 
-        }
+            ca_effect_direction_screen_units = screen_space_tangential_dir;        }
         
         r_ca_offset_uv = (ca_effect_direction_screen_units * final_aberration_offset_pixels) * ReShade::PixelSize;
         b_ca_offset_uv = (-ca_effect_direction_screen_units * final_aberration_offset_pixels) * ReShade::PixelSize;
         
         float2 r_sample_uv = saturate(base_sample_uv + r_ca_offset_uv);
         float2 g_sample_uv = saturate(base_sample_uv);
-        float2 b_sample_uv = saturate(base_sample_uv + b_ca_offset_uv); 
-
-        r_accum += tex2Dlod(ReShade::BackBuffer, float4(r_sample_uv, 0.0f, 0.0f)).r;
-        g_accum += tex2Dlod(ReShade::BackBuffer, float4(g_sample_uv, 0.0f, 0.0f)).g;
-        b_accum += tex2Dlod(ReShade::BackBuffer, float4(b_sample_uv, 0.0f, 0.0f)).b;
-        // We don't necessarily need to average the sampled alpha if we are going to restore the original later.
-        // However, AS_applyBlend expects an fgColor.a. For now, let's keep it for a potentially "smeary" alpha.
-        // Or, set a_accum based on original_color_sample.a or just 1.0.
-        // For simplicity and to ensure the RGB effect is visible, let's accumulate 1.0 for alpha to make the effect itself opaque.
-        // a_accum += 1.0f; // Make the effect itself opaque
-        // OR use the alpha of the central sample for the blur tap
-        a_accum += tex2Dlod(ReShade::BackBuffer, float4(g_sample_uv, 0.0f, 0.0f)).a;
-
-
+        float2 b_sample_uv = saturate(base_sample_uv + b_ca_offset_uv);
+        
+        // Sample color channels with chromatic aberration
+        r_accum += tex2Dlod(ReShade::BackBuffer, float4(r_sample_uv, ZERO_LOD, ZERO_LOD)).r;
+        g_accum += tex2Dlod(ReShade::BackBuffer, float4(g_sample_uv, ZERO_LOD, ZERO_LOD)).g;
+        b_accum += tex2Dlod(ReShade::BackBuffer, float4(b_sample_uv, ZERO_LOD, ZERO_LOD)).b;        a_accum += tex2Dlod(ReShade::BackBuffer, float4(g_sample_uv, ZERO_LOD, ZERO_LOD)).a;
     }
 
-    calculated_effect_rgb.r = r_accum / current_sample_count;
-    calculated_effect_rgb.g = g_accum / current_sample_count;
+    // Calculate final effect color by averaging all samples
+    calculated_effect_rgb.r = r_accum / current_sample_count;    calculated_effect_rgb.g = g_accum / current_sample_count;
     calculated_effect_rgb.b = b_accum / current_sample_count;
-    // calculated_effect_rgb.a will be set before AS_applyBlend
 
-    // For AS_BLEND_NORMAL, fgColor.a determines blend strength.
-    // We want our RGB effect to apply fully, then restore original_color_sample.a for final output.
-    float4 blended_rgb = AS_applyBlend(float4(calculated_effect_rgb.rgb, 1.0f), original_color_sample, BlendMode, BlendAmount);
+    // Apply RGB effect with full opacity, preserve original alpha
+    float4 blended_rgb = AS_applyBlend(float4(calculated_effect_rgb.rgb, UNITY_VALUE), original_color_sample, BlendMode, BlendAmount);
     
-    return float4(blended_rgb.rgb, original_color_sample.a); // Restore original alpha
+    return float4(blended_rgb.rgb, original_color_sample.a);
 }
 
 // ============================================================================
