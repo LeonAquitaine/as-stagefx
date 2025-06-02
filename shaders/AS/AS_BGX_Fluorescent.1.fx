@@ -172,19 +172,23 @@ float4 PS_Fluorescent(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : 
     // The original algorithm expects coordinates in a specific range
     float2 rayCoord = transformedCoord;
 
+    // Calculate constants outside the loop to improve performance
+    // Ray Direction is constant for each pixel
+    float3 rayDirection = normalize(float3(rayCoord, -1.0));
+    
+    // Rotation matrix is constant for the entire frame
+    float2x2 rotationMatrix = float2x2(ROTATION_COS, -ROTATION_SIN, ROTATION_SIN, ROTATION_COS);
+
     // Ray Marching Loop
     for (int i = 0; i < IterationCount; i++)
     {
-        // Ray Direction and Position - adapted for AS_Utils coordinate system
-        // Use the transformed coordinates directly, maintaining proper aspect ratio
-        float3 rayDirection = normalize(float3(rayCoord, -1.0));
-        float3 position = rayDistance * rayDirection; // Current point in 3D space along the ray
+        // Current point in 3D space along the ray (using precalculated direction)
+        float3 position = rayDistance * rayDirection;
 
         // Coordinate Transformations (Folding Space / Creating Shapes)
-        // 1. Rotate y and z coordinates of the position.
-        //    Original matrix: 0.1 * mat2(8, -6, 6, 8) which is mat2(0.8, -0.6, 0.6, 0.8)
-        float2x2 rotationMatrix = float2x2(ROTATION_COS, -ROTATION_SIN, ROTATION_SIN, ROTATION_COS);
-        position.yz = mul(rotationMatrix, position.yz);        // 2. Translate along the z-axis
+        // 1. Rotate y and z coordinates of the position using the precalculated matrix
+        position.yz = mul(rotationMatrix, position.yz);
+        // 2. Translate along the z-axis
         position.z += ZSceneOffset;
 
         // Distance Estimation
