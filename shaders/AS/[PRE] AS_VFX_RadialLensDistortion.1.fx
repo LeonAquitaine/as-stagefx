@@ -67,24 +67,24 @@ static const int LENS_PRESET_WIDE_ANGLE = 6;
 static const float2 EFFECT_CENTER_UV_DEFAULT = float2(0.5f, 0.5f);
 static const float BLUR_STRENGTH_MIN = 0.0f;
 static const float BLUR_STRENGTH_MAX = 50.0f; 
-static const float BLUR_STRENGTH_DEFAULT = 5.0f;
+static const float BLUR_STRENGTH_DEFAULT = 40.0f;
 static const float BLUR_STRENGTH_STEP = 0.1f;
 static const float ABERRATION_AMOUNT_MIN = 0.0f;
 static const float ABERRATION_AMOUNT_MAX = 50.0f;
-static const float ABERRATION_AMOUNT_DEFAULT = 5.0f;
+static const float ABERRATION_AMOUNT_DEFAULT = 38.0f;
 static const float ABERRATION_AMOUNT_STEP = 0.1f;
 static const int SAMPLE_COUNT_MIN = 3;
 static const int SAMPLE_COUNT_MAX = 25;
-static const int SAMPLE_COUNT_DEFAULT = 9;
+static const int SAMPLE_COUNT_DEFAULT = 15;
 
 static const float GLOBAL_STRENGTH_MIN = 0.0f;
 static const float GLOBAL_STRENGTH_MAX = 10.0f;
-static const float GLOBAL_STRENGTH_DEFAULT = 1.0f;
+static const float GLOBAL_STRENGTH_DEFAULT = 2.3f;
 static const float GLOBAL_STRENGTH_STEP = 0.05f;
 
 static const float EFFECT_FOCUS_EXP_MIN = 0.1f;
 static const float EFFECT_FOCUS_EXP_MAX = 5.0f;
-static const float EFFECT_FOCUS_EXP_DEFAULT = 1.0f;
+static const float EFFECT_FOCUS_EXP_DEFAULT = 2.2f;
 static const float EFFECT_FOCUS_EXP_STEP = 0.05f;
 
 static const float3 PRESET_VS_PARAMS = float3(10.0f, 3.0f, 0.0f);
