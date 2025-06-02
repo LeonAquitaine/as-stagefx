@@ -309,14 +309,28 @@
       "performance": "Moderate",
       "filename": "AS_BGX_PastRacer.1.fx",
       "author": "Leon Aquitaine"
-    },
-    {
+    },    {
       "credits": {
         "license": "Creative Commons Attribution 4.0 International"
       },
       "name": "AS_BGX_PlasmaFlow.1",
       "performance": "Light",
       "filename": "AS_BGX_PlasmaFlow.1.fx",
+      "author": "Leon Aquitaine"
+    },
+    {
+      "credits": {
+        "originalName": "Quadtree Truchet",
+        "link": "https://www.shadertoy.com/view/4t3BW4",
+        "author": "Shane",
+        "platform": "Shadertoy",
+        "creationDate": "2018-06-21",
+        "license": "Creative Commons Attribution 4.0 International",
+        "adaptedBy": "Leon Aquitaine"
+      },
+      "name": "AS_BGX_QuadtreeTruchet.1",
+      "performance": "Moderate",
+      "filename": "AS_BGX_QuadtreeTruchet.1.fx",
       "author": "Leon Aquitaine"
     },
     {
