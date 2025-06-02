@@ -13,11 +13,11 @@
  * and optionally weaved Truchet pattern. The effect generates complex geometric designs
  * by recursively subdividing a grid and rendering Truchet tiles at different scales
  * and with varying probabilities.
- *
- * FEATURES:
+ * * FEATURES:
  * - Quadtree-based recursive pattern generation over 3 levels.
  * - Overlapping tiles with rules to prevent smaller tiles drawing over larger ones.
- * - Multiple color modes: White, Spectrum, and Pink.
+ * - Full AS palette system support with 24 built-in palettes plus custom palette option.
+ * - Multiple color application modes: Two-Tone, Spectrum Blend, and Gradient Blend.
  * - Optional "stacked tiles" view to visualize layering.
  * - Optional "line tiles" for an art-deco appearance, including a mild weave effect.
  * - Animated rotation and vertical panning of the pattern.
@@ -46,6 +46,7 @@
 #include "ReShade.fxh"
 #include "AS_Utils.1.fxh" // For AS_getAnimationTime, AS_applyBlend, AS_PI, etc.
 #include "AS_Noise.1.fxh" // For AS_hash22
+#include "AS_Palette.1.fxh" // For AS palette support
 
 // ============================================================================
 // UI: TUNABLE CONSTANTS & PARAMETERS
@@ -71,7 +72,9 @@ uniform float MediumTileProbability < ui_type = "slider"; ui_label = "Medium Til
 uniform float PatternSeed < ui_type = "slider"; ui_label = "Pattern Seed"; ui_tooltip = "Changes the random pattern without affecting other parameters. Different values create different arrangements."; ui_min = PATTERN_SEED_MIN; ui_max = PATTERN_SEED_MAX; ui_category = "Pattern Distribution"; > = PATTERN_SEED_DEFAULT;
 
 // Style & Color
-uniform int ColorMode < ui_type = "combo"; ui_label = "Color Mode"; ui_items = "White\0Spectrum\0Pink\0"; ui_tooltip = "Selects the color scheme for the pattern."; ui_category = "Palette & Style"; > = 1;
+AS_PALETTE_SELECTION_UI(PaletteSelection, "Color Palette", AS_PALETTE_CLASSIC_VU, "Palette & Style")
+AS_DECLARE_CUSTOM_PALETTE(TruchetPalette, "Palette & Style")
+uniform int ColorMode < ui_type = "combo"; ui_label = "Color Application Mode"; ui_items = "Two-Tone\0Spectrum Blend\0Gradient Blend\0"; ui_tooltip = "How colors from the palette are applied to the pattern."; ui_category = "Palette & Style"; > = 1;
 uniform bool EnableStackedTiles < ui_label = "Enable Stacked Tiles View"; ui_tooltip = "Shows tile layers stacked, revealing the generation process. Disables continuous surface look."; ui_category = "Palette & Style"; > = false;
 
 // Visual Effects
@@ -79,8 +82,8 @@ static const float STRIPE_FREQUENCY_MIN = 5.0, STRIPE_FREQUENCY_MAX = 40.0, STRI
 static const float HIGHLIGHT_FREQUENCY_MIN = 5.0, HIGHLIGHT_FREQUENCY_MAX = 30.0, HIGHLIGHT_FREQUENCY_DEFAULT = 16.0;
 static const float LINE_PATTERN_FREQUENCY_MIN = 10.0, LINE_PATTERN_FREQUENCY_MAX = 50.0, LINE_PATTERN_FREQUENCY_DEFAULT = 24.0;
 
-uniform float StripeFrequency < ui_type = "slider"; ui_label = "Stripe Density"; ui_tooltip = "Controls the frequency of stripes in spectrum mode. Higher values = more stripes."; ui_min = STRIPE_FREQUENCY_MIN; ui_max = STRIPE_FREQUENCY_MAX; ui_category = "Visual Effects"; > = STRIPE_FREQUENCY_DEFAULT;
-uniform float HighlightFrequency < ui_type = "slider"; ui_label = "Highlight Density"; ui_tooltip = "Controls the frequency of highlights in spectrum mode. Higher values = more highlights."; ui_min = HIGHLIGHT_FREQUENCY_MIN; ui_max = HIGHLIGHT_FREQUENCY_MAX; ui_category = "Visual Effects"; > = HIGHLIGHT_FREQUENCY_DEFAULT;
+uniform float StripeFrequency < ui_type = "slider"; ui_label = "Stripe Density"; ui_tooltip = "Controls the frequency of stripes in Spectrum Blend mode. Uses palette color 3 for stripe coloring."; ui_min = STRIPE_FREQUENCY_MIN; ui_max = STRIPE_FREQUENCY_MAX; ui_category = "Visual Effects"; > = STRIPE_FREQUENCY_DEFAULT;
+uniform float HighlightFrequency < ui_type = "slider"; ui_label = "Highlight Density"; ui_tooltip = "Controls the frequency of highlights in Spectrum Blend mode. Uses palette color 5 for highlight coloring."; ui_min = HIGHLIGHT_FREQUENCY_MIN; ui_max = HIGHLIGHT_FREQUENCY_MAX; ui_category = "Visual Effects"; > = HIGHLIGHT_FREQUENCY_DEFAULT;
 uniform float LinePatternFrequency < ui_type = "slider"; ui_label = "Line Pattern Frequency"; ui_tooltip = "Controls the frequency of the decorative line pattern overlay."; ui_min = LINE_PATTERN_FREQUENCY_MIN; ui_max = LINE_PATTERN_FREQUENCY_MAX; ui_category = "Visual Effects"; > = LINE_PATTERN_FREQUENCY_DEFAULT;
 
 // Animation Controls
@@ -248,33 +251,28 @@ float4 PS_ASBGXQuadtreeTruchet(float4 vpos : SV_Position, float2 texcoord : TEXC
             }
         }
         dim *= 2.0; // Subdivide for next level
+    }    // The scene color - derived from palette
+    float3 col;
+    if (PaletteSelection == AS_PALETTE_CUSTOM) {
+        // Use darkened version of custom palette color 1 (index 0) for background
+        col = AS_GET_CUSTOM_PALETTE_COLOR(TruchetPalette, 0) * 0.25;
+    } else {
+        // Use darkened version of palette color 1 (index 0) for background
+        col = AS_getPaletteColor(PaletteSelection, 0) * 0.25;
     }
 
-    // The scene color.
-    float3 col = float3(0.25, 0.25, 0.25); // Initial grey background
-
     // Resolution based falloff for smoothing.
-    float fo = ReShade::PixelSize.y * 5.0; // 5 pixels
-
-    // Tile colors.
+    float fo = ReShade::PixelSize.y * 5.0; // 5 pixels    // Tile colors from palette.
     float3 pCol1, pCol2;
-    switch (ColorMode) {
-        case 0: // White
-            pCol1 = float3(1.0, 1.0, 1.0);
-            pCol2 = float3(0.125, 0.125, 0.125);
-            break;
-        case 1: // Spectrum
-            pCol1 = float3(0.7, 1.4, 0.4);
-            pCol2 = float3(0.125, 0.125, 0.125);
-            break;
-        case 2: // Pink
-            pCol1 = lerp(float3(1.0, 0.1, 0.2), float3(1.0, 0.1, 0.5), uv_screen_centered.y * 0.5 + 0.5);
-            pCol2 = float3(0.1, 0.02, 0.06);
-            break;
-        default: // White
-            pCol1 = float3(1.0, 1.0, 1.0);
-            pCol2 = float3(0.125, 0.125, 0.125);
-            break;
+    
+    if (PaletteSelection == AS_PALETTE_CUSTOM) {
+        // Use custom palette colors
+        pCol1 = AS_GET_CUSTOM_PALETTE_COLOR(TruchetPalette, 0); // First custom color
+        pCol2 = AS_GET_CUSTOM_PALETTE_COLOR(TruchetPalette, 3); // Fourth custom color for contrast
+    } else {
+        // Use built-in palette colors
+        pCol1 = AS_getPaletteColor(PaletteSelection, 0); // First palette color
+        pCol2 = AS_getPaletteColor(PaletteSelection, 3); // Fourth palette color for contrast
     }
       // Simple line pattern for non-spectrum modes if not stacked
     float pat3_lines = clamp(sin((oP.x - oP.y) * AS_TWO_PI * ReShade::ScreenSize.y / LinePatternFrequency) * 1.0 + 0.9, 0.0, 1.0) * 0.25 + 0.75;
@@ -304,24 +302,64 @@ float4 PS_ASBGXQuadtreeTruchet(float4 vpos : SV_Position, float2 texcoord : TEXC
         d_combined = max(d2.x, -d.x); // Start with first level combination
         d_combined = min(max(d_combined, -d2.y), d.y); // Combine with second level
         d_combined = max(min(d_combined, d2.z), -d.z); // Combine with third level
-        
-        if (ColorMode == 1) { // Spectrum specific coloring
+        if (ColorMode == 1) { // Spectrum Blend coloring
+            // Get stripe color from palette (using color index 2)
+            float3 stripeColor;
+            if (PaletteSelection == AS_PALETTE_CUSTOM) {
+                stripeColor = AS_GET_CUSTOM_PALETTE_COLOR(TruchetPalette, 2);
+            } else {
+                stripeColor = AS_getPaletteColor(PaletteSelection, 2);
+            }
+            
             float pat_spectrum_stripes = clamp(-sin(d_combined * AS_TWO_PI * StripeFrequency) - 0.0, 0.0, 1.0);
-            col *= pat_spectrum_stripes;
+            // Apply stripe pattern using palette color
+            col = lerp(col, stripeColor * 0.5, pat_spectrum_stripes * 0.3);
 
             d_combined = -(d_combined + 0.03); // Invert and offset for rendering
 
             col = lerp(col, float3(0,0,0), (1.0 - smoothstep(0.0, fo * 5.0, d_combined)));
             col = lerp(col, float3(0,0,0), 1.0 - smoothstep(0.0, fo, d_combined));
-            col = lerp(col, float3(0.8, 1.2, 0.6), 1.0 - smoothstep(0.0, fo * 2.0, d_combined + 0.02));
+            
+            // Get intermediate palette color for spectrum blend
+            float3 pColMid;
+            if (PaletteSelection == AS_PALETTE_CUSTOM) {
+                pColMid = AS_GET_CUSTOM_PALETTE_COLOR(TruchetPalette, 1);
+            } else {
+                pColMid = AS_getPaletteColor(PaletteSelection, 1);
+            }
+            
+            col = lerp(col, pColMid, 1.0 - smoothstep(0.0, fo * 2.0, d_combined + 0.02));
             col = lerp(col, float3(0,0,0), 1.0 - smoothstep(0.0, fo * 2.0, d_combined + 0.03));
+            
+            // Get highlight color from palette (using color index 4)
+            float3 highlightColor;
+            if (PaletteSelection == AS_PALETTE_CUSTOM) {
+                highlightColor = AS_GET_CUSTOM_PALETTE_COLOR(TruchetPalette, 4);
+            } else {
+                highlightColor = AS_getPaletteColor(PaletteSelection, 4);
+            }
+            
             float pat2_highlight_spectrum = clamp(sin(d_combined * AS_TWO_PI * HighlightFrequency) * 1.0 + 0.9, 0.0, 1.0) * 0.3 + 0.7;
-            col = lerp(col, pCol1 * pat2_highlight_spectrum, 1.0 - smoothstep(0.0, fo * 2.0, d_combined + 0.05));
+            col = lerp(col, highlightColor * pat2_highlight_spectrum, 1.0 - smoothstep(0.0, fo * 2.0, d_combined + 0.05));
             
             float sh_spectrum = clamp(0.75 + d_combined * 2.0, 0.0, 1.0); // Shading for spectrum
             col *= sh_spectrum;
         } 
-        else { // White or Pink coloring
+        else if (ColorMode == 2) { // Gradient Blend coloring
+            // Use interpolated palette colors based on distance field
+            float gradientT = saturate((d_combined + 0.05) * 2.0); // Normalize distance to 0-1
+            
+            if (PaletteSelection == AS_PALETTE_CUSTOM) {
+                col = AS_GET_INTERPOLATED_CUSTOM_COLOR(TruchetPalette, gradientT);
+            } else {
+                col = AS_getInterpolatedColor(PaletteSelection, gradientT);
+            }
+            
+            col = lerp(col, float3(0,0,0), (1.0 - smoothstep(0.0, fo * 5.0, d_combined)) * 0.35);
+            col = lerp(col, float3(0,0,0), 1.0 - smoothstep(0.0, fo, d_combined));
+            col *= pat3_lines;
+        }
+        else { // Two-Tone coloring (original behavior)
             col = pCol1; // Base color
 
             col = lerp(col, float3(0,0,0), (1.0 - smoothstep(0.0, fo * 5.0, d_combined)) * 0.35);
@@ -333,15 +371,16 @@ float4 PS_ASBGXQuadtreeTruchet(float4 vpos : SV_Position, float2 texcoord : TEXC
     }
     
     // Mild spotlight.
-    col *= max(SpotlightIntensity - length(uv_screen_centered) * SpotlightRadius, 0.0);
-
-    // Debug Grid Visualization
+    col *= max(SpotlightIntensity - length(uv_screen_centered) * SpotlightRadius, 0.0);    // Debug Grid Visualization
     if (ShowGrid) {
-        float3 vCol1 = float3(0.8, 1.0, 0.7);
-        float3 vCol2 = float3(1.0, 0.7, 0.4);
-        if (ColorMode == 2) { // Pink mode adjustment for grid colors
-            vCol1 = vCol1.zxy;
-            vCol2 = vCol2.zyx;
+        // Get grid colors from palette
+        float3 vCol1, vCol2;
+        if (PaletteSelection == AS_PALETTE_CUSTOM) {
+            vCol1 = AS_GET_CUSTOM_PALETTE_COLOR(TruchetPalette, 2);
+            vCol2 = AS_GET_CUSTOM_PALETTE_COLOR(TruchetPalette, 4);
+        } else {
+            vCol1 = AS_getPaletteColor(PaletteSelection, 2);
+            vCol2 = AS_getPaletteColor(PaletteSelection, 4);
         }
 
         // Grid lines (grid.x contains sdf for lines)
@@ -358,11 +397,19 @@ float4 PS_ASBGXQuadtreeTruchet(float4 vpos : SV_Position, float2 texcoord : TEXC
         col = lerp(col, vCol2, 1.0 - smoothstep(0.0, grid_point_fo, grid_point_sdf));
         // Original also had grid.z for another circle layer, omitting for slight simplification of debug
     }
-    
-    // Mix the colors for spectrum mode based on screen UVs
-    if (ColorMode == 1) { // Spectrum
+      // Mix the colors for advanced color modes based on screen UVs
+    if (ColorMode == 1) { // Spectrum Blend - add color variation based on position
         col = lerp(col, col.yxz, uv_screen_centered.y * 0.75 + 0.5);
-        col = lerp(col, col.zxy, uv_screen_centered.x * 0.7 + 0.5); // Original was uv.x * .7
+        col = lerp(col, col.zxy, uv_screen_centered.x * 0.7 + 0.5);
+    } else if (ColorMode == 2) { // Gradient Blend - add subtle position-based variation
+        float positionVariation = (uv_screen_centered.x + uv_screen_centered.y) * 0.1;
+        float3 positionColor;
+        if (PaletteSelection == AS_PALETTE_CUSTOM) {
+            positionColor = AS_GET_INTERPOLATED_CUSTOM_COLOR(TruchetPalette, positionVariation + 0.5);
+        } else {
+            positionColor = AS_getInterpolatedColor(PaletteSelection, positionVariation + 0.5);
+        }
+        col = lerp(col, positionColor, 0.15);
     }
 
     // Rough gamma correction from original, and output.
