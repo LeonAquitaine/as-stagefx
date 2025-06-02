@@ -5,24 +5,23 @@
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
  *
  * ===================================================================================
- *
- * DESCRIPTION:
+ * * DESCRIPTION:
  * This header file provides common utility functions used across the AS StageFX
  * shader collection. It includes blend modes, audio processing, mathematical helpers,
  * and various convenience functions to maintain consistency across shaders.
  *
  * FEATURES:
  * - Standardized UI controls for consistent user interfaces
- * - Listeningway audio integration with standard sources and controls
+ * - Listeningway audio integration with standard sources and stereo controls
+ * - Stereo audio spatialization and multi-channel format detection
  * - Debug visualization tools and helpers
  * - Common blend modes and mixing functions
  * - Mathematical and coordinate transformation helpers
  * - Depth, normal reconstruction, and surface effects functions
- *
- * IMPLEMENTATION OVERVIEW:
+ * * IMPLEMENTATION OVERVIEW:
  * This file is organized in sections:
  * 1. UI standardization macros for consistent parameter layouts
- * 2. Audio integration and Listeningway support
+ * 2. Audio integration and Listeningway support with stereo capabilities
  * 3. Visual effect helpers (blend modes, color operations)
  * 4. Mathematical functions (coordinate transforms)
  * 5. Advanced rendering helpers (depth, normals, etc.)
@@ -31,7 +30,7 @@
  *
  * ===================================================================================
  */
- 
+
 // ============================================================================
 // TECHNIQUE GUARD - Prevents duplicate loading of the same shader
 // ============================================================================
@@ -43,7 +42,7 @@
 // ============================================================================
 #include "ReShade.fxh"
 #include "ReShadeUI.fxh"
-#include "Blending.fxh"
+#include "Blending.fxh" // Make sure Blending.fxh from ReShade's common headers is available
 
 // ============================================================================
 // MATH CONSTANTS
@@ -61,20 +60,20 @@ static const float AS_GOLDEN_RATIO = 1.6180339887498948482045868343656f;
 
 // Physics & graphics constants
 static const float AS_EPSILON = 1e-6f;          // Very small number to avoid division by zero
-static const float AS_EPS_SAFE = 1e-5f;     // Slightly larger epsilon for screen-space operations
+static const float AS_EPS_SAFE = 1e-5f;      // Slightly larger epsilon for screen-space operations
 static const float AS_DEGREES_TO_RADIANS = AS_PI / 180.0f;
 static const float AS_RADIANS_TO_DEGREES = 180.0f / AS_PI;
 
 // Common numerical constants
-static const float AS_HALF = 0.5f;                      // 1/2 - useful for centered coordinates
-static const float AS_QUARTER = 0.25f;                  // 1/4
+static const float AS_HALF = 0.5f;                          // 1/2 - useful for centered coordinates
+static const float AS_QUARTER = 0.25f;                        // 1/4
 static const float AS_THIRD = 0.3333333333333333333333333333333f;    // 1/3
 static const float AS_TWO_THIRDS = 0.6666666666666666666666666666667f; // 2/3
 static const float AS_SQRT_TWO = 1.4142135623730950488016887242097f; // Square root of 2, useful for diagonal calculations
 
 // Depth testing constants 
 static const float AS_DEPTH_EPSILON = 0.0005f;  // Standard depth epsilon for z-fighting prevention
-static const float AS_EDGE_AA = 0.05f;          // Standard anti-aliasing edge size for smoothstep
+static const float AS_EDGE_AA = 0.05f;        // Standard anti-aliasing edge size for smoothstep
 
 // ============================================================================
 // UI STANDARDIZATION & MACROS
@@ -87,7 +86,9 @@ static const float AS_EDGE_AA = 0.05f;          // Standard anti-aliasing edge s
     // Since we're not including ListeningwayUniforms.fxh anymore,
     // provide a complete compatible implementation directly here
     #define LISTENINGWAY_NUM_BANDS 32
-    #define __LISTENINGWAY_INSTALLED 1    // Create fallback uniforms with the same interface as the real Listeningway
+    #define __LISTENINGWAY_INSTALLED 1
+
+    // Create fallback uniforms with the same interface as the real Listeningway
     uniform float Listeningway_Volume < source = "listeningway_volume"; > = 0.0f;
     uniform float Listeningway_FreqBands[LISTENINGWAY_NUM_BANDS] < source = "listeningway_freqbands"; > = {
         0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
@@ -95,75 +96,91 @@ static const float AS_EDGE_AA = 0.05f;          // Standard anti-aliasing edge s
         0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
         0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f
     };
-    uniform float Listeningway_Beat < source = "listeningway_beat"; > = 0.0f;    // Time uniforms
+    uniform float Listeningway_Beat < source = "listeningway_beat"; > = 0.0f;
+
+    // Time uniforms
     uniform float Listeningway_TimeSeconds < source = "listeningway_timeseconds"; > = 0.0f;
     uniform float Listeningway_TimePhase60Hz < source = "listeningway_timephase60hz"; > = 0.0f;
     uniform float Listeningway_TimePhase120Hz < source = "listeningway_timephase120hz"; > = 0.0f;
     uniform float Listeningway_TotalPhases60Hz < source = "listeningway_totalphases60hz"; > = 0.0f;
     uniform float Listeningway_TotalPhases120Hz < source = "listeningway_totalphases120hz"; > = 0.0f;
+
+    // Stereo spatialization uniforms
+    uniform float Listeningway_VolumeLeft < source = "listeningway_volumeleft"; > = 0.0f;
+    uniform float Listeningway_VolumeRight < source = "listeningway_volumeright"; > = 0.0f;
+    uniform float Listeningway_AudioPan < source = "listeningway_audiopan"; > = 0.0f;
+
+    // Audio format uniform (0=none, 1=mono, 2=stereo, 6=5.1, 8=7.1)
+    uniform float Listeningway_AudioFormat < source = "listeningway_audioformat"; > = 0.0f;
 #endif
 
 // Animation timing constants
-static const float AS_ANIM_SLOW = 0.5f;       // Slow animation speed multiplier
-static const float AS_ANIM_NORMAL = 1.0f;     // Normal animation speed multiplier  
-static const float AS_ANIM_FAST = 2.0f;       // Fast animation speed multiplier
+static const float AS_ANIM_SLOW = 0.5f;      // Slow animation speed multiplier
+static const float AS_ANIM_NORMAL = 1.0f;      // Normal animation speed multiplier  
+static const float AS_ANIM_FAST = 2.0f;      // Fast animation speed multiplier
 
 // Timing constants
 static const float AS_TIME_1_SECOND = 1.0f;              // 1 second of animation time
-static const float AS_TIME_HALF_SECOND = 0.5f;           // 0.5 seconds of animation time
-static const float AS_TIME_QUARTER_SECOND = 0.25f;       // 0.25 seconds of animation time
+static const float AS_TIME_HALF_SECOND = 0.5f;          // 0.5 seconds of animation time
+static const float AS_TIME_QUARTER_SECOND = 0.25f;      // 0.25 seconds of animation time
 
 // Animation patterns
-static const float AS_PATTERN_FREQ_LOW = 2.0f;           // Low frequency for animation patterns
-static const float AS_PATTERN_FREQ_MED = 5.0f;           // Medium frequency for animation patterns
+static const float AS_PATTERN_FREQ_LOW = 2.0f;          // Low frequency for animation patterns
+static const float AS_PATTERN_FREQ_MED = 5.0f;          // Medium frequency for animation patterns
 static const float AS_PATTERN_FREQ_HIGH = 10.0f;         // High frequency for animation patterns
 
 // Standard UI ranges for commonly used parameters
-static const float AS_RANGE_ZERO_ONE_MIN = 0.0f;         // Common minimum for normalized parameters
-static const float AS_RANGE_ZERO_ONE_MAX = 1.0f;         // Common maximum for normalized parameters
+static const float AS_RANGE_ZERO_ONE_MIN = 0.0f;        // Common minimum for normalized parameters
+static const float AS_RANGE_ZERO_ONE_MAX = 1.0f;        // Common maximum for normalized parameters
 
-static const float AS_RANGE_NEG_ONE_ONE_MIN = -1.0f;     // Common minimum for bipolar normalized parameters
+static const float AS_RANGE_NEG_ONE_ONE_MIN = -1.0f;    // Common minimum for bipolar normalized parameters
 static const float AS_RANGE_NEG_ONE_ONE_MAX = 1.0f;      // Common maximum for bipolar normalized parameters
 
 static const float AS_OP_MIN = 0.0f;          // Minimum for opacity parameters
 static const float AS_OP_MAX = 1.0f;          // Maximum for opacity parameters
 static const float AS_OP_DEFAULT = 1.0f;      // Default for opacity parameters
 
-static const float AS_RANGE_BLEND_MIN = 0.0f;            // Minimum for blend amount parameters
-static const float AS_RANGE_BLEND_MAX = 1.0f;            // Maximum for blend amount parameters
-static const float AS_RANGE_BLEND_DEFAULT = 1.0f;        // Default for blend amount parameters
+static const float AS_RANGE_BLEND_MIN = 0.0f;          // Minimum for blend amount parameters
+static const float AS_RANGE_BLEND_MAX = 1.0f;          // Maximum for blend amount parameters
+static const float AS_RANGE_BLEND_DEFAULT = 1.0f;      // Default for blend amount parameters
 
-static const float AS_RANGE_AUDIO_MULT_MIN = 0.0f;       // Minimum for audio multiplier parameters
-static const float AS_RANGE_AUDIO_MULT_MAX = 2.0f;       // Maximum for audio multiplier parameters
-static const float AS_RANGE_AUDIO_MULT_DEFAULT = 1.0f;   // Default for audio multiplier parameters
+static const float AS_RANGE_AUDIO_MULT_MIN = 0.0f;      // Minimum for audio multiplier parameters
+static const float AS_RANGE_AUDIO_MULT_MAX = 2.0f;      // Maximum for audio multiplier parameters
+static const float AS_RANGE_AUDIO_MULT_DEFAULT = 1.0f;  // Default for audio multiplier parameters
 
 // Scale range constants
-static const float AS_RANGE_SCALE_MIN = 0.1f;            // Minimum for scale parameters
-static const float AS_RANGE_SCALE_MAX = 5.0f;            // Maximum for scale parameters
-static const float AS_RANGE_SCALE_DEFAULT = 1.0f;        // Default for scale parameters
+static const float AS_RANGE_SCALE_MIN = 0.1f;          // Minimum for scale parameters
+static const float AS_RANGE_SCALE_MAX = 5.0f;          // Maximum for scale parameters
+static const float AS_RANGE_SCALE_DEFAULT = 1.0f;      // Default for scale parameters
 
 // Speed range constants
-static const float AS_RANGE_SPEED_MIN = 0.0f;            // Minimum for speed parameters 
-static const float AS_RANGE_SPEED_MAX = 5.0f;            // Maximum for speed parameters
-static const float AS_RANGE_SPEED_DEFAULT = 1.0f;        // Default for speed parameters
+static const float AS_RANGE_SPEED_MIN = 0.0f;          // Minimum for speed parameters 
+static const float AS_RANGE_SPEED_MAX = 5.0f;          // Maximum for speed parameters
+static const float AS_RANGE_SPEED_DEFAULT = 1.0f;      // Default for speed parameters
 
 // Debug mode constants
-static const int AS_DEBUG_OFF = 0;                      // Debug mode off
-static const int AS_DEBUG_MASK = 1;                     // Debug mask display
-static const int AS_DEBUG_DEPTH = 2;                    // Debug depth display
-static const int AS_DEBUG_AUDIO = 3;                    // Debug audio display
-static const int AS_DEBUG_PATTERN = 4;                  // Debug pattern display
+static const int AS_DEBUG_OFF = 0;                // Debug mode off
+static const int AS_DEBUG_MASK = 1;               // Debug mask display
+static const int AS_DEBUG_DEPTH = 2;              // Debug depth display
+static const int AS_DEBUG_AUDIO = 3;              // Debug audio display
+static const int AS_DEBUG_PATTERN = 4;            // Debug pattern display
 
 // --- Audio Constants ---
-#define AS_AUDIO_OFF     0  // Audio source disabled
-#define AS_AUDIO_SOLID   1  // Constant value (no audio reactivity)
-#define AS_AUDIO_VOLUME  2  // Overall audio volume
-#define AS_AUDIO_BEAT    3  // Beat detection
+#define AS_AUDIO_OFF          0  // Audio source disabled
+#define AS_AUDIO_SOLID        1  // Constant value (no audio reactivity)
+#define AS_AUDIO_VOLUME       2  // Overall audio volume
+#define AS_AUDIO_BEAT         3  // Beat detection
+#define AS_AUDIO_BASS         4  // Low frequency band
+#define AS_AUDIO_TREBLE       5  // High frequency band
+#define AS_AUDIO_MID          6  // Mid frequency band
+#define AS_AUDIO_VOLUME_LEFT  7  // Left channel volume
+#define AS_AUDIO_VOLUME_RIGHT 8  // Right channel volume
+#define AS_AUDIO_PAN          9  // Audio pan (-1 to 1)
 
 // --- Blend Constants ---
 #define AS_BLEND_NORMAL     0 // No blending
-#define AS_BLEND_OPAQUE     0 // Opaque blending
-#define AS_BLEND_LIGHTEN    5 // Lighter only
+#define AS_BLEND_OPAQUE     0 // Opaque blending (same as normal for RGB, alpha handled separately)
+#define AS_BLEND_LIGHTEN    5 // Lighter only (matches ComHeaders::Blending::Blend_Lighten_Only)
 
 // --- Display and Resolution Constants ---
 static const float AS_RESOLUTION_BASE_HEIGHT = 1080.0f;  // Standard height for scaling calculations
@@ -178,11 +195,10 @@ static const float AS_UI_POSITION_SCALE = 0.5f;  // Position scaling factor for 
 // Common coordinate system values
 static const float AS_SCREEN_CENTER_X = 0.5f;    // Screen center X coordinate
 static const float AS_SCREEN_CENTER_Y = 0.5f;    // Screen center Y coordinate
-static const float AS_RESOLUTION_SCALE = 1080.0f / BUFFER_HEIGHT; // Resolution scaling factor
-
-#define AS_AUDIO_BASS    4  // Low frequency band
-#define AS_AUDIO_TREBLE  5  // High frequency band
-#define AS_AUDIO_MID     6  // Mid frequency band
+// AS_RESOLUTION_SCALE is defined here, but it's better to calculate it dynamically if needed,
+// as BUFFER_HEIGHT might not be known at compile time for all contexts.
+// If used, ensure it's in a context where BUFFER_HEIGHT is defined.
+// static const float AS_RESOLUTION_SCALE = 1080.0f / BUFFER_HEIGHT; // Resolution scaling factor
 
 // Default number of frequency bands
 #ifndef LISTENINGWAY_NUM_BANDS
@@ -191,7 +207,7 @@ static const float AS_RESOLUTION_SCALE = 1080.0f / BUFFER_HEIGHT; // Resolution 
 #define AS_DEFAULT_NUM_BANDS LISTENINGWAY_NUM_BANDS
 
 // --- Standard UI Strings ---
-#define AS_AUDIO_SOURCE_ITEMS "Off\0Solid\0Volume\0Beat\0Bass\0Treble\0Mid\0"
+#define AS_AUDIO_SOURCE_ITEMS "Off\0Solid\0Volume\0Beat\0Bass\0Treble\0Mid\0Volume Left\0Volume Right\0Pan\0"
 
 // --- UI Control Macros ---
 // Define standard audio source control (reuse this macro for each audio reactive parameter)
@@ -212,8 +228,8 @@ bool AS_isDebugMode(int currentMode, int targetMode) {
     return currentMode == targetMode;
 }
 
-// Standard "Off" value for debug modes
-#define AS_DEBUG_OFF 0
+// Standard "Off" value for debug modes (already defined as const int AS_DEBUG_OFF)
+// #define AS_DEBUG_OFF 0 // This is redundant
 
 // --- Sway Animation UI Standardization ---
 // --- Sway UI Macros ---
@@ -251,56 +267,28 @@ uniform float scaleName < ui_type = "slider"; ui_label = "Scale"; ui_tooltip = "
 
 // --- Position Helper Functions ---
 // Applies position offset and scaling to centered coordinates
-// Parameters:
-//   coord: Centered coordinates from texcoord (already corrected for aspect ratio)
-//   pos: Position offset as float2(x, y) with range (-1.5 to 1.5)
-//   scale: Scaling factor (0.1 to 5.0)
-// Returns: Transformed coordinates
 float2 AS_applyPosScale(float2 coord, float2 pos, float scale) {
-    // Apply position offset (Y is inverted in screen space)
     coord.x -= pos.x;
-    coord.y += pos.y;
-      // Apply scale (higher value = zoomed out)
-    return coord / max(scale, AS_EPSILON); // Prevent division by zero
+    coord.y += pos.y; 
+    return coord / max(scale, AS_EPSILON); 
 }
 
 // Converts normalized texcoord to centered, aspect-corrected coordinates
-// Parameters:
-//   texcoord: Original normalized texcoord (0-1 range)
-//   aspectRatio: Width/height ratio of the screen
-// Returns: Centered coordinates corrected for aspect ratio
 float2 AS_centerCoord(float2 texcoord, float aspectRatio) {
     float2 centered = texcoord - 0.5;
-    
-    // Apply aspect ratio correction
     if (aspectRatio >= 1.0) {
-        // Landscape or square
         centered.x *= aspectRatio;
     } else {
-        // Portrait
         centered.y /= aspectRatio;
     }
-    
     return centered;
 }
 
 // All-in-one function that handles the common position/scale pattern
-// Parameters:
-//   texcoord: Original normalized texcoord (0-1 range)
-//   pos: Position as float2(x,y) with range (-1.5 to 1.5)
-//   scale: Scale factor (0.1 to 5.0)
-//   rotation: Rotation in radians
-// Returns: Transformed coordinates ready for sampling or calculations
 float2 AS_transformCoord(float2 texcoord, float2 pos, float scale, float rotation) {
-    // Get aspect ratio
     float aspectRatio = ReShade::AspectRatio;
-    
-    // Center and apply aspect ratio correction
     float2 centered = AS_centerCoord(texcoord, aspectRatio);
-    
-    // Apply position and scale
     float2 positioned = AS_applyPosScale(centered, pos, scale);
-      // Apply rotation if needed
     if (abs(rotation) > AS_EPSILON) {
         float s = sin(rotation);
         float c = cos(rotation);
@@ -309,7 +297,6 @@ float2 AS_transformCoord(float2 texcoord, float2 pos, float scale, float rotatio
             positioned.x * s + positioned.y * c
         );
     }
-    
     return positioned;
 }
 
@@ -333,76 +320,35 @@ float2 AS_applyRotation(float2 coord, float rotation)
 { return AS_rotate2D(coord, rotation);}
 
 // --- Math Helpers ---
-// NOTE: AS_mod must be defined before any function that uses it (such as AS_mapAngleToBand)
-// to avoid undeclared identifier errors during shader compilation.
-//
-// Why is this function called AS_mod?
-// - The name avoids confusion with built-in mod/fmod, which can behave inconsistently across shader languages/APIs.
-// - The AS_ prefix marks it as part of the Aquitaine Studio utility set.
-// - This implementation provides consistent, predictable modulo behavior for all AS shaders.
 float AS_mod(float x, float y) {
-    // Ensure y is not zero to avoid division by zero
     if (abs(y) < AS_EPSILON) return x;
     return x - y * floor(x / y);
 }
 
-// Convertion mistakes galore because of fmod, might as well use the same name
-float fmod(float x, float y) {
+float fmod(float x, float y) { // Ensure fmod is available if AS_mod is used as a replacement
     return AS_mod(x, y);
 }
+
 
 // ============================================================================
 // VISUAL EFFECTS & BLEND MODES
 // ============================================================================
 
 // --- Blend Functions ---
-
-// Applies various blend modes between a foreground and background color.
-// Parameters:
-//   fgColor: The foreground color (float3) - the effect's color.
-//   bgColor: The background color (float3) - the original scene color.
-//   blendMode: Integer specifying the blend mode:
-//              0: Normal (Foreground replaces Background)
-//              1: Lighter Only (Lighten)
-//              2: Darker Only (Darken)
-//              3: Additive
-//              4: Multiply
-//              5: Screen
-// Returns: The blended float3 color.
 float3 AS_applyBlend(float3 fgColor, float3 bgColor, int blendMode) {
-    
-    float3 outColor = ComHeaders::Blending::Blend(blendMode, bgColor, fgColor, 1.0);
-    return outColor.rgb; 
+    // Assuming ComHeaders::Blending::Blend is available from Blending.fxh
+    // The Blend function in Blending.fxh is:
+    // float3 Blend(const int type, const float3 backdrop, const float3 source, const float opacity = 1.0)
+    return ComHeaders::Blending::Blend(blendMode, bgColor, fgColor, 1.0).rgb; 
 }
 
-// Applies various blend modes between a foreground and background color, with opacity.
-// Parameters:
-//   fgColor: The foreground color (float4) - the effect's color, including its own alpha (fgColor.a).
-//   bgColor: The background color (float4) - the original scene color.
-//   blendMode: Integer specifying the blend mode:
-//              0: Normal (Foreground over Background)
-//              1: Lighter Only (Lighten)
-//              2: Darker Only (Darken)
-//              3: Additive
-//              4: Multiply
-//              5: Screen
-//   blendOpacity: Overall opacity of the foreground effect layer (0.0 to 1.0).
-// Returns: The blended float4 color. The alpha channel of the result is taken from bgColor.a.
 float4 AS_applyBlend(float4 fgColor, float4 bgColor, int blendMode, float blendOpacity) {
-    
-    // Call the 3-parameter version for RGB blending
     float3 effect_rgb = AS_applyBlend(fgColor.rgb, bgColor.rgb, blendMode);
-
-    // Combine fgColor.a (per-pixel effect alpha) and blendOpacity (overall layer opacity)
     float final_opacity = saturate(fgColor.a * blendOpacity);
-
-    // Lerp between the original background color and the blended effect color
     float3 final_rgb = lerp(bgColor.rgb, effect_rgb, final_opacity);
-    
-    return float4(final_rgb, bgColor.a); // Preserve original scene alpha
+    return float4(final_rgb, bgColor.a); 
 }
 
-// Linearly interpolates between two colors for palette generation
 float3 AS_paletteLerp(float3 c0, float3 c1, float t) {
     return lerp(c0, c1, t);
 }
@@ -410,65 +356,16 @@ float3 AS_paletteLerp(float3 c0, float3 c1, float t) {
 // ============================================================================
 // MATRIX & VECTOR MULTIPLICATION HELPERS (Use if intrinsic 'mul' causes issues)
 // ============================================================================
-
-/**
- * Multiplies a 2x2 matrix by a 2D vector. (Equivalent to intrinsic mul(matrix, vector))
- * M: The float2x2 matrix.
- * v: The float2 vector.
- * Returns the transformed float2 vector.
- */
 float2 AS_mul_float2x2_float2(float2x2 M, float2 v)
 {
-    // Standard matrix multiplication:
-    // x' = M00*x + M10*y  (Note: HLSL matrices are often column-major by default in mul,
-    // y' = M01*x + M11*y   so M[col][row]. M[0] is first column, M[1] is second)
-    // If M is defined as M[row][col] then:
-    // x' = M[0][0]*v.x + M[0][1]*v.y
-    // y' = M[1][0]*v.x + M[1][1]*v.y
-    // The HLSL intrinsic mul(M,v) handles this correctly.
-    // This explicit form is for fallback or clarity if issues persist.
-    return float2(
-        M[0][0] * v.x + M[1][0] * v.y, // Assuming M is M[column][row]
-        M[0][1] * v.x + M[1][1] * v.y
-    );
-    // Or, if you define matrices as M[row][col] in your head:
-    // return float2(
-    //     M[0][0] * v.x + M[0][1] * v.y,
-    //     M[1][0] * v.x + M[1][1] * v.y
-    // );
-    // It's generally safer to rely on the intrinsic mul(M,v) as it handles memory layout correctly.
+    return float2( M[0][0] * v.x + M[1][0] * v.y, M[0][1] * v.x + M[1][1] * v.y );
 }
 
-/**
- * Multiplies a 2D vector by a 2x2 matrix. (Equivalent to intrinsic mul(vector, matrix))
- * v: The float2 vector.
- * M: The float2x2 matrix.
- * Returns the transformed float2 vector.
- */
 float2 AS_mul_float2_float2x2(float2 v, float2x2 M)
 {
-    // Standard vector-matrix multiplication:
-    // x' = x*M00 + y*M01
-    // y' = x*M10 + y*M11
-    // This explicit form is for fallback or clarity.
-    return float2(
-        v.x * M[0][0] + v.y * M[0][1], // Assuming M is M[column][row]
-        v.x * M[1][0] + v.y * M[1][1]
-    );
-    // Or, if you define matrices as M[row][col] in your head:
-    // return float2(
-    //    v.x * M[0][0] + v.y * M[1][0],
-    //    v.x * M[0][1] + v.y * M[1][1]
-    // );
-    // Again, intrinsic mul(v,M) is preferred.
+    return float2( v.x * M[0][0] + v.y * M[0][1], v.x * M[1][0] + v.y * M[1][1] );
 }
 
-/**
- * Multiplies two 2x2 matrices. (Equivalent to intrinsic mul(matrixA, matrixB))
- * A: The first float2x2 matrix.
- * B: The second float2x2 matrix.
- * Returns the resulting float2x2 matrix.
- */
 float2x2 AS_mul_float2x2_float2x2(float2x2 A, float2x2 B)
 {
     float2x2 C;
@@ -476,44 +373,29 @@ float2x2 AS_mul_float2x2_float2x2(float2x2 A, float2x2 B)
     C[0][1] = A[0][1] * B[0][0] + A[1][1] * B[0][1];
     C[1][0] = A[0][0] * B[1][0] + A[1][0] * B[1][1];
     C[1][1] = A[0][1] * B[1][0] + A[1][1] * B[1][1];
-    // This is A * B assuming A[column][row] and B[column][row]
-    // Or C_ij = sum(A_ik * B_kj) if thinking in standard math A[row][col]
-    // The exact component math depends on how you mentally index vs how HLSL stores/accesses.
-    // The intrinsic mul(A,B) is the most reliable way.
     return C;
 }
-
-// You can add more for float3x3, float4x4 if needed, but they become verbose.
-// For example:
-// float3 AS_mul_float3x3_float3(float3x3 M, float3 v) { ... }
 
 // ============================================================================
 // AUDIO REACTIVITY FUNCTIONS
 // ============================================================================
 
 // --- Time Functions ---
-uniform int frameCount < source = "framecount"; >; // Frame count from ReShade
+uniform int frameCount < source = "framecount"; >; 
 
-// Returns consistent time value in seconds, using Listeningway if available
-// Approximates time based on frame count if Listeningway is not available
 float AS_getTime() {
 #if defined(__LISTENINGWAY_INSTALLED)
-    // Check if Listeningway appears to be actively running by checking if totalphases is non-zero
     if (Listeningway_TotalPhases120Hz > AS_EPSILON) {
-        // Use Listeningway's high-precision timer when available and active
-        return Listeningway_TotalPhases120Hz * (1.0f / 120.0f); // 120Hz phase counter
+        return Listeningway_TotalPhases120Hz * (1.0f / 120.0f); 
     }
     else if (Listeningway_TimeSeconds > AS_EPSILON) {
-        // Alternative fallback to direct time seconds if available
         return Listeningway_TimeSeconds;
     }
 #endif
-    // Fallback to frame count approximation (assumes ~60 FPS)
     return float(frameCount) * (1.0f / 60.0f);
 }
 
 // --- Listeningway Helpers ---
-// Returns number of available frequency bands
 int AS_getFreqBands() {
 #if defined(__LISTENINGWAY_INSTALLED) && defined(LISTENINGWAY_NUM_BANDS)
     return LISTENINGWAY_NUM_BANDS;
@@ -522,11 +404,9 @@ int AS_getFreqBands() {
 #endif
 }
 
-// Get frequency band value safely with bounds checking
 float AS_getFreq(int index) {
 #if defined(__LISTENINGWAY_INSTALLED)
     int numBands = AS_getFreqBands();
-    // Safely clamp the index to valid range
     int safeIndex = clamp(index, 0, numBands - 1);
     return Listeningway_FreqBands[safeIndex];
 #else
@@ -534,78 +414,56 @@ float AS_getFreq(int index) {
 #endif
 }
 
-// Map circular angle to frequency band index
 int AS_mapAngleToBand(float angleRadians, int repetitions) {
-    // Normalize angle to 0-1 range (0 to 2π)
     float normalizedAngle = AS_mod(angleRadians, AS_TWO_PI) / AS_TWO_PI;
-
-    // Scale by number of bands and repetitions
     int numBands = AS_getFreqBands();
-    if (numBands <= 0) return 0; // Avoid division by zero if no bands
-    int totalBands = numBands * max(1, repetitions); // Ensure at least 1 repetition
-
-    // Map to band index
+    if (numBands <= 0) return 0; 
+    int totalBands = numBands * max(1, repetitions); 
     int bandIdx = int(floor(normalizedAngle * totalBands)) % numBands;
     return bandIdx;
 }
 
-// Returns VU meter value from specified source
 float AS_getVU(int source) {
 #if defined(__LISTENINGWAY_INSTALLED)
     if (source == 0) return Listeningway_Volume;
     if (source == 1) return Listeningway_Beat;
-    // Assuming 32 bands for these indices
-    if (source == 2) return Listeningway_FreqBands[min(0, LISTENINGWAY_NUM_BANDS - 1)]; // Bass (first band)
-    if (source == 3) return Listeningway_FreqBands[min(14, LISTENINGWAY_NUM_BANDS - 1)]; // Mid (approx middle)
-    if (source == 4) return Listeningway_FreqBands[min(28, LISTENINGWAY_NUM_BANDS - 1)]; // Treble (near end)
+    if (source == 2) return Listeningway_FreqBands[min(0, LISTENINGWAY_NUM_BANDS - 1)]; 
+    if (source == 3) return Listeningway_FreqBands[min(14, LISTENINGWAY_NUM_BANDS - 1)];
+    if (source == 4) return Listeningway_FreqBands[min(28, LISTENINGWAY_NUM_BANDS - 1)]; 
 #endif
     return 0.0;
 }
 
-// Returns normalized audio value from specified source
 float AS_getAudioSource(int source) {
-    if (source == AS_AUDIO_OFF)   return 0.0;                // Off
-    if (source == AS_AUDIO_SOLID)  return 1.0;                // Solid
+    if (source == AS_AUDIO_OFF)   return 0.0;         
+    if (source == AS_AUDIO_SOLID)  return 1.0;         
 #if defined(__LISTENINGWAY_INSTALLED)
-    if (source == AS_AUDIO_VOLUME) return Listeningway_Volume; // Volume
-    if (source == AS_AUDIO_BEAT)   return Listeningway_Beat;   // Beat
+    if (source == AS_AUDIO_VOLUME) return Listeningway_Volume; 
+    if (source == AS_AUDIO_BEAT)   return Listeningway_Beat;   
 
     int numBands = AS_getFreqBands();
-    if (numBands <= 1) return 0.0; // Safety check
+    if (numBands <= 1 && (source == AS_AUDIO_BASS || source == AS_AUDIO_MID || source == AS_AUDIO_TREBLE)) return 0.0;
 
-    if (source == AS_AUDIO_BASS) {
-        // Bass is the first band
-        return Listeningway_FreqBands[0];
-    }
-    if (source == AS_AUDIO_MID) {
-        // Mid is the middle band
-        return Listeningway_FreqBands[numBands / 2];
-    }
-    if (source == AS_AUDIO_TREBLE) {
-        // Treble is the last band
-        return Listeningway_FreqBands[numBands - 1];
-    }
+    if (source == AS_AUDIO_BASS)   return Listeningway_FreqBands[0];
+    if (source == AS_AUDIO_MID)    return Listeningway_FreqBands[numBands / 2];
+    if (source == AS_AUDIO_TREBLE) return Listeningway_FreqBands[numBands - 1];
+    
+    if (source == AS_AUDIO_VOLUME_LEFT) return Listeningway_VolumeLeft; 
+    if (source == AS_AUDIO_VOLUME_RIGHT) return Listeningway_VolumeRight;
+    if (source == AS_AUDIO_PAN) return (Listeningway_AudioPan + 1.0) * 0.5;
 #endif
-
-    return 0.0; // Return 0 if source is invalid or Listeningway unavailable
+    return 0.0; 
 }
 
-// Applies audio reactivity to a parameter (multiplicative)
-// Base value is multiplied by (1.0 + audioLevel * multiplier)
 float AS_applyAudioReactivity(float baseValue, int audioSource, float multiplier, bool enableFlag) {
     if (!enableFlag || audioSource == AS_AUDIO_OFF) return baseValue;
-
     float audioLevel = AS_getAudioSource(audioSource);
     return baseValue * (1.0 + audioLevel * multiplier);
 }
 
-// Advanced version that can add or multiply the effect
-// mode: 0=Multiplicative, 1=Additive
 float AS_applyAudioReactivityEx(float baseValue, int audioSource, float multiplier, bool enableFlag, int mode) {
     if (!enableFlag || audioSource == AS_AUDIO_OFF) return baseValue;
-
     float audioLevel = AS_getAudioSource(audioSource);
-
     if (mode == 1) { // Additive mode
         return baseValue + (audioLevel * multiplier);
     } else { // Multiplicative mode (default)
@@ -613,91 +471,257 @@ float AS_applyAudioReactivityEx(float baseValue, int audioSource, float multipli
     }
 }
 
+
 // ============================================================================
-// MATH & COORDINATE HELPERS 
+// STEREO AUDIO HELPER FUNCTIONS
+// ============================================================================
+int AS_getAudioFormat() {
+#if defined(__LISTENINGWAY_INSTALLED)
+    return int(Listeningway_AudioFormat);
+#else
+    return 0; 
+#endif
+}
+
+bool AS_isStereoAvailable() {
+    return AS_getAudioFormat() >= 2;
+}
+
+bool AS_isSurroundAvailable() {
+    return AS_getAudioFormat() >= 6;
+}
+
+float2 AS_getStereoBalance() {
+#if defined(__LISTENINGWAY_INSTALLED)
+    if (!AS_isStereoAvailable()) {
+        return float2(0.5, 0.5);
+    }
+    float pan = Listeningway_AudioPan; 
+    float leftFactor = saturate(0.5 - pan * 0.5);  
+    float rightFactor = saturate(0.5 + pan * 0.5); 
+    return float2(leftFactor, rightFactor);
+#else
+    return float2(0.5, 0.5);
+#endif
+}
+
+float AS_getStereoAudioReactivity(float position, int audioSource) {
+    if (audioSource == AS_AUDIO_OFF) return 0.0;
+    if (!AS_isStereoAvailable()) {
+        return AS_getAudioSource(audioSource);
+    }
+#if defined(__LISTENINGWAY_INSTALLED)
+    float2 stereoBalance = AS_getStereoBalance(); // This uses Listeningway_AudioPan
+    float leftWeight = saturate(0.5 - position * 0.5);  
+    float rightWeight = saturate(0.5 + position * 0.5); 
+    
+    if (audioSource == AS_AUDIO_VOLUME) 
+        return Listeningway_VolumeLeft * leftWeight + Listeningway_VolumeRight * rightWeight;
+    if (audioSource == AS_AUDIO_VOLUME_LEFT) 
+        return Listeningway_VolumeLeft * leftWeight; 
+    if (audioSource == AS_AUDIO_VOLUME_RIGHT) 
+        return Listeningway_VolumeRight * rightWeight; 
+
+    float generalAudioValue = AS_getAudioSource(audioSource);
+
+    if (audioSource == AS_AUDIO_BASS || audioSource == AS_AUDIO_MID || audioSource == AS_AUDIO_TREBLE || audioSource == AS_AUDIO_BEAT) {
+         float panEffect = (position < 0) ? stereoBalance.x : stereoBalance.y; 
+         if (abs(position) < AS_EPSILON) panEffect = (stereoBalance.x + stereoBalance.y) * 0.5; 
+         return generalAudioValue * panEffect;
+    }
+    if (audioSource == AS_AUDIO_PAN) { 
+         return (Listeningway_AudioPan * position + 1.0) * 0.5; 
+    }
+    
+    return generalAudioValue; 
+#else     
+    return AS_getAudioSource(audioSource);
+#endif
+}
+
+/**
+ * Converts the Listeningway audio pan value to a direction in radians.
+ * -1.0 pan (full left) maps to -PI/2 radians (-90 degrees).
+ * 0.0 pan (center) maps to 0 radians (0 degrees).
+ * +1.0 pan (full right) maps to +PI/2 radians (+90 degrees).
+ * Returns the audio direction in radians.
+ */
+float AS_getAudioDirectionRadians() {
+#if defined(__LISTENINGWAY_INSTALLED)
+    // Listeningway_AudioPan ranges from -1.0 (left) to +1.0 (right)
+    // Multiplying by AS_HALF_PI maps this to -PI/2 to +PI/2
+    return Listeningway_AudioPan * AS_HALF_PI;
+#else
+    // If Listeningway is not installed, the fallback definition for Listeningway_AudioPan is 0.0f.
+    // So, 0.0 * AS_HALF_PI = 0.0, which is correct for no pan information.
+    return 0.0f; 
+#endif
+}
+
+// ============================================================================
+// STEREO UI STANDARDIZATION
+// ============================================================================
+#define AS_AUDIO_STEREO_UI(name, label, defaultSource, category) \
+uniform int name < ui_type = "combo"; ui_label = label; ui_items = AS_AUDIO_SOURCE_ITEMS; ui_tooltip = "Audio source for reactivity. Stereo options available when stereo audio detected."; ui_category = category; > = defaultSource;
+
+#define AS_STEREO_POSITION_UI(name, category) \
+uniform float name < ui_type = "slider"; ui_label = "Stereo Position"; ui_tooltip = "Stereo position for audio reactivity (-1.0 = left, 0.0 = center, 1.0 = right). Only effective with stereo audio."; ui_min = -1.0; ui_max = 1.0; ui_step = 0.01; ui_category = category; > = 0.0;
+
+#define AS_AUDIO_STEREO_FULL_UI(sourceName, posName, multName, label, defaultSource, category) \
+uniform int sourceName < ui_type = "combo"; ui_label = label " Source"; ui_items = AS_AUDIO_SOURCE_ITEMS; ui_tooltip = "Audio source for reactivity. Stereo options available when stereo audio detected."; ui_category = category; > = defaultSource; \
+uniform float posName < ui_type = "slider"; ui_label = label " Stereo Position"; ui_tooltip = "Stereo position for audio reactivity (-1.0 = left, 0.0 = center, 1.0 = right). Only effective with stereo audio."; ui_min = -1.0; ui_max = 1.0; ui_step = 0.01; ui_category = category; > = 0.0; \
+uniform float multName < ui_type = "slider"; ui_label = label " Multiplier"; ui_tooltip = "Controls how much the selected audio source affects this parameter."; ui_min = 0.0; ui_max = 2.0; ui_step = 0.05; ui_category = category; > = 1.0;
+
+// ============================================================================
+// ENHANCED AUDIO HELPER FUNCTIONS
+// ============================================================================
+float AS_applyAudioReactivityStereo(float baseValue, int audioSource, float multiplier, float stereoPosition, bool enableFlag) {
+    if (!enableFlag || audioSource == AS_AUDIO_OFF) return baseValue;
+    float audioLevel = AS_getStereoAudioReactivity(stereoPosition, audioSource);
+    return baseValue * (1.0 + audioLevel * multiplier);
+}
+
+float AS_getAudioSourceSafe(int source, float fallbackValue = 0.0) {
+#if defined(__LISTENINGWAY_INSTALLED)
+    if (Listeningway_TotalPhases120Hz > AS_EPSILON || Listeningway_Volume > AS_EPSILON || Listeningway_AudioFormat > 0) { 
+        return AS_getAudioSource(source);
+    }
+#endif
+    return (source == AS_AUDIO_SOLID) ? 1.0 : fallbackValue;
+}
+
+float AS_getSmoothedAudio(int source, float smoothing = 0.1) {
+    static float previousValue = 0.0; 
+    float currentValue = AS_getAudioSourceSafe(source); 
+    float smoothed = lerp(previousValue, currentValue, saturate(smoothing)); 
+    previousValue = smoothed;
+    return smoothed;
+}
+
+float AS_getFreqByPercent(float percent) {
+#if defined(__LISTENINGWAY_INSTALLED)
+    int numBands = AS_getFreqBands();
+    if (numBands <= 1) return 0.0;
+    int bandIndex = int(saturate(percent) * (numBands - 1));
+    return Listeningway_FreqBands[bandIndex];
+#else
+    return 0.0;
+#endif
+}
+
+
+// ============================================================================
+// AUDIO DEBUG HELPERS
+// ============================================================================
+float4 AS_debugAudio(float2 texcoord, int debugMode) {
+    if (debugMode != AS_DEBUG_AUDIO) return float4(0, 0, 0, 0); 
+#if defined(__LISTENINGWAY_INSTALLED)
+    float3 debugColor = float3(0, 0, 0);
+    if (texcoord.x < 0.2 && texcoord.y < 0.1) {
+        int format = AS_getAudioFormat();
+        if (format == 0) debugColor = float3(1, 0, 0);      
+        else if (format == 1) debugColor = float3(1, 1, 0); 
+        else if (format == 2) debugColor = float3(0, 1, 0); 
+        else debugColor = float3(0, 0, 1);                  
+    }
+    
+    int numBands = AS_getFreqBands();
+    if (numBands > 0 && texcoord.y > 0.2 && texcoord.y < 0.8) { 
+        float bandWidth = 1.0 / numBands;
+        int currentBand = int(texcoord.x / bandWidth);
+        if (currentBand < numBands) {
+            float bandValue = Listeningway_FreqBands[currentBand];
+            if ((1.0 - texcoord.y) < bandValue * 0.6 + 0.2) { 
+                 float hue = float(currentBand) / max(1,numBands-1); 
+                 if (hue < 0.333) debugColor = float3(1.0 - hue * 3.0, hue * 3.0, 0);
+                 else if (hue < 0.666) debugColor = float3(0, 1.0 - (hue - 0.333) * 3.0, (hue - 0.333) * 3.0);
+                 else debugColor = float3((hue - 0.666) * 3.0, 0, 1.0 - (hue - 0.666) * 3.0);
+            }
+        }
+    }
+    
+    if (AS_isStereoAvailable() && texcoord.y > 0.85) {
+        float2 stereoBalance = AS_getStereoBalance();
+        if (texcoord.x < 0.45) { 
+            debugColor = float3(stereoBalance.x, stereoBalance.x * 0.5, 0); 
+        } else if (texcoord.x > 0.55) { 
+            debugColor = float3(0, stereoBalance.y * 0.5, stereoBalance.y); 
+        } else { 
+            float panNorm = (Listeningway_AudioPan + 1.0) * 0.5; 
+            debugColor = float3(panNorm, panNorm, panNorm); 
+        }
+    }
+    return float4(debugColor, 1.0);
+#else
+    if (texcoord.x > 0.4 && texcoord.x < 0.6 && texcoord.y > 0.4 && texcoord.y < 0.6)
+      return float4(0.5, 0.2, 0.2, 1.0); 
+    return float4(0.0, 0.0, 0.0, 0.0); 
+#endif
+}
+
+
+// ============================================================================
+// MATH & COORDINATE HELPERS (Continued from above, standard ones)
 // ============================================================================
 
 // --- Rotation UI Standardization ---
-// --- Rotation UI Macro ---
-// Creates a standardized pair of rotation controls (snap + fine) that appear on the same line
 #define AS_ROTATION_UI(snapName, fineName) \
 uniform int snapName < ui_category = "Stage"; ui_label = "Snap Rotation"; ui_type = "slider"; ui_min = -4; ui_max = 4; ui_step = 1; ui_tooltip = "Snap rotation in 45° steps (-180° to +180°)"; ui_spacing = 0; > = 0; \
 uniform float fineName < ui_category = "Stage"; ui_label = "Fine Rotation"; ui_type = "slider"; ui_min = -45.0; ui_max = 45.0; ui_step = 0.1; ui_tooltip = "Fine rotation adjustment in degrees"; ui_same_line = true; > = 0.0;
 
-// --- Rotation Helper Function ---
-// Combines snap and fine rotation values and converts to radians
 float AS_getRotationRadians(int snapRotation, float fineRotation) {
     float snapAngle = float(snapRotation) * 45.0;
-    return (snapAngle + fineRotation) * (AS_PI / 180.0);
+    return (snapAngle + fineRotation) * AS_DEGREES_TO_RADIANS;
 }
 
 // --- Animation UI Standardization ---
-// --- Animation Constants ---
 #define AS_ANIMATION_SPEED_MIN 0.0
 #define AS_ANIMATION_SPEED_MAX 5.0
 #define AS_ANIMATION_SPEED_STEP 0.01
 #define AS_ANIMATION_SPEED_DEFAULT 1.0
 
 #define AS_ANIMATION_KEYFRAME_MIN 0.0
-#define AS_ANIMATION_KEYFRAME_MAX 100.0
+#define AS_ANIMATION_KEYFRAME_MAX 100.0 
 #define AS_ANIMATION_KEYFRAME_STEP 0.1
 #define AS_ANIMATION_KEYFRAME_DEFAULT 0.0
 
-// --- Animation UI Macros ---
-// Creates a standardized animation speed control
 #define AS_ANIMATION_SPEED_UI(name, category) \
 uniform float name < ui_type = "slider"; ui_label = "Animation Speed"; ui_tooltip = "Controls the overall animation speed of the effect. Set to 0 to pause animation."; ui_min = AS_ANIMATION_SPEED_MIN; ui_max = AS_ANIMATION_SPEED_MAX; ui_step = AS_ANIMATION_SPEED_STEP; ui_category = category; > = AS_ANIMATION_SPEED_DEFAULT;
 
-// Creates a standardized animation keyframe control
 #define AS_ANIMATION_KEYFRAME_UI(name, category) \
 uniform float name < ui_type = "slider"; ui_label = "Animation Keyframe"; ui_tooltip = "Sets a specific point in time for the animation. Useful for finding and saving specific patterns."; ui_min = AS_ANIMATION_KEYFRAME_MIN; ui_max = AS_ANIMATION_KEYFRAME_MAX; ui_step = AS_ANIMATION_KEYFRAME_STEP; ui_category = category; > = AS_ANIMATION_KEYFRAME_DEFAULT;
 
-// Combined animation UI for convenience (both speed and keyframe)
 #define AS_ANIMATION_UI(speedName, keyframeName, category) \
 uniform float speedName < ui_type = "slider"; ui_label = "Animation Speed"; ui_tooltip = "Controls the overall animation speed of the effect. Set to 0 to pause animation."; ui_min = AS_ANIMATION_SPEED_MIN; ui_max = AS_ANIMATION_SPEED_MAX; ui_step = AS_ANIMATION_SPEED_STEP; ui_category = category; > = AS_ANIMATION_SPEED_DEFAULT; \
 uniform float keyframeName < ui_type = "slider"; ui_label = "Animation Keyframe"; ui_tooltip = "Sets a specific point in time for the animation. Useful for finding and saving specific patterns."; ui_min = AS_ANIMATION_KEYFRAME_MIN; ui_max = AS_ANIMATION_KEYFRAME_MAX; ui_step = AS_ANIMATION_KEYFRAME_STEP; ui_category = category; > = AS_ANIMATION_KEYFRAME_DEFAULT;
 
-// --- Animation Helper Functions ---
-// Calculates animation time based on speed, keyframe, and AS_getTime()
-// Parameters:
-//   speed: Animation speed (0.0 = paused)
-//   keyframe: Animation keyframe/starting point
-// Returns: Animation time value
 float AS_getAnimationTime(float speed, float keyframe) {
-    // When animation speed is effectively zero, use keyframe directly
-    if (speed <= 0.0001) {
+    if (abs(speed) < AS_EPSILON) { 
         return keyframe;
     }
-    
-    // Otherwise use animated time plus keyframe offset
     return (AS_getTime() * speed) + keyframe;
 }
 
-// --- Math Helpers ---
-// Corrects UV coordinates for non-square aspect ratios
-float2 AS_aspectCorrect(float2 uv, float width, float height) { 
+float2 AS_aspectCorrect(float2 uv, float width, float height) { // Corrected parameter name
+    if (abs(height) < AS_EPSILON) return uv; 
     float aspect = width / height; 
     return float2((uv.x - 0.5) * aspect + 0.5, uv.y); 
 }
 
-// Transforms uv so that a distance calculation results in a circle on screen
 float2 AS_aspectCorrectUV(float2 uv, float aspectRatio) {
     float2 centered_uv = uv - 0.5;
     centered_uv.x *= aspectRatio;
-    return centered_uv + 0.5; // Return corrected UV in 0-1 range
+    return centered_uv + 0.5; 
 }
 
-// Converts degrees to radians
 float AS_radians(float deg) {
-    return deg * (AS_PI / 180.0);
+    return deg * AS_DEGREES_TO_RADIANS;
 }
 
-// Converts radians to degrees
 float AS_degrees(float rad) {
-    return rad * (180.0 / AS_PI);
+    return rad * AS_RADIANS_TO_DEGREES;
 }
 
-// Converts normalized UV coordinates to pixel positions
 float2 AS_rescaleToScreen(float2 uv) {
     return uv * ReShade::ScreenSize.xy;
 }
@@ -705,238 +729,111 @@ float2 AS_rescaleToScreen(float2 uv) {
 // ============================================================================
 // DEPTH, SURFACE & VISUAL EFFECTS
 // ============================================================================
-
-// --- Depth and Surface Functions ---
-// Returns a fade mask based on scene depth, near/far planes, and curve
 float AS_depthMask(float depth, float nearPlane, float farPlane, float curve) {
-    // Ensure nearPlane is less than farPlane to avoid issues
-    farPlane = max(nearPlane + 1e-5, farPlane);
-    // Calculate mask using smoothstep for range [nearPlane, farPlane]
+    farPlane = max(nearPlane + AS_EPS_SAFE, farPlane); 
     float mask = smoothstep(nearPlane, farPlane, depth);
-    // Apply curve and invert (1 near, 0 far)
-    return 1.0 - pow(mask, max(0.1, curve)); // Ensure curve is positive
+    return 1.0 - pow(mask, max(0.1f, curve)); 
 }
 
-// Reconstructs normal from depth buffer using screen-space derivatives
-// Note: Quality depends heavily on depth buffer precision and linearity.
 float3 AS_reconstructNormal(float2 texcoord) {
-    // Sample depth in a 2x2 neighborhood for central differencing
     float depth = ReShade::GetLinearizedDepth(texcoord);
-    float depthX1 = ReShade::GetLinearizedDepth(texcoord + float2(ReShade::PixelSize.x, 0.0));
-    float depthY1 = ReShade::GetLinearizedDepth(texcoord + float2(0.0, ReShade::PixelSize.y));
+    float px = max(abs(ReShade::PixelSize.x), AS_EPSILON);
+    float py = max(abs(ReShade::PixelSize.y), AS_EPSILON);
 
-    // Estimate view-space position derivatives using depth differences
-    // This assumes a perspective projection and requires knowledge of projection params for accuracy,
-    // but provides a reasonable approximation for screen-space effects.
-    float3 dx = float3(ReShade::PixelSize.x, 0.0, depthX1 - depth);
-    float3 dy = float3(0.0, ReShade::PixelSize.y, depthY1 - depth);
-
-    // Calculate normal using cross product (ensure correct handedness)
-    // Cross product direction depends on coordinate system; assuming standard right-handed view space
-    float3 normal = normalize(cross(dy, dx)); // Swapped order might be needed depending on depth direction
-
-    return normal;
+    float depthX1 = ReShade::GetLinearizedDepth(texcoord + float2(px, 0.0));
+    float depthY1 = ReShade::GetLinearizedDepth(texcoord + float2(0.0, py));
+    
+    float3 dx = float3(px, 0.0, depthX1 - depth);
+    float3 dy = float3(0.0, py, depthY1 - depth);
+    return normalize(cross(dy, dx)); 
 }
 
-// Returns fresnel term for a given normal and view direction
-// Assumes viewDir points from surface towards camera (e.g., viewDir = normalize(-viewSpacePos))
 float AS_fresnel(float3 normal, float3 viewDir, float power) {
-    // Ensure vectors are normalized
-    normal = normalize(normal);
+    normal = normalize(normal); 
     viewDir = normalize(viewDir);
-    // Calculate Fresnel term: (1 - dot(N, V))^power
-    return pow(1.0 - saturate(dot(normal, viewDir)), max(0.1, power)); // Ensure power is positive
+    return pow(1.0 - saturate(dot(normal, viewDir)), max(0.1f, power)); 
 }
 
-// --- Safe Hyperbolic Tangent ---
-// Provides a safer implementation of hyperbolic tangent that:
-// 1. Prevents infinity/NaN for extremely large inputs
-// 2. Normalizes output to strict [-1, 1] range
-// 3. Maintains the same behavior as regular tanh for normal inputs
-// Parameters:
-//   x: Input value to compute tanh for
-//   safetyThreshold: (Optional) Maximum absolute value to apply standard tanh to (default: 12.0)
 float stanh(float x, float safetyThreshold = 12.0) {
-    // For regular range inputs, use normal tanh
     if (abs(x) <= safetyThreshold) {
         return tanh(x);
     }
-    
-    // For extreme values, asymptotically approach +/-1 without risk of precision issues
-    // When |x| > threshold, we know tanh(x) is very close to sign(x)
-    return sign(x) * (1.0 - exp(-abs(x - sign(x) * safetyThreshold)) * (1.0 - tanh(safetyThreshold * sign(x))));
+    return sign(x) * (1.0f - exp(-abs(x - sign(x) * safetyThreshold)) * (1.0f - tanh(safetyThreshold * sign(x))));
 }
 
-// Vectorized version of stanh (for float2)
-float2 stanh(float2 x, float safetyThreshold = 12.0) {
-    return float2(
-        stanh(x.x, safetyThreshold),
-        stanh(x.y, safetyThreshold)
-    );
-}
+float2 stanh(float2 x, float safetyThreshold = 12.0) { return float2(stanh(x.x, safetyThreshold), stanh(x.y, safetyThreshold)); }
+float3 stanh(float3 x, float safetyThreshold = 12.0) { return float3(stanh(x.x, safetyThreshold), stanh(x.y, safetyThreshold), stanh(x.z, safetyThreshold)); }
+float4 stanh(float4 x, float safetyThreshold = 12.0) { return float4(stanh(x.x, safetyThreshold), stanh(x.y, safetyThreshold), stanh(x.z, safetyThreshold), stanh(x.w, safetyThreshold)); }
 
-// Vectorized version of stanh (for float3)
-float3 stanh(float3 x, float safetyThreshold = 12.0) {
-    return float3(
-        stanh(x.x, safetyThreshold),
-        stanh(x.y, safetyThreshold),
-        stanh(x.z, safetyThreshold)
-    );
-}
-
-// Vectorized version of stanh (for float4)
-float4 stanh(float4 x, float safetyThreshold = 12.0) {
-    return float4(
-        stanh(x.x, safetyThreshold),
-        stanh(x.y, safetyThreshold),
-        stanh(x.z, safetyThreshold),
-        stanh(x.w, safetyThreshold)
-    );
-}
-
-// --- Animation Helpers ---
-// Simple fade-in / fade-out function based on a cycle value (0 to 1)
 float AS_fadeInOut(float cycle, float fadeInEnd, float fadeOutStart) {
-    // Ensure valid ranges
     fadeInEnd = saturate(fadeInEnd);
     fadeOutStart = saturate(fadeOutStart);
-    if (fadeInEnd >= fadeOutStart) return (cycle < 0.5) ? smoothstep(0.0, 0.5, cycle) * 2.0 : (1.0 - smoothstep(0.5, 1.0, cycle)) * 2.0; // Simple triangle if invalid
+    if (fadeInEnd >= fadeOutStart) return (cycle < 0.5) ? smoothstep(0.0, 0.5, cycle) * 2.0 : (1.0 - smoothstep(0.5, 1.0, cycle)) * 2.0;
 
     float brightness = 1.0;
     if (cycle < fadeInEnd) {
-        // Fade in from 0 to fadeInEnd
         brightness = smoothstep(0.0, fadeInEnd, cycle);
     } else if (cycle > fadeOutStart) {
-        // Fade out from fadeOutStart to 1.0
         brightness = 1.0 - smoothstep(fadeOutStart, 1.0, cycle);
     }
-    // else: brightness remains 1.0 between fadeInEnd and fadeOutStart
-
     return brightness;
 }
 
-
-// --- Sway Animation Helpers ---
-// Applies sinusoidal sway effect based on time
-// swayAngle: maximum angle of sway in degrees
-// swaySpeed: speed of the sway animation
-// returns: sway offset in radians
 float AS_applySway(float swayAngle, float swaySpeed) {
     float time = AS_getTime();
     float swayPhase = time * swaySpeed;
     return AS_radians(swayAngle) * sin(swayPhase);
 }
 
-// Audio-reactive version of sway effect
-// swayAngle: maximum angle of sway in degrees
-// swaySpeed: speed of the sway animation
-// audioSource: audio source to modulate the sway with
-// audioMult: audio multiplier
-// returns: audio-reactive sway offset in radians
 float AS_applyAudioSway(float swayAngle, float swaySpeed, int audioSource, float audioMult) {
     float time = AS_getTime();
-    float audioLevel = AS_getAudioSource(audioSource);
-    // Modulate the angle based on audio
+    float audioLevel = AS_getAudioSourceSafe(audioSource); 
     float reactiveAngle = swayAngle * (1.0 + audioLevel * audioMult);
     float swayPhase = time * swaySpeed;
     return AS_radians(reactiveAngle) * sin(swayPhase);
 }
 
-// --- Visualization Helpers ---
-// Returns a debug color based on mode and value (simplified)
 float4 AS_debugOutput(int mode, float4 orig, float4 value1, float4 value2, float4 value3) {
-    if (mode == 1) return value1; // Show first debug value
-    if (mode == 2) return value2; // Show second debug value
-    if (mode == 3) return value3; // Show third debug value
-    // Add more modes as needed
-    return orig; // Default: return original color
+    if (mode == 1) return value1; 
+    if (mode == 2) return value2; 
+    if (mode == 3) return value3; 
+    return orig; 
 }
 
-// Returns a star-shaped mask for sparkle effects
-// p: coordinate relative to star center
-// size: overall size of the star
-// points: number of points on the star
-// angle: rotation angle offset
 float AS_starMask(float2 p, float size, float points, float angle) {
-    float2 uv = p / max(size, 1e-5); // Normalize coords by size
-    float a = atan2(uv.y, uv.x) + AS_radians(angle); // Angle + offset
-    float r = length(uv); // Distance from center
-
-    // Modulate radius based on angle and number of points
-    float f = cos(a * points); // Creates lobes
-    f = f * 0.5 + 0.5; // Map from [-1, 1] to [0, 1] range    // Use smoothstep to create the shape based on distance and modulated radius 'f'
-    // The inner edge is f, outer edge slightly larger for anti-aliasing
-    return 1.0 - smoothstep(f, f + AS_EDGE_AA, r); // Using standard anti-aliasing edge size
+    float2 uv = p / max(size, AS_EPS_SAFE); 
+    float a = atan2(uv.y, uv.x) + AS_radians(angle); 
+    float r = length(uv); 
+    float f = cos(a * points) * 0.5 + 0.5; 
+    return 1.0 - smoothstep(f, f + AS_EDGE_AA, r); 
 }
-
 
 // ============================================================================
 // STAGE DEPTH & BLEND UI HELPERS
 // ============================================================================
-
 #define AS_STAGEDEPTH_UI(name) \
 uniform float name < ui_type = "slider"; ui_label = "Effect Depth"; ui_tooltip = "Controls how far back the stage effect appears (Linear Depth 0-1)."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Stage"; > = 0.05;
 
-// --- Blend Mode UI Standardization ---
-// --- Blend Mode UI Macro with default value ---
 #define AS_BLENDMODE_UI_DEFAULT(name, defaultMode) \
-BLENDING_COMBO(name, "Mode", "Select how the effect will mix with the background.", "Final Mix", false, 0, defaultMode);
+BLENDING_COMBO(name, "Mode", "Select how the effect will mix with the background.", "Final Mix", false, 0, defaultMode)
 
-// --- Blend Mode UI Macro (defaults to Normal) ---
 #define AS_BLENDMODE_UI(name) \
-    AS_BLENDMODE_UI_DEFAULT(name, 0) // Default to Normal (index 0)
+    AS_BLENDMODE_UI_DEFAULT(name, 0) 
 
-// --- Blend Amount UI Macro ---
 #define AS_BLENDAMOUNT_UI(name) \
 uniform float name < ui_type = "slider"; ui_label = "Strength"; ui_tooltip = "Controls the overall intensity/opacity of the effect blend."; ui_min = 0.0; ui_max = 1.0; ui_category = "Final Mix"; > = 1.0;
 
 // ============================================================================
 // TEXTURE & SAMPLER CREATION
 // ============================================================================
-// --- Texture Creation Macro ---
-// Creates a texture2D resource with specified dimensions, format and mip levels
-#define AS_CREATE_TEXTURE(TEXTURE_NAME, SIZE, FORMAT, LEVELS) \
-    texture2D TEXTURE_NAME \
-    { \
-        Width = SIZE.x; \
-        Height = SIZE.y; \
-        Format = FORMAT; \
-        MipLevels = LEVELS; \
-    };
+#define AS_CREATE_TEXTURE(TEXTURE_NAME, SIZE_XY, FORMAT_TYPE, MIP_LEVELS) \
+    texture2D TEXTURE_NAME { Width = SIZE_XY.x; Height = SIZE_XY.y; Format = FORMAT_TYPE; MipLevels = MIP_LEVELS; };
 
-// --- Sampler Creation Macro ---
-// Creates a sampler2D for a texture with specified filtering and address modes
-#define AS_CREATE_SAMPLER(SAMPLER_NAME, TEXTURE, FILTER, ADDRESS) \
-    sampler2D SAMPLER_NAME \
-    { \
-        Texture = TEXTURE; \
-        MagFilter = FILTER; \
-        MinFilter = FILTER; \
-        MipFilter = FILTER; \
-        AddressU = ADDRESS; \
-        AddressV = ADDRESS; \
-    };
+#define AS_CREATE_SAMPLER(SAMPLER_NAME, TEXTURE_RESOURCE, FILTER_TYPE, ADDRESS_MODE) \
+    sampler2D SAMPLER_NAME { Texture = TEXTURE_RESOURCE; MagFilter = FILTER_TYPE; MinFilter = FILTER_TYPE; MipFilter = FILTER_TYPE; AddressU = ADDRESS_MODE; AddressV = ADDRESS_MODE; };
 
-// --- Combined Texture & Sampler Creation Macro ---
-// Creates both a texture2D resource and its associated sampler in a single macro call
-#define AS_CREATE_TEX_SAMPLER(TEXTURE_NAME, SAMPLER_NAME, SIZE, FORMAT, LEVELS, FILTER, ADDRESS) \
-    texture2D TEXTURE_NAME \
-    { \
-        Width = SIZE.x; \
-        Height = SIZE.y; \
-        Format = FORMAT; \
-        MipLevels = LEVELS; \
-    }; \
-    sampler2D SAMPLER_NAME \
-    { \
-        Texture = TEXTURE_NAME; \
-        MagFilter = FILTER; \
-        MinFilter = FILTER; \
-        MipFilter = FILTER; \
-        AddressU = ADDRESS; \
-        AddressV = ADDRESS; \
-    };
+#define AS_CREATE_TEX_SAMPLER(TEXTURE_NAME, SAMPLER_NAME, SIZE_XY, FORMAT_TYPE, MIP_LEVELS, FILTER_TYPE, ADDRESS_MODE) \
+    texture2D TEXTURE_NAME { Width = SIZE_XY.x; Height = SIZE_XY.y; Format = FORMAT_TYPE; MipLevels = MIP_LEVELS; }; \
+    sampler2D SAMPLER_NAME { Texture = TEXTURE_NAME; MagFilter = FILTER_TYPE; MinFilter = FILTER_TYPE; MipFilter = FILTER_TYPE; AddressU = ADDRESS_MODE; AddressV = ADDRESS_MODE; };
 
 #endif // __AS_Utils_1_fxh
-
-
