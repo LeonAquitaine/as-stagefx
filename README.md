@@ -40,7 +40,7 @@ AS-StageFX provides a collection of performant, customizable, and audio-reactive
 
 ## Available Shaders
 
-AS-StageFX includes **51 shaders** across four categories: **24 Background (BGX)**, **4 Graphic (GFX)**, **3 Lighting (LFX)**, and **20 Visual (VFX)** effects.
+AS-StageFX includes **52 shaders** across four categories: **25 Background (BGX)**, **4 Graphic (GFX)**, **3 Lighting (LFX)**, and **20 Visual (VFX)** effects.
 
 **Detailed descriptions and examples: [Shader Gallery](docs/gallery.md).**
 
@@ -76,6 +76,7 @@ Shaders are marked with an icon to give a general idea of their processing inten
 | **AS_BGX_PastRacer** ⚡ | Raymarched abstract procedural scene (2 selectable) with domain repetition, custom transformations, and audio-reactive geometry/flares. |
 | **AS_BGX_RaymarchedChain** 🔥 | Raymarched animated chain of interconnected torus shapes following a procedural path. Features dynamic rotation, customizable geometry, and sophisticated lighting with camera controls. |
 | **AS_BGX_PlasmaFlow** ✨ | Sophisticated, gentle, flexible plasma effect with procedural noise, domain warping, and customizable audio-reactive color gradients. |
+| **AS_BGX_QuadtreeTruchet** ⚡ | Multiscale recursive Truchet pattern with hierarchical tile overlaps, Art Deco line tiles, weave effects, and sophisticated palette system. Creates complex geometric designs through quadtree subdivision. |
 | **AS_BGX_ShineOn** ✨ | Dynamic, evolving fractal noise pattern with bright, sparkly, moving crystal highlights. Audio-reactive and depth-aware. |
 | **AS_BGX_StainedLights** ✨ | Dynamic, colorful patterns like stained glass with shifting light, blurred layers, and audio reactivity. |
 | **AS_BGX_TimeCrystal** ✨ | Hypnotic, crystalline fractal structure with dynamic animation, color cycling, and audio reactivity. |
@@ -88,6 +89,7 @@ Shaders are marked with an icon to give a general idea of their processing inten
 | Shader                 | Description                                                                                                |
 | ---------------------- | ---------------------------------------------------------------------------------------------------------- |
 | **AS_GFX_AspectRatio** ✨ | A versatile aspect ratio framing tool designed to help position subjects for social media posts, photography, and video composition. Features preset aspect ratios for common social media and photography formats (1:1, 16:9, 4:5, etc.), custom aspect ratio input, adjustable clipped area color and opacity, and other helper functions. Perfect for precise subject positioning and consistent framing across platforms. |
+| **AS_GFX_AudioDirection** ✨ | Renders a visual arc segment that points toward the direction of audio panning, helping users identify where sound is coming from during gameplay. Features real-time audio direction visualization using stereo panning data, audio-reactive arc length/thickness/intensity, and customizable colors. Perfect for gameplay assistance and spatial audio awareness. |
 | **AS_GFX_HandDrawing** 💀 | Transforms the scene into a stylized hand-drawn sketch with distinct linework. Features sophisticated line generation with customizable stroke directions and length and textured fills based on original image colors with noise-based variation. Perfect for artistic transformations, comic/manga styles, or technical illustrations. |
 | **AS_GFX_MultiLayerHalftone** ✨| Highly customizable multi-layer halftone (up to 4 layers) with various patterns, isolation methods, and blending options. |
 | **AS_GFX_VignettePlus** ✨ | Advanced vignette effect with customizable shape, color, animation, blur, and audio reactivity. |
@@ -128,7 +130,7 @@ Shaders are marked with an icon to give a general idea of their processing inten
 
 ## Core Capabilities
 
--   **Audio Integration:** Most effects utilize [Listeningway](https://github.com/gposingway/Listeningway) for dynamic parameter reaction to volume, beat, bass, treble, or specific frequency bands.
+-   **Audio Integration:** Most effects utilize [Listeningway](https://github.com/gposingway/Listeningway) for dynamic parameter reaction to volume, beat, bass, treble, or specific frequency bands. New stereo features include left/right channel volume and audio panning for spatial effects.
 -   **Depth Awareness:** Many shaders interact with scene geometry (via depth buffer) for integration, masking, and occlusion.
 -   **Customization:** Extensive controls for color, intensity, speed, position, blend modes, and audio source per effect.
 
