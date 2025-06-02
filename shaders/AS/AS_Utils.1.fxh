@@ -329,6 +329,9 @@ float2 AS_rotate2D(float2 p, float a)
     );
 }
 
+float2 AS_applyRotation(float2 coord, float rotation)
+{ return AS_rotate2D(coord, rotation);}
+
 // --- Math Helpers ---
 // NOTE: AS_mod must be defined before any function that uses it (such as AS_mapAngleToBand)
 // to avoid undeclared identifier errors during shader compilation.
