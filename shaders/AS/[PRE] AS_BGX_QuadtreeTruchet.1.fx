@@ -56,13 +56,32 @@ static const float PATTERN_SCALE_MIN = 0.5, PATTERN_SCALE_MAX = 20.0, PATTERN_SC
 static const float TILE_STROKE_THICKNESS_MIN = 0.05, TILE_STROKE_THICKNESS_MAX = 0.5, TILE_STROKE_THICKNESS_DEFAULT = 1.0/3.0;
 static const float GRID_LINE_WIDTH_MIN = 0.001, GRID_LINE_WIDTH_MAX = 0.05, GRID_LINE_WIDTH_DEFAULT = 0.01;
 
+// Pattern Distribution
+static const float LARGE_TILE_PROBABILITY_MIN = 0.1, LARGE_TILE_PROBABILITY_MAX = 0.9, LARGE_TILE_PROBABILITY_DEFAULT = 0.35;
+static const float MEDIUM_TILE_PROBABILITY_MIN = 0.3, MEDIUM_TILE_PROBABILITY_MAX = 0.9, MEDIUM_TILE_PROBABILITY_DEFAULT = 0.7;
+static const float PATTERN_SEED_MIN = 1.0, PATTERN_SEED_MAX = 100.0, PATTERN_SEED_DEFAULT = 57.0;
+
 uniform float PatternScale < ui_type = "slider"; ui_label = "Pattern Scale"; ui_tooltip = "Initial zoom level of the pattern."; ui_min = PATTERN_SCALE_MIN; ui_max = PATTERN_SCALE_MAX; ui_category = "Pattern Settings"; > = PATTERN_SCALE_DEFAULT;
 uniform float TileStrokeThickness < ui_type = "slider"; ui_label = "Tile Stroke Thickness"; ui_tooltip = "Thickness of the Truchet tile strokes, relative to tile radius."; ui_min = TILE_STROKE_THICKNESS_MIN; ui_max = TILE_STROKE_THICKNESS_MAX; ui_category = "Pattern Settings"; > = TILE_STROKE_THICKNESS_DEFAULT;
 uniform bool EnableLineTiles < ui_label = "Enable Line Tiles (Art Deco)"; ui_tooltip = "Replaces some arcs with straight lines, creating an art-deco look. Also enables a mild weave effect."; ui_category = "Pattern Settings"; > = false;
 
+// Pattern Distribution
+uniform float LargeTileProbability < ui_type = "slider"; ui_label = "Large Tile Density"; ui_tooltip = "Controls how many large tiles appear in the pattern. Lower values = fewer tiles."; ui_min = LARGE_TILE_PROBABILITY_MIN; ui_max = LARGE_TILE_PROBABILITY_MAX; ui_category = "Pattern Distribution"; > = LARGE_TILE_PROBABILITY_DEFAULT;
+uniform float MediumTileProbability < ui_type = "slider"; ui_label = "Medium Tile Density"; ui_tooltip = "Controls how many medium tiles appear in the pattern. Lower values = fewer tiles."; ui_min = MEDIUM_TILE_PROBABILITY_MIN; ui_max = MEDIUM_TILE_PROBABILITY_MAX; ui_category = "Pattern Distribution"; > = MEDIUM_TILE_PROBABILITY_DEFAULT;
+uniform float PatternSeed < ui_type = "slider"; ui_label = "Pattern Seed"; ui_tooltip = "Changes the random pattern without affecting other parameters. Different values create different arrangements."; ui_min = PATTERN_SEED_MIN; ui_max = PATTERN_SEED_MAX; ui_category = "Pattern Distribution"; > = PATTERN_SEED_DEFAULT;
+
 // Style & Color
 uniform int ColorMode < ui_type = "combo"; ui_label = "Color Mode"; ui_items = "White\0Spectrum\0Pink\0"; ui_tooltip = "Selects the color scheme for the pattern."; ui_category = "Palette & Style"; > = 1;
 uniform bool EnableStackedTiles < ui_label = "Enable Stacked Tiles View"; ui_tooltip = "Shows tile layers stacked, revealing the generation process. Disables continuous surface look."; ui_category = "Palette & Style"; > = false;
+
+// Visual Effects
+static const float STRIPE_FREQUENCY_MIN = 5.0, STRIPE_FREQUENCY_MAX = 40.0, STRIPE_FREQUENCY_DEFAULT = 20.0;
+static const float HIGHLIGHT_FREQUENCY_MIN = 5.0, HIGHLIGHT_FREQUENCY_MAX = 30.0, HIGHLIGHT_FREQUENCY_DEFAULT = 16.0;
+static const float LINE_PATTERN_FREQUENCY_MIN = 10.0, LINE_PATTERN_FREQUENCY_MAX = 50.0, LINE_PATTERN_FREQUENCY_DEFAULT = 24.0;
+
+uniform float StripeFrequency < ui_type = "slider"; ui_label = "Stripe Density"; ui_tooltip = "Controls the frequency of stripes in spectrum mode. Higher values = more stripes."; ui_min = STRIPE_FREQUENCY_MIN; ui_max = STRIPE_FREQUENCY_MAX; ui_category = "Visual Effects"; > = STRIPE_FREQUENCY_DEFAULT;
+uniform float HighlightFrequency < ui_type = "slider"; ui_label = "Highlight Density"; ui_tooltip = "Controls the frequency of highlights in spectrum mode. Higher values = more highlights."; ui_min = HIGHLIGHT_FREQUENCY_MIN; ui_max = HIGHLIGHT_FREQUENCY_MAX; ui_category = "Visual Effects"; > = HIGHLIGHT_FREQUENCY_DEFAULT;
+uniform float LinePatternFrequency < ui_type = "slider"; ui_label = "Line Pattern Frequency"; ui_tooltip = "Controls the frequency of the decorative line pattern overlay."; ui_min = LINE_PATTERN_FREQUENCY_MIN; ui_max = LINE_PATTERN_FREQUENCY_MAX; ui_category = "Visual Effects"; > = LINE_PATTERN_FREQUENCY_DEFAULT;
 
 // Animation Controls
 AS_ANIMATION_UI(AnimationSpeed, AnimationKeyframe, "Animation")
@@ -73,6 +92,19 @@ static const float PAN_SPEED_MIN = -2.0, PAN_SPEED_MAX = 2.0, PAN_SPEED_DEFAULT 
 uniform float AnimationTimeScale < ui_type = "slider"; ui_label = "Animation Time Scale Factor"; ui_tooltip = "Scales the internal time used for animations (e.g., rotation cycle speed)."; ui_min = ANIM_TIME_SCALE_MIN; ui_max = ANIM_TIME_SCALE_MAX; ui_category = "Animation"; > = ANIM_TIME_SCALE_DEFAULT;
 uniform float OverallRotationSpeed < ui_type = "slider"; ui_label = "Overall Rotation Speed"; ui_tooltip = "Speed of the main pattern rotation."; ui_min = ROTATION_SPEED_MIN; ui_max = ROTATION_SPEED_MAX; ui_category = "Animation"; > = ROTATION_SPEED_DEFAULT;
 uniform float PanSpeedY < ui_type = "slider"; ui_label = "Vertical Pan Speed"; ui_tooltip = "Speed of the vertical panning animation."; ui_min = PAN_SPEED_MIN; ui_max = PAN_SPEED_MAX; ui_category = "Animation"; > = PAN_SPEED_DEFAULT;
+
+// Atmosphere
+static const float SPOTLIGHT_INTENSITY_MIN = 0.5, SPOTLIGHT_INTENSITY_MAX = 2.0, SPOTLIGHT_INTENSITY_DEFAULT = 1.15;
+static const float SPOTLIGHT_RADIUS_MIN = 0.1, SPOTLIGHT_RADIUS_MAX = 1.0, SPOTLIGHT_RADIUS_DEFAULT = 0.5;
+
+uniform float SpotlightIntensity < ui_type = "slider"; ui_label = "Spotlight Intensity"; ui_tooltip = "Controls the intensity of the central spotlight effect."; ui_min = SPOTLIGHT_INTENSITY_MIN; ui_max = SPOTLIGHT_INTENSITY_MAX; ui_category = "Atmosphere"; > = SPOTLIGHT_INTENSITY_DEFAULT;
+
+uniform float SpotlightRadius < ui_type = "slider"; ui_label = "Spotlight Radius"; ui_tooltip = "Controls how far the spotlight effect extends from the center."; ui_min = SPOTLIGHT_RADIUS_MIN; ui_max = SPOTLIGHT_RADIUS_MAX; ui_category = "Atmosphere"; > = SPOTLIGHT_RADIUS_DEFAULT;
+
+// Art Deco Style
+static const float WEAVE_THICKNESS_MIN = 0.001, WEAVE_THICKNESS_MAX = 0.05, WEAVE_THICKNESS_DEFAULT = 0.01;
+
+uniform float WeaveThickness < ui_type = "slider"; ui_label = "Weave Effect Thickness"; ui_tooltip = "Controls the thickness of the weave effect when Line Tiles are enabled."; ui_min = WEAVE_THICKNESS_MIN; ui_max = WEAVE_THICKNESS_MAX; ui_category = "Art Deco Style"; ui_category_closed = true; > = WEAVE_THICKNESS_DEFAULT;
 
 // Final Mix
 AS_BLENDMODE_UI_DEFAULT(BlendMode, 0)
@@ -88,7 +120,7 @@ uniform float GridLineWidth < ui_type = "slider"; ui_label = "Debug Grid Line Wi
 // ============================================================================
 
 // Standard 2D rotation matrix.
-float2x2 r2(in float a) {
+float2x2 r2(float a) {
     float c = cos(a);
     float s = sin(a);
     return float2x2(c, s, -s, c);
@@ -115,11 +147,22 @@ float4 PS_ASBGXQuadtreeTruchet(float4 vpos : SV_Position, float2 texcoord : TEXC
     // layers and an an unused spare. The grid vector holds grid values.
     float4 d = float4(100000.0, 100000.0, 100000.0, 100000.0);
     float4 d2 = float4(100000.0, 100000.0, 100000.0, 100000.0);
-    float4 grid = float4(100000.0, 100000.0, 100000.0, 100000.0);
-
+    float4 grid = float4(100000.0, 100000.0, 100000.0, 100000.0);    
+    
     // Random constants for each layer. The X values are Truchet flipping threshold
     // values, and the Y values represent the chance that a particular sized tile will render.
-    static const float2 rndTh[3] = { float2(0.5, 0.35), float2(0.5, 0.7), float2(0.5, 1.0) };
+    float2 rndTh[3] = { 
+        float2(0.5, LargeTileProbability), 
+        float2(0.5, MediumTileProbability), 
+        float2(0.5, 1.0) 
+    };
+    
+    // Calculate derived randomization seeds from the pattern seed
+    float baseSeed = PatternSeed;
+    float flipSeed1 = baseSeed + 0.543;
+    float flipSeed2 = baseSeed * 2.76 + 0.49;
+    float lineSeed1 = baseSeed * 2.0 + 0.51;
+    float lineSeed2 = baseSeed * 2.13 + 0.49;
 
     // The scale dimensions. Gets multiplied by two each iteration.
     float dim = 1.0;
@@ -130,7 +173,8 @@ float4 PS_ASBGXQuadtreeTruchet(float4 vpos : SV_Position, float2 texcoord : TEXC
         // Base cell ID.
         float2 ip = floor(oP * dim);
 
-        for (int j = -1; j <= 1; j++) {            for (int i = -1; i <= 1; i++) {
+        for (int j = -1; j <= 1; j++) {
+            for (int i = -1; i <= 1; i++) {
                 // The neighboring cell ID.
                 float2 current_cell_id = ip + float2(i, j);
                 float2 rndIJ = AS_Hash22VariantB(current_cell_id); // Using Shadertoy-compatible hash
@@ -151,11 +195,9 @@ float4 PS_ASBGXQuadtreeTruchet(float4 vpos : SV_Position, float2 texcoord : TEXC
 
                     // The grid lines (for debug).
                     float gr = abs(square) - (GridLineWidth / 2.0) / dim; // Scale grid line width with dim
-                    grid.x = min(grid.x, gr);
-
-                    // TILE COLOR ONE.
+                    grid.x = min(grid.x, gr);                    // TILE COLOR ONE.
                     if (rndIJ.x < rndTh[k].x) p.xy = p.yx;
-                    if (frac(rndIJ.x * 57.543 + 0.37) < rndTh[k].x) p.x = -p.x;
+                    if (frac(rndIJ.x * flipSeed1 + 0.37) < rndTh[k].x) p.x = -p.x;
 
                     float2 p2 = abs(float2(p.y - p.x, p.x + p.y) * 0.70710678118) - float2(0.5, 0.5) * 0.70710678118 / dim;
                     float c3 = length(p2) - stroke_half_thickness_factor / dim; // (0.5/3.0) from original means thickness is 1/3 of radius (0.5)
@@ -164,28 +206,28 @@ float4 PS_ASBGXQuadtreeTruchet(float4 vpos : SV_Position, float2 texcoord : TEXC
 
                     // Truchet arc one.
                     c = abs(length(p - float2(-0.5, 0.5) / dim) - 0.5 / dim) - stroke_half_thickness_factor / dim;
-
+                    
                     // Truchet arc two or alternative.
-                    if (frac(rndIJ.x * 157.763 + 0.49) > 0.35) {
+                    if (frac(rndIJ.x * flipSeed2 + 0.49) > 0.35) {
                         c_alt = abs(length(p - float2(0.5, -0.5) / dim) - 0.5 / dim) - stroke_half_thickness_factor / dim;
                     } else {
                         c_alt = length(p - float2(0.5, 0.0) / dim) - stroke_half_thickness_factor / dim;
                         c_alt = min(c_alt, length(p - float2(0.0, -0.5) / dim) - stroke_half_thickness_factor / dim);
                     }
-
+                    
                     if (EnableLineTiles) {
-                        if (frac(rndIJ.x * 113.467 + 0.51) < 0.35) {
+                        if (frac(rndIJ.x * lineSeed1 + 0.51) < 0.35) {
                             c = abs(p.x) - stroke_half_thickness_factor / dim;
                         }
-                        if (frac(rndIJ.x * 123.853 + 0.49) < 0.35) {
+                        if (frac(rndIJ.x * lineSeed2 + 0.49) < 0.35) {
                             c_alt = abs(p.y) - stroke_half_thickness_factor / dim;
                         }
                     }
 
                     float truchet = min(c, c_alt);
-
+                    
                     if (EnableLineTiles) { // Weave effect
-                        float lne = abs(c - (0.5 / 12.0 / 4.0) / dim) - (0.5 / 12.0 / 4.0) / dim; // Original constants for weave detail
+                        float lne = abs(c - WeaveThickness / dim) - WeaveThickness / dim; // Using WeaveThickness parameter
                         truchet = max(truchet, -lne);
                     }
                     
@@ -234,9 +276,8 @@ float4 PS_ASBGXQuadtreeTruchet(float4 vpos : SV_Position, float2 texcoord : TEXC
             pCol2 = float3(0.125, 0.125, 0.125);
             break;
     }
-    
-    // Simple line pattern for non-spectrum modes if not stacked
-    float pat3_lines = clamp(sin((oP.x - oP.y) * AS_TWO_PI * ReShade::ScreenSize.y / 24.0) * 1.0 + 0.9, 0.0, 1.0) * 0.25 + 0.75;
+      // Simple line pattern for non-spectrum modes if not stacked
+    float pat3_lines = clamp(sin((oP.x - oP.y) * AS_TWO_PI * ReShade::ScreenSize.y / LinePatternFrequency) * 1.0 + 0.9, 0.0, 1.0) * 0.25 + 0.75;
 
 
     if (EnableStackedTiles) {
@@ -256,16 +297,16 @@ float4 PS_ASBGXQuadtreeTruchet(float4 vpos : SV_Position, float2 texcoord : TEXC
             // Swap colors for next layer
             float3 temp = pCol1; pCol1 = pCol2; pCol2 = temp;
         }
-        col *= pat3_lines;
-
-    } else { // Continuous surface
+                col *= pat3_lines;
+    } 
+    else { // Continuous surface
         float d_combined = d.x; // Use d.x as the primary working distance
         d_combined = max(d2.x, -d.x); // Start with first level combination
         d_combined = min(max(d_combined, -d2.y), d.y); // Combine with second level
         d_combined = max(min(d_combined, d2.z), -d.z); // Combine with third level
-
+        
         if (ColorMode == 1) { // Spectrum specific coloring
-            float pat_spectrum_stripes = clamp(-sin(d_combined * AS_TWO_PI * 20.0) - 0.0, 0.0, 1.0);
+            float pat_spectrum_stripes = clamp(-sin(d_combined * AS_TWO_PI * StripeFrequency) - 0.0, 0.0, 1.0);
             col *= pat_spectrum_stripes;
 
             d_combined = -(d_combined + 0.03); // Invert and offset for rendering
@@ -274,13 +315,13 @@ float4 PS_ASBGXQuadtreeTruchet(float4 vpos : SV_Position, float2 texcoord : TEXC
             col = lerp(col, float3(0,0,0), 1.0 - smoothstep(0.0, fo, d_combined));
             col = lerp(col, float3(0.8, 1.2, 0.6), 1.0 - smoothstep(0.0, fo * 2.0, d_combined + 0.02));
             col = lerp(col, float3(0,0,0), 1.0 - smoothstep(0.0, fo * 2.0, d_combined + 0.03));
-            float pat2_highlight_spectrum = clamp(sin(d_combined * AS_TWO_PI * 16.0) * 1.0 + 0.9, 0.0, 1.0) * 0.3 + 0.7;
+            float pat2_highlight_spectrum = clamp(sin(d_combined * AS_TWO_PI * HighlightFrequency) * 1.0 + 0.9, 0.0, 1.0) * 0.3 + 0.7;
             col = lerp(col, pCol1 * pat2_highlight_spectrum, 1.0 - smoothstep(0.0, fo * 2.0, d_combined + 0.05));
             
             float sh_spectrum = clamp(0.75 + d_combined * 2.0, 0.0, 1.0); // Shading for spectrum
             col *= sh_spectrum;
-
-        } else { // White or Pink coloring
+        } 
+        else { // White or Pink coloring
             col = pCol1; // Base color
 
             col = lerp(col, float3(0,0,0), (1.0 - smoothstep(0.0, fo * 5.0, d_combined)) * 0.35);
@@ -290,9 +331,9 @@ float4 PS_ASBGXQuadtreeTruchet(float4 vpos : SV_Position, float2 texcoord : TEXC
             col *= pat3_lines;
         }
     }
-
+    
     // Mild spotlight.
-    col *= max(1.15 - length(uv_screen_centered) * 0.5, 0.0);
+    col *= max(SpotlightIntensity - length(uv_screen_centered) * SpotlightRadius, 0.0);
 
     // Debug Grid Visualization
     if (ShowGrid) {
@@ -335,9 +376,8 @@ float4 PS_ASBGXQuadtreeTruchet(float4 vpos : SV_Position, float2 texcoord : TEXC
 // TECHNIQUE DEFINITION
 // ============================================================================
 technique AS_BGX_QuadtreeTruchet <
-    ui_tooltip = "Renders a multiscale, multitile, overlapped, weaved Truchet pattern.\n"
-                 "Based on 'Quadtree Truchet' by Shane on Shadertoy.\n"
-                 "Features recursive pattern generation, optional art-deco styling, and animation.";
+    ui_label = "AS Background: Quadtree Truchet";
+    ui_tooltip = "Renders a multiscale, multitile, overlapped, weaved Truchet pattern.";
 > {
     pass {
         VertexShader = PostProcessVS;
