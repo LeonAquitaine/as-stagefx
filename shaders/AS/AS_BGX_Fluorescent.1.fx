@@ -137,7 +137,7 @@ AS_POSITION_SCALE_UI(Position, Scale)
 AS_ROTATION_UI(EffectSnapRotation, EffectFineRotation)
 
 // --- Category: Final Mix ---
-AS_BLENDMODE_UI_DEFAULT(BlendMode, 5) // Default to Lighten mode
+AS_BLENDMODE_UI_DEFAULT(BlendMode, 0)
 AS_BLENDAMOUNT_UI(BlendAmount)
 
 // ============================================================================
