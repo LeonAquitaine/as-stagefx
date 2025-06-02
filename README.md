@@ -64,6 +64,7 @@ Shaders are marked with an icon to give a general idea of their processing inten
 | **AS_BGX_CorridorTravel** 🔥 | Simulates an artistic flight through an abstract, glowing, patterned tunnel with pseudo-DOF, motion blur, and light bounce simulation. |
 | **AS_BGX_CosmicKaleidoscope** ⚡ | Renders a raymarched volumetric fractal (Mandelbox/Mandelbulb-like) with kaleidoscopic mirroring, audio reactivity, and palette-based coloring. |
 | **AS_BGX_DigitalBrain** ✨ | Abstract visualization of a digital brain neural network with animated Voronoi patterns, neural-like connections, and electrical pulses. |
+| **AS_BGX_Fluorescent** ⚡ | Creates a vibrant neon fluorescent background effect with raymarched volumetric patterns. Perfect for retro, cyberpunk, or futuristic atmospheres. |
 | **AS_BGX_GoldenClockwork** ✨ | Intricate, animated golden clockwork or Apollonian fractal patterns with complex geometric designs and dynamic movement. |
 | **AS_BGX_Kaleidoscope** ✨ | Creates a vibrant, ever-evolving fractal kaleidoscope pattern with animated tendrils. Perfect for psychedelic, cosmic, or abstract backgrounds with a hypnotic quality. |
 | **AS_BGX_LightRipples** ✨ | Mesmerizing, rippling kaleidoscopic light patterns with customizable distortion, animation, color palettes, and audio reactivity. |
