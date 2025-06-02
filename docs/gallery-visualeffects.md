@@ -1,6 +1,6 @@
 # AS-StageFX Shader Gallery - Visual Effects Package
 
-This gallery provides detailed descriptions and visual examples of the **22 effects** (3 Lighting + 19 Visual) included in the **AS_StageFX_VisualEffects** package. These effects range from lighting simulation and audio visualization to particle systems and post-processing tools.
+This gallery provides detailed descriptions and visual examples of the **23 effects** (3 Lighting + 20 Visual) included in the **AS_StageFX_VisualEffects** package. These effects range from lighting simulation and audio visualization to particle systems and post-processing tools.
 
 For installation instructions and general information, please refer to the [main README](../README.md).
 
@@ -118,6 +118,15 @@ Inspired by: <a href="https://www.shadertoy.com/view/ltffzl" target="_new">"Hear
 </tr>
 <tr>
 <td width="50%">
+<h4>VFX: Radial Lens Distortion ✨</h4>
+<h5><code>[AS] VFX: Radial Lens Distortion|AS_VFX_RadialLensDistortion.1.fx</code></h5>
+Emulates various lens distortions including tangential (rotational) blur, chromatic aberration (tangential or horizontal), and geometric barrel/pincushion distortion. Effects are strongest at the edges and diminish towards a configurable center point. Features internal presets for common lens emulations (vintage soft focus, chromatic edge, dreamy haze, anamorphic cine, Helios vintage, wide-angle), independent blur and chromatic aberration controls, global strength multiplier, effect focus exponent for falloff control, variable sample count for quality/performance tuning, aspect ratio correction for circular patterns, and consistent alpha handling for effect visibility.
+</td>
+<td width="50%"><div style="text-align:center">
+</div></td>
+</tr>
+<tr>
+<td width="50%">
 <h4>VFX: Radiant Fire ✨</h4>
 <h5><code>[AS] VFX: Radiant Fire|AS_VFX_RadiantFire.1.fx</code></h5>
 A fire simulation that generates flames radiating from subject edges. Rotation affects the direction of internal physics forces.<br/><br/>
@@ -175,6 +184,16 @@ This shader creates a customizable mirrored or wavy warp effect that pulses and 
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://github.com/user-attachments/assets/c707583a-99a1-4463-a02f-cdefd2db3e6a" alt="Warp Distort Effect" style="max-width:100%;">
+</div></td>
+</tr>
+<tr>
+<td width="50%">
+<h4>VFX: Volumetric Light ✨</h4>
+<h5><code>[AS] VFX: Volumetric Light|AS_VFX_VolumetricLight.1.fx</code></h5>
+Simulates 2D volumetric light shafts (god rays) with depth-based occlusion and customizable colors. Features interactive light source positioning, user-selectable colors via palette system or custom colors, adjustable light brightness and ray properties, audio reactivity for dynamic lighting effects, depth-based occlusion where objects in front of the light source block rays, optional direct lighting on scene elements, and resolution-independent rendering. Perfect for creating atmospheric lighting effects in any scene.
+</td>
+<td width="50%"><div style="text-align:center">
+<img src="https://github.com/user-attachments/assets/placeholder-volumetric-light" alt="Volumetric Light Effect" style="max-width:100%;">
 </div></td>
 </tr>
 <tr>

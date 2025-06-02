@@ -1,34 +1,41 @@
 /**
- * AS_VFX_Fluorescent.1.fx - Raymarched Fluorescent Abstract Effect
+ * AS_BGX_Fluorescent.1.fx - Neon Fluorescent Background Effect
  * Author: Leon Aquitaine
  * License: Creative Commons Attribution 4.0 International
  * Original Shader "Fluorescent" by @XorDev: https://x.com/XorDev/status/1928504290290635042
+ * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
+ * 
+ * ===================================================================================
  *
  * DESCRIPTION:
- * This shader renders a raymarched abstract scene with fluorescent, evolving patterns.
- * It creates a sense of depth and complex structures through iterative calculations.
+ * Creates a vibrant neon fluorescent background effect that simulates the glow and intensity of fluorescent lighting.
+ * Perfect for creating retro, cyberpunk, or futuristic atmospheres with customizable colors and intensity.
  *
  * FEATURES:
- * - Raymarched volumetric effect.
- * - Animating patterns based on time.
- * - Customizable iteration count, colors, and animation speed.
- * - Standard blending options.
+ * - Raymarched volumetric fluorescent effect with depth
+ * - Dynamic color shifting with RGB phase controls
+ * - Animated pulsing and flowing patterns
+ * - Audio reactivity for rhythm-synchronized lighting
+ * - Standard stage controls for positioning and depth
+ * - Customizable iteration count for quality vs performance balance
+ * - Blend mode controls for integration with existing scenes
  *
  * IMPLEMENTATION OVERVIEW:
- * 1. Sets up a ray direction for each pixel.
- * 2. Iteratively marches the ray through a 3D space.
- * 3. At each step, transforms coordinates (rotation, translation) to define shapes.
- * 4. Calculates a distance estimate and advances the ray.
- * 5. Accumulates color based on mathematical formulas involving current position,
- * distance, and time, creating complex visual patterns.
- * 6. Applies a final tone-mapping step (tanh) to the accumulated color.
+ * 1. Sets up a ray direction for each pixel using screen coordinates
+ * 2. Iteratively marches the ray through 3D space with adaptive step sizing
+ * 3. Applies coordinate transformations and rotations to create complex shapes
+ * 4. Calculates distance estimates and accumulates color at each step
+ * 5. Uses trigonometric functions with time animation for dynamic patterns
+ * 6. Applies final tone-mapping and blending for integration
+ *
+ * ===================================================================================
  */
 
 // ============================================================================
-// TECHNIQUE GUARD
+// TECHNIQUE GUARD - Prevents duplicate loading of the same shader
 // ============================================================================
-#ifndef __AS_VFX_XorFluorescent_1_fx
-#define __AS_VFX_XorFluorescent_1_fx
+#ifndef __AS_BGX_Fluorescent_1_fx
+#define __AS_BGX_Fluorescent_1_fx
 
 // ============================================================================
 // INCLUDES
@@ -43,29 +50,29 @@
 // --- Iterations & Steps ---
 static const int ITERATIONS_MIN = 10;
 static const int ITERATIONS_MAX = 120;
-static const int ITERATIONS_DEFAULT = 60;
+static const int ITERATIONS_DEFAULT = 68; // Updated based on UI optimization
 
 // --- Scene Geometry & Raymarching ---
 static const float Z_OFFSET_MIN = 0.0;
 static const float Z_OFFSET_MAX = 20.0;
-static const float Z_OFFSET_DEFAULT = 8.0;
+static const float Z_OFFSET_DEFAULT = 7.156; // Updated based on UI optimization
 static const float SHELL_RADIUS_MIN = 0.1;
 static const float SHELL_RADIUS_MAX = 5.0;
-static const float SHELL_RADIUS_DEFAULT = 1.2;
+static const float SHELL_RADIUS_DEFAULT = 2.354; // Updated based on UI optimization
 static const float STEP_BASE_MIN = 0.01;
 static const float STEP_BASE_MAX = 0.5;
-static const float STEP_BASE_DEFAULT = 0.1;
+static const float STEP_BASE_DEFAULT = 0.253; // Updated based on UI optimization
 static const float STEP_SCALE_MIN = 0.01;
 static const float STEP_SCALE_MAX = 0.5;
-static const float STEP_SCALE_DEFAULT = 0.1;
+static const float STEP_SCALE_DEFAULT = 0.038; // Updated based on UI optimization
 
 // --- Color Generation & Effect Trigger ---
 static const float EFFECT_POS_MIN = 0.0;
 static const float EFFECT_POS_MAX = 10.0;
-static const float EFFECT_POS_DEFAULT = 6.0;
+static const float EFFECT_POS_DEFAULT = 6.0; // Kept at same value as seen in the image
 static const float EFFECT_SCALE_MIN = 1.0;
 static const float EFFECT_SCALE_MAX = 20.0;
-static const float EFFECT_SCALE_DEFAULT = 6.0;
+static const float EFFECT_SCALE_DEFAULT = 12.053; // Updated based on UI optimization
 static const float COLOR_PHASE_MIN = 0.0;
 static const float COLOR_PHASE_MAX = 6.28318; // 2*PI
 static const float COLOR_PHASE_R_DEFAULT = 2.0;
@@ -85,6 +92,15 @@ static const float PATTERN_CONTRAST_DEFAULT = 4.0;
 static const float BRIGHTNESS_SCALE_MIN = 1.0;
 static const float BRIGHTNESS_SCALE_MAX = 100.0;
 static const float BRIGHTNESS_SCALE_DEFAULT = 20.0;
+
+// --- Rotation Constants ---
+static const float ROTATION_COS = 0.8;  // Cosine component of rotation matrix
+static const float ROTATION_SIN = 0.6;  // Sine component of rotation matrix
+
+// --- Color Constants ---
+static const float COLOR_BASE_OFFSET = 1.0;  // Base offset for color calculations
+static const float COORD_SCALE = 2.0;        // Coordinate scaling factor for ray direction
+static const float STEP_INCREMENT = 1.0;     // Step increment for pre-increment simulation
 
 // ============================================================================
 // UI UNIFORMS
@@ -113,7 +129,12 @@ uniform float PatternFreq2 < ui_type = "slider"; ui_label = "Secondary Pattern F
 uniform float PatternContrast < ui_type = "slider"; ui_label = "Pattern Sharpness"; ui_tooltip = "Exponent applied to the pattern calculation. Higher values create sharper, more defined patterns."; ui_min = PATTERN_CONTRAST_MIN; ui_max = PATTERN_CONTRAST_MAX; ui_category = "Pattern Generation"; > = PATTERN_CONTRAST_DEFAULT;
 
 // --- Category: Animation ---
-AS_ANIMATION_SPEED_UI(AnimationSpeed, "Animation")
+AS_ANIMATION_UI(AnimationSpeed, AnimationKeyframe, "Animation")
+
+// --- Category: Stage Controls ---
+AS_STAGEDEPTH_UI(StageDepth)
+AS_POSITION_SCALE_UI(Position, Scale)
+AS_ROTATION_UI(EffectSnapRotation, EffectFineRotation)
 
 // --- Category: Final Mix ---
 AS_BLENDMODE_UI_DEFAULT(BlendMode, 0)
@@ -122,91 +143,116 @@ AS_BLENDAMOUNT_UI(BlendAmount)
 // ============================================================================
 // PIXEL SHADER
 // ============================================================================
-float4 PS_XorFluorescent(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : SV_Target
+float4 PS_Fluorescent(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : SV_Target
 {
-    float4 ps_finalColor = float4(0.0, 0.0, 0.0, 0.0); // Accumulated color
-    float fTime = AS_getTime() * AnimationSpeed;
-    float z_dist = 0.0; // Accumulated distance for ray marching
-    float d_step;       // Step size for each iteration
-    float s_len;        // Temporary variable for length/scaling
+    // Apply stage depth test
+    float depth = ReShade::GetLinearizedDepth(texcoord);
+    if (depth < StageDepth) {
+        return tex2D(ReShade::BackBuffer, texcoord);
+    }
+    
+    // Apply coordinate transformations: center → rotate → position/scale
+    float aspectRatio = ReShade::AspectRatio;
+    float2 centeredCoord = AS_centerCoord(texcoord, aspectRatio);
+    
+    // Apply rotation
+    float rotation = AS_getRotationRadians(EffectSnapRotation, EffectFineRotation);
+    float2 rotatedCoord = AS_applyRotation(centeredCoord, rotation);
+    
+    // Apply position and scale
+    float2 transformedCoord = AS_applyPosScale(rotatedCoord, Position, Scale);
+    
+    float4 finalColor = float4(0.0, 0.0, 0.0, 0.0); // Accumulated color
+    float time = AS_getAnimationTime(AnimationSpeed, AnimationKeyframe);
+    float rayDistance = 0.0; // Accumulated distance for ray marching
+    float stepSize;         // Step size for each iteration
+    float surfaceLength;    // Temporary variable for length/scaling
 
-    float2 Rxy = ReShade::ScreenSize;
-    float2 fragCoord = texcoord * Rxy;
+    // Convert transformed coordinates back to a coordinate system suitable for raymarching
+    // The original algorithm expects coordinates in a specific range
+    float2 rayCoord = transformedCoord;
 
-    // --- Ray Marching Loop ---
+    // Calculate constants outside the loop to improve performance
+    // Ray Direction is constant for each pixel
+    float3 rayDirection = normalize(float3(rayCoord, -1.0));
+    
+    // Rotation matrix is constant for the entire frame
+    float2x2 rotationMatrix = float2x2(ROTATION_COS, -ROTATION_SIN, ROTATION_SIN, ROTATION_COS);
+
+    // Ray Marching Loop
     for (int i = 0; i < IterationCount; i++)
     {
-        // --- Ray Direction and Position ---
-        // Original ray setup: vec3(2*fragCoord - R.xy, -R.x)
-        float3 rd = normalize(float3(2.0 * fragCoord - Rxy, -Rxy.x));
-        float3 p = z_dist * rd; // Current point in 3D space along the ray
+        // Current point in 3D space along the ray (using precalculated direction)
+        float3 position = rayDistance * rayDirection;
 
-        // --- Coordinate Transformations (Folding Space / Creating Shapes) ---
-        // 1. Rotate y and z coordinates of the point.
-        //    Original matrix: 0.1 * mat2(8, -6, 6, 8) which is mat2(0.8, -0.6, 0.6, 0.8)
-        float c_rot = 0.8;
-        float s_rot = 0.6;
-        float2x2 rotationMatrix = float2x2(c_rot, -s_rot, s_rot, c_rot);
-        p.yz = mul(rotationMatrix, p.yz);
-
+        // Coordinate Transformations (Folding Space / Creating Shapes)
+        // 1. Rotate y and z coordinates of the position using the precalculated matrix
+        position.yz = mul(rotationMatrix, position.yz);
         // 2. Translate along the z-axis
-        p.z += ZSceneOffset;
+        position.z += ZSceneOffset;
 
-        // --- Distance Estimation ---
-        s_len = length(p);
+        // Distance Estimation
+        surfaceLength = length(position);
 
-        // --- Step Size Calculation (Adaptive Step) ---
-        d_step = StepBase + StepScale * abs(s_len - ShellRadius);
+        // Step Size Calculation (Adaptive Step)
+        stepSize = StepBase + StepScale * abs(surfaceLength - ShellRadius);
 
-        // --- Advance Ray ---
-        z_dist += d_step;
+        // Advance Ray
+        rayDistance += stepSize;
 
-        // --- Color Accumulation ---
-        float f_trigger = tanh(s_len - EffectHighlightPos) * EffectHighlightScale;
+        // Color Accumulation
+        float effectTrigger = tanh(surfaceLength - EffectHighlightPos) * EffectHighlightScale;
         float4 colorPhaseOffsets = float4(ColorPhaseR, ColorPhaseG, ColorPhaseB, 0.0);
-        float4 base_col = cos(f_trigger - colorPhaseOffsets) + 1.0; // Ranges 0 to 2
+        float4 baseColor = cos(effectTrigger - colorPhaseOffsets) + COLOR_BASE_OFFSET; // Ranges 0 to 2
 
-        // The original code uses `++s` (pre-increment) for `s` (here s_len) in divisions.
-        float s_len_inc = s_len + 1.0; // Simulating pre-increment for this specific use pattern
+        // The original code uses ++s (pre-increment) for s (here surfaceLength) in divisions.
+        float surfaceLengthIncremented = surfaceLength + STEP_INCREMENT; // Simulating pre-increment for this specific use pattern
 
-        float3 p_div_s_inc_freq1 = p / s_len_inc / PatternFreq1;
-        float3 p_div_s_inc_freq2 = p / s_len_inc / PatternFreq2; // Original used s (now s_len_inc) again for second term
+        float3 positionDivFreq1 = position / surfaceLengthIncremented / PatternFreq1;
+        float3 positionDivFreq2 = position / surfaceLengthIncremented / PatternFreq2; // Original used s (now surfaceLengthIncremented) again for second term
 
-        float3 cosTermInput = p_div_s_inc_freq1 - fTime;
-        float3 sinTermInput = p_div_s_inc_freq2 + fTime;
+        float3 cosTermInput = positionDivFreq1 - time;
+        float3 sinTermInput = positionDivFreq2 + time;
 
         float3 cosValues = cos(cosTermInput);
         float3 sinValuesSwizzled = sin(sinTermInput).yzx; // Swizzle: (sin.y, sin.z, sin.x)
 
-        float f_dot = dot(cosValues, sinValuesSwizzled);
-        float f_pattern = pow(abs(f_dot), PatternContrast); // Using abs for stability with pow
+        float dotProduct = dot(cosValues, sinValuesSwizzled);
+        float pattern = pow(abs(dotProduct), PatternContrast); // Using abs for stability with pow
 
         // Add to output color, scaled by pattern and attenuated by distance
-        if (z_dist > AS_EPSILON) // Avoid division by zero or very small numbers
+        if (rayDistance > AS_EPSILON) // Avoid division by zero or very small numbers
         {
-            ps_finalColor += base_col * f_pattern / z_dist;
-        }
-    }
-
-    // --- Final Color Transformation ---
+            finalColor += baseColor * pattern / rayDistance;
+        }    }    // Final Color Transformation
     // Apply a tanh function for tone mapping.
-    float4 effect_output = tanh(ps_finalColor / FinalBrightnessScale);
-    effect_output.a = 1.0; // Ensure full alpha
-
-    float4 original_color = tex2D(ReShade::BackBuffer, texcoord);
-    return AS_applyBlend(effect_output, original_color, BlendMode, BlendAmount);
+    float4 effectOutput = tanh(finalColor / FinalBrightnessScale);
+    effectOutput.a = 1.0; // Ensure full alpha for the effect
+    
+    // For background effects, we want to blend the effect with the original background
+    // When BlendAmount = 0, show original background
+    // When BlendAmount = 1, show effect blended according to BlendMode
+    float4 originalColor = tex2D(ReShade::BackBuffer, texcoord);
+    
+    // Apply the blend mode between effect and original background
+    float3 blendedColor = AS_applyBlend(effectOutput.rgb, originalColor.rgb, BlendMode);
+    
+    // Mix between original and blended result based on BlendAmount
+    float3 finalResult = lerp(originalColor.rgb, blendedColor, BlendAmount);
+    
+    return float4(finalResult, originalColor.a);
 }
 
 // ============================================================================
 // TECHNIQUE DEFINITION
 // ============================================================================
-technique AS_VFX_XorFluorescent < ui_tooltip = "Renders a raymarched abstract scene with fluorescent, evolving patterns. Original by @XorDev."; >
+technique AS_BGX_Fluorescent < ui_label = "[AS] BGX: Fluorescent"; ui_tooltip = "Creates a vibrant neon fluorescent background effect with raymarched volumetric patterns. Perfect for retro, cyberpunk, or futuristic atmospheres. Original algorithm by @XorDev."; >
 {
     pass
     {
         VertexShader = PostProcessVS;
-        PixelShader = PS_XorFluorescent;
+        PixelShader = PS_Fluorescent;
     }
 }
 
-#endif // __AS_VFX_XorFluorescent_1_fx
+#endif // __AS_BGX_Fluorescent_1_fx

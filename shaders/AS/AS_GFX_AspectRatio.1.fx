@@ -894,7 +894,9 @@ float3 PS_AspectRatio(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV
 // TECHNIQUE
 // ============================================================================
 
-technique AS_GFX_AspectRatio < ui_label = "[AS] GFX: Aspect Ratio"; ui_tooltip = "Aspect ratio framing tool for precise subject positioning"; > {
+technique AS_GFX_AspectRatio <
+ui_label = "[AS] GFX: Aspect Ratio"; ui_tooltip = "Aspect ratio framing tool for precise subject positioning"; >
+{
     pass {
         VertexShader = PostProcessVS;
         PixelShader = PS_AspectRatio;

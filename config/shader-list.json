@@ -39,10 +39,90 @@
         "twitterReference": "https://x.com/cmzw_/status/1787147460772864188",
         "additionalCredit": "celestianmaze",
         "adaptedBy": "Leon Aquitaine"
-      },
-      "name": "AS_VFX_FocusedChaos.1",
+      },      "name": "AS_VFX_FocusedChaos.1",
       "performance": "Moderate",
       "filename": "[PRE] AS_VFX_FocusedChaos.1.fx",
+      "author": "Leon Aquitaine"
+    },
+    {
+      "credits": {
+        "license": "Creative Commons Attribution 4.0 International"
+      },
+      "name": "AS_BGX_Fluorescent.1",
+      "performance": "Light",
+      "filename": "[PRE] AS_BGX_Fluorescent.1.fx",
+      "author": "Leon Aquitaine"
+    },
+    {
+      "credits": {
+        "license": "Creative Commons Attribution 4.0 International"
+      },
+      "name": "AS_BGX_StudioBackdrop.1",
+      "performance": "Light",
+      "filename": "[PRE] AS_BGX_StudioBackdrop.1.fx",
+      "author": "Leon Aquitaine"
+    },
+    {
+      "credits": {
+        "license": "Creative Commons Attribution 4.0 International"
+      },
+      "name": "AS_BGX_Vortex.1",
+      "performance": "Moderate",
+      "filename": "[PRE] AS_BGX_Vortex.1.fx",
+      "author": "Leon Aquitaine"
+    },
+    {
+      "credits": {
+        "license": "Creative Commons Attribution 4.0 International"
+      },
+      "name": "AS_BGX_Wisps.1",
+      "performance": "Heavy",
+      "filename": "[PRE] AS_BGX_Wisps.1.fx",
+      "author": "Leon Aquitaine"
+    },
+    {
+      "credits": {
+        "license": "Creative Commons Attribution 4.0 International"
+      },
+      "name": "AS_GFX_ArtDecoFrame.1",
+      "performance": "Light",
+      "filename": "[PRE] AS_GFX_ArtDecoFrame.1.fx",
+      "author": "Leon Aquitaine"
+    },
+    {
+      "credits": {
+        "license": "Creative Commons Attribution 4.0 International"
+      },
+      "name": "AS_GFX_BrushStroke.1",
+      "performance": "Light",
+      "filename": "AS_GFX_BrushStroke.1.fx",
+      "author": "Leon Aquitaine"
+    },
+    {
+      "credits": {
+        "license": "Creative Commons Attribution 4.0 International"
+      },
+      "name": "AS_GFX_RippedPaper.1",
+      "performance": "Moderate",
+      "filename": "[PRE] AS_GFX_RippedPaper.1.fx",
+      "author": "Leon Aquitaine"
+    },
+    {
+      "credits": {
+        "license": "Creative Commons Attribution 4.0 International"
+      },      
+      "name": "AS_VFX_RadialLensDistortion.1",
+      "performance": "Light",
+      "filename": "AS_VFX_RadialLensDistortion.1.fx",
+      "author": "Leon Aquitaine"
+    },
+    {
+      "credits": {
+        "license": "Creative Commons Attribution 4.0 International"
+      },
+      "name": "AS_VFX_VolumetricLight.1",
+      "performance": "Moderate",
+      "filename": "AS_VFX_VolumetricLight.1.fx",
       "author": "Leon Aquitaine"
     },
     {
@@ -567,8 +647,7 @@
       "performance": "Light",
       "filename": "AS_VFX_VUMeter.1.fx",
       "author": "Leon Aquitaine"
-    },
-    {
+    },    {
       "credits": {
         "license": "Creative Commons Attribution 4.0 International"
       },
@@ -586,7 +665,21 @@
       "performance": "Light",
       "filename": "AS_VFX_WaterSurface.1.fx",
       "author": "Leon Aquitaine"
+    },
+    {
+      "credits": {
+        "originalName": "Fluorescent",
+        "link": "https://x.com/XorDev/status/1928504290290635042",
+        "author": "XorDev",
+        "platform": "Twitter/X",
+        "license": "Creative Commons Attribution 4.0 International",
+        "adaptedBy": "Leon Aquitaine"
+      },
+      "name": "AS_BGX_Fluorescent.1",
+      "performance": "Medium",
+      "filename": "AS_BGX_Fluorescent.1.fx",
+      "author": "Leon Aquitaine"
     }  ],
-  "count": 46,
-  "generated": "2025-05-31"
+  "count": 47,
+  "generated": "2025-06-02"
 }

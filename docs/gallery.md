@@ -1,6 +1,6 @@
 # AS-StageFX Shader Gallery - Essentials Package
 
-This gallery provides detailed descriptions and visual examples of the core shaders included in the **AS_StageFX_Essentials** package. The complete AS-StageFX collection includes **45 shaders** across four categories: **21 Background (BGX)**, **4 Graphic (GFX)**, **3 Lighting (LFX)**, and **17 Visual (VFX)** effects.
+This gallery provides detailed descriptions and visual examples of the core shaders included in the **AS_StageFX_Essentials** package. The complete AS-StageFX collection includes **52 shaders** across four categories: **25 Background (BGX)**, **4 Graphic (GFX)**, **3 Lighting (LFX)**, and **20 Visual (VFX)** effects.
 
 For installation instructions and general information, please refer to the [main README](../README.md).
 
@@ -104,6 +104,15 @@ Based on: <a href="https://www.shadertoy.com/view/XtVGD1" target="_new">"noteboo
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://github.com/user-attachments/assets/4074ac6b-a385-4e0f-9d9a-c4d5dd0117cd">
+</div></td>
+</tr>
+<tr>
+<td width="50%">
+<h4>GFX: Brush Stroke ✨</h4>
+<h5><code>[AS] GFX: Brush Stroke|AS_GFX_BrushStroke.1.fx</code></h5>
+Creates a stylized brush stroke band effect with highly textured, irregular edges. Features procedurally generated irregular edges using thresholded FBM noise, anisotropic noise scaling for directional ink texture appearance, dynamic thresholding system for stroke density variation from center to edge, optional drop shadow with configurable color and positioning, advanced texture shading with highlights and shadows, invert mode for negative space effects, audio reactivity for stroke height/ink contrast/shadow opacity, and full positioning/scaling/rotation controls with aspect ratio independence. Perfect for artistic overlays, title effects, or creative masking.
+</td>
+<td width="50%"><div style="text-align:center">
 </div></td>
 </tr>
 </table>

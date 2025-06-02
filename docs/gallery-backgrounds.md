@@ -1,6 +1,6 @@
 # AS-StageFX Shader Gallery - Backgrounds Package
 
-This gallery provides detailed descriptions and visual examples of the **24 background effects** included in the **AS_StageFX_Backgrounds** package. These dynamic, audio-reactive backgrounds range from cosmic and abstract patterns to flowing animations and crystalline structures.
+This gallery provides detailed descriptions and visual examples of the **25 background effects** included in the **AS_StageFX_Backgrounds** package. These dynamic, audio-reactive backgrounds range from cosmic and abstract patterns to flowing animations and crystalline structures.
 
 For installation instructions and general information, please refer to the [main README](../README.md).
 
@@ -97,6 +97,18 @@ Based on: <a href="https://www.shadertoy.com/view/4sl3Dr" target="_new">original
 <td width="50%"><div style="text-align:center">
 </div>
 <img src="https://github.com/user-attachments/assets/27c3f540-b8f5-4b85-a4a4-4a5076e67f39"/>
+</td>
+</tr>
+<tr>
+<td width="50%">
+<h4>BGX: Fluorescent ⚡</h4>
+<h5><code>[AS] BGX: Fluorescent|AS_BGX_Fluorescent.1.fx</code></h5>
+Creates a vibrant neon fluorescent background effect that simulates the glow and intensity of fluorescent lighting. Perfect for creating retro, cyberpunk, or futuristic atmospheres with customizable colors and intensity. Features raymarched volumetric fluorescent effect with depth, dynamic color shifting with RGB phase controls, animated pulsing and flowing patterns, audio reactivity for rhythm-synchronized lighting, standard stage controls for positioning and depth, customizable iteration count for quality vs performance balance, and blend mode controls for integration with existing scenes.<br><br>
+Based on: <a href="https://x.com/XorDev/status/1928504290290635042" target="_new">original shader by XorDev</a>.
+</td>
+<td width="50%"><div style="text-align:center">
+</div>
+<img src="https://github.com/user-attachments/assets/PLACEHOLDER-IMAGE-ID"/>
 </td>
 </tr>
 <tr>

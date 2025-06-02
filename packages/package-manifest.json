@@ -1,10 +1,10 @@
 ﻿{
-    "buildDate":  "2025-05-31T00:11:41Z",
-    "version":  "1.8.0",
+    "buildDate":  "2025-06-02T00:48:07Z",
+    "version":  "1.8.2",
     "packages":  [
                      {
-                         "version":  "1.8.0",
-                         "shaderCount":  18,
+                         "version":  "1.8.2",
+                         "shaderCount":  21,
                          "textureDependencyCount":  3,
                          "name":  "AS_StageFX_VisualEffects",
                          "fxhDependencyCount":  4,
@@ -24,6 +24,7 @@
                                           },
                          "shaders":  [
                                          "AS_GFX_AspectRatio.1.fx",
+                                         "AS_GFX_BrushStroke.1.fx",
                                          "AS_GFX_HandDrawing.1.fx",
                                          "AS_LFX_CandleFlame.1.fx",
                                          "AS_VFX_CircularSpectrum.1.fx",
@@ -33,19 +34,21 @@
                                          "AS_VFX_DustMotes.1.fx",
                                          "AS_VFX_FocusedChaos.1.fx",
                                          "AS_VFX_MotionFocus.1.fx",
+                                         "AS_VFX_RadialLensDistortion.1.fx",
                                          "AS_VFX_RadiantFire.1.fx",
                                          "AS_VFX_RainyWindow.1.fx",
                                          "AS_VFX_ScreenRing.1.fx",
                                          "AS_VFX_SpectrumRing.1.fx",
                                          "AS_VFX_TiltedGrid.1.fx",
+                                         "AS_VFX_VolumetricLight.1.fx",
                                          "AS_VFX_VUMeter.1.fx",
                                          "AS_VFX_WarpDistort.1.fx",
                                          "AS_VFX_WaterSurface.1.fx"
                                      ]
                      },
                      {
-                         "version":  "1.8.0",
-                         "shaderCount":  55,
+                         "version":  "1.8.2",
+                         "shaderCount":  59,
                          "textureDependencyCount":  3,
                          "name":  "AS_StageFX",
                          "fxhDependencyCount":  5,
@@ -86,10 +89,12 @@
                                          "AS_BGX_StainedLights.1.fx",
                                          "AS_BGX_SunsetClouds.1.fx",
                                          "AS_BGX_TimeCrystal.1.fx",
+                                         "AS_BGX_Vortex.1.fx",
                                          "AS_BGX_WavySquares.1.fx",
                                          "AS_BGX_WavySquiggles.1.fx",
                                          "AS_BGX_ZippyZaps.1.fx",
                                          "AS_GFX_AspectRatio.1.fx",
+                                         "AS_GFX_BrushStroke.1.fx",
                                          "AS_GFX_HandDrawing.1.fx",
                                          "AS_GFX_MultiLayerHalftone.1.fx",
                                          "AS_GFX_VignettePlus.1.fx",
@@ -110,6 +115,7 @@
                                          "AS_VFX_FocusedChaos.1.fx",
                                          "AS_VFX_MotionFocus.1.fx",
                                          "AS_VFX_MotionTrails.1.fx",
+                                         "AS_VFX_RadialLensDistortion.1.fx",
                                          "AS_VFX_RadiantFire.1.fx",
                                          "AS_VFX_RainyWindow.1.fx",
                                          "AS_VFX_ScreenRing.1.fx",
@@ -117,13 +123,14 @@
                                          "AS_VFX_SpectrumRing.1.fx",
                                          "AS_VFX_StencilMask.1.fx",
                                          "AS_VFX_TiltedGrid.1.fx",
+                                         "AS_VFX_VolumetricLight.1.fx",
                                          "AS_VFX_VUMeter.1.fx",
                                          "AS_VFX_WarpDistort.1.fx",
                                          "AS_VFX_WaterSurface.1.fx"
                                      ]
                      },
                      {
-                         "version":  "1.8.0",
+                         "version":  "1.8.2",
                          "shaderCount":  16,
                          "textureDependencyCount":  0,
                          "name":  "AS_StageFX_Essentials",
@@ -160,8 +167,8 @@
                                      ]
                      },
                      {
-                         "version":  "1.8.0",
-                         "shaderCount":  21,
+                         "version":  "1.8.2",
+                         "shaderCount":  22,
                          "textureDependencyCount":  1,
                          "name":  "AS_StageFX_Backgrounds",
                          "fxhDependencyCount":  3,
@@ -195,6 +202,7 @@
                                          "AS_BGX_RaymarchedChain.1.fx",
                                          "AS_BGX_ShineOn.1.fx",
                                          "AS_BGX_SunsetClouds.1.fx",
+                                         "AS_BGX_Vortex.1.fx",
                                          "AS_BGX_WavySquares.1.fx",
                                          "AS_BGX_WavySquiggles.1.fx",
                                          "AS_BGX_ZippyZaps.1.fx"
