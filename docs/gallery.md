@@ -1,6 +1,6 @@
 # AS-StageFX Shader Gallery - Essentials Package
 
-This gallery provides detailed descriptions and visual examples of the core shaders included in the **AS_StageFX_Essentials** package. The complete AS-StageFX collection includes **51 shaders** across four categories: **24 Background (BGX)**, **4 Graphic (GFX)**, **3 Lighting (LFX)**, and **20 Visual (VFX)** effects.
+This gallery provides detailed descriptions and visual examples of the core shaders included in the **AS_StageFX_Essentials** package. The complete AS-StageFX collection includes **52 shaders** across four categories: **25 Background (BGX)**, **4 Graphic (GFX)**, **3 Lighting (LFX)**, and **20 Visual (VFX)** effects.
 
 For installation instructions and general information, please refer to the [main README](../README.md).
 
