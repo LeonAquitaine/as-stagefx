@@ -1,6 +1,6 @@
 # AS-StageFX Shader Gallery - Visual Effects Package
 
-This gallery provides detailed descriptions and visual examples of the **22 effects** (3 Lighting + 19 Visual) included in the **AS_StageFX_VisualEffects** package. These effects range from lighting simulation and audio visualization to particle systems and post-processing tools.
+This gallery provides detailed descriptions and visual examples of the **23 effects** (3 Lighting + 20 Visual) included in the **AS_StageFX_VisualEffects** package. These effects range from lighting simulation and audio visualization to particle systems and post-processing tools.
 
 For installation instructions and general information, please refer to the [main README](../README.md).
 
@@ -114,6 +114,15 @@ Inspired by: <a href="https://www.shadertoy.com/view/ltffzl" target="_new">"Hear
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://github.com/user-attachments/assets/94601169-e214-4a45-8879-444b64c65d33" alt="Rainy Window Effect" style="max-width:100%;">
+</div></td>
+</tr>
+<tr>
+<td width="50%">
+<h4>VFX: Radial Lens Distortion ✨</h4>
+<h5><code>[AS] VFX: Radial Lens Distortion|AS_VFX_RadialLensDistortion.1.fx</code></h5>
+Emulates various lens distortions including tangential (rotational) blur, chromatic aberration (tangential or horizontal), and geometric barrel/pincushion distortion. Effects are strongest at the edges and diminish towards a configurable center point. Features internal presets for common lens emulations (vintage soft focus, chromatic edge, dreamy haze, anamorphic cine, Helios vintage, wide-angle), independent blur and chromatic aberration controls, global strength multiplier, effect focus exponent for falloff control, variable sample count for quality/performance tuning, aspect ratio correction for circular patterns, and consistent alpha handling for effect visibility.
+</td>
+<td width="50%"><div style="text-align:center">
 </div></td>
 </tr>
 <tr>
