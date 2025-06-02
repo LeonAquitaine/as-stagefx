@@ -1,6 +1,6 @@
 # AS-StageFX Shader Gallery - Backgrounds Package
 
-This gallery provides detailed descriptions and visual examples of the **25 background effects** included in the **AS_StageFX_Backgrounds** package. These dynamic, audio-reactive backgrounds range from cosmic and abstract patterns to flowing animations and crystalline structures.
+This gallery provides detailed descriptions and visual examples of the **26 background effects** included in the **AS_StageFX_Backgrounds** package. These dynamic, audio-reactive backgrounds range from cosmic and abstract patterns to flowing animations and crystalline structures.
 
 For installation instructions and general information, please refer to the [main README](../README.md).
 
@@ -228,6 +228,18 @@ Sophisticated, gentle, and flexible plasma effect for groovy, atmospheric visual
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://github.com/user-attachments/assets/ba95325d-eff0-439e-a452-567675da84fe" alt="Plasma Flow Effect" style="max-width:100%;">
+</div></td>
+</tr>
+<tr>
+<td width="50%">
+<h4>BGX: Quadtree Truchet ⚡</h4>
+<h5><code>[AS] BGX: Quadtree Truchet|AS_BGX_QuadtreeTruchet.1.fx</code></h5>
+Creates a sophisticated multiscale recursive Truchet pattern with hierarchical tile overlaps across 3 levels. Generates complex geometric designs through quadtree subdivision and probabilistic tile placement. Features quadtree-based recursive pattern generation, overlapping tile system with collision prevention, full AS palette system support with multiple color modes, Art Deco style with line tiles and weave effects, animated rotation and panning, audio reactivity for scale/rotation/seed/density, stage positioning controls, and debug visualization of the underlying quadtree structure.<br><br>
+Original: <a href="https://www.shadertoy.com/view/4t3BW4" target="_new">"Quadtree Truchet" by Shane</a>.
+</td>
+<td width="50%">
+<img src="https://github.com/user-attachments/assets/placeholder-image"/>
+<div style="text-align:center">
 </div></td>
 </tr>
 <tr>
