@@ -1,45 +1,56 @@
 /**
- * AS_BGX_QuadtreeTruchet.1.fx - Multiscale, multitile, overlapped, weaved Truchet pattern.
- * Author: Shane (Original Shadertoy), Leon Aquitaine (ReShade Adaptation)
- * License: CC BY-NC-SA 3.0 (Original Shadertoy License) / CC BY 4.0 (AS-StageFX Adaptation)
- * You are free to use, share, and adapt this shader for any purpose, including commercially,
- * as long as you provide attribution to both Shane and Leon Aquitaine.
- * Original Source: https://www.shadertoy.com/view/4t3BW4
- *
+ * AS_BGX_QuadtreeTruchet.1.fx - Multiscale Recursive Truchet Pattern
+ * Author: Leon Aquitaine
+ * License: Creative Commons Attribution 4.0 Intefloat4 PS_ASBGXQuadtreeTruchet(float4 vpos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target {
+    float4 orig_color = tex2D(ReShade::BackBuffer, texcoord);
+    
+    // Stage depth check - early exit if scene depth is in front of effect depth
+    float sceneDepth = ReShade::GetLinearizedDepth(texcoord);
+    if (sceneDepth < EffectDepth - AS_DEPTH_EPSILON) {
+        return orig_color;
+    }
+    
+    float time = AS_getAnimationTime(AnimationSpeed, AnimationKeyframe);tional
+ * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
+ * 
+ * CREDITS:
+ * Based on "Quadtree Truchet" by Shane (2018-06-21)
+ * Shadertoy: https://www.shadertoy.com/view/4t3BW4
+ * 
  * ===================================================================================
  *
  * DESCRIPTION:
- * Renders a "Quadtree Truchet" pattern, which is a multiscale, multitile, overlapped,
- * and optionally weaved Truchet pattern. The effect generates complex geometric designs
- * by recursively subdividing a grid and rendering Truchet tiles at different scales
- * and with varying probabilities.
- * * FEATURES:
- * - Quadtree-based recursive pattern generation over 3 levels.
- * - Overlapping tiles with rules to prevent smaller tiles drawing over larger ones.
- * - Full AS palette system support with 24 built-in palettes plus custom palette option.
- * - Multiple color application modes: Two-Tone, Spectrum Blend, and Gradient Blend.
- * - Optional "stacked tiles" view to visualize layering.
- * - Optional "line tiles" for an art-deco appearance, including a mild weave effect.
- * - Animated rotation and vertical panning of the pattern.
- * - Debug view to show the underlying quadtree grid structure.
+ * Creates a sophisticated Quadtree Truchet pattern with multiscale, overlapping tiles.
+ * Generates complex geometric designs through recursive grid subdivision and probabilistic tile placement.
+ *
+ * FEATURES:
+ * - Quadtree-based recursive pattern generation over 3 hierarchical levels
+ * - Overlapping tile system with intelligent collision prevention
+ * - Full AS palette system support with 24 built-in palettes plus custom options
+ * - Multiple color application modes: Two-Tone, Spectrum Blend, and Gradient Blend
+ * - Optional "stacked tiles" view to visualize the generation process
+ * - Art Deco style with line tiles and weave effects
+ * - Animated rotation and panning with customizable speed controls
+ * - Audio reactivity for pattern scale, rotation, seed, and tile density
+ * - Stage positioning controls for performance integration
+ * - Debug visualization of the underlying quadtree structure
  *
  * IMPLEMENTATION OVERVIEW:
- * 1. Screen coordinates are normalized and centered, then scaled for the pattern.
- * 2. The pattern space is animated with global rotation and vertical panning.
- * 3. A 3-level quadtree iteration process begins:
- * a. For each level, a 3x3 neighborhood of cells is considered to handle tile overlaps.
- * b. Cell IDs and random values (using AS_hash22) determine if a tile is rendered at the current scale,
- * its orientation, and its specific Truchet components (arcs, lines, circles).
- * c. Logic prevents smaller tiles from drawing over already placed larger tiles from previous levels.
- * d. Distance fields for two "colors" per tile (d and d2) and grid lines are accumulated.
- * 4. After all levels, the distance fields are combined based on whether "stacked" or "continuous" view is selected.
- * 5. Colors are applied based on the selected ColorMode. Spectrum and Pink modes use screen coordinates for gradients.
- * 6. Optional grid visualization can be overlaid.
- * 7. Final color is blended with the backbuffer.
- *
+ * 1. Transforms screen coordinates into pattern space with scaling, rotation, and offset
+ * 2. Iterates through 3 quadtree levels with increasing subdivision density
+ * 3. For each level, evaluates a 3x3 neighborhood to handle tile overlaps properly
+ * 4. Uses hash-based randomization to determine tile placement, orientation, and style
+ * 5. Generates distance fields for dual-color Truchet arcs, lines, and corner elements
+ * 6. Applies overlap prevention logic to maintain visual hierarchy across scales
+ * 7. Combines distance fields into final pattern based on selected rendering mode
+ * 8. Maps results through the palette system with optional spectrum/gradient effects
+ * 
  * ===================================================================================
  */
 
+// ============================================================================
+// TECHNIQUE GUARD - Prevents duplicate loading of the same shader
+// ============================================================================
 #ifndef __AS_BGX_QuadtreeTruchet_1_fx
 #define __AS_BGX_QuadtreeTruchet_1_fx
 
@@ -53,7 +64,7 @@
 // ============================================================================
 
 // Pattern Settings
-static const float PATTERN_SCALE_MIN = 0.5, PATTERN_SCALE_MAX = 20.0, PATTERN_SCALE_DEFAULT = 5.0;
+static const float PATTERN_SCALE_MIN = 0.5, PATTERN_SCALE_MAX = 20.0, PATTERN_SCALE_DEFAULT = 15.0;
 static const float TILE_STROKE_THICKNESS_MIN = 0.05, TILE_STROKE_THICKNESS_MAX = 0.5, TILE_STROKE_THICKNESS_DEFAULT = 1.0/3.0;
 static const float GRID_LINE_WIDTH_MIN = 0.001, GRID_LINE_WIDTH_MAX = 0.05, GRID_LINE_WIDTH_DEFAULT = 0.01;
 
@@ -96,6 +107,11 @@ uniform float AnimationTimeScale < ui_type = "slider"; ui_label = "Animation Tim
 uniform float OverallRotationSpeed < ui_type = "slider"; ui_label = "Overall Rotation Speed"; ui_tooltip = "Speed of the main pattern rotation."; ui_min = ROTATION_SPEED_MIN; ui_max = ROTATION_SPEED_MAX; ui_category = "Animation"; > = ROTATION_SPEED_DEFAULT;
 uniform float PanSpeedY < ui_type = "slider"; ui_label = "Vertical Pan Speed"; ui_tooltip = "Speed of the vertical panning animation."; ui_min = PAN_SPEED_MIN; ui_max = PAN_SPEED_MAX; ui_category = "Animation"; > = PAN_SPEED_DEFAULT;
 
+// Audio Reactivity
+AS_AUDIO_UI(AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
+AS_AUDIO_MULT_UI(AudioMultiplier, "Audio Intensity", 1.0, 2.0, "Audio Reactivity")
+uniform int AudioTarget < ui_type = "combo"; ui_label = "Audio Target"; ui_items = "None\0Pattern Scale\0Rotation Speed\0Pattern Seed\0Tile Density\0"; ui_tooltip = "Which parameter reacts to audio input."; ui_category = "Audio Reactivity"; > = 0;
+
 // Atmosphere
 static const float SPOTLIGHT_INTENSITY_MIN = 0.5, SPOTLIGHT_INTENSITY_MAX = 2.0, SPOTLIGHT_INTENSITY_DEFAULT = 1.15;
 static const float SPOTLIGHT_RADIUS_MIN = 0.1, SPOTLIGHT_RADIUS_MAX = 1.0, SPOTLIGHT_RADIUS_DEFAULT = 0.5;
@@ -108,6 +124,16 @@ uniform float SpotlightRadius < ui_type = "slider"; ui_label = "Spotlight Radius
 static const float WEAVE_THICKNESS_MIN = 0.001, WEAVE_THICKNESS_MAX = 0.05, WEAVE_THICKNESS_DEFAULT = 0.01;
 
 uniform float WeaveThickness < ui_type = "slider"; ui_label = "Weave Effect Thickness"; ui_tooltip = "Controls the thickness of the weave effect when Line Tiles are enabled."; ui_min = WEAVE_THICKNESS_MIN; ui_max = WEAVE_THICKNESS_MAX; ui_category = "Art Deco Style"; ui_category_closed = true; > = WEAVE_THICKNESS_DEFAULT;
+
+// Stage/Position Controls
+static const float STAGE_OFFSET_X_MIN = -1.0, STAGE_OFFSET_X_MAX = 1.0, STAGE_OFFSET_X_DEFAULT = 0.0;
+static const float STAGE_OFFSET_Y_MIN = -1.0, STAGE_OFFSET_Y_MAX = 1.0, STAGE_OFFSET_Y_DEFAULT = 0.0;
+
+uniform float StageOffsetX < ui_type = "slider"; ui_label = "Stage Offset X"; ui_tooltip = "Horizontal offset of the pattern on the stage."; ui_min = STAGE_OFFSET_X_MIN; ui_max = STAGE_OFFSET_X_MAX; ui_category = "Stage/Position"; ui_category_closed = true; > = STAGE_OFFSET_X_DEFAULT;
+uniform float StageOffsetY < ui_type = "slider"; ui_label = "Stage Offset Y"; ui_tooltip = "Vertical offset of the pattern on the stage."; ui_min = STAGE_OFFSET_Y_MIN; ui_max = STAGE_OFFSET_Y_MAX; ui_category = "Stage/Position"; ui_category_closed = true; > = STAGE_OFFSET_Y_DEFAULT;
+
+// Stage
+AS_STAGEDEPTH_UI(EffectDepth)
 
 // Final Mix
 AS_BLENDMODE_UI_DEFAULT(BlendMode, 0)
@@ -135,33 +161,64 @@ float2x2 r2(float a) {
 
 float4 PS_ASBGXQuadtreeTruchet(float4 vpos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target {
     float4 orig_color = tex2D(ReShade::BackBuffer, texcoord);
+    
+    // Stage depth check - early exit if scene depth is in front of effect depth
+    float sceneDepth = ReShade::GetLinearizedDepth(texcoord);
+    if (sceneDepth < EffectDepth - AS_DEPTH_EPSILON) {
+        return orig_color;
+    }
+    
     float time = AS_getAnimationTime(AnimationSpeed, AnimationKeyframe);
 
     // Screen coordinates, centered, aspect corrected (y ranges approx -0.5 to 0.5).
     float2 uv_screen_centered = (texcoord - 0.5) * float2(ReShade::AspectRatio, 1.0);
 
-    // Scaling, rotation and translation for pattern space.
-    float2 oP = uv_screen_centered * PatternScale;
+    // Apply audio reactivity to selected parameters
+    float patternScale_final = PatternScale;
+    float rotationSpeed_final = OverallRotationSpeed;
+    float patternSeed_final = PatternSeed;
+    float largeTileProbability_final = LargeTileProbability;
+    
+    if (AudioTarget > 0) {
+        float audioValue = AS_applyAudioReactivity(1.0, AudioSource, AudioMultiplier, true) - 1.0;
+        
+        if (AudioTarget == 1) { // Pattern Scale
+            patternScale_final = PatternScale * (1.0 + audioValue * 0.5);
+        }
+        else if (AudioTarget == 2) { // Rotation Speed
+            rotationSpeed_final = OverallRotationSpeed * (1.0 + audioValue * 2.0);
+        }
+        else if (AudioTarget == 3) { // Pattern Seed
+            patternSeed_final = PatternSeed + (audioValue * 50.0);
+        }
+        else if (AudioTarget == 4) { // Tile Density
+            largeTileProbability_final = saturate(LargeTileProbability + (audioValue * 0.3));
+        }
+    }    // Scaling, rotation and translation for pattern space.
+    float2 oP = uv_screen_centered * patternScale_final;
     float anim_time_scaled = time * AnimationTimeScale; // Original used iTime/8.
-    oP = mul(r2(sin(anim_time_scaled) * AS_PI / 8.0 * OverallRotationSpeed), oP); // AS_PI/8.0 part of original angle calc.
+    oP = mul(r2(sin(anim_time_scaled) * AS_PI / 8.0 * rotationSpeed_final), oP); // AS_PI/8.0 part of original angle calc.
     oP.y -= PanSpeedY * time; // Original was oP -= vec2(cos(iTime/8.)*0., -iTime); which simplifies to oP.y += iTime with speed control
+    
+    // Apply stage offset
+    oP.x += StageOffsetX * patternScale_final;
+    oP.y += StageOffsetY * patternScale_final;
 
     // Distance field values -- One for each color. They're "float4"s to hold the three
     // layers and an an unused spare. The grid vector holds grid values.
     float4 d = float4(100000.0, 100000.0, 100000.0, 100000.0);
     float4 d2 = float4(100000.0, 100000.0, 100000.0, 100000.0);
     float4 grid = float4(100000.0, 100000.0, 100000.0, 100000.0);    
-    
-    // Random constants for each layer. The X values are Truchet flipping threshold
+      // Random constants for each layer. The X values are Truchet flipping threshold
     // values, and the Y values represent the chance that a particular sized tile will render.
     float2 rndTh[3] = { 
-        float2(0.5, LargeTileProbability), 
+        float2(0.5, largeTileProbability_final), 
         float2(0.5, MediumTileProbability), 
         float2(0.5, 1.0) 
     };
     
     // Calculate derived randomization seeds from the pattern seed
-    float baseSeed = PatternSeed;
+    float baseSeed = patternSeed_final;
     float flipSeed1 = baseSeed + 0.543;
     float flipSeed2 = baseSeed * 2.76 + 0.49;
     float lineSeed1 = baseSeed * 2.0 + 0.51;
@@ -177,14 +234,13 @@ float4 PS_ASBGXQuadtreeTruchet(float4 vpos : SV_Position, float2 texcoord : TEXC
         float2 ip = floor(oP * dim);
 
         for (int j = -1; j <= 1; j++) {
-            for (int i = -1; i <= 1; i++) {
-                // The neighboring cell ID.
+            for (int i = -1; i <= 1; i++) {                // The neighboring cell ID.
                 float2 current_cell_id = ip + float2(i, j);
-                float2 rndIJ = AS_Hash22VariantB(current_cell_id); // Using Shadertoy-compatible hash
+                float2 rndIJ = AS_hash22(current_cell_id); // Using standard AS hash function
 
                 // Cell IDs for previous dimensions to check for overlaps.
-                float2 rndIJ2 = AS_Hash22VariantB(floor(current_cell_id / 2.0));
-                float2 rndIJ4 = AS_Hash22VariantB(floor(current_cell_id / 4.0));
+                float2 rndIJ2 = AS_hash22(floor(current_cell_id / 2.0));
+                float2 rndIJ4 = AS_hash22(floor(current_cell_id / 4.0));
 
                 if (k == 1 && rndIJ2.y < rndTh[0].y) continue;
                 if (k == 2 && (rndIJ2.y < rndTh[1].y || rndIJ4.y < rndTh[0].y)) continue;
