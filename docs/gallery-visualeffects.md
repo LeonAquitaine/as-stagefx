@@ -179,6 +179,16 @@ This shader creates a customizable mirrored or wavy warp effect that pulses and 
 </tr>
 <tr>
 <td width="50%">
+<h4>VFX: Volumetric Light ✨</h4>
+<h5><code>[AS] VFX: Volumetric Light|AS_VFX_VolumetricLight.1.fx</code></h5>
+Simulates 2D volumetric light shafts (god rays) with depth-based occlusion and customizable colors. Features interactive light source positioning, user-selectable colors via palette system or custom colors, adjustable light brightness and ray properties, audio reactivity for dynamic lighting effects, depth-based occlusion where objects in front of the light source block rays, optional direct lighting on scene elements, and resolution-independent rendering. Perfect for creating atmospheric lighting effects in any scene.
+</td>
+<td width="50%"><div style="text-align:center">
+<img src="https://github.com/user-attachments/assets/placeholder-volumetric-light" alt="Volumetric Light Effect" style="max-width:100%;">
+</div></td>
+</tr>
+<tr>
+<td width="50%">
 <h4>VFX: Water Surface ✨</h4>
 <h5><code>[AS] VFX: Water Surface|AS_VFX_WaterSurface.1.fx</code></h5>
 Creates a water surface where reflection start points are determined by object depth—distant objects reflect at the horizon, closer ones lower. Features a configurable water level, animated waves with perspective scaling, adjustable reflection parameters (including vertical compression), and customizable water color/transparency. Ideal for scenes with water, pools, or reflective floors.
