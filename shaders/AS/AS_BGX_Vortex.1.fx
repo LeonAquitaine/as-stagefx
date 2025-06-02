@@ -1,7 +1,8 @@
 /**
  * AS_BGX_Vortex.1.fx - Swirling Vortex Pattern
  * Author: Leon Aquitaine
- * License: CC BY 4.0
+ * License: Creative Commons Attribution 4.0 International
+ * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
  * Original Source: https://www.shadertoy.com/view/3fKGRd "Vortex__" by LonkDong
  *
  * ===================================================================================
@@ -82,6 +83,10 @@ static const float VORTEX_COLOR_OFFSET_MIN = 0.0f;
 static const float VORTEX_COLOR_OFFSET_MAX = 1.0f;
 static const float VORTEX_COLOR_OFFSET_DEFAULT = 0.0f;
 
+// Internal Calculation Constants
+static const float VORTEX_SWIRL_RADIUS_OFFSET = 0.01f;   // Small offset to prevent division by zero in swirl calculation
+static const float VORTEX_EPSILON_SMALL = 0.001f;        // Small epsilon for rotation checks and scale division
+
 
 // ============================================================================
 // UI DECLARATIONS
@@ -112,7 +117,7 @@ AS_STAGEDEPTH_UI(EffectDepth)
 AS_ROTATION_UI(SnapRotation, FineRotation)
 
 // Final Mix
-AS_BLENDMODE_UI_DEFAULT(BlendMode, 0) // Defaulting to ADD as it's common for such effects
+AS_BLENDMODE_UI_DEFAULT(BlendMode, 0) // Default to Normal blend for background effects
 AS_BLENDAMOUNT_UI(BlendStrength)
 
 // ============================================================================
@@ -120,19 +125,17 @@ AS_BLENDAMOUNT_UI(BlendStrength)
 // ============================================================================
 float4 PS_AS_BGX_Vortex_1(float4 vpos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target
 {
-    float4 finalColor = tex2D(ReShade::BackBuffer, texcoord); // Get original scene color
-
-    // --- Depth Check ---
+    float4 finalColor = tex2D(ReShade::BackBuffer, texcoord); // Get original scene color    // Depth Check
     if (ReShade::GetLinearizedDepth(texcoord) < EffectDepth - AS_DEPTH_EPSILON)
     {
         return finalColor;
     }
     
-    // --- Time ---
+    // Time
     // Vortex_AnimationSpeed and Vortex_AnimationKeyframe are directly used by AS_getAnimationTime
     float time = AS_getAnimationTime(Vortex_AnimationSpeed, Vortex_AnimationKeyframe);
     
-    // --- Coordinate Transformation ---
+    // Coordinate Transformation
     // Get global rotation from UI settings
     float globalRotation = AS_getRotationRadians(SnapRotation, FineRotation);
     
@@ -158,62 +161,51 @@ float4 PS_AS_BGX_Vortex_1(float4 vpos : SV_Position, float2 texcoord : TEXCOORD)
     // To map EffectCenter.x of -1 to the left edge of this corrected space and +1 to the right:
     centered.x -= EffectCenter.x * (ReShade::AspectRatio >= 1.0 ? ReShade::AspectRatio * 0.5 : 0.5);
     centered.y += EffectCenter.y * (ReShade::AspectRatio < 1.0 ? (1.0/ReShade::AspectRatio) * 0.5 : 0.5); // Y is inverted
-    
-    // Apply scale from UI (higher value = zoomed out, smaller effect)
+      // Apply scale from UI (higher value = zoomed out, smaller effect)
     // To make EffectScale=1.0 a neutral scale, and smaller values zoom in:
-    float2 scaled = centered / max(EffectScale, 0.001f); 
-    
-    // Apply rotation
+    float2 scaled = centered / max(EffectScale, VORTEX_EPSILON_SMALL);
+      // Apply rotation
     float2 rotated_uv = scaled; // Renamed for clarity
-    if (abs(globalRotation) > 0.001) { // Avoid sin/cos for zero rotation
+    if (abs(globalRotation) > AS_EPSILON) { // Avoid sin/cos for zero rotation
         float s = sin(globalRotation);
         float c = cos(globalRotation);
         rotated_uv.x = scaled.x * c - scaled.y * s;
         rotated_uv.y = scaled.x * s + scaled.y * c;
-    }
-    
+    }    
     float2 vortex_uv = rotated_uv;
 
-    // --- Effect Logic (from original GLSL) ---
+    // Effect Logic (from original GLSL)
     float r = length(vortex_uv);
-    float a = atan2(vortex_uv.y, vortex_uv.x); // HLSL atan2 takes (y,x)
-    
-    // Vortex Swirl Pattern
-    float swirl_animation_time = time; // Use the time from AS_getAnimationTime
-    float swirl = a + swirl_animation_time + Vortex_SwirlFalloff / (r + 0.01f);
+    float a = atan2(vortex_uv.y, vortex_uv.x); // HLSL atan2 takes (y,x)// Vortex Swirl Pattern
+    float animTime = time; // Use the time from AS_getAnimationTime
+    float swirl = a + animTime + Vortex_SwirlFalloff / (r + VORTEX_SWIRL_RADIUS_OFFSET);
     float pattern = sin(swirl * Vortex_SwirlFrequency);
-    float mask = smoothstep(Vortex_MaskEdge1, Vortex_MaskEdge2, abs(pattern));
-
-    // --- Palette Color Calculation (Radial) ---
+    float mask = smoothstep(Vortex_MaskEdge1, Vortex_MaskEdge2, abs(pattern));    // Palette Color Calculation (Radial)
     // Normalize radial distance 'r' using Vortex_BrightnessFalloff as the "edge"
-    // This means at r = Vortex_BrightnessFalloff, palette_radial_map will be 1.0
-    float palette_radial_map = saturate(r / max(Vortex_BrightnessFalloff, 0.001f));
-    
+    // This means at r = Vortex_BrightnessFalloff, radialMap will be 1.0
+    float radialMap = saturate(r / max(Vortex_BrightnessFalloff, VORTEX_EPSILON_SMALL));    
     // Apply frequency and offset to this radial map to get the final palette lookup value
-    float colorValue = frac(palette_radial_map * Vortex_ColorFrequency + Vortex_ColorOffset);
+    float colorValue = frac(radialMap * Vortex_ColorFrequency + Vortex_ColorOffset);
     
     // Get color from palette
     float3 baseColor;
     if (Vortex_Palette == AS_PALETTE_CUSTOM) {
-        baseColor = AS_GET_INTERPOLATED_CUSTOM_COLOR(Vortex_, colorValue);
-    } else {
+        baseColor = AS_GET_INTERPOLATED_CUSTOM_COLOR(Vortex_, colorValue);    } else {
         baseColor = AS_getInterpolatedColor(Vortex_Palette, colorValue);
     }
     
-    // --- Final Appearance ---
+    // Final Appearance
     // Calculate brightness based on radius (falls off towards Vortex_BrightnessFalloff)
-    float brightness_factor = smoothstep(Vortex_BrightnessFalloff, 0.0f, r); // Inverted smoothstep for falloff
-    
+    float brightnessF = smoothstep(Vortex_BrightnessFalloff, 0.0f, r); // Inverted smoothstep for falloff    
     // Combine base color with swirl mask, brightness falloff, and overall intensity
     // The original also multiplied by 'r * Vortex_BrightnessIntensity', which can make center very dark.
-    // Let's use brightness_factor for the falloff and keep Vortex_BrightnessIntensity for overall strength.
+    // Let's use brightnessF for the falloff and keep Vortex_BrightnessIntensity for overall strength.
     // The mask applies the swirl pattern.
-    float3 color = baseColor * mask * brightness_factor * Vortex_BrightnessIntensity;
-    
-    // --- Blending ---
+    float3 color = baseColor * mask * brightnessF * Vortex_BrightnessIntensity;
+      // Blending
     // Alpha for blending can also incorporate the mask and brightness
-    float effect_alpha = mask * brightness_factor;
-    float4 effectColor = float4(color, effect_alpha);
+    float effectAlpha = mask * brightnessF;
+    float4 effectColor = float4(color, effectAlpha);
     
     finalColor = AS_applyBlend(effectColor, finalColor, BlendMode, BlendStrength);
 
