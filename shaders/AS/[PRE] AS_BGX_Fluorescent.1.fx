@@ -50,29 +50,29 @@
 // --- Iterations & Steps ---
 static const int ITERATIONS_MIN = 10;
 static const int ITERATIONS_MAX = 120;
-static const int ITERATIONS_DEFAULT = 60;
+static const int ITERATIONS_DEFAULT = 68; // Updated based on UI optimization
 
 // --- Scene Geometry & Raymarching ---
 static const float Z_OFFSET_MIN = 0.0;
 static const float Z_OFFSET_MAX = 20.0;
-static const float Z_OFFSET_DEFAULT = 8.0;
+static const float Z_OFFSET_DEFAULT = 7.156; // Updated based on UI optimization
 static const float SHELL_RADIUS_MIN = 0.1;
 static const float SHELL_RADIUS_MAX = 5.0;
-static const float SHELL_RADIUS_DEFAULT = 1.2;
+static const float SHELL_RADIUS_DEFAULT = 2.354; // Updated based on UI optimization
 static const float STEP_BASE_MIN = 0.01;
 static const float STEP_BASE_MAX = 0.5;
-static const float STEP_BASE_DEFAULT = 0.1;
+static const float STEP_BASE_DEFAULT = 0.253; // Updated based on UI optimization
 static const float STEP_SCALE_MIN = 0.01;
 static const float STEP_SCALE_MAX = 0.5;
-static const float STEP_SCALE_DEFAULT = 0.1;
+static const float STEP_SCALE_DEFAULT = 0.038; // Updated based on UI optimization
 
 // --- Color Generation & Effect Trigger ---
 static const float EFFECT_POS_MIN = 0.0;
 static const float EFFECT_POS_MAX = 10.0;
-static const float EFFECT_POS_DEFAULT = 6.0;
+static const float EFFECT_POS_DEFAULT = 6.0; // Kept at same value as seen in the image
 static const float EFFECT_SCALE_MIN = 1.0;
 static const float EFFECT_SCALE_MAX = 20.0;
-static const float EFFECT_SCALE_DEFAULT = 6.0;
+static const float EFFECT_SCALE_DEFAULT = 12.053; // Updated based on UI optimization
 static const float COLOR_PHASE_MIN = 0.0;
 static const float COLOR_PHASE_MAX = 6.28318; // 2*PI
 static const float COLOR_PHASE_R_DEFAULT = 2.0;
@@ -242,7 +242,7 @@ float4 PS_Fluorescent(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : 
 // ============================================================================
 // TECHNIQUE DEFINITION
 // ============================================================================
-technique AS_BGX_Fluorescent < ui_tooltip = "Creates a vibrant neon fluorescent background effect with raymarched volumetric patterns. Perfect for retro, cyberpunk, or futuristic atmospheres. Original algorithm by @XorDev."; >
+technique AS_BGX_Fluorescent < ui_label = "[AS] BGX: Fluorescent"; ui_tooltip = "Creates a vibrant neon fluorescent background effect with raymarched volumetric patterns. Perfect for retro, cyberpunk, or futuristic atmospheres. Original algorithm by @XorDev."; >
 {
     pass
     {
