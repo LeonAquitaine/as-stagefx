@@ -110,10 +110,10 @@
     {
       "credits": {
         "license": "Creative Commons Attribution 4.0 International"
-      },
+      },      
       "name": "AS_VFX_RadialLensDistortion.1",
       "performance": "Light",
-      "filename": "[PRE] AS_VFX_RadialLensDistortion.1.fx",
+      "filename": "AS_VFX_RadialLensDistortion.1.fx",
       "author": "Leon Aquitaine"
     },
     {
