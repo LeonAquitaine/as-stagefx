@@ -261,19 +261,13 @@ float4 PS_RadialLensDistortion(float4 pos : SV_Position, float2 texcoord : TEXCO
     }    
     
     current_sample_count = max(MIN_SAMPLE_COUNT, SampleCount);
-    
-    [loop]
+      [loop]
     for (int i = 0; i < current_sample_count; ++i)
     {
         // Calculate normalized sample position within the blur range
-        float sample_t_norm;
-        if (current_sample_count == MIN_SAMPLE_COUNT) {
-            sample_t_norm = ZERO_LOD;
-        } else {
-            float sample_offset = float(i) - (current_sample_count - UNITY_VALUE) * CALCULATION_HALF;
-            float sample_range = (current_sample_count - UNITY_VALUE) * CALCULATION_HALF;
-            sample_t_norm = sample_offset / sample_range;
-        }
+        float sample_t_norm = (current_sample_count > MIN_SAMPLE_COUNT) ? 
+            (float(i) - (current_sample_count - 1) * 0.5f) / ((current_sample_count - 1) * 0.5f) : 
+            0.0f;
 
         float2 blur_offset_vector_screen_units = screen_space_tangential_dir * sample_t_norm * final_blur_offset_pixels;
         float2 current_blur_offset_vector_uv = blur_offset_vector_screen_units * ReShade::PixelSize;
@@ -293,12 +287,15 @@ float4 PS_RadialLensDistortion(float4 pos : SV_Position, float2 texcoord : TEXCO
         float2 r_sample_uv = saturate(base_sample_uv + r_ca_offset_uv);
         float2 g_sample_uv = saturate(base_sample_uv);
         float2 b_sample_uv = saturate(base_sample_uv + b_ca_offset_uv);
+          // Sample color channels with chromatic aberration
+        float4 r_sample = tex2Dlod(ReShade::BackBuffer, float4(r_sample_uv, ZERO_LOD, ZERO_LOD));
+        float4 g_sample = tex2Dlod(ReShade::BackBuffer, float4(g_sample_uv, ZERO_LOD, ZERO_LOD));
+        float4 b_sample = tex2Dlod(ReShade::BackBuffer, float4(b_sample_uv, ZERO_LOD, ZERO_LOD));
         
-        // Sample color channels with chromatic aberration
-        r_accum += tex2Dlod(ReShade::BackBuffer, float4(r_sample_uv, ZERO_LOD, ZERO_LOD)).r;
-        g_accum += tex2Dlod(ReShade::BackBuffer, float4(g_sample_uv, ZERO_LOD, ZERO_LOD)).g;
-        b_accum += tex2Dlod(ReShade::BackBuffer, float4(b_sample_uv, ZERO_LOD, ZERO_LOD)).b;        
-        a_accum += tex2Dlod(ReShade::BackBuffer, float4(g_sample_uv, ZERO_LOD, ZERO_LOD)).a;
+        r_accum += r_sample.r;
+        g_accum += g_sample.g;
+        b_accum += b_sample.b;
+        a_accum += g_sample.a;
     }
 
     // Calculate final effect color by averaging all samples
