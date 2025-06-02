@@ -647,8 +647,7 @@
       "performance": "Light",
       "filename": "AS_VFX_VUMeter.1.fx",
       "author": "Leon Aquitaine"
-    },
-    {
+    },    {
       "credits": {
         "license": "Creative Commons Attribution 4.0 International"
       },
@@ -666,7 +665,21 @@
       "performance": "Light",
       "filename": "AS_VFX_WaterSurface.1.fx",
       "author": "Leon Aquitaine"
+    },
+    {
+      "credits": {
+        "originalName": "Fluorescent",
+        "link": "https://x.com/XorDev/status/1928504290290635042",
+        "author": "XorDev",
+        "platform": "Twitter/X",
+        "license": "Creative Commons Attribution 4.0 International",
+        "adaptedBy": "Leon Aquitaine"
+      },
+      "name": "AS_BGX_Fluorescent.1",
+      "performance": "Medium",
+      "filename": "AS_BGX_Fluorescent.1.fx",
+      "author": "Leon Aquitaine"
     }  ],
-  "count": 46,
-  "generated": "2025-05-31"
+  "count": 47,
+  "generated": "2025-06-02"
 }
