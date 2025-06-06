@@ -384,17 +384,6 @@ Transforms your scene into a stylized hand-drawn sketch or technical ink illustr
 </tr>
 <tr>
 <td width="50%">
-<h4>GFX: Multi-Layer Halftone </h4>
-<h5><code>[AS] GFX: Multi-Layer Halftone|AS_GFX_MultiLayerHalftone.1.fx</code></h5>
-Creates a highly customizable multi-layer halftone effect with support for up to four independent layers. Each layer can use different pattern types (dots, lines, crosshatch), isolation methods (brightness, RGB, hue, depth), colors, thresholds, scales, densities, and angles. Features layer blending with transparency support.
-
-</td>
-<td width="50%"><div style="text-align:center">
-<img src="https://github.com/user-attachments/assets/b93c9d03-5d23-4b32-aa3e-f2b6a9736c70" alt="Multi-Layer Halftone Effect" style="max-width:100%;">
-</div></td>
-</tr>
-<tr>
-<td width="50%">
 <h4>GFX: MultiLayer Halftone </h4>
 <h5><code>[AS] GFX: MultiLayer Halftone|AS_GFX_MultiLayerHalftone.1.fx</code></h5>
 Creates a highly customizable multi-layer halftone effect with support for up to four independent layers. Each layer can use different pattern types (dots, lines, crosshatch), isolation methods (brightness, RGB, hue, depth), colors, thresholds, scales, densities, and angles. Features layer blending with transparency support.
