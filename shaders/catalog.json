@@ -65,7 +65,11 @@
     "type": "BGX",
     "shortDescription": "Creates a vibrant neon fluorescent background effect with raymarched volumetric patterns. Perfect for retro, cyberpunk, or futuristic atmospheres.",
     "longDescription": "Creates a vibrant neon fluorescent background effect that simulates the glow and intensity of fluorescent lighting. Perfect for creating retro, cyberpunk, or futuristic atmospheres with customizable colors and intensity. Features raymarched volumetric fluorescent effect with depth, dynamic color shifting with RGB phase controls, animated pulsing and flowing patterns, audio reactivity for rhythm-synchronized lighting, standard stage controls for positioning and depth, customizable iteration count for quality vs performance balance, and blend mode controls for integration with existing scenes.",
-    "imageUrl": "https://github.com/user-attachments/assets/PLACEHOLDER-IMAGE-ID"
+    "imageUrl": "https://github.com/user-attachments/assets/PLACEHOLDER-IMAGE-ID",
+    "credits": {
+      "description": "Neon glow technique adapted from @neonfx's public domain shader.",
+      "externalUrl": "https://www.shadertoy.com/view/4dXcDn"
+    }
   },
   {
     "name": "Golden Clockwork",
@@ -105,7 +109,11 @@
     "type": "GFX",
     "shortDescription": "Transforms the scene into a stylized hand-drawn sketch with distinct linework.",
     "longDescription": "Transforms your scene into a stylized hand-drawn sketch or technical ink illustration with distinct linework and cross-hatching patterns. Features sophisticated line generation with customizable stroke directions and length, textured fills based on original image colors with noise-based variation, animated 'wobble' effect for an authentic hand-drawn feel, optional paper-like background pattern, depth-aware rendering with standard blending, and comprehensive controls for fine-tuning every aspect of the effect. Perfect for artistic transformations, comic/manga styles, or technical illustrations.",
-    "imageUrl": "https://github.com/user-attachments/assets/4074ac6b-a385-4e0f-9d9a-c4d5dd0117cd"
+    "imageUrl": "https://github.com/user-attachments/assets/4074ac6b-a385-4e0f-9d9a-c4d5dd0117cd",
+    "credits": {
+      "description": "Based on 'notebook drawings' by Flockaroo (2016), adapted for AS StageFX.",
+      "externalUrl": "https://www.shadertoy.com/view/XtVGD1"
+    }
   },
   {
     "name": "Boom Sticker",
@@ -137,7 +145,11 @@
     "type": "GFX",
     "shortDescription": "Advanced vignette effect with customizable shape, color, animation, blur, and audio reactivity.",
     "longDescription": "A vignette shader that provides multiple visual styles and customizable pattern options, creating directional, controllable vignette effects for stage compositions and scene framing. Perfect for adding mood, focus, or stylistic elements. Features four distinct visual styles (Smooth Gradient, Duotone Circles, Directional Lines perpendicular and parallel), multiple mirroring options (none, edge-based, center-based), precise control over effect coverage with start/end falloff points, and much more. Optimized for performance across various resolutions.",
-    "imageUrl": "https://github.com/user-attachments/assets/bf471099-9c4a-423b-ae1f-fae2f83d924a"
+    "imageUrl": "https://github.com/user-attachments/assets/bf471099-9c4a-423b-ae1f-fae2f83d924a",
+    "credits": {
+      "description": "Hexagonal grid implementation adapted from 'hexagonal wipe' by blandprix.",
+      "externalUrl": "https://www.shadertoy.com/view/XfjyWG"
+    }
   },
   {
     "name": "Quadtree Truchet",
@@ -281,7 +293,11 @@
     "type": "BGX",
     "shortDescription": "Mesmerizing pattern of adaptive wavy lines forming intricate, rotating designs. Audio-reactive and depth-aware.",
     "longDescription": "Creates a mesmerizing pattern of adaptive wavy lines that follow a mouse or fixed position. The lines create intricate patterns that look like dynamic squiggly lines arranged around a central point, with rotation applied based on direction. Features position-reactive wavy line patterns; customizable line parameters (rotation influence, thickness, distance, smoothness); optional color palettes (hue, saturation, value control); pattern displacement for off-center effects; audio reactivity (multiple targets); depth-aware rendering; adjustable rotation; and standard position, scale, and blending options.",
-    "imageUrl": "https://github.com/user-attachments/assets/adfe182d-2507-49e1-82c1-38e41a1403a5"
+    "imageUrl": "https://github.com/user-attachments/assets/adfe182d-2507-49e1-82c1-38e41a1403a5",
+    "credits": {
+      "description": "Based on 'Interactive 2.5D Squiggles' by SnoopethDuckDuck, adapted for AS StageFX.",
+      "externalUrl": "https://www.shadertoy.com/view/7sBfDD"
+    }
   },
   {
     "name": "Zippy Zaps",
@@ -289,7 +305,11 @@
     "type": "BGX",
     "shortDescription": "Dynamic electric arcs/lightning patterns with procedural generation, audio reactivity, and 3D positioning.",
     "longDescription": "Creates dynamic electric arcs and lightning patterns for a striking background effect. This effect generates procedural electric-like patterns that appear behind objects in the scene, creating an energetic, dynamic background with complete control over appearance and animation. Features animated electric/lightning arcs with procedural generation; fully customizable colors, intensity, and animation parameters; resolution-independent rendering; audio reactivity; depth-aware rendering; and adjustable rotation/positioning in 3D space.",
-    "imageUrl": "https://github.com/user-attachments/assets/f32eebde-9c76-49ab-ab6e-50bc4fdeaf2f"
+    "imageUrl": "https://github.com/user-attachments/assets/f32eebde-9c76-49ab-ab6e-50bc4fdeaf2f",
+    "credits": {
+      "description": "Based on 'Zippy Zaps' by SnoopethDuckDuck, adapted for AS StageFX.",
+      "externalUrl": "https://www.shadertoy.com/view/XXyGzh"
+    }
   },
   {
     "name": "Audio Direction",
