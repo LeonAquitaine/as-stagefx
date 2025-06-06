@@ -85,7 +85,11 @@
     "type": "BGX",
     "shortDescription": "Mesmerizing, rippling kaleidoscopic light patterns with customizable distortion, animation, color palettes, and audio reactivity.",
     "longDescription": "Creates a mesmerizing, rippling kaleidoscopic light pattern effect. Suitable as a dynamic background or overlay. Includes controls for animation, distortion (amplitude, frequencies), color palettes with cycling, audio reactivity, depth-aware rendering, adjustable rotation, and standard blending options.",
-    "imageUrl": "https://github.com/user-attachments/assets/99bc3c0c-caac-4060-883c-079d92419abc"
+    "imageUrl": "https://github.com/user-attachments/assets/99bc3c0c-caac-4060-883c-079d92419abc",
+    "credits": {
+      "description": "Original by Danilo Guanabara, adapted for AS StageFX.",
+      "externalUrl": "https://www.pouet.net/prod.php?which=57245"
+    }
   },
   {
     "name": "Stained Lights",
@@ -93,7 +97,11 @@
     "type": "BGX",
     "shortDescription": "Dynamic, colorful patterns like stained glass with shifting light, blurred layers, and audio reactivity.",
     "longDescription": "Creates dynamic and colorful patterns reminiscent of stained glass illuminated by shifting light, with multiple blurred layers enhancing depth and visual complexity. Generates layers of distorted, cell-like structures with vibrant, evolving colors and subtle edge highlighting, overlaid with softer, floating elements. Features multi-layered pattern generation (adjustable iterations), dynamic animation with speed control, customizable pattern scaling/edge highlighting, audio reactivity for animation/pattern evolution, post-processing (curve adjustments, noise), blurred floating layers for depth, and depth-aware rendering with standard blending. Suitable for abstract backgrounds, energy fields, or mystical visuals.",
-    "imageUrl": "https://github.com/user-attachments/assets/45b96c92-dedd-45ec-8007-69efb93c3786"
+    "imageUrl": "https://github.com/user-attachments/assets/45b96c92-dedd-45ec-8007-69efb93c3786",
+    "credits": {
+      "description": "Inspired by 'Stained Lights' by 104, adapted for AS StageFX.",
+      "externalUrl": "https://www.shadertoy.com/view/WlsSzM"
+    }
   },
   {
     "name": "Aspect Ratio",
@@ -137,7 +145,11 @@
     "type": "GFX",
     "shortDescription": "Highly customizable multi-layer halftone (up to 4 layers) with various patterns, isolation methods, and blending options.",
     "longDescription": "Creates a highly customizable multi-layer halftone effect with support for up to four independent layers. Each layer can use different pattern types (dots, lines, crosshatch), isolation methods (brightness, RGB, hue, depth), colors, thresholds, scales, densities, and angles. Features layer blending with transparency support.",
-    "imageUrl": "https://github.com/user-attachments/assets/b93c9d03-5d23-4b32-aa3e-f2b6a9736c70"
+    "imageUrl": "https://github.com/user-attachments/assets/b93c9d03-5d23-4b32-aa3e-f2b6a9736c70",
+    "credits": {
+      "description": "Based on 'Halftone Shader' by P. Gonzalez Vivo, adapted for AS StageFX.",
+      "externalUrl": "https://www.shadertoy.com/view/XdcGzn"
+    }
   },
   {
     "name": "Vignette Plus",
@@ -173,7 +185,11 @@
     "type": "BGX",
     "shortDescription": "Raymarched animated chain of interconnected torus shapes following a procedural path. Features dynamic rotation, customizable geometry, and sophisticated lighting with camera controls.",
     "longDescription": "Renders a raymarched scene featuring an animated, endlessly twisting chain composed of interconnected torus shapes. The chain follows a procedurally defined path, and its segments rotate and evolve over time, creating a mesmerizing, complex visual. Features raymarched chain of torus shapes with procedural path animation, customizable animation speed and chain geometry, dynamic coloring based on raymarching depth and iteration, camera orientation controls, and standard AS-StageFX blending controls.",
-    "imageUrl": "https://github.com/user-attachments/assets/placeholder-image"
+    "imageUrl": "https://github.com/user-attachments/assets/placeholder-image",
+    "credits": {
+      "description": "Based on 'Corrente' by Elsio, adapted for AS StageFX.",
+      "externalUrl": "https://www.shadertoy.com/view/ctSfRV"
+    }
   },
   {
     "name": "Kaleidoscope",
@@ -181,7 +197,11 @@
     "type": "BGX",
     "shortDescription": "Creates a vibrant, ever-evolving fractal kaleidoscope pattern with animated tendrils. Perfect for psychedelic, cosmic, or abstract backgrounds with a hypnotic quality.",
     "longDescription": "Creates a vibrant, ever-evolving fractal kaleidoscope pattern with animated tendrils. Perfect for psychedelic, cosmic, or abstract backgrounds with a hypnotic quality. Features adjustable kaleidoscope mirror count for symmetry control; fractal zoom and pattern rotation with animation controls; customizable wave parameters and color palette; audio reactivity for zoom, wave intensity, and pattern rotation; depth-aware rendering; and standard blend options.",
-    "imageUrl": "https://github.com/user-attachments/assets/8bd0fdee-77a8-40d6-be9f-1708186e5590"
+    "imageUrl": "https://github.com/user-attachments/assets/8bd0fdee-77a8-40d6-be9f-1708186e5590",
+    "credits": {
+      "description": "Inspired by 'Shader Art Coding Introduction' by kishimisu, adapted for AS StageFX.",
+      "externalUrl": "https://youtu.be/f4s1h2YETNY"
+    }
   },
   {
     "name": "Light Wall",
@@ -197,7 +217,11 @@
     "type": "BGX",
     "shortDescription": "Creates dynamic, flowing psychedelic patterns reminiscent of liquid metal or chrome, with optional vertical stripe overlays.",
     "longDescription": "Creates dynamic, flowing psychedelic patterns reminiscent of liquid metal or chrome. This shader iteratively distorts screen coordinates, creating complex, flowing patterns with optional vertical stripe overlays for additional visual texture.",
-    "imageUrl": ""
+    "imageUrl": "",
+    "credits": {
+      "description": "Based on 'Liquid Chrome' by iamsaitam, adapted for AS StageFX.",
+      "externalUrl": "https://neort.io/art/bkm813c3p9f7drq1j86g"
+    }
   },
   {
     "name": "Log Spirals",
@@ -205,7 +229,11 @@
     "type": "BGX",
     "shortDescription": "Creates an organic spiral pattern based on logarithmic growth with animated spheres along the spiral arms.",
     "longDescription": "Creates an organic spiral pattern based on logarithmic growth with animated spheres along the spiral arms. Features precise control over spiral expansion rate and animation, customizable sphere size with fade effects and specular highlights, color palette options with hue cycling and ambient glow, audio reactivity for multiple parameters (animation speed, rotation, arm twist, sphere size, brightness), and standard position/rotation/scale controls for scene integration.",
-    "imageUrl": ""
+    "imageUrl": "",
+    "credits": {
+      "description": "Based on 'Logarithmic spiral of spheres' by mrange, adapted for AS StageFX.",
+      "externalUrl": "https://www.shadertoy.com/view/msGXRD"
+    }
   },
   {
     "name": "Melt Wave",
@@ -221,7 +249,11 @@
     "type": "BGX",
     "shortDescription": "Abstract fractal-based grid background with a misty, ethereal appearance using raymarching. Audio-reactive and customizable.",
     "longDescription": "Creates an abstract fractal-based grid background with a misty, ethereal appearance using raymarching techniques. Features dynamic fractal-based grid environment, customizable colors with palette system, folding and repetition for complex patterns, camera movement simulation with smooth rotations, audio reactivity affecting multiple parameters (fractal scale, folding intensity, saturation, brightness, camera zoom, animation speed), and standard position/rotation/scale controls.",
-    "imageUrl": "https://github.com/user-attachments/assets/ddd37fd8-70be-442c-aaed-f31063f8d9e9"
+    "imageUrl": "https://github.com/user-attachments/assets/ddd37fd8-70be-442c-aaed-f31063f8d9e9",
+    "credits": {
+      "description": "Based on 'Misty Grid' by NuSan, adapted for AS StageFX.",
+      "externalUrl": "https://www.shadertoy.com/view/wl2Szd"
+    }
   },
   {
     "name": "Past Racer",
@@ -229,7 +261,11 @@
     "type": "BGX",
     "shortDescription": "Raymarched abstract procedural scene (2 selectable) with domain repetition, custom transformations, and audio-reactive geometry/flares.",
     "longDescription": "A ray marching shader that generates one of two selectable abstract procedural scenes. Features domain repetition, custom transformations, and pseudo-random patterns. Scene geometry and flare effects can be reactive to audio frequency bands.",
-    "imageUrl": ""
+    "imageUrl": "",
+    "credits": {
+      "description": "Based on 'past racer' by jetlab, adapted for AS StageFX.",
+      "externalUrl": "https://www.shadertoy.com/view/3l23Rh"
+    }
   },
   {
     "name": "Plasma Flow",
@@ -253,7 +289,11 @@
     "type": "BGX",
     "shortDescription": "Dynamic, colorful patterns like stained glass with shifting light, blurred layers, and audio reactivity.",
     "longDescription": "Creates dynamic and colorful patterns reminiscent of stained glass illuminated by shifting light, with multiple blurred layers enhancing depth and visual complexity. Generates layers of distorted, cell-like structures with vibrant, evolving colors and subtle edge highlighting, overlaid with softer, floating elements. Features multi-layered pattern generation (adjustable iterations), dynamic animation with speed control, customizable pattern scaling/edge highlighting, audio reactivity for animation/pattern evolution, post-processing (curve adjustments, noise), blurred floating layers for depth, and depth-aware rendering with standard blending. Suitable for abstract backgrounds, energy fields, or mystical visuals.",
-    "imageUrl": "https://github.com/user-attachments/assets/45b96c92-dedd-45ec-8007-69efb93c3786"
+    "imageUrl": "https://github.com/user-attachments/assets/45b96c92-dedd-45ec-8007-69efb93c3786",
+    "credits": {
+      "description": "Inspired by 'Stained Lights' by 104, adapted for AS StageFX.",
+      "externalUrl": "https://www.shadertoy.com/view/WlsSzM"
+    }
   },
   {
     "name": "Sunset Clouds",
@@ -337,7 +377,11 @@
     "type": "GFX",
     "shortDescription": "Highly customizable multi-layer halftone (up to 4 layers) with various patterns, isolation methods, and blending options.",
     "longDescription": "Creates a highly customizable multi-layer halftone effect with support for up to four independent layers. Each layer can use different pattern types (dots, lines, crosshatch), isolation methods (brightness, RGB, hue, depth), colors, thresholds, scales, densities, and angles. Features layer blending with transparency support.",
-    "imageUrl": "https://github.com/user-attachments/assets/b93c9d03-5d23-4b32-aa3e-f2b6a9736c70"
+    "imageUrl": "https://github.com/user-attachments/assets/b93c9d03-5d23-4b32-aa3e-f2b6a9736c70",
+    "credits": {
+      "description": "Based on 'Halftone Shader' by P. Gonzalez Vivo, adapted for AS StageFX.",
+      "externalUrl": "https://www.shadertoy.com/view/XdcGzn"
+    }
   },
   {
     "name": "Candle Flame",
