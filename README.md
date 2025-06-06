@@ -40,9 +40,9 @@ AS-StageFX provides a collection of performant, customizable, and audio-reactive
 
 ## Shader Statistics
 
-- **Total Shaders:** 59
+- **Total Shaders:** 58
 - **Background Shaders (BGX):** 27
-- **Geometry Shaders (GFX):** 8
+- **Geometry Shaders (GFX):** 7
 - **Lighting Shaders (LFX):** 3
 - **Visual Shaders (VFX):** 21
 
@@ -50,7 +50,7 @@ AS-StageFX provides a collection of performant, customizable, and audio-reactive
 
 ## Available Shaders
 
-AS-StageFX includes **59 shaders** across four categories: **27 Background (BGX)**, **8 Graphic (GFX)**, **3 Lighting (LFX)**, and **21 Visual (VFX)** effects.
+AS-StageFX includes **58 shaders** across four categories: **27 Background (BGX)**, **7 Graphic (GFX)**, **3 Lighting (LFX)**, and **21 Visual (VFX)** effects.
 
 **Detailed descriptions and examples: [Shader Gallery](docs/gallery.md).**
 
@@ -95,7 +95,6 @@ AS-StageFX includes **59 shaders** across four categories: **27 Background (BGX)
 | **Brush Stroke** | Transforms the scene with painterly brush stroke textures and dynamic, layered paint effects. |
 | **Cinematic Diffusion** | High-quality cinematic diffusion/bloom filter with 8 classic presets and a fully customizable mode. |
 | **Hand Drawing** | Transforms the scene into a stylized hand-drawn sketch with distinct linework. |
-| **Multi-Layer Halftone** | Highly customizable multi-layer halftone (up to 4 layers) with various patterns, isolation methods, and blending options. |
 | **MultiLayer Halftone** | Highly customizable multi-layer halftone (up to 4 layers) with various patterns, isolation methods, and blending options. |
 | **Vignette Plus** | Advanced vignette effect with customizable shape, color, animation, blur, and audio reactivity. |
 
