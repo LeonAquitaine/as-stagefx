@@ -674,14 +674,15 @@ if (Test-Path $catalogPath) {
     $shaderFiles = Get-ChildItem -Path $shaderDir -File -Filter "*.fx" | Where-Object { $_.Name -notmatch "^\[PRE\]" }
     $newShaders = @()
     foreach ($shaderFile in $shaderFiles) {
-        $relPath = "shaders/AS/" + $shaderFile.Name
-        if (-not ($existingFilenames -contains $relPath)) {
+        # Use only the filename, not the path
+        $filenameOnly = $shaderFile.Name
+        if (-not ($existingFilenames -contains $filenameOnly)) {
             if ($shaderFile.Name -match "AS_([A-Z]+)_") {
                 $type = $matches[1].ToUpper()
             } else {
                 $type = "OTHER"
             }
-            $newShaders += @{ filename = $relPath; type = $type }
+            $newShaders += @{ filename = $filenameOnly; type = $type }
         }
     }
     if ($newShaders.Count -gt 0) {
@@ -712,109 +713,75 @@ if (Test-Path $catalogPath) {
 }
 # === END: Catalog auto-update for new shaders ===
 
+# === BEGIN: Precompute statistics and arrays for README ===
+$catalogPath = Join-Path $shadersRoot "shaders\catalog.json"
+if (Test-Path $catalogPath) {
+    $catalog = Get-Content -Path $catalogPath -Raw | ConvertFrom-Json
+    $items = $catalog.shaders.items
+    $types = @('BGX','GFX','LFX','VFX')
+    # Ensure statistics object exists and is a PSCustomObject
+    if (-not $catalog.shaders.PSObject.Properties['statistics']) {
+        $catalog.shaders | Add-Member -MemberType NoteProperty -Name statistics -Value ([PSCustomObject]@{}) -Force
+    }
+    $stats = $catalog.shaders.statistics
+    if (-not $stats.PSObject.Properties['total']) {
+        $stats | Add-Member -MemberType NoteProperty -Name total -Value 0 -Force
+    }
+    if (-not $stats.PSObject.Properties['byType']) {
+        $stats | Add-Member -MemberType NoteProperty -Name byType -Value ([PSCustomObject]@{}) -Force
+    }
+    # Remove shadersByType from the statistics if it exists
+    if ($catalog.shaders.statistics.PSObject.Properties['shadersByType']) {
+        $catalog.shaders.statistics.PSObject.Properties.Remove('shadersByType')
+    }
+    $stats.total = $items.Count
+    foreach ($type in $types) {
+        $arr = @($items | Where-Object { $_.type -eq $type })
+        $stats.byType.$type = $arr.Count
+    }
+    $json = $catalog | ConvertTo-Json -Depth 20
+    $json = $json -replace '^( +)', { $args[0].Value -replace '  ', '    ' }
+    Set-Content -Path $catalogPath -Value $json -Encoding UTF8
+    Write-Info "catalog.json statistics updated for README rendering."
+}
+# === END: Precompute statistics and arrays for README ===
+
 # === BEGIN: Render README.md from template and catalog ===
 $catalogPath = Join-Path $shadersRoot "shaders\catalog.json"
 $readmeTemplatePath = Join-Path $PSScriptRoot "..\docs\template\README.md"
 $readmeOutPath = Join-Path $PSScriptRoot "..\README.md"
 if ((Test-Path $catalogPath) -and (Test-Path $readmeTemplatePath)) {
     $catalog = Get-Content -Path $catalogPath -Raw | ConvertFrom-Json
-    $shaders = $catalog.shaders.items
-    # Normalize filenames for matching
-    foreach ($shader in $shaders) {
-        if ($shader.filename -like "shaders/AS/*") {
-            $shader.filename = $shader.filename -replace "^shaders/AS/", ""
-        }
-    }
-    # Categorize shaders by type
-    $shadersByType = @{ BGX = @(); GFX = @(); LFX = @(); VFX = @() }
-    foreach ($shader in $shaders) {
-        if ($shader.type -eq "BGX") { $shadersByType.BGX += $shader }
-        elseif ($shader.type -eq "GFX") { $shadersByType.GFX += $shader }
-        elseif ($shader.type -eq "LFX") { $shadersByType.LFX += $shader }
-        elseif ($shader.type -eq "VFX") { $shadersByType.VFX += $shader }
-    }
-    $shaderCount = $shaders.Count
-    $bgxCount = $shadersByType.BGX.Count
-    $gfxCount = $shadersByType.GFX.Count
-    $lfxCount = $shadersByType.LFX.Count
-    $vfxCount = $shadersByType.VFX.Count
-    # Performance icons (optional, can be mapped by name or left blank)
-    function Get-PerfIcon($shaderName) {
-        return "" # Remove all emoji/icon output
-    }
-    # Read template
     $template = Get-Content -Path $readmeTemplatePath -Raw
-    # Replace simple counts
-    $template = $template -replace "{{shaders.length}}", $shaderCount
-    $template = $template -replace "{{shadersByType.BGX.length}}", $bgxCount
-    $template = $template -replace "{{shadersByType.GFX.length}}", $gfxCount
-    $template = $template -replace "{{shadersByType.LFX.length}}", $lfxCount
-    $template = $template -replace "{{shadersByType.VFX.length}}", $vfxCount
-    # Render shader tables for each type
-    function RenderShaderTable($shaderList) {
-        $rows = @()
-        foreach ($shader in $shaderList) {
-            $icon = Get-PerfIcon $shader.name
-            $desc = $shader.shortDescription
-            $rows += "| **$($shader.name)** $icon | $desc |"
-        }
-        return $rows -join "`n"
-    }
-    # Helper: Remove duplicates by name
-    function DeduplicateByName($shaderList) {
-        $seen = @{
-        }
-        $result = @()
-        foreach ($shader in $shaderList) {
-            if (-not $seen.ContainsKey($shader.name)) {
-                $seen[$shader.name] = $true
-                $result += $shader
+
+    # Helper: Get value from nested property path (e.g., "shaders.statistics.byType.BGX")
+    function Get-CatalogValue($obj, $path) {
+        $parts = $path -split '\.'
+        foreach ($part in $parts) {
+            if ($null -eq $obj) { return $null }
+            if ($obj.PSObject.Properties.Name -contains $part) {
+                $obj = $obj.$part
+            } else {
+                return $null
             }
         }
-        return $result
+        return $obj
     }
-    # Helper: Filter out invalid/empty entries
-    function FilterValidShaders($shaderList) {
-        return $shaderList | Where-Object { $_.name -and $_.shortDescription }
+
+    # Remove all {{#each ...}} table blocks (no table interpolation)
+    $template = [regex]::Replace($template, '{{#each [^}]+}}([\s\S]*?){{/each}}', '')
+
+    # Replace all {{field}} placeholders with direct values from catalog (byType, total, etc)
+    $template = $template -replace '{{([a-zA-Z0-9_.]+)}}', {
+        if ($args.Count -eq 0 -or -not $args[0].Groups[1]) { return '' }
+        $ph = $args[0].Groups[1].Value
+        $val = Get-CatalogValue $catalog $ph
+        if ($null -eq $val) { return '' }
+        return $val.ToString()
     }
-    # Performance table renderer (2 columns)
-    function RenderPerfTable($shaderList) {
-        $shaderList = FilterValidShaders $shaderList
-        $shaderList = DeduplicateByName $shaderList
-        $rows = @()
-        foreach ($shader in $shaderList) {
-            $icon = Get-PerfIcon $shader.name
-            $desc = $shader.shortDescription
-            $rows += "| **$($shader.name)** $icon | $desc |"
-        }
-        return $rows -join "`n"
-    }
-    # Catalog table renderer (4 columns: Name, Author, Description, Credits)
-    function RenderCatalogTable($shaderList) {
-        $shaderList = FilterValidShaders $shaderList
-        $shaderList = DeduplicateByName $shaderList
-        $rows = @()
-        foreach ($shader in $shaderList) {
-            $author = if ($shader.author) { $shader.author } else { "-" }
-            $desc = if ($shader.longDescription) { $shader.longDescription } elseif ($shader.shortDescription) { $shader.shortDescription } else { "-" }
-            $credits = if ($shader.credits -and $shader.credits.externalUrl) { "[Source]($($shader.credits.externalUrl))" } else { "-" }
-            $rows += "| `$($shader.name)` | $author | $desc | $credits |"
-        }
-        return ($rows -join "`n")
-    }
-    # Render performance tables
-    $template = $template -replace "{{#each shadersByType.BGX}}[\s\S]*?{{/each}}", (RenderPerfTable $shadersByType.BGX)
-    $template = $template -replace "{{#each shadersByType.GFX}}[\s\S]*?{{/each}}", (RenderPerfTable $shadersByType.GFX)
-    $template = $template -replace "{{#each shadersByType.LFX}}[\s\S]*?{{/each}}", (RenderPerfTable $shadersByType.LFX)
-    $template = $template -replace "{{#each shadersByType.VFX}}[\s\S]*?{{/each}}", (RenderPerfTable $shadersByType.VFX)
-    # Render catalog tables (4 columns) using [regex]::Replace for multiline blocks
-    $template = [regex]::Replace($template, "(?ms)### Background Shaders \(BGX\)[^|]*\|------.*?---", "### Background Shaders (BGX)`n`n| Name | Author | Description | Credits |`n|------|--------|-------------|---------|`n" + (RenderCatalogTable ($shaders | Where-Object { $_.type -eq 'BGX' })) + "`n`n---")
-    $template = [regex]::Replace($template, "(?ms)### Geometry Shaders \(GFX\)[^|]*\|------.*?---", "### Geometry Shaders (GFX)`n`n| Name | Author | Description | Credits |`n|------|--------|-------------|---------|`n" + (RenderCatalogTable ($shaders | Where-Object { $_.type -eq 'GFX' })) + "`n`n---")
-    $template = [regex]::Replace($template, "(?ms)### Lighting Shaders \(LFX\)[^|]*\|------.*?---", "### Lighting Shaders (LFX)`n`n| Name | Author | Description | Credits |`n|------|--------|-------------|---------|`n" + (RenderCatalogTable ($shaders | Where-Object { $_.type -eq 'LFX' })) + "`n`n---")
-    $template = [regex]::Replace($template, "(?ms)### Visual Shaders \(VFX\)[^|]*\|------.*?---", "### Visual Shaders (VFX)`n`n| Name | Author | Description | Credits |`n|------|--------|-------------|---------|`n" + (RenderCatalogTable ($shaders | Where-Object { $_.type -eq 'VFX' })) + "`n`n---")
-    # Write output
+
     Set-Content -Path $readmeOutPath -Value $template -Encoding UTF8
-    Write-Success "README.md rendered from template and catalog."
+    Write-Success "README.md rendered from template and catalog (byType only, no tables)."
 } else {
     Write-Warning "README template or catalog.json not found, skipping README generation."
 }

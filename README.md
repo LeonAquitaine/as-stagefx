@@ -38,94 +38,100 @@ AS-StageFX provides a collection of performant, customizable, and audio-reactive
 
 ---
 
+## Shader Statistics
+
+- **Total Shaders:** 59
+- **Background Shaders (BGX):** 27
+- **Geometry Shaders (GFX):** 8
+- **Lighting Shaders (LFX):** 3
+- **Visual Shaders (VFX):** 21
+
+---
+
 ## Available Shaders
 
-AS-StageFX includes **52 shaders** across four categories: **25 Background (BGX)**, **5 Graphic (GFX)**, **3 Lighting (LFX)**, and **20 Visual (VFX)** effects.
+AS-StageFX includes **59 shaders** across four categories: **27 Background (BGX)**, **8 Graphic (GFX)**, **3 Lighting (LFX)**, and **21 Visual (VFX)** effects.
 
 **Detailed descriptions and examples: [Shader Gallery](docs/gallery.md).**
-
-## Performance Guide
-
-Shaders are marked with an icon to give a general idea of their processing intensity:
-
-| Icon | Category      | Count | GPU Time (ms) | Use Cases                                                                 |
-| :--: | ------------- | :---: | :-----------: | ------------------------------------------------------------------------- |
-|  ✨  | Light         |  34   |    < 0.5      | Everyday use, stacking multiple effects, older hardware.                    |
-|  ⚡  | Moderate      |   9   |   0.5 - 2.5   | General purpose, good balance of quality and performance.                   |
-|  🔥  | Heavy         |   5   |   2.5 - 10.0  | High-impact visuals, use sparingly if performance is critical.              |
-|  💀  | Very Heavy    |   1   |    > 10.0     | Cinematic shots, offline rendering, or very powerful hardware. Demanding. |
 
 ### Background Effects (BGX)
 
 | Shader                 | Description                                                                                                |
 | ---------------------- | ---------------------------------------------------------------------------------------------------------- |
-| **AS_BGX_BlueCorona** 🔥 | Vibrant, abstract blue corona with fluid, dynamic motion and hypnotic, organic, plasma-like visuals. Customizable and audio-reactive. |
-| **AS_BGX_Constellation** ⚡ | Creates an animated stellar constellation pattern with twinkling stars and connecting lines. Perfect for cosmic, night sky, or abstract network visualizations with a hand-drawn aesthetic. |
-| **AS_BGX_CorridorTravel** 🔥 | Simulates an artistic flight through an abstract, glowing, patterned tunnel with pseudo-DOF, motion blur, and light bounce simulation. |
-| **AS_BGX_CosmicKaleidoscope** ⚡ | Renders a raymarched volumetric fractal (Mandelbox/Mandelbulb-like) with kaleidoscopic mirroring, audio reactivity, and palette-based coloring. |
-| **AS_BGX_DigitalBrain** ✨ | Abstract visualization of a digital brain neural network with animated Voronoi patterns, neural-like connections, and electrical pulses. |
-| **AS_BGX_Fluorescent** ⚡ | Creates a vibrant neon fluorescent background effect with raymarched volumetric patterns. Perfect for retro, cyberpunk, or futuristic atmospheres. |
-| **AS_BGX_GoldenClockwork** ✨ | Intricate, animated golden clockwork or Apollonian fractal patterns with complex geometric designs and dynamic movement. |
-| **AS_BGX_Kaleidoscope** ✨ | Creates a vibrant, ever-evolving fractal kaleidoscope pattern with animated tendrils. Perfect for psychedelic, cosmic, or abstract backgrounds with a hypnotic quality. |
-| **AS_BGX_LightRipples** ✨ | Mesmerizing, rippling kaleidoscopic light patterns with customizable distortion, animation, color palettes, and audio reactivity. |
-| **AS_BGX_LightWall** ✨ | Renders a seamless, soft, overlapping grid of light panels with various built-in patterns, ideal for dance club/concert backdrops. Customizable and audio-reactive. |
-| **AS_BGX_LiquidChrome** ✨ | Creates dynamic, flowing psychedelic patterns reminiscent of liquid metal or chrome, with optional vertical stripe overlays. |
-| **AS_BGX_LogSpirals** ✨ | Creates an organic spiral pattern based on logarithmic growth with animated spheres along the spiral arms. Features precise control over spiral expansion rate and animation, customizable sphere size with fade effects and specular highlights. |
-| **AS_BGX_MeltWave** ✨ | Flowing, warping psychedelic effect with sine-based distortions, palette system, keyframe animation, and audio reactivity. |
-| **AS_BGX_MistyGrid** 🔥 | Abstract fractal-based grid background with a misty, ethereal appearance using raymarching. Audio-reactive and customizable. |
-| **AS_BGX_PastRacer** ⚡ | Raymarched abstract procedural scene (2 selectable) with domain repetition, custom transformations, and audio-reactive geometry/flares. |
-| **AS_BGX_RaymarchedChain** 🔥 | Raymarched animated chain of interconnected torus shapes following a procedural path. Features dynamic rotation, customizable geometry, and sophisticated lighting with camera controls. |
-| **AS_BGX_PlasmaFlow** ✨ | Sophisticated, gentle, flexible plasma effect with procedural noise, domain warping, and customizable audio-reactive color gradients. |
-| **AS_BGX_QuadtreeTruchet** ⚡ | Multiscale recursive Truchet pattern with hierarchical tile overlaps, Art Deco line tiles, weave effects, and sophisticated palette system. Creates complex geometric designs through quadtree subdivision. |
-| **AS_BGX_ShineOn** ✨ | Dynamic, evolving fractal noise pattern with bright, sparkly, moving crystal highlights. Audio-reactive and depth-aware. |
-| **AS_BGX_StainedLights** ✨ | Dynamic, colorful patterns like stained glass with shifting light, blurred layers, and audio reactivity. |
-| **AS_BGX_TimeCrystal** ✨ | Hypnotic, crystalline fractal structure with dynamic animation, color cycling, and audio reactivity. |
-| **AS_BGX_WavySquares** ✨ | Hypnotic pattern of wavy, animated, transforming square tiles with dynamic size changes. Audio-reactive and depth-aware. |
-| **AS_BGX_WavySquiggles** ✨ | Mesmerizing pattern of adaptive wavy lines forming intricate, rotating designs. Audio-reactive and depth-aware. |
-| **AS_BGX_ZippyZaps** ⚡ | Dynamic electric arcs/lightning patterns with procedural generation, audio reactivity, and 3D positioning. |
+| **Blue Corona** | Vibrant, abstract blue corona with fluid, dynamic motion and hypnotic, organic, plasma-like visuals. Customizable and audio-reactive. |
+| **Constellation** | Creates an animated stellar constellation pattern with twinkling stars and connecting lines. Perfect for cosmic, night sky, or abstract network visualizations with a hand-drawn aesthetic. |
+| **Corridor Travel** | Simulates an artistic flight through an abstract, glowing, patterned tunnel with pseudo-DOF, motion blur, and light bounce simulation. |
+| **Cosmic Kaleidoscope** | Renders a raymarched volumetric fractal (Mandelbox/Mandelbulb-like) with kaleidoscopic mirroring, audio reactivity, and palette-based coloring. |
+| **Digital Brain** | Abstract visualization of a digital brain neural network with animated Voronoi patterns, neural-like connections, and electrical pulses. |
+| **Fluorescent** | Creates a vibrant neon fluorescent background effect with raymarched volumetric patterns. Perfect for retro, cyberpunk, or futuristic atmospheres. |
+| **Golden Clockwork** | Intricate, animated golden clockwork or Apollonian fractal patterns. |
+| **Kaleidoscope** | Creates a vibrant, ever-evolving fractal kaleidoscope pattern with animated tendrils. Perfect for psychedelic, cosmic, or abstract backgrounds with a hypnotic quality. |
+| **Light Ripples** | Mesmerizing, rippling kaleidoscopic light patterns with customizable distortion, animation, color palettes, and audio reactivity. |
+| **Light Wall** | Renders a seamless, soft, overlapping grid of light panels with various built-in patterns, ideal for dance club/concert backdrops. Customizable and audio-reactive. |
+| **Liquid Chrome** | Creates dynamic, flowing psychedelic patterns reminiscent of liquid metal or chrome, with optional vertical stripe overlays. |
+| **Log Spirals** | Creates an organic spiral pattern based on logarithmic growth with animated spheres along the spiral arms. |
+| **Melt Wave** | Flowing, warping psychedelic effect with sine-based distortions, palette system, keyframe animation, and audio reactivity. |
+| **Misty Grid** | Abstract fractal-based grid background with a misty, ethereal appearance using raymarching. Audio-reactive and customizable. |
+| **Past Racer** | Raymarched abstract procedural scene (2 selectable) with domain repetition, custom transformations, and audio-reactive geometry/flares. |
+| **Plasma Flow** | Sophisticated, gentle, flexible plasma effect with procedural noise, domain warping, and customizable audio-reactive color gradients. |
+| **Protean Clouds** | Volumetric, evolving procedural clouds with raymarching, dynamic color, and realistic lighting. |
+| **Quadtree Truchet** | Multiscale recursive Truchet pattern with hierarchical tile overlaps, Art Deco line tiles, weave effects, and sophisticated palette system. |
+| **Raymarched Chain** | Raymarched animated chain of interconnected torus shapes following a procedural path. Features dynamic rotation, customizable geometry, and sophisticated lighting with camera controls. |
+| **Shine On** | Dynamic, evolving fractal noise pattern with bright, sparkly, moving crystal highlights. Audio-reactive and depth-aware. |
+| **Stained Lights** | Dynamic, colorful patterns like stained glass with shifting light, blurred layers, and audio reactivity. |
+| **Sunset Clouds** | Raymarched volumetric clouds with animated turbulence and dynamic sunset coloring. |
+| **Time Crystal** | Hypnotic, crystalline fractal structure with dynamic animation, color cycling, and audio reactivity. |
+| **Vortex** | Psychedelic swirling vortex pattern with animated color, swirl, and brightness controls. |
+| **Wavy Squares** | Hypnotic pattern of wavy, animated, transforming square tiles with dynamic size changes. Audio-reactive and depth-aware. |
+| **Wavy Squiggles** | Mesmerizing pattern of adaptive wavy lines forming intricate, rotating designs. Audio-reactive and depth-aware. |
+| **Zippy Zaps** | Dynamic electric arcs/lightning patterns with procedural generation, audio reactivity, and 3D positioning. |
 
 ### Graphic Effects (GFX)
 
 | Shader                 | Description                                                                                                |
 | ---------------------- | ---------------------------------------------------------------------------------------------------------- |
-| **AS_GFX_AspectRatio** ✨ | A versatile aspect ratio framing tool designed to help position subjects for social media posts, photography, and video composition. Features preset aspect ratios for common social media and photography formats (1:1, 16:9, 4:5, etc.), custom aspect ratio input, adjustable clipped area color and opacity, and other helper functions. Perfect for precise subject positioning and consistent framing across platforms. |
-| **AS_GFX_AudioDirection** ✨ | Renders a visual arc segment that points toward the direction of audio panning, helping users identify where sound is coming from during gameplay. Features real-time audio direction visualization using stereo panning data, audio-reactive arc length/thickness/intensity, and customizable colors. Perfect for gameplay assistance and spatial audio awareness. |
-| **AS_GFX_CinematicDiffusion** 💀 | High-quality cinematic diffusion/bloom filter with 8 classic presets and a fully customizable mode. **Custom controls (threshold, knee, intensity, radius, contrast, tint, etc.) are only active when Filter Preset is set to 'Custom'.** UI guidance is provided in the shader. |
-| **AS_GFX_HandDrawing** 💀 | Transforms the scene into a stylized hand-drawn sketch with distinct linework. Features sophisticated line generation with customizable stroke directions and length and textured fills based on original image colors with noise-based variation. Perfect for artistic transformations, comic/manga styles, or technical illustrations. |
-| **AS_GFX_MultiLayerHalftone** ✨| Highly customizable multi-layer halftone (up to 4 layers) with various patterns, isolation methods, and blending options. |
-| **AS_GFX_VignettePlus** ✨ | Advanced vignette effect with customizable shape, color, animation, blur, and audio reactivity. |
+| **Aspect Ratio** | A versatile aspect ratio framing tool for subject positioning and composition. |
+| **Audio Direction** | Visualizes audio directionality as animated arrows or indicators, ideal for music-driven scenes or overlays. |
+| **Brush Stroke** | Transforms the scene with painterly brush stroke textures and dynamic, layered paint effects. |
+| **Cinematic Diffusion** | High-quality cinematic diffusion/bloom filter with 8 classic presets and a fully customizable mode. |
+| **Hand Drawing** | Transforms the scene into a stylized hand-drawn sketch with distinct linework. |
+| **Multi-Layer Halftone** | Highly customizable multi-layer halftone (up to 4 layers) with various patterns, isolation methods, and blending options. |
+| **MultiLayer Halftone** | Highly customizable multi-layer halftone (up to 4 layers) with various patterns, isolation methods, and blending options. |
+| **Vignette Plus** | Advanced vignette effect with customizable shape, color, animation, blur, and audio reactivity. |
 
 ### Lighting Effects (LFX)
 
 | Shader                 | Description                                                                                                |
 | ---------------------- | ---------------------------------------------------------------------------------------------------------- |
-| **AS_LFX_CandleFlame** ✨ | Animated procedural candle flames with realistic shape/color gradients, audio reactivity, and multiple instances. |
-| **AS_LFX_LaserShow** ✨ | Multiple colored laser beams from a user-defined origin, illuminating animated procedural smoke. Audio-reactive and depth-occluded. |
-| **AS_LFX_StageSpotlights** ✨ | Simulates up to 4 independently controllable directional spotlights with glow effects, audio reactivity, and depth-masking. |
+| **Candle Flame** | Simulates a realistic, animated candle flame with flicker, glow, and color controls. |
+| **Laser Show** | Projects animated laser beams and patterns with customizable color, speed, and audio reactivity. |
+| **Stage Spotlights** | Simulates moving stage spotlights with beam controls, color, and audio reactivity. |
 
 ### Visual Effects (VFX)
 
 | Shader                 | Description                                                                                                |
 | ---------------------- | ---------------------------------------------------------------------------------------------------------- |
-| **AS_VFX_BoomSticker** ✨ | Displays a texture overlay ("sticker") with controls for placement, scale, rotation, audio reactivity, and depth masking. |
-| **AS_VFX_CircularSpectrum** ⚡ | Creates a dynamic circular audio spectrum visualizer with floating dots arranged in a ring pattern, featuring customizable colors, patterns, and audio reactivity. |
-| **AS_VFX_ClairObscur** ✨ | Creates a beautiful cascade of floating petals with realistic movement, organic animation, and natural rotation variation. |
-| **AS_VFX_ColorBalancer** ✨ | Enables colorists and videographers to apply classic cinematic color harmony models (complementary, analogous, triadic, split-complementary, tetradic) to live visuals or video production. It offers flexible color manipulation across shadows, midtones, and highlights. |
-| **AS_VFX_DigitalArtifacts** ✨ | Stylized digital artifacts, glitch effects, and hologram visuals with 3D positioning and audio-reactive intensity. |
-| **AS_VFX_DustMotes** ⚡ | Simulates static, sharp-bordered dust motes using two independent particle layers with a blur effect. Audio-reactive and depth-masked. |
-| **AS_VFX_MotionFocus** ⚡ | Analyzes motion between frames to dynamically zoom towards and center on areas of detected movement with motion-weighted zoom centering and generous zoom limits. |
-| **AS_VFX_MotionTrails** ✨ | Creates striking, persistent motion trails based on depth, with multiple capture modes and audio reactivity. |
-| **AS_VFX_RadialLensDistortion** ✨ | Emulates various lens distortions including tangential blur, chromatic aberration, and geometric barrel/pincushion distortion with presets for specific lens characteristics. |
-| **AS_VFX_RadiantFire** ✨ | GPU-based fire simulation generating flames radiating from subject edges, with physics affected by rotation. |
-| **AS_VFX_RainyWindow** ✨ | Simulates a rainy window with animated droplets, trails, frost, and optional audio-reactive lightning. |
-| **AS_VFX_ScreenRing** ✨ | Draws a textured ring/band in screen space with depth occlusion, customizable position, size, texture, and rotation. |
-| **AS_VFX_SparkleBloom** ⚡ | Dynamic sparkle and bloom effect responding to scene lighting, depth, camera movement, and audio. Uses Voronoi noise. |
-| **AS_VFX_SpectrumRing** ✨ | Stylized circular audio visualizer displaying all Listeningway frequency bands with customizable patterns and colors. |
-| **AS_VFX_StencilMask** ✨ | Foreground subject isolation with customizable borders and projected shadows. |
-| **AS_VFX_TiltedGrid** ✨ | Rotatable pixelating grid with adjustable borders, chamfered corners, audio reactivity, and depth masking. |
-| **AS_VFX_VUMeter** ✨ | Audio-reactive VU meter with multiple display styles, customizable appearance, palettes, and zoom/pan controls. |
-| **AS_VFX_WarpDistort** ✨ | Audio-reactive warp effect with customizable shape, pulsing radius, and wave/ripple effects. Adjustable position and depth. |
-| **AS_VFX_WaterSurface** ✨ | Water surface with depth-based reflections, perspective-scaled waves, and customizable appearance. |
+| **Boom Sticker** | Displays a texture overlay ('sticker') with controls for placement, scale, rotation, and audio reactivity. |
+| **Circular Spectrum** | Displays a circular audio spectrum analyzer with customizable bands, colors, and animation. |
+| **Clair Obscur** | Applies dramatic chiaroscuro lighting with strong contrast and stylized shadows. |
+| **Color Balancer** | Adjusts scene color balance with independent controls for shadows, midtones, and highlights. |
+| **Digital Artifacts** | Simulates digital compression artifacts, blockiness, and color banding. |
+| **Dust Motes** | Adds floating dust motes and particles with customizable density, size, and animation. |
+| **Focused Chaos** | Swirling cosmic vortex/black hole effect with animated noise and artistic controls. |
+| **Motion Focus** | Automatic motion-based camera focus and zoom using inter-frame motion analysis. |
+| **Motion Trails** | Creates trailing motion blur effects for moving objects or the entire scene. |
+| **Radial Lens Distortion** | Emulates radial and lens-specific distortions including blur, chromatic aberration, and geometric warping. |
+| **Radiant Fire** | Simulates radiant, glowing fire with animated flames and color gradients. |
+| **Rainy Window** | Simulates raindrops and streaks on a window with refraction and blur effects. |
+| **Screen Ring** | Draws animated rings or circular overlays with customizable size, color, and animation. |
+| **Sparkle Bloom** | Adds sparkling bloom highlights with animated glints and color controls. |
+| **Spectrum Ring** | Visualizes audio spectrum as a ring with customizable bands, colors, and animation. |
+| **Stencil Mask** | Applies a stencil mask for selective effect application with shape and position controls. |
+| **Tilted Grid** | Draws a tilted, animated grid overlay with customizable angle, spacing, and color. |
+| **Volumetric Light** | Simulates volumetric light rays and god rays with customizable source, color, and intensity. |
+| **VUMeter** | Displays a classic VU meter with audio-reactive bars and customizable appearance. |
+| **Warp Distort** | Applies animated warp distortion with customizable strength, direction, and speed. |
+| **Water Surface** | Simulates animated water surface with ripples, reflections, and customizable color. |
 
 ---
 
@@ -150,8 +156,8 @@ AS-StageFX includes both original shaders and adaptations from various sources a
 **For detailed attribution information**, see: **[AS_StageFX_Credits.md](AS_StageFX_Credits.md)**
 
 This comprehensive credits document includes:
-- **29 adapted shaders** with full attribution to original creators
-- **19 original works** created specifically for AS-StageFX
+- ** adapted shaders** with full attribution to original creators
+- ** original works** created specifically for AS-StageFX
 - **Complete source links** and licensing information
 - **Categorized sources**: Shadertoy, Godot, Art of Code, and other GLSL communities
 
