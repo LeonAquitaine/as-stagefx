@@ -3,27 +3,27 @@
  * License: Creative Commons Attribution 4.0 International
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
  * * ===================================================================================
- *
- * DESCRIPTION:
+ * * DESCRIPTION:
  * Renders a visual arc segment that points toward the direction of audio panning,
  * helping users identify where sound is coming from during gameplay. The arc appears
  * around the center of the screen with its orientation based on audio pan (center pan = up).
- * Audio modifiers are now additive. Reactivity is disabled by setting the source to "Off".
+ * Colors are driven by the AS StageFX palette system with optional audio-reactive color selection.
  *
  * FEATURES:
  * - Real-time audio direction visualization using stereo panning data
  * - Audio-reactive arc length, thickness, and opacity (additive modifiers)
- * - Customizable colors and visual styling
+ * - Integrated AS StageFX palette system with custom palette support
+ * - Audio-driven color selection along the palette spectrum
  * - Multiple blend modes for different visual integration needs
  * - Usability-focused design for gameplay assistance (e.g., similar to Fortnite's visual sound effects)
- *
- * IMPLEMENTATION OVERVIEW:
+ * * IMPLEMENTATION OVERVIEW:
  * 1. Uses AS_getAudioDirectionRadians() to determine audio direction.
  * 2. Converts screen coordinates to polar coordinates centered on screen.
  * 3. Renders arc segment based on calculated audio direction and parameters.
  * 4. Applies audio reactivity to visual properties for dynamic feedback.
- * 5. Correctly handles aspect ratio for distance and angle calculations.
- * 6. Implements robust arc drawing with soft edges.
+ * 5. Uses AS StageFX palette system for color selection with optional audio-driven interpolation.
+ * 6. Correctly handles aspect ratio for distance and angle calculations.
+ * 7. Implements robust arc drawing with soft edges.
  *
  * ===================================================================================
  */
@@ -37,7 +37,8 @@
 // ============================================================================
 // INCLUDES
 // ============================================================================
-#include "AS_Utils.1.fxh" // Assuming this is the corrected version with AS_applyAudioReactivityEx
+#include "AS_Utils.1.fxh"
+#include "AS_Palette.1.fxh"
 
 // ============================================================================
 // CONSTANTS
@@ -81,25 +82,31 @@ static const float INTENSITY_AUDIO_MULT_DEFAULT = 0.8;
 // UI DECLARATIONS
 // ============================================================================
 
-// --- Arc Shape Category ---
-uniform float ArcRadius < ui_type = "slider"; ui_label = "Arc Radius"; ui_tooltip = "Distance from screen center (normalized to screen height/2). 0.25 is 25% from center."; ui_min = ARC_RADIUS_MIN; ui_max = ARC_RADIUS_MAX; ui_step = 0.005; ui_category = "Arc Shape"; > = ARC_RADIUS_DEFAULT;
-uniform float BaseArcLengthDegrees < ui_type = "slider"; ui_label = "Base Arc Span"; ui_tooltip = "Base angular span of the arc segment in degrees. Audio effect is added to this."; ui_min = ARC_LENGTH_MIN; ui_max = ARC_LENGTH_MAX; ui_step = 1.0; ui_category = "Arc Shape"; > = ARC_LENGTH_BASE_DEFAULT;
-uniform float BaseThickness < ui_type = "slider"; ui_label = "Base Thickness"; ui_tooltip = "Base thickness of the arc (normalized to screen height/2). Audio effect is added to this."; ui_min = ARC_THICKNESS_MIN; ui_max = ARC_THICKNESS_MAX; ui_step = 0.001; ui_category = "Arc Shape"; > = ARC_THICKNESS_BASE_DEFAULT;
-uniform float BaseIntensity < ui_type = "slider"; ui_label = "Base Opacity"; ui_tooltip = "Base opacity of the arc. Audio effect is added to this."; ui_min = ARC_INTENSITY_MIN; ui_max = ARC_INTENSITY_MAX; ui_step = 0.01; ui_category = "Arc Shape"; > = ARC_INTENSITY_BASE_DEFAULT;
+// --- Arc Positioning ---
+uniform float ArcRadius < ui_type = "slider"; ui_label = "Distance from Center"; ui_tooltip = "How far from the center of the screen the arc appears"; ui_min = ARC_RADIUS_MIN; ui_max = ARC_RADIUS_MAX; ui_step = 0.005; ui_category = "Arc Position"; > = ARC_RADIUS_DEFAULT;
 
-// --- Appearance Category ---
-uniform float3 ArcColor < ui_type = "color"; ui_label = "Arc Color"; ui_tooltip = "Color of the audio direction arc."; ui_category = "Appearance"; > = float3(0.8, 0.9, 1.0); 
-uniform float EdgeSoftness < ui_type = "slider"; ui_label = "Edge Softness"; ui_tooltip = "General softness for arc edges (normalized screen units)."; ui_min = EDGE_SOFTNESS_MIN; ui_max = EDGE_SOFTNESS_MAX; ui_step = 0.001; ui_category = "Appearance"; > = EDGE_SOFTNESS_DEFAULT;
+// --- Arc Style ---
+uniform float BaseArcLengthDegrees < ui_type = "slider"; ui_label = "Arc Length"; ui_tooltip = "Base length of the arc in degrees"; ui_min = ARC_LENGTH_MIN; ui_max = ARC_LENGTH_MAX; ui_step = 1.0; ui_category = "Arc Style"; > = ARC_LENGTH_BASE_DEFAULT;
+uniform float BaseThickness < ui_type = "slider"; ui_label = "Arc Thickness"; ui_tooltip = "Base thickness of the arc line"; ui_min = ARC_THICKNESS_MIN; ui_max = ARC_THICKNESS_MAX; ui_step = 0.001; ui_category = "Arc Style"; > = ARC_THICKNESS_BASE_DEFAULT;
+uniform float BaseIntensity < ui_type = "slider"; ui_label = "Base Opacity"; ui_tooltip = "Base visibility of the arc"; ui_min = ARC_INTENSITY_MIN; ui_max = ARC_INTENSITY_MAX; ui_step = 0.01; ui_category = "Arc Style"; > = ARC_INTENSITY_BASE_DEFAULT;
+uniform float EdgeSoftness < ui_type = "slider"; ui_label = "Edge Softness"; ui_tooltip = "How soft the edges of the arc appear"; ui_min = EDGE_SOFTNESS_MIN; ui_max = EDGE_SOFTNESS_MAX; ui_step = 0.001; ui_category = "Arc Style"; > = EDGE_SOFTNESS_DEFAULT;
 
-// --- Audio Reactivity Category ---
-AS_AUDIO_UI(LengthAudioSource, "Arc Span Audio Source", AS_AUDIO_VOLUME, "Audio Reactivity")
-uniform float LengthAudioMult < ui_type = "slider"; ui_label = "Span Audio Add Amount"; ui_tooltip = "Degrees to add to arc span based on audio (AudioSignal * Multiplier)."; ui_min = LENGTH_AUDIO_MULT_MIN; ui_max = LENGTH_AUDIO_MULT_MAX; ui_step = 1.0; ui_category = "Audio Reactivity"; > = LENGTH_AUDIO_MULT_DEFAULT;
+// --- Palette & Colors ---
+AS_PALETTE_SELECTION_UI(PaletteIndex, "Color Palette", 1, "Palette & Colors")
+AS_DECLARE_CUSTOM_PALETTE(Arc, "Palette & Colors")
+uniform float ColorInterpolation < ui_type = "slider"; ui_label = "Color Position"; ui_tooltip = "Position along the palette to sample colors from (0=first color, 1=last color)"; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Palette & Colors"; > = 0.5;
+AS_AUDIO_UI(ColorAudioSource, "Color Audio Source", AS_AUDIO_VOLUME, "Palette & Colors")
+uniform float ColorAudioMult < ui_type = "slider"; ui_label = "Color Audio Multiplier"; ui_tooltip = "How much audio affects color position along the palette"; ui_min = 0.0; ui_max = 2.0; ui_step = 0.01; ui_category = "Palette & Colors"; > = 1.0;
+
+// --- Audio Reactivity ---
+AS_AUDIO_UI(LengthAudioSource, "Length Audio Source", AS_AUDIO_VOLUME, "Audio Reactivity")
+uniform float LengthAudioMult < ui_type = "slider"; ui_label = "Length Boost"; ui_tooltip = "How much audio extends the arc length"; ui_min = LENGTH_AUDIO_MULT_MIN; ui_max = LENGTH_AUDIO_MULT_MAX; ui_step = 1.0; ui_category = "Audio Reactivity"; > = LENGTH_AUDIO_MULT_DEFAULT;
 
 AS_AUDIO_UI(ThicknessAudioSource, "Thickness Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
-uniform float ThicknessAudioMult < ui_type = "slider"; ui_label = "Thickness Audio Add Amount"; ui_tooltip = "Amount to add to arc thickness based on audio (AudioSignal * Multiplier)."; ui_min = THICKNESS_AUDIO_MULT_MIN; ui_max = THICKNESS_AUDIO_MULT_MAX; ui_step = 0.001; ui_category = "Audio Reactivity"; > = THICKNESS_AUDIO_MULT_DEFAULT;
+uniform float ThicknessAudioMult < ui_type = "slider"; ui_label = "Thickness Boost"; ui_tooltip = "How much audio thickens the arc"; ui_min = THICKNESS_AUDIO_MULT_MIN; ui_max = THICKNESS_AUDIO_MULT_MAX; ui_step = 0.001; ui_category = "Audio Reactivity"; > = THICKNESS_AUDIO_MULT_DEFAULT;
 
-AS_AUDIO_UI(IntensityAudioSource, "Opacity Audio Source", AS_AUDIO_SOLID, "Audio Reactivity") // Default Solid for consistent additive opacity unless changed
-uniform float IntensityAudioMult < ui_type = "slider"; ui_label = "Opacity Audio Add Amount"; ui_tooltip = "Amount to add to arc opacity based on audio (AudioSignal * Multiplier)."; ui_min = INTENSITY_AUDIO_MULT_MIN; ui_max = INTENSITY_AUDIO_MULT_MAX; ui_step = 0.01; ui_category = "Audio Reactivity"; > = INTENSITY_AUDIO_MULT_DEFAULT;
+AS_AUDIO_UI(IntensityAudioSource, "Opacity Audio Source", AS_AUDIO_SOLID, "Audio Reactivity")
+uniform float IntensityAudioMult < ui_type = "slider"; ui_label = "Opacity Boost"; ui_tooltip = "How much audio brightens the arc"; ui_min = INTENSITY_AUDIO_MULT_MIN; ui_max = INTENSITY_AUDIO_MULT_MAX; ui_step = 0.01; ui_category = "Audio Reactivity"; > = INTENSITY_AUDIO_MULT_DEFAULT;
 
 // --- Final Mix Category ---
 AS_BLENDMODE_UI_DEFAULT(BlendMode, 0) 
@@ -108,6 +115,26 @@ AS_BLENDAMOUNT_UI(BlendStrength)
 // ============================================================================
 // HELPER FUNCTIONS
 // ============================================================================
+
+/**
+ * Gets the arc color based on palette selection and interpolation settings
+ */
+float3 getArcColor(float audioIntensity) {
+    float colorPosition = ColorInterpolation;
+    
+    // Use audio intensity to drive color position if audio source is enabled
+    if (ColorAudioSource != AS_AUDIO_OFF) {
+        colorPosition = saturate(audioIntensity * ColorAudioMult);
+    }
+    
+    // Handle custom palette (index 0)
+    if (PaletteIndex == AS_PALETTE_CUSTOM) {
+        return AS_GET_INTERPOLATED_CUSTOM_COLOR(Arc, colorPosition);
+    }
+    
+    // Use built-in palette
+    return AS_getInterpolatedColor(PaletteIndex, colorPosition);
+}
 
 /**
  * Calculates the arc mask for the audio direction visualization
@@ -158,20 +185,22 @@ float4 AudioDirectionPS(float4 position : SV_Position, float2 texcoord : TEXCOOR
     float audio_pan_direction_rad = AS_getAudioDirectionRadians(); 
     
     // Apply audio reactivity to parameters (additive mode = 1)
-    // The 'true' flag to AS_applyAudioReactivityEx is kept; disabling is now via AS_AUDIO_OFF source.
     float current_arc_span_deg = AS_applyAudioReactivityEx(BaseArcLengthDegrees, LengthAudioSource, LengthAudioMult, true, 1);
     current_arc_span_deg = clamp(current_arc_span_deg, ARC_LENGTH_MIN, ARC_LENGTH_MAX);
 
     float current_thickness = AS_applyAudioReactivityEx(BaseThickness, ThicknessAudioSource, ThicknessAudioMult, true, 1);
-    current_thickness = clamp(current_thickness, ARC_THICKNESS_MIN, ARC_THICKNESS_MAX);
+    current_thickness = clamp(current_thickness, ARC_THICKNESS_MIN, ARC_THICKNESS_MAX);    float current_intensity = AS_applyAudioReactivityEx(BaseIntensity, IntensityAudioSource, IntensityAudioMult, true, 1);
+    current_intensity = saturate(current_intensity);
 
-    float current_intensity = AS_applyAudioReactivityEx(BaseIntensity, IntensityAudioSource, IntensityAudioMult, true, 1);
-    current_intensity = saturate(current_intensity); // Opacity should be 0-1
-
+    // Get audio intensity for color calculation
+    float audio_for_color = AS_getAudioSource(ColorAudioSource);
+    
+    // Calculate arc color using palette system
+    float3 arc_color = getArcColor(audio_for_color);
     
     float arc_mask_value = calculateArcVisualMask(texcoord, audio_pan_direction_rad, current_arc_span_deg, ArcRadius, current_thickness, EdgeSoftness);
     
-    float4 arc_primitive_color = float4(ArcColor, saturate(arc_mask_value * current_intensity));
+    float4 arc_primitive_color = float4(arc_color, saturate(arc_mask_value * current_intensity));
     
     float4 result = AS_applyBlend(arc_primitive_color, backdrop_color, BlendMode, BlendStrength);
     
