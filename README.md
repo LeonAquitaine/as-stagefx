@@ -40,7 +40,7 @@ AS-StageFX provides a collection of performant, customizable, and audio-reactive
 
 ## Available Shaders
 
-AS-StageFX includes **52 shaders** across four categories: **25 Background (BGX)**, **4 Graphic (GFX)**, **3 Lighting (LFX)**, and **20 Visual (VFX)** effects.
+AS-StageFX includes **52 shaders** across four categories: **25 Background (BGX)**, **5 Graphic (GFX)**, **3 Lighting (LFX)**, and **20 Visual (VFX)** effects.
 
 **Detailed descriptions and examples: [Shader Gallery](docs/gallery.md).**
 
@@ -90,6 +90,7 @@ Shaders are marked with an icon to give a general idea of their processing inten
 | ---------------------- | ---------------------------------------------------------------------------------------------------------- |
 | **AS_GFX_AspectRatio** ✨ | A versatile aspect ratio framing tool designed to help position subjects for social media posts, photography, and video composition. Features preset aspect ratios for common social media and photography formats (1:1, 16:9, 4:5, etc.), custom aspect ratio input, adjustable clipped area color and opacity, and other helper functions. Perfect for precise subject positioning and consistent framing across platforms. |
 | **AS_GFX_AudioDirection** ✨ | Renders a visual arc segment that points toward the direction of audio panning, helping users identify where sound is coming from during gameplay. Features real-time audio direction visualization using stereo panning data, audio-reactive arc length/thickness/intensity, and customizable colors. Perfect for gameplay assistance and spatial audio awareness. |
+| **AS_GFX_CinematicDiffusion** 💀 | High-quality cinematic diffusion/bloom filter with 8 classic presets and a fully customizable mode. **Custom controls (threshold, knee, intensity, radius, contrast, tint, etc.) are only active when Filter Preset is set to 'Custom'.** UI guidance is provided in the shader. |
 | **AS_GFX_HandDrawing** 💀 | Transforms the scene into a stylized hand-drawn sketch with distinct linework. Features sophisticated line generation with customizable stroke directions and length and textured fills based on original image colors with noise-based variation. Perfect for artistic transformations, comic/manga styles, or technical illustrations. |
 | **AS_GFX_MultiLayerHalftone** ✨| Highly customizable multi-layer halftone (up to 4 layers) with various patterns, isolation methods, and blending options. |
 | **AS_GFX_VignettePlus** ✨ | Advanced vignette effect with customizable shape, color, animation, blur, and audio reactivity. |
