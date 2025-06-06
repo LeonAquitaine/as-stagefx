@@ -1,21 +1,5 @@
 [
   {
-    "name": "Aspect Ratio",
-    "filename": "AS_GFX_AspectRatio.1.fx",
-    "type": "GFX",
-    "shortDescription": "A versatile aspect ratio framing tool for subject positioning and composition.",
-    "longDescription": "A versatile aspect ratio framing tool designed to help position subjects for social media posts, photography, and video composition. Features preset aspect ratios for common social media and photography formats (1:1, 16:9, 4:5, etc.), custom aspect ratio input, adjustable clipped area color and opacity, optional composition guides (rule of thirds, golden ratio, center lines), horizontal/vertical alignment controls, and adjustable border appearance. Perfect for precise subject positioning and consistent framing across platforms.",
-    "imageUrl": "https://github.com/user-attachments/assets/6c622f56-edf8-4dc7-a18d-52995e846237"
-  },
-  {
-    "name": "Audio Direction",
-    "filename": "AS_GFX_AudioDirection.1.fx",
-    "type": "GFX",
-    "shortDescription": "Visualizes audio directionality as animated arrows or indicators, ideal for music-driven scenes or overlays.",
-    "longDescription": "Displays animated arrows or indicators that visualize the directionality of audio sources in real time. Features customizable arrow count, size, color, and animation speed. Supports audio reactivity for direction, magnitude, and color. Useful for music visualizations, DJ overlays, or any scene where audio direction feedback is desired.",
-    "imageUrl": "https://github.com/user-attachments/assets/placeholder-audiodirection"
-  },
-  {
     "name": "Blue Corona",
     "filename": "AS_BGX_BlueCorona.1.fx",
     "type": "BGX",
@@ -26,74 +10,6 @@
       "description": "Inspired by the 'Blue Corona' shader by @shaderartist.",
       "externalUrl": "https://www.shadertoy.com/view/ldX3z4"
     }
-  },
-  {
-    "name": "Boom Sticker",
-    "filename": "AS_VFX_BoomSticker.1.fx",
-    "type": "VFX",
-    "shortDescription": "Displays a texture overlay ('sticker') with controls for placement, scale, rotation, and audio reactivity.",
-    "longDescription": "Displays a texture overlay ('sticker') with controls for placement, scale, rotation, and audio reactivity. Features customizable depth masking and support for custom textures. Ideal for adding dynamic, music-responsive overlays.",
-    "imageUrl": "https://github.com/user-attachments/assets/ee8e98b8-198b-4a65-a40d-032eca60dcc5",
-    "credits": {
-      "description": "Heavily inspired by 'StageDepth.fx' by Marot Satil (2019), original depth masking implementation.",
-      "externalUrl": "https://github.com/marotsatil/StageDepth"
-    }
-  },
-  {
-    "name": "Brush Stroke",
-    "filename": "AS_GFX_BrushStroke.1.fx",
-    "type": "GFX",
-    "shortDescription": "Transforms the scene with painterly brush stroke textures and dynamic, layered paint effects.",
-    "longDescription": "Applies painterly brush stroke textures to the scene, simulating layered paint effects. Features customizable brush size, direction, density, and color blending. Includes animation controls for evolving brush patterns and supports palette-based colorization. Ideal for artistic transformations and stylized overlays.",
-    "imageUrl": "https://github.com/user-attachments/assets/placeholder-brushstroke"
-  },
-  {
-    "name": "Candle Flame",
-    "filename": "AS_LFX_CandleFlame.1.fx",
-    "type": "LFX",
-    "shortDescription": "Simulates a realistic, animated candle flame with flicker, glow, and color controls.",
-    "longDescription": "Renders a realistic animated candle flame with natural flicker and glow. Features customizable flame shape, color, flicker speed, and intensity. Includes controls for flame position, scale, and blending. Ideal for atmospheric lighting and cozy scene effects.",
-    "imageUrl": "https://github.com/user-attachments/assets/placeholder-candleflame"
-  },
-  {
-    "name": "Cinematic Diffusion",
-    "filename": "AS_GFX_CinematicDiffusion.1.fx",
-    "type": "GFX",
-    "shortDescription": "High-quality cinematic diffusion/bloom filter with 8 classic presets and a fully customizable mode.",
-    "longDescription": "A high-quality cinematic diffusion/bloom filter that replicates classic film diffusion looks. Features 8 built-in presets (Pro-Mist, Hollywood Black Magic, etc.) and a fully customizable mode. Multi-pass downsampling ensures smooth, natural glows. Ideal for virtual photography and cinematic shots.",
-    "imageUrl": ""
-  },
-  {
-    "name": "Circular Spectrum",
-    "filename": "AS_VFX_CircularSpectrum.1.fx",
-    "type": "VFX",
-    "shortDescription": "Displays a circular audio spectrum analyzer with customizable bands, colors, and animation.",
-    "longDescription": "Visualizes audio frequencies as a circular spectrum analyzer. Features adjustable band count, radius, thickness, color palette, and animation speed. Supports audio reactivity for dynamic, music-driven visuals. Ideal for overlays, music videos, and live performances.",
-    "imageUrl": "https://github.com/user-attachments/assets/placeholder-circularspectrum",
-    "credits": {
-      "description": "Based on 'Circular audio visualizer' by AIandDesign.",
-      "externalUrl": "https://www.shadertoy.com/view/tcyGW1"
-    }
-  },
-  {
-    "name": "Clair Obscur",
-    "filename": "AS_VFX_ClairObscur.1.fx",
-    "type": "VFX",
-    "shortDescription": "Applies dramatic chiaroscuro lighting with strong contrast and stylized shadows.",
-    "longDescription": "Simulates dramatic chiaroscuro (light-dark) lighting, emphasizing strong contrast and stylized shadows. Features controls for light direction, intensity, shadow softness, and color tint. Useful for artistic, cinematic, or moody scene transformations.",
-    "imageUrl": "https://github.com/user-attachments/assets/placeholder-clairobscur",
-    "credits": {
-      "description": "Based on '[RGR] Hearts' by deeplo.",
-      "externalUrl": "https://www.shadertoy.com/view/ttcBRs"
-    }
-  },
-  {
-    "name": "Color Balancer",
-    "filename": "AS_VFX_ColorBalancer.1.fx",
-    "type": "VFX",
-    "shortDescription": "Adjusts scene color balance with independent controls for shadows, midtones, and highlights.",
-    "longDescription": "Provides precise color grading by adjusting the balance of shadows, midtones, and highlights independently. Features controls for lift, gamma, gain, and color wheels. Useful for creative color correction and stylized looks.",
-    "imageUrl": "https://github.com/user-attachments/assets/placeholder-colorbalancer"
   },
   {
     "name": "Constellation",
@@ -132,14 +48,6 @@
     }
   },
   {
-    "name": "Digital Artifacts",
-    "filename": "AS_VFX_DigitalArtifacts.1.fx",
-    "type": "VFX",
-    "shortDescription": "Simulates digital compression artifacts, blockiness, and color banding.",
-    "longDescription": "Applies digital compression artifacts such as blockiness, color banding, and quantization noise. Features adjustable artifact strength, block size, and color depth. Useful for retro, glitch, or degraded video effects.",
-    "imageUrl": "https://github.com/user-attachments/assets/placeholder-digitalartifacts"
-  },
-  {
     "name": "Digital Brain",
     "filename": "AS_BGX_DigitalBrain.1.fx",
     "type": "BGX",
@@ -150,14 +58,6 @@
       "description": "Voronoi pattern logic based on @neuralnet's open-source GLSL example.",
       "externalUrl": "https://www.shadertoy.com/view/4dXcWn"
     }
-  },
-  {
-    "name": "Dust Motes",
-    "filename": "AS_VFX_DustMotes.1.fx",
-    "type": "VFX",
-    "shortDescription": "Adds floating dust motes and particles with customizable density, size, and animation.",
-    "longDescription": "Simulates floating dust motes and particles drifting through the scene. Features controls for particle density, size, speed, color, and depth of field. Includes animation and blending options for subtle atmospheric enhancement.",
-    "imageUrl": "https://github.com/user-attachments/assets/placeholder-dustmotes"
   },
   {
     "name": "Fluorescent",
@@ -172,31 +72,12 @@
     }
   },
   {
-    "filename": "AS_VFX_FocusedChaos.1.fx",
-    "type": "VFX",
-    "name": "Focused Chaos",
-    "shortDescription": "Swirling cosmic vortex/black hole effect with animated noise and artistic controls.",
-    "longDescription": "Creates a visually complex and dynamic abstract effect resembling a focused point of chaotic energy or a swirling cosmic vortex. Patterns are generated using 3D Simplex noise and Fractional Brownian Motion (FBM), with colors evolving based on noise patterns and spatial coordinates, animated over time. Features transparent background, customizable animation, artistic controls for swirl/noise/color/alpha, dithering, domain warping, and standard AS-StageFX depth/blending controls."
-  },
-  {
     "name": "Golden Clockwork",
     "filename": "AS_BGX_GoldenClockwork.1.fx",
     "type": "BGX",
     "shortDescription": "Intricate, animated golden clockwork or Apollonian fractal patterns.",
     "longDescription": "Renders a mesmerizing and intricate animated background effect reminiscent of golden clockwork mechanisms or Apollonian gasket-like fractal patterns. The effect features complex, evolving geometric designs with a characteristic golden color palette. Features procedurally generated Apollonian fractal patterns, dynamic animation driven by time, a golden color scheme with lighting and shading effects, depth-like progression through fractal layers, kaleidoscopic and mirroring options for pattern variation, resolution-independent rendering, and UI controls for animation (speed, keyframe, path speed), palette, fractal/kaleidoscope parameters, audio reactivity, stage controls (position, scale, rotation, depth), and blending.",
     "imageUrl": "https://github.com/user-attachments/assets/583dfe11-c8b6-4e34-ad79-35d875ce32c6"
-  },
-  {
-    "name": "Hand Drawing",
-    "filename": "AS_GFX_HandDrawing.1.fx",
-    "type": "GFX",
-    "shortDescription": "Transforms the scene into a stylized hand-drawn sketch with distinct linework.",
-    "longDescription": "Transforms your scene into a stylized hand-drawn sketch or technical ink illustration with distinct linework and cross-hatching patterns. Features sophisticated line generation with customizable stroke directions and length, textured fills based on original image colors with noise-based variation, animated 'wobble' effect for an authentic hand-drawn feel, optional paper-like background pattern, depth-aware rendering with standard blending, and comprehensive controls for fine-tuning every aspect of the effect. Perfect for artistic transformations, comic/manga styles, or technical illustrations.",
-    "imageUrl": "https://github.com/user-attachments/assets/4074ac6b-a385-4e0f-9d9a-c4d5dd0117cd",
-    "credits": {
-      "description": "Based on 'notebook drawings' by Flockaroo (2016).",
-      "externalUrl": "https://www.shadertoy.com/view/XtVGD1"
-    }
   },
   {
     "name": "Kaleidoscope",
@@ -209,14 +90,6 @@
       "description": "Inspired by 'Shader Art Coding Introduction' by kishimisu.",
       "externalUrl": "https://youtu.be/f4s1h2YETNY"
     }
-  },
-  {
-    "name": "Laser Show",
-    "filename": "AS_LFX_LaserShow.1.fx",
-    "type": "LFX",
-    "shortDescription": "Projects animated laser beams and patterns with customizable color, speed, and audio reactivity.",
-    "longDescription": "Projects animated laser beams and geometric patterns onto the stage. Features customizable beam count, color, speed, and spread. Supports audio reactivity for beam movement and intensity. Includes controls for rotation, position, and blending. Perfect for concert, club, or sci-fi lighting effects.",
-    "imageUrl": "https://github.com/user-attachments/assets/placeholder-lasershow"
   },
   {
     "name": "Light Ripples",
@@ -283,33 +156,6 @@
     }
   },
   {
-    "filename": "AS_VFX_MotionFocus.1.fx",
-    "type": "VFX",
-    "name": "Motion Focus",
-    "shortDescription": "Automatic motion-based camera focus and zoom using inter-frame motion analysis.",
-    "longDescription": "Analyzes inter-frame motion differences to dynamically adjust the viewport, zooming towards and centering on areas of detected movement. Uses a multi-pass approach to capture frames, detect motion, analyze motion distribution in quadrants, and apply a corresponding camera transformation with motion-centered zoom. Features multi-pass motion analysis, temporal smoothing, adaptive decay, quadrant-based aggregation, dynamic zoom/focus, and debug visualization."
-  },
-  {
-    "name": "Motion Trails",
-    "filename": "AS_VFX_MotionTrails.1.fx",
-    "type": "VFX",
-    "shortDescription": "Creates trailing motion blur effects for moving objects or the entire scene.",
-    "longDescription": "Applies trailing motion blur to moving objects or the whole scene. Features adjustable trail length, direction, fade, and blending. Useful for simulating speed, action, or ghosting effects in dynamic scenes.",
-    "imageUrl": "https://github.com/user-attachments/assets/placeholder-motiontrails"
-  },
-  {
-    "name": "MultiLayer Halftone",
-    "filename": "AS_GFX_MultiLayerHalftone.1.fx",
-    "type": "GFX",
-    "shortDescription": "Highly customizable multi-layer halftone (up to 4 layers) with various patterns, isolation methods, and blending options.",
-    "longDescription": "Creates a highly customizable multi-layer halftone effect with support for up to four independent layers. Each layer can use different pattern types (dots, lines, crosshatch), isolation methods (brightness, RGB, hue, depth), colors, thresholds, scales, densities, and angles. Features layer blending with transparency support.",
-    "imageUrl": "https://github.com/user-attachments/assets/b93c9d03-5d23-4b32-aa3e-f2b6a9736c70",
-    "credits": {
-      "description": "Based on 'Halftone Shader' by P. Gonzalez Vivo.",
-      "externalUrl": "https://www.shadertoy.com/view/XdcGzn"
-    }
-  },
-  {
     "name": "Past Racer",
     "filename": "AS_BGX_PastRacer.1.fx",
     "type": "BGX",
@@ -350,33 +196,6 @@
     "imageUrl": "https://github.com/user-attachments/assets/placeholder-image"
   },
   {
-    "filename": "AS_VFX_RadialLensDistortion.1.fx",
-    "type": "VFX",
-    "name": "Radial Lens Distortion",
-    "shortDescription": "Emulates radial and lens-specific distortions including blur, chromatic aberration, and geometric warping.",
-    "longDescription": "Simulates various lens distortions including tangential (rotational) blur, chromatic aberration (tangential or horizontal), and geometric barrel/pincushion distortion. Effects are strongest at the edges and diminish towards a configurable center point. Includes presets for emulating specific lens characteristics, plus global strength and focus falloff controls. Ensures consistent effect visibility regardless of source alpha by controlling alpha during blending."
-  },
-  {
-    "name": "Radiant Fire",
-    "filename": "AS_VFX_RadiantFire.1.fx",
-    "type": "VFX",
-    "shortDescription": "Simulates radiant, glowing fire with animated flames and color gradients.",
-    "longDescription": "Generates radiant, glowing fire effects with animated flames and customizable color gradients. Features controls for flame shape, speed, intensity, and palette. Ideal for magical, fantasy, or atmospheric visuals.",
-    "imageUrl": "https://github.com/user-attachments/assets/placeholder-radiantfire"
-  },
-  {
-    "name": "Rainy Window",
-    "filename": "AS_VFX_RainyWindow.1.fx",
-    "type": "VFX",
-    "shortDescription": "Simulates raindrops and streaks on a window with refraction and blur effects.",
-    "longDescription": "Creates the illusion of raindrops and streaks running down a window, with realistic refraction and blur. Features adjustable rain density, drop size, streak speed, and blending. Perfect for moody, cinematic, or weather-themed scenes.",
-    "imageUrl": "https://github.com/user-attachments/assets/placeholder-rainywindow",
-    "credits": {
-      "description": "Inspired by 'Heartfelt' by Martijn Steinrucken (BigWings).",
-      "externalUrl": "https://www.shadertoy.com/view/ltffzl"
-    }
-  },
-  {
     "name": "Raymarched Chain",
     "filename": "AS_BGX_RaymarchedChain.1.fx",
     "type": "BGX",
@@ -389,44 +208,12 @@
     }
   },
   {
-    "name": "Screen Ring",
-    "filename": "AS_VFX_ScreenRing.1.fx",
-    "type": "VFX",
-    "shortDescription": "Draws animated rings or circular overlays with customizable size, color, and animation.",
-    "longDescription": "Draws animated rings or circular overlays on the screen. Features controls for ring count, size, thickness, color, and animation speed. Useful for HUDs, overlays, or stylized transitions.",
-    "imageUrl": "https://github.com/user-attachments/assets/placeholder-screenring"
-  },
-  {
     "name": "Shine On",
     "filename": "AS_BGX_ShineOn.1.fx",
     "type": "BGX",
     "shortDescription": "Dynamic, evolving fractal noise pattern with bright, sparkly, moving crystal highlights. Audio-reactive and depth-aware.",
     "longDescription": "Creates a dynamic, evolving fractal noise pattern with bright, sparkly crystal highlights that move across the screen. Combines multiple layers of noise with procedural animation for a mesmerizing background effect. Features layered noise patterns with dynamic animation, crystal point highlights with customizable parameters, audio reactivity, and depth-aware rendering.",
     "imageUrl": "https://github.com/user-attachments/assets/50162c8a-4841-4319-b731-d79c15453c7a"
-  },
-  {
-    "name": "Sparkle Bloom",
-    "filename": "AS_VFX_SparkleBloom.1.fx",
-    "type": "VFX",
-    "shortDescription": "Adds sparkling bloom highlights with animated glints and color controls.",
-    "longDescription": "Adds sparkling bloom highlights to bright areas, with animated glints and customizable color. Features controls for sparkle density, size, intensity, and animation. Ideal for magical, festive, or dreamy visuals.",
-    "imageUrl": "https://github.com/user-attachments/assets/placeholder-sparklebloom"
-  },
-  {
-    "name": "Spectrum Ring",
-    "filename": "AS_VFX_SpectrumRing.1.fx",
-    "type": "VFX",
-    "shortDescription": "Visualizes audio spectrum as a ring with customizable bands, colors, and animation.",
-    "longDescription": "Displays an audio spectrum analyzer in a ring format. Features adjustable band count, radius, thickness, color palette, and animation speed. Supports audio reactivity for dynamic, music-driven visuals. Ideal for overlays, music videos, and live performances.",
-    "imageUrl": "https://github.com/user-attachments/assets/placeholder-spectrumring"
-  },
-  {
-    "name": "Stage Spotlights",
-    "filename": "AS_LFX_StageSpotlights.1.fx",
-    "type": "LFX",
-    "shortDescription": "Simulates moving stage spotlights with beam controls, color, and audio reactivity.",
-    "longDescription": "Simulates moving stage spotlights with adjustable beam width, color, intensity, and movement patterns. Features multiple spotlights with independent controls, audio reactivity for movement and brightness, and blending options for integration with other effects. Ideal for live performance and dramatic scene lighting.",
-    "imageUrl": "https://github.com/user-attachments/assets/placeholder-spotlights"
   },
   {
     "name": "Stained Lights",
@@ -441,14 +228,6 @@
     }
   },
   {
-    "name": "Stencil Mask",
-    "filename": "AS_VFX_StencilMask.1.fx",
-    "type": "VFX",
-    "shortDescription": "Applies a stencil mask for selective effect application with shape and position controls.",
-    "longDescription": "Applies a stencil mask to selectively reveal or hide parts of the scene. Features controls for mask shape, size, position, feathering, and blending. Useful for transitions, overlays, or compositing effects.",
-    "imageUrl": "https://github.com/user-attachments/assets/placeholder-stencilmask"
-  },
-  {
     "name": "Sunset Clouds",
     "filename": "AS_BGX_SunsetClouds.1.fx",
     "type": "BGX",
@@ -459,14 +238,6 @@
       "description": "Based on 'Sunset [280]' by Xor.",
       "externalUrl": "https://www.shadertoy.com/view/wXjSRt"
     }
-  },
-  {
-    "name": "Tilted Grid",
-    "filename": "AS_VFX_TiltedGrid.1.fx",
-    "type": "VFX",
-    "shortDescription": "Draws a tilted, animated grid overlay with customizable angle, spacing, and color.",
-    "longDescription": "Draws a tilted, animated grid overlay on the scene. Features controls for grid angle, spacing, line thickness, color, and animation speed. Useful for stylized overlays, retro visuals, or compositional guides.",
-    "imageUrl": "https://github.com/user-attachments/assets/placeholder-tiltedgrid"
   },
   {
     "name": "Time Crystal",
@@ -481,56 +252,12 @@
     }
   },
   {
-    "name": "Vignette Plus",
-    "filename": "AS_GFX_VignettePlus.1.fx",
-    "type": "GFX",
-    "shortDescription": "Advanced vignette effect with customizable shape, color, animation, blur, and audio reactivity.",
-    "longDescription": "A vignette shader that provides multiple visual styles and customizable pattern options, creating directional, controllable vignette effects for stage compositions and scene framing. Perfect for adding mood, focus, or stylistic elements. Features four distinct visual styles (Smooth Gradient, Duotone Circles, Directional Lines perpendicular and parallel), multiple mirroring options (none, edge-based, center-based), precise control over effect coverage with start/end falloff points, and much more. Optimized for performance across various resolutions.",
-    "imageUrl": "https://github.com/user-attachments/assets/bf471099-9c4a-423b-ae1f-fae2f83d924a",
-    "credits": {
-      "description": "Hexagonal grid implementation adapted from 'hexagonal wipe' by blandprix.",
-      "externalUrl": "https://www.shadertoy.com/view/XfjyWG"
-    }
-  },
-  {
-    "name": "Volumetric Light",
-    "filename": "AS_VFX_VolumetricLight.1.fx",
-    "type": "VFX",
-    "shortDescription": "Simulates volumetric light rays and god rays with customizable source, color, and intensity.",
-    "longDescription": "Simulates volumetric light rays (god rays) emanating from a source. Features controls for light position, color, intensity, ray length, and blending. Useful for dramatic, atmospheric, or mystical scene lighting.",
-    "imageUrl": "https://github.com/user-attachments/assets/placeholder-volumetriclight"
-  },
-  {
     "name": "Vortex",
     "filename": "AS_BGX_Vortex.1.fx",
     "type": "BGX",
     "shortDescription": "Psychedelic swirling vortex pattern with animated color, swirl, and brightness controls.",
     "longDescription": "Creates a psychedelic swirling vortex pattern. The effect is animated and features controls for color, animation speed, swirl characteristics, and brightness. Suitable as a dynamic background. Features animated vortex with customizable speed, palette-based coloring, swirl intensity/frequency/sharpness, brightness falloff, and standard AS-StageFX blending and positioning.",
     "imageUrl": ""
-  },
-  {
-    "name": "VUMeter",
-    "filename": "AS_VFX_VUMeter.1.fx",
-    "type": "VFX",
-    "shortDescription": "Displays a classic VU meter with audio-reactive bars and customizable appearance.",
-    "longDescription": "Displays a classic VU meter with audio-reactive bars. Features controls for bar count, orientation, color, peak hold, and animation. Ideal for music visualizations, overlays, and live performance feedback.",
-    "imageUrl": "https://github.com/user-attachments/assets/placeholder-vumeter"
-  },
-  {
-    "name": "Warp Distort",
-    "filename": "AS_VFX_WarpDistort.1.fx",
-    "type": "VFX",
-    "shortDescription": "Applies animated warp distortion with customizable strength, direction, and speed.",
-    "longDescription": "Applies animated warp distortion to the scene. Features controls for distortion strength, direction, speed, and blending. Useful for psychedelic, dreamlike, or transition effects.",
-    "imageUrl": "https://github.com/user-attachments/assets/placeholder-warpdistort"
-  },
-  {
-    "name": "Water Surface",
-    "filename": "AS_VFX_WaterSurface.1.fx",
-    "type": "VFX",
-    "shortDescription": "Simulates animated water surface with ripples, reflections, and customizable color.",
-    "longDescription": "Simulates an animated water surface with dynamic ripples, reflections, and customizable color. Features controls for wave speed, amplitude, direction, and reflection intensity. Useful for aquatic, dreamy, or atmospheric effects.",
-    "imageUrl": "https://github.com/user-attachments/assets/placeholder-watersurface"
   },
   {
     "name": "Wavy Squares",
@@ -567,5 +294,278 @@
       "description": "Based on 'Zippy Zaps' by SnoopethDuckDuck.",
       "externalUrl": "https://www.shadertoy.com/view/XXyGzh"
     }
+  },
+  {
+    "name": "Aspect Ratio",
+    "filename": "AS_GFX_AspectRatio.1.fx",
+    "type": "GFX",
+    "shortDescription": "A versatile aspect ratio framing tool for subject positioning and composition.",
+    "longDescription": "A versatile aspect ratio framing tool designed to help position subjects for social media posts, photography, and video composition. Features preset aspect ratios for common social media and photography formats (1:1, 16:9, 4:5, etc.), custom aspect ratio input, adjustable clipped area color and opacity, optional composition guides (rule of thirds, golden ratio, center lines), horizontal/vertical alignment controls, and adjustable border appearance. Perfect for precise subject positioning and consistent framing across platforms.",
+    "imageUrl": "https://github.com/user-attachments/assets/6c622f56-edf8-4dc7-a18d-52995e846237"
+  },
+  {
+    "name": "Audio Direction",
+    "filename": "AS_GFX_AudioDirection.1.fx",
+    "type": "GFX",
+    "shortDescription": "Visualizes audio directionality as animated arrows or indicators, ideal for music-driven scenes or overlays.",
+    "longDescription": "Displays animated arrows or indicators that visualize the directionality of audio sources in real time. Features customizable arrow count, size, color, and animation speed. Supports audio reactivity for direction, magnitude, and color. Useful for music visualizations, DJ overlays, or any scene where audio direction feedback is desired.",
+    "imageUrl": "https://github.com/user-attachments/assets/placeholder-audiodirection"
+  },
+  {
+    "name": "Brush Stroke",
+    "filename": "AS_GFX_BrushStroke.1.fx",
+    "type": "GFX",
+    "shortDescription": "Transforms the scene with painterly brush stroke textures and dynamic, layered paint effects.",
+    "longDescription": "Applies painterly brush stroke textures to the scene, simulating layered paint effects. Features customizable brush size, direction, density, and color blending. Includes animation controls for evolving brush patterns and supports palette-based colorization. Ideal for artistic transformations and stylized overlays.",
+    "imageUrl": "https://github.com/user-attachments/assets/placeholder-brushstroke"
+  },
+  {
+    "name": "Cinematic Diffusion",
+    "filename": "AS_GFX_CinematicDiffusion.1.fx",
+    "type": "GFX",
+    "shortDescription": "High-quality cinematic diffusion/bloom filter with 8 classic presets and a fully customizable mode.",
+    "longDescription": "A high-quality cinematic diffusion/bloom filter that replicates classic film diffusion looks. Features 8 built-in presets (Pro-Mist, Hollywood Black Magic, etc.) and a fully customizable mode. Multi-pass downsampling ensures smooth, natural glows. Ideal for virtual photography and cinematic shots.",
+    "imageUrl": ""
+  },
+  {
+    "name": "Hand Drawing",
+    "filename": "AS_GFX_HandDrawing.1.fx",
+    "type": "GFX",
+    "shortDescription": "Transforms the scene into a stylized hand-drawn sketch with distinct linework.",
+    "longDescription": "Transforms your scene into a stylized hand-drawn sketch or technical ink illustration with distinct linework and cross-hatching patterns. Features sophisticated line generation with customizable stroke directions and length, textured fills based on original image colors with noise-based variation, animated 'wobble' effect for an authentic hand-drawn feel, optional paper-like background pattern, depth-aware rendering with standard blending, and comprehensive controls for fine-tuning every aspect of the effect. Perfect for artistic transformations, comic/manga styles, or technical illustrations.",
+    "imageUrl": "https://github.com/user-attachments/assets/4074ac6b-a385-4e0f-9d9a-c4d5dd0117cd",
+    "credits": {
+      "description": "Based on 'notebook drawings' by Flockaroo (2016).",
+      "externalUrl": "https://www.shadertoy.com/view/XtVGD1"
+    }
+  },
+  {
+    "name": "MultiLayer Halftone",
+    "filename": "AS_GFX_MultiLayerHalftone.1.fx",
+    "type": "GFX",
+    "shortDescription": "Highly customizable multi-layer halftone (up to 4 layers) with various patterns, isolation methods, and blending options.",
+    "longDescription": "Creates a highly customizable multi-layer halftone effect with support for up to four independent layers. Each layer can use different pattern types (dots, lines, crosshatch), isolation methods (brightness, RGB, hue, depth), colors, thresholds, scales, densities, and angles. Features layer blending with transparency support.",
+    "imageUrl": "https://github.com/user-attachments/assets/b93c9d03-5d23-4b32-aa3e-f2b6a9736c70",
+    "credits": {
+      "description": "Based on 'Halftone Shader' by P. Gonzalez Vivo.",
+      "externalUrl": "https://www.shadertoy.com/view/XdcGzn"
+    }
+  },
+  {
+    "name": "Vignette Plus",
+    "filename": "AS_GFX_VignettePlus.1.fx",
+    "type": "GFX",
+    "shortDescription": "Advanced vignette effect with customizable shape, color, animation, blur, and audio reactivity.",
+    "longDescription": "A vignette shader that provides multiple visual styles and customizable pattern options, creating directional, controllable vignette effects for stage compositions and scene framing. Perfect for adding mood, focus, or stylistic elements. Features four distinct visual styles (Smooth Gradient, Duotone Circles, Directional Lines perpendicular and parallel), multiple mirroring options (none, edge-based, center-based), precise control over effect coverage with start/end falloff points, and much more. Optimized for performance across various resolutions.",
+    "imageUrl": "https://github.com/user-attachments/assets/bf471099-9c4a-423b-ae1f-fae2f83d924a",
+    "credits": {
+      "description": "Hexagonal grid implementation adapted from 'hexagonal wipe' by blandprix.",
+      "externalUrl": "https://www.shadertoy.com/view/XfjyWG"
+    }
+  },
+  {
+    "name": "Candle Flame",
+    "filename": "AS_LFX_CandleFlame.1.fx",
+    "type": "LFX",
+    "shortDescription": "Simulates a realistic, animated candle flame with flicker, glow, and color controls.",
+    "longDescription": "Renders a realistic animated candle flame with natural flicker and glow. Features customizable flame shape, color, flicker speed, and intensity. Includes controls for flame position, scale, and blending. Ideal for atmospheric lighting and cozy scene effects.",
+    "imageUrl": "https://github.com/user-attachments/assets/placeholder-candleflame"
+  },
+  {
+    "name": "Laser Show",
+    "filename": "AS_LFX_LaserShow.1.fx",
+    "type": "LFX",
+    "shortDescription": "Projects animated laser beams and patterns with customizable color, speed, and audio reactivity.",
+    "longDescription": "Projects animated laser beams and geometric patterns onto the stage. Features customizable beam count, color, speed, and spread. Supports audio reactivity for beam movement and intensity. Includes controls for rotation, position, and blending. Perfect for concert, club, or sci-fi lighting effects.",
+    "imageUrl": "https://github.com/user-attachments/assets/placeholder-lasershow"
+  },
+  {
+    "name": "Stage Spotlights",
+    "filename": "AS_LFX_StageSpotlights.1.fx",
+    "type": "LFX",
+    "shortDescription": "Simulates moving stage spotlights with beam controls, color, and audio reactivity.",
+    "longDescription": "Simulates moving stage spotlights with adjustable beam width, color, intensity, and movement patterns. Features multiple spotlights with independent controls, audio reactivity for movement and brightness, and blending options for integration with other effects. Ideal for live performance and dramatic scene lighting.",
+    "imageUrl": "https://github.com/user-attachments/assets/placeholder-spotlights"
+  },
+  {
+    "name": "Boom Sticker",
+    "filename": "AS_VFX_BoomSticker.1.fx",
+    "type": "VFX",
+    "shortDescription": "Displays a texture overlay ('sticker') with controls for placement, scale, rotation, and audio reactivity.",
+    "longDescription": "Displays a texture overlay ('sticker') with controls for placement, scale, rotation, and audio reactivity. Features customizable depth masking and support for custom textures. Ideal for adding dynamic, music-responsive overlays.",
+    "imageUrl": "https://github.com/user-attachments/assets/ee8e98b8-198b-4a65-a40d-032eca60dcc5",
+    "credits": {
+      "description": "Heavily inspired by 'StageDepth.fx' by Marot Satil (2019), original depth masking implementation.",
+      "externalUrl": "https://github.com/marotsatil/StageDepth"
+    }
+  },
+  {
+    "name": "Circular Spectrum",
+    "filename": "AS_VFX_CircularSpectrum.1.fx",
+    "type": "VFX",
+    "shortDescription": "Displays a circular audio spectrum analyzer with customizable bands, colors, and animation.",
+    "longDescription": "Visualizes audio frequencies as a circular spectrum analyzer. Features adjustable band count, radius, thickness, color palette, and animation speed. Supports audio reactivity for dynamic, music-driven visuals. Ideal for overlays, music videos, and live performances.",
+    "imageUrl": "https://github.com/user-attachments/assets/placeholder-circularspectrum",
+    "credits": {
+      "description": "Based on 'Circular audio visualizer' by AIandDesign.",
+      "externalUrl": "https://www.shadertoy.com/view/tcyGW1"
+    }
+  },
+  {
+    "name": "Clair Obscur",
+    "filename": "AS_VFX_ClairObscur.1.fx",
+    "type": "VFX",
+    "shortDescription": "Applies dramatic chiaroscuro lighting with strong contrast and stylized shadows.",
+    "longDescription": "Simulates dramatic chiaroscuro (light-dark) lighting, emphasizing strong contrast and stylized shadows. Features controls for light direction, intensity, shadow softness, and color tint. Useful for artistic, cinematic, or moody scene transformations.",
+    "imageUrl": "https://github.com/user-attachments/assets/placeholder-clairobscur",
+    "credits": {
+      "description": "Based on '[RGR] Hearts' by deeplo.",
+      "externalUrl": "https://www.shadertoy.com/view/ttcBRs"
+    }
+  },
+  {
+    "name": "Color Balancer",
+    "filename": "AS_VFX_ColorBalancer.1.fx",
+    "type": "VFX",
+    "shortDescription": "Adjusts scene color balance with independent controls for shadows, midtones, and highlights.",
+    "longDescription": "Provides precise color grading by adjusting the balance of shadows, midtones, and highlights independently. Features controls for lift, gamma, gain, and color wheels. Useful for creative color correction and stylized looks.",
+    "imageUrl": "https://github.com/user-attachments/assets/placeholder-colorbalancer"
+  },
+  {
+    "name": "Digital Artifacts",
+    "filename": "AS_VFX_DigitalArtifacts.1.fx",
+    "type": "VFX",
+    "shortDescription": "Simulates digital compression artifacts, blockiness, and color banding.",
+    "longDescription": "Applies digital compression artifacts such as blockiness, color banding, and quantization noise. Features adjustable artifact strength, block size, and color depth. Useful for retro, glitch, or degraded video effects.",
+    "imageUrl": "https://github.com/user-attachments/assets/placeholder-digitalartifacts"
+  },
+  {
+    "name": "Dust Motes",
+    "filename": "AS_VFX_DustMotes.1.fx",
+    "type": "VFX",
+    "shortDescription": "Adds floating dust motes and particles with customizable density, size, and animation.",
+    "longDescription": "Simulates floating dust motes and particles drifting through the scene. Features controls for particle density, size, speed, color, and depth of field. Includes animation and blending options for subtle atmospheric enhancement.",
+    "imageUrl": "https://github.com/user-attachments/assets/placeholder-dustmotes"
+  },
+  {
+    "filename": "AS_VFX_FocusedChaos.1.fx",
+    "type": "VFX",
+    "name": "Focused Chaos",
+    "shortDescription": "Swirling cosmic vortex/black hole effect with animated noise and artistic controls.",
+    "longDescription": "Creates a visually complex and dynamic abstract effect resembling a focused point of chaotic energy or a swirling cosmic vortex. Patterns are generated using 3D Simplex noise and Fractional Brownian Motion (FBM), with colors evolving based on noise patterns and spatial coordinates, animated over time. Features transparent background, customizable animation, artistic controls for swirl/noise/color/alpha, dithering, domain warping, and standard AS-StageFX depth/blending controls."
+  },
+  {
+    "filename": "AS_VFX_MotionFocus.1.fx",
+    "type": "VFX",
+    "name": "Motion Focus",
+    "shortDescription": "Automatic motion-based camera focus and zoom using inter-frame motion analysis.",
+    "longDescription": "Analyzes inter-frame motion differences to dynamically adjust the viewport, zooming towards and centering on areas of detected movement. Uses a multi-pass approach to capture frames, detect motion, analyze motion distribution in quadrants, and apply a corresponding camera transformation with motion-centered zoom. Features multi-pass motion analysis, temporal smoothing, adaptive decay, quadrant-based aggregation, dynamic zoom/focus, and debug visualization."
+  },
+  {
+    "name": "Motion Trails",
+    "filename": "AS_VFX_MotionTrails.1.fx",
+    "type": "VFX",
+    "shortDescription": "Creates trailing motion blur effects for moving objects or the entire scene.",
+    "longDescription": "Applies trailing motion blur to moving objects or the whole scene. Features adjustable trail length, direction, fade, and blending. Useful for simulating speed, action, or ghosting effects in dynamic scenes.",
+    "imageUrl": "https://github.com/user-attachments/assets/placeholder-motiontrails"
+  },
+  {
+    "filename": "AS_VFX_RadialLensDistortion.1.fx",
+    "type": "VFX",
+    "name": "Radial Lens Distortion",
+    "shortDescription": "Emulates radial and lens-specific distortions including blur, chromatic aberration, and geometric warping.",
+    "longDescription": "Simulates various lens distortions including tangential (rotational) blur, chromatic aberration (tangential or horizontal), and geometric barrel/pincushion distortion. Effects are strongest at the edges and diminish towards a configurable center point. Includes presets for emulating specific lens characteristics, plus global strength and focus falloff controls. Ensures consistent effect visibility regardless of source alpha by controlling alpha during blending."
+  },
+  {
+    "name": "Radiant Fire",
+    "filename": "AS_VFX_RadiantFire.1.fx",
+    "type": "VFX",
+    "shortDescription": "Simulates radiant, glowing fire with animated flames and color gradients.",
+    "longDescription": "Generates radiant, glowing fire effects with animated flames and customizable color gradients. Features controls for flame shape, speed, intensity, and palette. Ideal for magical, fantasy, or atmospheric visuals.",
+    "imageUrl": "https://github.com/user-attachments/assets/placeholder-radiantfire"
+  },
+  {
+    "name": "Rainy Window",
+    "filename": "AS_VFX_RainyWindow.1.fx",
+    "type": "VFX",
+    "shortDescription": "Simulates raindrops and streaks on a window with refraction and blur effects.",
+    "longDescription": "Creates the illusion of raindrops and streaks running down a window, with realistic refraction and blur. Features adjustable rain density, drop size, streak speed, and blending. Perfect for moody, cinematic, or weather-themed scenes.",
+    "imageUrl": "https://github.com/user-attachments/assets/placeholder-rainywindow",
+    "credits": {
+      "description": "Inspired by 'Heartfelt' by Martijn Steinrucken (BigWings).",
+      "externalUrl": "https://www.shadertoy.com/view/ltffzl"
+    }
+  },
+  {
+    "name": "Screen Ring",
+    "filename": "AS_VFX_ScreenRing.1.fx",
+    "type": "VFX",
+    "shortDescription": "Draws animated rings or circular overlays with customizable size, color, and animation.",
+    "longDescription": "Draws animated rings or circular overlays on the screen. Features controls for ring count, size, thickness, color, and animation speed. Useful for HUDs, overlays, or stylized transitions.",
+    "imageUrl": "https://github.com/user-attachments/assets/placeholder-screenring"
+  },
+  {
+    "name": "Sparkle Bloom",
+    "filename": "AS_VFX_SparkleBloom.1.fx",
+    "type": "VFX",
+    "shortDescription": "Adds sparkling bloom highlights with animated glints and color controls.",
+    "longDescription": "Adds sparkling bloom highlights to bright areas, with animated glints and customizable color. Features controls for sparkle density, size, intensity, and animation. Ideal for magical, festive, or dreamy visuals.",
+    "imageUrl": "https://github.com/user-attachments/assets/placeholder-sparklebloom"
+  },
+  {
+    "name": "Spectrum Ring",
+    "filename": "AS_VFX_SpectrumRing.1.fx",
+    "type": "VFX",
+    "shortDescription": "Visualizes audio spectrum as a ring with customizable bands, colors, and animation.",
+    "longDescription": "Displays an audio spectrum analyzer in a ring format. Features adjustable band count, radius, thickness, color palette, and animation speed. Supports audio reactivity for dynamic, music-driven visuals. Ideal for overlays, music videos, and live performances.",
+    "imageUrl": "https://github.com/user-attachments/assets/placeholder-spectrumring"
+  },
+  {
+    "name": "Stencil Mask",
+    "filename": "AS_VFX_StencilMask.1.fx",
+    "type": "VFX",
+    "shortDescription": "Applies a stencil mask for selective effect application with shape and position controls.",
+    "longDescription": "Applies a stencil mask to selectively reveal or hide parts of the scene. Features controls for mask shape, size, position, feathering, and blending. Useful for transitions, overlays, or compositing effects.",
+    "imageUrl": "https://github.com/user-attachments/assets/placeholder-stencilmask"
+  },
+  {
+    "name": "Tilted Grid",
+    "filename": "AS_VFX_TiltedGrid.1.fx",
+    "type": "VFX",
+    "shortDescription": "Draws a tilted, animated grid overlay with customizable angle, spacing, and color.",
+    "longDescription": "Draws a tilted, animated grid overlay on the scene. Features controls for grid angle, spacing, line thickness, color, and animation speed. Useful for stylized overlays, retro visuals, or compositional guides.",
+    "imageUrl": "https://github.com/user-attachments/assets/placeholder-tiltedgrid"
+  },
+  {
+    "name": "Volumetric Light",
+    "filename": "AS_VFX_VolumetricLight.1.fx",
+    "type": "VFX",
+    "shortDescription": "Simulates volumetric light rays and god rays with customizable source, color, and intensity.",
+    "longDescription": "Simulates volumetric light rays (god rays) emanating from a source. Features controls for light position, color, intensity, ray length, and blending. Useful for dramatic, atmospheric, or mystical scene lighting.",
+    "imageUrl": "https://github.com/user-attachments/assets/placeholder-volumetriclight"
+  },
+  {
+    "name": "VUMeter",
+    "filename": "AS_VFX_VUMeter.1.fx",
+    "type": "VFX",
+    "shortDescription": "Displays a classic VU meter with audio-reactive bars and customizable appearance.",
+    "longDescription": "Displays a classic VU meter with audio-reactive bars. Features controls for bar count, orientation, color, peak hold, and animation. Ideal for music visualizations, overlays, and live performance feedback.",
+    "imageUrl": "https://github.com/user-attachments/assets/placeholder-vumeter"
+  },
+  {
+    "name": "Warp Distort",
+    "filename": "AS_VFX_WarpDistort.1.fx",
+    "type": "VFX",
+    "shortDescription": "Applies animated warp distortion with customizable strength, direction, and speed.",
+    "longDescription": "Applies animated warp distortion to the scene. Features controls for distortion strength, direction, speed, and blending. Useful for psychedelic, dreamlike, or transition effects.",
+    "imageUrl": "https://github.com/user-attachments/assets/placeholder-warpdistort"
+  },
+  {
+    "name": "Water Surface",
+    "filename": "AS_VFX_WaterSurface.1.fx",
+    "type": "VFX",
+    "shortDescription": "Simulates animated water surface with ripples, reflections, and customizable color.",
+    "longDescription": "Simulates an animated water surface with dynamic ripples, reflections, and customizable color. Features controls for wave speed, amplitude, direction, and reflection intensity. Useful for aquatic, dreamy, or atmospheric effects.",
+    "imageUrl": "https://github.com/user-attachments/assets/placeholder-watersurface"
   }
 ]

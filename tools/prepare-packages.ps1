@@ -273,7 +273,6 @@ function New-PackageManifest($packagesDataToManifest, $manifestPath) {
         }
         $manifest.packages.Add($packageManifest)
     }
-    $manifestPath = Join-Path $OutputPath $config.paths.manifestFile
     $manifest | ConvertTo-Json -Depth 5 | Set-Content -Path $manifestPath -Encoding UTF8
     Write-Success "Package manifest generated: $manifestPath"
 }

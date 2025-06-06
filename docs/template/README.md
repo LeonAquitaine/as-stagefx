@@ -52,7 +52,7 @@ AS-StageFX provides a collection of performant, customizable, and audio-reactive
 
 AS-StageFX includes **{{total}} shaders** across four categories: **{{byType.BGX}} Background (BGX)**, **{{byType.GFX}} Graphic (GFX)**, **{{byType.LFX}} Lighting (LFX)**, and **{{byType.VFX}} Visual (VFX)** effects.
 
-**Detailed descriptions and examples: [Shader Gallery](docs/gallery.md).**
+**Detailed descriptions and examples: [Shader Gallery](gallery.md).**
 
 ### Background Effects (BGX)
 
@@ -106,7 +106,7 @@ Sample images in this repository may contain characters and stickers from Final 
 
 AS-StageFX includes both original shaders and adaptations from various sources across the graphics programming community. Proper attribution is maintained for all external sources as required by Creative Commons licensing.
 
-**For detailed attribution information**, see: **[AS_StageFX_Credits.md](AS_StageFX_Credits.md)**
+**For detailed attribution information**, see: **[AS_StageFX_Credits.md](../AS_StageFX_Credits.md)**
 
 This comprehensive credits document includes:
 - **{{credits.adaptedCount}} adapted shaders** with full attribution to original creators
@@ -121,3 +121,7 @@ This comprehensive credits document includes:
 - **FencerDevLog**: Godot shader tutorials and inspiration
 - **Inigo Quilez**: Mathematical foundations and procedural techniques
 - **All original creators**: Listed individually in the comprehensive credits
+
+---
+
+*For more detailed information about installation, updates, and credits, please refer to the [main README](../README.md). Complete external source attribution is available in [AS_StageFX_Credits.md](../AS_StageFX_Credits.md).*

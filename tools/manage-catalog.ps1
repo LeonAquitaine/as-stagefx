@@ -7,8 +7,26 @@ param(
     [string]$CatalogPath = "$PSScriptRoot/../shaders/catalog.json"
 )
 
-# Load config
-$config = Get-Content -Path $ConfigPath -Raw | ConvertFrom-Json
+# Error handling for loading configuration file
+if (-not (Test-Path $ConfigPath)) {
+    Write-Host "[ERROR] Config file not found: $ConfigPath" -ForegroundColor Red
+    exit 1
+}
+try {
+    $configContent = Get-Content -Path $ConfigPath -Raw
+} catch {
+    Write-Host "[ERROR] Failed to read config file: $ConfigPath" -ForegroundColor Red
+    Write-Host $_.Exception.Message -ForegroundColor Red
+    exit 1
+}
+try {
+    $config = $configContent | ConvertFrom-Json
+} catch {
+    Write-Host "[ERROR] Failed to parse JSON in config file: $ConfigPath" -ForegroundColor Red
+    Write-Host $_.Exception.Message -ForegroundColor Red
+    exit 1
+}
+
 $shadersRoot = Split-Path -Parent $ConfigPath | Split-Path -Parent
 $shaderDir = Join-Path $shadersRoot "shaders/AS"
 
@@ -72,28 +90,25 @@ foreach ($type in $groupedByType.Keys) {
 $statistics | ConvertTo-Json -Depth 10 | Set-Content -Path "$PSScriptRoot/../shaders/catalog-statistics.json" -Encoding UTF8
 Write-Host "[SUCCESS] catalog-statistics.json generated."
 
-# Read the catalog.json file as a flat array
-$catalogPath = Join-Path $PSScriptRoot '../shaders/catalog.json'
-$catalog = Get-Content $catalogPath -Raw | ConvertFrom-Json
+# (Assume $catalogPath and $catalog are already loaded with error handling above)
+# Remove duplicate loading and use $catalog for all operations
 
-# Deduplicate by name (keep first occurrence)
-$seen = @{
-}
-$deduped = @()
+# Deduplicate by filename
+$uniqueCatalog = @{}
 foreach ($item in $catalog) {
-    if (-not $seen.ContainsKey($item.name)) {
-        $seen[$item.name] = $true
-        $deduped += $item
-    }
+    $uniqueCatalog[$item.filename] = $item
 }
+$catalog = $uniqueCatalog.Values
 
-# Separate items with and without a 'name' property
-$withName = $deduped | Where-Object { $_.PSObject.Properties["name"] -and $_.name }
-$withoutName = $deduped | Where-Object { -not ($_.PSObject.Properties["name"] -and $_.name) }
+# Sort by type, then name
+$catalog = $catalog | Sort-Object type, name
 
-# Sort only those with a name, leave the rest at the end
-$sortedWithName = $withName | Sort-Object -Property { $_.name.ToLowerInvariant() }
-$finalCatalog = @($sortedWithName + $withoutName)
-
-# Write back as a flat array, pretty-printed
-$finalCatalog | ConvertTo-Json -Depth 10 | Set-Content $catalogPath
+# Write back to file
+try {
+    $catalog | ConvertTo-Json -Depth 10 | Set-Content -Path $CatalogPath -Encoding UTF8
+    Write-Host "[SUCCESS] Catalog deduplicated, sorted, and written: $CatalogPath"
+} catch {
+    Write-Host "[ERROR] Failed to write catalog file: $CatalogPath" -ForegroundColor Red
+    Write-Host $_.Exception.Message -ForegroundColor Red
+    exit 1
+}

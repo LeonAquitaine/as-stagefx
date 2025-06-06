@@ -8,7 +8,22 @@ param(
     [string]$PackageName = "AS_StageFX_Backgrounds"
 )
 
-$catalogStats = Get-Content -Path $CatalogPath -Raw | ConvertFrom-Json
+# Load catalog-statistics.json with error handling
+try {
+    $catalogContent = Get-Content -Path $CatalogPath -Raw
+} catch {
+    Write-Host "[ERROR] Failed to read catalog file: $CatalogPath" -ForegroundColor Red
+    Write-Host $_.Exception.Message -ForegroundColor Red
+    exit 1
+}
+try {
+    $catalogStats = $catalogContent | ConvertFrom-Json
+} catch {
+    Write-Host "[ERROR] Failed to parse JSON in catalog file: $CatalogPath" -ForegroundColor Red
+    Write-Host $_.Exception.Message -ForegroundColor Red
+    exit 1
+}
+
 $template = Get-Content -Path $GalleryTemplatePath -Raw
 
 # Prepare data for template
@@ -45,5 +60,11 @@ $template = [regex]::Replace($template, $pattern, {
     return ($rows -join "`n")
 })
 
-Set-Content -Path $GalleryOutPath -Value $template -Encoding UTF8
-Write-Host "[SUCCESS] Gallery rendered: $GalleryOutPath"
+try {
+    Set-Content -Path $GalleryOutPath -Value $template -Encoding UTF8
+    Write-Host "[SUCCESS] Gallery rendered: $GalleryOutPath"
+} catch {
+    Write-Host "[ERROR] Failed to write gallery file: $GalleryOutPath" -ForegroundColor Red
+    Write-Host $_.Exception.Message -ForegroundColor Red
+    exit 1
+}

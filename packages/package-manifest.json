@@ -1,35 +1,44 @@
 {
-  "buildDate": "2025-06-06T11:49:46Z",
   "version": "1.8.4",
+  "buildDate": "2025-06-06T12:06:02Z",
   "packages": [
     {
-      "shaderCount": 0,
-      "shaders": null,
-      "version": "1.8.4",
-      "dependencies": {
-        "textures": [],
-        "fxh": []
-      },
       "description": "The complete collection of all AS StageFX shaders and utilities",
-      "textureDependencyCount": 0,
-      "name": "AS_StageFX",
-      "fxhDependencyCount": 0
-    },
-    {
-      "shaderCount": 0,
-      "shaders": null,
-      "version": "1.8.4",
       "dependencies": {
         "textures": [],
         "fxh": []
       },
-      "description": "Complete collection of background effects (Requires Essentials)",
-      "textureDependencyCount": 0,
-      "name": "AS_StageFX_Backgrounds",
-      "fxhDependencyCount": 0
+      "shaders": null,
+      "fxhDependencyCount": 0,
+      "shaderCount": 0,
+      "name": "AS_StageFX",
+      "version": "1.8.4",
+      "textureDependencyCount": 0
     },
     {
-      "shaderCount": 16,
+      "description": "Complete collection of background effects (Requires Essentials)",
+      "dependencies": {
+        "textures": [],
+        "fxh": []
+      },
+      "shaders": null,
+      "fxhDependencyCount": 0,
+      "shaderCount": 0,
+      "name": "AS_StageFX_Backgrounds",
+      "version": "1.8.4",
+      "textureDependencyCount": 0
+    },
+    {
+      "description": "Core library files and essential visual effects for general use",
+      "dependencies": {
+        "textures": [],
+        "fxh": [
+          "AS_Utils.1.fxh",
+          "AS_Palette_Styles.1.fxh",
+          "AS_Palette.1.fxh",
+          "AS_Noise.1.fxh"
+        ]
+      },
       "shaders": [
         "AS_Utils.1.fxh",
         "AS_Noise.1.fxh",
@@ -48,33 +57,24 @@
         "AS_VFX_MotionTrails.1.fx",
         "AS_VFX_StencilMask.1.fx"
       ],
-      "version": "1.8.4",
-      "dependencies": {
-        "textures": [],
-        "fxh": [
-          "AS_Utils.1.fxh",
-          "AS_Palette_Styles.1.fxh",
-          "AS_Palette.1.fxh",
-          "AS_Noise.1.fxh"
-        ]
-      },
-      "description": "Core library files and essential visual effects for general use",
-      "textureDependencyCount": 0,
+      "fxhDependencyCount": 4,
+      "shaderCount": 16,
       "name": "AS_StageFX_Essentials",
-      "fxhDependencyCount": 4
+      "version": "1.8.4",
+      "textureDependencyCount": 0
     },
     {
-      "shaderCount": 0,
-      "shaders": null,
-      "version": "1.8.4",
+      "description": "Complete collection of visual effects (Requires Essentials)",
       "dependencies": {
         "textures": [],
         "fxh": []
       },
-      "description": "Complete collection of visual effects (Requires Essentials)",
-      "textureDependencyCount": 0,
+      "shaders": null,
+      "fxhDependencyCount": 0,
+      "shaderCount": 0,
       "name": "AS_StageFX_VisualEffects",
-      "fxhDependencyCount": 0
+      "version": "1.8.4",
+      "textureDependencyCount": 0
     }
   ]
 }
