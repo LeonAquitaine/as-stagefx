@@ -740,7 +740,7 @@ if ((Test-Path $catalogPath) -and (Test-Path $readmeTemplatePath)) {
     $vfxCount = $shadersByType.VFX.Count
     # Performance icons (optional, can be mapped by name or left blank)
     function Get-PerfIcon($shaderName) {
-        return "✨" # Placeholder; customize as needed
+        return "" # Remove all emoji/icon output
     }
     # Read template
     $template = Get-Content -Path $readmeTemplatePath -Raw
