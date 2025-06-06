@@ -88,6 +88,15 @@ float3 AS_hash33(float3 p3) {
     return -1.0 + 2.0 * frac(float3((p3.x + p3.y) * p3.z, (p3.x + p3.z) * p3.y, (p3.y + p3.z) * p3.x));
 }
 
+// --- Shadertoy Compatible Hash Functions ---
+// These provide exact compatibility with common Shadertoy implementations
+
+// Shadertoy-style 2D->2D hash (used in QuadtreeTruchet and other ported shaders)
+float2 AS_Hash22VariantB(float2 p) {
+    float n = sin(dot(p, float2(57, 27)));
+    return frac(float2(262144, 32768) * n);
+}
+
 // ============================================================================
 // VALUE NOISE
 // ============================================================================
