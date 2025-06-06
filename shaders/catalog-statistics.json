@@ -1,11 +1,76 @@
 {
-  "byType": {
-    "BGX": 27,
-    "GFX": 7,
-    "VFX": 21,
-    "LFX": 3
-  },
+  "total": 58,
   "grouped": {
+    "GFX": [
+      {
+        "name": "Aspect Ratio",
+        "filename": "AS_GFX_AspectRatio.1.fx",
+        "type": "GFX",
+        "shortDescription": "A versatile aspect ratio framing tool for subject positioning and composition.",
+        "longDescription": "A versatile aspect ratio framing tool designed to help position subjects for social media posts, photography, and video composition. Features preset aspect ratios for common social media and photography formats (1:1, 16:9, 4:5, etc.), custom aspect ratio input, adjustable clipped area color and opacity, optional composition guides (rule of thirds, golden ratio, center lines), horizontal/vertical alignment controls, and adjustable border appearance. Perfect for precise subject positioning and consistent framing across platforms.",
+        "imageUrl": "https://github.com/user-attachments/assets/6c622f56-edf8-4dc7-a18d-52995e846237"
+      },
+      {
+        "name": "Audio Direction",
+        "filename": "AS_GFX_AudioDirection.1.fx",
+        "type": "GFX",
+        "shortDescription": "Visualizes audio directionality as animated arrows or indicators, ideal for music-driven scenes or overlays.",
+        "longDescription": "Displays animated arrows or indicators that visualize the directionality of audio sources in real time. Features customizable arrow count, size, color, and animation speed. Supports audio reactivity for direction, magnitude, and color. Useful for music visualizations, DJ overlays, or any scene where audio direction feedback is desired.",
+        "imageUrl": "https://github.com/user-attachments/assets/placeholder-audiodirection"
+      },
+      {
+        "name": "Brush Stroke",
+        "filename": "AS_GFX_BrushStroke.1.fx",
+        "type": "GFX",
+        "shortDescription": "Transforms the scene with painterly brush stroke textures and dynamic, layered paint effects.",
+        "longDescription": "Applies painterly brush stroke textures to the scene, simulating layered paint effects. Features customizable brush size, direction, density, and color blending. Includes animation controls for evolving brush patterns and supports palette-based colorization. Ideal for artistic transformations and stylized overlays.",
+        "imageUrl": "https://github.com/user-attachments/assets/placeholder-brushstroke"
+      },
+      {
+        "name": "Cinematic Diffusion",
+        "filename": "AS_GFX_CinematicDiffusion.1.fx",
+        "type": "GFX",
+        "shortDescription": "High-quality cinematic diffusion/bloom filter with 8 classic presets and a fully customizable mode.",
+        "longDescription": "A high-quality cinematic diffusion/bloom filter that replicates classic film diffusion looks. Features 8 built-in presets (Pro-Mist, Hollywood Black Magic, etc.) and a fully customizable mode. Multi-pass downsampling ensures smooth, natural glows. Ideal for virtual photography and cinematic shots.",
+        "imageUrl": ""
+      },
+      {
+        "name": "Hand Drawing",
+        "filename": "AS_GFX_HandDrawing.1.fx",
+        "type": "GFX",
+        "shortDescription": "Transforms the scene into a stylized hand-drawn sketch with distinct linework.",
+        "longDescription": "Transforms your scene into a stylized hand-drawn sketch or technical ink illustration with distinct linework and cross-hatching patterns. Features sophisticated line generation with customizable stroke directions and length, textured fills based on original image colors with noise-based variation, animated 'wobble' effect for an authentic hand-drawn feel, optional paper-like background pattern, depth-aware rendering with standard blending, and comprehensive controls for fine-tuning every aspect of the effect. Perfect for artistic transformations, comic/manga styles, or technical illustrations.",
+        "imageUrl": "https://github.com/user-attachments/assets/4074ac6b-a385-4e0f-9d9a-c4d5dd0117cd",
+        "credits": {
+          "description": "Based on 'notebook drawings' by Flockaroo (2016).",
+          "externalUrl": "https://www.shadertoy.com/view/XtVGD1"
+        }
+      },
+      {
+        "name": "MultiLayer Halftone",
+        "filename": "AS_GFX_MultiLayerHalftone.1.fx",
+        "type": "GFX",
+        "shortDescription": "Highly customizable multi-layer halftone (up to 4 layers) with various patterns, isolation methods, and blending options.",
+        "longDescription": "Creates a highly customizable multi-layer halftone effect with support for up to four independent layers. Each layer can use different pattern types (dots, lines, crosshatch), isolation methods (brightness, RGB, hue, depth), colors, thresholds, scales, densities, and angles. Features layer blending with transparency support.",
+        "imageUrl": "https://github.com/user-attachments/assets/b93c9d03-5d23-4b32-aa3e-f2b6a9736c70",
+        "credits": {
+          "description": "Based on 'Halftone Shader' by P. Gonzalez Vivo.",
+          "externalUrl": "https://www.shadertoy.com/view/XdcGzn"
+        }
+      },
+      {
+        "name": "Vignette Plus",
+        "filename": "AS_GFX_VignettePlus.1.fx",
+        "type": "GFX",
+        "shortDescription": "Advanced vignette effect with customizable shape, color, animation, blur, and audio reactivity.",
+        "longDescription": "A vignette shader that provides multiple visual styles and customizable pattern options, creating directional, controllable vignette effects for stage compositions and scene framing. Perfect for adding mood, focus, or stylistic elements. Features four distinct visual styles (Smooth Gradient, Duotone Circles, Directional Lines perpendicular and parallel), multiple mirroring options (none, edge-based, center-based), precise control over effect coverage with start/end falloff points, and much more. Optimized for performance across various resolutions.",
+        "imageUrl": "https://github.com/user-attachments/assets/bf471099-9c4a-423b-ae1f-fae2f83d924a",
+        "credits": {
+          "description": "Hexagonal grid implementation adapted from 'hexagonal wipe' by blandprix.",
+          "externalUrl": "https://www.shadertoy.com/view/XfjyWG"
+        }
+      }
+    ],
     "BGX": [
       {
         "name": "Blue Corona",
@@ -304,76 +369,6 @@
         }
       }
     ],
-    "GFX": [
-      {
-        "name": "Aspect Ratio",
-        "filename": "AS_GFX_AspectRatio.1.fx",
-        "type": "GFX",
-        "shortDescription": "A versatile aspect ratio framing tool for subject positioning and composition.",
-        "longDescription": "A versatile aspect ratio framing tool designed to help position subjects for social media posts, photography, and video composition. Features preset aspect ratios for common social media and photography formats (1:1, 16:9, 4:5, etc.), custom aspect ratio input, adjustable clipped area color and opacity, optional composition guides (rule of thirds, golden ratio, center lines), horizontal/vertical alignment controls, and adjustable border appearance. Perfect for precise subject positioning and consistent framing across platforms.",
-        "imageUrl": "https://github.com/user-attachments/assets/6c622f56-edf8-4dc7-a18d-52995e846237"
-      },
-      {
-        "name": "Audio Direction",
-        "filename": "AS_GFX_AudioDirection.1.fx",
-        "type": "GFX",
-        "shortDescription": "Visualizes audio directionality as animated arrows or indicators, ideal for music-driven scenes or overlays.",
-        "longDescription": "Displays animated arrows or indicators that visualize the directionality of audio sources in real time. Features customizable arrow count, size, color, and animation speed. Supports audio reactivity for direction, magnitude, and color. Useful for music visualizations, DJ overlays, or any scene where audio direction feedback is desired.",
-        "imageUrl": "https://github.com/user-attachments/assets/placeholder-audiodirection"
-      },
-      {
-        "name": "Brush Stroke",
-        "filename": "AS_GFX_BrushStroke.1.fx",
-        "type": "GFX",
-        "shortDescription": "Transforms the scene with painterly brush stroke textures and dynamic, layered paint effects.",
-        "longDescription": "Applies painterly brush stroke textures to the scene, simulating layered paint effects. Features customizable brush size, direction, density, and color blending. Includes animation controls for evolving brush patterns and supports palette-based colorization. Ideal for artistic transformations and stylized overlays.",
-        "imageUrl": "https://github.com/user-attachments/assets/placeholder-brushstroke"
-      },
-      {
-        "name": "Cinematic Diffusion",
-        "filename": "AS_GFX_CinematicDiffusion.1.fx",
-        "type": "GFX",
-        "shortDescription": "High-quality cinematic diffusion/bloom filter with 8 classic presets and a fully customizable mode.",
-        "longDescription": "A high-quality cinematic diffusion/bloom filter that replicates classic film diffusion looks. Features 8 built-in presets (Pro-Mist, Hollywood Black Magic, etc.) and a fully customizable mode. Multi-pass downsampling ensures smooth, natural glows. Ideal for virtual photography and cinematic shots.",
-        "imageUrl": ""
-      },
-      {
-        "name": "Hand Drawing",
-        "filename": "AS_GFX_HandDrawing.1.fx",
-        "type": "GFX",
-        "shortDescription": "Transforms the scene into a stylized hand-drawn sketch with distinct linework.",
-        "longDescription": "Transforms your scene into a stylized hand-drawn sketch or technical ink illustration with distinct linework and cross-hatching patterns. Features sophisticated line generation with customizable stroke directions and length, textured fills based on original image colors with noise-based variation, animated 'wobble' effect for an authentic hand-drawn feel, optional paper-like background pattern, depth-aware rendering with standard blending, and comprehensive controls for fine-tuning every aspect of the effect. Perfect for artistic transformations, comic/manga styles, or technical illustrations.",
-        "imageUrl": "https://github.com/user-attachments/assets/4074ac6b-a385-4e0f-9d9a-c4d5dd0117cd",
-        "credits": {
-          "description": "Based on 'notebook drawings' by Flockaroo (2016).",
-          "externalUrl": "https://www.shadertoy.com/view/XtVGD1"
-        }
-      },
-      {
-        "name": "MultiLayer Halftone",
-        "filename": "AS_GFX_MultiLayerHalftone.1.fx",
-        "type": "GFX",
-        "shortDescription": "Highly customizable multi-layer halftone (up to 4 layers) with various patterns, isolation methods, and blending options.",
-        "longDescription": "Creates a highly customizable multi-layer halftone effect with support for up to four independent layers. Each layer can use different pattern types (dots, lines, crosshatch), isolation methods (brightness, RGB, hue, depth), colors, thresholds, scales, densities, and angles. Features layer blending with transparency support.",
-        "imageUrl": "https://github.com/user-attachments/assets/b93c9d03-5d23-4b32-aa3e-f2b6a9736c70",
-        "credits": {
-          "description": "Based on 'Halftone Shader' by P. Gonzalez Vivo.",
-          "externalUrl": "https://www.shadertoy.com/view/XdcGzn"
-        }
-      },
-      {
-        "name": "Vignette Plus",
-        "filename": "AS_GFX_VignettePlus.1.fx",
-        "type": "GFX",
-        "shortDescription": "Advanced vignette effect with customizable shape, color, animation, blur, and audio reactivity.",
-        "longDescription": "A vignette shader that provides multiple visual styles and customizable pattern options, creating directional, controllable vignette effects for stage compositions and scene framing. Perfect for adding mood, focus, or stylistic elements. Features four distinct visual styles (Smooth Gradient, Duotone Circles, Directional Lines perpendicular and parallel), multiple mirroring options (none, edge-based, center-based), precise control over effect coverage with start/end falloff points, and much more. Optimized for performance across various resolutions.",
-        "imageUrl": "https://github.com/user-attachments/assets/bf471099-9c4a-423b-ae1f-fae2f83d924a",
-        "credits": {
-          "description": "Hexagonal grid implementation adapted from 'hexagonal wipe' by blandprix.",
-          "externalUrl": "https://www.shadertoy.com/view/XfjyWG"
-        }
-      }
-    ],
     "VFX": [
       {
         "name": "Boom Sticker",
@@ -584,5 +579,10 @@
       }
     ]
   },
-  "total": 58
+  "byType": {
+    "GFX": 7,
+    "BGX": 27,
+    "VFX": 21,
+    "LFX": 3
+  }
 }
