@@ -198,6 +198,13 @@
                                                   }
                                   },
                                   {
+                                      "filename":  "AS_VFX_FocusedChaos.1.fx",
+                                      "type":  "VFX",
+                                      "name":  "Focused Chaos",
+                                      "shortDescription":  "Swirling cosmic vortex/black hole effect with animated noise and artistic controls.",
+                                      "longDescription":  "Creates a visually complex and dynamic abstract effect resembling a focused point of chaotic energy or a swirling cosmic vortex. Patterns are generated using 3D Simplex noise and Fractional Brownian Motion (FBM), with colors evolving based on noise patterns and spatial coordinates, animated over time. Features transparent background, customizable animation, artistic controls for swirl/noise/color/alpha, dithering, domain warping, and standard AS-StageFX depth/blending controls."
+                                  },
+                                  {
                                       "name":  "Glitch Mosaic",
                                       "filename":  "AS_VFX_GlitchMosaic.1.fx",
                                       "type":  "VFX",
@@ -318,6 +325,13 @@
                                                   }
                                   },
                                   {
+                                      "filename":  "AS_VFX_MotionFocus.1.fx",
+                                      "type":  "VFX",
+                                      "name":  "Motion Focus",
+                                      "shortDescription":  "Automatic motion-based camera focus and zoom using inter-frame motion analysis.",
+                                      "longDescription":  "Analyzes inter-frame motion differences to dynamically adjust the viewport, zooming towards and centering on areas of detected movement. Uses a multi-pass approach to capture frames, detect motion, analyze motion distribution in quadrants, and apply a corresponding camera transformation with motion-centered zoom. Features multi-pass motion analysis, temporal smoothing, adaptive decay, quadrant-based aggregation, dynamic zoom/focus, and debug visualization."
+                                  },
+                                  {
                                       "name":  "Motion Trails",
                                       "filename":  "AS_VFX_MotionTrails.1.fx",
                                       "type":  "VFX",
@@ -404,6 +418,13 @@
                                       "shortDescription":  "Creates a radial blur effect with adjustable center, strength, and falloff.",
                                       "longDescription":  "Applies a radial blur centered on a user-defined point, with adjustable strength, radius, and falloff. Features controls for blur quality, center position, and blending. Useful for focus effects, motion simulation, or stylized transitions.",
                                       "imageUrl":  "https://github.com/user-attachments/assets/placeholder-radialblur"
+                                  },
+                                  {
+                                      "filename":  "AS_VFX_RadialLensDistortion.1.fx",
+                                      "type":  "VFX",
+                                      "name":  "Radial Lens Distortion",
+                                      "shortDescription":  "Emulates radial and lens-specific distortions including blur, chromatic aberration, and geometric warping.",
+                                      "longDescription":  "Simulates various lens distortions including tangential (rotational) blur, chromatic aberration (tangential or horizontal), and geometric barrel/pincushion distortion. Effects are strongest at the edges and diminish towards a configurable center point. Includes presets for emulating specific lens characteristics, plus global strength and focus falloff controls. Ensures consistent effect visibility regardless of source alpha by controlling alpha during blending."
                                   },
                                   {
                                       "name":  "Radiant Fire",
@@ -646,33 +667,244 @@
                                                   }
                                   },
                                   {
-                                      "filename":  "AS_VFX_RadialLensDistortion.1.fx",
-                                      "type":  "VFX",
-                                      "name":  "Radial Lens Distortion",
-                                      "shortDescription":  "Emulates radial and lens-specific distortions including blur, chromatic aberration, and geometric warping.",
-                                      "longDescription":  "Simulates various lens distortions including tangential (rotational) blur, chromatic aberration (tangential or horizontal), and geometric barrel/pincushion distortion. Effects are strongest at the edges and diminish towards a configurable center point. Includes presets for emulating specific lens characteristics, plus global strength and focus falloff controls. Ensures consistent effect visibility regardless of source alpha by controlling alpha during blending."
+                                      "filename":  "shaders/AS/AS_BGX_BlueCorona.1.fx",
+                                      "type":  "BGX"
                                   },
                                   {
-                                      "filename":  "AS_VFX_MotionFocus.1.fx",
-                                      "type":  "VFX",
-                                      "name":  "Motion Focus",
-                                      "shortDescription":  "Automatic motion-based camera focus and zoom using inter-frame motion analysis.",
-                                      "longDescription":  "Analyzes inter-frame motion differences to dynamically adjust the viewport, zooming towards and centering on areas of detected movement. Uses a multi-pass approach to capture frames, detect motion, analyze motion distribution in quadrants, and apply a corresponding camera transformation with motion-centered zoom. Features multi-pass motion analysis, temporal smoothing, adaptive decay, quadrant-based aggregation, dynamic zoom/focus, and debug visualization."
+                                      "filename":  "shaders/AS/AS_BGX_Constellation.1.fx",
+                                      "type":  "BGX"
                                   },
                                   {
-                                      "filename":  "AS_VFX_FocusedChaos.1.fx",
-                                      "type":  "VFX",
-                                      "name":  "Focused Chaos",
-                                      "shortDescription":  "Swirling cosmic vortex/black hole effect with animated noise and artistic controls.",
-                                      "longDescription":  "Creates a visually complex and dynamic abstract effect resembling a focused point of chaotic energy or a swirling cosmic vortex. Patterns are generated using 3D Simplex noise and Fractional Brownian Motion (FBM), with colors evolving based on noise patterns and spatial coordinates, animated over time. Features transparent background, customizable animation, artistic controls for swirl/noise/color/alpha, dithering, domain warping, and standard AS-StageFX depth/blending controls."
+                                      "filename":  "shaders/AS/AS_BGX_CorridorTravel.1.fx",
+                                      "type":  "BGX"
+                                  },
+                                  {
+                                      "filename":  "shaders/AS/AS_BGX_CosmicKaleidoscope.1.fx",
+                                      "type":  "BGX"
+                                  },
+                                  {
+                                      "filename":  "shaders/AS/AS_BGX_DigitalBrain.1.fx",
+                                      "type":  "BGX"
+                                  },
+                                  {
+                                      "filename":  "shaders/AS/AS_BGX_Fluorescent.1.fx",
+                                      "type":  "BGX"
+                                  },
+                                  {
+                                      "filename":  "shaders/AS/AS_BGX_GoldenClockwork.1.fx",
+                                      "type":  "BGX"
+                                  },
+                                  {
+                                      "filename":  "shaders/AS/AS_BGX_Kaleidoscope.1.fx",
+                                      "type":  "BGX"
+                                  },
+                                  {
+                                      "filename":  "shaders/AS/AS_BGX_LightRipples.1.fx",
+                                      "type":  "BGX"
+                                  },
+                                  {
+                                      "filename":  "shaders/AS/AS_BGX_LightWall.1.fx",
+                                      "type":  "BGX"
+                                  },
+                                  {
+                                      "filename":  "shaders/AS/AS_BGX_LiquidChrome.1.fx",
+                                      "type":  "BGX"
+                                  },
+                                  {
+                                      "filename":  "shaders/AS/AS_BGX_LogSpirals.1.fx",
+                                      "type":  "BGX"
+                                  },
+                                  {
+                                      "filename":  "shaders/AS/AS_BGX_MeltWave.1.fx",
+                                      "type":  "BGX"
+                                  },
+                                  {
+                                      "filename":  "shaders/AS/AS_BGX_MistyGrid.1.fx",
+                                      "type":  "BGX"
+                                  },
+                                  {
+                                      "filename":  "shaders/AS/AS_BGX_PastRacer.1.fx",
+                                      "type":  "BGX"
+                                  },
+                                  {
+                                      "filename":  "shaders/AS/AS_BGX_PlasmaFlow.1.fx",
+                                      "type":  "BGX"
+                                  },
+                                  {
+                                      "filename":  "shaders/AS/AS_BGX_ProteanClouds.1.fx",
+                                      "type":  "BGX"
+                                  },
+                                  {
+                                      "filename":  "shaders/AS/AS_BGX_QuadtreeTruchet.1.fx",
+                                      "type":  "BGX"
+                                  },
+                                  {
+                                      "filename":  "shaders/AS/AS_BGX_RaymarchedChain.1.fx",
+                                      "type":  "BGX"
+                                  },
+                                  {
+                                      "filename":  "shaders/AS/AS_BGX_ShineOn.1.fx",
+                                      "type":  "BGX"
+                                  },
+                                  {
+                                      "filename":  "shaders/AS/AS_BGX_StainedLights.1.fx",
+                                      "type":  "BGX"
+                                  },
+                                  {
+                                      "filename":  "shaders/AS/AS_BGX_SunsetClouds.1.fx",
+                                      "type":  "BGX"
+                                  },
+                                  {
+                                      "filename":  "shaders/AS/AS_BGX_TimeCrystal.1.fx",
+                                      "type":  "BGX"
+                                  },
+                                  {
+                                      "filename":  "shaders/AS/AS_BGX_Vortex.1.fx",
+                                      "type":  "BGX"
+                                  },
+                                  {
+                                      "filename":  "shaders/AS/AS_BGX_WavySquares.1.fx",
+                                      "type":  "BGX"
+                                  },
+                                  {
+                                      "filename":  "shaders/AS/AS_BGX_WavySquiggles.1.fx",
+                                      "type":  "BGX"
+                                  },
+                                  {
+                                      "filename":  "shaders/AS/AS_BGX_ZippyZaps.1.fx",
+                                      "type":  "BGX"
+                                  },
+                                  {
+                                      "filename":  "shaders/AS/AS_GFX_AspectRatio.1.fx",
+                                      "type":  "GFX"
+                                  },
+                                  {
+                                      "filename":  "shaders/AS/AS_GFX_AudioDirection.1.fx",
+                                      "type":  "GFX"
+                                  },
+                                  {
+                                      "filename":  "shaders/AS/AS_GFX_BrushStroke.1.fx",
+                                      "type":  "GFX"
+                                  },
+                                  {
+                                      "filename":  "shaders/AS/AS_GFX_CinematicDiffusion.1.fx",
+                                      "type":  "GFX"
+                                  },
+                                  {
+                                      "filename":  "shaders/AS/AS_GFX_HandDrawing.1.fx",
+                                      "type":  "GFX"
+                                  },
+                                  {
+                                      "filename":  "shaders/AS/AS_GFX_MultiLayerHalftone.1.fx",
+                                      "type":  "GFX"
+                                  },
+                                  {
+                                      "filename":  "shaders/AS/AS_GFX_VignettePlus.1.fx",
+                                      "type":  "GFX"
+                                  },
+                                  {
+                                      "filename":  "shaders/AS/AS_LFX_CandleFlame.1.fx",
+                                      "type":  "LFX"
+                                  },
+                                  {
+                                      "filename":  "shaders/AS/AS_LFX_LaserShow.1.fx",
+                                      "type":  "LFX"
+                                  },
+                                  {
+                                      "filename":  "shaders/AS/AS_LFX_StageSpotlights.1.fx",
+                                      "type":  "LFX"
+                                  },
+                                  {
+                                      "filename":  "shaders/AS/AS_VFX_BoomSticker.1.fx",
+                                      "type":  "VFX"
+                                  },
+                                  {
+                                      "filename":  "shaders/AS/AS_VFX_CircularSpectrum.1.fx",
+                                      "type":  "VFX"
+                                  },
+                                  {
+                                      "filename":  "shaders/AS/AS_VFX_ClairObscur.1.fx",
+                                      "type":  "VFX"
+                                  },
+                                  {
+                                      "filename":  "shaders/AS/AS_VFX_ColorBalancer.1.fx",
+                                      "type":  "VFX"
+                                  },
+                                  {
+                                      "filename":  "shaders/AS/AS_VFX_DigitalArtifacts.1.fx",
+                                      "type":  "VFX"
+                                  },
+                                  {
+                                      "filename":  "shaders/AS/AS_VFX_DustMotes.1.fx",
+                                      "type":  "VFX"
+                                  },
+                                  {
+                                      "filename":  "shaders/AS/AS_VFX_FocusedChaos.1.fx",
+                                      "type":  "VFX"
+                                  },
+                                  {
+                                      "filename":  "shaders/AS/AS_VFX_MotionFocus.1.fx",
+                                      "type":  "VFX"
+                                  },
+                                  {
+                                      "filename":  "shaders/AS/AS_VFX_MotionTrails.1.fx",
+                                      "type":  "VFX"
+                                  },
+                                  {
+                                      "filename":  "shaders/AS/AS_VFX_RadialLensDistortion.1.fx",
+                                      "type":  "VFX"
+                                  },
+                                  {
+                                      "filename":  "shaders/AS/AS_VFX_RadiantFire.1.fx",
+                                      "type":  "VFX"
+                                  },
+                                  {
+                                      "filename":  "shaders/AS/AS_VFX_RainyWindow.1.fx",
+                                      "type":  "VFX"
+                                  },
+                                  {
+                                      "filename":  "shaders/AS/AS_VFX_ScreenRing.1.fx",
+                                      "type":  "VFX"
+                                  },
+                                  {
+                                      "filename":  "shaders/AS/AS_VFX_SparkleBloom.1.fx",
+                                      "type":  "VFX"
+                                  },
+                                  {
+                                      "filename":  "shaders/AS/AS_VFX_SpectrumRing.1.fx",
+                                      "type":  "VFX"
+                                  },
+                                  {
+                                      "filename":  "shaders/AS/AS_VFX_StencilMask.1.fx",
+                                      "type":  "VFX"
+                                  },
+                                  {
+                                      "filename":  "shaders/AS/AS_VFX_TiltedGrid.1.fx",
+                                      "type":  "VFX"
+                                  },
+                                  {
+                                      "filename":  "shaders/AS/AS_VFX_VolumetricLight.1.fx",
+                                      "type":  "VFX"
+                                  },
+                                  {
+                                      "filename":  "shaders/AS/AS_VFX_VUMeter.1.fx",
+                                      "type":  "VFX"
+                                  },
+                                  {
+                                      "filename":  "shaders/AS/AS_VFX_WarpDistort.1.fx",
+                                      "type":  "VFX"
+                                  },
+                                  {
+                                      "filename":  "shaders/AS/AS_VFX_WaterSurface.1.fx",
+                                      "type":  "VFX"
                                   }
                               ],
                     "statistics":  {
                                        "byType":  {
-                                                      "BGX":  28,
-                                                      "GFX":  8,
-                                                      "LFX":  3,
-                                                      "VFX":  30
+                                                      "BGX":  55,
+                                                      "GFX":  15,
+                                                      "LFX":  6,
+                                                      "VFX":  51
                                                   }
                                    }
                 }
