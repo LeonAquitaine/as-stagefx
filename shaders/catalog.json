@@ -269,7 +269,11 @@
     "type": "BGX",
     "shortDescription": "Hypnotic, crystalline fractal structure with dynamic animation, color cycling, and audio reactivity.",
     "longDescription": "Creates a hypnotic, crystalline fractal structure with dynamic animation and color cycling. Generates patterns reminiscent of crystalline structures or gems with depth and dimension. Features fractal crystal-like patterns (customizable iterations), dynamic animation (controllable speed), adjustable pattern density/detail, customizable color palettes with cycling, audio reactivity for pattern dynamics/colors, depth-aware rendering with standard blending, and adjustable position/rotation controls. Suitable for mystic or sci-fi backgrounds, portals, or energy fields.",
-    "imageUrl": "https://github.com/user-attachments/assets/ffec219a-b0c2-481a-a1c4-125ad699c8f8"
+    "imageUrl": "https://github.com/user-attachments/assets/ffec219a-b0c2-481a-a1c4-125ad699c8f8",
+    "credits": {
+      "description": "Based on 'Time Crystal' by raphaeljmu, adapted for AS StageFX.",
+      "externalUrl": "https://www.shadertoy.com/view/lcl3z2"
+    }
   },
   {
     "name": "Vortex",
@@ -365,7 +369,11 @@
     "type": "VFX",
     "shortDescription": "Displays a circular audio spectrum analyzer with customizable bands, colors, and animation.",
     "longDescription": "Visualizes audio frequencies as a circular spectrum analyzer. Features adjustable band count, radius, thickness, color palette, and animation speed. Supports audio reactivity for dynamic, music-driven visuals. Ideal for overlays, music videos, and live performances.",
-    "imageUrl": "https://github.com/user-attachments/assets/placeholder-circularspectrum"
+    "imageUrl": "https://github.com/user-attachments/assets/placeholder-circularspectrum",
+    "credits": {
+      "description": "Based on 'Circular audio visualizer' by AIandDesign, adapted for AS StageFX.",
+      "externalUrl": "https://www.shadertoy.com/view/tcyGW1"
+    }
   },
   {
     "name": "Clair Obscur",
@@ -373,7 +381,11 @@
     "type": "VFX",
     "shortDescription": "Applies dramatic chiaroscuro lighting with strong contrast and stylized shadows.",
     "longDescription": "Simulates dramatic chiaroscuro (light-dark) lighting, emphasizing strong contrast and stylized shadows. Features controls for light direction, intensity, shadow softness, and color tint. Useful for artistic, cinematic, or moody scene transformations.",
-    "imageUrl": "https://github.com/user-attachments/assets/placeholder-clairobscur"
+    "imageUrl": "https://github.com/user-attachments/assets/placeholder-clairobscur",
+    "credits": {
+      "description": "Based on '[RGR] Hearts' by deeplo, adapted for AS StageFX.",
+      "externalUrl": "https://www.shadertoy.com/view/ttcBRs"
+    }
   },
   {
     "name": "Color Balancer",
@@ -421,7 +433,11 @@
     "type": "VFX",
     "shortDescription": "Simulates raindrops and streaks on a window with refraction and blur effects.",
     "longDescription": "Creates the illusion of raindrops and streaks running down a window, with realistic refraction and blur. Features adjustable rain density, drop size, streak speed, and blending. Perfect for moody, cinematic, or weather-themed scenes.",
-    "imageUrl": "https://github.com/user-attachments/assets/placeholder-rainywindow"
+    "imageUrl": "https://github.com/user-attachments/assets/placeholder-rainywindow",
+    "credits": {
+      "description": "Inspired by 'Heartfelt' by Martijn Steinrucken (BigWings), adapted for AS StageFX.",
+      "externalUrl": "https://www.shadertoy.com/view/ltffzl"
+    }
   },
   {
     "name": "Screen Ring",
