@@ -124,17 +124,6 @@ Creates a mesmerizing, rippling kaleidoscopic light pattern effect. Suitable as 
 </tr>
 <tr>
 <td width="50%">
-<h4>BGX: Light Wall </h4>
-<h5><code>[AS] BGX: Light Wall|AS_BGX_LightWall.1.fx</code></h5>
-This shader renders a seamless, soft, overlapping grid of light panels with various built-in patterns. Perfect for creating dance club and concert backdrops with fully customizable colors, patterns, and audio reactivity.
-
-</td>
-<td width="50%"><div style="text-align:center">
-<img src="https://github.com/user-attachments/assets/4871c7be-b540-4f19-8cb2-bbd0c47ac237" alt="Light Wall Effect" style="max-width:100%;">
-</div></td>
-</tr>
-<tr>
-<td width="50%">
 <h4>BGX: Liquid Chrome </h4>
 <h5><code>[AS] BGX: Liquid Chrome|AS_BGX_LiquidChrome.1.fx</code></h5>
 Creates dynamic, flowing psychedelic patterns reminiscent of liquid metal or chrome. This shader iteratively distorts screen coordinates, creating complex, flowing patterns with optional vertical stripe overlays for additional visual texture.
@@ -318,6 +307,16 @@ Creates dynamic electric arcs and lightning patterns for a striking background e
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://github.com/user-attachments/assets/f32eebde-9c76-49ab-ab6e-50bc4fdeaf2f" alt="Zippy Zaps Effect" style="max-width:100%;">
+</div></td>
+</tr>
+<tr>
+<td width="50%">
+<h4>BGX:  </h4>
+<h5><code>[AS] BGX: |AS_BGX_LightWall.1.fx</code></h5>
+
+</td>
+<td width="50%"><div style="text-align:center">
+<img src="" alt=" Effect" style="max-width:100%;">
 </div></td>
 </tr>
 </table>

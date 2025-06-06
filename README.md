@@ -67,7 +67,6 @@ AS-StageFX includes **58 shaders** across four categories: **27 Background (BGX)
 | **Golden Clockwork** | Intricate, animated golden clockwork or Apollonian fractal patterns. |
 | **Kaleidoscope** | Creates a vibrant, ever-evolving fractal kaleidoscope pattern with animated tendrils. Perfect for psychedelic, cosmic, or abstract backgrounds with a hypnotic quality. |
 | **Light Ripples** | Mesmerizing, rippling kaleidoscopic light patterns with customizable distortion, animation, color palettes, and audio reactivity. |
-| **Light Wall** | Renders a seamless, soft, overlapping grid of light panels with various built-in patterns, ideal for dance club/concert backdrops. Customizable and audio-reactive. |
 | **Liquid Chrome** | Creates dynamic, flowing psychedelic patterns reminiscent of liquid metal or chrome, with optional vertical stripe overlays. |
 | **Log Spirals** | Creates an organic spiral pattern based on logarithmic growth with animated spheres along the spiral arms. |
 | **Melt Wave** | Flowing, warping psychedelic effect with sine-based distortions, palette system, keyframe animation, and audio reactivity. |
@@ -85,6 +84,7 @@ AS-StageFX includes **58 shaders** across four categories: **27 Background (BGX)
 | **Wavy Squares** | Hypnotic pattern of wavy, animated, transforming square tiles with dynamic size changes. Audio-reactive and depth-aware. |
 | **Wavy Squiggles** | Mesmerizing pattern of adaptive wavy lines forming intricate, rotating designs. Audio-reactive and depth-aware. |
 | **Zippy Zaps** | Dynamic electric arcs/lightning patterns with procedural generation, audio reactivity, and 3D positioning. |
+| **** |  |
 
 ### Graphic Effects (GFX)
 

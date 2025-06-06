@@ -9,11 +9,48 @@ param(
         Gallery = @{ Template = "$PSScriptRoot/../docs/template/gallery.md"; Out = "$PSScriptRoot/../docs/gallery.md" }
         GalleryBGX = @{ Template = "$PSScriptRoot/../docs/template/gallery-backgrounds.md"; Out = "$PSScriptRoot/../docs/gallery-backgrounds.md" }
         GalleryVFX = @{ Template = "$PSScriptRoot/../docs/template/gallery-visualeffects.md"; Out = "$PSScriptRoot/../docs/gallery-visualeffects.md" }
+        Credits = @{ Template = "$PSScriptRoot/../docs/template/AS_StageFX_Credits.md"; Out = "$PSScriptRoot/../AS_StageFX_Credits.md" }
     }
 )
 
 # Load catalog-statistics
 $catalogStats = Get-Content -Path $CatalogPath -Raw | ConvertFrom-Json
+
+# Flatten all grouped arrays into a single 'shaders' array for credits rendering
+$allShaders = @()
+if ($catalogStats.grouped) {
+    foreach ($group in $catalogStats.grouped.PSObject.Properties) {
+        $items = $group.Value
+        if ($items -is [System.Collections.IEnumerable]) {
+            foreach ($item in $items) { $allShaders += $item }
+        }
+    }
+}
+$catalogStats | Add-Member -MemberType NoteProperty -Name shaders -Value $allShaders -Force
+
+# Precompute arrays for credits template
+$BGXAdapted = $allShaders | Where-Object { $_.type -eq 'BGX' -and $_.credits -and $_.credits.originalAuthor }
+$OtherAdapted = $allShaders | Where-Object { $_.type -ne 'BGX' -and $_.credits -and $_.credits.originalAuthor }
+$OriginalWorks = $allShaders | Where-Object { -not ($_.credits -and $_.credits.originalAuthor) }
+$catalogStats | Add-Member -MemberType NoteProperty -Name BGXAdapted -Value $BGXAdapted -Force
+$catalogStats | Add-Member -MemberType NoteProperty -Name OtherAdapted -Value $OtherAdapted -Force
+$catalogStats | Add-Member -MemberType NoteProperty -Name OriginalWorks -Value $OriginalWorks -Force
+
+# Debug: Print first few items of each group and their credits property
+if ($catalogStats.grouped) {
+    foreach ($groupName in $catalogStats.grouped.PSObject.Properties.Name) {
+        Write-Host "[DEBUG] Group: $groupName" -ForegroundColor Yellow
+        $items = $catalogStats.grouped.$groupName
+        $i = 0
+        foreach ($item in $items) {
+            if ($i -ge 3) { break }
+            $hasCredits = if ($item.PSObject.Properties.Name -contains 'credits') { 'YES' } else { 'NO' }
+            $creditsSummary = if ($hasCredits -eq 'YES') { $item.credits | ConvertTo-Json -Compress } else { '' }
+            Write-Host ("  [DEBUG] $($item.filename): credits? $hasCredits $creditsSummary") -ForegroundColor Yellow
+            $i++
+        }
+    }
+}
 
 # Helper: Get value from nested property path (e.g., "grouped.VFX.0.name")
 function Get-CatalogValue($obj, $path) {
@@ -35,6 +72,18 @@ function Get-CatalogValue($obj, $path) {
 # 1. Evaluate all {{#if ...}}...{{/if}} blocks first, before any property replacements
 function Get-NestedPropertyValue {
     param($context, $propertyPath)
+    # Support simple (eq field value) and (ne field value) expressions
+    if ($propertyPath -match '^\(eq ([^ ]+) "([^"]+)"\)$') {
+        $field = $matches[1]
+        $val = $matches[2]
+        $actual = $context.$field
+        return ($actual -eq $val)
+    } elseif ($propertyPath -match '^\(ne ([^ ]+) "([^"]+)"\)$') {
+        $field = $matches[1]
+        $val = $matches[2]
+        $actual = $context.$field
+        return ($actual -ne $val)
+    }
     $parts = $propertyPath -split '\.'
     $value = $context
     foreach ($part in $parts) {
@@ -96,17 +145,18 @@ function Invoke-GroupReplacement {
         if ($null -eq $arr -or $arr.Count -eq 0) { return '' }
         $rows = @()
         foreach ($item in $arr) {
-            $row = [regex]::Replace($block, '{{([a-zA-Z0-9_]+)}}', {
+            $row = [regex]::Replace($block, '{{#if ([^}]+)}}([\s\S]*?){{/if}}', {
+                param($m3)
+                $fieldPath = $m3.Groups[1].Value.Trim()
+                $ifBlock = $m3.Groups[2].Value
+                $val = Get-NestedPropertyValue $item $fieldPath
+                if ($val) { return $ifBlock } else { return '' }
+            })
+            $row = [regex]::Replace($row, '{{([a-zA-Z0-9_.]+)}}', {
                 param($m2)
                 if ($null -eq $m2 -or -not $m2.Groups[1]) { return '' }
                 $field = $m2.Groups[1].Value
-                if ($item -is [System.Collections.IDictionary] -and $item.ContainsKey($field)) {
-                    $v = $item[$field]
-                } elseif ($item.PSObject -and $item.PSObject.Properties.Name -contains $field) {
-                    $v = $item.$field
-                } else {
-                    $v = ''
-                }
+                $v = Get-NestedPropertyValue $item $field
                 if ($null -eq $v) { return '' } else { return $v.ToString() }
             })
             $rows += $row

@@ -1,5 +1,10 @@
 {
-  "total": 58,
+  "byType": {
+    "GFX": 7,
+    "VFX": 21,
+    "BGX": 27,
+    "LFX": 3
+  },
   "grouped": {
     "GFX": [
       {
@@ -43,7 +48,9 @@
         "imageUrl": "https://github.com/user-attachments/assets/4074ac6b-a385-4e0f-9d9a-c4d5dd0117cd",
         "credits": {
           "description": "Based on 'notebook drawings' by Flockaroo (2016).",
-          "externalUrl": "https://www.shadertoy.com/view/XtVGD1"
+          "externalUrl": "https://www.shadertoy.com/view/XtVGD1",
+          "originalAuthor": "Flockaroo",
+          "originalTitle": "notebook drawings"
         }
       },
       {
@@ -55,7 +62,9 @@
         "imageUrl": "https://github.com/user-attachments/assets/b93c9d03-5d23-4b32-aa3e-f2b6a9736c70",
         "credits": {
           "description": "Based on 'Halftone Shader' by P. Gonzalez Vivo.",
-          "externalUrl": "https://www.shadertoy.com/view/XdcGzn"
+          "externalUrl": "https://www.shadertoy.com/view/XdcGzn",
+          "originalAuthor": "P. Gonzalez Vivo",
+          "originalTitle": "Halftone Shader"
         }
       },
       {
@@ -67,305 +76,9 @@
         "imageUrl": "https://github.com/user-attachments/assets/bf471099-9c4a-423b-ae1f-fae2f83d924a",
         "credits": {
           "description": "Hexagonal grid implementation adapted from 'hexagonal wipe' by blandprix.",
-          "externalUrl": "https://www.shadertoy.com/view/XfjyWG"
-        }
-      }
-    ],
-    "BGX": [
-      {
-        "name": "Blue Corona",
-        "filename": "AS_BGX_BlueCorona.1.fx",
-        "type": "BGX",
-        "shortDescription": "Vibrant, abstract blue corona with fluid, dynamic motion and hypnotic, organic, plasma-like visuals. Customizable and audio-reactive.",
-        "longDescription": "Creates a vibrant, abstract blue corona effect with fluid, dynamic motion. The effect generates hypnotic patterns through iterative mathematical transformations, resulting in organic, plasma-like visuals with a predominantly blue color scheme. Features abstract, organic blue corona patterns; smooth fluid-like animation; customizable iteration count/pattern scale; animation speed/flow controls; intuitive color controls; customizable background color; audio reactivity (multiple targets); depth-aware rendering; and standard position, rotation, scale, and blending options.",
-        "imageUrl": "https://github.com/user-attachments/assets/f5ee6ce1-36b9-4d2f-9250-4c345394c27c",
-        "credits": {
-          "description": "Inspired by the 'Blue Corona' shader by @shaderartist.",
-          "externalUrl": "https://www.shadertoy.com/view/ldX3z4"
-        }
-      },
-      {
-        "name": "Constellation",
-        "filename": "AS_BGX_Constellation.1.fx",
-        "type": "BGX",
-        "shortDescription": "Creates an animated stellar constellation pattern with twinkling stars and connecting lines. Perfect for cosmic, night sky, or abstract network visualizations with a hand-drawn aesthetic.",
-        "longDescription": "Creates an animated stellar constellation pattern with twinkling stars and connecting lines. Perfect for cosmic, night sky, or abstract network visualizations with a hand-drawn aesthetic. Features dynamic constellation lines with customizable thickness and falloff; twinkling star points with adjustable sparkle properties; procedurally animated line connections; animated color palette with adjustable parameters; audio reactivity for zoom, gradient effects, line brightness, and sparkle magnitude; depth-aware rendering; and standard blend options.",
-        "imageUrl": "https://github.com/user-attachments/assets/8a7e8736-c23c-47eb-a753-c44ffc101b71",
-        "credits": {
-          "description": "Based on the 'Constellation' effect by @glslcoder.",
-          "externalUrl": "https://www.shadertoy.com/view/4dX3Dn"
-        }
-      },
-      {
-        "name": "Corridor Travel",
-        "filename": "AS_BGX_CorridorTravel.1.fx",
-        "type": "BGX",
-        "shortDescription": "Simulates an artistic flight through an abstract, glowing, patterned tunnel with pseudo-DOF, motion blur, and light bounce simulation.",
-        "longDescription": "Simulates an artistic flight through an abstract, glowing, patterned tunnel. Features multiple samples per pixel for pseudo-DOF and motion blur, and simulates light bounces with artistic reflection logic.",
-        "imageUrl": "https://github.com/user-attachments/assets/be502be4-cc82-44a4-8947-74dfd6f072b8",
-        "credits": {
-          "description": "Inspired by the 'Corridor Travel' shader by @tunnelmaster.",
-          "externalUrl": "https://www.shadertoy.com/view/3dXcDn"
-        }
-      },
-      {
-        "name": "Cosmic Kaleidoscope",
-        "filename": "AS_BGX_CosmicKaleidoscope.1.fx",
-        "type": "BGX",
-        "shortDescription": "Renders a raymarched volumetric fractal (Mandelbox/Mandelbulb-like) with kaleidoscopic mirroring, audio reactivity, and palette-based coloring.",
-        "longDescription": "Renders a raymarched volumetric fractal resembling a Mandelbox or Mandelbulb. Features Kaleidoscope-like mirroring effect with customizable repetitions, audio reactivity for dynamic parameter adjustments, palette-based coloring system with customizable options, and full rotation, position and depth control for scene integration.",
-        "imageUrl": "https://github.com/user-attachments/assets/d466ec57-964c-4c25-93e2-6d01ca4ee1d3",
-        "credits": {
-          "description": "Fractal algorithm adapted from @fractalwizard's Mandelbox implementation.",
-          "externalUrl": "https://www.shadertoy.com/view/4dX3Wn"
-        }
-      },
-      {
-        "name": "Digital Brain",
-        "filename": "AS_BGX_DigitalBrain.1.fx",
-        "type": "BGX",
-        "shortDescription": "Abstract visualization of a digital brain neural network with animated Voronoi patterns, neural-like connections, and electrical pulses.",
-        "longDescription": "Creates an abstract visualization of a 'digital brain' with evolving Voronoi patterns and neural-like connections. The effect simulates an organic electronic network with dynamic light paths that mimic neural activity in a stylized, technological manner. Features dynamic Voronoi-based pattern generation, animated 'electrical' pulses simulating synaptic activity, color modulation based on noise texture for organic variation, advanced vignette controls, pre-optimized pattern stretching, classic and texture-based coloring options, customizable animation and pattern controls, and depth-aware rendering with standard blending.",
-        "imageUrl": "https://github.com/user-attachments/assets/27c3f540-b8f5-4b85-a4a4-4a5076e67f39",
-        "credits": {
-          "description": "Voronoi pattern logic based on @neuralnet's open-source GLSL example.",
-          "externalUrl": "https://www.shadertoy.com/view/4dXcWn"
-        }
-      },
-      {
-        "name": "Fluorescent",
-        "filename": "AS_BGX_Fluorescent.1.fx",
-        "type": "BGX",
-        "shortDescription": "Creates a vibrant neon fluorescent background effect with raymarched volumetric patterns. Perfect for retro, cyberpunk, or futuristic atmospheres.",
-        "longDescription": "Creates a vibrant neon fluorescent background effect that simulates the glow and intensity of fluorescent lighting. Perfect for creating retro, cyberpunk, or futuristic atmospheres with customizable colors and intensity. Features raymarched volumetric fluorescent effect with depth, dynamic color shifting with RGB phase controls, animated pulsing and flowing patterns, audio reactivity for rhythm-synchronized lighting, standard stage controls for positioning and depth, customizable iteration count for quality vs performance balance, and blend mode controls for integration with existing scenes.",
-        "imageUrl": "https://github.com/user-attachments/assets/PLACEHOLDER-IMAGE-ID",
-        "credits": {
-          "description": "Neon glow technique adapted from @neonfx's work.",
-          "externalUrl": "https://www.shadertoy.com/view/4dXcDn"
-        }
-      },
-      {
-        "name": "Golden Clockwork",
-        "filename": "AS_BGX_GoldenClockwork.1.fx",
-        "type": "BGX",
-        "shortDescription": "Intricate, animated golden clockwork or Apollonian fractal patterns.",
-        "longDescription": "Renders a mesmerizing and intricate animated background effect reminiscent of golden clockwork mechanisms or Apollonian gasket-like fractal patterns. The effect features complex, evolving geometric designs with a characteristic golden color palette. Features procedurally generated Apollonian fractal patterns, dynamic animation driven by time, a golden color scheme with lighting and shading effects, depth-like progression through fractal layers, kaleidoscopic and mirroring options for pattern variation, resolution-independent rendering, and UI controls for animation (speed, keyframe, path speed), palette, fractal/kaleidoscope parameters, audio reactivity, stage controls (position, scale, rotation, depth), and blending.",
-        "imageUrl": "https://github.com/user-attachments/assets/583dfe11-c8b6-4e34-ad79-35d875ce32c6"
-      },
-      {
-        "name": "Kaleidoscope",
-        "filename": "AS_BGX_Kaleidoscope.1.fx",
-        "type": "BGX",
-        "shortDescription": "Creates a vibrant, ever-evolving fractal kaleidoscope pattern with animated tendrils. Perfect for psychedelic, cosmic, or abstract backgrounds with a hypnotic quality.",
-        "longDescription": "Creates a vibrant, ever-evolving fractal kaleidoscope pattern with animated tendrils. Perfect for psychedelic, cosmic, or abstract backgrounds with a hypnotic quality. Features adjustable kaleidoscope mirror count for symmetry control; fractal zoom and pattern rotation with animation controls; customizable wave parameters and color palette; audio reactivity for zoom, wave intensity, and pattern rotation; depth-aware rendering; and standard blend options.",
-        "imageUrl": "https://github.com/user-attachments/assets/8bd0fdee-77a8-40d6-be9f-1708186e5590",
-        "credits": {
-          "description": "Inspired by 'Shader Art Coding Introduction' by kishimisu.",
-          "externalUrl": "https://youtu.be/f4s1h2YETNY"
-        }
-      },
-      {
-        "name": "Light Ripples",
-        "filename": "AS_BGX_LightRipples.1.fx",
-        "type": "BGX",
-        "shortDescription": "Mesmerizing, rippling kaleidoscopic light patterns with customizable distortion, animation, color palettes, and audio reactivity.",
-        "longDescription": "Creates a mesmerizing, rippling kaleidoscopic light pattern effect. Suitable as a dynamic background or overlay. Includes controls for animation, distortion (amplitude, frequencies), color palettes with cycling, audio reactivity, depth-aware rendering, adjustable rotation, and standard blending options.",
-        "imageUrl": "https://github.com/user-attachments/assets/99bc3c0c-caac-4060-883c-079d92419abc",
-        "credits": {
-          "description": "Original by Danilo Guanabara.",
-          "externalUrl": "https://www.pouet.net/prod.php?which=57245"
-        }
-      },
-      {
-        "name": "Light Wall",
-        "filename": "AS_BGX_LightWall.1.fx",
-        "type": "BGX",
-        "shortDescription": "Renders a seamless, soft, overlapping grid of light panels with various built-in patterns, ideal for dance club/concert backdrops. Customizable and audio-reactive.",
-        "longDescription": "This shader renders a seamless, soft, overlapping grid of light panels with various built-in patterns. Perfect for creating dance club and concert backdrops with fully customizable colors, patterns, and audio reactivity.",
-        "imageUrl": "https://github.com/user-attachments/assets/4871c7be-b540-4f19-8cb2-bbd0c47ac237"
-      },
-      {
-        "name": "Liquid Chrome",
-        "filename": "AS_BGX_LiquidChrome.1.fx",
-        "type": "BGX",
-        "shortDescription": "Creates dynamic, flowing psychedelic patterns reminiscent of liquid metal or chrome, with optional vertical stripe overlays.",
-        "longDescription": "Creates dynamic, flowing psychedelic patterns reminiscent of liquid metal or chrome. This shader iteratively distorts screen coordinates, creating complex, flowing patterns with optional vertical stripe overlays for additional visual texture.",
-        "imageUrl": "",
-        "credits": {
-          "description": "Based on 'Liquid Chrome' by iamsaitam.",
-          "externalUrl": "https://neort.io/art/bkm813c3p9f7drq1j86g"
-        }
-      },
-      {
-        "name": "Log Spirals",
-        "filename": "AS_BGX_LogSpirals.1.fx",
-        "type": "BGX",
-        "shortDescription": "Creates an organic spiral pattern based on logarithmic growth with animated spheres along the spiral arms.",
-        "longDescription": "Creates an organic spiral pattern based on logarithmic growth with animated spheres along the spiral arms. Features precise control over spiral expansion rate and animation, customizable sphere size with fade effects and specular highlights, color palette options with hue cycling and ambient glow, audio reactivity for multiple parameters (animation speed, rotation, arm twist, sphere size, brightness), and standard position/rotation/scale controls for scene integration.",
-        "imageUrl": "",
-        "credits": {
-          "description": "Based on 'Logarithmic spiral of spheres' by mrange.",
-          "externalUrl": "https://www.shadertoy.com/view/msGXRD"
-        }
-      },
-      {
-        "name": "Melt Wave",
-        "filename": "AS_BGX_MeltWave.1.fx",
-        "type": "BGX",
-        "shortDescription": "Flowing, warping psychedelic effect with sine-based distortions, palette system, keyframe animation, and audio reactivity.",
-        "longDescription": "Creates a flowing, warping psychedelic effect inspired by 1970s visual aesthetics. Generates mesmerizing colored patterns with sine-based distortions that evolve over time. Features adjustable zoom/intensity, a palette system (mathematical or preset colors), dynamic time-based animation with keyframe support, audio reactivity mappable to different parameters, and resolution-independent transformation with position/rotation controls.",
-        "imageUrl": "https://github.com/user-attachments/assets/4871c7be-b540-4f19-8cb2-bbd0c47ac237"
-      },
-      {
-        "name": "Misty Grid",
-        "filename": "AS_BGX_MistyGrid.1.fx",
-        "type": "BGX",
-        "shortDescription": "Abstract fractal-based grid background with a misty, ethereal appearance using raymarching. Audio-reactive and customizable.",
-        "longDescription": "Creates an abstract fractal-based grid background with a misty, ethereal appearance using raymarching techniques. Features dynamic fractal-based grid environment, customizable colors with palette system, folding and repetition for complex patterns, camera movement simulation with smooth rotations, audio reactivity affecting multiple parameters (fractal scale, folding intensity, saturation, brightness, camera zoom, animation speed), and standard position/rotation/scale controls.",
-        "imageUrl": "https://github.com/user-attachments/assets/ddd37fd8-70be-442c-aaed-f31063f8d9e9",
-        "credits": {
-          "description": "Based on 'Misty Grid' by NuSan.",
-          "externalUrl": "https://www.shadertoy.com/view/wl2Szd"
-        }
-      },
-      {
-        "name": "Past Racer",
-        "filename": "AS_BGX_PastRacer.1.fx",
-        "type": "BGX",
-        "shortDescription": "Raymarched abstract procedural scene (2 selectable) with domain repetition, custom transformations, and audio-reactive geometry/flares.",
-        "longDescription": "A ray marching shader that generates one of two selectable abstract procedural scenes. Features domain repetition, custom transformations, and pseudo-random patterns. Scene geometry and flare effects can be reactive to audio frequency bands.",
-        "imageUrl": "",
-        "credits": {
-          "description": "Based on 'past racer' by jetlab.",
-          "externalUrl": "https://www.shadertoy.com/view/3l23Rh"
-        }
-      },
-      {
-        "name": "Plasma Flow",
-        "filename": "AS_BGX_PlasmaFlow.1.fx",
-        "type": "BGX",
-        "shortDescription": "Sophisticated, gentle, flexible plasma effect with procedural noise, domain warping, and customizable audio-reactive color gradients.",
-        "longDescription": "Sophisticated, gentle, and flexible plasma effect for groovy, atmospheric visuals. Generates smooth, swirling, organic patterns with customizable color gradients (2-4 user-defined colors) and strong audio reactivity. Features procedural plasma/noise with domain warping for fluid motion, controls for speed, scale, complexity, stretch, and warp, audio-reactive modulation of movement, color, brightness, and turbulence, plus standard blend modes and debug views. Ideal for music video backgrounds and overlays.",
-        "imageUrl": "https://github.com/user-attachments/assets/ba95325d-eff0-439e-a452-567675da84fe"
-      },
-      {
-        "name": "Protean Clouds",
-        "filename": "AS_BGX_ProteanClouds.1.fx",
-        "type": "BGX",
-        "shortDescription": "Volumetric, evolving procedural clouds with raymarching, dynamic color, and realistic lighting.",
-        "longDescription": "Renders dynamic, evolving volumetric clouds through raymarching techniques. Creates an immersive, abstract cloudscape with dynamic color variations and realistic lighting. Features high-quality volumetric cloud formations, customizable cloud density, shape, and detail, dynamic camera movement with adjustable path and sway, sophisticated internal lighting and self-shadowing, color palette system with customizable parameters, audio reactivity for multiple cloud parameters, and resolution-independent rendering with precise position controls.",
-        "imageUrl": "https://github.com/user-attachments/assets/placeholder-image",
-        "credits": {
-          "description": "Based on 'Protean clouds' by nimitz.",
-          "externalUrl": "https://www.shadertoy.com/view/3l23Rh"
-        }
-      },
-      {
-        "name": "Quadtree Truchet",
-        "filename": "AS_BGX_QuadtreeTruchet.1.fx",
-        "type": "BGX",
-        "shortDescription": "Multiscale recursive Truchet pattern with hierarchical tile overlaps, Art Deco line tiles, weave effects, and sophisticated palette system.",
-        "longDescription": "Creates a sophisticated multiscale recursive Truchet pattern with hierarchical tile overlaps across 3 levels. Generates complex geometric designs through quadtree subdivision and probabilistic tile placement. Features quadtree-based recursive pattern generation, overlapping tile system with collision prevention, full AS palette system support with multiple color modes, Art Deco style with line tiles and weave effects, animated rotation and panning, audio reactivity for scale/rotation/seed/density, stage positioning controls, and debug visualization of the underlying quadtree structure.",
-        "imageUrl": "https://github.com/user-attachments/assets/placeholder-image"
-      },
-      {
-        "name": "Raymarched Chain",
-        "filename": "AS_BGX_RaymarchedChain.1.fx",
-        "type": "BGX",
-        "shortDescription": "Raymarched animated chain of interconnected torus shapes following a procedural path. Features dynamic rotation, customizable geometry, and sophisticated lighting with camera controls.",
-        "longDescription": "Renders a raymarched scene featuring an animated, endlessly twisting chain composed of interconnected torus shapes. The chain follows a procedurally defined path, and its segments rotate and evolve over time, creating a mesmerizing, complex visual. Features raymarched chain of torus shapes with procedural path animation, customizable animation speed and chain geometry, dynamic coloring based on raymarching depth and iteration, camera orientation controls, and standard AS-StageFX blending controls.",
-        "imageUrl": "https://github.com/user-attachments/assets/placeholder-image",
-        "credits": {
-          "description": "Based on 'Corrente' by Elsio.",
-          "externalUrl": "https://www.shadertoy.com/view/ctSfRV"
-        }
-      },
-      {
-        "name": "Shine On",
-        "filename": "AS_BGX_ShineOn.1.fx",
-        "type": "BGX",
-        "shortDescription": "Dynamic, evolving fractal noise pattern with bright, sparkly, moving crystal highlights. Audio-reactive and depth-aware.",
-        "longDescription": "Creates a dynamic, evolving fractal noise pattern with bright, sparkly crystal highlights that move across the screen. Combines multiple layers of noise with procedural animation for a mesmerizing background effect. Features layered noise patterns with dynamic animation, crystal point highlights with customizable parameters, audio reactivity, and depth-aware rendering.",
-        "imageUrl": "https://github.com/user-attachments/assets/50162c8a-4841-4319-b731-d79c15453c7a"
-      },
-      {
-        "name": "Stained Lights",
-        "filename": "AS_BGX_StainedLights.1.fx",
-        "type": "BGX",
-        "shortDescription": "Dynamic, colorful patterns like stained glass with shifting light, blurred layers, and audio reactivity.",
-        "longDescription": "Creates dynamic and colorful patterns reminiscent of stained glass illuminated by shifting light, with multiple blurred layers enhancing depth and visual complexity. Generates layers of distorted, cell-like structures with vibrant, evolving colors and subtle edge highlighting, overlaid with softer, floating elements. Features multi-layered pattern generation (adjustable iterations), dynamic animation with speed control, customizable pattern scaling/edge highlighting, audio reactivity for animation/pattern evolution, post-processing (curve adjustments, noise), blurred floating layers for depth, and depth-aware rendering with standard blending. Suitable for abstract backgrounds, energy fields, or mystical visuals.",
-        "imageUrl": "https://github.com/user-attachments/assets/45b96c92-dedd-45ec-8007-69efb93c3786",
-        "credits": {
-          "description": "Inspired by 'Stained Lights' by 104.",
-          "externalUrl": "https://www.shadertoy.com/view/WlsSzM"
-        }
-      },
-      {
-        "name": "Sunset Clouds",
-        "filename": "AS_BGX_SunsetClouds.1.fx",
-        "type": "BGX",
-        "shortDescription": "Raymarched volumetric clouds with animated turbulence and dynamic sunset coloring.",
-        "longDescription": "Renders an animated scene of clouds at sunset using raymarching to create volumetric cloud effects with dynamic lighting and turbulence. Features raymarched volumetric clouds, animated turbulence effect, dynamic sunset coloring that changes over time, and tunable parameters for iterations, animation speed, and visual details.",
-        "imageUrl": "https://github.com/user-attachments/assets/placeholder-image",
-        "credits": {
-          "description": "Based on 'Sunset [280]' by Xor.",
-          "externalUrl": "https://www.shadertoy.com/view/wXjSRt"
-        }
-      },
-      {
-        "name": "Time Crystal",
-        "filename": "AS_BGX_TimeCrystal.1.fx",
-        "type": "BGX",
-        "shortDescription": "Hypnotic, crystalline fractal structure with dynamic animation, color cycling, and audio reactivity.",
-        "longDescription": "Creates a hypnotic, crystalline fractal structure with dynamic animation and color cycling. Generates patterns reminiscent of crystalline structures or gems with depth and dimension. Features fractal crystal-like patterns (customizable iterations), dynamic animation (controllable speed), adjustable pattern density/detail, customizable color palettes with cycling, audio reactivity for pattern dynamics/colors, depth-aware rendering with standard blending, and adjustable position/rotation controls. Suitable for mystic or sci-fi backgrounds, portals, or energy fields.",
-        "imageUrl": "https://github.com/user-attachments/assets/ffec219a-b0c2-481a-a1c4-125ad699c8f8",
-        "credits": {
-          "description": "Based on 'Time Crystal' by raphaeljmu.",
-          "externalUrl": "https://www.shadertoy.com/view/lcl3z2"
-        }
-      },
-      {
-        "name": "Vortex",
-        "filename": "AS_BGX_Vortex.1.fx",
-        "type": "BGX",
-        "shortDescription": "Psychedelic swirling vortex pattern with animated color, swirl, and brightness controls.",
-        "longDescription": "Creates a psychedelic swirling vortex pattern. The effect is animated and features controls for color, animation speed, swirl characteristics, and brightness. Suitable as a dynamic background. Features animated vortex with customizable speed, palette-based coloring, swirl intensity/frequency/sharpness, brightness falloff, and standard AS-StageFX blending and positioning.",
-        "imageUrl": ""
-      },
-      {
-        "name": "Wavy Squares",
-        "filename": "AS_BGX_WavySquares.1.fx",
-        "type": "BGX",
-        "shortDescription": "Hypnotic pattern of wavy, animated, transforming square tiles with dynamic size changes. Audio-reactive and depth-aware.",
-        "longDescription": "Creates a hypnotic pattern of wavy, animated square tiles that shift and transform. The squares follow a wave-like motion and feature dynamic size changes, creating a flowing, organic grid pattern. Features wavy, undulating square tiling; customizable wave parameters (amplitude, frequency, speed); variable tile size/scaling; shape smoothness/box roundness controls; audio reactivity (multiple targets); depth-aware rendering; adjustable rotation; and standard position, scale, and blending options.",
-        "imageUrl": "https://github.com/user-attachments/assets/30c2fa46-0d3c-4fe4-bb24-001b85585f41",
-        "credits": {
-          "description": "Adapted from 'Square Tiling Example E' by an unknown GLSL author, see Shadertoy for original inspiration.",
-          "externalUrl": "https://www.shadertoy.com/view/NdfBzn"
-        }
-      },
-      {
-        "name": "Wavy Squiggles",
-        "filename": "AS_BGX_WavySquiggles.1.fx",
-        "type": "BGX",
-        "shortDescription": "Mesmerizing pattern of adaptive wavy lines forming intricate, rotating designs. Audio-reactive and depth-aware.",
-        "longDescription": "Creates a mesmerizing pattern of adaptive wavy lines that follow a mouse or fixed position. The lines create intricate patterns that look like dynamic squiggly lines arranged around a central point, with rotation applied based on direction. Features position-reactive wavy line patterns; customizable line parameters (rotation influence, thickness, distance, smoothness); optional color palettes (hue, saturation, value control); pattern displacement for off-center effects; audio reactivity (multiple targets); depth-aware rendering; adjustable rotation; and standard position, scale, and blending options.",
-        "imageUrl": "https://github.com/user-attachments/assets/adfe182d-2507-49e1-82c1-38e41a1403a5",
-        "credits": {
-          "description": "Based on 'Interactive 2.5D Squiggles' by SnoopethDuckDuck.",
-          "externalUrl": "https://www.shadertoy.com/view/7sBfDD"
-        }
-      },
-      {
-        "name": "Zippy Zaps",
-        "filename": "AS_BGX_ZippyZaps.1.fx",
-        "type": "BGX",
-        "shortDescription": "Dynamic electric arcs/lightning patterns with procedural generation, audio reactivity, and 3D positioning.",
-        "longDescription": "Creates dynamic electric arcs and lightning patterns for a striking background effect. This effect generates procedural electric-like patterns that appear behind objects in the scene, creating an energetic, dynamic background with complete control over appearance and animation. Features animated electric/lightning arcs with procedural generation; fully customizable colors, intensity, and animation parameters; resolution-independent rendering; audio reactivity; depth-aware rendering; and adjustable rotation/positioning in 3D space.",
-        "imageUrl": "https://github.com/user-attachments/assets/f32eebde-9c76-49ab-ab6e-50bc4fdeaf2f",
-        "credits": {
-          "description": "Based on 'Zippy Zaps' by SnoopethDuckDuck.",
-          "externalUrl": "https://www.shadertoy.com/view/XXyGzh"
+          "externalUrl": "https://www.shadertoy.com/view/XfjyWG",
+          "originalAuthor": "blandprix",
+          "originalTitle": "hexagonal wipe"
         }
       }
     ],
@@ -379,7 +92,9 @@
         "imageUrl": "https://github.com/user-attachments/assets/ee8e98b8-198b-4a65-a40d-032eca60dcc5",
         "credits": {
           "description": "Heavily inspired by 'StageDepth.fx' by Marot Satil (2019), original depth masking implementation.",
-          "externalUrl": "https://github.com/marotsatil/StageDepth"
+          "externalUrl": "https://github.com/marotsatil/StageDepth",
+          "originalAuthor": "Marot Satil",
+          "originalTitle": "StageDepth.fx"
         }
       },
       {
@@ -391,7 +106,9 @@
         "imageUrl": "https://github.com/user-attachments/assets/placeholder-circularspectrum",
         "credits": {
           "description": "Based on 'Circular audio visualizer' by AIandDesign.",
-          "externalUrl": "https://www.shadertoy.com/view/tcyGW1"
+          "externalUrl": "https://www.shadertoy.com/view/tcyGW1",
+          "originalAuthor": "AIandDesign",
+          "originalTitle": "Circular audio visualizer"
         }
       },
       {
@@ -403,7 +120,9 @@
         "imageUrl": "https://github.com/user-attachments/assets/placeholder-clairobscur",
         "credits": {
           "description": "Based on '[RGR] Hearts' by deeplo.",
-          "externalUrl": "https://www.shadertoy.com/view/ttcBRs"
+          "externalUrl": "https://www.shadertoy.com/view/ttcBRs",
+          "originalAuthor": "deeplo",
+          "originalTitle": "[RGR] Hearts"
         }
       },
       {
@@ -476,7 +195,9 @@
         "imageUrl": "https://github.com/user-attachments/assets/placeholder-rainywindow",
         "credits": {
           "description": "Inspired by 'Heartfelt' by Martijn Steinrucken (BigWings).",
-          "externalUrl": "https://www.shadertoy.com/view/ltffzl"
+          "externalUrl": "https://www.shadertoy.com/view/ltffzl",
+          "originalAuthor": "Martijn Steinrucken (BigWings)",
+          "originalTitle": "Heartfelt"
         }
       },
       {
@@ -552,6 +273,343 @@
         "imageUrl": "https://github.com/user-attachments/assets/placeholder-watersurface"
       }
     ],
+    "BGX": [
+      {
+        "name": "Blue Corona",
+        "filename": "AS_BGX_BlueCorona.1.fx",
+        "type": "BGX",
+        "shortDescription": "Vibrant, abstract blue corona with fluid, dynamic motion and hypnotic, organic, plasma-like visuals. Customizable and audio-reactive.",
+        "longDescription": "Creates a vibrant, abstract blue corona effect with fluid, dynamic motion. The effect generates hypnotic patterns through iterative mathematical transformations, resulting in organic, plasma-like visuals with a predominantly blue color scheme. Features abstract, organic blue corona patterns; smooth fluid-like animation; customizable iteration count/pattern scale; animation speed/flow controls; intuitive color controls; customizable background color; audio reactivity (multiple targets); depth-aware rendering; and standard position, rotation, scale, and blending options.",
+        "imageUrl": "https://github.com/user-attachments/assets/f5ee6ce1-36b9-4d2f-9250-4c345394c27c",
+        "credits": {
+          "description": "Inspired by the 'Blue Corona' shader by @shaderartist.",
+          "externalUrl": "https://www.shadertoy.com/view/ldX3z4",
+          "originalAuthor": "shaderartist",
+          "originalTitle": "Blue Corona"
+        }
+      },
+      {
+        "name": "Constellation",
+        "filename": "AS_BGX_Constellation.1.fx",
+        "type": "BGX",
+        "shortDescription": "Creates an animated stellar constellation pattern with twinkling stars and connecting lines. Perfect for cosmic, night sky, or abstract network visualizations with a hand-drawn aesthetic.",
+        "longDescription": "Creates an animated stellar constellation pattern with twinkling stars and connecting lines. Perfect for cosmic, night sky, or abstract network visualizations with a hand-drawn aesthetic. Features dynamic constellation lines with customizable thickness and falloff; twinkling star points with adjustable sparkle properties; procedurally animated line connections; animated color palette with adjustable parameters; audio reactivity for zoom, gradient effects, line brightness, and sparkle magnitude; depth-aware rendering; and standard blend options.",
+        "imageUrl": "https://github.com/user-attachments/assets/8a7e8736-c23c-47eb-a753-c44ffc101b71",
+        "credits": {
+          "description": "Based on the 'Constellation' effect by @glslcoder.",
+          "externalUrl": "https://www.shadertoy.com/view/4dX3Dn",
+          "originalAuthor": "glslcoder",
+          "originalTitle": "Constellation"
+        }
+      },
+      {
+        "name": "Corridor Travel",
+        "filename": "AS_BGX_CorridorTravel.1.fx",
+        "type": "BGX",
+        "shortDescription": "Simulates an artistic flight through an abstract, glowing, patterned tunnel with pseudo-DOF, motion blur, and light bounce simulation.",
+        "longDescription": "Simulates an artistic flight through an abstract, glowing, patterned tunnel. Features multiple samples per pixel for pseudo-DOF and motion blur, and simulates light bounces with artistic reflection logic.",
+        "imageUrl": "https://github.com/user-attachments/assets/be502be4-cc82-44a4-8947-74dfd6f072b8",
+        "credits": {
+          "description": "Inspired by the 'Corridor Travel' shader by @tunnelmaster.",
+          "externalUrl": "https://www.shadertoy.com/view/3dXcDn",
+          "originalAuthor": "tunnelmaster",
+          "originalTitle": "Corridor Travel"
+        }
+      },
+      {
+        "name": "Cosmic Kaleidoscope",
+        "filename": "AS_BGX_CosmicKaleidoscope.1.fx",
+        "type": "BGX",
+        "shortDescription": "Renders a raymarched volumetric fractal (Mandelbox/Mandelbulb-like) with kaleidoscopic mirroring, audio reactivity, and palette-based coloring.",
+        "longDescription": "Renders a raymarched volumetric fractal resembling a Mandelbox or Mandelbulb. Features Kaleidoscope-like mirroring effect with customizable repetitions, audio reactivity for dynamic parameter adjustments, palette-based coloring system with customizable options, and full rotation, position and depth control for scene integration.",
+        "imageUrl": "https://github.com/user-attachments/assets/d466ec57-964c-4c25-93e2-6d01ca4ee1d3",
+        "credits": {
+          "description": "Fractal algorithm adapted from @fractalwizard's Mandelbox implementation.",
+          "externalUrl": "https://www.shadertoy.com/view/4dX3Wn",
+          "originalAuthor": "fractalwizard",
+          "originalTitle": "Mandelbox"
+        }
+      },
+      {
+        "name": "Digital Brain",
+        "filename": "AS_BGX_DigitalBrain.1.fx",
+        "type": "BGX",
+        "shortDescription": "Abstract visualization of a digital brain neural network with animated Voronoi patterns, neural-like connections, and electrical pulses.",
+        "longDescription": "Creates an abstract visualization of a 'digital brain' with evolving Voronoi patterns and neural-like connections. The effect simulates an organic electronic network with dynamic light paths that mimic neural activity in a stylized, technological manner. Features dynamic Voronoi-based pattern generation, animated 'electrical' pulses simulating synaptic activity, color modulation based on noise texture for organic variation, advanced vignette controls, pre-optimized pattern stretching, classic and texture-based coloring options, customizable animation and pattern controls, and depth-aware rendering with standard blending.",
+        "imageUrl": "https://github.com/user-attachments/assets/27c3f540-b8f5-4b85-a4a4-4a5076e67f39",
+        "credits": {
+          "description": "Voronoi pattern logic based on @neuralnet's open-source GLSL example.",
+          "externalUrl": "https://www.shadertoy.com/view/4dXcWn",
+          "originalAuthor": "neuralnet",
+          "originalTitle": "Voronoi pattern GLSL example"
+        }
+      },
+      {
+        "name": "Fluorescent",
+        "filename": "AS_BGX_Fluorescent.1.fx",
+        "type": "BGX",
+        "shortDescription": "Creates a vibrant neon fluorescent background effect with raymarched volumetric patterns. Perfect for retro, cyberpunk, or futuristic atmospheres.",
+        "longDescription": "Creates a vibrant neon fluorescent background effect that simulates the glow and intensity of fluorescent lighting. Perfect for creating retro, cyberpunk, or futuristic atmospheres with customizable colors and intensity. Features raymarched volumetric fluorescent effect with depth, dynamic color shifting with RGB phase controls, animated pulsing and flowing patterns, audio reactivity for rhythm-synchronized lighting, standard stage controls for positioning and depth, customizable iteration count for quality vs performance balance, and blend mode controls for integration with existing scenes.",
+        "imageUrl": "https://github.com/user-attachments/assets/PLACEHOLDER-IMAGE-ID",
+        "credits": {
+          "description": "Neon glow technique adapted from @neonfx's work.",
+          "externalUrl": "https://www.shadertoy.com/view/4dXcDn",
+          "originalAuthor": "neonfx",
+          "originalTitle": "Neon Glow"
+        }
+      },
+      {
+        "name": "Golden Clockwork",
+        "filename": "AS_BGX_GoldenClockwork.1.fx",
+        "type": "BGX",
+        "shortDescription": "Intricate, animated golden clockwork or Apollonian fractal patterns.",
+        "longDescription": "Renders a mesmerizing and intricate animated background effect reminiscent of golden clockwork mechanisms or Apollonian gasket-like fractal patterns. The effect features complex, evolving geometric designs with a characteristic golden color palette. Features procedurally generated Apollonian fractal patterns, dynamic animation driven by time, a golden color scheme with lighting and shading effects, depth-like progression through fractal layers, kaleidoscopic and mirroring options for pattern variation, resolution-independent rendering, and UI controls for animation (speed, keyframe, path speed), palette, fractal/kaleidoscope parameters, audio reactivity, stage controls (position, scale, rotation, depth), and blending.",
+        "imageUrl": "https://github.com/user-attachments/assets/583dfe11-c8b6-4e34-ad79-35d875ce32c6",
+        "credits": {
+          "description": "Based on 'Golden apollian' by mrange.",
+          "originalAuthor": "mrange",
+          "originalTitle": "Golden apollian"
+        }
+      },
+      {
+        "name": "Kaleidoscope",
+        "filename": "AS_BGX_Kaleidoscope.1.fx",
+        "type": "BGX",
+        "shortDescription": "Creates a vibrant, ever-evolving fractal kaleidoscope pattern with animated tendrils. Perfect for psychedelic, cosmic, or abstract backgrounds with a hypnotic quality.",
+        "longDescription": "Creates a vibrant, ever-evolving fractal kaleidoscope pattern with animated tendrils. Perfect for psychedelic, cosmic, or abstract backgrounds with a hypnotic quality. Features adjustable kaleidoscope mirror count for symmetry control; fractal zoom and pattern rotation with animation controls; customizable wave parameters and color palette; audio reactivity for zoom, wave intensity, and pattern rotation; depth-aware rendering; and standard blend options.",
+        "imageUrl": "https://github.com/user-attachments/assets/8bd0fdee-77a8-40d6-be9f-1708186e5590",
+        "credits": {
+          "description": "Inspired by 'Shader Art Coding Introduction' by kishimisu.",
+          "externalUrl": "https://youtu.be/f4s1h2YETNY",
+          "originalAuthor": "kishimisu",
+          "originalTitle": "Shader Art Coding Introduction"
+        }
+      },
+      {
+        "name": "Light Ripples",
+        "filename": "AS_BGX_LightRipples.1.fx",
+        "type": "BGX",
+        "shortDescription": "Mesmerizing, rippling kaleidoscopic light patterns with customizable distortion, animation, color palettes, and audio reactivity.",
+        "longDescription": "Creates a mesmerizing, rippling kaleidoscopic light pattern effect. Suitable as a dynamic background or overlay. Includes controls for animation, distortion (amplitude, frequencies), color palettes with cycling, audio reactivity, depth-aware rendering, adjustable rotation, and standard blending options.",
+        "imageUrl": "https://github.com/user-attachments/assets/99bc3c0c-caac-4060-883c-079d92419abc",
+        "credits": {
+          "description": "Original by Danilo Guanabara.",
+          "externalUrl": "https://www.pouet.net/prod.php?which=57245",
+          "originalAuthor": "Danilo Guanabara",
+          "originalTitle": "Light Ripples"
+        }
+      },
+      {
+        "name": "Liquid Chrome",
+        "filename": "AS_BGX_LiquidChrome.1.fx",
+        "type": "BGX",
+        "shortDescription": "Creates dynamic, flowing psychedelic patterns reminiscent of liquid metal or chrome, with optional vertical stripe overlays.",
+        "longDescription": "Creates dynamic, flowing psychedelic patterns reminiscent of liquid metal or chrome. This shader iteratively distorts screen coordinates, creating complex, flowing patterns with optional vertical stripe overlays for additional visual texture.",
+        "imageUrl": "",
+        "credits": {
+          "description": "Based on 'Liquid Chrome' by iamsaitam.",
+          "externalUrl": "https://neort.io/art/bkm813c3p9f7drq1j86g",
+          "originalAuthor": "iamsaitam",
+          "originalTitle": "Liquid Chrome"
+        }
+      },
+      {
+        "name": "Log Spirals",
+        "filename": "AS_BGX_LogSpirals.1.fx",
+        "type": "BGX",
+        "shortDescription": "Creates an organic spiral pattern based on logarithmic growth with animated spheres along the spiral arms.",
+        "longDescription": "Creates an organic spiral pattern based on logarithmic growth with animated spheres along the spiral arms. Features precise control over spiral expansion rate and animation, customizable sphere size with fade effects and specular highlights, color palette options with hue cycling and ambient glow, audio reactivity for multiple parameters (animation speed, rotation, arm twist, sphere size, brightness), and standard position/rotation/scale controls for scene integration.",
+        "imageUrl": "",
+        "credits": {
+          "description": "Based on 'Logarithmic spiral of spheres' by mrange.",
+          "externalUrl": "https://www.shadertoy.com/view/msGXRD",
+          "originalAuthor": "mrange",
+          "originalTitle": "Logarithmic spiral of spheres"
+        }
+      },
+      {
+        "name": "Melt Wave",
+        "filename": "AS_BGX_MeltWave.1.fx",
+        "type": "BGX",
+        "shortDescription": "Flowing, warping psychedelic effect with sine-based distortions, palette system, keyframe animation, and audio reactivity.",
+        "longDescription": "Creates a flowing, warping psychedelic effect inspired by 1970s visual aesthetics. Generates mesmerizing colored patterns with sine-based distortions that evolve over time. Features adjustable zoom/intensity, a palette system (mathematical or preset colors), dynamic time-based animation with keyframe support, audio reactivity mappable to different parameters, and resolution-independent transformation with position/rotation controls.",
+        "imageUrl": "https://github.com/user-attachments/assets/4871c7be-b540-4f19-8cb2-bbd0c47ac237"
+      },
+      {
+        "name": "Misty Grid",
+        "filename": "AS_BGX_MistyGrid.1.fx",
+        "type": "BGX",
+        "shortDescription": "Abstract fractal-based grid background with a misty, ethereal appearance using raymarching. Audio-reactive and customizable.",
+        "longDescription": "Creates an abstract fractal-based grid background with a misty, ethereal appearance using raymarching techniques. Features dynamic fractal-based grid environment, customizable colors with palette system, folding and repetition for complex patterns, camera movement simulation with smooth rotations, audio reactivity affecting multiple parameters (fractal scale, folding intensity, saturation, brightness, camera zoom, animation speed), and standard position/rotation/scale controls.",
+        "imageUrl": "https://github.com/user-attachments/assets/ddd37fd8-70be-442c-aaed-f31063f8d9e9",
+        "credits": {
+          "description": "Based on 'Misty Grid' by NuSan.",
+          "externalUrl": "https://www.shadertoy.com/view/wl2Szd",
+          "originalAuthor": "NuSan",
+          "originalTitle": "Misty Grid"
+        }
+      },
+      {
+        "name": "Past Racer",
+        "filename": "AS_BGX_PastRacer.1.fx",
+        "type": "BGX",
+        "shortDescription": "Raymarched abstract procedural scene (2 selectable) with domain repetition, custom transformations, and audio-reactive geometry/flares.",
+        "longDescription": "A ray marching shader that generates one of two selectable abstract procedural scenes. Features domain repetition, custom transformations, and pseudo-random patterns. Scene geometry and flare effects can be reactive to audio frequency bands.",
+        "imageUrl": "",
+        "credits": {
+          "description": "Based on 'past racer' by jetlab.",
+          "externalUrl": "https://www.shadertoy.com/view/3l23Rh",
+          "originalAuthor": "jetlab",
+          "originalTitle": "past racer",
+          "sourceType": "Original GLSL"
+        }
+      },
+      {
+        "name": "Plasma Flow",
+        "filename": "AS_BGX_PlasmaFlow.1.fx",
+        "type": "BGX",
+        "shortDescription": "Sophisticated, gentle, flexible plasma effect with procedural noise, domain warping, and customizable audio-reactive color gradients.",
+        "longDescription": "Sophisticated, gentle, and flexible plasma effect for groovy, atmospheric visuals. Generates smooth, swirling, organic patterns with customizable color gradients (2-4 user-defined colors) and strong audio reactivity. Features procedural plasma/noise with domain warping for fluid motion, controls for speed, scale, complexity, stretch, and warp, audio-reactive modulation of movement, color, brightness, and turbulence, plus standard blend modes and debug views. Ideal for music video backgrounds and overlays.",
+        "imageUrl": "https://github.com/user-attachments/assets/ba95325d-eff0-439e-a452-567675da84fe"
+      },
+      {
+        "name": "Protean Clouds",
+        "filename": "AS_BGX_ProteanClouds.1.fx",
+        "type": "BGX",
+        "shortDescription": "Volumetric, evolving procedural clouds with raymarching, dynamic color, and realistic lighting.",
+        "longDescription": "Renders dynamic, evolving volumetric clouds through raymarching techniques. Creates an immersive, abstract cloudscape with dynamic color variations and realistic lighting. Features high-quality volumetric cloud formations, customizable cloud density, shape, and detail, dynamic camera movement with adjustable path and sway, sophisticated internal lighting and self-shadowing, color palette system with customizable parameters, audio reactivity for multiple cloud parameters, and resolution-independent rendering with precise position controls.",
+        "imageUrl": "https://github.com/user-attachments/assets/placeholder-image",
+        "credits": {
+          "description": "Based on 'Protean clouds' by nimitz.",
+          "externalUrl": "https://www.shadertoy.com/view/3l23Rh"
+        }
+      },
+      {
+        "name": "Quadtree Truchet",
+        "filename": "AS_BGX_QuadtreeTruchet.1.fx",
+        "type": "BGX",
+        "shortDescription": "Multiscale recursive Truchet pattern with hierarchical tile overlaps, Art Deco line tiles, weave effects, and sophisticated palette system.",
+        "longDescription": "Creates a sophisticated multiscale recursive Truchet pattern with hierarchical tile overlaps across 3 levels. Generates complex geometric designs through quadtree subdivision and probabilistic tile placement. Features quadtree-based recursive pattern generation, overlapping tile system with collision prevention, full AS palette system support with multiple color modes, Art Deco style with line tiles and weave effects, animated rotation and panning, audio reactivity for scale/rotation/seed/density, stage positioning controls, and debug visualization of the underlying quadtree structure.",
+        "imageUrl": "https://github.com/user-attachments/assets/placeholder-image"
+      },
+      {
+        "name": "Raymarched Chain",
+        "filename": "AS_BGX_RaymarchedChain.1.fx",
+        "type": "BGX",
+        "shortDescription": "Raymarched animated chain of interconnected torus shapes following a procedural path. Features dynamic rotation, customizable geometry, and sophisticated lighting with camera controls.",
+        "longDescription": "Renders a raymarched scene featuring an animated, endlessly twisting chain composed of interconnected torus shapes. The chain follows a procedurally defined path, and its segments rotate and evolve over time, creating a mesmerizing, complex visual. Features raymarched chain of torus shapes with procedural path animation, customizable animation speed and chain geometry, dynamic coloring based on raymarching depth and iteration, camera orientation controls, and standard AS-StageFX blending controls.",
+        "imageUrl": "https://github.com/user-attachments/assets/placeholder-image",
+        "credits": {
+          "description": "Based on 'Corrente' by Elsio.",
+          "externalUrl": "https://www.shadertoy.com/view/ctSfRV",
+          "originalAuthor": "Elsio",
+          "originalTitle": "Corrente"
+        }
+      },
+      {
+        "name": "Shine On",
+        "filename": "AS_BGX_ShineOn.1.fx",
+        "type": "BGX",
+        "shortDescription": "Dynamic, evolving fractal noise pattern with bright, sparkly, moving crystal highlights. Audio-reactive and depth-aware.",
+        "longDescription": "Creates a dynamic, evolving fractal noise pattern with bright, sparkly crystal highlights that move across the screen. Combines multiple layers of noise with procedural animation for a mesmerizing background effect. Features layered noise patterns with dynamic animation, crystal point highlights with customizable parameters, audio reactivity, and depth-aware rendering.",
+        "imageUrl": "https://github.com/user-attachments/assets/50162c8a-4841-4319-b731-d79c15453c7a"
+      },
+      {
+        "name": "Stained Lights",
+        "filename": "AS_BGX_StainedLights.1.fx",
+        "type": "BGX",
+        "shortDescription": "Dynamic, colorful patterns like stained glass with shifting light, blurred layers, and audio reactivity.",
+        "longDescription": "Creates dynamic and colorful patterns reminiscent of stained glass illuminated by shifting light, with multiple blurred layers enhancing depth and visual complexity. Generates layers of distorted, cell-like structures with vibrant, evolving colors and subtle edge highlighting, overlaid with softer, floating elements. Features multi-layered pattern generation (adjustable iterations), dynamic animation with speed control, customizable pattern scaling/edge highlighting, audio reactivity for animation/pattern evolution, post-processing (curve adjustments, noise), blurred floating layers for depth, and depth-aware rendering with standard blending. Suitable for abstract backgrounds, energy fields, or mystical visuals.",
+        "imageUrl": "https://github.com/user-attachments/assets/45b96c92-dedd-45ec-8007-69efb93c3786",
+        "credits": {
+          "description": "Inspired by 'Stained Lights' by 104.",
+          "externalUrl": "https://www.shadertoy.com/view/WlsSzM",
+          "originalAuthor": "104",
+          "originalTitle": "Stained Lights"
+        }
+      },
+      {
+        "name": "Sunset Clouds",
+        "filename": "AS_BGX_SunsetClouds.1.fx",
+        "type": "BGX",
+        "shortDescription": "Raymarched volumetric clouds with animated turbulence and dynamic sunset coloring.",
+        "longDescription": "Renders an animated scene of clouds at sunset using raymarching to create volumetric cloud effects with dynamic lighting and turbulence. Features raymarched volumetric clouds, animated turbulence effect, dynamic sunset coloring that changes over time, and tunable parameters for iterations, animation speed, and visual details.",
+        "imageUrl": "https://github.com/user-attachments/assets/placeholder-image",
+        "credits": {
+          "description": "Based on 'Sunset [280]' by Xor.",
+          "externalUrl": "https://www.shadertoy.com/view/wXjSRt",
+          "originalAuthor": "Xor",
+          "originalTitle": "Sunset [280]"
+        }
+      },
+      {
+        "name": "Time Crystal",
+        "filename": "AS_BGX_TimeCrystal.1.fx",
+        "type": "BGX",
+        "shortDescription": "Hypnotic, crystalline fractal structure with dynamic animation, color cycling, and audio reactivity.",
+        "longDescription": "Creates a hypnotic, crystalline fractal structure with dynamic animation and color cycling. Generates patterns reminiscent of crystalline structures or gems with depth and dimension. Features fractal crystal-like patterns (customizable iterations), dynamic animation (controllable speed), adjustable pattern density/detail, customizable color palettes with cycling, audio reactivity for pattern dynamics/colors, depth-aware rendering with standard blending, and adjustable position/rotation controls. Suitable for mystic or sci-fi backgrounds, portals, or energy fields.",
+        "imageUrl": "https://github.com/user-attachments/assets/ffec219a-b0c2-481a-a1c4-125ad699c8f8",
+        "credits": {
+          "description": "Based on 'Time Crystal' by raphaeljmu.",
+          "externalUrl": "https://www.shadertoy.com/view/lcl3z2",
+          "originalAuthor": "raphaeljmu",
+          "originalTitle": "Time Crystal"
+        }
+      },
+      {
+        "name": "Vortex",
+        "filename": "AS_BGX_Vortex.1.fx",
+        "type": "BGX",
+        "shortDescription": "Psychedelic swirling vortex pattern with animated color, swirl, and brightness controls.",
+        "longDescription": "Creates a psychedelic swirling vortex pattern. The effect is animated and features controls for color, animation speed, swirl characteristics, and brightness. Suitable as a dynamic background. Features animated vortex with customizable speed, palette-based coloring, swirl intensity/frequency/sharpness, brightness falloff, and standard AS-StageFX blending and positioning.",
+        "imageUrl": ""
+      },
+      {
+        "name": "Wavy Squares",
+        "filename": "AS_BGX_WavySquares.1.fx",
+        "type": "BGX",
+        "shortDescription": "Hypnotic pattern of wavy, animated, transforming square tiles with dynamic size changes. Audio-reactive and depth-aware.",
+        "longDescription": "Creates a hypnotic pattern of wavy, animated square tiles that shift and transform. The squares follow a wave-like motion and feature dynamic size changes, creating a flowing, organic grid pattern. Features wavy, undulating square tiling; customizable wave parameters (amplitude, frequency, speed); variable tile size/scaling; shape smoothness/box roundness controls; audio reactivity (multiple targets); depth-aware rendering; adjustable rotation; and standard position, scale, and blending options.",
+        "imageUrl": "https://github.com/user-attachments/assets/30c2fa46-0d3c-4fe4-bb24-001b85585f41",
+        "credits": {
+          "description": "Adapted from 'Square Tiling Example E' by an unknown GLSL author, see Shadertoy for original inspiration.",
+          "externalUrl": "https://www.shadertoy.com/view/NdfBzn",
+          "originalTitle": "Square Tiling Example E"
+        }
+      },
+      {
+        "name": "Wavy Squiggles",
+        "filename": "AS_BGX_WavySquiggles.1.fx",
+        "type": "BGX",
+        "shortDescription": "Mesmerizing pattern of adaptive wavy lines forming intricate, rotating designs. Audio-reactive and depth-aware.",
+        "longDescription": "Creates a mesmerizing pattern of adaptive wavy lines that follow a mouse or fixed position. The lines create intricate patterns that look like dynamic squiggly lines arranged around a central point, with rotation applied based on direction. Features position-reactive wavy line patterns; customizable line parameters (rotation influence, thickness, distance, smoothness); optional color palettes (hue, saturation, value control); pattern displacement for off-center effects; audio reactivity (multiple targets); depth-aware rendering; adjustable rotation; and standard position, scale, and blending options.",
+        "imageUrl": "https://github.com/user-attachments/assets/adfe182d-2507-49e1-82c1-38e41a1403a5",
+        "credits": {
+          "description": "Based on 'Interactive 2.5D Squiggles' by SnoopethDuckDuck.",
+          "externalUrl": "https://www.shadertoy.com/view/7sBfDD",
+          "originalAuthor": "SnoopethDuckDuck",
+          "originalTitle": "Interactive 2.5D Squiggles"
+        }
+      },
+      {
+        "name": "Zippy Zaps",
+        "filename": "AS_BGX_ZippyZaps.1.fx",
+        "type": "BGX",
+        "shortDescription": "Dynamic electric arcs/lightning patterns with procedural generation, audio reactivity, and 3D positioning.",
+        "longDescription": "Creates dynamic electric arcs and lightning patterns for a striking background effect. This effect generates procedural electric-like patterns that appear behind objects in the scene, creating an energetic, dynamic background with complete control over appearance and animation. Features animated electric/lightning arcs with procedural generation; fully customizable colors, intensity, and animation parameters; resolution-independent rendering; audio reactivity; depth-aware rendering; and adjustable rotation/positioning in 3D space.",
+        "imageUrl": "https://github.com/user-attachments/assets/f32eebde-9c76-49ab-ab6e-50bc4fdeaf2f",
+        "credits": {
+          "description": "Based on 'Zippy Zaps' by SnoopethDuckDuck.",
+          "externalUrl": "https://www.shadertoy.com/view/XXyGzh",
+          "originalAuthor": "SnoopethDuckDuck",
+          "originalTitle": "Zippy Zaps"
+        }
+      },
+      {
+        "filename": "AS_BGX_LightWall.1.fx",
+        "type": "BGX"
+      }
+    ],
     "LFX": [
       {
         "name": "Candle Flame",
@@ -579,10 +637,5 @@
       }
     ]
   },
-  "byType": {
-    "GFX": 7,
-    "BGX": 27,
-    "VFX": 21,
-    "LFX": 3
-  }
+  "total": 58
 }

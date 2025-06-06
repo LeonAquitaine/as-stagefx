@@ -8,7 +8,9 @@
     "imageUrl": "https://github.com/user-attachments/assets/f5ee6ce1-36b9-4d2f-9250-4c345394c27c",
     "credits": {
       "description": "Inspired by the 'Blue Corona' shader by @shaderartist.",
-      "externalUrl": "https://www.shadertoy.com/view/ldX3z4"
+      "externalUrl": "https://www.shadertoy.com/view/ldX3z4",
+      "originalAuthor": "shaderartist",
+      "originalTitle": "Blue Corona"
     }
   },
   {
@@ -20,7 +22,9 @@
     "imageUrl": "https://github.com/user-attachments/assets/8a7e8736-c23c-47eb-a753-c44ffc101b71",
     "credits": {
       "description": "Based on the 'Constellation' effect by @glslcoder.",
-      "externalUrl": "https://www.shadertoy.com/view/4dX3Dn"
+      "externalUrl": "https://www.shadertoy.com/view/4dX3Dn",
+      "originalAuthor": "glslcoder",
+      "originalTitle": "Constellation"
     }
   },
   {
@@ -32,7 +36,9 @@
     "imageUrl": "https://github.com/user-attachments/assets/be502be4-cc82-44a4-8947-74dfd6f072b8",
     "credits": {
       "description": "Inspired by the 'Corridor Travel' shader by @tunnelmaster.",
-      "externalUrl": "https://www.shadertoy.com/view/3dXcDn"
+      "externalUrl": "https://www.shadertoy.com/view/3dXcDn",
+      "originalAuthor": "tunnelmaster",
+      "originalTitle": "Corridor Travel"
     }
   },
   {
@@ -44,7 +50,9 @@
     "imageUrl": "https://github.com/user-attachments/assets/d466ec57-964c-4c25-93e2-6d01ca4ee1d3",
     "credits": {
       "description": "Fractal algorithm adapted from @fractalwizard's Mandelbox implementation.",
-      "externalUrl": "https://www.shadertoy.com/view/4dX3Wn"
+      "externalUrl": "https://www.shadertoy.com/view/4dX3Wn",
+      "originalAuthor": "fractalwizard",
+      "originalTitle": "Mandelbox"
     }
   },
   {
@@ -56,7 +64,9 @@
     "imageUrl": "https://github.com/user-attachments/assets/27c3f540-b8f5-4b85-a4a4-4a5076e67f39",
     "credits": {
       "description": "Voronoi pattern logic based on @neuralnet's open-source GLSL example.",
-      "externalUrl": "https://www.shadertoy.com/view/4dXcWn"
+      "externalUrl": "https://www.shadertoy.com/view/4dXcWn",
+      "originalAuthor": "neuralnet",
+      "originalTitle": "Voronoi pattern GLSL example"
     }
   },
   {
@@ -68,7 +78,9 @@
     "imageUrl": "https://github.com/user-attachments/assets/PLACEHOLDER-IMAGE-ID",
     "credits": {
       "description": "Neon glow technique adapted from @neonfx's work.",
-      "externalUrl": "https://www.shadertoy.com/view/4dXcDn"
+      "externalUrl": "https://www.shadertoy.com/view/4dXcDn",
+      "originalAuthor": "neonfx",
+      "originalTitle": "Neon Glow"
     }
   },
   {
@@ -77,7 +89,12 @@
     "type": "BGX",
     "shortDescription": "Intricate, animated golden clockwork or Apollonian fractal patterns.",
     "longDescription": "Renders a mesmerizing and intricate animated background effect reminiscent of golden clockwork mechanisms or Apollonian gasket-like fractal patterns. The effect features complex, evolving geometric designs with a characteristic golden color palette. Features procedurally generated Apollonian fractal patterns, dynamic animation driven by time, a golden color scheme with lighting and shading effects, depth-like progression through fractal layers, kaleidoscopic and mirroring options for pattern variation, resolution-independent rendering, and UI controls for animation (speed, keyframe, path speed), palette, fractal/kaleidoscope parameters, audio reactivity, stage controls (position, scale, rotation, depth), and blending.",
-    "imageUrl": "https://github.com/user-attachments/assets/583dfe11-c8b6-4e34-ad79-35d875ce32c6"
+    "imageUrl": "https://github.com/user-attachments/assets/583dfe11-c8b6-4e34-ad79-35d875ce32c6",
+    "credits": {
+      "description": "Based on 'Golden apollian' by mrange.",
+      "originalAuthor": "mrange",
+      "originalTitle": "Golden apollian"
+    }
   },
   {
     "name": "Kaleidoscope",
@@ -88,7 +105,9 @@
     "imageUrl": "https://github.com/user-attachments/assets/8bd0fdee-77a8-40d6-be9f-1708186e5590",
     "credits": {
       "description": "Inspired by 'Shader Art Coding Introduction' by kishimisu.",
-      "externalUrl": "https://youtu.be/f4s1h2YETNY"
+      "externalUrl": "https://youtu.be/f4s1h2YETNY",
+      "originalAuthor": "kishimisu",
+      "originalTitle": "Shader Art Coding Introduction"
     }
   },
   {
@@ -100,16 +119,10 @@
     "imageUrl": "https://github.com/user-attachments/assets/99bc3c0c-caac-4060-883c-079d92419abc",
     "credits": {
       "description": "Original by Danilo Guanabara.",
-      "externalUrl": "https://www.pouet.net/prod.php?which=57245"
+      "externalUrl": "https://www.pouet.net/prod.php?which=57245",
+      "originalAuthor": "Danilo Guanabara",
+      "originalTitle": "Light Ripples"
     }
-  },
-  {
-    "name": "Light Wall",
-    "filename": "AS_BGX_LightWall.1.fx",
-    "type": "BGX",
-    "shortDescription": "Renders a seamless, soft, overlapping grid of light panels with various built-in patterns, ideal for dance club/concert backdrops. Customizable and audio-reactive.",
-    "longDescription": "This shader renders a seamless, soft, overlapping grid of light panels with various built-in patterns. Perfect for creating dance club and concert backdrops with fully customizable colors, patterns, and audio reactivity.",
-    "imageUrl": "https://github.com/user-attachments/assets/4871c7be-b540-4f19-8cb2-bbd0c47ac237"
   },
   {
     "name": "Liquid Chrome",
@@ -120,7 +133,9 @@
     "imageUrl": "",
     "credits": {
       "description": "Based on 'Liquid Chrome' by iamsaitam.",
-      "externalUrl": "https://neort.io/art/bkm813c3p9f7drq1j86g"
+      "externalUrl": "https://neort.io/art/bkm813c3p9f7drq1j86g",
+      "originalAuthor": "iamsaitam",
+      "originalTitle": "Liquid Chrome"
     }
   },
   {
@@ -132,7 +147,9 @@
     "imageUrl": "",
     "credits": {
       "description": "Based on 'Logarithmic spiral of spheres' by mrange.",
-      "externalUrl": "https://www.shadertoy.com/view/msGXRD"
+      "externalUrl": "https://www.shadertoy.com/view/msGXRD",
+      "originalAuthor": "mrange",
+      "originalTitle": "Logarithmic spiral of spheres"
     }
   },
   {
@@ -152,7 +169,9 @@
     "imageUrl": "https://github.com/user-attachments/assets/ddd37fd8-70be-442c-aaed-f31063f8d9e9",
     "credits": {
       "description": "Based on 'Misty Grid' by NuSan.",
-      "externalUrl": "https://www.shadertoy.com/view/wl2Szd"
+      "externalUrl": "https://www.shadertoy.com/view/wl2Szd",
+      "originalAuthor": "NuSan",
+      "originalTitle": "Misty Grid"
     }
   },
   {
@@ -164,7 +183,10 @@
     "imageUrl": "",
     "credits": {
       "description": "Based on 'past racer' by jetlab.",
-      "externalUrl": "https://www.shadertoy.com/view/3l23Rh"
+      "externalUrl": "https://www.shadertoy.com/view/3l23Rh",
+      "originalAuthor": "jetlab",
+      "originalTitle": "past racer",
+      "sourceType": "Original GLSL"
     }
   },
   {
@@ -204,7 +226,9 @@
     "imageUrl": "https://github.com/user-attachments/assets/placeholder-image",
     "credits": {
       "description": "Based on 'Corrente' by Elsio.",
-      "externalUrl": "https://www.shadertoy.com/view/ctSfRV"
+      "externalUrl": "https://www.shadertoy.com/view/ctSfRV",
+      "originalAuthor": "Elsio",
+      "originalTitle": "Corrente"
     }
   },
   {
@@ -224,7 +248,9 @@
     "imageUrl": "https://github.com/user-attachments/assets/45b96c92-dedd-45ec-8007-69efb93c3786",
     "credits": {
       "description": "Inspired by 'Stained Lights' by 104.",
-      "externalUrl": "https://www.shadertoy.com/view/WlsSzM"
+      "externalUrl": "https://www.shadertoy.com/view/WlsSzM",
+      "originalAuthor": "104",
+      "originalTitle": "Stained Lights"
     }
   },
   {
@@ -236,7 +262,9 @@
     "imageUrl": "https://github.com/user-attachments/assets/placeholder-image",
     "credits": {
       "description": "Based on 'Sunset [280]' by Xor.",
-      "externalUrl": "https://www.shadertoy.com/view/wXjSRt"
+      "externalUrl": "https://www.shadertoy.com/view/wXjSRt",
+      "originalAuthor": "Xor",
+      "originalTitle": "Sunset [280]"
     }
   },
   {
@@ -248,7 +276,9 @@
     "imageUrl": "https://github.com/user-attachments/assets/ffec219a-b0c2-481a-a1c4-125ad699c8f8",
     "credits": {
       "description": "Based on 'Time Crystal' by raphaeljmu.",
-      "externalUrl": "https://www.shadertoy.com/view/lcl3z2"
+      "externalUrl": "https://www.shadertoy.com/view/lcl3z2",
+      "originalAuthor": "raphaeljmu",
+      "originalTitle": "Time Crystal"
     }
   },
   {
@@ -268,7 +298,8 @@
     "imageUrl": "https://github.com/user-attachments/assets/30c2fa46-0d3c-4fe4-bb24-001b85585f41",
     "credits": {
       "description": "Adapted from 'Square Tiling Example E' by an unknown GLSL author, see Shadertoy for original inspiration.",
-      "externalUrl": "https://www.shadertoy.com/view/NdfBzn"
+      "externalUrl": "https://www.shadertoy.com/view/NdfBzn",
+      "originalTitle": "Square Tiling Example E"
     }
   },
   {
@@ -280,7 +311,9 @@
     "imageUrl": "https://github.com/user-attachments/assets/adfe182d-2507-49e1-82c1-38e41a1403a5",
     "credits": {
       "description": "Based on 'Interactive 2.5D Squiggles' by SnoopethDuckDuck.",
-      "externalUrl": "https://www.shadertoy.com/view/7sBfDD"
+      "externalUrl": "https://www.shadertoy.com/view/7sBfDD",
+      "originalAuthor": "SnoopethDuckDuck",
+      "originalTitle": "Interactive 2.5D Squiggles"
     }
   },
   {
@@ -292,8 +325,14 @@
     "imageUrl": "https://github.com/user-attachments/assets/f32eebde-9c76-49ab-ab6e-50bc4fdeaf2f",
     "credits": {
       "description": "Based on 'Zippy Zaps' by SnoopethDuckDuck.",
-      "externalUrl": "https://www.shadertoy.com/view/XXyGzh"
+      "externalUrl": "https://www.shadertoy.com/view/XXyGzh",
+      "originalAuthor": "SnoopethDuckDuck",
+      "originalTitle": "Zippy Zaps"
     }
+  },
+  {
+    "filename": "AS_BGX_LightWall.1.fx",
+    "type": "BGX"
   },
   {
     "name": "Aspect Ratio",
@@ -336,7 +375,9 @@
     "imageUrl": "https://github.com/user-attachments/assets/4074ac6b-a385-4e0f-9d9a-c4d5dd0117cd",
     "credits": {
       "description": "Based on 'notebook drawings' by Flockaroo (2016).",
-      "externalUrl": "https://www.shadertoy.com/view/XtVGD1"
+      "externalUrl": "https://www.shadertoy.com/view/XtVGD1",
+      "originalAuthor": "Flockaroo",
+      "originalTitle": "notebook drawings"
     }
   },
   {
@@ -348,7 +389,9 @@
     "imageUrl": "https://github.com/user-attachments/assets/b93c9d03-5d23-4b32-aa3e-f2b6a9736c70",
     "credits": {
       "description": "Based on 'Halftone Shader' by P. Gonzalez Vivo.",
-      "externalUrl": "https://www.shadertoy.com/view/XdcGzn"
+      "externalUrl": "https://www.shadertoy.com/view/XdcGzn",
+      "originalAuthor": "P. Gonzalez Vivo",
+      "originalTitle": "Halftone Shader"
     }
   },
   {
@@ -360,7 +403,9 @@
     "imageUrl": "https://github.com/user-attachments/assets/bf471099-9c4a-423b-ae1f-fae2f83d924a",
     "credits": {
       "description": "Hexagonal grid implementation adapted from 'hexagonal wipe' by blandprix.",
-      "externalUrl": "https://www.shadertoy.com/view/XfjyWG"
+      "externalUrl": "https://www.shadertoy.com/view/XfjyWG",
+      "originalAuthor": "blandprix",
+      "originalTitle": "hexagonal wipe"
     }
   },
   {
@@ -396,7 +441,9 @@
     "imageUrl": "https://github.com/user-attachments/assets/ee8e98b8-198b-4a65-a40d-032eca60dcc5",
     "credits": {
       "description": "Heavily inspired by 'StageDepth.fx' by Marot Satil (2019), original depth masking implementation.",
-      "externalUrl": "https://github.com/marotsatil/StageDepth"
+      "externalUrl": "https://github.com/marotsatil/StageDepth",
+      "originalAuthor": "Marot Satil",
+      "originalTitle": "StageDepth.fx"
     }
   },
   {
@@ -408,7 +455,9 @@
     "imageUrl": "https://github.com/user-attachments/assets/placeholder-circularspectrum",
     "credits": {
       "description": "Based on 'Circular audio visualizer' by AIandDesign.",
-      "externalUrl": "https://www.shadertoy.com/view/tcyGW1"
+      "externalUrl": "https://www.shadertoy.com/view/tcyGW1",
+      "originalAuthor": "AIandDesign",
+      "originalTitle": "Circular audio visualizer"
     }
   },
   {
@@ -420,7 +469,9 @@
     "imageUrl": "https://github.com/user-attachments/assets/placeholder-clairobscur",
     "credits": {
       "description": "Based on '[RGR] Hearts' by deeplo.",
-      "externalUrl": "https://www.shadertoy.com/view/ttcBRs"
+      "externalUrl": "https://www.shadertoy.com/view/ttcBRs",
+      "originalAuthor": "deeplo",
+      "originalTitle": "[RGR] Hearts"
     }
   },
   {
@@ -493,7 +544,9 @@
     "imageUrl": "https://github.com/user-attachments/assets/placeholder-rainywindow",
     "credits": {
       "description": "Inspired by 'Heartfelt' by Martijn Steinrucken (BigWings).",
-      "externalUrl": "https://www.shadertoy.com/view/ltffzl"
+      "externalUrl": "https://www.shadertoy.com/view/ltffzl",
+      "originalAuthor": "Martijn Steinrucken (BigWings)",
+      "originalTitle": "Heartfelt"
     }
   },
   {
