@@ -298,18 +298,6 @@
     "imageUrl": "https://github.com/user-attachments/assets/placeholder-motiontrails"
   },
   {
-    "name": "Multi-Layer Halftone",
-    "filename": "AS_GFX_MultiLayerHalftone.1.fx",
-    "type": "GFX",
-    "shortDescription": "Highly customizable multi-layer halftone (up to 4 layers) with various patterns, isolation methods, and blending options.",
-    "longDescription": "Creates a highly customizable multi-layer halftone effect with support for up to four independent layers. Each layer can use different pattern types (dots, lines, crosshatch), isolation methods (brightness, RGB, hue, depth), colors, thresholds, scales, densities, and angles. Features layer blending with transparency support.",
-    "imageUrl": "https://github.com/user-attachments/assets/b93c9d03-5d23-4b32-aa3e-f2b6a9736c70",
-    "credits": {
-      "description": "Based on 'Halftone Shader' by P. Gonzalez Vivo.",
-      "externalUrl": "https://www.shadertoy.com/view/XdcGzn"
-    }
-  },
-  {
     "name": "MultiLayer Halftone",
     "filename": "AS_GFX_MultiLayerHalftone.1.fx",
     "type": "GFX",
