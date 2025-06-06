@@ -138,7 +138,7 @@ function Get-ParsedShaderContentDependencies($shaderPath, $availableDependencies
         }
     }
     
-    # Fallback FXH matching by basename has been removed for precision.
+    # Fallback FXH matching for basename has been removed for precision.
     
     # Get texture pattern from config or use default
     $texturePattern = 'texture\s+\w+\s*<\s*source\s*=\s*([^;>]+)\s*[;>]'
@@ -180,7 +180,7 @@ function Get-ParsedShaderContentDependencies($shaderPath, $availableDependencies
         }
     }
     
-    # Fallback texture matching by basename has been removed for precision.
+    # Fallback texture matching for basename has been removed for precision.
     
     # Add global dependencies from config
     if ($config.buildRules.dependencyTracking.globalDependencies) {
@@ -663,3 +663,51 @@ Remove-PackageFolders -PackagesPath $OutputPath -FolderNames $script:createdPack
 
 # Create README files for each package
 # ... (rest of the script remains the same for now)
+
+# === BEGIN: Catalog auto-update for new shaders ===
+$catalogPath = Join-Path $shadersRoot "shaders\catalog.json"
+if (Test-Path $catalogPath) {
+    $catalog = Get-Content -Path $catalogPath -Raw | ConvertFrom-Json
+    $catalogItems = $catalog.shaders.items
+    $existingFilenames = $catalogItems | ForEach-Object { $_.filename }
+    $shaderDir = Join-Path $shadersRoot "shaders/AS"
+    $shaderFiles = Get-ChildItem -Path $shaderDir -File -Filter "*.fx" | Where-Object { $_.Name -notmatch "^\[PRE\]" }
+    $newShaders = @()
+    foreach ($shaderFile in $shaderFiles) {
+        $relPath = "shaders/AS/" + $shaderFile.Name
+        if (-not ($existingFilenames -contains $relPath)) {
+            if ($shaderFile.Name -match "AS_([A-Z]+)_") {
+                $type = $matches[1].ToUpper()
+            } else {
+                $type = "OTHER"
+            }
+            $newShaders += @{ filename = $relPath; type = $type }
+        }
+    }
+    if ($newShaders.Count -gt 0) {
+        Write-Info "Adding $($newShaders.Count) new shaders to catalog.json..."
+        $catalog.shaders.items += $newShaders
+    }
+    # Sort items by name (case-insensitive)
+    $catalog.shaders.items = $catalog.shaders.items | Sort-Object -Property name, filename
+    # Recalculate statistics
+    $typeCounts = @{}
+    foreach ($item in $catalog.shaders.items) {
+        if ($item.type) {
+            if ($typeCounts.ContainsKey($item.type)) {
+                $typeCounts[$item.type]++
+            } else {
+                $typeCounts[$item.type] = 1
+            }
+        }
+    }
+    $catalog.shaders.statistics.byType = $typeCounts
+    # Write pretty-printed JSON with 4 spaces per indent
+    $json = $catalog | ConvertTo-Json -Depth 20
+    $json = $json -replace '^( +)', { $args[0].Value -replace '  ', '    ' }
+    Set-Content -Path $catalogPath -Value $json -Encoding UTF8
+    Write-Success "catalog.json updated with new shaders, sorted, and pretty-printed."
+} else {
+    Write-Warning "catalog.json not found, skipping catalog update."
+}
+# === END: Catalog auto-update for new shaders ===
