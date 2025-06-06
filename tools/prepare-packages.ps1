@@ -261,14 +261,20 @@ function New-PackageManifest($packagesDataToManifest, $manifestPath) {
                 $textureDeps = @($package.Dependencies.TextureDependencies)
             }
         }
+        # Filter .fxh files out of shaders, add them to fxhDeps if not already present
+        $shaderFiles = @($package.Shaders | Where-Object { $_ -notmatch '\.fxh$' })
+        $fxhFromShaders = @($package.Shaders | Where-Object { $_ -match '\.fxh$' })
+        foreach ($fxh in $fxhFromShaders) {
+            if ($fxhDeps -notcontains $fxh) { $fxhDeps += $fxh }
+        }
         $packageManifest = @{
             name = $package.Name
             version = $config.version
             description = $package.Description
-            shaderCount = $package.ShaderCount
-            fxhDependencyCount = $package.FxhCount
-            textureDependencyCount = $package.TextureCount
-            shaders = $package.Shaders
+            shaderCount = $shaderFiles.Count
+            fxhDependencyCount = $fxhDeps.Count
+            textureDependencyCount = $textureDeps.Count
+            shaders = $shaderFiles
             dependencies = @{ fxh = $fxhDeps; textures = $textureDeps }
         }
         $manifest.packages.Add($packageManifest)
