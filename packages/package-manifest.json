@@ -1,10 +1,10 @@
 ﻿{
-    "buildDate":  "2025-06-02T00:48:07Z",
-    "version":  "1.8.2",
+    "buildDate":  "2025-06-06T00:01:25Z",
+    "version":  "1.8.4",
     "packages":  [
                      {
-                         "version":  "1.8.2",
-                         "shaderCount":  21,
+                         "version":  "1.8.4",
+                         "shaderCount":  23,
                          "textureDependencyCount":  3,
                          "name":  "AS_StageFX_VisualEffects",
                          "fxhDependencyCount":  4,
@@ -24,7 +24,9 @@
                                           },
                          "shaders":  [
                                          "AS_GFX_AspectRatio.1.fx",
+                                         "AS_GFX_AudioDirection.1.fx",
                                          "AS_GFX_BrushStroke.1.fx",
+                                         "AS_GFX_CinematicDiffusion.1.fx",
                                          "AS_GFX_HandDrawing.1.fx",
                                          "AS_LFX_CandleFlame.1.fx",
                                          "AS_VFX_CircularSpectrum.1.fx",
@@ -47,8 +49,8 @@
                                      ]
                      },
                      {
-                         "version":  "1.8.2",
-                         "shaderCount":  59,
+                         "version":  "1.8.4",
+                         "shaderCount":  63,
                          "textureDependencyCount":  3,
                          "name":  "AS_StageFX",
                          "fxhDependencyCount":  5,
@@ -73,6 +75,7 @@
                                          "AS_BGX_CorridorTravel.1.fx",
                                          "AS_BGX_CosmicKaleidoscope.1.fx",
                                          "AS_BGX_DigitalBrain.1.fx",
+                                         "AS_BGX_Fluorescent.1.fx",
                                          "AS_BGX_GoldenClockwork.1.fx",
                                          "AS_BGX_Kaleidoscope.1.fx",
                                          "AS_BGX_LightRipples.1.fx",
@@ -84,6 +87,7 @@
                                          "AS_BGX_PastRacer.1.fx",
                                          "AS_BGX_PlasmaFlow.1.fx",
                                          "AS_BGX_ProteanClouds.1.fx",
+                                         "AS_BGX_QuadtreeTruchet.1.fx",
                                          "AS_BGX_RaymarchedChain.1.fx",
                                          "AS_BGX_ShineOn.1.fx",
                                          "AS_BGX_StainedLights.1.fx",
@@ -94,7 +98,9 @@
                                          "AS_BGX_WavySquiggles.1.fx",
                                          "AS_BGX_ZippyZaps.1.fx",
                                          "AS_GFX_AspectRatio.1.fx",
+                                         "AS_GFX_AudioDirection.1.fx",
                                          "AS_GFX_BrushStroke.1.fx",
+                                         "AS_GFX_CinematicDiffusion.1.fx",
                                          "AS_GFX_HandDrawing.1.fx",
                                          "AS_GFX_MultiLayerHalftone.1.fx",
                                          "AS_GFX_VignettePlus.1.fx",
@@ -130,7 +136,7 @@
                                      ]
                      },
                      {
-                         "version":  "1.8.2",
+                         "version":  "1.8.4",
                          "shaderCount":  16,
                          "textureDependencyCount":  0,
                          "name":  "AS_StageFX_Essentials",
@@ -167,8 +173,8 @@
                                      ]
                      },
                      {
-                         "version":  "1.8.2",
-                         "shaderCount":  22,
+                         "version":  "1.8.4",
+                         "shaderCount":  24,
                          "textureDependencyCount":  1,
                          "name":  "AS_StageFX_Backgrounds",
                          "fxhDependencyCount":  3,
@@ -189,6 +195,7 @@
                                          "AS_BGX_CorridorTravel.1.fx",
                                          "AS_BGX_CosmicKaleidoscope.1.fx",
                                          "AS_BGX_DigitalBrain.1.fx",
+                                         "AS_BGX_Fluorescent.1.fx",
                                          "AS_BGX_GoldenClockwork.1.fx",
                                          "AS_BGX_Kaleidoscope.1.fx",
                                          "AS_BGX_LightWall.1.fx",
@@ -199,6 +206,7 @@
                                          "AS_BGX_PastRacer.1.fx",
                                          "AS_BGX_PlasmaFlow.1.fx",
                                          "AS_BGX_ProteanClouds.1.fx",
+                                         "AS_BGX_QuadtreeTruchet.1.fx",
                                          "AS_BGX_RaymarchedChain.1.fx",
                                          "AS_BGX_ShineOn.1.fx",
                                          "AS_BGX_SunsetClouds.1.fx",
