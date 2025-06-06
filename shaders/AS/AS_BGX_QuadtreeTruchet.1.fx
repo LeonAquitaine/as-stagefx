@@ -173,16 +173,20 @@ float4 PS_ASBGXQuadtreeTruchet(float4 vpos : SV_Position, float2 texcoord : TEXC
     if (AudioTarget > 0) {
         float audioValue = AS_applyAudioReactivity(1.0, AudioSource, AudioMultiplier, true) - 1.0;
         
-        if (AudioTarget == 1) { // Pattern Scale
+        // Pattern Scale
+        if (AudioTarget == 1) {
             patternScale_final = PatternScale * (1.0 + audioValue * 0.5);
         }
-        else if (AudioTarget == 2) { // Rotation Speed
+        // Rotation Speed
+        else if (AudioTarget == 2) {
             rotationSpeed_final = OverallRotationSpeed * (1.0 + audioValue * 2.0);
         }
-        else if (AudioTarget == 3) { // Pattern Seed
+        // Pattern Seed
+        else if (AudioTarget == 3) {
             patternSeed_final = PatternSeed + (audioValue * 50.0);
         }
-        else if (AudioTarget == 4) { // Tile Density
+        // Tile Density
+        else if (AudioTarget == 4) {
             largeTileProbability_final = saturate(LargeTileProbability + (audioValue * 0.3));
         }
     }    // Scaling, rotation and translation for pattern space.
