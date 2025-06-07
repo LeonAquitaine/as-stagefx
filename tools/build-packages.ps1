@@ -482,9 +482,7 @@ function Copy-ShadersToPackage($shaderList, $packageDirName, $packageDesc, $curr
                 Write-Warning "Texture dependency not found in source: $textureName (when copying to $packageDirName)"
             }
         }
-    }
-
-    # Add to manifest data
+    }    # Add to manifest data
     $script:packagesForManifest += @{
         Name = $packageDirName
         Description = $packageDesc
@@ -744,7 +742,8 @@ function New-PackageManifest($packagesDataToManifest, $manifestPath) {
     
     # Sort packages by display order from config, then by name
     $sortedPackagesData = $packagesDataToManifest | Sort-Object {
-        $order = $config.packageDisplayOrder.IndexOf($_.Name.Replace($packagePrefix, "").TrimStart('_'))
+        $packageName = $_.Name.Replace($packagePrefix, "").TrimStart('_')
+        $order = $config.packageDisplayOrder.IndexOf($packageName)
         if ($order -eq -1) { $order = 999 } # Put unsorted items at the end
         $order
     }, Name
