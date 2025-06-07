@@ -534,13 +534,13 @@
     "type": "VFX",
     "shortDescription": "Simulates radiant, glowing fire with animated flames and color gradients.",
     "longDescription": "Generates radiant, glowing fire effects with animated flames and customizable color gradients. Features controls for flame shape, speed, intensity, and palette. Ideal for magical, fantasy, or atmospheric visuals.",
-    "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-radiantfire.gif",
     "credits": {
       "description": "Flame generation inspired by '301's Fire Shader - Remix 3' by mu6k.",
       "externalUrl": "https://www.shadertoy.com/view/4ttGWM",
       "originalAuthor": "mu6k",
       "originalTitle": "301's Fire Shader - Remix 3"
-    }
+    },
+    "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-radiantfire.gif"
   },
   {
     "name": "Rainy Window",

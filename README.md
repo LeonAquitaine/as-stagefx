@@ -40,7 +40,7 @@ AS-StageFX provides a collection of performant, customizable, and audio-reactive
 
 ## Available Shaders
 
-AS-StageFX includes **58 shaders** across four categories: **27 Background (BGX)**, **7 Graphic (GFX)**, **3 Lighting (LFX)**, and **21 Visual (VFX)** effects.
+AS-StageFX includes **57 shaders** across four categories: **26 Background (BGX)**, **7 Graphic (GFX)**, **3 Lighting (LFX)**, and **21 Visual (VFX)** effects.
 
 **Detailed descriptions and examples: [Shader Gallery](docs/gallery.md).**
 
@@ -66,7 +66,6 @@ AS-StageFX includes **58 shaders** across four categories: **27 Background (BGX)
 | **Protean Clouds** | Volumetric, evolving procedural clouds with raymarching, dynamic color, and realistic lighting. |
 | **Quadtree Truchet** | Multiscale recursive Truchet pattern with hierarchical tile overlaps, Art Deco line tiles, weave effects, and sophisticated palette system. |
 | **Raymarched Chain** | Raymarched animated chain of interconnected torus shapes following a procedural path. Features dynamic rotation, customizable geometry, and sophisticated lighting with camera controls. |
-| **Shine On** | Dynamic, evolving fractal noise pattern with bright, sparkly, moving crystal highlights. Audio-reactive and depth-aware. |
 | **Stained Lights** | Dynamic, colorful patterns like stained glass with shifting light, blurred layers, and audio reactivity. |
 | **Sunset Clouds** | Raymarched volumetric clouds with animated turbulence and dynamic sunset coloring. |
 | **Time Crystal** | Hypnotic, crystalline fractal structure with dynamic animation, color cycling, and audio reactivity. |

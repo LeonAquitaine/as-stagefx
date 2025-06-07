@@ -63,7 +63,7 @@ Displays a texture overlay ('sticker') with controls for placement, scale, rotat
 
 <br><br>
 Heavily inspired by 'StageDepth.fx' by Marot Satil (2019), original depth masking implementation.<br>
-<a href="https://github.com/marotsatil/StageDepth" target="_new">Source</a>
+<a href="https://github.com/Otakumouse/stormshade/blob/master/v4.X/reshade-shaders/Shader%20Library/Recommended/StageDepth.fx" target="_new">Source</a>
 
 </td>
 <td width="50%"><div style="text-align:center">
@@ -92,7 +92,7 @@ Based on 'Circular audio visualizer' by AIandDesign.<br>
 Simulates dramatic chiaroscuro (light-dark) lighting, emphasizing strong contrast and stylized shadows. Features controls for light direction, intensity, shadow softness, and color tint. Useful for artistic, cinematic, or moody scene transformations.
 
 <br><br>
-Based on '[RGR] Hearts' by deeplo.<br>
+Motion inspired by '[RGR] Hearts' by deeplo.<br>
 <a href="https://www.shadertoy.com/view/ttcBRs" target="_new">Source</a>
 
 </td>
@@ -139,6 +139,8 @@ Simulates floating dust motes and particles drifting through the scene. Features
 <h5><code>[AS] VFX: Focused Chaos|AS_VFX_FocusedChaos.1.fx</code></h5>
 Creates a visually complex and dynamic abstract effect resembling a focused point of chaotic energy or a swirling cosmic vortex. Patterns are generated using 3D Simplex noise and Fractional Brownian Motion (FBM), with colors evolving based on noise patterns and spatial coordinates, animated over time. Features transparent background, customizable animation, artistic controls for swirl/noise/color/alpha, dithering, domain warping, and standard AS-StageFX depth/blending controls.
 
+<br><br>
+
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="" alt="Focused Chaos Effect" style="max-width:100%;">
@@ -182,6 +184,10 @@ Simulates various lens distortions including tangential (rotational) blur, chrom
 <h4>VFX: Radiant Fire </h4>
 <h5><code>[AS] VFX: Radiant Fire|AS_VFX_RadiantFire.1.fx</code></h5>
 Generates radiant, glowing fire effects with animated flames and customizable color gradients. Features controls for flame shape, speed, intensity, and palette. Ideal for magical, fantasy, or atmospheric visuals.
+
+<br><br>
+Flame generation inspired by '301's Fire Shader - Remix 3' by mu6k.<br>
+<a href="https://www.shadertoy.com/view/4ttGWM" target="_new">Source</a>
 
 </td>
 <td width="50%"><div style="text-align:center">
@@ -253,6 +259,8 @@ Applies a stencil mask to selectively reveal or hide parts of the scene. Feature
 <h5><code>[AS] VFX: Tilted Grid|AS_VFX_TiltedGrid.1.fx</code></h5>
 Draws a tilted, animated grid overlay on the scene. Features controls for grid angle, spacing, line thickness, color, and animation speed. Useful for stylized overlays, retro visuals, or compositional guides.
 
+<br><br>
+
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-tiltedgrid.gif" alt="Tilted Grid Effect" style="max-width:100%;">
@@ -263,6 +271,8 @@ Draws a tilted, animated grid overlay on the scene. Features controls for grid a
 <h4>VFX: Volumetric Light </h4>
 <h5><code>[AS] VFX: Volumetric Light|AS_VFX_VolumetricLight.1.fx</code></h5>
 Simulates volumetric light rays (god rays) emanating from a source. Features controls for light position, color, intensity, ray length, and blending. Useful for dramatic, atmospheric, or mystical scene lighting.
+
+<br><br>
 
 </td>
 <td width="50%"><div style="text-align:center">

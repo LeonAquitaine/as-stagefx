@@ -30,8 +30,8 @@ The Essentials package includes these foundation libraries used by all shaders:
 Creates a vibrant, abstract blue corona effect with fluid, dynamic motion. The effect generates hypnotic patterns through iterative mathematical transformations, resulting in organic, plasma-like visuals with a predominantly blue color scheme. Features abstract, organic blue corona patterns; smooth fluid-like animation; customizable iteration count/pattern scale; animation speed/flow controls; intuitive color controls; customizable background color; audio reactivity (multiple targets); depth-aware rendering; and standard position, rotation, scale, and blending options.
 
 <br><br>
-Inspired by the 'Blue Corona' shader by @shaderartist.<br>
-<a href="https://www.shadertoy.com/view/ldX3z4" target="_new">Source</a>
+Inspired by the 'Blue Corona [256 Chars]' shader by @SnoopethDuckDuck.<br>
+<a href="https://www.shadertoy.com/view/XfKGWV" target="_new">Source</a>
 
 </td>
 <td width="50%"><div style="text-align:center">
@@ -45,8 +45,8 @@ Inspired by the 'Blue Corona' shader by @shaderartist.<br>
 Creates an animated stellar constellation pattern with twinkling stars and connecting lines. Perfect for cosmic, night sky, or abstract network visualizations with a hand-drawn aesthetic. Features dynamic constellation lines with customizable thickness and falloff; twinkling star points with adjustable sparkle properties; procedurally animated line connections; animated color palette with adjustable parameters; audio reactivity for zoom, gradient effects, line brightness, and sparkle magnitude; depth-aware rendering; and standard blend options.
 
 <br><br>
-Based on the 'Constellation' effect by @glslcoder.<br>
-<a href="https://www.shadertoy.com/view/4dX3Dn" target="_new">Source</a>
+Based on the 'old joseph' effect by jairoandre.<br>
+<a href="https://www.shadertoy.com/view/slfGzf" target="_new">Source</a>
 
 </td>
 <td width="50%"><div style="text-align:center">
@@ -60,8 +60,8 @@ Based on the 'Constellation' effect by @glslcoder.<br>
 Simulates an artistic flight through an abstract, glowing, patterned tunnel. Features multiple samples per pixel for pseudo-DOF and motion blur, and simulates light bounces with artistic reflection logic.
 
 <br><br>
-Inspired by the 'Corridor Travel' shader by @tunnelmaster.<br>
-<a href="https://www.shadertoy.com/view/3dXcDn" target="_new">Source</a>
+Inspired by the 'Corridor Travel' shader by NuSan.<br>
+<a href="https://www.shadertoy.com/view/3sXyRN" target="_new">Source</a>
 
 </td>
 <td width="50%"><div style="text-align:center">
@@ -75,8 +75,8 @@ Inspired by the 'Corridor Travel' shader by @tunnelmaster.<br>
 Renders a raymarched volumetric fractal resembling a Mandelbox or Mandelbulb. Features Kaleidoscope-like mirroring effect with customizable repetitions, audio reactivity for dynamic parameter adjustments, palette-based coloring system with customizable options, and full rotation, position and depth control for scene integration.
 
 <br><br>
-Fractal algorithm adapted from @fractalwizard's Mandelbox implementation.<br>
-<a href="https://www.shadertoy.com/view/4dX3Wn" target="_new">Source</a>
+Inspired by 'Star Nest' from Kali<br>
+<a href="https://www.shadertoy.com/view/XlfGRj" target="_new">Source</a>
 
 </td>
 <td width="50%"><div style="text-align:center">
@@ -90,8 +90,8 @@ Fractal algorithm adapted from @fractalwizard's Mandelbox implementation.<br>
 Creates an abstract visualization of a 'digital brain' with evolving Voronoi patterns and neural-like connections. The effect simulates an organic electronic network with dynamic light paths that mimic neural activity in a stylized, technological manner. Features dynamic Voronoi-based pattern generation, animated 'electrical' pulses simulating synaptic activity, color modulation based on noise texture for organic variation, advanced vignette controls, pre-optimized pattern stretching, classic and texture-based coloring options, customizable animation and pattern controls, and depth-aware rendering with standard blending.
 
 <br><br>
-Voronoi pattern logic based on @neuralnet's open-source GLSL example.<br>
-<a href="https://www.shadertoy.com/view/4dXcWn" target="_new">Source</a>
+Voronoi pattern logic inspired by 'Digital Brain' from srtuss.<br>
+<a href="https://www.shadertoy.com/view/4sl3Dr" target="_new">Source</a>
 
 </td>
 <td width="50%"><div style="text-align:center">
@@ -105,8 +105,6 @@ Voronoi pattern logic based on @neuralnet's open-source GLSL example.<br>
 Creates a vibrant neon fluorescent background effect that simulates the glow and intensity of fluorescent lighting. Perfect for creating retro, cyberpunk, or futuristic atmospheres with customizable colors and intensity. Features raymarched volumetric fluorescent effect with depth, dynamic color shifting with RGB phase controls, animated pulsing and flowing patterns, audio reactivity for rhythm-synchronized lighting, standard stage controls for positioning and depth, customizable iteration count for quality vs performance balance, and blend mode controls for integration with existing scenes.
 
 <br><br>
-Neon glow technique adapted from @neonfx's work.<br>
-<a href="https://www.shadertoy.com/view/4dXcDn" target="_new">Source</a>
 
 </td>
 <td width="50%"><div style="text-align:center">
@@ -120,8 +118,6 @@ Neon glow technique adapted from @neonfx's work.<br>
 Renders a mesmerizing and intricate animated background effect reminiscent of golden clockwork mechanisms or Apollonian gasket-like fractal patterns. The effect features complex, evolving geometric designs with a characteristic golden color palette. Features procedurally generated Apollonian fractal patterns, dynamic animation driven by time, a golden color scheme with lighting and shading effects, depth-like progression through fractal layers, kaleidoscopic and mirroring options for pattern variation, resolution-independent rendering, and UI controls for animation (speed, keyframe, path speed), palette, fractal/kaleidoscope parameters, audio reactivity, stage controls (position, scale, rotation, depth), and blending.
 
 <br><br>
-Based on 'Golden apollian' by mrange.<br>
-
 
 </td>
 <td width="50%"><div style="text-align:center">
@@ -135,8 +131,6 @@ Based on 'Golden apollian' by mrange.<br>
 Creates a vibrant, ever-evolving fractal kaleidoscope pattern with animated tendrils. Perfect for psychedelic, cosmic, or abstract backgrounds with a hypnotic quality. Features adjustable kaleidoscope mirror count for symmetry control; fractal zoom and pattern rotation with animation controls; customizable wave parameters and color palette; audio reactivity for zoom, wave intensity, and pattern rotation; depth-aware rendering; and standard blend options.
 
 <br><br>
-Inspired by 'Shader Art Coding Introduction' by kishimisu.<br>
-<a href="https://youtu.be/f4s1h2YETNY" target="_new">Source</a>
 
 </td>
 <td width="50%"><div style="text-align:center">
@@ -150,8 +144,6 @@ Inspired by 'Shader Art Coding Introduction' by kishimisu.<br>
 Creates a mesmerizing, rippling kaleidoscopic light pattern effect. Suitable as a dynamic background or overlay. Includes controls for animation, distortion (amplitude, frequencies), color palettes with cycling, audio reactivity, depth-aware rendering, adjustable rotation, and standard blending options.
 
 <br><br>
-Original by Danilo Guanabara.<br>
-<a href="https://www.pouet.net/prod.php?which=57245" target="_new">Source</a>
 
 </td>
 <td width="50%"><div style="text-align:center">
@@ -165,8 +157,6 @@ Original by Danilo Guanabara.<br>
 Creates dynamic, flowing psychedelic patterns reminiscent of liquid metal or chrome. This shader iteratively distorts screen coordinates, creating complex, flowing patterns with optional vertical stripe overlays for additional visual texture.
 
 <br><br>
-Based on 'Liquid Chrome' by iamsaitam.<br>
-<a href="https://neort.io/art/bkm813c3p9f7drq1j86g" target="_new">Source</a>
 
 </td>
 <td width="50%"><div style="text-align:center">
@@ -195,8 +185,6 @@ Based on 'Logarithmic spiral of spheres' by mrange.<br>
 Creates a flowing, warping psychedelic effect inspired by 1970s visual aesthetics. Generates mesmerizing colored patterns with sine-based distortions that evolve over time. Features adjustable zoom/intensity, a palette system (mathematical or preset colors), dynamic time-based animation with keyframe support, audio reactivity mappable to different parameters, and resolution-independent transformation with position/rotation controls.
 
 <br><br>
-Based on 'Melt Wave' by iamsaitam.<br>
-<a href="https://www.shadertoy.com/view/4dXcDn" target="_new">Source</a>
 
 </td>
 <td width="50%"><div style="text-align:center">
@@ -210,8 +198,6 @@ Based on 'Melt Wave' by iamsaitam.<br>
 Creates an abstract fractal-based grid background with a misty, ethereal appearance using raymarching techniques. Features dynamic fractal-based grid environment, customizable colors with palette system, folding and repetition for complex patterns, camera movement simulation with smooth rotations, audio reactivity affecting multiple parameters (fractal scale, folding intensity, saturation, brightness, camera zoom, animation speed), and standard position/rotation/scale controls.
 
 <br><br>
-Based on 'Misty Grid' by NuSan.<br>
-<a href="https://www.shadertoy.com/view/wl2Szd" target="_new">Source</a>
 
 </td>
 <td width="50%"><div style="text-align:center">
@@ -225,8 +211,6 @@ Based on 'Misty Grid' by NuSan.<br>
 A ray marching shader that generates one of two selectable abstract procedural scenes. Features domain repetition, custom transformations, and pseudo-random patterns. Scene geometry and flare effects can be reactive to audio frequency bands.
 
 <br><br>
-Based on 'past racer' by jetlab.<br>
-<a href="https://www.shadertoy.com/view/3l23Rh" target="_new">Source</a>
 
 </td>
 <td width="50%"><div style="text-align:center">
@@ -240,8 +224,6 @@ Based on 'past racer' by jetlab.<br>
 Sophisticated, gentle, and flexible plasma effect for groovy, atmospheric visuals. Generates smooth, swirling, organic patterns with customizable color gradients (2-4 user-defined colors) and strong audio reactivity. Features procedural plasma/noise with domain warping for fluid motion, controls for speed, scale, complexity, stretch, and warp, audio-reactive modulation of movement, color, brightness, and turbulence, plus standard blend modes and debug views. Ideal for music video backgrounds and overlays.
 
 <br><br>
-Based on 'Plasma Flow' by iamsaitam.<br>
-<a href="https://www.shadertoy.com/view/4dXcDn" target="_new">Source</a>
 
 </td>
 <td width="50%"><div style="text-align:center">
@@ -255,8 +237,6 @@ Based on 'Plasma Flow' by iamsaitam.<br>
 Renders dynamic, evolving volumetric clouds through raymarching techniques. Creates an immersive, abstract cloudscape with dynamic color variations and realistic lighting. Features high-quality volumetric cloud formations, customizable cloud density, shape, and detail, dynamic camera movement with adjustable path and sway, sophisticated internal lighting and self-shadowing, color palette system with customizable parameters, audio reactivity for multiple cloud parameters, and resolution-independent rendering with precise position controls.
 
 <br><br>
-Based on 'Protean clouds' by nimitz.<br>
-<a href="https://www.shadertoy.com/view/3l23Rh" target="_new">Source</a>
 
 </td>
 <td width="50%"><div style="text-align:center">
@@ -270,8 +250,6 @@ Based on 'Protean clouds' by nimitz.<br>
 Creates a sophisticated multiscale recursive Truchet pattern with hierarchical tile overlaps across 3 levels. Generates complex geometric designs through quadtree subdivision and probabilistic tile placement. Features quadtree-based recursive pattern generation, overlapping tile system with collision prevention, full AS palette system support with multiple color modes, Art Deco style with line tiles and weave effects, animated rotation and panning, audio reactivity for scale/rotation/seed/density, stage positioning controls, and debug visualization of the underlying quadtree structure.
 
 <br><br>
-Based on 'Truchet Tiling' by iq and 'QuadTree' by 0x0f.<br>
-<a href="https://www.shadertoy.com/view/4dX3Wn" target="_new">Source</a>
 
 </td>
 <td width="50%"><div style="text-align:center">
@@ -285,27 +263,10 @@ Based on 'Truchet Tiling' by iq and 'QuadTree' by 0x0f.<br>
 Renders a raymarched scene featuring an animated, endlessly twisting chain composed of interconnected torus shapes. The chain follows a procedurally defined path, and its segments rotate and evolve over time, creating a mesmerizing, complex visual. Features raymarched chain of torus shapes with procedural path animation, customizable animation speed and chain geometry, dynamic coloring based on raymarching depth and iteration, camera orientation controls, and standard AS-StageFX blending controls.
 
 <br><br>
-Based on 'Corrente' by Elsio.<br>
-<a href="https://www.shadertoy.com/view/ctSfRV" target="_new">Source</a>
 
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-raymarchedchain.gif" alt="Raymarched Chain Effect" style="max-width:100%;">
-</div></td>
-</tr>
-<tr>
-<td width="50%">
-<h3>Shine On </h3>
-<h5><code>AS_BGX_ShineOn.1.fx</code></h5>
-Creates a dynamic, evolving fractal noise pattern with bright, sparkly crystal highlights that move across the screen. Combines multiple layers of noise with procedural animation for a mesmerizing background effect. Features layered noise patterns with dynamic animation, crystal point highlights with customizable parameters, audio reactivity, and depth-aware rendering.
-
-<br><br>
-Inspired by 'Shine On' by 104.<br>
-<a href="https://www.shadertoy.com/view/WlsSzM" target="_new">Source</a>
-
-</td>
-<td width="50%"><div style="text-align:center">
-<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-shineon.gif" alt="Shine On Effect" style="max-width:100%;">
 </div></td>
 </tr>
 <tr>
@@ -315,8 +276,6 @@ Inspired by 'Shine On' by 104.<br>
 Creates dynamic and colorful patterns reminiscent of stained glass illuminated by shifting light, with multiple blurred layers enhancing depth and visual complexity. Generates layers of distorted, cell-like structures with vibrant, evolving colors and subtle edge highlighting, overlaid with softer, floating elements. Features multi-layered pattern generation (adjustable iterations), dynamic animation with speed control, customizable pattern scaling/edge highlighting, audio reactivity for animation/pattern evolution, post-processing (curve adjustments, noise), blurred floating layers for depth, and depth-aware rendering with standard blending. Suitable for abstract backgrounds, energy fields, or mystical visuals.
 
 <br><br>
-Inspired by 'Stained Lights' by 104.<br>
-<a href="https://www.shadertoy.com/view/WlsSzM" target="_new">Source</a>
 
 </td>
 <td width="50%"><div style="text-align:center">
@@ -330,8 +289,6 @@ Inspired by 'Stained Lights' by 104.<br>
 Renders an animated scene of clouds at sunset using raymarching to create volumetric cloud effects with dynamic lighting and turbulence. Features raymarched volumetric clouds, animated turbulence effect, dynamic sunset coloring that changes over time, and tunable parameters for iterations, animation speed, and visual details.
 
 <br><br>
-Based on 'Sunset [280]' by Xor.<br>
-<a href="https://www.shadertoy.com/view/wXjSRt" target="_new">Source</a>
 
 </td>
 <td width="50%"><div style="text-align:center">
@@ -345,8 +302,6 @@ Based on 'Sunset [280]' by Xor.<br>
 Creates a hypnotic, crystalline fractal structure with dynamic animation and color cycling. Generates patterns reminiscent of crystalline structures or gems with depth and dimension. Features fractal crystal-like patterns (customizable iterations), dynamic animation (controllable speed), adjustable pattern density/detail, customizable color palettes with cycling, audio reactivity for pattern dynamics/colors, depth-aware rendering with standard blending, and adjustable position/rotation controls. Suitable for mystic or sci-fi backgrounds, portals, or energy fields.
 
 <br><br>
-Based on 'Time Crystal' by raphaeljmu.<br>
-<a href="https://www.shadertoy.com/view/lcl3z2" target="_new">Source</a>
 
 </td>
 <td width="50%"><div style="text-align:center">
@@ -358,6 +313,8 @@ Based on 'Time Crystal' by raphaeljmu.<br>
 <h3>Vortex </h3>
 <h5><code>AS_BGX_Vortex.1.fx</code></h5>
 Creates a psychedelic swirling vortex pattern. The effect is animated and features controls for color, animation speed, swirl characteristics, and brightness. Suitable as a dynamic background. Features animated vortex with customizable speed, palette-based coloring, swirl intensity/frequency/sharpness, brightness falloff, and standard AS-StageFX blending and positioning.
+
+<br><br>
 
 </td>
 <td width="50%"><div style="text-align:center">
@@ -371,8 +328,6 @@ Creates a psychedelic swirling vortex pattern. The effect is animated and featur
 Creates a hypnotic pattern of wavy, animated square tiles that shift and transform. The squares follow a wave-like motion and feature dynamic size changes, creating a flowing, organic grid pattern. Features wavy, undulating square tiling; customizable wave parameters (amplitude, frequency, speed); variable tile size/scaling; shape smoothness/box roundness controls; audio reactivity (multiple targets); depth-aware rendering; adjustable rotation; and standard position, scale, and blending options.
 
 <br><br>
-Adapted from 'Square Tiling Example E' by an unknown GLSL author, see Shadertoy for original inspiration.<br>
-<a href="https://www.shadertoy.com/view/NdfBzn" target="_new">Source</a>
 
 </td>
 <td width="50%"><div style="text-align:center">
@@ -401,8 +356,6 @@ Based on 'Interactive 2.5D Squiggles' by SnoopethDuckDuck.<br>
 Creates dynamic electric arcs and lightning patterns for a striking background effect. This effect generates procedural electric-like patterns that appear behind objects in the scene, creating an energetic, dynamic background with complete control over appearance and animation. Features animated electric/lightning arcs with procedural generation; fully customizable colors, intensity, and animation parameters; resolution-independent rendering; audio reactivity; depth-aware rendering; and adjustable rotation/positioning in 3D space.
 
 <br><br>
-Based on 'Zippy Zaps' by SnoopethDuckDuck.<br>
-<a href="https://www.shadertoy.com/view/XXyGzh" target="_new">Source</a>
 
 </td>
 <td width="50%"><div style="text-align:center">
@@ -491,10 +444,6 @@ Based on 'notebook drawings' by Flockaroo (2016).<br>
 <h5><code>AS_GFX_MultiLayerHalftone.1.fx</code></h5>
 Creates a highly customizable multi-layer halftone effect with support for up to four independent layers. Each layer can use different pattern types (dots, lines, crosshatch), isolation methods (brightness, RGB, hue, depth), colors, thresholds, scales, densities, and angles. Features layer blending with transparency support.
 
-<br><br>
-Based on 'Halftone Shader' by P. Gonzalez Vivo.<br>
-<a href="https://www.shadertoy.com/view/XdcGzn" target="_new">Source</a>
-
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-multilayerhalftone.gif" alt="MultiLayer Halftone Effect" style="max-width:100%;">
@@ -570,7 +519,7 @@ Displays a texture overlay ('sticker') with controls for placement, scale, rotat
 
 <br><br>
 Heavily inspired by 'StageDepth.fx' by Marot Satil (2019), original depth masking implementation.<br>
-<a href="https://github.com/marotsatil/StageDepth" target="_new">Source</a>
+<a href="https://github.com/Otakumouse/stormshade/blob/master/v4.X/reshade-shaders/Shader%20Library/Recommended/StageDepth.fx" target="_new">Source</a>
 
 </td>
 <td width="50%"><div style="text-align:center">
@@ -599,7 +548,7 @@ Based on 'Circular audio visualizer' by AIandDesign.<br>
 Simulates dramatic chiaroscuro (light-dark) lighting, emphasizing strong contrast and stylized shadows. Features controls for light direction, intensity, shadow softness, and color tint. Useful for artistic, cinematic, or moody scene transformations.
 
 <br><br>
-Based on '[RGR] Hearts' by deeplo.<br>
+Motion inspired by '[RGR] Hearts' by deeplo.<br>
 <a href="https://www.shadertoy.com/view/ttcBRs" target="_new">Source</a>
 
 </td>
@@ -646,6 +595,8 @@ Simulates floating dust motes and particles drifting through the scene. Features
 <h5><code>AS_VFX_FocusedChaos.1.fx</code></h5>
 Creates a visually complex and dynamic abstract effect resembling a focused point of chaotic energy or a swirling cosmic vortex. Patterns are generated using 3D Simplex noise and Fractional Brownian Motion (FBM), with colors evolving based on noise patterns and spatial coordinates, animated over time. Features transparent background, customizable animation, artistic controls for swirl/noise/color/alpha, dithering, domain warping, and standard AS-StageFX depth/blending controls.
 
+<br><br>
+
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="" alt="Focused Chaos Effect" style="max-width:100%;">
@@ -689,6 +640,10 @@ Simulates various lens distortions including tangential (rotational) blur, chrom
 <h3>Radiant Fire </h3>
 <h5><code>AS_VFX_RadiantFire.1.fx</code></h5>
 Generates radiant, glowing fire effects with animated flames and customizable color gradients. Features controls for flame shape, speed, intensity, and palette. Ideal for magical, fantasy, or atmospheric visuals.
+
+<br><br>
+Flame generation inspired by '301's Fire Shader - Remix 3' by mu6k.<br>
+<a href="https://www.shadertoy.com/view/4ttGWM" target="_new">Source</a>
 
 </td>
 <td width="50%"><div style="text-align:center">
@@ -760,6 +715,8 @@ Applies a stencil mask to selectively reveal or hide parts of the scene. Feature
 <h5><code>AS_VFX_TiltedGrid.1.fx</code></h5>
 Draws a tilted, animated grid overlay on the scene. Features controls for grid angle, spacing, line thickness, color, and animation speed. Useful for stylized overlays, retro visuals, or compositional guides.
 
+<br><br>
+
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-tiltedgrid.gif" alt="Tilted Grid Effect" style="max-width:100%;">
@@ -770,6 +727,8 @@ Draws a tilted, animated grid overlay on the scene. Features controls for grid a
 <h3>Volumetric Light </h3>
 <h5><code>AS_VFX_VolumetricLight.1.fx</code></h5>
 Simulates volumetric light rays (god rays) emanating from a source. Features controls for light position, color, intensity, ray length, and blending. Useful for dramatic, atmospheric, or mystical scene lighting.
+
+<br><br>
 
 </td>
 <td width="50%"><div style="text-align:center">

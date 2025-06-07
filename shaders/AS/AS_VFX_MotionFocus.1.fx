@@ -359,7 +359,10 @@ float2 PS_MotionFocusStorageFocusCenter(float4 pos : SV_Position, float2 texcoor
 // ============================================================================
 // TECHNIQUE DEFINITION
 // ============================================================================
-technique AS_VFX_MotionFocus < ui_tooltip = "Automatically zooms towards detected motion with audio-reactive control.\nRequires multiple frames to initialize motion tracking.\nIncludes advanced tuning parameters for motion detection and response."; >
+technique AS_VFX_MotionFocus < 
+    ui_label = "[AS] VFX: Motion Focus";
+    ui_tooltip = "Automatically zooms towards detected motion with audio-reactive control."; 
+>
 {
     pass MotionFocusNormPass
     {
