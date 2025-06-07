@@ -411,13 +411,13 @@
     "type": "GFX",
     "shortDescription": "Highly customizable multi-layer halftone (up to 4 layers) with various patterns, isolation methods, and blending options.",
     "longDescription": "Creates a highly customizable multi-layer halftone effect with support for up to four independent layers. Each layer can use different pattern types (dots, lines, crosshatch), isolation methods (brightness, RGB, hue, depth), colors, thresholds, scales, densities, and angles. Features layer blending with transparency support.",
-    "imageUrl": "https://github.com/user-attachments/assets/b93c9d03-5d23-4b32-aa3e-f2b6a9736c70",
     "credits": {
       "description": "Based on 'Halftone Shader' by P. Gonzalez Vivo.",
       "externalUrl": "https://www.shadertoy.com/view/XdcGzn",
       "originalAuthor": "P. Gonzalez Vivo",
       "originalTitle": "Halftone Shader"
-    }
+    },
+    "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-multilayerhalftone.gif"
   },
   {
     "name": "Vignette Plus",
@@ -513,7 +513,7 @@
     "type": "VFX",
     "shortDescription": "Simulates digital compression artifacts, blockiness, and color banding.",
     "longDescription": "Applies digital compression artifacts such as blockiness, color banding, and quantization noise. Features adjustable artifact strength, block size, and color depth. Useful for retro, glitch, or degraded video effects.",
-    "imageUrl": null
+    "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-digitalartifacts.gif"
   },
   {
     "name": "Dust Motes",

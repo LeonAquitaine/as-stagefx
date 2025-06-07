@@ -389,7 +389,7 @@ Creates a highly customizable multi-layer halftone effect with support for up to
 
 </td>
 <td width="50%"><div style="text-align:center">
-<img src="https://github.com/user-attachments/assets/b93c9d03-5d23-4b32-aa3e-f2b6a9736c70" alt="MultiLayer Halftone Effect" style="max-width:100%;">
+<img src="" alt="MultiLayer Halftone Effect" style="max-width:100%;">
 </div></td>
 </tr>
 <tr>
@@ -502,7 +502,7 @@ Applies digital compression artifacts such as blockiness, color banding, and qua
 
 </td>
 <td width="50%"><div style="text-align:center">
-<img src="" alt="Digital Artifacts Effect" style="max-width:100%;">
+<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-digitalartifacts.gif" alt="Digital Artifacts Effect" style="max-width:100%;">
 </div></td>
 </tr>
 <tr>
