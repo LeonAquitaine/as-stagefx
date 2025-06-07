@@ -1,0 +1,390 @@
+[INFO] Configuration loaded from F:\Replica\NAS\Files\repo\github\as-stagefx\tools\..\config\package-config.json
+[INFO] Cleaning packages directory: F:\Replica\NAS\Files\repo\github\as-stagefx\tools\..\packages
+[INFO] No package folders to clean in packages directory
+[INFO] Found 63 shader files
+[INFO] Found 5 FXH files and 3 texture files for dependency tracking
+[INFO] Skipping prerelease shader: [PRE] AS_GFX_ArtDecoFrame.1.fx
+[INFO] Dynamic package generation is enabled
+[INFO] Generating dynamic package: complete
+[INFO]   Including all textures
+[INFO]   Including all available shaders
+[INFO]     gfx: 7 shaders
+[INFO]     lfx: 3 shaders
+[INFO]     vfx: 21 shaders
+[INFO]     other: 1 shaders
+[INFO]     bgx: 26 shaders
+[INFO]   Total shaders included: 58
+[INFO] Generating dynamic package: backgrounds
+[INFO]   Inheriting from: essentials
+[INFO]   Including categories: bgx
+[INFO]     bgx: 26 shaders
+[INFO]   Total shaders included: 26
+[INFO] Generating dynamic package: visualeffects
+[INFO]   Inheriting from: essentials
+[INFO]   Including categories: vfx, lfx, gfx, afx
+[INFO]     vfx: 21 shaders
+[INFO]     lfx: 3 shaders
+[INFO]     gfx: 7 shaders
+[INFO]   Total shaders included: 31
+DEBUG SHADER LIST: Processing package 'complete'
+DEBUG SHADER LIST: Package config type: PSCustomObject
+DEBUG SHADER LIST: Processing category 'gfx' with value type: Object[]
+DEBUG SHADER LIST: Category value is array: True
+DEBUG SHADER LIST: Category value count: 7
+DEBUG SHADER LIST: Added shader: AS_GFX_AspectRatio.1.fx
+DEBUG SHADER LIST: Added shader: AS_GFX_AudioDirection.1.fx
+DEBUG SHADER LIST: Added shader: AS_GFX_BrushStroke.1.fx
+DEBUG SHADER LIST: Added shader: AS_GFX_CinematicDiffusion.1.fx
+DEBUG SHADER LIST: Added shader: AS_GFX_HandDrawing.1.fx
+DEBUG SHADER LIST: Added shader: AS_GFX_MultiLayerHalftone.1.fx
+DEBUG SHADER LIST: Added shader: AS_GFX_VignettePlus.1.fx
+DEBUG SHADER LIST: Skipping special property: includeTextures
+DEBUG SHADER LIST: Processing category 'lfx' with value type: Object[]
+DEBUG SHADER LIST: Category value is array: True
+DEBUG SHADER LIST: Category value count: 3
+DEBUG SHADER LIST: Added shader: AS_LFX_CandleFlame.1.fx
+DEBUG SHADER LIST: Added shader: AS_LFX_LaserShow.1.fx
+DEBUG SHADER LIST: Added shader: AS_LFX_StageSpotlights.1.fx
+DEBUG SHADER LIST: Processing category 'vfx' with value type: Object[]
+DEBUG SHADER LIST: Category value is array: True
+DEBUG SHADER LIST: Category value count: 21
+DEBUG SHADER LIST: Added shader: AS_VFX_BoomSticker.1.fx
+DEBUG SHADER LIST: Added shader: AS_VFX_CircularSpectrum.1.fx
+DEBUG SHADER LIST: Added shader: AS_VFX_ClairObscur.1.fx
+DEBUG SHADER LIST: Added shader: AS_VFX_ColorBalancer.1.fx
+DEBUG SHADER LIST: Added shader: AS_VFX_DigitalArtifacts.1.fx
+DEBUG SHADER LIST: Added shader: AS_VFX_DustMotes.1.fx
+DEBUG SHADER LIST: Added shader: AS_VFX_FocusedChaos.1.fx
+DEBUG SHADER LIST: Added shader: AS_VFX_MotionFocus.1.fx
+DEBUG SHADER LIST: Added shader: AS_VFX_MotionTrails.1.fx
+DEBUG SHADER LIST: Added shader: AS_VFX_RadialLensDistortion.1.fx
+DEBUG SHADER LIST: Added shader: AS_VFX_RadiantFire.1.fx
+DEBUG SHADER LIST: Added shader: AS_VFX_RainyWindow.1.fx
+DEBUG SHADER LIST: Added shader: AS_VFX_ScreenRing.1.fx
+DEBUG SHADER LIST: Added shader: AS_VFX_SparkleBloom.1.fx
+DEBUG SHADER LIST: Added shader: AS_VFX_SpectrumRing.1.fx
+DEBUG SHADER LIST: Added shader: AS_VFX_StencilMask.1.fx
+DEBUG SHADER LIST: Added shader: AS_VFX_TiltedGrid.1.fx
+DEBUG SHADER LIST: Added shader: AS_VFX_VolumetricLight.1.fx
+DEBUG SHADER LIST: Added shader: AS_VFX_VUMeter.1.fx
+DEBUG SHADER LIST: Added shader: AS_VFX_WarpDistort.1.fx
+DEBUG SHADER LIST: Added shader: AS_VFX_WaterSurface.1.fx
+DEBUG SHADER LIST: Processing category 'other' with value type: Object[]
+DEBUG SHADER LIST: Category value is array: True
+DEBUG SHADER LIST: Category value count: 1
+DEBUG SHADER LIST: Added shader: AS_Palette_Styles.1.fxh
+DEBUG SHADER LIST: Processing category 'bgx' with value type: Object[]
+DEBUG SHADER LIST: Category value is array: True
+DEBUG SHADER LIST: Category value count: 26
+DEBUG SHADER LIST: Added shader: AS_BGX_BlueCorona.1.fx
+DEBUG SHADER LIST: Added shader: AS_BGX_Constellation.1.fx
+DEBUG SHADER LIST: Added shader: AS_BGX_CorridorTravel.1.fx
+DEBUG SHADER LIST: Added shader: AS_BGX_CosmicKaleidoscope.1.fx
+DEBUG SHADER LIST: Added shader: AS_BGX_DigitalBrain.1.fx
+DEBUG SHADER LIST: Added shader: AS_BGX_Fluorescent.1.fx
+DEBUG SHADER LIST: Added shader: AS_BGX_GoldenClockwork.1.fx
+DEBUG SHADER LIST: Added shader: AS_BGX_Kaleidoscope.1.fx
+DEBUG SHADER LIST: Added shader: AS_BGX_LightRipples.1.fx
+DEBUG SHADER LIST: Added shader: AS_BGX_LightWall.1.fx
+DEBUG SHADER LIST: Added shader: AS_BGX_LiquidChrome.1.fx
+DEBUG SHADER LIST: Added shader: AS_BGX_LogSpirals.1.fx
+DEBUG SHADER LIST: Added shader: AS_BGX_MeltWave.1.fx
+DEBUG SHADER LIST: Added shader: AS_BGX_MistyGrid.1.fx
+DEBUG SHADER LIST: Added shader: AS_BGX_PastRacer.1.fx
+DEBUG SHADER LIST: Added shader: AS_BGX_PlasmaFlow.1.fx
+DEBUG SHADER LIST: Added shader: AS_BGX_ProteanClouds.1.fx
+DEBUG SHADER LIST: Added shader: AS_BGX_QuadtreeTruchet.1.fx
+DEBUG SHADER LIST: Added shader: AS_BGX_RaymarchedChain.1.fx
+DEBUG SHADER LIST: Added shader: AS_BGX_StainedLights.1.fx
+DEBUG SHADER LIST: Added shader: AS_BGX_SunsetClouds.1.fx
+DEBUG SHADER LIST: Added shader: AS_BGX_TimeCrystal.1.fx
+DEBUG SHADER LIST: Added shader: AS_BGX_Vortex.1.fx
+DEBUG SHADER LIST: Added shader: AS_BGX_WavySquares.1.fx
+DEBUG SHADER LIST: Added shader: AS_BGX_WavySquiggles.1.fx
+DEBUG SHADER LIST: Added shader: AS_BGX_ZippyZaps.1.fx
+DEBUG SHADER LIST: Final shader list count for 'complete': 58
+[INFO] Processing Dynamic package: AS_StageFX (58 shaders)
+[INFO] Copying all available textures for dynamic package: complete
+[INFO] Processing package: AS_StageFX
+[INFO]   58 primary shaders for this package.
+[INFO]   Resolved dependencies: 4 FXH files, 3 textures.
+DEBUG SHADER LIST: Processing package 'essentials'
+DEBUG SHADER LIST: Package config type: PSCustomObject
+DEBUG SHADER LIST: Processing category 'fxh' with value type: Object[]
+DEBUG SHADER LIST: Category value is array: True
+DEBUG SHADER LIST: Category value count: 5
+DEBUG SHADER LIST: Added shader: AS_Utils.1.fxh
+DEBUG SHADER LIST: Added shader: AS_Noise.1.fxh
+DEBUG SHADER LIST: Added shader: AS_Perspective.1.fxh
+DEBUG SHADER LIST: Added shader: AS_Palette.1.fxh
+DEBUG SHADER LIST: Added shader: AS_Palette_Styles.1.fxh
+DEBUG SHADER LIST: Processing category 'bgx' with value type: Object[]
+DEBUG SHADER LIST: Category value is array: True
+DEBUG SHADER LIST: Category value count: 3
+DEBUG SHADER LIST: Added shader: AS_BGX_TimeCrystal.1.fx
+DEBUG SHADER LIST: Added shader: AS_BGX_StainedLights.1.fx
+DEBUG SHADER LIST: Added shader: AS_BGX_LightRipples.1.fx
+DEBUG SHADER LIST: Processing category 'gfx' with value type: Object[]
+DEBUG SHADER LIST: Category value is array: True
+DEBUG SHADER LIST: Category value count: 2
+DEBUG SHADER LIST: Added shader: AS_GFX_VignettePlus.1.fx
+DEBUG SHADER LIST: Added shader: AS_GFX_MultiLayerHalftone.1.fx
+DEBUG SHADER LIST: Processing category 'lfx' with value type: Object[]
+DEBUG SHADER LIST: Category value is array: True
+DEBUG SHADER LIST: Category value count: 2
+DEBUG SHADER LIST: Added shader: AS_LFX_StageSpotlights.1.fx
+DEBUG SHADER LIST: Added shader: AS_LFX_LaserShow.1.fx
+DEBUG SHADER LIST: Processing category 'vfx' with value type: Object[]
+DEBUG SHADER LIST: Category value is array: True
+DEBUG SHADER LIST: Category value count: 4
+DEBUG SHADER LIST: Added shader: AS_VFX_BoomSticker.1.fx
+DEBUG SHADER LIST: Added shader: AS_VFX_SparkleBloom.1.fx
+DEBUG SHADER LIST: Added shader: AS_VFX_MotionTrails.1.fx
+DEBUG SHADER LIST: Added shader: AS_VFX_StencilMask.1.fx
+DEBUG SHADER LIST: Final shader list count for 'essentials': 16
+[INFO] Processing Explicit package: AS_StageFX_Essentials (16 shaders)
+[INFO] Processing package: AS_StageFX_Essentials
+[INFO]   16 primary shaders for this package.
+[INFO]   Resolved dependencies: 4 FXH files, 0 textures.
+DEBUG SHADER LIST: Processing package 'visualEffects'
+DEBUG SHADER LIST: Package config type: PSCustomObject
+DEBUG SHADER LIST: Package inherits from: essentials
+DEBUG SHADER LIST: Processing package 'essentials'
+DEBUG SHADER LIST: Package config type: PSCustomObject
+DEBUG SHADER LIST: Processing category 'fxh' with value type: Object[]
+DEBUG SHADER LIST: Category value is array: True
+DEBUG SHADER LIST: Category value count: 5
+DEBUG SHADER LIST: Added shader: AS_Utils.1.fxh
+DEBUG SHADER LIST: Added shader: AS_Noise.1.fxh
+DEBUG SHADER LIST: Added shader: AS_Perspective.1.fxh
+DEBUG SHADER LIST: Added shader: AS_Palette.1.fxh
+DEBUG SHADER LIST: Added shader: AS_Palette_Styles.1.fxh
+DEBUG SHADER LIST: Processing category 'bgx' with value type: Object[]
+DEBUG SHADER LIST: Category value is array: True
+DEBUG SHADER LIST: Category value count: 3
+DEBUG SHADER LIST: Added shader: AS_BGX_TimeCrystal.1.fx
+DEBUG SHADER LIST: Added shader: AS_BGX_StainedLights.1.fx
+DEBUG SHADER LIST: Added shader: AS_BGX_LightRipples.1.fx
+DEBUG SHADER LIST: Processing category 'gfx' with value type: Object[]
+DEBUG SHADER LIST: Category value is array: True
+DEBUG SHADER LIST: Category value count: 2
+DEBUG SHADER LIST: Added shader: AS_GFX_VignettePlus.1.fx
+DEBUG SHADER LIST: Added shader: AS_GFX_MultiLayerHalftone.1.fx
+DEBUG SHADER LIST: Processing category 'lfx' with value type: Object[]
+DEBUG SHADER LIST: Category value is array: True
+DEBUG SHADER LIST: Category value count: 2
+DEBUG SHADER LIST: Added shader: AS_LFX_StageSpotlights.1.fx
+DEBUG SHADER LIST: Added shader: AS_LFX_LaserShow.1.fx
+DEBUG SHADER LIST: Processing category 'vfx' with value type: Object[]
+DEBUG SHADER LIST: Category value is array: True
+DEBUG SHADER LIST: Category value count: 4
+DEBUG SHADER LIST: Added shader: AS_VFX_BoomSticker.1.fx
+DEBUG SHADER LIST: Added shader: AS_VFX_SparkleBloom.1.fx
+DEBUG SHADER LIST: Added shader: AS_VFX_MotionTrails.1.fx
+DEBUG SHADER LIST: Added shader: AS_VFX_StencilMask.1.fx
+DEBUG SHADER LIST: Final shader list count for 'essentials': 16
+DEBUG SHADER LIST: Added 16 inherited shaders
+DEBUG SHADER LIST: Processing category 'gfx' with value type: Object[]
+DEBUG SHADER LIST: Category value is array: True
+DEBUG SHADER LIST: Category value count: 7
+DEBUG SHADER LIST: Added shader: AS_GFX_AspectRatio.1.fx
+DEBUG SHADER LIST: Added shader: AS_GFX_AudioDirection.1.fx
+DEBUG SHADER LIST: Added shader: AS_GFX_BrushStroke.1.fx
+DEBUG SHADER LIST: Added shader: AS_GFX_CinematicDiffusion.1.fx
+DEBUG SHADER LIST: Added shader: AS_GFX_HandDrawing.1.fx
+DEBUG SHADER LIST: Added shader: AS_GFX_MultiLayerHalftone.1.fx
+DEBUG SHADER LIST: Added shader: AS_GFX_VignettePlus.1.fx
+DEBUG SHADER LIST: Skipping special property: inherit
+DEBUG SHADER LIST: Processing category 'lfx' with value type: Object[]
+DEBUG SHADER LIST: Category value is array: True
+DEBUG SHADER LIST: Category value count: 3
+DEBUG SHADER LIST: Added shader: AS_LFX_CandleFlame.1.fx
+DEBUG SHADER LIST: Added shader: AS_LFX_LaserShow.1.fx
+DEBUG SHADER LIST: Added shader: AS_LFX_StageSpotlights.1.fx
+DEBUG SHADER LIST: Processing category 'vfx' with value type: Object[]
+DEBUG SHADER LIST: Category value is array: True
+DEBUG SHADER LIST: Category value count: 21
+DEBUG SHADER LIST: Added shader: AS_VFX_BoomSticker.1.fx
+DEBUG SHADER LIST: Added shader: AS_VFX_CircularSpectrum.1.fx
+DEBUG SHADER LIST: Added shader: AS_VFX_ClairObscur.1.fx
+DEBUG SHADER LIST: Added shader: AS_VFX_ColorBalancer.1.fx
+DEBUG SHADER LIST: Added shader: AS_VFX_DigitalArtifacts.1.fx
+DEBUG SHADER LIST: Added shader: AS_VFX_DustMotes.1.fx
+DEBUG SHADER LIST: Added shader: AS_VFX_FocusedChaos.1.fx
+DEBUG SHADER LIST: Added shader: AS_VFX_MotionFocus.1.fx
+DEBUG SHADER LIST: Added shader: AS_VFX_MotionTrails.1.fx
+DEBUG SHADER LIST: Added shader: AS_VFX_RadialLensDistortion.1.fx
+DEBUG SHADER LIST: Added shader: AS_VFX_RadiantFire.1.fx
+DEBUG SHADER LIST: Added shader: AS_VFX_RainyWindow.1.fx
+DEBUG SHADER LIST: Added shader: AS_VFX_ScreenRing.1.fx
+DEBUG SHADER LIST: Added shader: AS_VFX_SparkleBloom.1.fx
+DEBUG SHADER LIST: Added shader: AS_VFX_SpectrumRing.1.fx
+DEBUG SHADER LIST: Added shader: AS_VFX_StencilMask.1.fx
+DEBUG SHADER LIST: Added shader: AS_VFX_TiltedGrid.1.fx
+DEBUG SHADER LIST: Added shader: AS_VFX_VolumetricLight.1.fx
+DEBUG SHADER LIST: Added shader: AS_VFX_VUMeter.1.fx
+DEBUG SHADER LIST: Added shader: AS_VFX_WarpDistort.1.fx
+DEBUG SHADER LIST: Added shader: AS_VFX_WaterSurface.1.fx
+DEBUG SHADER LIST: Final shader list count for 'visualEffects': 47
+[INFO] Processing Dynamic package: AS_StageFX_VisualEffects (39 shaders)
+[INFO] Processing package: AS_StageFX_VisualEffects
+[INFO]   39 primary shaders for this package.
+[INFO]   Resolved dependencies: 5 FXH files, 3 textures.
+DEBUG SHADER LIST: Processing package 'backgrounds'
+DEBUG SHADER LIST: Package config type: PSCustomObject
+DEBUG SHADER LIST: Package inherits from: essentials
+DEBUG SHADER LIST: Processing package 'essentials'
+DEBUG SHADER LIST: Package config type: PSCustomObject
+DEBUG SHADER LIST: Processing category 'fxh' with value type: Object[]
+DEBUG SHADER LIST: Category value is array: True
+DEBUG SHADER LIST: Category value count: 5
+DEBUG SHADER LIST: Added shader: AS_Utils.1.fxh
+DEBUG SHADER LIST: Added shader: AS_Noise.1.fxh
+DEBUG SHADER LIST: Added shader: AS_Perspective.1.fxh
+DEBUG SHADER LIST: Added shader: AS_Palette.1.fxh
+DEBUG SHADER LIST: Added shader: AS_Palette_Styles.1.fxh
+DEBUG SHADER LIST: Processing category 'bgx' with value type: Object[]
+DEBUG SHADER LIST: Category value is array: True
+DEBUG SHADER LIST: Category value count: 3
+DEBUG SHADER LIST: Added shader: AS_BGX_TimeCrystal.1.fx
+DEBUG SHADER LIST: Added shader: AS_BGX_StainedLights.1.fx
+DEBUG SHADER LIST: Added shader: AS_BGX_LightRipples.1.fx
+DEBUG SHADER LIST: Processing category 'gfx' with value type: Object[]
+DEBUG SHADER LIST: Category value is array: True
+DEBUG SHADER LIST: Category value count: 2
+DEBUG SHADER LIST: Added shader: AS_GFX_VignettePlus.1.fx
+DEBUG SHADER LIST: Added shader: AS_GFX_MultiLayerHalftone.1.fx
+DEBUG SHADER LIST: Processing category 'lfx' with value type: Object[]
+DEBUG SHADER LIST: Category value is array: True
+DEBUG SHADER LIST: Category value count: 2
+DEBUG SHADER LIST: Added shader: AS_LFX_StageSpotlights.1.fx
+DEBUG SHADER LIST: Added shader: AS_LFX_LaserShow.1.fx
+DEBUG SHADER LIST: Processing category 'vfx' with value type: Object[]
+DEBUG SHADER LIST: Category value is array: True
+DEBUG SHADER LIST: Category value count: 4
+DEBUG SHADER LIST: Added shader: AS_VFX_BoomSticker.1.fx
+DEBUG SHADER LIST: Added shader: AS_VFX_SparkleBloom.1.fx
+DEBUG SHADER LIST: Added shader: AS_VFX_MotionTrails.1.fx
+DEBUG SHADER LIST: Added shader: AS_VFX_StencilMask.1.fx
+DEBUG SHADER LIST: Final shader list count for 'essentials': 16
+DEBUG SHADER LIST: Added 16 inherited shaders
+DEBUG SHADER LIST: Processing category 'bgx' with value type: Object[]
+DEBUG SHADER LIST: Category value is array: True
+DEBUG SHADER LIST: Category value count: 26
+DEBUG SHADER LIST: Added shader: AS_BGX_BlueCorona.1.fx
+DEBUG SHADER LIST: Added shader: AS_BGX_Constellation.1.fx
+DEBUG SHADER LIST: Added shader: AS_BGX_CorridorTravel.1.fx
+DEBUG SHADER LIST: Added shader: AS_BGX_CosmicKaleidoscope.1.fx
+DEBUG SHADER LIST: Added shader: AS_BGX_DigitalBrain.1.fx
+DEBUG SHADER LIST: Added shader: AS_BGX_Fluorescent.1.fx
+DEBUG SHADER LIST: Added shader: AS_BGX_GoldenClockwork.1.fx
+DEBUG SHADER LIST: Added shader: AS_BGX_Kaleidoscope.1.fx
+DEBUG SHADER LIST: Added shader: AS_BGX_LightRipples.1.fx
+DEBUG SHADER LIST: Added shader: AS_BGX_LightWall.1.fx
+DEBUG SHADER LIST: Added shader: AS_BGX_LiquidChrome.1.fx
+DEBUG SHADER LIST: Added shader: AS_BGX_LogSpirals.1.fx
+DEBUG SHADER LIST: Added shader: AS_BGX_MeltWave.1.fx
+DEBUG SHADER LIST: Added shader: AS_BGX_MistyGrid.1.fx
+DEBUG SHADER LIST: Added shader: AS_BGX_PastRacer.1.fx
+DEBUG SHADER LIST: Added shader: AS_BGX_PlasmaFlow.1.fx
+DEBUG SHADER LIST: Added shader: AS_BGX_ProteanClouds.1.fx
+DEBUG SHADER LIST: Added shader: AS_BGX_QuadtreeTruchet.1.fx
+DEBUG SHADER LIST: Added shader: AS_BGX_RaymarchedChain.1.fx
+DEBUG SHADER LIST: Added shader: AS_BGX_StainedLights.1.fx
+DEBUG SHADER LIST: Added shader: AS_BGX_SunsetClouds.1.fx
+DEBUG SHADER LIST: Added shader: AS_BGX_TimeCrystal.1.fx
+DEBUG SHADER LIST: Added shader: AS_BGX_Vortex.1.fx
+DEBUG SHADER LIST: Added shader: AS_BGX_WavySquares.1.fx
+DEBUG SHADER LIST: Added shader: AS_BGX_WavySquiggles.1.fx
+DEBUG SHADER LIST: Added shader: AS_BGX_ZippyZaps.1.fx
+DEBUG SHADER LIST: Skipping special property: inherit
+DEBUG SHADER LIST: Final shader list count for 'backgrounds': 42
+[INFO] Processing Dynamic package: AS_StageFX_Backgrounds (39 shaders)
+[INFO] Processing package: AS_StageFX_Backgrounds
+[INFO]   39 primary shaders for this package.
+[INFO]   Resolved dependencies: 4 FXH files, 1 textures.
+DEBUG SHADER LIST: Processing package 'gposingway'
+DEBUG SHADER LIST: Package config type: PSCustomObject
+DEBUG SHADER LIST: Package inherits from: essentials
+DEBUG SHADER LIST: Processing package 'essentials'
+DEBUG SHADER LIST: Package config type: PSCustomObject
+DEBUG SHADER LIST: Processing category 'fxh' with value type: Object[]
+DEBUG SHADER LIST: Category value is array: True
+DEBUG SHADER LIST: Category value count: 5
+DEBUG SHADER LIST: Added shader: AS_Utils.1.fxh
+DEBUG SHADER LIST: Added shader: AS_Noise.1.fxh
+DEBUG SHADER LIST: Added shader: AS_Perspective.1.fxh
+DEBUG SHADER LIST: Added shader: AS_Palette.1.fxh
+DEBUG SHADER LIST: Added shader: AS_Palette_Styles.1.fxh
+DEBUG SHADER LIST: Processing category 'bgx' with value type: Object[]
+DEBUG SHADER LIST: Category value is array: True
+DEBUG SHADER LIST: Category value count: 3
+DEBUG SHADER LIST: Added shader: AS_BGX_TimeCrystal.1.fx
+DEBUG SHADER LIST: Added shader: AS_BGX_StainedLights.1.fx
+DEBUG SHADER LIST: Added shader: AS_BGX_LightRipples.1.fx
+DEBUG SHADER LIST: Processing category 'gfx' with value type: Object[]
+DEBUG SHADER LIST: Category value is array: True
+DEBUG SHADER LIST: Category value count: 2
+DEBUG SHADER LIST: Added shader: AS_GFX_VignettePlus.1.fx
+DEBUG SHADER LIST: Added shader: AS_GFX_MultiLayerHalftone.1.fx
+DEBUG SHADER LIST: Processing category 'lfx' with value type: Object[]
+DEBUG SHADER LIST: Category value is array: True
+DEBUG SHADER LIST: Category value count: 2
+DEBUG SHADER LIST: Added shader: AS_LFX_StageSpotlights.1.fx
+DEBUG SHADER LIST: Added shader: AS_LFX_LaserShow.1.fx
+DEBUG SHADER LIST: Processing category 'vfx' with value type: Object[]
+DEBUG SHADER LIST: Category value is array: True
+DEBUG SHADER LIST: Category value count: 4
+DEBUG SHADER LIST: Added shader: AS_VFX_BoomSticker.1.fx
+DEBUG SHADER LIST: Added shader: AS_VFX_SparkleBloom.1.fx
+DEBUG SHADER LIST: Added shader: AS_VFX_MotionTrails.1.fx
+DEBUG SHADER LIST: Added shader: AS_VFX_StencilMask.1.fx
+DEBUG SHADER LIST: Final shader list count for 'essentials': 16
+DEBUG SHADER LIST: Added 16 inherited shaders
+DEBUG SHADER LIST: Skipping special property: inherit
+DEBUG SHADER LIST: Skipping special property: includeTextures
+DEBUG SHADER LIST: Processing category 'bgx' with value type: Object[]
+DEBUG SHADER LIST: Category value is array: True
+DEBUG SHADER LIST: Category value count: 3
+DEBUG SHADER LIST: Added shader: AS_BGX_Constellation.1.fx
+DEBUG SHADER LIST: Added shader: AS_BGX_Kaleidoscope.1.fx
+DEBUG SHADER LIST: Added shader: AS_BGX_LogSpirals.1.fx
+DEBUG SHADER LIST: Processing category 'gfx' with value type: Object[]
+DEBUG SHADER LIST: Category value is array: True
+DEBUG SHADER LIST: Category value count: 5
+DEBUG SHADER LIST: Added shader: AS_GFX_CinematicDiffusion.1.fx
+DEBUG SHADER LIST: Added shader: AS_GFX_AspectRatio.1.fx
+DEBUG SHADER LIST: Added shader: AS_GFX_BrushStroke.1.fx
+DEBUG SHADER LIST: Added shader: AS_GFX_HandDrawing.1.fx
+DEBUG SHADER LIST: Added shader: AS_GFX_AudioDirection.1.fx
+DEBUG SHADER LIST: Processing category 'vfx' with value type: Object[]
+DEBUG SHADER LIST: Category value is array: True
+DEBUG SHADER LIST: Category value count: 9
+DEBUG SHADER LIST: Added shader: AS_VFX_MotionFocus.1.fx
+DEBUG SHADER LIST: Added shader: AS_VFX_RadiantFire.1.fx
+DEBUG SHADER LIST: Added shader: AS_VFX_ClairObscur.1.fx
+DEBUG SHADER LIST: Added shader: AS_VFX_RainyWindow.1.fx
+DEBUG SHADER LIST: Added shader: AS_VFX_ScreenRing.1.fx
+DEBUG SHADER LIST: Added shader: AS_VFX_WarpDistort.1.fx
+DEBUG SHADER LIST: Added shader: AS_VFX_WaterSurface.1.fx
+DEBUG SHADER LIST: Added shader: AS_VFX_CircularSpectrum.1.fx
+DEBUG SHADER LIST: Added shader: AS_VFX_RadialLensDistortion.1.fx
+DEBUG SHADER LIST: Final shader list count for 'gposingway': 33
+[INFO] Processing Explicit package: AS_StageFX_GPosingway (33 shaders)
+[INFO] Processing package: AS_StageFX_GPosingway
+[INFO]   33 primary shaders for this package.
+[INFO]   Resolved dependencies: 5 FXH files, 3 textures.
+[SUCCESS] All packages processed.
+[INFO] Generating package manifest: F:\Replica\NAS\Files\repo\github\as-stagefx\tools\..\packages\package-manifest.json
+[SUCCESS] Package manifest generated: F:\Replica\NAS\Files\repo\github\as-stagefx\tools\..\packages\package-manifest.json
+[INFO] Creating ZIP archives for packages...
+[SUCCESS] Created ZIP archive: F:\Replica\NAS\Files\repo\github\as-stagefx\tools\..\packages\AS_StageFX.zip
+[SUCCESS] Created ZIP archive: F:\Replica\NAS\Files\repo\github\as-stagefx\tools\..\packages\AS_StageFX_Essentials.zip
+[SUCCESS] Created ZIP archive: F:\Replica\NAS\Files\repo\github\as-stagefx\tools\..\packages\AS_StageFX_VisualEffects.zip
+[SUCCESS] Created ZIP archive: F:\Replica\NAS\Files\repo\github\as-stagefx\tools\..\packages\AS_StageFX_Backgrounds.zip
+[SUCCESS] Created ZIP archive: F:\Replica\NAS\Files\repo\github\as-stagefx\tools\..\packages\AS_StageFX_GPosingway.zip
+[INFO] Removing package folders (keeping only ZIPs and manifest)...
+[SUCCESS] Removed 5 package folders, keeping only ZIP files and manifest
+[SUCCESS] catalog.json updated with new shaders, sorted, and pretty-printed.
+[INFO] catalog-statistics.json updated for README rendering.
+[SUCCESS] README.md rendered from template and catalog statistics.

@@ -1,5 +1,5 @@
-{
-  "essentials": {
+{  "essentials": {
+    "includeTextures": true,
     "fxh": [
       "AS_Utils.1.fxh",
       "AS_Noise.1.fxh",
@@ -27,11 +27,38 @@
       "AS_VFX_StencilMask.1.fx"
     ]
   },
-  "packageDescription": {
+  "gposingway": {
+    "inherit": "essentials",
+    "includeTextures": true,
+    "bgx": [
+      "AS_BGX_Constellation.1.fx",
+      "AS_BGX_Kaleidoscope.1.fx",
+      "AS_BGX_LogSpirals.1.fx"
+    ],
+    "gfx": [
+      "AS_GFX_CinematicDiffusion.1.fx",
+      "AS_GFX_AspectRatio.1.fx",
+      "AS_GFX_BrushStroke.1.fx",
+      "AS_GFX_HandDrawing.1.fx",
+      "AS_GFX_AudioDirection.1.fx"
+    ],
+    "vfx": [
+      "AS_VFX_MotionFocus.1.fx",
+      "AS_VFX_RadiantFire.1.fx",
+      "AS_VFX_ClairObscur.1.fx",
+      "AS_VFX_RainyWindow.1.fx",
+      "AS_VFX_ScreenRing.1.fx",
+      "AS_VFX_WarpDistort.1.fx",
+      "AS_VFX_WaterSurface.1.fx",
+      "AS_VFX_CircularSpectrum.1.fx",
+      "AS_VFX_RadialLensDistortion.1.fx"
+    ]
+  },  "packageDescription": {
     "essentials": "Core library files and essential visual effects for general use",
     "backgrounds": "Complete collection of background effects (Requires Essentials)",
     "visualeffects": "Complete collection of visual effects (Requires Essentials)",
-    "complete": "The complete collection of all AS StageFX shaders and utilities"
+    "complete": "The complete collection of all AS StageFX shaders and utilities",
+    "gposingway": "Curated collection of essential shaders and handpicked effects for photography and content creation, includes all textures"
   },
   "paths": {
     "shaderDir": "Shaders/AS",
@@ -47,8 +74,7 @@
     ]
   },  "fileExtensions": {
     "shaders": [".fx", ".fxh"]
-  },
-  "buildRules": {
+  },  "buildRules": {
     "excludePatterns": ["^\\[PRE\\]"],
     "dependencyTracking": {
       "enabled": true,
@@ -56,15 +82,41 @@
       "includePatterns": ["#include\\s+[\"<]([^\">]+)[\">]"],
       "texturePatterns": ["texture\\s+\\w+\\s*<\\s*source\\s*=\\s*([^;>]+)\\s*[;>]"]
     }
-  },
-  "packageNames": {
+  },  "dynamicPackages": {
+    "enabled": true,
+    "autoDiscovery": {
+      "complete": {
+        "includeAllShaders": true,
+        "includeAllTextures": true,
+        "excludePrerelease": true,
+        "description": "The complete collection of all AS StageFX shaders and utilities"
+      },
+      "backgrounds": {
+        "includeCategories": ["bgx"],
+        "inherit": "essentials",
+        "excludePrerelease": true,
+        "description": "Complete collection of background effects (Requires Essentials)"
+      },
+      "visualeffects": {
+        "includeCategories": ["vfx", "lfx", "gfx", "afx"],
+        "inherit": "essentials", 
+        "excludePrerelease": true,
+        "description": "Complete collection of visual effects (Requires Essentials)"
+      }
+    },
+    "options": {
+      "logShaderCounts": true,
+      "validateDependencies": true
+    }
+  },"packageNames": {
     "prefix": "AS_StageFX",
     "essentials": "_Essentials",
     "backgrounds": "_Backgrounds",
-    "visualEffects": "_VisualEffects",
-    "complete": ""
+    "visualeffects": "_VisualEffects",
+    "complete": "",
+    "gposingway": "_GPosingway"
   },
-  "packageDisplayOrder": ["complete", "essentials", "visualEffects", "backgrounds"],  "readmeTemplate": "# AS StageFX Package\nVersion: {version}\n\n## Description\n{description}{textureNote}\n\n## Installation\n1. Copy the entire contents of this package to your ReShade installation directory\n   (This is usually your game directory that contains the ReShade DLL)\n2. The shaders will appear in the ReShade effects list under their respective categories\n\n## Support\nFor help and updates, visit: {supportUrl}\n",
+  "packageDisplayOrder": ["complete", "essentials", "visualEffects", "backgrounds", "gposingway"],  "readmeTemplate": "# AS StageFX Package\nVersion: {version}\n\n## Description\n{description}{textureNote}\n\n## Installation\n1. Copy the entire contents of this package to your ReShade installation directory\n   (This is usually your game directory that contains the ReShade DLL)\n2. The shaders will appear in the ReShade effects list under their respective categories\n\n## Support\nFor help and updates, visit: {supportUrl}\n",
   "supportUrl": "https://github.com/LeonAquitaine/as-stagefx",
-  "version": "1.8.4"
+  "version": "1.8.5"
 }

@@ -9,54 +9,54 @@ This document lists all external sources, original authors, and inspiration cred
 
 ## Shadertoy & External Adaptations (BGX)
 ### AS_BGX_BlueCorona.1.fx - Blue Corona
-- **Original Author**: shaderartist
-- **Original Title**: Blue Corona
-- **Notes**: Inspired by the 'Blue Corona' shader by @shaderartist.
-- **Source**: https://www.shadertoy.com/view/ldX3z4
+- **Original Author**: SnoopethDuckDuck
+- **Original Title**: Blue Corona [256 Chars]
+- **Notes**: Inspired by the 'Blue Corona [256 Chars]' shader by @SnoopethDuckDuck.
+- **Source**: https://www.shadertoy.com/view/XfKGWV
 ### AS_BGX_Constellation.1.fx - Constellation
-- **Original Author**: glslcoder
-- **Original Title**: Constellation
-- **Notes**: Based on the 'Constellation' effect by @glslcoder.
-- **Source**: https://www.shadertoy.com/view/4dX3Dn
+- **Original Author**: jairoandre
+- **Original Title**: old joseph
+- **Notes**: Based on the 'old joseph' effect by jairoandre.
+- **Source**: https://www.shadertoy.com/view/slfGzf
 ### AS_BGX_CorridorTravel.1.fx - Corridor Travel
-- **Original Author**: tunnelmaster
+- **Original Author**: NuSan
 - **Original Title**: Corridor Travel
-- **Notes**: Inspired by the 'Corridor Travel' shader by @tunnelmaster.
-- **Source**: https://www.shadertoy.com/view/3dXcDn
+- **Notes**: Inspired by the 'Corridor Travel' shader by NuSan.
+- **Source**: https://www.shadertoy.com/view/3sXyRN
 ### AS_BGX_CosmicKaleidoscope.1.fx - Cosmic Kaleidoscope
-- **Original Author**: fractalwizard
-- **Original Title**: Mandelbox
-- **Notes**: Fractal algorithm adapted from @fractalwizard's Mandelbox implementation.
-- **Source**: https://www.shadertoy.com/view/4dX3Wn
+- **Original Author**: Kali
+- **Original Title**: Star Nest
+- **Notes**: Inspired by 'Star Nest' from Kali
+- **Source**: https://www.shadertoy.com/view/XlfGRj
 ### AS_BGX_DigitalBrain.1.fx - Digital Brain
-- **Original Author**: neuralnet
-- **Original Title**: Voronoi pattern GLSL example
-- **Notes**: Voronoi pattern logic based on @neuralnet's open-source GLSL example.
-- **Source**: https://www.shadertoy.com/view/4dXcWn
+- **Original Author**: srtuss
+- **Original Title**: Digital Brain
+- **Notes**: Voronoi pattern logic inspired by 'Digital Brain' from srtuss.
+- **Source**: https://www.shadertoy.com/view/4sl3Dr
 ### AS_BGX_Fluorescent.1.fx - Fluorescent
-- **Original Author**: neonfx
-- **Original Title**: Neon Glow
-- **Notes**: Neon glow technique adapted from @neonfx's work.
-- **Source**: https://www.shadertoy.com/view/4dXcDn
+- **Original Author**: Xor
+- **Original Title**: Fluorescent [292]
+- **Notes**: 
+- **Source**: https://www.shadertoy.com/view/WcGGDd
 ### AS_BGX_GoldenClockwork.1.fx - Golden Clockwork
 - **Original Author**: mrange
 - **Original Title**: Golden apollian
-- **Notes**: Based on 'Golden apollian' by mrange.
-- **Source**: 
+- **Notes**: 
+- **Source**: https://www.shadertoy.com/view/WlcfRS
 ### AS_BGX_Kaleidoscope.1.fx - Kaleidoscope
-- **Original Author**: kishimisu
-- **Original Title**: Shader Art Coding Introduction
-- **Notes**: Inspired by 'Shader Art Coding Introduction' by kishimisu.
-- **Source**: https://youtu.be/f4s1h2YETNY
+- **Original Author**: Kanduvisla
+- **Original Title**: Kaleidoscope
+- **Notes**: 
+- **Source**: https://www.shadertoy.com/view/ddsyDN
 ### AS_BGX_LightRipples.1.fx - Light Ripples
-- **Original Author**: Danilo Guanabara
-- **Original Title**: Light Ripples
-- **Notes**: Original by Danilo Guanabara.
-- **Source**: https://www.pouet.net/prod.php?which=57245
+- **Original Author**: Danguafer/Danilo Guanabara
+- **Original Title**: Creation by Silexars
+- **Notes**: 
+- **Source**: https://www.shadertoy.com/view/XsXXDn
 ### AS_BGX_LiquidChrome.1.fx - Liquid Chrome
 - **Original Author**: iamsaitam
 - **Original Title**: Liquid Chrome
-- **Notes**: Based on 'Liquid Chrome' by iamsaitam.
+- **Notes**: 
 - **Source**: https://neort.io/art/bkm813c3p9f7drq1j86g
 ### AS_BGX_LogSpirals.1.fx - Log Spirals
 - **Original Author**: mrange
@@ -64,69 +64,64 @@ This document lists all external sources, original authors, and inspiration cred
 - **Notes**: Based on 'Logarithmic spiral of spheres' by mrange.
 - **Source**: https://www.shadertoy.com/view/msGXRD
 ### AS_BGX_MeltWave.1.fx - Melt Wave
-- **Original Author**: iamsaitam
-- **Original Title**: Melt Wave
-- **Notes**: Based on 'Melt Wave' by iamsaitam.
-- **Source**: https://www.shadertoy.com/view/4dXcDn
+- **Original Author**: tomorrowevening
+- **Original Title**: 70s Melt
+- **Notes**: 
+- **Source**: https://www.shadertoy.com/view/XsX3zl
 ### AS_BGX_MistyGrid.1.fx - Misty Grid
 - **Original Author**: NuSan
-- **Original Title**: Misty Grid
-- **Notes**: Based on 'Misty Grid' by NuSan.
+- **Original Title**: [twitch] Misty Grid
+- **Notes**: 
 - **Source**: https://www.shadertoy.com/view/wl2Szd
 ### AS_BGX_PastRacer.1.fx - Past Racer
-- **Original Author**: jetlab
-- **Original Title**: past racer
-- **Notes**: Based on 'past racer' by jetlab.
-- **Source**: https://www.shadertoy.com/view/3l23Rh
+- **Original Author**: NuSan
+- **Original Title**: Outline 2020 Freestyle Live code
+- **Notes**: 
+- **Source**: https://www.shadertoy.com/view/tsBBzG
 ### AS_BGX_PlasmaFlow.1.fx - Plasma Flow
-- **Original Author**: iamsaitam
-- **Original Title**: Plasma Flow
-- **Notes**: Based on 'Plasma Flow' by iamsaitam.
-- **Source**: https://www.shadertoy.com/view/4dXcDn
+- **Original Author**: fuzzmoon
+- **Original Title**: Plasma Storm
+- **Notes**: 
+- **Source**: https://www.shadertoy.com/view/slSBDd
 ### AS_BGX_ProteanClouds.1.fx - Protean Clouds
-- **Original Author**: 
-- **Original Title**: 
-- **Notes**: Based on 'Protean clouds' by nimitz.
+- **Original Author**: nimitz
+- **Original Title**: Protean clouds
+- **Notes**: 
 - **Source**: https://www.shadertoy.com/view/3l23Rh
 ### AS_BGX_QuadtreeTruchet.1.fx - Quadtree Truchet
-- **Original Author**: iq, 0x0f
-- **Original Title**: Truchet Tiling, QuadTree
-- **Notes**: Based on 'Truchet Tiling' by iq and 'QuadTree' by 0x0f.
-- **Source**: https://www.shadertoy.com/view/4dX3Wn
+- **Original Author**: Shane
+- **Original Title**: Quadtree Truchet
+- **Notes**: 
+- **Source**: https://www.shadertoy.com/view/4t3BW4
 ### AS_BGX_RaymarchedChain.1.fx - Raymarched Chain
 - **Original Author**: Elsio
 - **Original Title**: Corrente
-- **Notes**: Based on 'Corrente' by Elsio.
+- **Notes**: 
 - **Source**: https://www.shadertoy.com/view/ctSfRV
-### AS_BGX_ShineOn.1.fx - Shine On
-- **Original Author**: 104
-- **Original Title**: Shine On
-- **Notes**: Inspired by 'Shine On' by 104.
-- **Source**: https://www.shadertoy.com/view/WlsSzM
 ### AS_BGX_StainedLights.1.fx - Stained Lights
 - **Original Author**: 104
 - **Original Title**: Stained Lights
-- **Notes**: Inspired by 'Stained Lights' by 104.
+- **Notes**: 
 - **Source**: https://www.shadertoy.com/view/WlsSzM
 ### AS_BGX_SunsetClouds.1.fx - Sunset Clouds
 - **Original Author**: Xor
 - **Original Title**: Sunset [280]
-- **Notes**: Based on 'Sunset [280]' by Xor.
+- **Notes**: 
 - **Source**: https://www.shadertoy.com/view/wXjSRt
 ### AS_BGX_TimeCrystal.1.fx - Time Crystal
 - **Original Author**: raphaeljmu
 - **Original Title**: Time Crystal
-- **Notes**: Based on 'Time Crystal' by raphaeljmu.
+- **Notes**: 
 - **Source**: https://www.shadertoy.com/view/lcl3z2
 ### AS_BGX_Vortex.1.fx - Vortex
-- **Original Author**: 
-- **Original Title**: 
+- **Original Author**: LonkDong
+- **Original Title**: Vortex__ 
 - **Notes**: 
-- **Source**: 
+- **Source**: https://www.shadertoy.com/view/3fKGRd
 ### AS_BGX_WavySquares.1.fx - Wavy Squares
-- **Original Author**: 
+- **Original Author**: SnoopethDuckDuck
 - **Original Title**: Square Tiling Example E
-- **Notes**: Adapted from 'Square Tiling Example E' by an unknown GLSL author, see Shadertoy for original inspiration.
+- **Notes**: 
 - **Source**: https://www.shadertoy.com/view/NdfBzn
 ### AS_BGX_WavySquiggles.1.fx - Wavy Squiggles
 - **Original Author**: SnoopethDuckDuck
@@ -136,7 +131,7 @@ This document lists all external sources, original authors, and inspiration cred
 ### AS_BGX_ZippyZaps.1.fx - Zippy Zaps
 - **Original Author**: SnoopethDuckDuck
 - **Original Title**: Zippy Zaps
-- **Notes**: Based on 'Zippy Zaps' by SnoopethDuckDuck.
+- **Notes**: 
 - **Source**: https://www.shadertoy.com/view/XXyGzh
 ### AS_BGX_LightWall.1.fx - 
 - **Original Author**: 
@@ -149,7 +144,7 @@ This document lists all external sources, original authors, and inspiration cred
 - **Original Author**: Marot Satil
 - **Original Title**: StageDepth.fx
 - **Notes**: Heavily inspired by 'StageDepth.fx' by Marot Satil (2019), original depth masking implementation.
-- **Source**: https://github.com/marotsatil/StageDepth
+- **Source**: https://github.com/Otakumouse/stormshade/blob/master/v4.X/reshade-shaders/Shader%20Library/Recommended/StageDepth.fx
 ### AS_VFX_CircularSpectrum.1.fx - Circular Spectrum
 - **Original Author**: AIandDesign
 - **Original Title**: Circular audio visualizer
@@ -158,7 +153,7 @@ This document lists all external sources, original authors, and inspiration cred
 ### AS_VFX_ClairObscur.1.fx - Clair Obscur
 - **Original Author**: deeplo
 - **Original Title**: [RGR] Hearts
-- **Notes**: Based on '[RGR] Hearts' by deeplo.
+- **Notes**: Motion inspired by '[RGR] Hearts' by deeplo.
 - **Source**: https://www.shadertoy.com/view/ttcBRs
 ### AS_VFX_ColorBalancer.1.fx - Color Balancer
 - **Original Author**: 
@@ -176,10 +171,10 @@ This document lists all external sources, original authors, and inspiration cred
 - **Notes**: 
 - **Source**: 
 ### AS_VFX_FocusedChaos.1.fx - Focused Chaos
-- **Original Author**: 
-- **Original Title**: 
+- **Original Author**: misterprada
+- **Original Title**: BlackHole (swirl, portal)
 - **Notes**: 
-- **Source**: 
+- **Source**: https://www.shadertoy.com/view/lcfyDj
 ### AS_VFX_MotionFocus.1.fx - Motion Focus
 - **Original Author**: 
 - **Original Title**: 
@@ -196,10 +191,10 @@ This document lists all external sources, original authors, and inspiration cred
 - **Notes**: 
 - **Source**: 
 ### AS_VFX_RadiantFire.1.fx - Radiant Fire
-- **Original Author**: 
-- **Original Title**: 
-- **Notes**: 
-- **Source**: 
+- **Original Author**: mu6k
+- **Original Title**: 301's Fire Shader - Remix 3
+- **Notes**: Flame generation inspired by '301's Fire Shader - Remix 3' by mu6k.
+- **Source**: https://www.shadertoy.com/view/4ttGWM
 ### AS_VFX_RainyWindow.1.fx - Rainy Window
 - **Original Author**: Martijn Steinrucken (BigWings)
 - **Original Title**: Heartfelt
@@ -226,15 +221,15 @@ This document lists all external sources, original authors, and inspiration cred
 - **Notes**: 
 - **Source**: 
 ### AS_VFX_TiltedGrid.1.fx - Tilted Grid
-- **Original Author**: 
-- **Original Title**: 
+- **Original Author**: FencerDevLog
+- **Original Title**: Godot 4: Tilted Grid Effect Tutorial
 - **Notes**: 
-- **Source**: 
+- **Source**: https://www.youtube.com/watch?v=Tfj6RDqXEHM
 ### AS_VFX_VolumetricLight.1.fx - Volumetric Light
-- **Original Author**: 
-- **Original Title**: 
+- **Original Author**: int_45h
+- **Original Title**: fake volumetric 2d light wip
 - **Notes**: 
-- **Source**: 
+- **Source**: https://www.shadertoy.com/view/wftXzr
 ### AS_VFX_VUMeter.1.fx - VUMeter
 - **Original Author**: 
 - **Original Title**: 
@@ -278,13 +273,13 @@ This document lists all external sources, original authors, and inspiration cred
 - **Notes**: Based on 'notebook drawings' by Flockaroo (2016).
 - **Source**: https://www.shadertoy.com/view/XtVGD1
 ### AS_GFX_MultiLayerHalftone.1.fx - MultiLayer Halftone
-- **Original Author**: P. Gonzalez Vivo
-- **Original Title**: Halftone Shader
-- **Notes**: Based on 'Halftone Shader' by P. Gonzalez Vivo.
-- **Source**: https://www.shadertoy.com/view/XdcGzn
+- **Original Author**: 
+- **Original Title**: 
+- **Notes**: 
+- **Source**: 
 ### AS_GFX_VignettePlus.1.fx - Vignette Plus
 - **Original Author**: blandprix
-- **Original Title**: hexagonal wipe
+- **Original Title**: Hexagonal Wipe
 - **Notes**: Hexagonal grid implementation adapted from 'hexagonal wipe' by blandprix.
 - **Source**: https://www.shadertoy.com/view/XfjyWG
 
