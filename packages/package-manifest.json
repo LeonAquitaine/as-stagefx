@@ -1,8 +1,11 @@
 {
+  "buildDate": "2025-06-06T22:28:07Z",
   "version": "1.8.4",
-  "buildDate": "2025-06-06T20:45:06Z",
   "packages": [
     {
+      "fxhDependencyCount": 0,
+      "textureDependencyCount": 0,
+      "shaderCount": 1,
       "dependencies": {
         "fxh": [],
         "textures": []
@@ -10,14 +13,14 @@
       "shaders": [
         null
       ],
-      "shaderCount": 1,
-      "textureDependencyCount": 0,
-      "version": "1.8.4",
-      "fxhDependencyCount": 0,
       "name": "AS_StageFX",
+      "version": "1.8.4",
       "description": "The complete collection of all AS StageFX shaders and utilities"
     },
     {
+      "fxhDependencyCount": 0,
+      "textureDependencyCount": 0,
+      "shaderCount": 1,
       "dependencies": {
         "fxh": [],
         "textures": []
@@ -25,14 +28,14 @@
       "shaders": [
         null
       ],
-      "shaderCount": 1,
-      "textureDependencyCount": 0,
-      "version": "1.8.4",
-      "fxhDependencyCount": 0,
       "name": "AS_StageFX_Backgrounds",
+      "version": "1.8.4",
       "description": "Complete collection of background effects (Requires Essentials)"
     },
     {
+      "fxhDependencyCount": 5,
+      "textureDependencyCount": 0,
+      "shaderCount": 11,
       "dependencies": {
         "fxh": [
           "AS_Utils.1.fxh",
@@ -56,14 +59,14 @@
         "AS_VFX_MotionTrails.1.fx",
         "AS_VFX_StencilMask.1.fx"
       ],
-      "shaderCount": 11,
-      "textureDependencyCount": 0,
-      "version": "1.8.4",
-      "fxhDependencyCount": 5,
       "name": "AS_StageFX_Essentials",
+      "version": "1.8.4",
       "description": "Core library files and essential visual effects for general use"
     },
     {
+      "fxhDependencyCount": 0,
+      "textureDependencyCount": 0,
+      "shaderCount": 1,
       "dependencies": {
         "fxh": [],
         "textures": []
@@ -71,11 +74,8 @@
       "shaders": [
         null
       ],
-      "shaderCount": 1,
-      "textureDependencyCount": 0,
-      "version": "1.8.4",
-      "fxhDependencyCount": 0,
       "name": "AS_StageFX_VisualEffects",
+      "version": "1.8.4",
       "description": "Complete collection of visual effects (Requires Essentials)"
     }
   ]

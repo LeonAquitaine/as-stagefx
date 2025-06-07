@@ -668,7 +668,8 @@ Remove-PackageFolders -PackagesPath $OutputPath -FolderNames $script:createdPack
 $catalogPath = Join-Path $shadersRoot "shaders\catalog.json"
 if (Test-Path $catalogPath) {
     $catalog = Get-Content -Path $catalogPath -Raw | ConvertFrom-Json
-    $catalogItems = $catalog.shaders.items
+    # catalog.json is an array of shader objects
+    $catalogItems = $catalog
     $existingFilenames = $catalogItems | ForEach-Object { $_.filename }
     $shaderDir = Join-Path $shadersRoot "shaders/AS"
     $shaderFiles = Get-ChildItem -Path $shaderDir -File -Filter "*.fx" | Where-Object { $_.Name -notmatch "^\[PRE\]" }
@@ -682,27 +683,22 @@ if (Test-Path $catalogPath) {
             } else {
                 $type = "OTHER"
             }
-            $newShaders += @{ filename = $filenameOnly; type = $type }
+            # Create a basic shader entry for new shaders
+            $newShaders += @{ 
+                name = $filenameOnly -replace "\.fx$", "" -replace "AS_[A-Z]+_", ""
+                filename = $filenameOnly
+                type = $type
+                shortDescription = "Auto-generated entry for $filenameOnly"
+                longDescription = "This shader was automatically detected and added to the catalog. Please update with proper description."
+            }
         }
     }
     if ($newShaders.Count -gt 0) {
         Write-Info "Adding $($newShaders.Count) new shaders to catalog.json..."
-        $catalog.shaders.items += $newShaders
+        $catalog += $newShaders
     }
     # Sort items by name (case-insensitive)
-    $catalog.shaders.items = $catalog.shaders.items | Sort-Object -Property name, filename
-    # Recalculate statistics
-    $typeCounts = @{}
-    foreach ($item in $catalog.shaders.items) {
-        if ($item.type) {
-            if ($typeCounts.ContainsKey($item.type)) {
-                $typeCounts[$item.type]++
-            } else {
-                $typeCounts[$item.type] = 1
-            }
-        }
-    }
-    $catalog.shaders.statistics.byType = $typeCounts
+    $catalog = $catalog | Sort-Object -Property name, filename
     # Write pretty-printed JSON with 4 spaces per indent
     $json = $catalog | ConvertTo-Json -Depth 20
     $json = $json -replace '^( +)', { $args[0].Value -replace '  ', '    ' }
@@ -717,41 +713,49 @@ if (Test-Path $catalogPath) {
 $catalogPath = Join-Path $shadersRoot "shaders\catalog.json"
 if (Test-Path $catalogPath) {
     $catalog = Get-Content -Path $catalogPath -Raw | ConvertFrom-Json
-    $items = $catalog.shaders.items
+    # catalog.json is an array of shader objects
+    $items = $catalog
     $types = @('BGX','GFX','LFX','VFX')
-    # Ensure statistics object exists and is a PSCustomObject
-    if (-not $catalog.shaders.PSObject.Properties['statistics']) {
-        $catalog.shaders | Add-Member -MemberType NoteProperty -Name statistics -Value ([PSCustomObject]@{}) -Force
+    
+    # Create statistics object
+    $statistics = @{
+        total = $items.Count
+        byType = @{}
     }
-    $stats = $catalog.shaders.statistics
-    if (-not $stats.PSObject.Properties['total']) {
-        $stats | Add-Member -MemberType NoteProperty -Name total -Value 0 -Force
-    }
-    if (-not $stats.PSObject.Properties['byType']) {
-        $stats | Add-Member -MemberType NoteProperty -Name byType -Value ([PSCustomObject]@{}) -Force
-    }
-    # Remove shadersByType from the statistics if it exists
-    if ($catalog.shaders.statistics.PSObject.Properties['shadersByType']) {
-        $catalog.shaders.statistics.PSObject.Properties.Remove('shadersByType')
-    }
-    $stats.total = $items.Count
+    
+    # Create grouped object for template iteration
+    $grouped = @{}
+    
+    # Calculate type counts and group shaders by type
     foreach ($type in $types) {
         $arr = @($items | Where-Object { $_.type -eq $type })
-        $stats.byType.$type = $arr.Count
+        $statistics.byType.$type = $arr.Count
+        $grouped.$type = $arr
     }
-    $json = $catalog | ConvertTo-Json -Depth 20
+    
+    # Create a catalog structure for template rendering
+    $catalogForTemplate = @{
+        shaders = @{
+            statistics = $statistics
+        }
+        grouped = $grouped
+    }
+    
+    # Write the statistics to a separate file for README template rendering
+    $statisticsPath = Join-Path $shadersRoot "shaders\catalog-statistics.json"
+    $json = $catalogForTemplate | ConvertTo-Json -Depth 20
     $json = $json -replace '^( +)', { $args[0].Value -replace '  ', '    ' }
-    Set-Content -Path $catalogPath -Value $json -Encoding UTF8
-    Write-Info "catalog.json statistics updated for README rendering."
+    Set-Content -Path $statisticsPath -Value $json -Encoding UTF8
+    Write-Info "catalog-statistics.json updated for README rendering."
 }
 # === END: Precompute statistics and arrays for README ===
 
 # === BEGIN: Render README.md from template and catalog ===
-$catalogPath = Join-Path $shadersRoot "shaders\catalog.json"
+$statisticsPath = Join-Path $shadersRoot "shaders\catalog-statistics.json"
 $readmeTemplatePath = Join-Path $PSScriptRoot "..\docs\template\README.md"
 $readmeOutPath = Join-Path $PSScriptRoot "..\README.md"
-if ((Test-Path $catalogPath) -and (Test-Path $readmeTemplatePath)) {
-    $catalog = Get-Content -Path $catalogPath -Raw | ConvertFrom-Json
+if ((Test-Path $statisticsPath) -and (Test-Path $readmeTemplatePath)) {
+    $catalogStats = Get-Content -Path $statisticsPath -Raw | ConvertFrom-Json
     $template = Get-Content -Path $readmeTemplatePath -Raw
 
     # Helper: Get value from nested property path (e.g., "shaders.statistics.byType.BGX")
@@ -775,14 +779,14 @@ if ((Test-Path $catalogPath) -and (Test-Path $readmeTemplatePath)) {
     $template = $template -replace '{{([a-zA-Z0-9_.]+)}}', {
         if ($args.Count -eq 0 -or -not $args[0].Groups[1]) { return '' }
         $ph = $args[0].Groups[1].Value
-        $val = Get-CatalogValue $catalog $ph
+        $val = Get-CatalogValue $catalogStats $ph
         if ($null -eq $val) { return '' }
         return $val.ToString()
     }
 
     Set-Content -Path $readmeOutPath -Value $template -Encoding UTF8
-    Write-Success "README.md rendered from template and catalog (byType only, no tables)."
+    Write-Success "README.md rendered from template and catalog statistics."
 } else {
-    Write-Warning "README template or catalog.json not found, skipping README generation."
+    Write-Warning "README template or catalog statistics not found, skipping README generation."
 }
 # === END: Render README.md from template and catalog ===

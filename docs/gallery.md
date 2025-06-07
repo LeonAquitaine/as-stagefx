@@ -389,7 +389,7 @@ Creates a highly customizable multi-layer halftone effect with support for up to
 
 </td>
 <td width="50%"><div style="text-align:center">
-<img src="" alt="MultiLayer Halftone Effect" style="max-width:100%;">
+<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-multilayerhalftone.gif" alt="MultiLayer Halftone Effect" style="max-width:100%;">
 </div></td>
 </tr>
 <tr>
