@@ -289,7 +289,7 @@
       "externalUrl": "https://www.shadertoy.com/view/3fKGRd",
       "originalAuthor": "LonkDong",
       "originalTitle": "Vortex__ "
-    },
+    }
   },
   {
     "name": "Wavy Squares",
@@ -607,6 +607,11 @@
     "type": "VFX",
     "shortDescription": "Simulates volumetric light rays and god rays with customizable source, color, and intensity.",
     "longDescription": "Simulates volumetric light rays (god rays) emanating from a source. Features controls for light position, color, intensity, ray length, and blending. Useful for dramatic, atmospheric, or mystical scene lighting.",
+    "credits": {
+      "externalUrl": "https://www.shadertoy.com/view/wftXzr",
+      "originalAuthor": "int_45h",
+      "originalTitle": "fake volumetric 2d light wip"
+    },
     "imageUrl": null
   },
   {
