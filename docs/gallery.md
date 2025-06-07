@@ -29,6 +29,10 @@ The Essentials package includes these foundation libraries used by all shaders:
 <h5><code>[AS] BGX: Blue Corona|AS_BGX_BlueCorona.1.fx</code></h5>
 Creates a vibrant, abstract blue corona effect with fluid, dynamic motion. The effect generates hypnotic patterns through iterative mathematical transformations, resulting in organic, plasma-like visuals with a predominantly blue color scheme. Features abstract, organic blue corona patterns; smooth fluid-like animation; customizable iteration count/pattern scale; animation speed/flow controls; intuitive color controls; customizable background color; audio reactivity (multiple targets); depth-aware rendering; and standard position, rotation, scale, and blending options.
 
+<br><br>
+Inspired by the 'Blue Corona' shader by @shaderartist.<br>
+<a href="https://www.shadertoy.com/view/ldX3z4" target="_new">Source</a>
+
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-bluecorona.gif" alt="Blue Corona Effect" style="max-width:100%;">
@@ -39,6 +43,10 @@ Creates a vibrant, abstract blue corona effect with fluid, dynamic motion. The e
 <h4>BGX: Constellation </h4>
 <h5><code>[AS] BGX: Constellation|AS_BGX_Constellation.1.fx</code></h5>
 Creates an animated stellar constellation pattern with twinkling stars and connecting lines. Perfect for cosmic, night sky, or abstract network visualizations with a hand-drawn aesthetic. Features dynamic constellation lines with customizable thickness and falloff; twinkling star points with adjustable sparkle properties; procedurally animated line connections; animated color palette with adjustable parameters; audio reactivity for zoom, gradient effects, line brightness, and sparkle magnitude; depth-aware rendering; and standard blend options.
+
+<br><br>
+Based on the 'Constellation' effect by @glslcoder.<br>
+<a href="https://www.shadertoy.com/view/4dX3Dn" target="_new">Source</a>
 
 </td>
 <td width="50%"><div style="text-align:center">
@@ -51,6 +59,10 @@ Creates an animated stellar constellation pattern with twinkling stars and conne
 <h5><code>[AS] BGX: Corridor Travel|AS_BGX_CorridorTravel.1.fx</code></h5>
 Simulates an artistic flight through an abstract, glowing, patterned tunnel. Features multiple samples per pixel for pseudo-DOF and motion blur, and simulates light bounces with artistic reflection logic.
 
+<br><br>
+Inspired by the 'Corridor Travel' shader by @tunnelmaster.<br>
+<a href="https://www.shadertoy.com/view/3dXcDn" target="_new">Source</a>
+
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-corridortravel.gif" alt="Corridor Travel Effect" style="max-width:100%;">
@@ -61,6 +73,10 @@ Simulates an artistic flight through an abstract, glowing, patterned tunnel. Fea
 <h4>BGX: Cosmic Kaleidoscope </h4>
 <h5><code>[AS] BGX: Cosmic Kaleidoscope|AS_BGX_CosmicKaleidoscope.1.fx</code></h5>
 Renders a raymarched volumetric fractal resembling a Mandelbox or Mandelbulb. Features Kaleidoscope-like mirroring effect with customizable repetitions, audio reactivity for dynamic parameter adjustments, palette-based coloring system with customizable options, and full rotation, position and depth control for scene integration.
+
+<br><br>
+Fractal algorithm adapted from @fractalwizard's Mandelbox implementation.<br>
+<a href="https://www.shadertoy.com/view/4dX3Wn" target="_new">Source</a>
 
 </td>
 <td width="50%"><div style="text-align:center">
@@ -73,6 +89,10 @@ Renders a raymarched volumetric fractal resembling a Mandelbox or Mandelbulb. Fe
 <h5><code>[AS] BGX: Digital Brain|AS_BGX_DigitalBrain.1.fx</code></h5>
 Creates an abstract visualization of a 'digital brain' with evolving Voronoi patterns and neural-like connections. The effect simulates an organic electronic network with dynamic light paths that mimic neural activity in a stylized, technological manner. Features dynamic Voronoi-based pattern generation, animated 'electrical' pulses simulating synaptic activity, color modulation based on noise texture for organic variation, advanced vignette controls, pre-optimized pattern stretching, classic and texture-based coloring options, customizable animation and pattern controls, and depth-aware rendering with standard blending.
 
+<br><br>
+Voronoi pattern logic based on @neuralnet's open-source GLSL example.<br>
+<a href="https://www.shadertoy.com/view/4dXcWn" target="_new">Source</a>
+
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-digitalbrain.gif" alt="Digital Brain Effect" style="max-width:100%;">
@@ -83,6 +103,10 @@ Creates an abstract visualization of a 'digital brain' with evolving Voronoi pat
 <h4>BGX: Fluorescent </h4>
 <h5><code>[AS] BGX: Fluorescent|AS_BGX_Fluorescent.1.fx</code></h5>
 Creates a vibrant neon fluorescent background effect that simulates the glow and intensity of fluorescent lighting. Perfect for creating retro, cyberpunk, or futuristic atmospheres with customizable colors and intensity. Features raymarched volumetric fluorescent effect with depth, dynamic color shifting with RGB phase controls, animated pulsing and flowing patterns, audio reactivity for rhythm-synchronized lighting, standard stage controls for positioning and depth, customizable iteration count for quality vs performance balance, and blend mode controls for integration with existing scenes.
+
+<br><br>
+Neon glow technique adapted from @neonfx's work.<br>
+<a href="https://www.shadertoy.com/view/4dXcDn" target="_new">Source</a>
 
 </td>
 <td width="50%"><div style="text-align:center">
@@ -95,6 +119,10 @@ Creates a vibrant neon fluorescent background effect that simulates the glow and
 <h5><code>[AS] BGX: Golden Clockwork|AS_BGX_GoldenClockwork.1.fx</code></h5>
 Renders a mesmerizing and intricate animated background effect reminiscent of golden clockwork mechanisms or Apollonian gasket-like fractal patterns. The effect features complex, evolving geometric designs with a characteristic golden color palette. Features procedurally generated Apollonian fractal patterns, dynamic animation driven by time, a golden color scheme with lighting and shading effects, depth-like progression through fractal layers, kaleidoscopic and mirroring options for pattern variation, resolution-independent rendering, and UI controls for animation (speed, keyframe, path speed), palette, fractal/kaleidoscope parameters, audio reactivity, stage controls (position, scale, rotation, depth), and blending.
 
+<br><br>
+Based on 'Golden apollian' by mrange.<br>
+
+
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-goldenclockwork.gif" alt="Golden Clockwork Effect" style="max-width:100%;">
@@ -105,6 +133,10 @@ Renders a mesmerizing and intricate animated background effect reminiscent of go
 <h4>BGX: Kaleidoscope </h4>
 <h5><code>[AS] BGX: Kaleidoscope|AS_BGX_Kaleidoscope.1.fx</code></h5>
 Creates a vibrant, ever-evolving fractal kaleidoscope pattern with animated tendrils. Perfect for psychedelic, cosmic, or abstract backgrounds with a hypnotic quality. Features adjustable kaleidoscope mirror count for symmetry control; fractal zoom and pattern rotation with animation controls; customizable wave parameters and color palette; audio reactivity for zoom, wave intensity, and pattern rotation; depth-aware rendering; and standard blend options.
+
+<br><br>
+Inspired by 'Shader Art Coding Introduction' by kishimisu.<br>
+<a href="https://youtu.be/f4s1h2YETNY" target="_new">Source</a>
 
 </td>
 <td width="50%"><div style="text-align:center">
@@ -117,6 +149,10 @@ Creates a vibrant, ever-evolving fractal kaleidoscope pattern with animated tend
 <h5><code>[AS] BGX: Light Ripples|AS_BGX_LightRipples.1.fx</code></h5>
 Creates a mesmerizing, rippling kaleidoscopic light pattern effect. Suitable as a dynamic background or overlay. Includes controls for animation, distortion (amplitude, frequencies), color palettes with cycling, audio reactivity, depth-aware rendering, adjustable rotation, and standard blending options.
 
+<br><br>
+Original by Danilo Guanabara.<br>
+<a href="https://www.pouet.net/prod.php?which=57245" target="_new">Source</a>
+
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-lightripples.gif" alt="Light Ripples Effect" style="max-width:100%;">
@@ -127,6 +163,10 @@ Creates a mesmerizing, rippling kaleidoscopic light pattern effect. Suitable as 
 <h4>BGX: Liquid Chrome </h4>
 <h5><code>[AS] BGX: Liquid Chrome|AS_BGX_LiquidChrome.1.fx</code></h5>
 Creates dynamic, flowing psychedelic patterns reminiscent of liquid metal or chrome. This shader iteratively distorts screen coordinates, creating complex, flowing patterns with optional vertical stripe overlays for additional visual texture.
+
+<br><br>
+Based on 'Liquid Chrome' by iamsaitam.<br>
+<a href="https://neort.io/art/bkm813c3p9f7drq1j86g" target="_new">Source</a>
 
 </td>
 <td width="50%"><div style="text-align:center">
@@ -139,6 +179,10 @@ Creates dynamic, flowing psychedelic patterns reminiscent of liquid metal or chr
 <h5><code>[AS] BGX: Log Spirals|AS_BGX_LogSpirals.1.fx</code></h5>
 Creates an organic spiral pattern based on logarithmic growth with animated spheres along the spiral arms. Features precise control over spiral expansion rate and animation, customizable sphere size with fade effects and specular highlights, color palette options with hue cycling and ambient glow, audio reactivity for multiple parameters (animation speed, rotation, arm twist, sphere size, brightness), and standard position/rotation/scale controls for scene integration.
 
+<br><br>
+Based on 'Logarithmic spiral of spheres' by mrange.<br>
+<a href="https://www.shadertoy.com/view/msGXRD" target="_new">Source</a>
+
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-logspirals.gif" alt="Log Spirals Effect" style="max-width:100%;">
@@ -149,6 +193,10 @@ Creates an organic spiral pattern based on logarithmic growth with animated sphe
 <h4>BGX: Melt Wave </h4>
 <h5><code>[AS] BGX: Melt Wave|AS_BGX_MeltWave.1.fx</code></h5>
 Creates a flowing, warping psychedelic effect inspired by 1970s visual aesthetics. Generates mesmerizing colored patterns with sine-based distortions that evolve over time. Features adjustable zoom/intensity, a palette system (mathematical or preset colors), dynamic time-based animation with keyframe support, audio reactivity mappable to different parameters, and resolution-independent transformation with position/rotation controls.
+
+<br><br>
+Based on 'Melt Wave' by iamsaitam.<br>
+<a href="https://www.shadertoy.com/view/4dXcDn" target="_new">Source</a>
 
 </td>
 <td width="50%"><div style="text-align:center">
@@ -161,6 +209,10 @@ Creates a flowing, warping psychedelic effect inspired by 1970s visual aesthetic
 <h5><code>[AS] BGX: Misty Grid|AS_BGX_MistyGrid.1.fx</code></h5>
 Creates an abstract fractal-based grid background with a misty, ethereal appearance using raymarching techniques. Features dynamic fractal-based grid environment, customizable colors with palette system, folding and repetition for complex patterns, camera movement simulation with smooth rotations, audio reactivity affecting multiple parameters (fractal scale, folding intensity, saturation, brightness, camera zoom, animation speed), and standard position/rotation/scale controls.
 
+<br><br>
+Based on 'Misty Grid' by NuSan.<br>
+<a href="https://www.shadertoy.com/view/wl2Szd" target="_new">Source</a>
+
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-mistygrid.gif" alt="Misty Grid Effect" style="max-width:100%;">
@@ -171,6 +223,10 @@ Creates an abstract fractal-based grid background with a misty, ethereal appeara
 <h4>BGX: Past Racer </h4>
 <h5><code>[AS] BGX: Past Racer|AS_BGX_PastRacer.1.fx</code></h5>
 A ray marching shader that generates one of two selectable abstract procedural scenes. Features domain repetition, custom transformations, and pseudo-random patterns. Scene geometry and flare effects can be reactive to audio frequency bands.
+
+<br><br>
+Based on 'past racer' by jetlab.<br>
+<a href="https://www.shadertoy.com/view/3l23Rh" target="_new">Source</a>
 
 </td>
 <td width="50%"><div style="text-align:center">
@@ -183,6 +239,10 @@ A ray marching shader that generates one of two selectable abstract procedural s
 <h5><code>[AS] BGX: Plasma Flow|AS_BGX_PlasmaFlow.1.fx</code></h5>
 Sophisticated, gentle, and flexible plasma effect for groovy, atmospheric visuals. Generates smooth, swirling, organic patterns with customizable color gradients (2-4 user-defined colors) and strong audio reactivity. Features procedural plasma/noise with domain warping for fluid motion, controls for speed, scale, complexity, stretch, and warp, audio-reactive modulation of movement, color, brightness, and turbulence, plus standard blend modes and debug views. Ideal for music video backgrounds and overlays.
 
+<br><br>
+Based on 'Plasma Flow' by iamsaitam.<br>
+<a href="https://www.shadertoy.com/view/4dXcDn" target="_new">Source</a>
+
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-PlasmaFlow.gif" alt="Plasma Flow Effect" style="max-width:100%;">
@@ -193,6 +253,10 @@ Sophisticated, gentle, and flexible plasma effect for groovy, atmospheric visual
 <h4>BGX: Protean Clouds </h4>
 <h5><code>[AS] BGX: Protean Clouds|AS_BGX_ProteanClouds.1.fx</code></h5>
 Renders dynamic, evolving volumetric clouds through raymarching techniques. Creates an immersive, abstract cloudscape with dynamic color variations and realistic lighting. Features high-quality volumetric cloud formations, customizable cloud density, shape, and detail, dynamic camera movement with adjustable path and sway, sophisticated internal lighting and self-shadowing, color palette system with customizable parameters, audio reactivity for multiple cloud parameters, and resolution-independent rendering with precise position controls.
+
+<br><br>
+Based on 'Protean clouds' by nimitz.<br>
+<a href="https://www.shadertoy.com/view/3l23Rh" target="_new">Source</a>
 
 </td>
 <td width="50%"><div style="text-align:center">
@@ -205,6 +269,10 @@ Renders dynamic, evolving volumetric clouds through raymarching techniques. Crea
 <h5><code>[AS] BGX: Quadtree Truchet|AS_BGX_QuadtreeTruchet.1.fx</code></h5>
 Creates a sophisticated multiscale recursive Truchet pattern with hierarchical tile overlaps across 3 levels. Generates complex geometric designs through quadtree subdivision and probabilistic tile placement. Features quadtree-based recursive pattern generation, overlapping tile system with collision prevention, full AS palette system support with multiple color modes, Art Deco style with line tiles and weave effects, animated rotation and panning, audio reactivity for scale/rotation/seed/density, stage positioning controls, and debug visualization of the underlying quadtree structure.
 
+<br><br>
+Based on 'Truchet Tiling' by iq and 'QuadTree' by 0x0f.<br>
+<a href="https://www.shadertoy.com/view/4dX3Wn" target="_new">Source</a>
+
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-quadtreetruchet.gif" alt="Quadtree Truchet Effect" style="max-width:100%;">
@@ -215,6 +283,10 @@ Creates a sophisticated multiscale recursive Truchet pattern with hierarchical t
 <h4>BGX: Raymarched Chain </h4>
 <h5><code>[AS] BGX: Raymarched Chain|AS_BGX_RaymarchedChain.1.fx</code></h5>
 Renders a raymarched scene featuring an animated, endlessly twisting chain composed of interconnected torus shapes. The chain follows a procedurally defined path, and its segments rotate and evolve over time, creating a mesmerizing, complex visual. Features raymarched chain of torus shapes with procedural path animation, customizable animation speed and chain geometry, dynamic coloring based on raymarching depth and iteration, camera orientation controls, and standard AS-StageFX blending controls.
+
+<br><br>
+Based on 'Corrente' by Elsio.<br>
+<a href="https://www.shadertoy.com/view/ctSfRV" target="_new">Source</a>
 
 </td>
 <td width="50%"><div style="text-align:center">
@@ -227,6 +299,10 @@ Renders a raymarched scene featuring an animated, endlessly twisting chain compo
 <h5><code>[AS] BGX: Shine On|AS_BGX_ShineOn.1.fx</code></h5>
 Creates a dynamic, evolving fractal noise pattern with bright, sparkly crystal highlights that move across the screen. Combines multiple layers of noise with procedural animation for a mesmerizing background effect. Features layered noise patterns with dynamic animation, crystal point highlights with customizable parameters, audio reactivity, and depth-aware rendering.
 
+<br><br>
+Inspired by 'Shine On' by 104.<br>
+<a href="https://www.shadertoy.com/view/WlsSzM" target="_new">Source</a>
+
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-shineon.gif" alt="Shine On Effect" style="max-width:100%;">
@@ -237,6 +313,10 @@ Creates a dynamic, evolving fractal noise pattern with bright, sparkly crystal h
 <h4>BGX: Stained Lights </h4>
 <h5><code>[AS] BGX: Stained Lights|AS_BGX_StainedLights.1.fx</code></h5>
 Creates dynamic and colorful patterns reminiscent of stained glass illuminated by shifting light, with multiple blurred layers enhancing depth and visual complexity. Generates layers of distorted, cell-like structures with vibrant, evolving colors and subtle edge highlighting, overlaid with softer, floating elements. Features multi-layered pattern generation (adjustable iterations), dynamic animation with speed control, customizable pattern scaling/edge highlighting, audio reactivity for animation/pattern evolution, post-processing (curve adjustments, noise), blurred floating layers for depth, and depth-aware rendering with standard blending. Suitable for abstract backgrounds, energy fields, or mystical visuals.
+
+<br><br>
+Inspired by 'Stained Lights' by 104.<br>
+<a href="https://www.shadertoy.com/view/WlsSzM" target="_new">Source</a>
 
 </td>
 <td width="50%"><div style="text-align:center">
@@ -249,6 +329,10 @@ Creates dynamic and colorful patterns reminiscent of stained glass illuminated b
 <h5><code>[AS] BGX: Sunset Clouds|AS_BGX_SunsetClouds.1.fx</code></h5>
 Renders an animated scene of clouds at sunset using raymarching to create volumetric cloud effects with dynamic lighting and turbulence. Features raymarched volumetric clouds, animated turbulence effect, dynamic sunset coloring that changes over time, and tunable parameters for iterations, animation speed, and visual details.
 
+<br><br>
+Based on 'Sunset [280]' by Xor.<br>
+<a href="https://www.shadertoy.com/view/wXjSRt" target="_new">Source</a>
+
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-sunsetclouds.gif" alt="Sunset Clouds Effect" style="max-width:100%;">
@@ -259,6 +343,10 @@ Renders an animated scene of clouds at sunset using raymarching to create volume
 <h4>BGX: Time Crystal </h4>
 <h5><code>[AS] BGX: Time Crystal|AS_BGX_TimeCrystal.1.fx</code></h5>
 Creates a hypnotic, crystalline fractal structure with dynamic animation and color cycling. Generates patterns reminiscent of crystalline structures or gems with depth and dimension. Features fractal crystal-like patterns (customizable iterations), dynamic animation (controllable speed), adjustable pattern density/detail, customizable color palettes with cycling, audio reactivity for pattern dynamics/colors, depth-aware rendering with standard blending, and adjustable position/rotation controls. Suitable for mystic or sci-fi backgrounds, portals, or energy fields.
+
+<br><br>
+Based on 'Time Crystal' by raphaeljmu.<br>
+<a href="https://www.shadertoy.com/view/lcl3z2" target="_new">Source</a>
 
 </td>
 <td width="50%"><div style="text-align:center">
@@ -282,6 +370,10 @@ Creates a psychedelic swirling vortex pattern. The effect is animated and featur
 <h5><code>[AS] BGX: Wavy Squares|AS_BGX_WavySquares.1.fx</code></h5>
 Creates a hypnotic pattern of wavy, animated square tiles that shift and transform. The squares follow a wave-like motion and feature dynamic size changes, creating a flowing, organic grid pattern. Features wavy, undulating square tiling; customizable wave parameters (amplitude, frequency, speed); variable tile size/scaling; shape smoothness/box roundness controls; audio reactivity (multiple targets); depth-aware rendering; adjustable rotation; and standard position, scale, and blending options.
 
+<br><br>
+Adapted from 'Square Tiling Example E' by an unknown GLSL author, see Shadertoy for original inspiration.<br>
+<a href="https://www.shadertoy.com/view/NdfBzn" target="_new">Source</a>
+
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-wavysquares.gif" alt="Wavy Squares Effect" style="max-width:100%;">
@@ -293,6 +385,10 @@ Creates a hypnotic pattern of wavy, animated square tiles that shift and transfo
 <h5><code>[AS] BGX: Wavy Squiggles|AS_BGX_WavySquiggles.1.fx</code></h5>
 Creates a mesmerizing pattern of adaptive wavy lines that follow a mouse or fixed position. The lines create intricate patterns that look like dynamic squiggly lines arranged around a central point, with rotation applied based on direction. Features position-reactive wavy line patterns; customizable line parameters (rotation influence, thickness, distance, smoothness); optional color palettes (hue, saturation, value control); pattern displacement for off-center effects; audio reactivity (multiple targets); depth-aware rendering; adjustable rotation; and standard position, scale, and blending options.
 
+<br><br>
+Based on 'Interactive 2.5D Squiggles' by SnoopethDuckDuck.<br>
+<a href="https://www.shadertoy.com/view/7sBfDD" target="_new">Source</a>
+
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-wavysquiggles.gif" alt="Wavy Squiggles Effect" style="max-width:100%;">
@@ -303,6 +399,10 @@ Creates a mesmerizing pattern of adaptive wavy lines that follow a mouse or fixe
 <h4>BGX: Zippy Zaps </h4>
 <h5><code>[AS] BGX: Zippy Zaps|AS_BGX_ZippyZaps.1.fx</code></h5>
 Creates dynamic electric arcs and lightning patterns for a striking background effect. This effect generates procedural electric-like patterns that appear behind objects in the scene, creating an energetic, dynamic background with complete control over appearance and animation. Features animated electric/lightning arcs with procedural generation; fully customizable colors, intensity, and animation parameters; resolution-independent rendering; audio reactivity; depth-aware rendering; and adjustable rotation/positioning in 3D space.
+
+<br><br>
+Based on 'Zippy Zaps' by SnoopethDuckDuck.<br>
+<a href="https://www.shadertoy.com/view/XXyGzh" target="_new">Source</a>
 
 </td>
 <td width="50%"><div style="text-align:center">
@@ -376,6 +476,10 @@ A high-quality cinematic diffusion/bloom filter that replicates classic film dif
 <h5><code>[AS] GFX: Hand Drawing|AS_GFX_HandDrawing.1.fx</code></h5>
 Transforms your scene into a stylized hand-drawn sketch or technical ink illustration with distinct linework and cross-hatching patterns. Features sophisticated line generation with customizable stroke directions and length, textured fills based on original image colors with noise-based variation, animated 'wobble' effect for an authentic hand-drawn feel, optional paper-like background pattern, depth-aware rendering with standard blending, and comprehensive controls for fine-tuning every aspect of the effect. Perfect for artistic transformations, comic/manga styles, or technical illustrations.
 
+<br><br>
+Based on 'notebook drawings' by Flockaroo (2016).<br>
+<a href="https://www.shadertoy.com/view/XtVGD1" target="_new">Source</a>
+
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://github.com/user-attachments/assets/4074ac6b-a385-4e0f-9d9a-c4d5dd0117cd" alt="Hand Drawing Effect" style="max-width:100%;">
@@ -387,6 +491,10 @@ Transforms your scene into a stylized hand-drawn sketch or technical ink illustr
 <h5><code>[AS] GFX: MultiLayer Halftone|AS_GFX_MultiLayerHalftone.1.fx</code></h5>
 Creates a highly customizable multi-layer halftone effect with support for up to four independent layers. Each layer can use different pattern types (dots, lines, crosshatch), isolation methods (brightness, RGB, hue, depth), colors, thresholds, scales, densities, and angles. Features layer blending with transparency support.
 
+<br><br>
+Based on 'Halftone Shader' by P. Gonzalez Vivo.<br>
+<a href="https://www.shadertoy.com/view/XdcGzn" target="_new">Source</a>
+
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-multilayerhalftone.gif" alt="MultiLayer Halftone Effect" style="max-width:100%;">
@@ -397,6 +505,10 @@ Creates a highly customizable multi-layer halftone effect with support for up to
 <h4>GFX: Vignette Plus </h4>
 <h5><code>[AS] GFX: Vignette Plus|AS_GFX_VignettePlus.1.fx</code></h5>
 A vignette shader that provides multiple visual styles and customizable pattern options, creating directional, controllable vignette effects for stage compositions and scene framing. Perfect for adding mood, focus, or stylistic elements. Features four distinct visual styles (Smooth Gradient, Duotone Circles, Directional Lines perpendicular and parallel), multiple mirroring options (none, edge-based, center-based), precise control over effect coverage with start/end falloff points, and much more. Optimized for performance across various resolutions.
+
+<br><br>
+Hexagonal grid implementation adapted from 'hexagonal wipe' by blandprix.<br>
+<a href="https://www.shadertoy.com/view/XfjyWG" target="_new">Source</a>
 
 </td>
 <td width="50%"><div style="text-align:center">
@@ -456,6 +568,10 @@ Simulates moving stage spotlights with adjustable beam width, color, intensity, 
 <h5><code>[AS] VFX: Boom Sticker|AS_VFX_BoomSticker.1.fx</code></h5>
 Displays a texture overlay ('sticker') with controls for placement, scale, rotation, and audio reactivity. Features customizable depth masking and support for custom textures. Ideal for adding dynamic, music-responsive overlays.
 
+<br><br>
+Heavily inspired by 'StageDepth.fx' by Marot Satil (2019), original depth masking implementation.<br>
+<a href="https://github.com/marotsatil/StageDepth" target="_new">Source</a>
+
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-BoomSticker.gif" alt="Boom Sticker Effect" style="max-width:100%;">
@@ -467,6 +583,10 @@ Displays a texture overlay ('sticker') with controls for placement, scale, rotat
 <h5><code>[AS] VFX: Circular Spectrum|AS_VFX_CircularSpectrum.1.fx</code></h5>
 Visualizes audio frequencies as a circular spectrum analyzer. Features adjustable band count, radius, thickness, color palette, and animation speed. Supports audio reactivity for dynamic, music-driven visuals. Ideal for overlays, music videos, and live performances.
 
+<br><br>
+Based on 'Circular audio visualizer' by AIandDesign.<br>
+<a href="https://www.shadertoy.com/view/tcyGW1" target="_new">Source</a>
+
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="" alt="Circular Spectrum Effect" style="max-width:100%;">
@@ -477,6 +597,10 @@ Visualizes audio frequencies as a circular spectrum analyzer. Features adjustabl
 <h4>VFX: Clair Obscur </h4>
 <h5><code>[AS] VFX: Clair Obscur|AS_VFX_ClairObscur.1.fx</code></h5>
 Simulates dramatic chiaroscuro (light-dark) lighting, emphasizing strong contrast and stylized shadows. Features controls for light direction, intensity, shadow softness, and color tint. Useful for artistic, cinematic, or moody scene transformations.
+
+<br><br>
+Based on '[RGR] Hearts' by deeplo.<br>
+<a href="https://www.shadertoy.com/view/ttcBRs" target="_new">Source</a>
 
 </td>
 <td width="50%"><div style="text-align:center">
@@ -576,6 +700,10 @@ Generates radiant, glowing fire effects with animated flames and customizable co
 <h4>VFX: Rainy Window </h4>
 <h5><code>[AS] VFX: Rainy Window|AS_VFX_RainyWindow.1.fx</code></h5>
 Creates the illusion of raindrops and streaks running down a window, with realistic refraction and blur. Features adjustable rain density, drop size, streak speed, and blending. Perfect for moody, cinematic, or weather-themed scenes.
+
+<br><br>
+Inspired by 'Heartfelt' by Martijn Steinrucken (BigWings).<br>
+<a href="https://www.shadertoy.com/view/ltffzl" target="_new">Source</a>
 
 </td>
 <td width="50%"><div style="text-align:center">

@@ -36,22 +36,6 @@ $catalogStats | Add-Member -MemberType NoteProperty -Name BGXAdapted -Value $BGX
 $catalogStats | Add-Member -MemberType NoteProperty -Name OtherAdapted -Value $OtherAdapted -Force
 $catalogStats | Add-Member -MemberType NoteProperty -Name OriginalWorks -Value $OriginalWorks -Force
 
-# Debug: Print first few items of each group and their credits property
-if ($catalogStats.grouped) {
-    foreach ($groupName in $catalogStats.grouped.PSObject.Properties.Name) {
-        Write-Host "[DEBUG] Group: $groupName" -ForegroundColor Yellow
-        $items = $catalogStats.grouped.$groupName
-        $i = 0
-        foreach ($item in $items) {
-            if ($i -ge 3) { break }
-            $hasCredits = if ($item.PSObject.Properties.Name -contains 'credits') { 'YES' } else { 'NO' }
-            $creditsSummary = if ($hasCredits -eq 'YES') { $item.credits | ConvertTo-Json -Compress } else { '' }
-            Write-Host ("  [DEBUG] $($item.filename): credits? $hasCredits $creditsSummary") -ForegroundColor Yellow
-            $i++
-        }
-    }
-}
-
 # Helper: Get value from nested property path (e.g., "grouped.VFX.0.name")
 function Get-CatalogValue($obj, $path) {
     $parts = $path -split '\.'
@@ -145,13 +129,22 @@ function Invoke-GroupReplacement {
         if ($null -eq $arr -or $arr.Count -eq 0) { return '' }
         $rows = @()
         foreach ($item in $arr) {
-            $row = [regex]::Replace($block, '{{#if ([^}]+)}}([\s\S]*?){{/if}}', {
-                param($m3)
-                $fieldPath = $m3.Groups[1].Value.Trim()
-                $ifBlock = $m3.Groups[2].Value
-                $val = Get-NestedPropertyValue $item $fieldPath
-                if ($val) { return $ifBlock } else { return '' }
-            })
+            $row = $block
+            
+            # Process all {{#if}} blocks recursively within this item context
+            $ifBlockPattern = '(?ms){{#if ([^}]+)}}(.*?){{/if}}'
+            do {
+                $oldRow = $row
+                $row = [regex]::Replace($row, $ifBlockPattern, {
+                    param($m3)
+                    $fieldPath = $m3.Groups[1].Value.Trim()
+                    $ifBlock = $m3.Groups[2].Value
+                    $val = Get-NestedPropertyValue $item $fieldPath
+                    if ($val) { return $ifBlock } else { return '' }
+                })
+            } while ($row -ne $oldRow)
+            
+            # Process property replacements
             $row = [regex]::Replace($row, '{{([a-zA-Z0-9_.]+)}}', {
                 param($m2)
                 if ($null -eq $m2 -or -not $m2.Groups[1]) { return '' }
@@ -193,10 +186,13 @@ foreach ($key in $Templates.Keys) {
     if (!(Test-Path $templatePath)) { Write-Host "[WARN] Template not found: $templatePath" -ForegroundColor Yellow; continue }
     $template = Get-Content -Path $templatePath -Raw
 
-    # Recursively remove all if-blocks before any replacements
-    $rendered = Remove-AllIfBlocks $template $catalogStats
-
-    $rendered = Invoke-GroupReplacement $rendered $catalogStats
+    # Process {{#each}} blocks first (which handles {{#if}} blocks within item contexts)
+    $rendered = Invoke-GroupReplacement $template $catalogStats
+    
+    # Then process any remaining global {{#if}} blocks
+    $rendered = Remove-AllIfBlocks $rendered $catalogStats
+    
+    # Finally process simple property replacements
     $rendered = Invoke-PropertyReplacement $rendered $catalogStats
 
     # Remove any lines or inline markers like {{#if ...}}, {{/if}}, {{else}}, etc, that were not replaced

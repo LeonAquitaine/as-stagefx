@@ -1,6 +1,6 @@
 # AS-StageFX Shader Gallery - Visual Effects Package
 
-This gallery provides detailed descriptions and visual examples of the **visual effects** (3 Lighting + 21 Visual) included in the **AS_StageFX_VisualEffects** package. These effects range from lighting simulation and audio visualization to particle systems and post-processing tools.
+This gallery provides detailed descriptions and visual examples of the **visual effects** ( Lighting +  Visual) included in the **AS_StageFX_VisualEffects** package. These effects range from lighting simulation and audio visualization to particle systems and post-processing tools.
 
 For installation instructions and general information, please refer to the [main README](../README.md).
 
@@ -61,6 +61,10 @@ Simulates moving stage spotlights with adjustable beam width, color, intensity, 
 <h5><code>[AS] VFX: Boom Sticker|AS_VFX_BoomSticker.1.fx</code></h5>
 Displays a texture overlay ('sticker') with controls for placement, scale, rotation, and audio reactivity. Features customizable depth masking and support for custom textures. Ideal for adding dynamic, music-responsive overlays.
 
+<br><br>
+Heavily inspired by 'StageDepth.fx' by Marot Satil (2019), original depth masking implementation.<br>
+<a href="https://github.com/marotsatil/StageDepth" target="_new">Source</a>
+
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-BoomSticker.gif" alt="Boom Sticker Effect" style="max-width:100%;">
@@ -72,6 +76,10 @@ Displays a texture overlay ('sticker') with controls for placement, scale, rotat
 <h5><code>[AS] VFX: Circular Spectrum|AS_VFX_CircularSpectrum.1.fx</code></h5>
 Visualizes audio frequencies as a circular spectrum analyzer. Features adjustable band count, radius, thickness, color palette, and animation speed. Supports audio reactivity for dynamic, music-driven visuals. Ideal for overlays, music videos, and live performances.
 
+<br><br>
+Based on 'Circular audio visualizer' by AIandDesign.<br>
+<a href="https://www.shadertoy.com/view/tcyGW1" target="_new">Source</a>
+
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="" alt="Circular Spectrum Effect" style="max-width:100%;">
@@ -82,6 +90,10 @@ Visualizes audio frequencies as a circular spectrum analyzer. Features adjustabl
 <h4>VFX: Clair Obscur </h4>
 <h5><code>[AS] VFX: Clair Obscur|AS_VFX_ClairObscur.1.fx</code></h5>
 Simulates dramatic chiaroscuro (light-dark) lighting, emphasizing strong contrast and stylized shadows. Features controls for light direction, intensity, shadow softness, and color tint. Useful for artistic, cinematic, or moody scene transformations.
+
+<br><br>
+Based on '[RGR] Hearts' by deeplo.<br>
+<a href="https://www.shadertoy.com/view/ttcBRs" target="_new">Source</a>
 
 </td>
 <td width="50%"><div style="text-align:center">
@@ -181,6 +193,10 @@ Generates radiant, glowing fire effects with animated flames and customizable co
 <h4>VFX: Rainy Window </h4>
 <h5><code>[AS] VFX: Rainy Window|AS_VFX_RainyWindow.1.fx</code></h5>
 Creates the illusion of raindrops and streaks running down a window, with realistic refraction and blur. Features adjustable rain density, drop size, streak speed, and blending. Perfect for moody, cinematic, or weather-themed scenes.
+
+<br><br>
+Inspired by 'Heartfelt' by Martijn Steinrucken (BigWings).<br>
+<a href="https://www.shadertoy.com/view/ltffzl" target="_new">Source</a>
 
 </td>
 <td width="50%"><div style="text-align:center">
