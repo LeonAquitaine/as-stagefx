@@ -3,9 +3,8 @@
  * Author: Leon Aquitaine
  * License: Creative Commons Attribution 4.0 International
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
- * 
- * CREDITS:
- * Based on "Blue Corona" by SnoopethDuckDuck
+ *  * CREDITS:
+ * Based on "Blue Corona [256 Chars]" by SnoopethDuckDuck
  * Shadertoy: https://www.shadertoy.com/view/XfKGWV
  * 
  * ===================================================================================

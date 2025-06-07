@@ -1,8 +1,11 @@
 /**
  * AS_BGX_PlasmaFlow.1.fx - Audio-Reactive Plasma/Flow Field Shader
  * Author: Leon Aquitaine
- * License: Creative Commons Attribution 4.0 International
- * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
+ * License: Creative Commons Attribution 4.0 International * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
+ * 
+ * CREDITS:
+ * Based on "Plasma Storm" by fuzzmoon
+ * Shadertoy: https://www.shadertoy.com/view/slSBDd
  * 
  * ===================================================================================
  *

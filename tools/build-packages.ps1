@@ -349,6 +349,10 @@ $allShaders = Get-ChildItem -Path $shadersRoot -Recurse -File -Include $includeP
 
 Write-Info "Found $($allShaders.Count) shader files"
 
+# Define directory paths used throughout the script
+$shaderDirPath = $config.paths.shaderDir
+$textureDirPath = $config.paths.textureDir
+
 # Build a collection of available dependencies (FXH files and textures)
 $availableDependencies = @{
     FxhFiles = @()
@@ -401,49 +405,6 @@ foreach ($shader in $allShaders) {
         }
         elseif ($shaderType -match "vfx|lfx|gfx|afx") {
             $visualEffectShaders += $shaderName
-        }
-    }
-}
-
-# Get package name prefix and names from config
-$packagePrefix = $config.packageNames.prefix
-$essentialsName = $config.packageNames.essentials
-$backgroundsName = $config.packageNames.backgrounds
-$visualEffectsName = $config.packageNames.visualEffects
-$completeName = $config.packageNames.complete
-
-# Create package directories
-$essentialsDir = Join-Path $OutputPath "$packagePrefix$essentialsName"
-$backgroundsDir = Join-Path $OutputPath "$packagePrefix$backgroundsName"
-$visualEffectsDir = Join-Path $OutputPath "$packagePrefix$visualEffectsName"
-$completeDir = Join-Path $OutputPath "$packagePrefix$completeName"
-
-# Get paths from config
-$shaderDirPath = $config.paths.shaderDir
-$textureDirPath = $config.paths.textureDir
-
-# Create directories with structure
-$packageDirs = @($essentialsDir, $backgroundsDir, $visualEffectsDir, $completeDir)
-
-foreach ($dir in $packageDirs) {
-    # Create main directory
-    if (-not (Test-Path $dir)) {
-        New-Item -ItemType Directory -Path $dir | Out-Null
-    }
-    
-    # Create shader directory structure
-    $shaderDir = Join-Path $dir $shaderDirPath
-    if (-not (Test-Path $shaderDir)) {
-        New-Item -ItemType Directory -Path $shaderDir -Force | Out-Null
-    }
-    
-    # For essentials and complete packages, also create textures directory
-    # This logic might need adjustment based on actual texture dependencies per package
-    # For now, creating it for essentials and complete as before.
-    if ($dir -eq $essentialsDir -or $dir -eq $completeDir) {
-        $texturesDir = Join-Path $dir $textureDirPath
-        if (-not (Test-Path $texturesDir)) {
-            New-Item -ItemType Directory -Path $texturesDir -Force | Out-Null
         }
     }
 }
@@ -521,9 +482,7 @@ function Copy-ShadersToPackage($shaderList, $packageDirName, $packageDesc, $curr
                 Write-Warning "Texture dependency not found in source: $textureName (when copying to $packageDirName)"
             }
         }
-    }
-
-    # Add to manifest data
+    }    # Add to manifest data
     $script:packagesForManifest += @{
         Name = $packageDirName
         Description = $packageDesc
@@ -535,38 +494,234 @@ function Copy-ShadersToPackage($shaderList, $packageDirName, $packageDesc, $curr
     }
 }
 
-# Call Copy-ShadersToPackage for each package
-# Essentials Package
-Copy-ShadersToPackage -shaderList $essentialShaders `
-                      -packageDirName "$packagePrefix$essentialsName" `
-                      -packageDesc $config.packageDescription.essentials `
-                      -currentAllShaders $allShaders `
-                      -currentShadersRoot $shadersRoot `
-                      -currentAvailableDependencies $availableDependencies
+# Process all packages dynamically based on configuration
+function Get-PackageShaderList($packageName, $packageConfig, $allAvailableShaders) {
+    $shaderList = @()    # If package inherits from another package, start with that package's shaders
+    if ($packageConfig.inherit) {
+        $inheritedPackage = $config.$($packageConfig.inherit)
+        if ($inheritedPackage) {
+            $inheritedShaderList = Get-PackageShaderList $packageConfig.inherit $inheritedPackage $allAvailableShaders
+            $shaderList += $inheritedShaderList
+        }
+    }
+      # Add shaders from each category (bgx, gfx, lfx, vfx, etc.)
+    foreach ($category in $packageConfig.PSObject.Properties) {
+        if ($category.Name -in @('inherit', 'includeTextures')) {
+            continue # Skip special properties
+        }
+          if ($category.Value -is [array]) {
+            foreach ($shader in $category.Value) {
+                if ($allAvailableShaders.Name -contains $shader) {
+                    $shaderList += $shader
+                }
+                else {
+                    Write-Warning "Shader not found: $shader (referenced in package $packageName)"
+                }
+            }
+        }    }
+    
+    # Remove duplicates and return
+    return $shaderList | Select-Object -Unique
+}
 
-# Backgrounds Package
-Copy-ShadersToPackage -shaderList $backgroundShaders `
-                      -packageDirName "$packagePrefix$backgroundsName" `
-                      -packageDesc $config.packageDescription.backgrounds `
-                      -currentAllShaders $allShaders `
-                      -currentShadersRoot $shadersRoot `
-                      -currentAvailableDependencies $availableDependencies
+# Get package name prefix from config
+$packagePrefix = $config.packageNames.prefix
 
-# Visual Effects Package
-Copy-ShadersToPackage -shaderList $visualEffectShaders `
-                      -packageDirName "$packagePrefix$visualEffectsName" `
-                      -packageDesc $config.packageDescription.visualeffects `
-                      -currentAllShaders $allShaders `
-                      -currentShadersRoot $shadersRoot `
-                      -currentAvailableDependencies $availableDependencies
+# Build a comprehensive list of all packages to process
+$allPackagesToProcess = @{}
 
-# Complete Package (all non-prerelease shaders)
-Copy-ShadersToPackage -shaderList $allShadersList `
-                      -packageDirName "$packagePrefix$completeName" `
-                      -packageDesc $config.packageDescription.complete `
-                      -currentAllShaders $allShaders `
-                      -currentShadersRoot $shadersRoot `
-                      -currentAvailableDependencies $availableDependencies
+# Add explicitly defined packages
+foreach ($property in $config.PSObject.Properties) {
+    if ($property.Value -is [PSCustomObject] -and $property.Name -notin @('packageDescription', 'paths', 'fileExtensions', 'buildRules', 'packageNames', 'dynamicPackages')) {
+        $allPackagesToProcess[$property.Name] = @{
+            Config = $property.Value
+            Source = 'Explicit'
+            Description = $config.packageDescription.$($property.Name)
+        }
+    }
+}
+
+# Add dynamic packages if enabled
+if ($config.dynamicPackages -and $config.dynamicPackages.enabled -eq $true) {
+    Write-Info "Dynamic package generation is enabled"
+    
+    foreach ($dynamicPackageName in $config.dynamicPackages.autoDiscovery.PSObject.Properties.Name) {
+        $dynamicConfig = $config.dynamicPackages.autoDiscovery.$dynamicPackageName
+        
+        # Only generate if not already explicitly defined
+        if (-not $allPackagesToProcess.ContainsKey($dynamicPackageName)) {            Write-Info "Generating dynamic package: $dynamicPackageName"
+            
+            # Generate the dynamic package configuration directly here instead of using a separate function
+            $dynamicPackageConfig = @{}
+            
+            # Handle inheritance
+            if ($dynamicConfig.inherit) {
+                $dynamicPackageConfig.inherit = $dynamicConfig.inherit
+                Write-Info "  Inheriting from: $($dynamicConfig.inherit)"
+            }
+            
+            # Handle includeAllTextures flag
+            if ($dynamicConfig.includeAllTextures -eq $true) {
+                $dynamicPackageConfig.includeTextures = $true
+                Write-Info "  Including all textures"
+            }
+            
+            # Handle includeAllShaders (for complete package)
+            if ($dynamicConfig.includeAllShaders -eq $true) {
+                Write-Info "  Including all available shaders"
+                  # Group all shaders by category
+                $categories = @{}
+                $totalShaderCount = 0
+                foreach ($shader in $allShaders) {
+                    # Skip prerelease shaders if configured to exclude them
+                    if (Test-IsPrerelease $shader.Name) {
+                        if ($dynamicConfig.excludePrerelease -eq $true) {
+                            continue # Skip prerelease
+                        }
+                    }
+                    
+                    $type = Get-ShaderType $shader.Name
+                    
+                    # Skip FXH files from main shader categories (they're handled separately as dependencies)
+                    if ($type -eq "fxh") {
+                        continue
+                    }
+                    
+                    if (-not $categories.ContainsKey($type)) {
+                        $categories[$type] = @()
+                    }
+                    $categories[$type] += $shader.Name
+                    $totalShaderCount++
+                }
+                
+                # Add all categories to package definition
+                foreach ($categoryName in $categories.Keys) {
+                    if ($categories[$categoryName].Count -gt 0) {
+                        $dynamicPackageConfig.$categoryName = $categories[$categoryName]
+                        Write-Info "    ${categoryName}: $($categories[$categoryName].Count) shaders"
+                    }
+                }
+                
+                Write-Info "  Total shaders included: $totalShaderCount"
+            }
+            # Handle includeCategories (for category-specific packages)
+            elseif ($dynamicConfig.includeCategories) {
+                Write-Info "  Including categories: $($dynamicConfig.includeCategories -join ', ')"
+                
+                $totalShaderCount = 0
+                foreach ($categoryToInclude in $dynamicConfig.includeCategories) {
+                    $categoryShaders = @()
+                    foreach ($shader in $allShaders) {
+                        # Skip prerelease shaders if configured to exclude them
+                        if (Test-IsPrerelease $shader.Name) {
+                            if ($dynamicConfig.excludePrerelease -eq $true) {
+                                continue # Skip prerelease
+                            }
+                        }
+                        
+                        $type = Get-ShaderType $shader.Name
+                        if ($type -eq $categoryToInclude) {
+                            $categoryShaders += $shader.Name
+                        }
+                    }
+                    
+                    if ($categoryShaders.Count -gt 0) {
+                        $dynamicPackageConfig.$categoryToInclude = $categoryShaders
+                        $totalShaderCount += $categoryShaders.Count
+                        Write-Info "    ${categoryToInclude}: $($categoryShaders.Count) shaders"
+                    }
+                }
+                
+                Write-Info "  Total shaders included: $totalShaderCount"
+            }
+              $allPackagesToProcess[$dynamicPackageName] = @{
+                Config = [PSCustomObject]$dynamicPackageConfig
+                Source = 'Dynamic'
+                Description = $dynamicConfig.description
+            }
+        }
+        else {
+            Write-Info "Package '$dynamicPackageName' already explicitly defined, skipping dynamic generation"
+        }
+    }
+}
+
+# Process packages in display order
+$packageOrder = $config.packageDisplayOrder
+if (-not $packageOrder) {
+    # Fallback to all packages if no order specified
+    $packageOrder = $allPackagesToProcess.Keys | Sort-Object
+}
+
+foreach ($packageKey in $packageOrder) {
+    # Skip if package is not available
+    if (-not $allPackagesToProcess.ContainsKey($packageKey)) {
+        Write-Warning "Package '$packageKey' referenced in packageDisplayOrder but not found in config or dynamic generation"
+        continue
+    }
+    
+    $packageInfo = $allPackagesToProcess[$packageKey]
+    $packageConfig = $packageInfo.Config
+    $packageSource = $packageInfo.Source
+    $packageDescription = $packageInfo.Description
+    
+    $packageSuffix = $config.packageNames.$packageKey
+    if ($null -eq $packageSuffix) {
+        Write-Warning "Package name not found for '$packageKey' in packageNames config"
+        continue
+    }
+    
+    $packageName = "$packagePrefix$packageSuffix"
+    
+    if (-not $packageDescription) {
+        $packageDescription = "Package: $packageKey ($packageSource)"
+    }
+    
+    # Get shader list for this package
+    $packageShaders = Get-PackageShaderList $packageKey $packageConfig $allShaders
+    
+    Write-Info "Processing $packageSource package: $packageName ($($packageShaders.Count) shaders)"
+    
+    # Create package directory structure
+    $packageDir = Join-Path $OutputPath $packageName
+    if (-not (Test-Path $packageDir)) {
+        New-Item -ItemType Directory -Path $packageDir | Out-Null
+    }
+    
+    # Create shader directory structure
+    $shaderDir = Join-Path $packageDir $shaderDirPath
+    if (-not (Test-Path $shaderDir)) {
+        New-Item -ItemType Directory -Path $shaderDir -Force | Out-Null
+    }
+    
+    # Create textures directory if package includes textures
+    if ($packageConfig.includeTextures -eq $true) {
+        $texturesDir = Join-Path $packageDir $textureDirPath
+        if (-not (Test-Path $texturesDir)) {
+            New-Item -ItemType Directory -Path $texturesDir -Force | Out-Null
+        }
+        
+        # For dynamic packages with includeAllTextures, copy all available textures
+        if ($packageSource -eq 'Dynamic' -and $config.dynamicPackages.autoDiscovery.$packageKey.includeAllTextures -eq $true) {
+            Write-Info "Copying all available textures for dynamic package: $packageKey"
+            $textureSourceDir = Join-Path $shadersRoot $config.paths.textureDir
+            if (Test-Path $textureSourceDir) {
+                Get-ChildItem -Path $textureSourceDir -File | ForEach-Object {
+                    $destPath = Join-Path $texturesDir $_.Name
+                    Copy-Item -Path $_.FullName -Destination $destPath -Force
+                }
+            }
+        }
+    }
+    
+    # Copy shaders to package
+    Copy-ShadersToPackage -shaderList $packageShaders `
+                          -packageDirName $packageName `
+                          -packageDesc $packageDescription `
+                          -currentAllShaders $allShaders `
+                          -currentShadersRoot $shadersRoot `
+                          -currentAvailableDependencies $availableDependencies
+}
 
 Write-Success "All packages processed."
 
@@ -582,7 +737,8 @@ function New-PackageManifest($packagesDataToManifest, $manifestPath) {
     
     # Sort packages by display order from config, then by name
     $sortedPackagesData = $packagesDataToManifest | Sort-Object {
-        $order = $config.packageDisplayOrder.IndexOf($_.Name.Replace($packagePrefix, "").TrimStart('_'))
+        $packageName = $_.Name.Replace($packagePrefix, "").TrimStart('_')
+        $order = $config.packageDisplayOrder.IndexOf($packageName)
         if ($order -eq -1) { $order = 999 } # Put unsorted items at the end
         $order
     }, Name

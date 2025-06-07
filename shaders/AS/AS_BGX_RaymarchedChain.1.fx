@@ -1,8 +1,13 @@
-/**
- * AS_BGX_RaymarchedChain.1.fx - Raymarched Animated Chain
+/** * AS_BGX_RaymarchedChain.1.fx - Raymarched Animated Chain
  * Author: Leon Aquitaine
- * License: CC BY 4.0
- * Original Shader: "Corrente" by Elsio (https://www.shadertoy.com/view/ctSfRV)
+ * License: Creative Commons Attribution 4.0 International
+ * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
+ * 
+ * CREDITS:
+ * Based on "Corrente" by Elsio
+ * Shadertoy: https://www.shadertoy.com/view/ctSfRV
+ *
+ * ===================================================================================
  *
  * DESCRIPTION:
  * This shader renders a raymarched scene featuring an animated, endlessly

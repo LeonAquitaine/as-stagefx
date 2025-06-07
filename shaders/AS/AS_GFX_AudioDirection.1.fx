@@ -1,5 +1,5 @@
 /**
- * AS_AFX_AudioDirection.1.fx - Audio Direction Visualization
+ * AS_GFX_AudioDirection.1.fx - Audio Direction Visualization
  * License: Creative Commons Attribution 4.0 International
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
  * * ===================================================================================
@@ -31,8 +31,8 @@
 // ============================================================================
 // TECHNIQUE GUARD - Prevents duplicate loading of the same shader
 // ============================================================================
-#ifndef __AS_AFX_AudioDirection_1_fx
-#define __AS_AFX_AudioDirection_1_fx
+#ifndef __AS_GFX_AudioDirection_1_fx
+#define __AS_GFX_AudioDirection_1_fx
 
 // ============================================================================
 // INCLUDES
@@ -210,7 +210,10 @@ float4 AudioDirectionPS(float4 position : SV_Position, float2 texcoord : TEXCOOR
 // ============================================================================
 // TECHNIQUE
 // ============================================================================
-technique AS_AFX_AudioDirection 
+technique AS_GFX_AudioDirection < 
+    ui_label = "[AS] GFX: Audio Direction";
+    ui_tooltip = "Renders a visual arc that points toward the direction of audio panning for gameplay assistance."; 
+>
 {
     pass {
         VertexShader = PostProcessVS;
@@ -218,4 +221,4 @@ technique AS_AFX_AudioDirection
     }
 }
 
-#endif // __AS_AFX_AudioDirection_1_fx
+#endif // __AS_GFX_AudioDirection_1_fx

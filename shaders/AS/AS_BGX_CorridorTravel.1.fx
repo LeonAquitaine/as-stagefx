@@ -3,9 +3,8 @@
  * Author: Leon Aquitaine
  * License: Creative Commons Attribution 4.0 International
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
- * 
- * CREDITS:
- * Based on "Corridor Travel" by NuSan (2020-03-14)
+ *  * CREDITS:
+ * Based on "Corridor Travel" by NuSan
  * Shadertoy: https://www.shadertoy.com/view/3sXyRN
  * 
  * ===================================================================================

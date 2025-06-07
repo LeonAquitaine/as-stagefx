@@ -3,10 +3,9 @@
  * Author: Leon Aquitaine
  * License: Creative Commons Attribution 4.0 International
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
- * 
- * CREDITS:
- * Based on "Logarithmic spirals tweaked" by mrange (2023-04-16)
- * Shadertoy: https://www.shadertoy.com/view/cdKXDV
+ *  * CREDITS:
+ * Based on "Logarithmic spiral of spheres" by mrange
+ * Shadertoy: https://www.shadertoy.com/view/msGXRD
  * 
  * ===================================================================================
  *

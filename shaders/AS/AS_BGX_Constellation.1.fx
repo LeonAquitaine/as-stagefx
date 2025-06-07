@@ -3,11 +3,9 @@
  * Author: Leon Aquitaine
  * License: Creative Commons Attribution 4.0 International
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
- * 
- * CREDITS:
- * Based on 'Old Joseph' by jairoandre (2021-06-01)
+ *  * CREDITS:
+ * Based on "old joseph" by jairoandre
  * Shadertoy: https://www.shadertoy.com/view/slfGzf
- * Inspired by: Art of Code (YouTube)
  * 
  * ===================================================================================
  *
