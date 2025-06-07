@@ -18,8 +18,8 @@ For installation instructions and general information, please refer to the [main
 {{#each grouped.LFX}}
 <tr>
 <td width="50%">
-<h4>LFX: {{name}} {{icon}}</h4>
-<h5><code>[AS] LFX: {{name}}|{{filename}}</code></h5>
+<h4>{{name}} {{icon}}</h4>
+<h5><code>{{filename}}</code></h5>
 {{longDescription}}
 {{#if credits}}
 <br><br>

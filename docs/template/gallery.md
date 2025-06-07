@@ -27,7 +27,7 @@ The Essentials package includes these foundation libraries used by all shaders:
 <tr>
 <td width="50%">
 <h4>BGX: {{name}} {{icon}}</h4>
-<h5><code>[AS] BGX: {{name}}|{{filename}}</code></h5>
+<h5><code>{{filename}}</code></h5>
 {{longDescription}}
 {{#if credits}}
 <br><br>
