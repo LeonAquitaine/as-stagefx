@@ -1,6 +1,6 @@
 # AS-StageFX Shader Gallery - Visual Effects Package
 
-This gallery provides detailed descriptions and visual examples of the **visual effects** ( Lighting +  Visual) included in the **AS_StageFX_VisualEffects** package. These effects range from lighting simulation and audio visualization to particle systems and post-processing tools.
+This gallery provides detailed descriptions and visual examples of the **visual effects** (3 Lighting + 21 Visual) included in the **AS_StageFX_VisualEffects** package. These effects range from lighting simulation and audio visualization to particle systems and post-processing tools.
 
 For installation instructions and general information, please refer to the [main README](../README.md).
 
@@ -17,8 +17,8 @@ For installation instructions and general information, please refer to the [main
 <table>
 <tr>
 <td width="50%">
-<h4>LFX: Candle Flame </h4>
-<h5><code>[AS] LFX: Candle Flame|AS_LFX_CandleFlame.1.fx</code></h5>
+<h4>Candle Flame </h4>
+<h5><code>AS_LFX_CandleFlame.1.fx</code></h5>
 Renders a realistic animated candle flame with natural flicker and glow. Features customizable flame shape, color, flicker speed, and intensity. Includes controls for flame position, scale, and blending. Ideal for atmospheric lighting and cozy scene effects.
 
 </td>
@@ -28,8 +28,8 @@ Renders a realistic animated candle flame with natural flicker and glow. Feature
 </tr>
 <tr>
 <td width="50%">
-<h4>LFX: Laser Show </h4>
-<h5><code>[AS] LFX: Laser Show|AS_LFX_LaserShow.1.fx</code></h5>
+<h4>Laser Show </h4>
+<h5><code>AS_LFX_LaserShow.1.fx</code></h5>
 Projects animated laser beams and geometric patterns onto the stage. Features customizable beam count, color, speed, and spread. Supports audio reactivity for beam movement and intensity. Includes controls for rotation, position, and blending. Perfect for concert, club, or sci-fi lighting effects.
 
 </td>
@@ -39,8 +39,8 @@ Projects animated laser beams and geometric patterns onto the stage. Features cu
 </tr>
 <tr>
 <td width="50%">
-<h4>LFX: Stage Spotlights </h4>
-<h5><code>[AS] LFX: Stage Spotlights|AS_LFX_StageSpotlights.1.fx</code></h5>
+<h4>Stage Spotlights </h4>
+<h5><code>AS_LFX_StageSpotlights.1.fx</code></h5>
 Simulates moving stage spotlights with adjustable beam width, color, intensity, and movement patterns. Features multiple spotlights with independent controls, audio reactivity for movement and brightness, and blending options for integration with other effects. Ideal for live performance and dramatic scene lighting.
 
 </td>
