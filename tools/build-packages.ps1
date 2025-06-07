@@ -576,8 +576,7 @@ if ($config.dynamicPackages -and $config.dynamicPackages.enabled -eq $true) {
             # Handle includeAllShaders (for complete package)
             if ($dynamicConfig.includeAllShaders -eq $true) {
                 Write-Info "  Including all available shaders"
-                
-                # Group all shaders by category
+                  # Group all shaders by category
                 $categories = @{}
                 $totalShaderCount = 0
                 foreach ($shader in $allShaders) {
@@ -589,6 +588,12 @@ if ($config.dynamicPackages -and $config.dynamicPackages.enabled -eq $true) {
                     }
                     
                     $type = Get-ShaderType $shader.Name
+                    
+                    # Skip FXH files from main shader categories (they're handled separately as dependencies)
+                    if ($type -eq "fxh") {
+                        continue
+                    }
+                    
                     if (-not $categories.ContainsKey($type)) {
                         $categories[$type] = @()
                     }
