@@ -496,9 +496,7 @@ function Copy-ShadersToPackage($shaderList, $packageDirName, $packageDesc, $curr
 
 # Process all packages dynamically based on configuration
 function Get-PackageShaderList($packageName, $packageConfig, $allAvailableShaders) {
-    $shaderList = @()
-    
-    # If package inherits from another package, start with that package's shaders
+    $shaderList = @()    # If package inherits from another package, start with that package's shaders
     if ($packageConfig.inherit) {
         $inheritedPackage = $config.$($packageConfig.inherit)
         if ($inheritedPackage) {
@@ -506,14 +504,12 @@ function Get-PackageShaderList($packageName, $packageConfig, $allAvailableShader
             $shaderList += $inheritedShaderList
         }
     }
-    
-    # Add shaders from each category (bgx, gfx, lfx, vfx, etc.)
+      # Add shaders from each category (bgx, gfx, lfx, vfx, etc.)
     foreach ($category in $packageConfig.PSObject.Properties) {
         if ($category.Name -in @('inherit', 'includeTextures')) {
             continue # Skip special properties
         }
-        
-        if ($category.Value -is [array]) {
+          if ($category.Value -is [array]) {
             foreach ($shader in $category.Value) {
                 if ($allAvailableShaders.Name -contains $shader) {
                     $shaderList += $shader
@@ -522,8 +518,7 @@ function Get-PackageShaderList($packageName, $packageConfig, $allAvailableShader
                     Write-Warning "Shader not found: $shader (referenced in package $packageName)"
                 }
             }
-        }
-    }
+        }    }
     
     # Remove duplicates and return
     return $shaderList | Select-Object -Unique

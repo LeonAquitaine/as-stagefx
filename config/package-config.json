@@ -1,4 +1,5 @@
 {  "essentials": {
+    "includeTextures": true,
     "fxh": [
       "AS_Utils.1.fxh",
       "AS_Noise.1.fxh",
