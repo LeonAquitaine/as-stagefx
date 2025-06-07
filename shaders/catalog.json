@@ -566,13 +566,13 @@
     "type": "VFX",
     "shortDescription": "Simulates raindrops and streaks on a window with refraction and blur effects.",
     "longDescription": "Creates the illusion of raindrops and streaks running down a window, with realistic refraction and blur. Features adjustable rain density, drop size, streak speed, and blending. Perfect for moody, cinematic, or weather-themed scenes.",
-    "imageUrl": null,
     "credits": {
       "description": "Inspired by 'Heartfelt' by Martijn Steinrucken (BigWings).",
       "externalUrl": "https://www.shadertoy.com/view/ltffzl",
       "originalAuthor": "Martijn Steinrucken (BigWings)",
       "originalTitle": "Heartfelt"
-    }
+    },
+    "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-rainywindow.gif"
   },
   {
     "name": "Screen Ring",

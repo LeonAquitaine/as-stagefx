@@ -34,7 +34,7 @@ Projects animated laser beams and geometric patterns onto the stage. Features cu
 
 </td>
 <td width="50%"><div style="text-align:center">
-<img src="" alt="Laser Show Effect" style="max-width:100%;">
+<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-lasershow.gif" alt="Laser Show Effect" style="max-width:100%;">
 </div></td>
 </tr>
 <tr>
