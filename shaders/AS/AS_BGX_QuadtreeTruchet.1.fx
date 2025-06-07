@@ -474,7 +474,7 @@ float4 PS_ASBGXQuadtreeTruchet(float4 vpos : SV_Position, float2 texcoord : TEXC
 // TECHNIQUE DEFINITION
 // ============================================================================
 technique AS_BGX_QuadtreeTruchet <
-    ui_label = "AS Background: Quadtree Truchet";
+    ui_label = "[AS] BGX: Quadtree Truchet";
     ui_tooltip = "Renders a multiscale, multitile, overlapped, weaved Truchet pattern.";
 > {
     pass {
