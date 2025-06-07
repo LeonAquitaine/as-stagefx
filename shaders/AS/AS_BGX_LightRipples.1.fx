@@ -3,10 +3,9 @@
  * Author: Leon Aquitaine
  * License: Creative Commons Attribution 4.0 International
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
- * 
- * CREDITS:
- * Based on "Light Ripples" 
- * Pouet: https://www.pouet.net/prod.php?which=57245
+ *  * CREDITS:
+ * Based on "Creation by Silexars" by Danguafer/Danilo Guanabara
+ * Shadertoy: https://www.shadertoy.com/view/XsXXDn
  * 
  * ===================================================================================
  *

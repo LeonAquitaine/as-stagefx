@@ -3,13 +3,9 @@
  * Author: Leon Aquitaine
  * License: Creative Commons Attribution 4.0 International
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
- * 
- * CREDITS:
- * The core rain droplet logic is inspired by "Heartfelt" by Martijn Steinrucken (BigWings).
- * ShaderToy: https://www.shadertoy.com/view/ltffzl
- * Email: countfrolic@gmail.com
- * Twitter: @The_ArtOfCode
- * Original License: Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License.
+ *  * CREDITS:
+ * Based on "Heartfelt" by Martijn Steinrucken (BigWings)
+ * Shadertoy: https://www.shadertoy.com/view/ltffzl
  * 
  * ===================================================================================
  *

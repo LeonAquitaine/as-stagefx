@@ -2,8 +2,11 @@
  * AS_BGX_Fluorescent.1.fx - Neon Fluorescent Background Effect
  * Author: Leon Aquitaine
  * License: Creative Commons Attribution 4.0 International
- * Original Shader "Fluorescent" by @XorDev: https://x.com/XorDev/status/1928504290290635042
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
+ * 
+ * CREDITS:
+ * Based on "Fluorescent [292]" by Xor
+ * Shadertoy: https://www.shadertoy.com/view/WcGGDd
  * 
  * ===================================================================================
  *

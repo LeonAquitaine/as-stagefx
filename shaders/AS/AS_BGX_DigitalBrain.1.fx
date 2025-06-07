@@ -3,10 +3,9 @@
  * Author: Leon Aquitaine
  * License: Creative Commons Attribution 4.0 International
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
- * 
- * CREDITS:
- * Original: "Digital Brain" by srtuss (2013)
- * Source: https://www.shadertoy.com/view/4sl3Dr
+ *  * CREDITS:
+ * Based on "Digital Brain" by srtuss
+ * Shadertoy: https://www.shadertoy.com/view/4sl3Dr
  * 
  * ===================================================================================
  *

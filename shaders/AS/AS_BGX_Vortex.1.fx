@@ -1,9 +1,11 @@
-/**
- * AS_BGX_Vortex.1.fx - Swirling Vortex Pattern
+/** * AS_BGX_Vortex.1.fx - Swirling Vortex Pattern
  * Author: Leon Aquitaine
  * License: Creative Commons Attribution 4.0 International
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
- * Original Source: https://www.shadertoy.com/view/3fKGRd "Vortex__" by LonkDong
+ * 
+ * CREDITS:
+ * Based on "Vortex__ " by LonkDong
+ * Shadertoy: https://www.shadertoy.com/view/3fKGRd
  *
  * ===================================================================================
  *

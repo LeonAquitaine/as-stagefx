@@ -3,10 +3,9 @@
  * Author: Leon Aquitaine
  * License: Creative Commons Attribution 4.0 International
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
- * 
- * CREDITS:
- * Based on "Shader Art Coding Introduction" by kishimisu (2023-05-20)
- * YouTube: https://youtu.be/f4s1h2YETNY
+ *  * CREDITS:
+ * Based on "Kaleidoscope" by Kanduvisla
+ * Shadertoy: https://www.shadertoy.com/view/ddsyDN
  * 
  * ===================================================================================
  *
