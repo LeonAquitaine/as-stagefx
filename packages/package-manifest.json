@@ -1,48 +1,42 @@
 {
+  "version": "1.8.4",
   "packages": [
     {
-      "dependencies": {
-        "fxh": [],
-        "textures": []
-      },
+      "fxhDependencyCount": 0,
+      "shaderCount": 1,
       "description": "The complete collection of all AS StageFX shaders and utilities",
-      "shaderCount": 1,
-      "shaders": [
-        null
-      ],
+      "textureDependencyCount": 0,
       "name": "AS_StageFX",
-      "textureDependencyCount": 0,
-      "version": "1.8.4",
-      "fxhDependencyCount": 0
-    },
-    {
-      "dependencies": {
-        "fxh": [],
-        "textures": []
-      },
-      "description": "Complete collection of background effects (Requires Essentials)",
-      "shaderCount": 1,
       "shaders": [
         null
       ],
-      "name": "AS_StageFX_Backgrounds",
-      "textureDependencyCount": 0,
       "version": "1.8.4",
-      "fxhDependencyCount": 0
+      "dependencies": {
+        "textures": [],
+        "fxh": []
+      }
     },
     {
+      "fxhDependencyCount": 0,
+      "shaderCount": 1,
+      "description": "Complete collection of background effects (Requires Essentials)",
+      "textureDependencyCount": 0,
+      "name": "AS_StageFX_Backgrounds",
+      "shaders": [
+        null
+      ],
+      "version": "1.8.4",
       "dependencies": {
-        "fxh": [
-          "AS_Utils.1.fxh",
-          "AS_Palette_Styles.1.fxh",
-          "AS_Palette.1.fxh",
-          "AS_Noise.1.fxh",
-          "AS_Perspective.1.fxh"
-        ],
-        "textures": []
-      },
-      "description": "Core library files and essential visual effects for general use",
+        "textures": [],
+        "fxh": []
+      }
+    },
+    {
+      "fxhDependencyCount": 5,
       "shaderCount": 11,
+      "description": "Core library files and essential visual effects for general use",
+      "textureDependencyCount": 0,
+      "name": "AS_StageFX_Essentials",
       "shaders": [
         "AS_BGX_TimeCrystal.1.fx",
         "AS_BGX_StainedLights.1.fx",
@@ -56,27 +50,33 @@
         "AS_VFX_MotionTrails.1.fx",
         "AS_VFX_StencilMask.1.fx"
       ],
-      "name": "AS_StageFX_Essentials",
-      "textureDependencyCount": 0,
       "version": "1.8.4",
-      "fxhDependencyCount": 5
+      "dependencies": {
+        "textures": [],
+        "fxh": [
+          "AS_Utils.1.fxh",
+          "AS_Palette_Styles.1.fxh",
+          "AS_Palette.1.fxh",
+          "AS_Noise.1.fxh",
+          "AS_Perspective.1.fxh"
+        ]
+      }
     },
     {
-      "dependencies": {
-        "fxh": [],
-        "textures": []
-      },
-      "description": "Complete collection of visual effects (Requires Essentials)",
+      "fxhDependencyCount": 0,
       "shaderCount": 1,
+      "description": "Complete collection of visual effects (Requires Essentials)",
+      "textureDependencyCount": 0,
+      "name": "AS_StageFX_VisualEffects",
       "shaders": [
         null
       ],
-      "name": "AS_StageFX_VisualEffects",
-      "textureDependencyCount": 0,
       "version": "1.8.4",
-      "fxhDependencyCount": 0
+      "dependencies": {
+        "textures": [],
+        "fxh": []
+      }
     }
   ],
-  "version": "1.8.4",
-  "buildDate": "2025-06-06T22:37:29Z"
+  "buildDate": "2025-06-06T22:39:35Z"
 }

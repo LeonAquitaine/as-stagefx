@@ -26,7 +26,7 @@ The Essentials package includes these foundation libraries used by all shaders:
 {{#each grouped.BGX}}
 <tr>
 <td width="50%">
-<h4>BGX: {{name}} {{icon}}</h4>
+<h3>{{name}} {{icon}}</h3>
 <h5><code>{{filename}}</code></h5>
 {{longDescription}}
 {{#if credits}}
@@ -50,8 +50,8 @@ The Essentials package includes these foundation libraries used by all shaders:
 {{#each grouped.GFX}}
 <tr>
 <td width="50%">
-<h4>GFX: {{name}} {{icon}}</h4>
-<h5><code>[AS] GFX: {{name}}|{{filename}}</code></h5>
+<h3>{{name}} {{icon}}</h3>
+<h5><code>{{filename}}</code></h5>
 {{longDescription}}
 {{#if credits}}
 <br><br>
@@ -74,8 +74,8 @@ The Essentials package includes these foundation libraries used by all shaders:
 {{#each grouped.LFX}}
 <tr>
 <td width="50%">
-<h4>LFX: {{name}} {{icon}}</h4>
-<h5><code>[AS] LFX: {{name}}|{{filename}}</code></h5>
+<h3>{{name}} {{icon}}</h3>
+<h5><code>{{filename}}</code></h5>
 {{longDescription}}
 {{#if credits}}
 <br><br>
@@ -98,8 +98,8 @@ The Essentials package includes these foundation libraries used by all shaders:
 {{#each grouped.VFX}}
 <tr>
 <td width="50%">
-<h4>VFX: {{name}} {{icon}}</h4>
-<h5><code>[AS] VFX: {{name}}|{{filename}}</code></h5>
+<h3>{{name}} {{icon}}</h3>
+<h5><code>{{filename}}</code></h5>
 {{longDescription}}
 {{#if credits}}
 <br><br>

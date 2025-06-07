@@ -18,7 +18,7 @@ For installation instructions and general information, please refer to the [main
 {{#each grouped.BGX}}
 <tr>
 <td width="50%">
-<h4>{{name}} {{icon}}</h4>
+<h3>{{name}} {{icon}}</h3>
 <h5><code>{{filename}}</code></h5>
 {{longDescription}}
 {{#if credits}}

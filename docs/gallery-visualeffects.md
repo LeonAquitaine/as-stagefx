@@ -17,7 +17,7 @@ For installation instructions and general information, please refer to the [main
 <table>
 <tr>
 <td width="50%">
-<h4>Candle Flame </h4>
+<h3>Candle Flame </h3>
 <h5><code>AS_LFX_CandleFlame.1.fx</code></h5>
 Renders a realistic animated candle flame with natural flicker and glow. Features customizable flame shape, color, flicker speed, and intensity. Includes controls for flame position, scale, and blending. Ideal for atmospheric lighting and cozy scene effects.
 
@@ -28,7 +28,7 @@ Renders a realistic animated candle flame with natural flicker and glow. Feature
 </tr>
 <tr>
 <td width="50%">
-<h4>Laser Show </h4>
+<h3>Laser Show </h3>
 <h5><code>AS_LFX_LaserShow.1.fx</code></h5>
 Projects animated laser beams and geometric patterns onto the stage. Features customizable beam count, color, speed, and spread. Supports audio reactivity for beam movement and intensity. Includes controls for rotation, position, and blending. Perfect for concert, club, or sci-fi lighting effects.
 
@@ -39,7 +39,7 @@ Projects animated laser beams and geometric patterns onto the stage. Features cu
 </tr>
 <tr>
 <td width="50%">
-<h4>Stage Spotlights </h4>
+<h3>Stage Spotlights </h3>
 <h5><code>AS_LFX_StageSpotlights.1.fx</code></h5>
 Simulates moving stage spotlights with adjustable beam width, color, intensity, and movement patterns. Features multiple spotlights with independent controls, audio reactivity for movement and brightness, and blending options for integration with other effects. Ideal for live performance and dramatic scene lighting.
 
