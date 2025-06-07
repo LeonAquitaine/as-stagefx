@@ -23,7 +23,7 @@ Renders a realistic animated candle flame with natural flicker and glow. Feature
 
 </td>
 <td width="50%"><div style="text-align:center">
-<img src="https://github.com/user-attachments/assets/placeholder-candleflame" alt="Candle Flame Effect" style="max-width:100%;">
+<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-Candle.gif" alt="Candle Flame Effect" style="max-width:100%;">
 </div></td>
 </tr>
 <tr>
@@ -34,7 +34,7 @@ Projects animated laser beams and geometric patterns onto the stage. Features cu
 
 </td>
 <td width="50%"><div style="text-align:center">
-<img src="https://github.com/user-attachments/assets/placeholder-lasershow" alt="Laser Show Effect" style="max-width:100%;">
+<img src="" alt="Laser Show Effect" style="max-width:100%;">
 </div></td>
 </tr>
 <tr>
@@ -45,7 +45,7 @@ Simulates moving stage spotlights with adjustable beam width, color, intensity, 
 
 </td>
 <td width="50%"><div style="text-align:center">
-<img src="https://github.com/user-attachments/assets/placeholder-spotlights" alt="Stage Spotlights Effect" style="max-width:100%;">
+<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-Spotlights.gif" alt="Stage Spotlights Effect" style="max-width:100%;">
 </div></td>
 </tr>
 </table>
@@ -63,7 +63,7 @@ Displays a texture overlay ('sticker') with controls for placement, scale, rotat
 
 </td>
 <td width="50%"><div style="text-align:center">
-<img src="https://github.com/user-attachments/assets/ee8e98b8-198b-4a65-a40d-032eca60dcc5" alt="Boom Sticker Effect" style="max-width:100%;">
+<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-BoomSticker.gif" alt="Boom Sticker Effect" style="max-width:100%;">
 </div></td>
 </tr>
 <tr>
@@ -74,7 +74,7 @@ Visualizes audio frequencies as a circular spectrum analyzer. Features adjustabl
 
 </td>
 <td width="50%"><div style="text-align:center">
-<img src="https://github.com/user-attachments/assets/placeholder-circularspectrum" alt="Circular Spectrum Effect" style="max-width:100%;">
+<img src="" alt="Circular Spectrum Effect" style="max-width:100%;">
 </div></td>
 </tr>
 <tr>
@@ -85,7 +85,7 @@ Simulates dramatic chiaroscuro (light-dark) lighting, emphasizing strong contras
 
 </td>
 <td width="50%"><div style="text-align:center">
-<img src="https://github.com/user-attachments/assets/placeholder-clairobscur" alt="Clair Obscur Effect" style="max-width:100%;">
+<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-ClairObscur.gif" alt="Clair Obscur Effect" style="max-width:100%;">
 </div></td>
 </tr>
 <tr>
@@ -96,7 +96,7 @@ Provides precise color grading by adjusting the balance of shadows, midtones, an
 
 </td>
 <td width="50%"><div style="text-align:center">
-<img src="https://github.com/user-attachments/assets/placeholder-colorbalancer" alt="Color Balancer Effect" style="max-width:100%;">
+<img src="" alt="Color Balancer Effect" style="max-width:100%;">
 </div></td>
 </tr>
 <tr>
@@ -107,7 +107,7 @@ Applies digital compression artifacts such as blockiness, color banding, and qua
 
 </td>
 <td width="50%"><div style="text-align:center">
-<img src="https://github.com/user-attachments/assets/placeholder-digitalartifacts" alt="Digital Artifacts Effect" style="max-width:100%;">
+<img src="" alt="Digital Artifacts Effect" style="max-width:100%;">
 </div></td>
 </tr>
 <tr>
@@ -118,7 +118,7 @@ Simulates floating dust motes and particles drifting through the scene. Features
 
 </td>
 <td width="50%"><div style="text-align:center">
-<img src="https://github.com/user-attachments/assets/placeholder-dustmotes" alt="Dust Motes Effect" style="max-width:100%;">
+<img src="" alt="Dust Motes Effect" style="max-width:100%;">
 </div></td>
 </tr>
 <tr>
@@ -151,7 +151,7 @@ Applies trailing motion blur to moving objects or the whole scene. Features adju
 
 </td>
 <td width="50%"><div style="text-align:center">
-<img src="https://github.com/user-attachments/assets/placeholder-motiontrails" alt="Motion Trails Effect" style="max-width:100%;">
+<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-motiontrails.gif" alt="Motion Trails Effect" style="max-width:100%;">
 </div></td>
 </tr>
 <tr>
@@ -173,7 +173,7 @@ Generates radiant, glowing fire effects with animated flames and customizable co
 
 </td>
 <td width="50%"><div style="text-align:center">
-<img src="https://github.com/user-attachments/assets/placeholder-radiantfire" alt="Radiant Fire Effect" style="max-width:100%;">
+<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-radiantfire.gif" alt="Radiant Fire Effect" style="max-width:100%;">
 </div></td>
 </tr>
 <tr>
@@ -184,7 +184,7 @@ Creates the illusion of raindrops and streaks running down a window, with realis
 
 </td>
 <td width="50%"><div style="text-align:center">
-<img src="https://github.com/user-attachments/assets/placeholder-rainywindow" alt="Rainy Window Effect" style="max-width:100%;">
+<img src="" alt="Rainy Window Effect" style="max-width:100%;">
 </div></td>
 </tr>
 <tr>
@@ -195,7 +195,7 @@ Draws animated rings or circular overlays on the screen. Features controls for r
 
 </td>
 <td width="50%"><div style="text-align:center">
-<img src="https://github.com/user-attachments/assets/placeholder-screenring" alt="Screen Ring Effect" style="max-width:100%;">
+<img src="" alt="Screen Ring Effect" style="max-width:100%;">
 </div></td>
 </tr>
 <tr>
@@ -206,7 +206,7 @@ Adds sparkling bloom highlights to bright areas, with animated glints and custom
 
 </td>
 <td width="50%"><div style="text-align:center">
-<img src="https://github.com/user-attachments/assets/placeholder-sparklebloom" alt="Sparkle Bloom Effect" style="max-width:100%;">
+<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-sparklebloom.gif" alt="Sparkle Bloom Effect" style="max-width:100%;">
 </div></td>
 </tr>
 <tr>
@@ -217,7 +217,7 @@ Displays an audio spectrum analyzer in a ring format. Features adjustable band c
 
 </td>
 <td width="50%"><div style="text-align:center">
-<img src="https://github.com/user-attachments/assets/placeholder-spectrumring" alt="Spectrum Ring Effect" style="max-width:100%;">
+<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-SpectrumRing.gif" alt="Spectrum Ring Effect" style="max-width:100%;">
 </div></td>
 </tr>
 <tr>
@@ -228,7 +228,7 @@ Applies a stencil mask to selectively reveal or hide parts of the scene. Feature
 
 </td>
 <td width="50%"><div style="text-align:center">
-<img src="https://github.com/user-attachments/assets/placeholder-stencilmask" alt="Stencil Mask Effect" style="max-width:100%;">
+<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-StencilMask.gif" alt="Stencil Mask Effect" style="max-width:100%;">
 </div></td>
 </tr>
 <tr>
@@ -239,7 +239,7 @@ Draws a tilted, animated grid overlay on the scene. Features controls for grid a
 
 </td>
 <td width="50%"><div style="text-align:center">
-<img src="https://github.com/user-attachments/assets/placeholder-tiltedgrid" alt="Tilted Grid Effect" style="max-width:100%;">
+<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-tiltedgrid.gif" alt="Tilted Grid Effect" style="max-width:100%;">
 </div></td>
 </tr>
 <tr>
@@ -250,7 +250,7 @@ Simulates volumetric light rays (god rays) emanating from a source. Features con
 
 </td>
 <td width="50%"><div style="text-align:center">
-<img src="https://github.com/user-attachments/assets/placeholder-volumetriclight" alt="Volumetric Light Effect" style="max-width:100%;">
+<img src="" alt="Volumetric Light Effect" style="max-width:100%;">
 </div></td>
 </tr>
 <tr>
@@ -261,7 +261,7 @@ Displays a classic VU meter with audio-reactive bars. Features controls for bar 
 
 </td>
 <td width="50%"><div style="text-align:center">
-<img src="https://github.com/user-attachments/assets/placeholder-vumeter" alt="VUMeter Effect" style="max-width:100%;">
+<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-VUMeter.gif" alt="VUMeter Effect" style="max-width:100%;">
 </div></td>
 </tr>
 <tr>
@@ -272,7 +272,7 @@ Applies animated warp distortion to the scene. Features controls for distortion 
 
 </td>
 <td width="50%"><div style="text-align:center">
-<img src="https://github.com/user-attachments/assets/placeholder-warpdistort" alt="Warp Distort Effect" style="max-width:100%;">
+<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-Warp.gif" alt="Warp Distort Effect" style="max-width:100%;">
 </div></td>
 </tr>
 <tr>
@@ -283,7 +283,7 @@ Simulates an animated water surface with dynamic ripples, reflections, and custo
 
 </td>
 <td width="50%"><div style="text-align:center">
-<img src="https://github.com/user-attachments/assets/placeholder-watersurface" alt="Water Surface Effect" style="max-width:100%;">
+<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-watersurface.gif" alt="Water Surface Effect" style="max-width:100%;">
 </div></td>
 </tr>
 </table>

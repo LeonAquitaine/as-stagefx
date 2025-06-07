@@ -284,8 +284,7 @@ try {
             Write-Host $nameColumn -NoNewline -ForegroundColor White
             Write-Host $item.ExpectedImage -ForegroundColor $issueColor
         }
-        
-        Write-Host ""
+          Write-Host ""
         Write-Host "Legend: " -NoNewline -ForegroundColor Gray
         Write-Host "Yellow" -NoNewline -ForegroundColor Yellow
         Write-Host " = Missing imageUrl, " -NoNewline -ForegroundColor Gray
@@ -293,6 +292,37 @@ try {
         Write-Host " = Broken image link" -ForegroundColor Gray
     }
     
+    # Add unused images analysis
+    Write-Host ""
+    Write-Host "🗂️  UNUSED IMAGES ANALYSIS" -ForegroundColor Cyan
+    Write-Host "============================================================" -ForegroundColor Gray
+      # Get all image filenames referenced in catalog
+    $usedImages = @()
+    foreach ($entry in $catalog) {
+        if ($entry.imageUrl -and $entry.imageUrl -match "(as-stagefx-.+\.gif)$") {
+            $usedImages += $matches[1]
+        }
+    }
+    
+    # Find unused images
+    $unusedImages = $availableImages | Where-Object { $_ -notin $usedImages }
+    
+    if ($unusedImages.Count -gt 0) {
+        Write-Host "📁 Found $($unusedImages.Count) image files not associated with any catalog entries:" -ForegroundColor Yellow
+        Write-Host ""
+        foreach ($image in ($unusedImages | Sort-Object)) {
+            Write-Host "  • $image" -ForegroundColor DarkGray
+        }
+        Write-Host ""
+        Write-Host "💡 These images could be:" -ForegroundColor Yellow
+        Write-Host "  - Orphaned files from renamed/removed shaders" -ForegroundColor White
+        Write-Host "  - Images for new shaders not yet in catalog" -ForegroundColor White
+        Write-Host "  - Alternative versions or backup images" -ForegroundColor White
+        Write-Host "  - Images with naming that doesn't match current patterns" -ForegroundColor White
+    } else {
+        Write-Host "✅ All images in docs/res/img/ are associated with catalog entries" -ForegroundColor Green
+    }
+
 } catch {
     Write-Error "Failed to process catalog: $_"
     exit 1

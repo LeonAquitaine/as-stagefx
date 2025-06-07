@@ -64,10 +64,10 @@ This document lists all external sources, original authors, and inspiration cred
 - **Notes**: Based on 'Logarithmic spiral of spheres' by mrange.
 - **Source**: https://www.shadertoy.com/view/msGXRD
 ### AS_BGX_MeltWave.1.fx - Melt Wave
-- **Original Author**: 
-- **Original Title**: 
-- **Notes**: 
-- **Source**: 
+- **Original Author**: iamsaitam
+- **Original Title**: Melt Wave
+- **Notes**: Based on 'Melt Wave' by iamsaitam.
+- **Source**: https://www.shadertoy.com/view/4dXcDn
 ### AS_BGX_MistyGrid.1.fx - Misty Grid
 - **Original Author**: NuSan
 - **Original Title**: Misty Grid
@@ -79,30 +79,30 @@ This document lists all external sources, original authors, and inspiration cred
 - **Notes**: Based on 'past racer' by jetlab.
 - **Source**: https://www.shadertoy.com/view/3l23Rh
 ### AS_BGX_PlasmaFlow.1.fx - Plasma Flow
-- **Original Author**: 
-- **Original Title**: 
-- **Notes**: 
-- **Source**: 
+- **Original Author**: iamsaitam
+- **Original Title**: Plasma Flow
+- **Notes**: Based on 'Plasma Flow' by iamsaitam.
+- **Source**: https://www.shadertoy.com/view/4dXcDn
 ### AS_BGX_ProteanClouds.1.fx - Protean Clouds
 - **Original Author**: 
 - **Original Title**: 
 - **Notes**: Based on 'Protean clouds' by nimitz.
 - **Source**: https://www.shadertoy.com/view/3l23Rh
 ### AS_BGX_QuadtreeTruchet.1.fx - Quadtree Truchet
-- **Original Author**: 
-- **Original Title**: 
-- **Notes**: 
-- **Source**: 
+- **Original Author**: iq, 0x0f
+- **Original Title**: Truchet Tiling, QuadTree
+- **Notes**: Based on 'Truchet Tiling' by iq and 'QuadTree' by 0x0f.
+- **Source**: https://www.shadertoy.com/view/4dX3Wn
 ### AS_BGX_RaymarchedChain.1.fx - Raymarched Chain
 - **Original Author**: Elsio
 - **Original Title**: Corrente
 - **Notes**: Based on 'Corrente' by Elsio.
 - **Source**: https://www.shadertoy.com/view/ctSfRV
 ### AS_BGX_ShineOn.1.fx - Shine On
-- **Original Author**: 
-- **Original Title**: 
-- **Notes**: 
-- **Source**: 
+- **Original Author**: 104
+- **Original Title**: Shine On
+- **Notes**: Inspired by 'Shine On' by 104.
+- **Source**: https://www.shadertoy.com/view/WlsSzM
 ### AS_BGX_StainedLights.1.fx - Stained Lights
 - **Original Author**: 104
 - **Original Title**: Stained Lights

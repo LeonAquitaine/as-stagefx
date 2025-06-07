@@ -13,4 +13,7 @@ pwsh ./tools/render-templates.ps1
 Write-Host "[INFO] Step 3: Preparing packages..."
 pwsh ./tools/prepare-packages.ps1
 
+Write-Host "[INFO] Step 4: Pre-Release checklist..."
+pwsh ./tools/pre-release-checklist.ps1
+
 Write-Host "[SUCCESS] All build steps completed."

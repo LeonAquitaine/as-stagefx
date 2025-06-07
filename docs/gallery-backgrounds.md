@@ -23,7 +23,7 @@ Creates a vibrant, abstract blue corona effect with fluid, dynamic motion. The e
 
 </td>
 <td width="50%">
-<img src="https://github.com/user-attachments/assets/f5ee6ce1-36b9-4d2f-9250-4c345394c27c" alt="Blue Corona Effect" style="max-width:100%;"/>
+<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-bluecorona.gif" alt="Blue Corona Effect" style="max-width:100%;"/>
 <div style="text-align:center">
 </div></td>
 </tr>
@@ -35,7 +35,7 @@ Creates an animated stellar constellation pattern with twinkling stars and conne
 
 </td>
 <td width="50%">
-<img src="https://github.com/user-attachments/assets/8a7e8736-c23c-47eb-a753-c44ffc101b71" alt="Constellation Effect" style="max-width:100%;"/>
+<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-constellation.gif" alt="Constellation Effect" style="max-width:100%;"/>
 <div style="text-align:center">
 </div></td>
 </tr>
@@ -47,7 +47,7 @@ Simulates an artistic flight through an abstract, glowing, patterned tunnel. Fea
 
 </td>
 <td width="50%">
-<img src="https://github.com/user-attachments/assets/be502be4-cc82-44a4-8947-74dfd6f072b8" alt="Corridor Travel Effect" style="max-width:100%;"/>
+<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-corridortravel.gif" alt="Corridor Travel Effect" style="max-width:100%;"/>
 <div style="text-align:center">
 </div></td>
 </tr>
@@ -59,7 +59,7 @@ Renders a raymarched volumetric fractal resembling a Mandelbox or Mandelbulb. Fe
 
 </td>
 <td width="50%">
-<img src="https://github.com/user-attachments/assets/d466ec57-964c-4c25-93e2-6d01ca4ee1d3" alt="Cosmic Kaleidoscope Effect" style="max-width:100%;"/>
+<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-cosmickaleidoscope.gif" alt="Cosmic Kaleidoscope Effect" style="max-width:100%;"/>
 <div style="text-align:center">
 </div></td>
 </tr>
@@ -71,7 +71,7 @@ Creates an abstract visualization of a 'digital brain' with evolving Voronoi pat
 
 </td>
 <td width="50%">
-<img src="https://github.com/user-attachments/assets/27c3f540-b8f5-4b85-a4a4-4a5076e67f39" alt="Digital Brain Effect" style="max-width:100%;"/>
+<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-digitalbrain.gif" alt="Digital Brain Effect" style="max-width:100%;"/>
 <div style="text-align:center">
 </div></td>
 </tr>
@@ -83,7 +83,7 @@ Creates a vibrant neon fluorescent background effect that simulates the glow and
 
 </td>
 <td width="50%">
-<img src="https://github.com/user-attachments/assets/PLACEHOLDER-IMAGE-ID" alt="Fluorescent Effect" style="max-width:100%;"/>
+<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-fluorescent.gif" alt="Fluorescent Effect" style="max-width:100%;"/>
 <div style="text-align:center">
 </div></td>
 </tr>
@@ -95,7 +95,7 @@ Renders a mesmerizing and intricate animated background effect reminiscent of go
 
 </td>
 <td width="50%">
-<img src="https://github.com/user-attachments/assets/583dfe11-c8b6-4e34-ad79-35d875ce32c6" alt="Golden Clockwork Effect" style="max-width:100%;"/>
+<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-goldenclockwork.gif" alt="Golden Clockwork Effect" style="max-width:100%;"/>
 <div style="text-align:center">
 </div></td>
 </tr>
@@ -107,7 +107,7 @@ Creates a vibrant, ever-evolving fractal kaleidoscope pattern with animated tend
 
 </td>
 <td width="50%">
-<img src="https://github.com/user-attachments/assets/8bd0fdee-77a8-40d6-be9f-1708186e5590" alt="Kaleidoscope Effect" style="max-width:100%;"/>
+<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-kaleidoscope.gif" alt="Kaleidoscope Effect" style="max-width:100%;"/>
 <div style="text-align:center">
 </div></td>
 </tr>
@@ -119,7 +119,7 @@ Creates a mesmerizing, rippling kaleidoscopic light pattern effect. Suitable as 
 
 </td>
 <td width="50%">
-<img src="https://github.com/user-attachments/assets/99bc3c0c-caac-4060-883c-079d92419abc" alt="Light Ripples Effect" style="max-width:100%;"/>
+<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-lightripples.gif" alt="Light Ripples Effect" style="max-width:100%;"/>
 <div style="text-align:center">
 </div></td>
 </tr>
@@ -131,7 +131,7 @@ Creates dynamic, flowing psychedelic patterns reminiscent of liquid metal or chr
 
 </td>
 <td width="50%">
-<img src="" alt="Liquid Chrome Effect" style="max-width:100%;"/>
+<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-liquidchrome.gif" alt="Liquid Chrome Effect" style="max-width:100%;"/>
 <div style="text-align:center">
 </div></td>
 </tr>
@@ -143,7 +143,7 @@ Creates an organic spiral pattern based on logarithmic growth with animated sphe
 
 </td>
 <td width="50%">
-<img src="" alt="Log Spirals Effect" style="max-width:100%;"/>
+<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-logspirals.gif" alt="Log Spirals Effect" style="max-width:100%;"/>
 <div style="text-align:center">
 </div></td>
 </tr>
@@ -155,7 +155,7 @@ Creates a flowing, warping psychedelic effect inspired by 1970s visual aesthetic
 
 </td>
 <td width="50%">
-<img src="https://github.com/user-attachments/assets/4871c7be-b540-4f19-8cb2-bbd0c47ac237" alt="Melt Wave Effect" style="max-width:100%;"/>
+<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-meltwave.gif" alt="Melt Wave Effect" style="max-width:100%;"/>
 <div style="text-align:center">
 </div></td>
 </tr>
@@ -167,7 +167,7 @@ Creates an abstract fractal-based grid background with a misty, ethereal appeara
 
 </td>
 <td width="50%">
-<img src="https://github.com/user-attachments/assets/ddd37fd8-70be-442c-aaed-f31063f8d9e9" alt="Misty Grid Effect" style="max-width:100%;"/>
+<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-mistygrid.gif" alt="Misty Grid Effect" style="max-width:100%;"/>
 <div style="text-align:center">
 </div></td>
 </tr>
@@ -179,7 +179,7 @@ A ray marching shader that generates one of two selectable abstract procedural s
 
 </td>
 <td width="50%">
-<img src="" alt="Past Racer Effect" style="max-width:100%;"/>
+<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-pastracer.gif" alt="Past Racer Effect" style="max-width:100%;"/>
 <div style="text-align:center">
 </div></td>
 </tr>
@@ -191,7 +191,7 @@ Sophisticated, gentle, and flexible plasma effect for groovy, atmospheric visual
 
 </td>
 <td width="50%">
-<img src="https://github.com/user-attachments/assets/ba95325d-eff0-439e-a452-567675da84fe" alt="Plasma Flow Effect" style="max-width:100%;"/>
+<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-PlasmaFlow.gif" alt="Plasma Flow Effect" style="max-width:100%;"/>
 <div style="text-align:center">
 </div></td>
 </tr>
@@ -203,7 +203,7 @@ Renders dynamic, evolving volumetric clouds through raymarching techniques. Crea
 
 </td>
 <td width="50%">
-<img src="https://github.com/user-attachments/assets/placeholder-image" alt="Protean Clouds Effect" style="max-width:100%;"/>
+<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-proteanclouds.gif" alt="Protean Clouds Effect" style="max-width:100%;"/>
 <div style="text-align:center">
 </div></td>
 </tr>
@@ -215,7 +215,7 @@ Creates a sophisticated multiscale recursive Truchet pattern with hierarchical t
 
 </td>
 <td width="50%">
-<img src="https://github.com/user-attachments/assets/placeholder-image" alt="Quadtree Truchet Effect" style="max-width:100%;"/>
+<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-quadtreetruchet.gif" alt="Quadtree Truchet Effect" style="max-width:100%;"/>
 <div style="text-align:center">
 </div></td>
 </tr>
@@ -227,7 +227,7 @@ Renders a raymarched scene featuring an animated, endlessly twisting chain compo
 
 </td>
 <td width="50%">
-<img src="https://github.com/user-attachments/assets/placeholder-image" alt="Raymarched Chain Effect" style="max-width:100%;"/>
+<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-raymarchedchain.gif" alt="Raymarched Chain Effect" style="max-width:100%;"/>
 <div style="text-align:center">
 </div></td>
 </tr>
@@ -239,7 +239,7 @@ Creates a dynamic, evolving fractal noise pattern with bright, sparkly crystal h
 
 </td>
 <td width="50%">
-<img src="https://github.com/user-attachments/assets/50162c8a-4841-4319-b731-d79c15453c7a" alt="Shine On Effect" style="max-width:100%;"/>
+<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-shineon.gif" alt="Shine On Effect" style="max-width:100%;"/>
 <div style="text-align:center">
 </div></td>
 </tr>
@@ -251,7 +251,7 @@ Creates dynamic and colorful patterns reminiscent of stained glass illuminated b
 
 </td>
 <td width="50%">
-<img src="https://github.com/user-attachments/assets/45b96c92-dedd-45ec-8007-69efb93c3786" alt="Stained Lights Effect" style="max-width:100%;"/>
+<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-stainedlights.gif" alt="Stained Lights Effect" style="max-width:100%;"/>
 <div style="text-align:center">
 </div></td>
 </tr>
@@ -263,7 +263,7 @@ Renders an animated scene of clouds at sunset using raymarching to create volume
 
 </td>
 <td width="50%">
-<img src="https://github.com/user-attachments/assets/placeholder-image" alt="Sunset Clouds Effect" style="max-width:100%;"/>
+<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-sunsetclouds.gif" alt="Sunset Clouds Effect" style="max-width:100%;"/>
 <div style="text-align:center">
 </div></td>
 </tr>
@@ -275,7 +275,7 @@ Creates a hypnotic, crystalline fractal structure with dynamic animation and col
 
 </td>
 <td width="50%">
-<img src="https://github.com/user-attachments/assets/ffec219a-b0c2-481a-a1c4-125ad699c8f8" alt="Time Crystal Effect" style="max-width:100%;"/>
+<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-timecrystal.gif" alt="Time Crystal Effect" style="max-width:100%;"/>
 <div style="text-align:center">
 </div></td>
 </tr>
@@ -287,7 +287,7 @@ Creates a psychedelic swirling vortex pattern. The effect is animated and featur
 
 </td>
 <td width="50%">
-<img src="" alt="Vortex Effect" style="max-width:100%;"/>
+<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-vortex.gif" alt="Vortex Effect" style="max-width:100%;"/>
 <div style="text-align:center">
 </div></td>
 </tr>
@@ -299,7 +299,7 @@ Creates a hypnotic pattern of wavy, animated square tiles that shift and transfo
 
 </td>
 <td width="50%">
-<img src="https://github.com/user-attachments/assets/30c2fa46-0d3c-4fe4-bb24-001b85585f41" alt="Wavy Squares Effect" style="max-width:100%;"/>
+<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-wavysquares.gif" alt="Wavy Squares Effect" style="max-width:100%;"/>
 <div style="text-align:center">
 </div></td>
 </tr>
@@ -311,7 +311,7 @@ Creates a mesmerizing pattern of adaptive wavy lines that follow a mouse or fixe
 
 </td>
 <td width="50%">
-<img src="https://github.com/user-attachments/assets/adfe182d-2507-49e1-82c1-38e41a1403a5" alt="Wavy Squiggles Effect" style="max-width:100%;"/>
+<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-wavysquiggles.gif" alt="Wavy Squiggles Effect" style="max-width:100%;"/>
 <div style="text-align:center">
 </div></td>
 </tr>
@@ -323,7 +323,7 @@ Creates dynamic electric arcs and lightning patterns for a striking background e
 
 </td>
 <td width="50%">
-<img src="https://github.com/user-attachments/assets/f32eebde-9c76-49ab-ab6e-50bc4fdeaf2f" alt="Zippy Zaps Effect" style="max-width:100%;"/>
+<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-zippyzaps.gif" alt="Zippy Zaps Effect" style="max-width:100%;"/>
 <div style="text-align:center">
 </div></td>
 </tr>
@@ -334,7 +334,7 @@ Creates dynamic electric arcs and lightning patterns for a striking background e
 
 </td>
 <td width="50%">
-<img src="" alt=" Effect" style="max-width:100%;"/>
+<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-LightWall.gif" alt=" Effect" style="max-width:100%;"/>
 <div style="text-align:center">
 </div></td>
 </tr>
