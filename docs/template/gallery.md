@@ -31,7 +31,7 @@ The Essentials package includes these foundation libraries used by all shaders:
 {{longDescription}}
 {{#if credits}}
 <br><br>
-{{#if credits.description}}{{credits.description}}<br>{{/if}}
+{{#if credits.originalTitle}}Based on '{{credits.originalTitle}}' by {{credits.originalAuthor}}<br>{{/if}}
 {{#if credits.externalUrl}}<a href="{{credits.externalUrl}}" target="_new">Source</a>{{/if}}
 {{/if}}
 </td>
@@ -55,7 +55,7 @@ The Essentials package includes these foundation libraries used by all shaders:
 {{longDescription}}
 {{#if credits}}
 <br><br>
-{{#if credits.description}}{{credits.description}}<br>{{/if}}
+{{#if credits.originalTitle}}Based on '{{credits.originalTitle}}' by {{credits.originalAuthor}}<br>{{/if}}
 {{#if credits.externalUrl}}<a href="{{credits.externalUrl}}" target="_new">Source</a>{{/if}}
 {{/if}}
 </td>
@@ -79,7 +79,7 @@ The Essentials package includes these foundation libraries used by all shaders:
 {{longDescription}}
 {{#if credits}}
 <br><br>
-{{#if credits.description}}{{credits.description}}<br>{{/if}}
+{{#if credits.originalTitle}}Based on '{{credits.originalTitle}}' by {{credits.originalAuthor}}<br>{{/if}}
 {{#if credits.externalUrl}}<a href="{{credits.externalUrl}}" target="_new">Source</a>{{/if}}
 {{/if}}
 </td>
@@ -103,7 +103,7 @@ The Essentials package includes these foundation libraries used by all shaders:
 {{longDescription}}
 {{#if credits}}
 <br><br>
-{{#if credits.description}}{{credits.description}}<br>{{/if}}
+{{#if credits.originalTitle}}Based on '{{credits.originalTitle}}' by {{credits.originalAuthor}}<br>{{/if}}
 {{#if credits.externalUrl}}<a href="{{credits.externalUrl}}" target="_new">Source</a>{{/if}}
 {{/if}}
 </td>
