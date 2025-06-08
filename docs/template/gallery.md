@@ -1,4 +1,4 @@
-# AS-StageFX Shader Gallery - Essentials Package
+# AS-StageFX Shader Gallery
 
 This gallery provides detailed descriptions and visual examples of the complete AS-StageFX collection, which includes **{{shaderCount}} shaders** across four categories: **{{bgxCount}} Background (BGX)**, **{{gfxCount}} Graphic (GFX)**, **{{lfxCount}} Lighting (LFX)**, and **{{vfxCount}} Visual (VFX)** effects.
 
