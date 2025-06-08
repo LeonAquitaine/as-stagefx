@@ -131,34 +131,38 @@ static const float TONEMAP_EXPOSURE_DEFAULT = 4e8; // Was TonemapStrength
 // ============================================================================
 
 // --- Animation Controls ---
-uniform float AnimationSpeed < ui_type = "slider"; ui_label = "Animation Speed"; ui_tooltip = "Overall speed of cloud and color evolution."; ui_min = ANIMATION_SPEED_MIN; ui_max = ANIMATION_SPEED_MAX; ui_step = 0.01; ui_category = "Animation"; > = ANIMATION_SPEED_DEFAULT;
-uniform float AnimationKeyframe < ui_type = "slider"; ui_label = "Time Offset"; ui_tooltip = "Manually scrub through the animation timeline."; ui_min = ANIMATION_KEYFRAME_MIN; ui_max = ANIMATION_KEYFRAME_MAX; ui_step = 0.1; ui_category = "Animation"; > = ANIMATION_KEYFRAME_DEFAULT;
+uniform float AnimationSpeed < ui_type = "slider"; ui_label = "Speed"; ui_tooltip = "Cloud and color animation speed."; ui_min = ANIMATION_SPEED_MIN; ui_max = ANIMATION_SPEED_MAX; ui_step = 0.01; ui_category = "Animation"; > = ANIMATION_SPEED_DEFAULT;
+uniform float AnimationKeyframe < ui_type = "slider"; ui_label = "Time Offset"; ui_tooltip = "Scrub the animation timeline."; ui_min = ANIMATION_KEYFRAME_MIN; ui_max = ANIMATION_KEYFRAME_MAX; ui_step = 0.1; ui_category = "Animation"; > = ANIMATION_KEYFRAME_DEFAULT;
 
 // --- Cloud Shape & Detail ---
-uniform float CloudAltitude < ui_type = "slider"; ui_label = "Cloud Altitude"; ui_tooltip = "Adjusts the general height and density of the cloud layer."; ui_min = CLOUD_ALTITUDE_MIN; ui_max = CLOUD_ALTITUDE_MAX; ui_step = 0.01; ui_category = "Cloud Shape"; > = CLOUD_ALTITUDE_DEFAULT;
-uniform int CloudDetail < ui_type = "slider"; ui_label = "Cloud Detail"; ui_tooltip = "Number of rendering steps. Higher values give more detail but impact performance."; ui_min = CLOUD_DETAIL_MIN; ui_max = CLOUD_DETAIL_MAX; ui_category = "Cloud Shape"; > = CLOUD_DETAIL_DEFAULT;
+uniform float CloudAltitude < ui_type = "slider"; ui_label = "Altitude"; ui_tooltip = "Cloud layer height."; ui_min = CLOUD_ALTITUDE_MIN; ui_max = CLOUD_ALTITUDE_MAX; ui_step = 0.01; ui_category = "Clouds"; > = CLOUD_ALTITUDE_DEFAULT;
+uniform int CloudDetail < ui_type = "slider"; ui_label = "Detail"; ui_tooltip = "Raymarch steps (quality)."; ui_min = CLOUD_DETAIL_MIN; ui_max = CLOUD_DETAIL_MAX; ui_category = "Clouds"; > = CLOUD_DETAIL_DEFAULT;
+uniform float EffectRaymarchDepth < ui_type = "slider"; ui_label = "Raymarch Depth"; ui_tooltip = "Scales the depth of the raymarching effect (legacy, not a true cutout)."; ui_min = 0.1; ui_max = 3.0; ui_step = 0.01; ui_category = "Clouds"; > = 1.0;
 
 // --- Cloud Dynamics ---
-uniform float TurbulenceIntensity < ui_type = "slider"; ui_label = "Turbulence Intensity"; ui_tooltip = "How much the clouds are distorted and swirled."; ui_min = TURBULENCE_INTENSITY_MIN; ui_max = TURBULENCE_INTENSITY_MAX; ui_step = 0.01; ui_category = "Cloud Dynamics"; > = TURBULENCE_INTENSITY_DEFAULT;
-uniform float TurbulenceAnimFactor < ui_type = "slider"; ui_label = "Turbulence Animation Speed"; ui_tooltip = "How quickly the turbulence pattern evolves over time."; ui_min = TURBULENCE_ANIM_FACTOR_MIN; ui_max = TURBULENCE_ANIM_FACTOR_MAX; ui_step = 0.01; ui_category = "Cloud Dynamics"; > = TURBULENCE_ANIM_FACTOR_DEFAULT;
-uniform float TurbulenceScaleStart < ui_type = "slider"; ui_label = "Turbulence Scale (Start)"; ui_tooltip = "Initial size of turbulence details."; ui_min = TURBULENCE_SCALE_START_MIN; ui_max = TURBULENCE_SCALE_START_MAX; ui_step = 0.1; ui_category = "Cloud Dynamics"; > = TURBULENCE_SCALE_START_DEFAULT;
-uniform float TurbulenceScaleEnd < ui_type = "slider"; ui_label = "Turbulence Scale (End)"; ui_tooltip = "Maximum size of turbulence details."; ui_min = TURBULENCE_SCALE_END_MIN; ui_max = TURBULENCE_SCALE_END_MAX; ui_step = 1.0; ui_category = "Cloud Dynamics"; > = TURBULENCE_SCALE_END_DEFAULT;
+uniform float TurbulenceIntensity < ui_type = "slider"; ui_label = "Turbulence"; ui_tooltip = "Cloud swirl amount."; ui_min = TURBULENCE_INTENSITY_MIN; ui_max = TURBULENCE_INTENSITY_MAX; ui_step = 0.01; ui_category = "Turbulence"; > = TURBULENCE_INTENSITY_DEFAULT;
+uniform float TurbulenceAnimFactor < ui_type = "slider"; ui_label = "Turb. Speed"; ui_tooltip = "Turbulence animation speed."; ui_min = TURBULENCE_ANIM_FACTOR_MIN; ui_max = TURBULENCE_ANIM_FACTOR_MAX; ui_step = 0.01; ui_category = "Turbulence"; > = TURBULENCE_ANIM_FACTOR_DEFAULT;
+uniform float TurbulenceScaleStart < ui_type = "slider"; ui_label = "Turb. Scale Start"; ui_tooltip = "Smallest swirl size."; ui_min = TURBULENCE_SCALE_START_MIN; ui_max = TURBULENCE_SCALE_START_MAX; ui_step = 0.1; ui_category = "Turbulence"; > = TURBULENCE_SCALE_START_DEFAULT;
+uniform float TurbulenceScaleEnd < ui_type = "slider"; ui_label = "Turb. Scale End"; ui_tooltip = "Largest swirl size."; ui_min = TURBULENCE_SCALE_END_MIN; ui_max = TURBULENCE_SCALE_END_MAX; ui_step = 1.0; ui_category = "Turbulence"; > = TURBULENCE_SCALE_END_DEFAULT;
 
 // --- Sunset Colors ---
-uniform float3 ColorPhase < ui_type = "slider"; ui_label = "Color Phases (RGB)"; ui_tooltip = "Adjusts the phase shifts for red, green, and blue color components, affecting the sunset hues."; ui_min = COLOR_PHASE_R_MIN; ui_max = COLOR_PHASE_B_MAX; ui_step = 0.1; ui_category = "Sunset Colors"; > = float3(COLOR_PHASE_R_DEFAULT, COLOR_PHASE_G_DEFAULT, COLOR_PHASE_B_DEFAULT);
-uniform float ColorAnimationSpeed < ui_type = "slider"; ui_label = "Color Animation Speed"; ui_tooltip = "How quickly the sunset colors shift and change."; ui_min = COLOR_ANIM_FACTOR_MIN; ui_max = COLOR_ANIM_FACTOR_MAX; ui_step = 0.01; ui_category = "Sunset Colors"; > = COLOR_ANIM_FACTOR_DEFAULT;
-uniform float ColorBrightnessBoost < ui_type = "slider"; ui_label = "Brightness Boost"; ui_tooltip = "Adds an overall brightness to the cloud colors."; ui_min = COLOR_BRIGHTNESS_ADD_MIN; ui_max = COLOR_BRIGHTNESS_ADD_MAX; ui_step = 0.01; ui_category = "Sunset Colors"; > = COLOR_BRIGHTNESS_ADD_DEFAULT;
+uniform float3 ColorPhase < ui_type = "slider"; ui_label = "Hue Phases"; ui_tooltip = "Red, green, blue phase shifts."; ui_min = COLOR_PHASE_R_MIN; ui_max = COLOR_PHASE_B_MAX; ui_step = 0.1; ui_category = "Color"; > = float3(COLOR_PHASE_R_DEFAULT, COLOR_PHASE_G_DEFAULT, COLOR_PHASE_B_DEFAULT);
+uniform float ColorAnimationSpeed < ui_type = "slider"; ui_label = "Color Speed"; ui_tooltip = "How fast sunset colors shift."; ui_min = COLOR_ANIM_FACTOR_MIN; ui_max = COLOR_ANIM_FACTOR_MAX; ui_step = 0.01; ui_category = "Color"; > = COLOR_ANIM_FACTOR_DEFAULT;
+uniform float ColorBrightnessBoost < ui_type = "slider"; ui_label = "Glow"; ui_tooltip = "Cloud color brightness boost."; ui_min = COLOR_BRIGHTNESS_ADD_MIN; ui_max = COLOR_BRIGHTNESS_ADD_MAX; ui_step = 0.01; ui_category = "Color"; > = COLOR_BRIGHTNESS_ADD_DEFAULT;
 
-// --- Final Look ---
-uniform float Exposure < ui_type = "slider"; ui_label = "Exposure"; ui_tooltip = "Overall exposure/brightness control for the final image."; ui_min = TONEMAP_EXPOSURE_MIN; ui_max = TONEMAP_EXPOSURE_MAX; ui_step = 1e6; ui_category = "Final Look"; > = TONEMAP_EXPOSURE_DEFAULT;
+// --- Output ---
+uniform float Exposure < ui_type = "slider"; ui_label = "Exposure"; ui_tooltip = "Final image brightness."; ui_min = TONEMAP_EXPOSURE_MIN; ui_max = TONEMAP_EXPOSURE_MAX; ui_step = 1e6; ui_category = "Output"; > = TONEMAP_EXPOSURE_DEFAULT;
 
-// --- Advanced Settings (Category Closed by Default) ---
-uniform float AdvMarchStepBase < ui_type = "slider"; ui_label = "Raymarch: Base Step"; ui_tooltip = "Base step size for raymarching. Smaller is more accurate but slower."; ui_min = MARCH_STEP_BASE_MIN; ui_max = MARCH_STEP_BASE_MAX; ui_step = 0.001; ui_category = "Advanced Settings"; ui_category_closed = true; > = MARCH_STEP_BASE_DEFAULT;
-uniform float AdvMarchSDFInfluence < ui_type = "slider"; ui_label = "Raymarch: SDF Influence"; ui_tooltip = "How much cloud density affects raymarching step size."; ui_min = MARCH_SDF_INFLUENCE_MIN; ui_max = MARCH_SDF_INFLUENCE_MAX; ui_step = 0.01; ui_category = "Advanced Settings"; ui_category_closed = true; > = MARCH_SDF_INFLUENCE_DEFAULT;
-uniform float AdvMarchSDFDivisor < ui_type = "slider"; ui_label = "Raymarch: SDF Divisor"; ui_tooltip = "Divisor for SDF influence on step size."; ui_min = MARCH_SDF_DIVISOR_MIN; ui_max = MARCH_SDF_DIVISOR_MAX; ui_step = 0.1; ui_category = "Advanced Settings"; ui_category_closed = true; > = MARCH_SDF_DIVISOR_DEFAULT;
-uniform float AdvColorSDFMod < ui_type = "slider"; ui_label = "Color: SDF Modulator"; ui_tooltip = "How cloud density modulates the primary color calculation."; ui_min = COLOR_SDF_MOD_MIN; ui_max = COLOR_SDF_MOD_MAX; ui_step = 0.001; ui_category = "Advanced Settings"; ui_category_closed = true; > = COLOR_SDF_MOD_DEFAULT;
-uniform float AdvColorExpSDFMod < ui_type = "slider"; ui_label = "Color: Exponential SDF Modulator"; ui_tooltip = "How cloud density modulates the exponential (glow) part of color."; ui_min = COLOR_EXP_SDF_MOD_MIN; ui_max = COLOR_EXP_SDF_MOD_MAX; ui_step = 0.001; ui_category = "Advanced Settings"; ui_category_closed = true; > = COLOR_EXP_SDF_MOD_DEFAULT;
+// --- Advanced (Closed) ---
+uniform float AdvMarchStepBase < ui_type = "slider"; ui_label = "Step Base"; ui_tooltip = "Base raymarch step size."; ui_min = MARCH_STEP_BASE_MIN; ui_max = MARCH_STEP_BASE_MAX; ui_step = 0.001; ui_category = "Advanced"; ui_category_closed = true; > = MARCH_STEP_BASE_DEFAULT;
+uniform float AdvMarchSDFInfluence < ui_type = "slider"; ui_label = "Step SDF"; ui_tooltip = "Cloud density effect on step size."; ui_min = MARCH_SDF_INFLUENCE_MIN; ui_max = MARCH_SDF_INFLUENCE_MAX; ui_step = 0.01; ui_category = "Advanced"; ui_category_closed = true; > = MARCH_SDF_INFLUENCE_DEFAULT;
+uniform float AdvMarchSDFDivisor < ui_type = "slider"; ui_label = "Step Divisor"; ui_tooltip = "Divisor for SDF step influence."; ui_min = MARCH_SDF_DIVISOR_MIN; ui_max = MARCH_SDF_DIVISOR_MAX; ui_step = 0.1; ui_category = "Advanced"; ui_category_closed = true; > = MARCH_SDF_DIVISOR_DEFAULT;
+uniform float AdvColorSDFMod < ui_type = "slider"; ui_label = "Color SDF"; ui_tooltip = "Density modulates color."; ui_min = COLOR_SDF_MOD_MIN; ui_max = COLOR_SDF_MOD_MAX; ui_step = 0.001; ui_category = "Advanced"; ui_category_closed = true; > = COLOR_SDF_MOD_DEFAULT;
+uniform float AdvColorExpSDFMod < ui_type = "slider"; ui_label = "Color Exp SDF"; ui_tooltip = "Density modulates glow."; ui_min = COLOR_EXP_SDF_MOD_MIN; ui_max = COLOR_EXP_SDF_MOD_MAX; ui_step = 0.001; ui_category = "Advanced"; ui_category_closed = true; > = COLOR_EXP_SDF_MOD_DEFAULT;
 
+// --- Stage/Transform ---
+AS_STAGEDEPTH_UI(EffectDepth)
+AS_ROTATION_UI(EffectSnapRotation, EffectFineRotation)
 
 // ============================================================================
 // PIXEL SHADER
@@ -169,17 +173,39 @@ float4 AS_BGX_SunsetClouds_PS(float4 vpos : SV_Position, float2 texcoord : TEXCO
     float2 iResolution = float2(BUFFER_WIDTH, BUFFER_HEIGHT);
     float2 fragCoord = vpos.xy;
 
+    // Apply Stage Rotation controls
+    float2 uv = texcoord;
+    float current_rotationRadians = AS_getRotationRadians(EffectSnapRotation, EffectFineRotation);
+    if (abs(current_rotationRadians) > 0.001f) {
+        float s_rot = sin(current_rotationRadians);
+        float c_rot = cos(current_rotationRadians);
+        uv = float2(
+            uv.x * c_rot - uv.y * s_rot,
+            uv.x * s_rot + uv.y * c_rot
+        );
+    }
+    float2 centeredCoord = uv * iResolution;
+
+    float4 originalColor = tex2D(ReShade::BackBuffer, texcoord);
+    float depth = ReShade::GetLinearizedDepth(texcoord);
+    // Apply depth test
+    if (depth < EffectDepth) {
+        return originalColor;
+    }
+
     int i = 0;
     float depth_z = 0.0;
     float step_dist_d_loop;
     float current_march_step_d;
-    float signed_dist_s;    float4 outputColor = float4(0.0, 0.0, 0.0, 0.0);
+    float signed_dist_s;
+    float4 outputColor = float4(0.0, 0.0, 0.0, 0.0);
 
     // Maintain consistent aspect ratio by using screen width for normalization of both X and Y components
     float aspectRatio = iResolution.x / iResolution.y;
-    float3 rayDir = normalize(float3( (2.0 * fragCoord.x - iResolution.x),
-                                      (iResolution.x - 2.0 * fragCoord.y * aspectRatio),
+    float3 rayDir = normalize(float3( (2.0 * centeredCoord.x - iResolution.x),
+                                      (iResolution.x - 2.0 * centeredCoord.y * aspectRatio),
                                       -iResolution.x) );
+    rayDir *= EffectRaymarchDepth;
 
     for (i = 0; i < CloudDetail; i++) // Using CloudDetail UI
     {

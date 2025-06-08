@@ -75,12 +75,12 @@
     "type": "BGX",
     "shortDescription": "Creates a vibrant neon fluorescent background effect with raymarched volumetric patterns. Perfect for retro, cyberpunk, or futuristic atmospheres.",
     "longDescription": "Creates a vibrant neon fluorescent background effect that simulates the glow and intensity of fluorescent lighting. Perfect for creating retro, cyberpunk, or futuristic atmospheres with customizable colors and intensity. Features raymarched volumetric fluorescent effect with depth, dynamic color shifting with RGB phase controls, animated pulsing and flowing patterns, audio reactivity for rhythm-synchronized lighting, standard stage controls for positioning and depth, customizable iteration count for quality vs performance balance, and blend mode controls for integration with existing scenes.",
-    "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-fluorescent.gif",
     "credits": {
       "externalUrl": "https://www.shadertoy.com/view/WcGGDd",
       "originalAuthor": "Xor",
       "originalTitle": "Fluorescent [292]"
-    }
+    },
+    "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-fluorescent.gif"
   },
   {
     "name": "Golden Clockwork",
@@ -127,12 +127,12 @@
     "type": "BGX",
     "shortDescription": "Creates dynamic, flowing psychedelic patterns reminiscent of liquid metal or chrome, with optional vertical stripe overlays.",
     "longDescription": "Creates dynamic, flowing psychedelic patterns reminiscent of liquid metal or chrome. This shader iteratively distorts screen coordinates, creating complex, flowing patterns with optional vertical stripe overlays for additional visual texture.",
-    "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-liquidchrome.gif",
     "credits": {
       "externalUrl": "https://neort.io/art/bkm813c3p9f7drq1j86g",
       "originalAuthor": "iamsaitam",
       "originalTitle": "Liquid Chrome"
-    }
+    },
+    "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-liquidchrome.gif"
   },
   {
     "name": "Log Spirals",
@@ -140,13 +140,13 @@
     "type": "BGX",
     "shortDescription": "Creates an organic spiral pattern based on logarithmic growth with animated spheres along the spiral arms.",
     "longDescription": "Creates an organic spiral pattern based on logarithmic growth with animated spheres along the spiral arms. Features precise control over spiral expansion rate and animation, customizable sphere size with fade effects and specular highlights, color palette options with hue cycling and ambient glow, audio reactivity for multiple parameters (animation speed, rotation, arm twist, sphere size, brightness), and standard position/rotation/scale controls for scene integration.",
-    "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-logspirals.gif",
     "credits": {
       "description": "Based on 'Logarithmic spiral of spheres' by mrange.",
       "externalUrl": "https://www.shadertoy.com/view/msGXRD",
       "originalAuthor": "mrange",
       "originalTitle": "Logarithmic spiral of spheres"
-    }
+    },
+    "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-logspirals.gif"
   },
   {
     "name": "Melt Wave",
@@ -258,12 +258,12 @@
     "type": "BGX",
     "shortDescription": "Raymarched volumetric clouds with animated turbulence and dynamic sunset coloring.",
     "longDescription": "Renders an animated scene of clouds at sunset using raymarching to create volumetric cloud effects with dynamic lighting and turbulence. Features raymarched volumetric clouds, animated turbulence effect, dynamic sunset coloring that changes over time, and tunable parameters for iterations, animation speed, and visual details.",
-    "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-sunsetclouds.gif",
     "credits": {
       "externalUrl": "https://www.shadertoy.com/view/wXjSRt",
       "originalAuthor": "Xor",
       "originalTitle": "Sunset [280]"
-    }
+    },
+    "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-sunsetclouds.gif"
   },
   {
     "name": "Time Crystal",
@@ -350,7 +350,7 @@
     "type": "GFX",
     "shortDescription": "Visualizes audio directionality as animated arrows or indicators, ideal for music-driven scenes or overlays.",
     "longDescription": "Displays animated arrows or indicators that visualize the directionality of audio sources in real time. Features customizable arrow count, size, color, and animation speed. Supports audio reactivity for direction, magnitude, and color. Useful for music visualizations, DJ overlays, or any scene where audio direction feedback is desired.",
-    "imageUrl": null
+    "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-audiodirection.gif"
   },
   {
     "name": "Brush Stroke",
@@ -366,7 +366,7 @@
     "type": "GFX",
     "shortDescription": "High-quality cinematic diffusion/bloom filter with 8 classic presets and a fully customizable mode.",
     "longDescription": "A high-quality cinematic diffusion/bloom filter that replicates classic film diffusion looks. Features 8 built-in presets (Pro-Mist, Hollywood Black Magic, etc.) and a fully customizable mode. Multi-pass downsampling ensures smooth, natural glows. Ideal for virtual photography and cinematic shots.",
-    "imageUrl": null
+    "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-cinematicdiffusion.gif"
   },
   {
     "name": "Hand Drawing",
@@ -504,7 +504,8 @@
       "externalUrl": "https://www.shadertoy.com/view/lcfyDj",
       "originalAuthor": "misterprada",
       "originalTitle": "BlackHole (swirl, portal)"
-    }
+    },
+    "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-focusedchaos.gif"
   },
   {
     "filename": "AS_VFX_MotionFocus.1.fx",
@@ -526,7 +527,8 @@
     "type": "VFX",
     "name": "Radial Lens Distortion",
     "shortDescription": "Emulates radial and lens-specific distortions including blur, chromatic aberration, and geometric warping.",
-    "longDescription": "Simulates various lens distortions including tangential (rotational) blur, chromatic aberration (tangential or horizontal), and geometric barrel/pincushion distortion. Effects are strongest at the edges and diminish towards a configurable center point. Includes presets for emulating specific lens characteristics, plus global strength and focus falloff controls. Ensures consistent effect visibility regardless of source alpha by controlling alpha during blending."
+    "longDescription": "Simulates various lens distortions including tangential (rotational) blur, chromatic aberration (tangential or horizontal), and geometric barrel/pincushion distortion. Effects are strongest at the edges and diminish towards a configurable center point. Includes presets for emulating specific lens characteristics, plus global strength and focus falloff controls. Ensures consistent effect visibility regardless of source alpha by controlling alpha during blending.",
+    "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-radiallensdistortion.gif"
   },
   {
     "name": "Radiant Fire",
@@ -612,7 +614,7 @@
       "originalAuthor": "int_45h",
       "originalTitle": "fake volumetric 2d light wip"
     },
-    "imageUrl": null
+    "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-volumetriclight.gif"
   },
   {
     "name": "VUMeter",
