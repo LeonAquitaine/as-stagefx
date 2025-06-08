@@ -151,6 +151,17 @@ Based on '<a href="https://www.shadertoy.com/view/XsXXDn" target="_new">Creation
 </tr>
 <tr>
 <td width="50%">
+<h3>Light Wall </h3>
+<h5><code>AS_BGX_LightWall.1.fx</code></h5>
+This shader renders a seamless, soft, overlapping grid of light panels with various built-in patterns. Perfect for creating dance club and concert backdrops with fully customizable colors, patterns, and audio reactivity. Features 14 built-in patterns, audio-reactive panels that pulse to music, customizable color palettes with 9 presets and custom options, light burst effects and cross beams for dramatic highlighting, 3D perspective with tilt, pitch, and roll controls, and others.
+
+</td>
+<td width="50%"><div style="text-align:center">
+<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-LightWall.gif" alt="Light Wall Effect" style="max-width:100%;">
+</div></td>
+</tr>
+<tr>
+<td width="50%">
 <h3>Liquid Chrome </h3>
 <h5><code>AS_BGX_LiquidChrome.1.fx</code></h5>
 Creates dynamic, flowing psychedelic patterns reminiscent of liquid metal or chrome. This shader iteratively distorts screen coordinates, creating complex, flowing patterns with optional vertical stripe overlays for additional visual texture.
@@ -371,16 +382,6 @@ Based on '<a href="https://www.shadertoy.com/view/XXyGzh" target="_new">Zippy Za
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-zippyzaps.gif" alt="Zippy Zaps Effect" style="max-width:100%;">
-</div></td>
-</tr>
-<tr>
-<td width="50%">
-<h3> </h3>
-<h5><code>AS_BGX_LightWall.1.fx</code></h5>
-
-</td>
-<td width="50%"><div style="text-align:center">
-<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-LightWall.gif" alt=" Effect" style="max-width:100%;">
 </div></td>
 </tr>
 </table>

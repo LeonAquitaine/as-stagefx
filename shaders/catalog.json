@@ -122,6 +122,14 @@
     "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-lightripples.gif"
   },
   {
+    "name": "Light Wall",
+    "filename": "AS_BGX_LightWall.1.fx",
+    "type": "BGX",
+    "shortDescription": "A seamless, soft, overlapping grid of light panels with various built-in patterns. Perfect for creating dance club and concert backdrops.",
+    "longDescription": "This shader renders a seamless, soft, overlapping grid of light panels with various built-in patterns. Perfect for creating dance club and concert backdrops with fully customizable colors, patterns, and audio reactivity. Features 14 built-in patterns, audio-reactive panels that pulse to music, customizable color palettes with 9 presets and custom options, light burst effects and cross beams for dramatic highlighting, 3D perspective with tilt, pitch, and roll controls, and others.",
+    "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-LightWall.gif"
+  },
+  {
     "name": "Liquid Chrome",
     "filename": "AS_BGX_LiquidChrome.1.fx",
     "type": "BGX",
@@ -330,11 +338,6 @@
       "originalTitle": "Zippy Zaps"
     },
     "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-zippyzaps.gif"
-  },
-  {
-    "filename": "AS_BGX_LightWall.1.fx",
-    "type": "BGX",
-    "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-LightWall.gif"
   },
   {
     "name": "Aspect Ratio",

@@ -2,8 +2,8 @@
   "byType": {
     "BGX": 26,
     "VFX": 21,
-    "GFX": 7,
-    "LFX": 3
+    "LFX": 3,
+    "GFX": 7
   },
   "total": 57,
   "grouped": {
@@ -129,6 +129,14 @@
           "originalTitle": "Creation by Silexars"
         },
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-lightripples.gif"
+      },
+      {
+        "name": "Light Wall",
+        "filename": "AS_BGX_LightWall.1.fx",
+        "type": "BGX",
+        "shortDescription": "A seamless, soft, overlapping grid of light panels with various built-in patterns. Perfect for creating dance club and concert backdrops.",
+        "longDescription": "This shader renders a seamless, soft, overlapping grid of light panels with various built-in patterns. Perfect for creating dance club and concert backdrops with fully customizable colors, patterns, and audio reactivity. Features 14 built-in patterns, audio-reactive panels that pulse to music, customizable color palettes with 9 presets and custom options, light burst effects and cross beams for dramatic highlighting, 3D perspective with tilt, pitch, and roll controls, and others.",
+        "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-LightWall.gif"
       },
       {
         "name": "Liquid Chrome",
@@ -339,11 +347,6 @@
           "originalTitle": "Zippy Zaps"
         },
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-zippyzaps.gif"
-      },
-      {
-        "filename": "AS_BGX_LightWall.1.fx",
-        "type": "BGX",
-        "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-LightWall.gif"
       }
     ],
     "VFX": [
@@ -560,6 +563,32 @@
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-watersurface.gif"
       }
     ],
+    "LFX": [
+      {
+        "name": "Candle Flame",
+        "filename": "AS_LFX_CandleFlame.1.fx",
+        "type": "LFX",
+        "shortDescription": "Simulates a realistic, animated candle flame with flicker, glow, and color controls.",
+        "longDescription": "Renders a realistic animated candle flame with natural flicker and glow. Features customizable flame shape, color, flicker speed, and intensity. Includes controls for flame position, scale, and blending. Ideal for atmospheric lighting and cozy scene effects.",
+        "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-Candle.gif"
+      },
+      {
+        "name": "Laser Show",
+        "filename": "AS_LFX_LaserShow.1.fx",
+        "type": "LFX",
+        "shortDescription": "Projects animated laser beams and patterns with customizable color, speed, and audio reactivity.",
+        "longDescription": "Projects animated laser beams and geometric patterns onto the stage. Features customizable beam count, color, speed, and spread. Supports audio reactivity for beam movement and intensity. Includes controls for rotation, position, and blending. Perfect for concert, club, or sci-fi lighting effects.",
+        "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-lasershow.gif"
+      },
+      {
+        "name": "Stage Spotlights",
+        "filename": "AS_LFX_StageSpotlights.1.fx",
+        "type": "LFX",
+        "shortDescription": "Simulates moving stage spotlights with beam controls, color, and audio reactivity.",
+        "longDescription": "Simulates moving stage spotlights with adjustable beam width, color, intensity, and movement patterns. Features multiple spotlights with independent controls, audio reactivity for movement and brightness, and blending options for integration with other effects. Ideal for live performance and dramatic scene lighting.",
+        "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-Spotlights.gif"
+      }
+    ],
     "GFX": [
       {
         "name": "Aspect Ratio",
@@ -628,32 +657,6 @@
           "originalTitle": "Hexagonal Wipe"
         },
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-vignetteplus.gif"
-      }
-    ],
-    "LFX": [
-      {
-        "name": "Candle Flame",
-        "filename": "AS_LFX_CandleFlame.1.fx",
-        "type": "LFX",
-        "shortDescription": "Simulates a realistic, animated candle flame with flicker, glow, and color controls.",
-        "longDescription": "Renders a realistic animated candle flame with natural flicker and glow. Features customizable flame shape, color, flicker speed, and intensity. Includes controls for flame position, scale, and blending. Ideal for atmospheric lighting and cozy scene effects.",
-        "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-Candle.gif"
-      },
-      {
-        "name": "Laser Show",
-        "filename": "AS_LFX_LaserShow.1.fx",
-        "type": "LFX",
-        "shortDescription": "Projects animated laser beams and patterns with customizable color, speed, and audio reactivity.",
-        "longDescription": "Projects animated laser beams and geometric patterns onto the stage. Features customizable beam count, color, speed, and spread. Supports audio reactivity for beam movement and intensity. Includes controls for rotation, position, and blending. Perfect for concert, club, or sci-fi lighting effects.",
-        "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-lasershow.gif"
-      },
-      {
-        "name": "Stage Spotlights",
-        "filename": "AS_LFX_StageSpotlights.1.fx",
-        "type": "LFX",
-        "shortDescription": "Simulates moving stage spotlights with beam controls, color, and audio reactivity.",
-        "longDescription": "Simulates moving stage spotlights with adjustable beam width, color, intensity, and movement patterns. Features multiple spotlights with independent controls, audio reactivity for movement and brightness, and blending options for integration with other effects. Ideal for live performance and dramatic scene lighting.",
-        "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-Spotlights.gif"
       }
     ]
   }

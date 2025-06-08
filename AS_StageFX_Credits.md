@@ -53,6 +53,11 @@ This document lists all external sources, original authors, and inspiration cred
 - **Original Title**: Creation by Silexars
 - **Notes**: 
 - **Source**: https://www.shadertoy.com/view/XsXXDn
+### AS_BGX_LightWall.1.fx - Light Wall
+- **Original Author**: 
+- **Original Title**: 
+- **Notes**: 
+- **Source**: 
 ### AS_BGX_LiquidChrome.1.fx - Liquid Chrome
 - **Original Author**: iamsaitam
 - **Original Title**: Liquid Chrome
@@ -133,11 +138,6 @@ This document lists all external sources, original authors, and inspiration cred
 - **Original Title**: Zippy Zaps
 - **Notes**: 
 - **Source**: https://www.shadertoy.com/view/XXyGzh
-### AS_BGX_LightWall.1.fx - 
-- **Original Author**: 
-- **Original Title**: 
-- **Notes**: 
-- **Source**: 
 
 ## Shadertoy & External Adaptations (VFX)
 ### AS_VFX_BoomSticker.1.fx - Boom Sticker
