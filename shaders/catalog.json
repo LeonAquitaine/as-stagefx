@@ -188,12 +188,12 @@
     "type": "BGX",
     "shortDescription": "Raymarched abstract procedural scene (2 selectable) with domain repetition, custom transformations, and audio-reactive geometry/flares.",
     "longDescription": "A ray marching shader that generates one of two selectable abstract procedural scenes. Features domain repetition, custom transformations, and pseudo-random patterns. Scene geometry and flare effects can be reactive to audio frequency bands.",
-    "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-pastracer.gif",
     "credits": {
       "externalUrl": "https://www.shadertoy.com/view/tsBBzG",
       "originalAuthor": "NuSan",
       "originalTitle": "Outline 2020 Freestyle Live code"
-    }
+    },
+    "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-pastracer.gif"
   },
   {
     "name": "Plasma Flow",
@@ -214,12 +214,12 @@
     "type": "BGX",
     "shortDescription": "Volumetric, evolving procedural clouds with raymarching, dynamic color, and realistic lighting.",
     "longDescription": "Renders dynamic, evolving volumetric clouds through raymarching techniques. Creates an immersive, abstract cloudscape with dynamic color variations and realistic lighting. Features high-quality volumetric cloud formations, customizable cloud density, shape, and detail, dynamic camera movement with adjustable path and sway, sophisticated internal lighting and self-shadowing, color palette system with customizable parameters, audio reactivity for multiple cloud parameters, and resolution-independent rendering with precise position controls.",
-    "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-proteanclouds.gif",
     "credits": {
       "externalUrl": "https://www.shadertoy.com/view/3l23Rh",
       "originalAuthor": "nimitz",
       "originalTitle": "Protean clouds"
-    }
+    },
+    "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-proteanclouds.gif"
   },
   {
     "name": "Quadtree Truchet",
@@ -451,13 +451,13 @@
     "type": "VFX",
     "shortDescription": "Displays a circular audio spectrum analyzer with customizable bands, colors, and animation.",
     "longDescription": "Visualizes audio frequencies as a circular spectrum analyzer. Features adjustable band count, radius, thickness, color palette, and animation speed. Supports audio reactivity for dynamic, music-driven visuals. Ideal for overlays, music videos, and live performances.",
-    "imageUrl": null,
     "credits": {
       "description": "Based on 'Circular audio visualizer' by AIandDesign.",
       "externalUrl": "https://www.shadertoy.com/view/tcyGW1",
       "originalAuthor": "AIandDesign",
       "originalTitle": "Circular audio visualizer"
-    }
+    },
+    "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-circularspectrum.gif"
   },
   {
     "name": "Clair Obscur",

@@ -3,7 +3,7 @@
  * Author: Leon Aquitaine
  * License: Creative Commons Attribution 4.0 International
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
- *  * CREDITS:
+ * CREDITS:
  * Based on "Outline 2020 Freestyle Live code" by NuSan
  * Shadertoy: https://www.shadertoy.com/view/tsBBzG
  * 
@@ -156,6 +156,14 @@ uniform float GlowIntensity < ui_type = "drag"; ui_min = 0.0; ui_max = 2.0; ui_s
 // --- Final Mix (Blend) ---
 uniform float VignetteStrength < ui_type = "drag"; ui_min = 0.0; ui_max = 2.0; ui_step = 0.01; ui_label = "Vignette Strength"; ui_tooltip = "Strength of the screen-edge darkening effect."; ui_category = "Final Mix"; > = DEFAULT_VIGNETTE_STRENGTH;
 uniform float Gamma < ui_type = "drag"; ui_min = 1.0; ui_max = 3.0; ui_step = 0.01; ui_label = "Gamma Correction"; ui_tooltip = "Final gamma adjustment. Standard is often 2.2."; ui_category = "Final Mix"; > = DEFAULT_GAMMA;
+
+// --- Stage/Transform ---
+AS_STAGEDEPTH_UI(StageDepth)
+AS_ROTATION_UI(EffectSnapRotation, EffectFineRotation)
+
+// --- Blend ---
+AS_BLENDMODE_UI(BlendMode)
+AS_BLENDAMOUNT_UI(BlendAmount)
 
 // ============================================================================
 // HELPER FUNCTIONS
@@ -319,9 +327,15 @@ float SDE_DescribeWorld_Scene1(float3 pWorld, float timeVal, inout float accAt, 
 // --- Common ray marching function ---
 float4 PS_PastRacer_Common(float4 vpos, float2 texcoord, bool isScene0)
 {
+    // Stage depth cut-out - early return if depth is less than stage depth
+    float depth = ReShade::GetLinearizedDepth(texcoord);
+    if (depth < StageDepth) {
+        return tex2D(ReShade::BackBuffer, texcoord);
+    }
+    
     // Time calculation
     float masterTime = AS_getTime() * GlobalTimeScale;
-    float currentTime = AS_mod(masterTime, 300.0f); 
+    float currentTime = AS_mod(masterTime, 300.0f);
       // UV Setup - applying resolution-independent aspect ratio correction
     float2 uv = texcoord - 0.5f; 
     uv.x *= ReShade::AspectRatio; 
@@ -391,11 +405,25 @@ float4 PS_PastRacer_Common(float4 vpos, float2 texcoord, bool isScene0)
             lookAtTarget.z = initialRayOrigin.z + 50.0f;
         }
     }
-    
-    // Camera setup
+      // Camera setup
     float3 camDirZ = normalize(lookAtTarget - initialRayOrigin);
     float3 camDirX = normalize(cross(float3(0.0f, 1.0f, 0.0f), camDirZ)); 
     float3 camDirY = normalize(cross(camDirX, camDirZ));
+    
+    // Apply 3D rotation to camera coordinate system
+    float rotationRadians = AS_getRotationRadians(EffectSnapRotation, EffectFineRotation);
+    if (rotationRadians != 0.0) {
+        float cosTheta = cos(rotationRadians);
+        float sinTheta = sin(rotationRadians);
+        
+        // Rotate camDirX and camDirY around the camDirZ (forward) axis
+        float3 rotatedCamDirX = camDirX * cosTheta + camDirY * sinTheta;
+        float3 rotatedCamDirY = -camDirX * sinTheta + camDirY * cosTheta;
+        
+        camDirX = rotatedCamDirX;
+        camDirY = rotatedCamDirY;
+    }
+    
     float3 rayDirection = normalize(uv.x * camDirX + uv.y * camDirY + FieldOfView * camDirZ);
     
     // Ray marching setup
@@ -496,8 +524,13 @@ float4 PS_PastRacer_Common(float4 vpos, float2 texcoord, bool isScene0)
     accumulatedColor += max(accumulatedColor.zxy - 1.0f, 0.0f) * GlowIntensity;    // Final tone mapping and gamma correction
     accumulatedColor = smoothstep(0.0f, 1.0f, accumulatedColor); 
     accumulatedColor = pow(accumulatedColor, 1.0f / Gamma); 
+    
+    // Apply blend mode with background
+    float4 originalColor = tex2D(ReShade::BackBuffer, texcoord);
+    float3 blended = AS_applyBlend(accumulatedColor, originalColor.rgb, BlendMode);
+    float3 result = lerp(originalColor.rgb, blended, BlendAmount);
         
-    return float4(accumulatedColor, 1.0f);
+    return float4(result, originalColor.a);
 }
 
 // --- Scene 0: Audio Boxes ---

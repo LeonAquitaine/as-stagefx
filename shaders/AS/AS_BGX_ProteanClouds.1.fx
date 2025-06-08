@@ -116,6 +116,13 @@ uniform float Vignette_Power < ui_category="Fog & Post FX"; ui_type="drag"; ui_m
 uniform float Vignette_EdgeBrightness < ui_category="Fog & Post FX"; ui_type="drag"; ui_min=0.0; ui_max=1.0; ui_step=0.01; ui_label="Vignette Edge Brightness"; > = 0.3f;
 uniform float Vignette_CenterBoost < ui_category="Fog & Post FX"; ui_type="drag"; ui_min=0.0; ui_max=1.0; ui_step=0.01; ui_label="Vignette Center Boost"; > = 0.7f;
 
+// --- Stage/Transform ---
+AS_STAGEDEPTH_UI(StageDepth)
+AS_ROTATION_UI(EffectSnapRotation, EffectFineRotation)
+
+// --- Blend ---
+AS_BLENDMODE_UI(BlendMode)
+AS_BLENDAMOUNT_UI(BlendAmount)
 
 // ============================================================================
 // UI DECLARATIONS
@@ -214,15 +221,19 @@ float3 iLerp(float3 a, float3 b, float x) { // Removed 'in'
 //--------------------------------------------------------------------------------------
 float4 PS_ProteanClouds(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : SV_Target
 {
-    float2 R_Screen = float2(BUFFER_WIDTH, BUFFER_HEIGHT);
+    // Stage depth cut-out - early return if depth is less than stage depth
+    float depth = ReShade::GetLinearizedDepth(texcoord);
+    if (depth < StageDepth) {
+        return tex2D(ReShade::BackBuffer, texcoord);
+    }    float2 R_Screen = float2(BUFFER_WIDTH, BUFFER_HEIGHT);
     float master_time = AS_getAnimationTime(MasterTimeSpeed, MasterTimeKeyframe); 
 
-    g_iTime_global_for_map = master_time; 
+    g_iTime_global_for_map = master_time;
     g_bsMo_NoMouse = float2(0.0, 0.0); 
     g_prm1 = smoothstep(-0.4f, 0.4f, sin(master_time * Prm1_AnimationSpeedFactor)); 
     
     float2 q_norm_uv = texcoord; 
-    float2 p_centered_uv = (vpos.xy - 0.5f * R_Screen) / R_Screen.y; 
+    float2 p_centered_uv = ((texcoord * R_Screen) - 0.5f * R_Screen) / R_Screen.y;
     
     float time_for_main_logic = master_time * Camera_PathSpeedFactor; 
     
@@ -234,11 +245,23 @@ float4 PS_ProteanClouds(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) 
 
     float tgtDst = 3.5f; 
     float3 target_pt = float3(disp(time_for_main_logic + tgtDst, Camera_SwayFrequencyFactor)*dspAmp_cam, time_for_main_logic + tgtDst);
-    float3 target_vec = normalize(ro - target_pt); 
-
-    float3 rightdir = normalize(cross(target_vec, float3(0,1,0)));
+    float3 target_vec = normalize(ro - target_pt);     float3 rightdir = normalize(cross(target_vec, float3(0,1,0)));
     if (abs(dot(target_vec, float3(0,1,0))) > 0.999f) rightdir = float3(1,0,0);
     float3 updir = normalize(cross(rightdir, target_vec));
+    
+    // Apply 3D rotation to camera coordinate system
+    float rotationRadians = AS_getRotationRadians(EffectSnapRotation, EffectFineRotation);
+    if (rotationRadians != 0.0) {
+        float cosTheta = cos(rotationRadians);
+        float sinTheta = sin(rotationRadians);
+        
+        // Rotate rightdir and updir around the target_vec (forward) axis
+        float3 rotatedRightdir = rightdir * cosTheta + updir * sinTheta;
+        float3 rotatedUpdir = -rightdir * sinTheta + updir * cosTheta;
+        
+        rightdir = rotatedRightdir;
+        updir = rotatedUpdir;
+    }
     
     float3 rd=normalize((p_centered_uv.x*rightdir + p_centered_uv.y*updir)*Camera_FOV_Effect - target_vec);
     
@@ -249,12 +272,15 @@ float4 PS_ProteanClouds(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) 
     float3 col = scn.rgb;
     col = iLerp(col.bgr, col.rgb, saturate(1.0f - g_prm1)); 
     
-    col = pow(col, ColorGrade_Power) * ColorGrade_Multiplier;
-
-    float vignette_mask_shape = pow(16.0f * q_norm_uv.x * q_norm_uv.y * (1.0f - q_norm_uv.x) * (1.0f - q_norm_uv.y), Vignette_Power);
+    col = pow(col, ColorGrade_Power) * ColorGrade_Multiplier;    float vignette_mask_shape = pow(16.0f * q_norm_uv.x * q_norm_uv.y * (1.0f - q_norm_uv.x) * (1.0f - q_norm_uv.y), Vignette_Power);
     col *= lerp(Vignette_EdgeBrightness, Vignette_EdgeBrightness + Vignette_CenterBoost, vignette_mask_shape);
     
-    return float4(col, 1.0f);
+    // Apply blend mode
+    float4 originalColor = tex2D(ReShade::BackBuffer, texcoord);
+    float3 blended = AS_applyBlend(col, originalColor.rgb, BlendMode);
+    float3 result = lerp(originalColor.rgb, blended, BlendAmount);
+    
+    return float4(result, originalColor.a);
 }
 
 //--------------------------------------------------------------------------------------

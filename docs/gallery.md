@@ -546,7 +546,7 @@ Based on '<a href="https://www.shadertoy.com/view/tcyGW1" target="_new">Circular
 
 </td>
 <td width="50%"><div style="text-align:center">
-<img src="" alt="Circular Spectrum Effect" style="max-width:100%;">
+<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-circularspectrum.gif" alt="Circular Spectrum Effect" style="max-width:100%;">
 </div></td>
 </tr>
 <tr>
