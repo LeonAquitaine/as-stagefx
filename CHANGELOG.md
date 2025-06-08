@@ -7,12 +7,18 @@
 - Added an audio direction visualization effect that displays a reactive arc indicating audio panning.
 - Released a cinematic diffusion filter with multiple presets for high-quality bloom and glow effects.
 - Enhanced audio features with stereo support, including left/right channel volume and panning controls.
+- Added a split-screen debug mode to the Cinematic Diffusion effect, allowing side-by-side comparison of original and processed images.
+- Introduced new controls and UI enhancements to the Sunset Clouds effect, including rotation, depth settings, and a new raymarch depth parameter.
 
 ### Documentation
 - Updated documentation and galleries to reflect new shaders and expanded audio capabilities.
 - Added comprehensive shader galleries with detailed descriptions and images.
 - Replaced shader template README with a high-level project overview and installation guide.
+- Updated gallery documentation to display visual examples for multiple effects by adding image URLs.
+- Improved organization and completeness of shader catalog data and gallery documentation.
 
 ### Chores
 - Added modular build scripts to streamline catalog management, template rendering, and package preparation.
 - Automated shader catalog updates and README generation integrated into build process.
+- Incremented version numbers and updated build metadata.
+- Standardized and reorganized JSON metadata for improved clarity and consistency.

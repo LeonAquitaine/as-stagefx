@@ -398,7 +398,7 @@ Displays animated arrows or indicators that visualize the directionality of audi
 
 </td>
 <td width="50%"><div style="text-align:center">
-<img src="" alt="Audio Direction Effect" style="max-width:100%;">
+<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-audiodirection.gif" alt="Audio Direction Effect" style="max-width:100%;">
 </div></td>
 </tr>
 <tr>
@@ -420,7 +420,7 @@ A high-quality cinematic diffusion/bloom filter that replicates classic film dif
 
 </td>
 <td width="50%"><div style="text-align:center">
-<img src="" alt="Cinematic Diffusion Effect" style="max-width:100%;">
+<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-cinematicdiffusion.gif" alt="Cinematic Diffusion Effect" style="max-width:100%;">
 </div></td>
 </tr>
 <tr>
@@ -599,7 +599,7 @@ Creates a visually complex and dynamic abstract effect resembling a focused poin
 
 </td>
 <td width="50%"><div style="text-align:center">
-<img src="" alt="Focused Chaos Effect" style="max-width:100%;">
+<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-focusedchaos.gif" alt="Focused Chaos Effect" style="max-width:100%;">
 </div></td>
 </tr>
 <tr>
@@ -632,7 +632,7 @@ Simulates various lens distortions including tangential (rotational) blur, chrom
 
 </td>
 <td width="50%"><div style="text-align:center">
-<img src="" alt="Radial Lens Distortion Effect" style="max-width:100%;">
+<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-radiallensdistortion.gif" alt="Radial Lens Distortion Effect" style="max-width:100%;">
 </div></td>
 </tr>
 <tr>
@@ -732,7 +732,7 @@ Simulates volumetric light rays (god rays) emanating from a source. Features con
 
 </td>
 <td width="50%"><div style="text-align:center">
-<img src="" alt="Volumetric Light Effect" style="max-width:100%;">
+<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-volumetriclight.gif" alt="Volumetric Light Effect" style="max-width:100%;">
 </div></td>
 </tr>
 <tr>
