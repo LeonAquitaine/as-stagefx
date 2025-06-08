@@ -1,16 +1,12 @@
 # AS-StageFX Shader Gallery - Essentials Package
 
-This gallery provides detailed descriptions and visual examples of the core shaders included in the **AS_StageFX_Essentials** package. The complete AS-StageFX collection includes ** shaders** across four categories: ** Background (BGX)**, ** Graphic (GFX)**, ** Lighting (LFX)**, and ** Visual (VFX)** effects.
+This gallery provides detailed descriptions and visual examples of the complete AS-StageFX collection, which includes ** shaders** across four categories: ** Background (BGX)**, ** Graphic (GFX)**, ** Lighting (LFX)**, and ** Visual (VFX)** effects.
 
 For installation instructions and general information, please refer to the [main README](../README.md).
 
-> **Looking for other packages?**
-> - [Backgrounds Gallery](./gallery-backgrounds.md) - Complete collection of background effects
-> - [Visual Effects Gallery](./gallery-visualeffects.md) - Complete collection of visual effects
-
 ## Core Library Files (.fxh)
 
-The Essentials package includes these foundation libraries used by all shaders:
+The collection includes these foundation libraries used by all shaders:
 
 - **AS_Noise.1.fxh** - Noise generation functions (Perlin, Simplex, FBM, etc.)
 - **AS_Palette.1.fxh** - Color palette and gradient system
@@ -593,7 +589,7 @@ Simulates floating dust motes and particles drifting through the scene. Features
 
 </td>
 <td width="50%"><div style="text-align:center">
-<img src="" alt="Dust Motes Effect" style="max-width:100%;">
+<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-dustmotes.gif" alt="Dust Motes Effect" style="max-width:100%;">
 </div></td>
 </tr>
 <tr>
