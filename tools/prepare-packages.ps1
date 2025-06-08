@@ -142,7 +142,7 @@ $shaderDirPath = $config.paths.shaderDir
 $textureDirPath = $config.paths.textureDir
 
 # Get lists of shaders for each package from catalog
-$catalogItems = $catalog.shaders.items
+$catalogItems = $catalog  # The catalog is already an array of shader objects
 $essentialShaders = @()
 foreach ($categoryName in $config.essentials.PSObject.Properties.Name) {
     $category = $config.essentials.$categoryName
