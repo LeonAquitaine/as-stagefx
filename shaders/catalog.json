@@ -227,12 +227,12 @@
     "type": "BGX",
     "shortDescription": "Multiscale recursive Truchet pattern with hierarchical tile overlaps, Art Deco line tiles, weave effects, and sophisticated palette system.",
     "longDescription": "Creates a sophisticated multiscale recursive Truchet pattern with hierarchical tile overlaps across 3 levels. Generates complex geometric designs through quadtree subdivision and probabilistic tile placement. Features quadtree-based recursive pattern generation, overlapping tile system with collision prevention, full AS palette system support with multiple color modes, Art Deco style with line tiles and weave effects, animated rotation and panning, audio reactivity for scale/rotation/seed/density, stage positioning controls, and debug visualization of the underlying quadtree structure.",
-    "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-quadtreetruchet.gif",
     "credits": {
       "externalUrl": "https://www.shadertoy.com/view/4t3BW4",
       "originalAuthor": "Shane",
       "originalTitle": "Quadtree Truchet"
-    }
+    },
+    "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-quadtreetruchet.gif"
   },
   {
     "name": "Raymarched Chain",
@@ -240,12 +240,12 @@
     "type": "BGX",
     "shortDescription": "Raymarched animated chain of interconnected torus shapes following a procedural path. Features dynamic rotation, customizable geometry, and sophisticated lighting with camera controls.",
     "longDescription": "Renders a raymarched scene featuring an animated, endlessly twisting chain composed of interconnected torus shapes. The chain follows a procedurally defined path, and its segments rotate and evolve over time, creating a mesmerizing, complex visual. Features raymarched chain of torus shapes with procedural path animation, customizable animation speed and chain geometry, dynamic coloring based on raymarching depth and iteration, camera orientation controls, and standard AS-StageFX blending controls.",
-    "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-raymarchedchain.gif",
     "credits": {
       "externalUrl": "https://www.shadertoy.com/view/ctSfRV",
       "originalAuthor": "Elsio",
       "originalTitle": "Corrente"
-    }
+    },
+    "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-raymarchedchain.gif"
   },
   {
     "name": "Stained Lights",
@@ -292,12 +292,12 @@
     "type": "BGX",
     "shortDescription": "Psychedelic swirling vortex pattern with animated color, swirl, and brightness controls.",
     "longDescription": "Creates a psychedelic swirling vortex pattern. The effect is animated and features controls for color, animation speed, swirl characteristics, and brightness. Suitable as a dynamic background. Features animated vortex with customizable speed, palette-based coloring, swirl intensity/frequency/sharpness, brightness falloff, and standard AS-StageFX blending and positioning.",
-    "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-vortex.gif",
     "credits": {
       "externalUrl": "https://www.shadertoy.com/view/3fKGRd",
       "originalAuthor": "LonkDong",
       "originalTitle": "Vortex__ "
-    }
+    },
+    "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-vortex.gif"
   },
   {
     "name": "Wavy Squares",
@@ -361,7 +361,7 @@
     "type": "GFX",
     "shortDescription": "Transforms the scene with painterly brush stroke textures and dynamic, layered paint effects.",
     "longDescription": "Applies painterly brush stroke textures to the scene, simulating layered paint effects. Features customizable brush size, direction, density, and color blending. Includes animation controls for evolving brush patterns and supports palette-based colorization. Ideal for artistic transformations and stylized overlays.",
-    "imageUrl": null
+    "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-brushstroke.gif"
   },
   {
     "name": "Cinematic Diffusion",
@@ -479,7 +479,7 @@
     "type": "VFX",
     "shortDescription": "Adjusts scene color balance with independent controls for shadows, midtones, and highlights.",
     "longDescription": "Provides precise color grading by adjusting the balance of shadows, midtones, and highlights independently. Features controls for lift, gamma, gain, and color wheels. Useful for creative color correction and stylized looks.",
-    "imageUrl": null
+    "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-colorbalancer.gif"
   },
   {
     "name": "Digital Artifacts",
@@ -495,7 +495,7 @@
     "type": "VFX",
     "shortDescription": "Adds floating dust motes and particles with customizable density, size, and animation.",
     "longDescription": "Simulates floating dust motes and particles drifting through the scene. Features controls for particle density, size, speed, color, and depth of field. Includes animation and blending options for subtle atmospheric enhancement.",
-    "imageUrl": null
+    "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-dustmotes.gif"
   },
   {
     "filename": "AS_VFX_FocusedChaos.1.fx",
@@ -515,7 +515,8 @@
     "type": "VFX",
     "name": "Motion Focus",
     "shortDescription": "Automatic motion-based camera focus and zoom using inter-frame motion analysis.",
-    "longDescription": "Analyzes inter-frame motion differences to dynamically adjust the viewport, zooming towards and centering on areas of detected movement. Uses a multi-pass approach to capture frames, detect motion, analyze motion distribution in quadrants, and apply a corresponding camera transformation with motion-centered zoom. Features multi-pass motion analysis, temporal smoothing, adaptive decay, quadrant-based aggregation, dynamic zoom/focus, and debug visualization."
+    "longDescription": "Analyzes inter-frame motion differences to dynamically adjust the viewport, zooming towards and centering on areas of detected movement. Uses a multi-pass approach to capture frames, detect motion, analyze motion distribution in quadrants, and apply a corresponding camera transformation with motion-centered zoom. Features multi-pass motion analysis, temporal smoothing, adaptive decay, quadrant-based aggregation, dynamic zoom/focus, and debug visualization.",
+    "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-motionfocus.gif"
   },
   {
     "name": "Motion Trails",
@@ -567,7 +568,7 @@
     "type": "VFX",
     "shortDescription": "Draws animated rings or circular overlays with customizable size, color, and animation.",
     "longDescription": "Draws animated rings or circular overlays on the screen. Features controls for ring count, size, thickness, color, and animation speed. Useful for HUDs, overlays, or stylized transitions.",
-    "imageUrl": null
+    "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-screenring.gif"
   },
   {
     "name": "Sparkle Bloom",

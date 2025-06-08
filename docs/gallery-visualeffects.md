@@ -105,7 +105,7 @@ Provides precise color grading by adjusting the balance of shadows, midtones, an
 
 </td>
 <td width="50%"><div style="text-align:center">
-<img src="" alt="Color Balancer Effect" style="max-width:100%;">
+<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-colorbalancer.gif" alt="Color Balancer Effect" style="max-width:100%;">
 </div></td>
 </tr>
 <tr>
@@ -152,7 +152,7 @@ Analyzes inter-frame motion differences to dynamically adjust the viewport, zoom
 
 </td>
 <td width="50%"><div style="text-align:center">
-<img src="" alt="Motion Focus Effect" style="max-width:100%;">
+<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-motionfocus.gif" alt="Motion Focus Effect" style="max-width:100%;">
 </div></td>
 </tr>
 <tr>
@@ -213,7 +213,7 @@ Draws animated rings or circular overlays on the screen. Features controls for r
 
 </td>
 <td width="50%"><div style="text-align:center">
-<img src="" alt="Screen Ring Effect" style="max-width:100%;">
+<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-screenring.gif" alt="Screen Ring Effect" style="max-width:100%;">
 </div></td>
 </tr>
 <tr>
