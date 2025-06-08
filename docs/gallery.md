@@ -1,6 +1,6 @@
 # AS-StageFX Shader Gallery
 
-This gallery provides detailed descriptions and visual examples of the complete AS-StageFX collection, which includes ** shaders** across four categories: ** Background (BGX)**, ** Graphic (GFX)**, ** Lighting (LFX)**, and ** Visual (VFX)** effects.
+This gallery provides detailed descriptions and visual examples of the complete AS-StageFX collection, which includes **57 shaders** across four categories: **26 Background (BGX)**, **7 Graphic (GFX)**, **3 Lighting (LFX)**, and **21 Visual (VFX)** effects.
 
 For installation instructions and general information, please refer to the [main README](../README.md).
 
