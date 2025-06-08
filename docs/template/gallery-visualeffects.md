@@ -23,8 +23,7 @@ For installation instructions and general information, please refer to the [main
 {{longDescription}}
 {{#if credits}}
 <br><br>
-{{#if credits.description}}{{credits.description}}<br>{{/if}}
-{{#if credits.externalUrl}}<a href="{{credits.externalUrl}}" target="_new">Source</a>{{/if}}
+{{#if credits.originalTitle}}Based on '<a href="{{credits.externalUrl}}" target="_new">{{credits.originalTitle}}</a>' by {{credits.originalAuthor}}<br>{{/if}}
 {{/if}}
 </td>
 <td width="50%"><div style="text-align:center">
@@ -47,8 +46,7 @@ For installation instructions and general information, please refer to the [main
 {{longDescription}}
 {{#if credits}}
 <br><br>
-{{#if credits.description}}{{credits.description}}<br>{{/if}}
-{{#if credits.externalUrl}}<a href="{{credits.externalUrl}}" target="_new">Source</a>{{/if}}
+{{#if credits.originalTitle}}Based on '<a href="{{credits.externalUrl}}" target="_new">{{credits.originalTitle}}</a>' by {{credits.originalAuthor}}<br>{{/if}}
 {{/if}}
 </td>
 <td width="50%"><div style="text-align:center">

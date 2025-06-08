@@ -62,8 +62,7 @@ Simulates moving stage spotlights with adjustable beam width, color, intensity, 
 Displays a texture overlay ('sticker') with controls for placement, scale, rotation, and audio reactivity. Features customizable depth masking and support for custom textures. Ideal for adding dynamic, music-responsive overlays.
 
 <br><br>
-Heavily inspired by 'StageDepth.fx' by Marot Satil (2019), original depth masking implementation.<br>
-<a href="https://github.com/Otakumouse/stormshade/blob/master/v4.X/reshade-shaders/Shader%20Library/Recommended/StageDepth.fx" target="_new">Source</a>
+Based on '<a href="https://github.com/Otakumouse/stormshade/blob/master/v4.X/reshade-shaders/Shader%20Library/Recommended/StageDepth.fx" target="_new">StageDepth.fx</a>' by Marot Satil<br>
 
 </td>
 <td width="50%"><div style="text-align:center">
@@ -77,8 +76,7 @@ Heavily inspired by 'StageDepth.fx' by Marot Satil (2019), original depth maskin
 Visualizes audio frequencies as a circular spectrum analyzer. Features adjustable band count, radius, thickness, color palette, and animation speed. Supports audio reactivity for dynamic, music-driven visuals. Ideal for overlays, music videos, and live performances.
 
 <br><br>
-Based on 'Circular audio visualizer' by AIandDesign.<br>
-<a href="https://www.shadertoy.com/view/tcyGW1" target="_new">Source</a>
+Based on '<a href="https://www.shadertoy.com/view/tcyGW1" target="_new">Circular audio visualizer</a>' by AIandDesign<br>
 
 </td>
 <td width="50%"><div style="text-align:center">
@@ -92,8 +90,7 @@ Based on 'Circular audio visualizer' by AIandDesign.<br>
 Simulates dramatic chiaroscuro (light-dark) lighting, emphasizing strong contrast and stylized shadows. Features controls for light direction, intensity, shadow softness, and color tint. Useful for artistic, cinematic, or moody scene transformations.
 
 <br><br>
-Motion inspired by '[RGR] Hearts' by deeplo.<br>
-<a href="https://www.shadertoy.com/view/ttcBRs" target="_new">Source</a>
+Based on '<a href="https://www.shadertoy.com/view/ttcBRs" target="_new">[RGR] Hearts</a>' by deeplo<br>
 
 </td>
 <td width="50%"><div style="text-align:center">
@@ -140,6 +137,7 @@ Simulates floating dust motes and particles drifting through the scene. Features
 Creates a visually complex and dynamic abstract effect resembling a focused point of chaotic energy or a swirling cosmic vortex. Patterns are generated using 3D Simplex noise and Fractional Brownian Motion (FBM), with colors evolving based on noise patterns and spatial coordinates, animated over time. Features transparent background, customizable animation, artistic controls for swirl/noise/color/alpha, dithering, domain warping, and standard AS-StageFX depth/blending controls.
 
 <br><br>
+Based on '<a href="https://www.shadertoy.com/view/lcfyDj" target="_new">BlackHole (swirl, portal)</a>' by misterprada<br>
 
 </td>
 <td width="50%"><div style="text-align:center">
@@ -186,8 +184,7 @@ Simulates various lens distortions including tangential (rotational) blur, chrom
 Generates radiant, glowing fire effects with animated flames and customizable color gradients. Features controls for flame shape, speed, intensity, and palette. Ideal for magical, fantasy, or atmospheric visuals.
 
 <br><br>
-Flame generation inspired by '301's Fire Shader - Remix 3' by mu6k.<br>
-<a href="https://www.shadertoy.com/view/4ttGWM" target="_new">Source</a>
+Based on '<a href="https://www.shadertoy.com/view/4ttGWM" target="_new">301's Fire Shader - Remix 3</a>' by mu6k<br>
 
 </td>
 <td width="50%"><div style="text-align:center">
@@ -201,8 +198,7 @@ Flame generation inspired by '301's Fire Shader - Remix 3' by mu6k.<br>
 Creates the illusion of raindrops and streaks running down a window, with realistic refraction and blur. Features adjustable rain density, drop size, streak speed, and blending. Perfect for moody, cinematic, or weather-themed scenes.
 
 <br><br>
-Inspired by 'Heartfelt' by Martijn Steinrucken (BigWings).<br>
-<a href="https://www.shadertoy.com/view/ltffzl" target="_new">Source</a>
+Based on '<a href="https://www.shadertoy.com/view/ltffzl" target="_new">Heartfelt</a>' by Martijn Steinrucken (BigWings)<br>
 
 </td>
 <td width="50%"><div style="text-align:center">
@@ -260,6 +256,7 @@ Applies a stencil mask to selectively reveal or hide parts of the scene. Feature
 Draws a tilted, animated grid overlay on the scene. Features controls for grid angle, spacing, line thickness, color, and animation speed. Useful for stylized overlays, retro visuals, or compositional guides.
 
 <br><br>
+Based on '<a href="https://www.youtube.com/watch?v=Tfj6RDqXEHM" target="_new">Godot 4: Tilted Grid Effect Tutorial</a>' by FencerDevLog<br>
 
 </td>
 <td width="50%"><div style="text-align:center">
@@ -273,6 +270,7 @@ Draws a tilted, animated grid overlay on the scene. Features controls for grid a
 Simulates volumetric light rays (god rays) emanating from a source. Features controls for light position, color, intensity, ray length, and blending. Useful for dramatic, atmospheric, or mystical scene lighting.
 
 <br><br>
+Based on '<a href="https://www.shadertoy.com/view/wftXzr" target="_new">fake volumetric 2d light wip</a>' by int_45h<br>
 
 </td>
 <td width="50%"><div style="text-align:center">

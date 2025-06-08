@@ -87,7 +87,7 @@
     "filename": "AS_BGX_GoldenClockwork.1.fx",
     "type": "BGX",
     "shortDescription": "Intricate, animated golden clockwork or Apollonian fractal patterns.",
-    "longDescription": "Renders a mesmerizing and intricate animated background effect reminiscent of golden clockwork mechanisms or Apollonian gasket-like fractal patterns. The effect features complex, evolving geometric designs with a characteristic golden color palette. Features procedurally generated Apollonian fractal patterns, dynamic animation driven by time, a golden color scheme with lighting and shading effects, depth-like progression through fractal layers, kaleidoscopic and mirroring options for pattern variation, resolution-independent rendering, and UI controls for animation (speed, keyframe, path speed), palette, fractal/kaleidoscope parameters, audio reactivity, stage controls (position, scale, rotation, depth), and blending.",
+    "longDescription": "Renders a mesmerizing and intricate animated background effect reminiscent of golden clockwork mechanisms or Apollonian gasket-like fractal patterns. The effect features complex, evolving geometric designs with a characteristic golden color palette. Features procedurally generated Apollonian fractal patterns, dynamic animation driven by time, a golden color scheme with lighting and shading effects, depth-like progression through fractal layers, kaleidoscopic and mirroring options for pattern variation and resolution-independent rendering.",
     "credits": {
       "externalUrl": "https://www.shadertoy.com/view/WlcfRS",
       "originalAuthor": "mrange",
@@ -244,7 +244,7 @@
     "filename": "AS_BGX_StainedLights.1.fx",
     "type": "BGX",
     "shortDescription": "Dynamic, colorful patterns like stained glass with shifting light, blurred layers, and audio reactivity.",
-    "longDescription": "Creates dynamic and colorful patterns reminiscent of stained glass illuminated by shifting light, with multiple blurred layers enhancing depth and visual complexity. Generates layers of distorted, cell-like structures with vibrant, evolving colors and subtle edge highlighting, overlaid with softer, floating elements. Features multi-layered pattern generation (adjustable iterations), dynamic animation with speed control, customizable pattern scaling/edge highlighting, audio reactivity for animation/pattern evolution, post-processing (curve adjustments, noise), blurred floating layers for depth, and depth-aware rendering with standard blending. Suitable for abstract backgrounds, energy fields, or mystical visuals.",
+    "longDescription": "Creates dynamic and colorful patterns reminiscent of stained glass illuminated by shifting light, with multiple blurred layers enhancing depth and visual complexity. Generates layers of distorted, cell-like structures with vibrant, evolving colors and subtle edge highlighting, overlaid with softer, floating elements. Suitable for abstract backgrounds, energy fields, or mystical visuals.",
     "credits": {
       "externalUrl": "https://www.shadertoy.com/view/WlsSzM",
       "originalAuthor": "104",
