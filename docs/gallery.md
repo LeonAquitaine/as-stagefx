@@ -160,7 +160,6 @@ Based on '<a href="https://www.shadertoy.com/view/XsXXDn" target="_new">Creation
 <h5><code>AS_BGX_LightWall.1.fx</code></h5>
 This shader renders a seamless, soft, overlapping grid of light panels with various built-in patterns. Perfect for creating dance club and concert backdrops with fully customizable colors, patterns, and audio reactivity. Features 14 built-in patterns, audio-reactive panels that pulse to music, customizable color palettes with 9 presets and custom options, light burst effects and cross beams for dramatic highlighting, 3D perspective with tilt, pitch, and roll controls, and others.
 
-<br><strong>License:</strong> Creative Commons Attribution 4.0 International <span style="color:#888;font-size:90%">(CC BY 4.0)</span>
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-LightWall.gif" alt="Light Wall Effect" style="max-width:100%;">
@@ -175,7 +174,7 @@ Creates dynamic, flowing psychedelic patterns reminiscent of liquid metal or chr
 <br><br>
 Based on '<a href="https://neort.io/art/bkm813c3p9f7drq1j86g" target="_new">Liquid Chrome</a>' by iamsaitam<br>
 
-<br><strong>License:</strong> Creative Commons Attribution 4.0 International <span style="color:#888;font-size:90%">(CC BY 4.0)</span>
+
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-liquidchrome.gif" alt="Liquid Chrome Effect" style="max-width:100%;">
@@ -419,7 +418,6 @@ Based on '<a href="https://www.shadertoy.com/view/XXyGzh" target="_new">Zippy Za
 <h5><code>AS_GFX_AspectRatio.1.fx</code></h5>
 A versatile aspect ratio framing tool designed to help position subjects for social media posts, photography, and video composition. Features preset aspect ratios for common social media and photography formats (1:1, 16:9, 4:5, etc.), custom aspect ratio input, adjustable clipped area color and opacity, optional composition guides (rule of thirds, golden ratio, center lines), horizontal/vertical alignment controls, and adjustable border appearance. Perfect for precise subject positioning and consistent framing across platforms.
 
-<br><strong>License:</strong> Creative Commons Attribution 4.0 International <span style="color:#888;font-size:90%">(CC BY 4.0)</span>
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-aspectratio.gif" alt="Aspect Ratio Effect" style="max-width:100%;">
@@ -431,7 +429,6 @@ A versatile aspect ratio framing tool designed to help position subjects for soc
 <h5><code>AS_GFX_AudioDirection.1.fx</code></h5>
 Displays animated arrows or indicators that visualize the directionality of audio sources in real time. Features customizable arrow count, size, color, and animation speed. Supports audio reactivity for direction, magnitude, and color. Useful for music visualizations, DJ overlays, or any scene where audio direction feedback is desired.
 
-<br><strong>License:</strong> Creative Commons Attribution 4.0 International <span style="color:#888;font-size:90%">(CC BY 4.0)</span>
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-audiodirection.gif" alt="Audio Direction Effect" style="max-width:100%;">
@@ -443,7 +440,6 @@ Displays animated arrows or indicators that visualize the directionality of audi
 <h5><code>AS_GFX_BrushStroke.1.fx</code></h5>
 Applies painterly brush stroke textures to the scene, simulating layered paint effects. Features customizable brush size, direction, density, and color blending. Includes animation controls for evolving brush patterns and supports palette-based colorization. Ideal for artistic transformations and stylized overlays.
 
-<br><strong>License:</strong> Creative Commons Attribution 4.0 International <span style="color:#888;font-size:90%">(CC BY 4.0)</span>
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-brushstroke.gif" alt="Brush Stroke Effect" style="max-width:100%;">
@@ -455,7 +451,6 @@ Applies painterly brush stroke textures to the scene, simulating layered paint e
 <h5><code>AS_GFX_CinematicDiffusion.1.fx</code></h5>
 A high-quality cinematic diffusion/bloom filter that replicates classic film diffusion looks. Features 8 built-in presets (Pro-Mist, Hollywood Black Magic, etc.) and a fully customizable mode. Multi-pass downsampling ensures smooth, natural glows. Ideal for virtual photography and cinematic shots.
 
-<br><strong>License:</strong> Creative Commons Attribution 4.0 International <span style="color:#888;font-size:90%">(CC BY 4.0)</span>
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-cinematicdiffusion.gif" alt="Cinematic Diffusion Effect" style="max-width:100%;">
@@ -482,7 +477,6 @@ Based on '<a href="https://www.shadertoy.com/view/XtVGD1" target="_new">notebook
 <h5><code>AS_GFX_MultiLayerHalftone.1.fx</code></h5>
 Creates a highly customizable multi-layer halftone effect with support for up to four independent layers. Each layer can use different pattern types (dots, lines, crosshatch), isolation methods (brightness, RGB, hue, depth), colors, thresholds, scales, densities, and angles. Features layer blending with transparency support.
 
-<br><strong>License:</strong> Creative Commons Attribution 4.0 International <span style="color:#888;font-size:90%">(CC BY 4.0)</span>
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-multilayerhalftone.gif" alt="MultiLayer Halftone Effect" style="max-width:100%;">
@@ -516,7 +510,6 @@ Based on '<a href="https://www.shadertoy.com/view/XfjyWG" target="_new">Hexagona
 <h5><code>AS_LFX_CandleFlame.1.fx</code></h5>
 Renders a realistic animated candle flame with natural flicker and glow. Features customizable flame shape, color, flicker speed, and intensity. Includes controls for flame position, scale, and blending. Ideal for atmospheric lighting and cozy scene effects.
 
-<br><strong>License:</strong> Creative Commons Attribution 4.0 International <span style="color:#888;font-size:90%">(CC BY 4.0)</span>
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-Candle.gif" alt="Candle Flame Effect" style="max-width:100%;">
@@ -528,7 +521,6 @@ Renders a realistic animated candle flame with natural flicker and glow. Feature
 <h5><code>AS_LFX_LaserShow.1.fx</code></h5>
 Projects animated laser beams and geometric patterns onto the stage. Features customizable beam count, color, speed, and spread. Supports audio reactivity for beam movement and intensity. Includes controls for rotation, position, and blending. Perfect for concert, club, or sci-fi lighting effects.
 
-<br><strong>License:</strong> Creative Commons Attribution 4.0 International <span style="color:#888;font-size:90%">(CC BY 4.0)</span>
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-lasershow.gif" alt="Laser Show Effect" style="max-width:100%;">
@@ -540,7 +532,6 @@ Projects animated laser beams and geometric patterns onto the stage. Features cu
 <h5><code>AS_LFX_StageSpotlights.1.fx</code></h5>
 Simulates moving stage spotlights with adjustable beam width, color, intensity, and movement patterns. Features multiple spotlights with independent controls, audio reactivity for movement and brightness, and blending options for integration with other effects. Ideal for live performance and dramatic scene lighting.
 
-<br><strong>License:</strong> Creative Commons Attribution 4.0 International <span style="color:#888;font-size:90%">(CC BY 4.0)</span>
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-Spotlights.gif" alt="Stage Spotlights Effect" style="max-width:100%;">
@@ -560,9 +551,9 @@ Simulates moving stage spotlights with adjustable beam width, color, intensity, 
 Displays a texture overlay ('sticker') with controls for placement, scale, rotation, and audio reactivity. Features customizable depth masking and support for custom textures. Ideal for adding dynamic, music-responsive overlays.
 
 <br><br>
-Based on '<a href="https://github.com/Otakumouse/stormshade/blob/master/v4.X/reshade-shaders/Shader%20Library/Recommended/StageDepth.fx" target="_new">StageDepth.fx</a>' by Marot Satil<br>
+Based on '<a href="https://github.com/Otakumouse/stormshade/blob/master/v4.X/reshade-shaders/Shader%20Library/Recommended/StageDepth.fx" target="_new">StageDepth.fx</a>' by Marot Satil
 
-<br><strong>License:</strong> Creative Commons Attribution 4.0 International <span style="color:#888;font-size:90%">(CC BY 4.0)</span>
+
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-BoomSticker.gif" alt="Boom Sticker Effect" style="max-width:100%;">
@@ -575,7 +566,7 @@ Based on '<a href="https://github.com/Otakumouse/stormshade/blob/master/v4.X/res
 Visualizes audio frequencies as a circular spectrum analyzer. Features adjustable band count, radius, thickness, color palette, and animation speed. Supports audio reactivity for dynamic, music-driven visuals. Ideal for overlays, music videos, and live performances.
 
 <br><br>
-Based on '<a href="https://www.shadertoy.com/view/tcyGW1" target="_new">Circular audio visualizer</a>' by AIandDesign<br>
+Based on '<a href="https://www.shadertoy.com/view/tcyGW1" target="_new">Circular audio visualizer</a>' by AIandDesign
 
 <br><strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">(CC BY-NC-SA)</span>
 </td>
@@ -590,7 +581,7 @@ Based on '<a href="https://www.shadertoy.com/view/tcyGW1" target="_new">Circular
 Simulates dramatic chiaroscuro (light-dark) lighting, emphasizing strong contrast and stylized shadows. Features controls for light direction, intensity, shadow softness, and color tint. Useful for artistic, cinematic, or moody scene transformations.
 
 <br><br>
-Based on '<a href="https://www.shadertoy.com/view/ttcBRs" target="_new">[RGR] Hearts</a>' by deeplo<br>
+Based on '<a href="https://www.shadertoy.com/view/ttcBRs" target="_new">[RGR] Hearts</a>' by deeplo
 
 <br><strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">(CC BY-NC-SA)</span>
 </td>
@@ -604,7 +595,6 @@ Based on '<a href="https://www.shadertoy.com/view/ttcBRs" target="_new">[RGR] He
 <h5><code>AS_VFX_ColorBalancer.1.fx</code></h5>
 Provides precise color grading by adjusting the balance of shadows, midtones, and highlights independently. Features controls for lift, gamma, gain, and color wheels. Useful for creative color correction and stylized looks.
 
-<br><strong>License:</strong> Creative Commons Attribution 4.0 International <span style="color:#888;font-size:90%">(CC BY 4.0)</span>
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-colorbalancer.gif" alt="Color Balancer Effect" style="max-width:100%;">
@@ -616,7 +606,6 @@ Provides precise color grading by adjusting the balance of shadows, midtones, an
 <h5><code>AS_VFX_DigitalArtifacts.1.fx</code></h5>
 Applies digital compression artifacts such as blockiness, color banding, and quantization noise. Features adjustable artifact strength, block size, and color depth. Useful for retro, glitch, or degraded video effects.
 
-<br><strong>License:</strong> Creative Commons Attribution 4.0 International <span style="color:#888;font-size:90%">(CC BY 4.0)</span>
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-digitalartifacts.gif" alt="Digital Artifacts Effect" style="max-width:100%;">
@@ -628,7 +617,6 @@ Applies digital compression artifacts such as blockiness, color banding, and qua
 <h5><code>AS_VFX_DustMotes.1.fx</code></h5>
 Simulates floating dust motes and particles drifting through the scene. Features controls for particle density, size, speed, color, and depth of field. Includes animation and blending options for subtle atmospheric enhancement.
 
-<br><strong>License:</strong> Creative Commons Attribution 4.0 International <span style="color:#888;font-size:90%">(CC BY 4.0)</span>
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-dustmotes.gif" alt="Dust Motes Effect" style="max-width:100%;">
@@ -641,7 +629,7 @@ Simulates floating dust motes and particles drifting through the scene. Features
 Creates a visually complex and dynamic abstract effect resembling a focused point of chaotic energy or a swirling cosmic vortex. Patterns are generated using 3D Simplex noise and Fractional Brownian Motion (FBM), with colors evolving based on noise patterns and spatial coordinates, animated over time. Features transparent background, customizable animation, artistic controls for swirl/noise/color/alpha, dithering, domain warping, and standard AS-StageFX depth/blending controls.
 
 <br><br>
-Based on '<a href="https://www.shadertoy.com/view/lcfyDj" target="_new">BlackHole (swirl, portal)</a>' by misterprada<br>
+Based on '<a href="https://www.shadertoy.com/view/lcfyDj" target="_new">BlackHole (swirl, portal)</a>' by misterprada
 
 <br><strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">(CC BY-NC-SA)</span>
 </td>
@@ -655,7 +643,6 @@ Based on '<a href="https://www.shadertoy.com/view/lcfyDj" target="_new">BlackHol
 <h5><code>AS_VFX_MotionFocus.1.fx</code></h5>
 Analyzes inter-frame motion differences to dynamically adjust the viewport, zooming towards and centering on areas of detected movement. Uses a multi-pass approach to capture frames, detect motion, analyze motion distribution in quadrants, and apply a corresponding camera transformation with motion-centered zoom. Features multi-pass motion analysis, temporal smoothing, adaptive decay, quadrant-based aggregation, dynamic zoom/focus, and debug visualization.
 
-<br><strong>License:</strong> Creative Commons Attribution 4.0 International <span style="color:#888;font-size:90%">(CC BY 4.0)</span>
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-motionfocus.gif" alt="Motion Focus Effect" style="max-width:100%;">
@@ -667,7 +654,6 @@ Analyzes inter-frame motion differences to dynamically adjust the viewport, zoom
 <h5><code>AS_VFX_MotionTrails.1.fx</code></h5>
 Applies trailing motion blur to moving objects or the whole scene. Features adjustable trail length, direction, fade, and blending. Useful for simulating speed, action, or ghosting effects in dynamic scenes.
 
-<br><strong>License:</strong> Creative Commons Attribution 4.0 International <span style="color:#888;font-size:90%">(CC BY 4.0)</span>
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-motiontrails.gif" alt="Motion Trails Effect" style="max-width:100%;">
@@ -679,7 +665,6 @@ Applies trailing motion blur to moving objects or the whole scene. Features adju
 <h5><code>AS_VFX_RadialLensDistortion.1.fx</code></h5>
 Simulates various lens distortions including tangential (rotational) blur, chromatic aberration (tangential or horizontal), and geometric barrel/pincushion distortion. Effects are strongest at the edges and diminish towards a configurable center point. Includes presets for emulating specific lens characteristics, plus global strength and focus falloff controls. Ensures consistent effect visibility regardless of source alpha by controlling alpha during blending.
 
-<br><strong>License:</strong> Creative Commons Attribution 4.0 International <span style="color:#888;font-size:90%">(CC BY 4.0)</span>
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-radiallensdistortion.gif" alt="Radial Lens Distortion Effect" style="max-width:100%;">
@@ -692,7 +677,7 @@ Simulates various lens distortions including tangential (rotational) blur, chrom
 Generates radiant, glowing fire effects with animated flames and customizable color gradients. Features controls for flame shape, speed, intensity, and palette. Ideal for magical, fantasy, or atmospheric visuals.
 
 <br><br>
-Based on '<a href="https://www.shadertoy.com/view/4ttGWM" target="_new">301's Fire Shader - Remix 3</a>' by mu6k<br>
+Based on '<a href="https://www.shadertoy.com/view/4ttGWM" target="_new">301's Fire Shader - Remix 3</a>' by mu6k
 
 <br><strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">(CC BY-NC-SA)</span>
 </td>
@@ -707,7 +692,7 @@ Based on '<a href="https://www.shadertoy.com/view/4ttGWM" target="_new">301's Fi
 Creates the illusion of raindrops and streaks running down a window, with realistic refraction and blur. Features adjustable rain density, drop size, streak speed, and blending. Perfect for moody, cinematic, or weather-themed scenes.
 
 <br><br>
-Based on '<a href="https://www.shadertoy.com/view/ltffzl" target="_new">Heartfelt</a>' by Martijn Steinrucken (BigWings)<br>
+Based on '<a href="https://www.shadertoy.com/view/ltffzl" target="_new">Heartfelt</a>' by Martijn Steinrucken (BigWings)
 
 <br><strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">(CC BY-NC-SA)</span>
 </td>
@@ -721,7 +706,6 @@ Based on '<a href="https://www.shadertoy.com/view/ltffzl" target="_new">Heartfel
 <h5><code>AS_VFX_ScreenRing.1.fx</code></h5>
 Draws animated rings or circular overlays on the screen. Features controls for ring count, size, thickness, color, and animation speed. Useful for HUDs, overlays, or stylized transitions.
 
-<br><strong>License:</strong> Creative Commons Attribution 4.0 International <span style="color:#888;font-size:90%">(CC BY 4.0)</span>
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-screenring.gif" alt="Screen Ring Effect" style="max-width:100%;">
@@ -733,7 +717,6 @@ Draws animated rings or circular overlays on the screen. Features controls for r
 <h5><code>AS_VFX_SparkleBloom.1.fx</code></h5>
 Adds sparkling bloom highlights to bright areas, with animated glints and customizable color. Features controls for sparkle density, size, intensity, and animation. Ideal for magical, festive, or dreamy visuals.
 
-<br><strong>License:</strong> Creative Commons Attribution 4.0 International <span style="color:#888;font-size:90%">(CC BY 4.0)</span>
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-sparklebloom.gif" alt="Sparkle Bloom Effect" style="max-width:100%;">
@@ -745,7 +728,6 @@ Adds sparkling bloom highlights to bright areas, with animated glints and custom
 <h5><code>AS_VFX_SpectrumRing.1.fx</code></h5>
 Displays an audio spectrum analyzer in a ring format. Features adjustable band count, radius, thickness, color palette, and animation speed. Supports audio reactivity for dynamic, music-driven visuals. Ideal for overlays, music videos, and live performances.
 
-<br><strong>License:</strong> Creative Commons Attribution 4.0 International <span style="color:#888;font-size:90%">(CC BY 4.0)</span>
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-SpectrumRing.gif" alt="Spectrum Ring Effect" style="max-width:100%;">
@@ -757,7 +739,6 @@ Displays an audio spectrum analyzer in a ring format. Features adjustable band c
 <h5><code>AS_VFX_StencilMask.1.fx</code></h5>
 Applies a stencil mask to selectively reveal or hide parts of the scene. Features controls for mask shape, size, position, feathering, and blending. Useful for transitions, overlays, or compositing effects.
 
-<br><strong>License:</strong> Creative Commons Attribution 4.0 International <span style="color:#888;font-size:90%">(CC BY 4.0)</span>
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-StencilMask.gif" alt="Stencil Mask Effect" style="max-width:100%;">
@@ -770,9 +751,9 @@ Applies a stencil mask to selectively reveal or hide parts of the scene. Feature
 Draws a tilted, animated grid overlay on the scene. Features controls for grid angle, spacing, line thickness, color, and animation speed. Useful for stylized overlays, retro visuals, or compositional guides.
 
 <br><br>
-Based on '<a href="https://www.youtube.com/watch?v=Tfj6RDqXEHM" target="_new">Godot 4: Tilted Grid Effect Tutorial</a>' by FencerDevLog<br>
+Based on '<a href="https://www.youtube.com/watch?v=Tfj6RDqXEHM" target="_new">Godot 4: Tilted Grid Effect Tutorial</a>' by FencerDevLog
 
-<br><strong>License:</strong> Creative Commons Attribution 4.0 International <span style="color:#888;font-size:90%">(CC BY 4.0)</span>
+
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-tiltedgrid.gif" alt="Tilted Grid Effect" style="max-width:100%;">
@@ -785,7 +766,7 @@ Based on '<a href="https://www.youtube.com/watch?v=Tfj6RDqXEHM" target="_new">Go
 Simulates volumetric light rays (god rays) emanating from a source. Features controls for light position, color, intensity, ray length, and blending. Useful for dramatic, atmospheric, or mystical scene lighting.
 
 <br><br>
-Based on '<a href="https://www.shadertoy.com/view/wftXzr" target="_new">fake volumetric 2d light wip</a>' by int_45h<br>
+Based on '<a href="https://www.shadertoy.com/view/wftXzr" target="_new">fake volumetric 2d light wip</a>' by int_45h
 
 <br><strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">(CC BY-NC-SA)</span>
 </td>
@@ -799,7 +780,6 @@ Based on '<a href="https://www.shadertoy.com/view/wftXzr" target="_new">fake vol
 <h5><code>AS_VFX_VUMeter.1.fx</code></h5>
 Displays a classic VU meter with audio-reactive bars. Features controls for bar count, orientation, color, peak hold, and animation. Ideal for music visualizations, overlays, and live performance feedback.
 
-<br><strong>License:</strong> Creative Commons Attribution 4.0 International <span style="color:#888;font-size:90%">(CC BY 4.0)</span>
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-VUMeter.gif" alt="VUMeter Effect" style="max-width:100%;">
@@ -811,7 +791,6 @@ Displays a classic VU meter with audio-reactive bars. Features controls for bar 
 <h5><code>AS_VFX_WarpDistort.1.fx</code></h5>
 Applies animated warp distortion to the scene. Features controls for distortion strength, direction, speed, and blending. Useful for psychedelic, dreamlike, or transition effects.
 
-<br><strong>License:</strong> Creative Commons Attribution 4.0 International <span style="color:#888;font-size:90%">(CC BY 4.0)</span>
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-Warp.gif" alt="Warp Distort Effect" style="max-width:100%;">
@@ -823,7 +802,6 @@ Applies animated warp distortion to the scene. Features controls for distortion 
 <h5><code>AS_VFX_WaterSurface.1.fx</code></h5>
 Simulates an animated water surface with dynamic ripples, reflections, and customizable color. Features controls for wave speed, amplitude, direction, and reflection intensity. Useful for aquatic, dreamy, or atmospheric effects.
 
-<br><strong>License:</strong> Creative Commons Attribution 4.0 International <span style="color:#888;font-size:90%">(CC BY 4.0)</span>
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-watersurface.gif" alt="Water Surface Effect" style="max-width:100%;">

@@ -1,8 +1,10 @@
 {
+  "buildDate": "2025-06-11T11:28:12Z",
+  "version": "1.8.6",
   "packages": [
     {
       "fxhDependencyCount": 4,
-      "version": "1.8.6",
+      "description": "The complete collection of all AS StageFX shaders and utilities",
       "textureDependencyCount": 3,
       "dependencies": {
         "fxh": [
@@ -76,13 +78,13 @@
         "AS_VFX_WarpDistort.1.fx",
         "AS_VFX_WaterSurface.1.fx"
       ],
-      "shaderCount": 57,
       "name": "AS_StageFX",
-      "description": "The complete collection of all AS StageFX shaders and utilities"
+      "version": "1.8.6",
+      "shaderCount": 57
     },
     {
       "fxhDependencyCount": 3,
-      "version": "1.8.6",
+      "description": "Complete collection of background effects (Requires Essentials)",
       "textureDependencyCount": 1,
       "dependencies": {
         "fxh": [
@@ -122,13 +124,13 @@
         "AS_BGX_WavySquiggles.1.fx",
         "AS_BGX_ZippyZaps.1.fx"
       ],
-      "shaderCount": 26,
       "name": "AS_StageFX_Backgrounds",
-      "description": "Complete collection of background effects (Requires Essentials)"
+      "version": "1.8.6",
+      "shaderCount": 26
     },
     {
       "fxhDependencyCount": 5,
-      "version": "1.8.6",
+      "description": "Core library files and essential visual effects for general use",
       "textureDependencyCount": 0,
       "dependencies": {
         "fxh": [
@@ -154,13 +156,13 @@
         "AS_VFX_MotionTrails.1.fx",
         "AS_VFX_StencilMask.1.fx"
       ],
-      "shaderCount": 12,
       "name": "AS_StageFX_Essentials",
-      "description": "Core library files and essential visual effects for general use"
+      "version": "1.8.6",
+      "shaderCount": 12
     },
     {
       "fxhDependencyCount": 4,
-      "version": "1.8.6",
+      "description": "Complete collection of visual effects (Requires Essentials)",
       "textureDependencyCount": 3,
       "dependencies": {
         "fxh": [
@@ -208,11 +210,9 @@
         "AS_VFX_WarpDistort.1.fx",
         "AS_VFX_WaterSurface.1.fx"
       ],
-      "shaderCount": 31,
       "name": "AS_StageFX_VisualEffects",
-      "description": "Complete collection of visual effects (Requires Essentials)"
+      "version": "1.8.6",
+      "shaderCount": 31
     }
-  ],
-  "buildDate": "2025-06-11T11:13:28Z",
-  "version": "1.8.6"
+  ]
 }
