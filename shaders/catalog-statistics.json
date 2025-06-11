@@ -1,256 +1,5 @@
 {
-  "total": 57,
-  "byType": {
-    "VFX": 21,
-    "LFX": 3,
-    "BGX": 26,
-    "GFX": 7
-  },
   "grouped": {
-    "VFX": [
-      {
-        "name": "Boom Sticker",
-        "filename": "AS_VFX_BoomSticker.1.fx",
-        "type": "VFX",
-        "shortDescription": "Displays a texture overlay ('sticker') with controls for placement, scale, rotation, and audio reactivity.",
-        "longDescription": "Displays a texture overlay ('sticker') with controls for placement, scale, rotation, and audio reactivity. Features customizable depth masking and support for custom textures. Ideal for adding dynamic, music-responsive overlays.",
-        "credits": {
-          "description": "Heavily inspired by 'StageDepth.fx' by Marot Satil (2019), original depth masking implementation.",
-          "externalUrl": "https://github.com/Otakumouse/stormshade/blob/master/v4.X/reshade-shaders/Shader%20Library/Recommended/StageDepth.fx",
-          "originalAuthor": "Marot Satil",
-          "originalTitle": "StageDepth.fx",
-          "licence": "Creative Commons Attribution 4.0 International"
-        },
-        "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-BoomSticker.gif",
-        "licence": "Creative Commons Attribution 4.0 International"
-      },
-      {
-        "name": "Circular Spectrum",
-        "filename": "AS_VFX_CircularSpectrum.1.fx",
-        "type": "VFX",
-        "shortDescription": "Displays a circular audio spectrum analyzer with customizable bands, colors, and animation.",
-        "longDescription": "Visualizes audio frequencies as a circular spectrum analyzer. Features adjustable band count, radius, thickness, color palette, and animation speed. Supports audio reactivity for dynamic, music-driven visuals. Ideal for overlays, music videos, and live performances.",
-        "credits": {
-          "description": "Based on 'Circular audio visualizer' by AIandDesign.",
-          "externalUrl": "https://www.shadertoy.com/view/tcyGW1",
-          "originalAuthor": "AIandDesign",
-          "originalTitle": "Circular audio visualizer",
-          "licence": "CC Share-Alike Non-Commercial"
-        },
-        "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-circularspectrum.gif",
-        "licence": "CC Share-Alike Non-Commercial"
-      },
-      {
-        "name": "Clair Obscur",
-        "filename": "AS_VFX_ClairObscur.1.fx",
-        "type": "VFX",
-        "shortDescription": "Applies dramatic chiaroscuro lighting with strong contrast and stylized shadows.",
-        "longDescription": "Simulates dramatic chiaroscuro (light-dark) lighting, emphasizing strong contrast and stylized shadows. Features controls for light direction, intensity, shadow softness, and color tint. Useful for artistic, cinematic, or moody scene transformations.",
-        "credits": {
-          "description": "Motion inspired by '[RGR] Hearts' by deeplo.",
-          "externalUrl": "https://www.shadertoy.com/view/ttcBRs",
-          "originalAuthor": "deeplo",
-          "originalTitle": "[RGR] Hearts",
-          "licence": "CC Share-Alike Non-Commercial"
-        },
-        "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-ClairObscur.gif",
-        "licence": "CC Share-Alike Non-Commercial"
-      },
-      {
-        "name": "Color Balancer",
-        "filename": "AS_VFX_ColorBalancer.1.fx",
-        "type": "VFX",
-        "shortDescription": "Adjusts scene color balance with independent controls for shadows, midtones, and highlights.",
-        "longDescription": "Provides precise color grading by adjusting the balance of shadows, midtones, and highlights independently. Features controls for lift, gamma, gain, and color wheels. Useful for creative color correction and stylized looks.",
-        "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-colorbalancer.gif",
-        "licence": "Creative Commons Attribution 4.0 International"
-      },
-      {
-        "name": "Digital Artifacts",
-        "filename": "AS_VFX_DigitalArtifacts.1.fx",
-        "type": "VFX",
-        "shortDescription": "Simulates digital compression artifacts, blockiness, and color banding.",
-        "longDescription": "Applies digital compression artifacts such as blockiness, color banding, and quantization noise. Features adjustable artifact strength, block size, and color depth. Useful for retro, glitch, or degraded video effects.",
-        "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-digitalartifacts.gif",
-        "licence": "Creative Commons Attribution 4.0 International"
-      },
-      {
-        "name": "Dust Motes",
-        "filename": "AS_VFX_DustMotes.1.fx",
-        "type": "VFX",
-        "shortDescription": "Adds floating dust motes and particles with customizable density, size, and animation.",
-        "longDescription": "Simulates floating dust motes and particles drifting through the scene. Features controls for particle density, size, speed, color, and depth of field. Includes animation and blending options for subtle atmospheric enhancement.",
-        "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-dustmotes.gif",
-        "licence": "Creative Commons Attribution 4.0 International"
-      },
-      {
-        "filename": "AS_VFX_FocusedChaos.1.fx",
-        "type": "VFX",
-        "name": "Focused Chaos",
-        "shortDescription": "Swirling cosmic vortex/black hole effect with animated noise and artistic controls.",
-        "longDescription": "Creates a visually complex and dynamic abstract effect resembling a focused point of chaotic energy or a swirling cosmic vortex. Patterns are generated using 3D Simplex noise and Fractional Brownian Motion (FBM), with colors evolving based on noise patterns and spatial coordinates, animated over time. Features transparent background, customizable animation, artistic controls for swirl/noise/color/alpha, dithering, domain warping, and standard AS-StageFX depth/blending controls.",
-        "credits": {
-          "externalUrl": "https://www.shadertoy.com/view/lcfyDj",
-          "originalAuthor": "misterprada",
-          "originalTitle": "BlackHole (swirl, portal)",
-          "licence": "CC Share-Alike Non-Commercial"
-        },
-        "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-focusedchaos.gif",
-        "licence": "CC Share-Alike Non-Commercial"
-      },
-      {
-        "filename": "AS_VFX_MotionFocus.1.fx",
-        "type": "VFX",
-        "name": "Motion Focus",
-        "shortDescription": "Automatic motion-based camera focus and zoom using inter-frame motion analysis.",
-        "longDescription": "Analyzes inter-frame motion differences to dynamically adjust the viewport, zooming towards and centering on areas of detected movement. Uses a multi-pass approach to capture frames, detect motion, analyze motion distribution in quadrants, and apply a corresponding camera transformation with motion-centered zoom. Features multi-pass motion analysis, temporal smoothing, adaptive decay, quadrant-based aggregation, dynamic zoom/focus, and debug visualization.",
-        "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-motionfocus.gif",
-        "licence": "Creative Commons Attribution 4.0 International"
-      },
-      {
-        "name": "Motion Trails",
-        "filename": "AS_VFX_MotionTrails.1.fx",
-        "type": "VFX",
-        "shortDescription": "Creates trailing motion blur effects for moving objects or the entire scene.",
-        "longDescription": "Applies trailing motion blur to moving objects or the whole scene. Features adjustable trail length, direction, fade, and blending. Useful for simulating speed, action, or ghosting effects in dynamic scenes.",
-        "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-motiontrails.gif",
-        "licence": "Creative Commons Attribution 4.0 International"
-      },
-      {
-        "filename": "AS_VFX_RadialLensDistortion.1.fx",
-        "type": "VFX",
-        "name": "Radial Lens Distortion",
-        "shortDescription": "Emulates radial and lens-specific distortions including blur, chromatic aberration, and geometric warping.",
-        "longDescription": "Simulates various lens distortions including tangential (rotational) blur, chromatic aberration (tangential or horizontal), and geometric barrel/pincushion distortion. Effects are strongest at the edges and diminish towards a configurable center point. Includes presets for emulating specific lens characteristics, plus global strength and focus falloff controls. Ensures consistent effect visibility regardless of source alpha by controlling alpha during blending.",
-        "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-radiallensdistortion.gif",
-        "licence": "Creative Commons Attribution 4.0 International"
-      },
-      {
-        "name": "Radiant Fire",
-        "filename": "AS_VFX_RadiantFire.1.fx",
-        "type": "VFX",
-        "shortDescription": "Simulates radiant, glowing fire with animated flames and color gradients.",
-        "longDescription": "Generates radiant, glowing fire effects with animated flames and customizable color gradients. Features controls for flame shape, speed, intensity, and palette. Ideal for magical, fantasy, or atmospheric visuals.",
-        "credits": {
-          "description": "Flame generation inspired by '301's Fire Shader - Remix 3' by mu6k.",
-          "externalUrl": "https://www.shadertoy.com/view/4ttGWM",
-          "originalAuthor": "mu6k",
-          "originalTitle": "301's Fire Shader - Remix 3",
-          "licence": "CC Share-Alike Non-Commercial"
-        },
-        "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-radiantfire.gif",
-        "licence": "CC Share-Alike Non-Commercial"
-      },
-      {
-        "name": "Rainy Window",
-        "filename": "AS_VFX_RainyWindow.1.fx",
-        "type": "VFX",
-        "shortDescription": "Simulates raindrops and streaks on a window with refraction and blur effects.",
-        "longDescription": "Creates the illusion of raindrops and streaks running down a window, with realistic refraction and blur. Features adjustable rain density, drop size, streak speed, and blending. Perfect for moody, cinematic, or weather-themed scenes.",
-        "credits": {
-          "description": "Inspired by 'Heartfelt' by Martijn Steinrucken (BigWings).",
-          "externalUrl": "https://www.shadertoy.com/view/ltffzl",
-          "originalAuthor": "Martijn Steinrucken (BigWings)",
-          "originalTitle": "Heartfelt",
-          "licence": "CC Share-Alike Non-Commercial"
-        },
-        "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-rainywindow.gif",
-        "licence": "CC Share-Alike Non-Commercial"
-      },
-      {
-        "name": "Screen Ring",
-        "filename": "AS_VFX_ScreenRing.1.fx",
-        "type": "VFX",
-        "shortDescription": "Draws animated rings or circular overlays with customizable size, color, and animation.",
-        "longDescription": "Draws animated rings or circular overlays on the screen. Features controls for ring count, size, thickness, color, and animation speed. Useful for HUDs, overlays, or stylized transitions.",
-        "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-screenring.gif",
-        "licence": "Creative Commons Attribution 4.0 International"
-      },
-      {
-        "name": "Sparkle Bloom",
-        "filename": "AS_VFX_SparkleBloom.1.fx",
-        "type": "VFX",
-        "shortDescription": "Adds sparkling bloom highlights with animated glints and color controls.",
-        "longDescription": "Adds sparkling bloom highlights to bright areas, with animated glints and customizable color. Features controls for sparkle density, size, intensity, and animation. Ideal for magical, festive, or dreamy visuals.",
-        "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-sparklebloom.gif",
-        "licence": "Creative Commons Attribution 4.0 International"
-      },
-      {
-        "name": "Spectrum Ring",
-        "filename": "AS_VFX_SpectrumRing.1.fx",
-        "type": "VFX",
-        "shortDescription": "Visualizes audio spectrum as a ring with customizable bands, colors, and animation.",
-        "longDescription": "Displays an audio spectrum analyzer in a ring format. Features adjustable band count, radius, thickness, color palette, and animation speed. Supports audio reactivity for dynamic, music-driven visuals. Ideal for overlays, music videos, and live performances.",
-        "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-SpectrumRing.gif",
-        "licence": "Creative Commons Attribution 4.0 International"
-      },
-      {
-        "name": "Stencil Mask",
-        "filename": "AS_VFX_StencilMask.1.fx",
-        "type": "VFX",
-        "shortDescription": "Applies a stencil mask for selective effect application with shape and position controls.",
-        "longDescription": "Applies a stencil mask to selectively reveal or hide parts of the scene. Features controls for mask shape, size, position, feathering, and blending. Useful for transitions, overlays, or compositing effects.",
-        "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-StencilMask.gif",
-        "licence": "Creative Commons Attribution 4.0 International"
-      },
-      {
-        "name": "Tilted Grid",
-        "filename": "AS_VFX_TiltedGrid.1.fx",
-        "type": "VFX",
-        "shortDescription": "Draws a tilted, animated grid overlay with customizable angle, spacing, and color.",
-        "longDescription": "Draws a tilted, animated grid overlay on the scene. Features controls for grid angle, spacing, line thickness, color, and animation speed. Useful for stylized overlays, retro visuals, or compositional guides.",
-        "credits": {
-          "externalUrl": "https://www.youtube.com/watch?v=Tfj6RDqXEHM",
-          "originalAuthor": "FencerDevLog",
-          "originalTitle": "Godot 4: Tilted Grid Effect Tutorial",
-          "licence": "Creative Commons Attribution 4.0 International"
-        },
-        "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-tiltedgrid.gif",
-        "licence": "Creative Commons Attribution 4.0 International"
-      },
-      {
-        "name": "Volumetric Light",
-        "filename": "AS_VFX_VolumetricLight.1.fx",
-        "type": "VFX",
-        "shortDescription": "Simulates volumetric light rays and god rays with customizable source, color, and intensity.",
-        "longDescription": "Simulates volumetric light rays (god rays) emanating from a source. Features controls for light position, color, intensity, ray length, and blending. Useful for dramatic, atmospheric, or mystical scene lighting.",
-        "credits": {
-          "externalUrl": "https://www.shadertoy.com/view/wftXzr",
-          "originalAuthor": "int_45h",
-          "originalTitle": "fake volumetric 2d light wip",
-          "licence": "CC Share-Alike Non-Commercial"
-        },
-        "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-volumetriclight.gif",
-        "licence": "CC Share-Alike Non-Commercial"
-      },
-      {
-        "name": "VUMeter",
-        "filename": "AS_VFX_VUMeter.1.fx",
-        "type": "VFX",
-        "shortDescription": "Displays a classic VU meter with audio-reactive bars and customizable appearance.",
-        "longDescription": "Displays a classic VU meter with audio-reactive bars. Features controls for bar count, orientation, color, peak hold, and animation. Ideal for music visualizations, overlays, and live performance feedback.",
-        "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-VUMeter.gif",
-        "licence": "Creative Commons Attribution 4.0 International"
-      },
-      {
-        "name": "Warp Distort",
-        "filename": "AS_VFX_WarpDistort.1.fx",
-        "type": "VFX",
-        "shortDescription": "Applies animated warp distortion with customizable strength, direction, and speed.",
-        "longDescription": "Applies animated warp distortion to the scene. Features controls for distortion strength, direction, speed, and blending. Useful for psychedelic, dreamlike, or transition effects.",
-        "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-Warp.gif",
-        "licence": "Creative Commons Attribution 4.0 International"
-      },
-      {
-        "name": "Water Surface",
-        "filename": "AS_VFX_WaterSurface.1.fx",
-        "type": "VFX",
-        "shortDescription": "Simulates animated water surface with ripples, reflections, and customizable color.",
-        "longDescription": "Simulates an animated water surface with dynamic ripples, reflections, and customizable color. Features controls for wave speed, amplitude, direction, and reflection intensity. Useful for aquatic, dreamy, or atmospheric effects.",
-        "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-watersurface.gif",
-        "licence": "Creative Commons Attribution 4.0 International"
-      }
-    ],
     "LFX": [
       {
         "name": "Candle Flame",
@@ -259,7 +8,8 @@
         "shortDescription": "Simulates a realistic, animated candle flame with flicker, glow, and color controls.",
         "longDescription": "Renders a realistic animated candle flame with natural flicker and glow. Features customizable flame shape, color, flicker speed, and intensity. Includes controls for flame position, scale, and blending. Ideal for atmospheric lighting and cozy scene effects.",
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-Candle.gif",
-        "licence": "Creative Commons Attribution 4.0 International"
+        "licence": "Creative Commons Attribution 4.0 International",
+        "license": "CC BY 4.0"
       },
       {
         "name": "Laser Show",
@@ -268,7 +18,8 @@
         "shortDescription": "Projects animated laser beams and patterns with customizable color, speed, and audio reactivity.",
         "longDescription": "Projects animated laser beams and geometric patterns onto the stage. Features customizable beam count, color, speed, and spread. Supports audio reactivity for beam movement and intensity. Includes controls for rotation, position, and blending. Perfect for concert, club, or sci-fi lighting effects.",
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-lasershow.gif",
-        "licence": "Creative Commons Attribution 4.0 International"
+        "licence": "Creative Commons Attribution 4.0 International",
+        "license": "CC BY 4.0"
       },
       {
         "name": "Stage Spotlights",
@@ -277,7 +28,8 @@
         "shortDescription": "Simulates moving stage spotlights with beam controls, color, and audio reactivity.",
         "longDescription": "Simulates moving stage spotlights with adjustable beam width, color, intensity, and movement patterns. Features multiple spotlights with independent controls, audio reactivity for movement and brightness, and blending options for integration with other effects. Ideal for live performance and dramatic scene lighting.",
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-Spotlights.gif",
-        "licence": "Creative Commons Attribution 4.0 International"
+        "licence": "Creative Commons Attribution 4.0 International",
+        "license": "CC BY 4.0"
       }
     ],
     "BGX": [
@@ -292,10 +44,12 @@
           "externalUrl": "https://www.shadertoy.com/view/XfKGWV",
           "originalAuthor": "SnoopethDuckDuck",
           "originalTitle": "Blue Corona [256 Chars]",
-          "licence": "CC Share-Alike Non-Commercial"
+          "licence": "CC Share-Alike Non-Commercial",
+          "license": "CC BY-NC-SA"
         },
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-bluecorona.gif",
-        "licence": "CC Share-Alike Non-Commercial"
+        "licence": "CC Share-Alike Non-Commercial",
+        "license": "CC BY-NC-SA"
       },
       {
         "name": "Constellation",
@@ -308,10 +62,12 @@
           "externalUrl": "https://www.shadertoy.com/view/slfGzf",
           "originalAuthor": "jairoandre",
           "originalTitle": "old joseph",
-          "licence": "CC Share-Alike Non-Commercial"
+          "licence": "CC Share-Alike Non-Commercial",
+          "license": "CC BY-NC-SA"
         },
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-constellation.gif",
-        "licence": "CC Share-Alike Non-Commercial"
+        "licence": "CC Share-Alike Non-Commercial",
+        "license": "CC BY-NC-SA"
       },
       {
         "name": "Corridor Travel",
@@ -324,10 +80,12 @@
           "externalUrl": "https://www.shadertoy.com/view/3sXyRN",
           "originalAuthor": "NuSan",
           "originalTitle": "Corridor Travel",
-          "licence": "CC Share-Alike Non-Commercial"
+          "licence": "CC Share-Alike Non-Commercial",
+          "license": "CC BY-NC-SA"
         },
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-corridortravel.gif",
-        "licence": "CC Share-Alike Non-Commercial"
+        "licence": "CC Share-Alike Non-Commercial",
+        "license": "CC BY-NC-SA"
       },
       {
         "name": "Cosmic Kaleidoscope",
@@ -340,10 +98,12 @@
           "externalUrl": "https://www.shadertoy.com/view/XlfGRj",
           "originalAuthor": "Kali",
           "originalTitle": "Star Nest",
-          "licence": "CC Share-Alike Non-Commercial"
+          "licence": "CC Share-Alike Non-Commercial",
+          "license": "CC BY-NC-SA"
         },
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-cosmickaleidoscope.gif",
-        "licence": "CC Share-Alike Non-Commercial"
+        "licence": "CC Share-Alike Non-Commercial",
+        "license": "CC BY-NC-SA"
       },
       {
         "name": "Digital Brain",
@@ -356,10 +116,12 @@
           "externalUrl": "https://www.shadertoy.com/view/4sl3Dr",
           "originalAuthor": "srtuss",
           "originalTitle": "Digital Brain",
-          "licence": "CC Share-Alike Non-Commercial"
+          "licence": "CC Share-Alike Non-Commercial",
+          "license": "CC BY-NC-SA"
         },
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-digitalbrain.gif",
-        "licence": "CC Share-Alike Non-Commercial"
+        "licence": "CC Share-Alike Non-Commercial",
+        "license": "CC BY-NC-SA"
       },
       {
         "name": "Fluorescent",
@@ -371,10 +133,12 @@
           "externalUrl": "https://www.shadertoy.com/view/WcGGDd",
           "originalAuthor": "Xor",
           "originalTitle": "Fluorescent [292]",
-          "licence": "CC Share-Alike Non-Commercial"
+          "licence": "CC Share-Alike Non-Commercial",
+          "license": "CC BY-NC-SA"
         },
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-fluorescent.gif",
-        "licence": "CC Share-Alike Non-Commercial"
+        "licence": "CC Share-Alike Non-Commercial",
+        "license": "CC BY-NC-SA"
       },
       {
         "name": "Golden Clockwork",
@@ -386,10 +150,12 @@
           "externalUrl": "https://www.shadertoy.com/view/WlcfRS",
           "originalAuthor": "mrange",
           "originalTitle": "Golden apollian",
-          "licence": "CC Share-Alike Non-Commercial"
+          "licence": "CC Share-Alike Non-Commercial",
+          "license": "CC BY-NC-SA"
         },
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-goldenclockwork.gif",
-        "licence": "CC Share-Alike Non-Commercial"
+        "licence": "CC Share-Alike Non-Commercial",
+        "license": "CC BY-NC-SA"
       },
       {
         "name": "Kaleidoscope",
@@ -401,10 +167,12 @@
           "externalUrl": "https://www.shadertoy.com/view/ddsyDN",
           "originalAuthor": "Kanduvisla",
           "originalTitle": "Kaleidoscope",
-          "licence": "CC Share-Alike Non-Commercial"
+          "licence": "CC Share-Alike Non-Commercial",
+          "license": "CC BY-NC-SA"
         },
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-kaleidoscope.gif",
-        "licence": "CC Share-Alike Non-Commercial"
+        "licence": "CC Share-Alike Non-Commercial",
+        "license": "CC BY-NC-SA"
       },
       {
         "name": "Light Ripples",
@@ -416,10 +184,12 @@
           "externalUrl": "https://www.shadertoy.com/view/XsXXDn",
           "originalAuthor": "Danguafer/Danilo Guanabara",
           "originalTitle": "Creation by Silexars",
-          "licence": "CC Share-Alike Non-Commercial"
+          "licence": "CC Share-Alike Non-Commercial",
+          "license": "CC BY-NC-SA"
         },
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-lightripples.gif",
-        "licence": "CC Share-Alike Non-Commercial"
+        "licence": "CC Share-Alike Non-Commercial",
+        "license": "CC BY-NC-SA"
       },
       {
         "name": "Light Wall",
@@ -428,7 +198,8 @@
         "shortDescription": "A seamless, soft, overlapping grid of light panels with various built-in patterns. Perfect for creating dance club and concert backdrops.",
         "longDescription": "This shader renders a seamless, soft, overlapping grid of light panels with various built-in patterns. Perfect for creating dance club and concert backdrops with fully customizable colors, patterns, and audio reactivity. Features 14 built-in patterns, audio-reactive panels that pulse to music, customizable color palettes with 9 presets and custom options, light burst effects and cross beams for dramatic highlighting, 3D perspective with tilt, pitch, and roll controls, and others.",
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-LightWall.gif",
-        "licence": "Creative Commons Attribution 4.0 International"
+        "licence": "Creative Commons Attribution 4.0 International",
+        "license": "CC BY 4.0"
       },
       {
         "name": "Liquid Chrome",
@@ -440,10 +211,12 @@
           "externalUrl": "https://neort.io/art/bkm813c3p9f7drq1j86g",
           "originalAuthor": "iamsaitam",
           "originalTitle": "Liquid Chrome",
-          "licence": "Creative Commons Attribution 4.0 International"
+          "licence": "Creative Commons Attribution 4.0 International",
+          "license": "CC BY 4.0"
         },
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-liquidchrome.gif",
-        "licence": "Creative Commons Attribution 4.0 International"
+        "licence": "Creative Commons Attribution 4.0 International",
+        "license": "CC BY 4.0"
       },
       {
         "name": "Log Spirals",
@@ -456,10 +229,12 @@
           "externalUrl": "https://www.shadertoy.com/view/msGXRD",
           "originalAuthor": "mrange",
           "originalTitle": "Logarithmic spiral of spheres",
-          "licence": "CC Share-Alike Non-Commercial"
+          "licence": "CC Share-Alike Non-Commercial",
+          "license": "CC BY-NC-SA"
         },
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-logspirals.gif",
-        "licence": "CC Share-Alike Non-Commercial"
+        "licence": "CC Share-Alike Non-Commercial",
+        "license": "CC BY-NC-SA"
       },
       {
         "name": "Melt Wave",
@@ -471,10 +246,12 @@
           "externalUrl": "https://www.shadertoy.com/view/XsX3zl",
           "originalAuthor": "tomorrowevening",
           "originalTitle": "70s Melt",
-          "licence": "CC Share-Alike Non-Commercial"
+          "licence": "CC Share-Alike Non-Commercial",
+          "license": "CC BY-NC-SA"
         },
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-meltwave.gif",
-        "licence": "CC Share-Alike Non-Commercial"
+        "licence": "CC Share-Alike Non-Commercial",
+        "license": "CC BY-NC-SA"
       },
       {
         "name": "Misty Grid",
@@ -486,10 +263,12 @@
           "externalUrl": "https://www.shadertoy.com/view/wl2Szd",
           "originalAuthor": "NuSan",
           "originalTitle": "[twitch] Misty Grid",
-          "licence": "CC Share-Alike Non-Commercial"
+          "licence": "CC Share-Alike Non-Commercial",
+          "license": "CC BY-NC-SA"
         },
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-mistygrid.gif",
-        "licence": "CC Share-Alike Non-Commercial"
+        "licence": "CC Share-Alike Non-Commercial",
+        "license": "CC BY-NC-SA"
       },
       {
         "name": "Past Racer",
@@ -501,10 +280,12 @@
           "externalUrl": "https://www.shadertoy.com/view/tsBBzG",
           "originalAuthor": "NuSan",
           "originalTitle": "Outline 2020 Freestyle Live code",
-          "licence": "CC Share-Alike Non-Commercial"
+          "licence": "CC Share-Alike Non-Commercial",
+          "license": "CC BY-NC-SA"
         },
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-pastracer.gif",
-        "licence": "CC Share-Alike Non-Commercial"
+        "licence": "CC Share-Alike Non-Commercial",
+        "license": "CC BY-NC-SA"
       },
       {
         "name": "Plasma Flow",
@@ -516,10 +297,12 @@
           "externalUrl": "https://www.shadertoy.com/view/slSBDd",
           "originalAuthor": "fuzzmoon",
           "originalTitle": "Plasma Storm",
-          "licence": "CC Share-Alike Non-Commercial"
+          "licence": "CC Share-Alike Non-Commercial",
+          "license": "CC BY-NC-SA"
         },
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-PlasmaFlow.gif",
-        "licence": "CC Share-Alike Non-Commercial"
+        "licence": "CC Share-Alike Non-Commercial",
+        "license": "CC BY-NC-SA"
       },
       {
         "name": "Protean Clouds",
@@ -531,10 +314,12 @@
           "externalUrl": "https://www.shadertoy.com/view/3l23Rh",
           "originalAuthor": "nimitz",
           "originalTitle": "Protean clouds",
-          "licence": "CC Share-Alike Non-Commercial"
+          "licence": "CC Share-Alike Non-Commercial",
+          "license": "CC BY-NC-SA"
         },
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-proteanclouds.gif",
-        "licence": "CC Share-Alike Non-Commercial"
+        "licence": "CC Share-Alike Non-Commercial",
+        "license": "CC BY-NC-SA"
       },
       {
         "name": "Quadtree Truchet",
@@ -546,10 +331,12 @@
           "externalUrl": "https://www.shadertoy.com/view/4t3BW4",
           "originalAuthor": "Shane",
           "originalTitle": "Quadtree Truchet",
-          "licence": "CC Share-Alike Non-Commercial"
+          "licence": "CC Share-Alike Non-Commercial",
+          "license": "CC BY-NC-SA"
         },
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-quadtreetruchet.gif",
-        "licence": "CC Share-Alike Non-Commercial"
+        "licence": "CC Share-Alike Non-Commercial",
+        "license": "CC BY-NC-SA"
       },
       {
         "name": "Raymarched Chain",
@@ -561,10 +348,12 @@
           "externalUrl": "https://www.shadertoy.com/view/ctSfRV",
           "originalAuthor": "Elsio",
           "originalTitle": "Corrente",
-          "licence": "CC Share-Alike Non-Commercial"
+          "licence": "CC Share-Alike Non-Commercial",
+          "license": "CC BY-NC-SA"
         },
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-raymarchedchain.gif",
-        "licence": "CC Share-Alike Non-Commercial"
+        "licence": "CC Share-Alike Non-Commercial",
+        "license": "CC BY-NC-SA"
       },
       {
         "name": "Stained Lights",
@@ -576,10 +365,12 @@
           "externalUrl": "https://www.shadertoy.com/view/WlsSzM",
           "originalAuthor": "104",
           "originalTitle": "Stained Lights",
-          "licence": "CC Share-Alike Non-Commercial"
+          "licence": "CC Share-Alike Non-Commercial",
+          "license": "CC BY-NC-SA"
         },
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-stainedlights.gif",
-        "licence": "CC Share-Alike Non-Commercial"
+        "licence": "CC Share-Alike Non-Commercial",
+        "license": "CC BY-NC-SA"
       },
       {
         "name": "Sunset Clouds",
@@ -591,10 +382,12 @@
           "externalUrl": "https://www.shadertoy.com/view/wXjSRt",
           "originalAuthor": "Xor",
           "originalTitle": "Sunset [280]",
-          "licence": "CC Share-Alike Non-Commercial"
+          "licence": "CC Share-Alike Non-Commercial",
+          "license": "CC BY-NC-SA"
         },
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-sunsetclouds.gif",
-        "licence": "CC Share-Alike Non-Commercial"
+        "licence": "CC Share-Alike Non-Commercial",
+        "license": "CC BY-NC-SA"
       },
       {
         "name": "Time Crystal",
@@ -606,10 +399,12 @@
           "externalUrl": "https://www.shadertoy.com/view/lcl3z2",
           "originalAuthor": "raphaeljmu",
           "originalTitle": "Time Crystal",
-          "licence": "CC Share-Alike Non-Commercial"
+          "licence": "CC Share-Alike Non-Commercial",
+          "license": "CC BY-NC-SA"
         },
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-timecrystal.gif",
-        "licence": "CC Share-Alike Non-Commercial"
+        "licence": "CC Share-Alike Non-Commercial",
+        "license": "CC BY-NC-SA"
       },
       {
         "name": "Vortex",
@@ -621,10 +416,12 @@
           "externalUrl": "https://www.shadertoy.com/view/3fKGRd",
           "originalAuthor": "LonkDong",
           "originalTitle": "Vortex__ ",
-          "licence": "CC Share-Alike Non-Commercial"
+          "licence": "CC Share-Alike Non-Commercial",
+          "license": "CC BY-NC-SA"
         },
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-vortex.gif",
-        "licence": "CC Share-Alike Non-Commercial"
+        "licence": "CC Share-Alike Non-Commercial",
+        "license": "CC BY-NC-SA"
       },
       {
         "name": "Wavy Squares",
@@ -636,10 +433,12 @@
           "externalUrl": "https://www.shadertoy.com/view/NdfBzn",
           "originalAuthor": "SnoopethDuckDuck",
           "originalTitle": "Square Tiling Example E",
-          "licence": "CC Share-Alike Non-Commercial"
+          "licence": "CC Share-Alike Non-Commercial",
+          "license": "CC BY-NC-SA"
         },
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-wavysquares.gif",
-        "licence": "CC Share-Alike Non-Commercial"
+        "licence": "CC Share-Alike Non-Commercial",
+        "license": "CC BY-NC-SA"
       },
       {
         "name": "Wavy Squiggles",
@@ -652,10 +451,12 @@
           "externalUrl": "https://www.shadertoy.com/view/7sBfDD",
           "originalAuthor": "SnoopethDuckDuck",
           "originalTitle": "Interactive 2.5D Squiggles",
-          "licence": "CC Share-Alike Non-Commercial"
+          "licence": "CC Share-Alike Non-Commercial",
+          "license": "CC BY-NC-SA"
         },
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-wavysquiggles.gif",
-        "licence": "CC Share-Alike Non-Commercial"
+        "licence": "CC Share-Alike Non-Commercial",
+        "license": "CC BY-NC-SA"
       },
       {
         "name": "Zippy Zaps",
@@ -667,10 +468,285 @@
           "externalUrl": "https://www.shadertoy.com/view/XXyGzh",
           "originalAuthor": "SnoopethDuckDuck",
           "originalTitle": "Zippy Zaps",
-          "licence": "CC Share-Alike Non-Commercial"
+          "licence": "CC Share-Alike Non-Commercial",
+          "license": "CC BY-NC-SA"
         },
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-zippyzaps.gif",
-        "licence": "CC Share-Alike Non-Commercial"
+        "licence": "CC Share-Alike Non-Commercial",
+        "license": "CC BY-NC-SA"
+      }
+    ],
+    "VFX": [
+      {
+        "name": "Boom Sticker",
+        "filename": "AS_VFX_BoomSticker.1.fx",
+        "type": "VFX",
+        "shortDescription": "Displays a texture overlay ('sticker') with controls for placement, scale, rotation, and audio reactivity.",
+        "longDescription": "Displays a texture overlay ('sticker') with controls for placement, scale, rotation, and audio reactivity. Features customizable depth masking and support for custom textures. Ideal for adding dynamic, music-responsive overlays.",
+        "credits": {
+          "description": "Heavily inspired by 'StageDepth.fx' by Marot Satil (2019), original depth masking implementation.",
+          "externalUrl": "https://github.com/Otakumouse/stormshade/blob/master/v4.X/reshade-shaders/Shader%20Library/Recommended/StageDepth.fx",
+          "originalAuthor": "Marot Satil",
+          "originalTitle": "StageDepth.fx",
+          "licence": "Creative Commons Attribution 4.0 International",
+          "license": "CC BY 4.0"
+        },
+        "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-BoomSticker.gif",
+        "licence": "Creative Commons Attribution 4.0 International",
+        "license": "CC BY 4.0"
+      },
+      {
+        "name": "Circular Spectrum",
+        "filename": "AS_VFX_CircularSpectrum.1.fx",
+        "type": "VFX",
+        "shortDescription": "Displays a circular audio spectrum analyzer with customizable bands, colors, and animation.",
+        "longDescription": "Visualizes audio frequencies as a circular spectrum analyzer. Features adjustable band count, radius, thickness, color palette, and animation speed. Supports audio reactivity for dynamic, music-driven visuals. Ideal for overlays, music videos, and live performances.",
+        "credits": {
+          "description": "Based on 'Circular audio visualizer' by AIandDesign.",
+          "externalUrl": "https://www.shadertoy.com/view/tcyGW1",
+          "originalAuthor": "AIandDesign",
+          "originalTitle": "Circular audio visualizer",
+          "licence": "CC Share-Alike Non-Commercial",
+          "license": "CC BY-NC-SA"
+        },
+        "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-circularspectrum.gif",
+        "licence": "CC Share-Alike Non-Commercial",
+        "license": "CC BY-NC-SA"
+      },
+      {
+        "name": "Clair Obscur",
+        "filename": "AS_VFX_ClairObscur.1.fx",
+        "type": "VFX",
+        "shortDescription": "Applies dramatic chiaroscuro lighting with strong contrast and stylized shadows.",
+        "longDescription": "Simulates dramatic chiaroscuro (light-dark) lighting, emphasizing strong contrast and stylized shadows. Features controls for light direction, intensity, shadow softness, and color tint. Useful for artistic, cinematic, or moody scene transformations.",
+        "credits": {
+          "description": "Motion inspired by '[RGR] Hearts' by deeplo.",
+          "externalUrl": "https://www.shadertoy.com/view/ttcBRs",
+          "originalAuthor": "deeplo",
+          "originalTitle": "[RGR] Hearts",
+          "licence": "CC Share-Alike Non-Commercial",
+          "license": "CC BY-NC-SA"
+        },
+        "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-ClairObscur.gif",
+        "licence": "CC Share-Alike Non-Commercial",
+        "license": "CC BY-NC-SA"
+      },
+      {
+        "name": "Color Balancer",
+        "filename": "AS_VFX_ColorBalancer.1.fx",
+        "type": "VFX",
+        "shortDescription": "Adjusts scene color balance with independent controls for shadows, midtones, and highlights.",
+        "longDescription": "Provides precise color grading by adjusting the balance of shadows, midtones, and highlights independently. Features controls for lift, gamma, gain, and color wheels. Useful for creative color correction and stylized looks.",
+        "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-colorbalancer.gif",
+        "licence": "Creative Commons Attribution 4.0 International",
+        "license": "CC BY 4.0"
+      },
+      {
+        "name": "Digital Artifacts",
+        "filename": "AS_VFX_DigitalArtifacts.1.fx",
+        "type": "VFX",
+        "shortDescription": "Simulates digital compression artifacts, blockiness, and color banding.",
+        "longDescription": "Applies digital compression artifacts such as blockiness, color banding, and quantization noise. Features adjustable artifact strength, block size, and color depth. Useful for retro, glitch, or degraded video effects.",
+        "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-digitalartifacts.gif",
+        "licence": "Creative Commons Attribution 4.0 International",
+        "license": "CC BY 4.0"
+      },
+      {
+        "name": "Dust Motes",
+        "filename": "AS_VFX_DustMotes.1.fx",
+        "type": "VFX",
+        "shortDescription": "Adds floating dust motes and particles with customizable density, size, and animation.",
+        "longDescription": "Simulates floating dust motes and particles drifting through the scene. Features controls for particle density, size, speed, color, and depth of field. Includes animation and blending options for subtle atmospheric enhancement.",
+        "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-dustmotes.gif",
+        "licence": "Creative Commons Attribution 4.0 International",
+        "license": "CC BY 4.0"
+      },
+      {
+        "filename": "AS_VFX_FocusedChaos.1.fx",
+        "type": "VFX",
+        "name": "Focused Chaos",
+        "shortDescription": "Swirling cosmic vortex/black hole effect with animated noise and artistic controls.",
+        "longDescription": "Creates a visually complex and dynamic abstract effect resembling a focused point of chaotic energy or a swirling cosmic vortex. Patterns are generated using 3D Simplex noise and Fractional Brownian Motion (FBM), with colors evolving based on noise patterns and spatial coordinates, animated over time. Features transparent background, customizable animation, artistic controls for swirl/noise/color/alpha, dithering, domain warping, and standard AS-StageFX depth/blending controls.",
+        "credits": {
+          "externalUrl": "https://www.shadertoy.com/view/lcfyDj",
+          "originalAuthor": "misterprada",
+          "originalTitle": "BlackHole (swirl, portal)",
+          "licence": "CC Share-Alike Non-Commercial",
+          "license": "CC BY-NC-SA"
+        },
+        "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-focusedchaos.gif",
+        "licence": "CC Share-Alike Non-Commercial",
+        "license": "CC BY-NC-SA"
+      },
+      {
+        "filename": "AS_VFX_MotionFocus.1.fx",
+        "type": "VFX",
+        "name": "Motion Focus",
+        "shortDescription": "Automatic motion-based camera focus and zoom using inter-frame motion analysis.",
+        "longDescription": "Analyzes inter-frame motion differences to dynamically adjust the viewport, zooming towards and centering on areas of detected movement. Uses a multi-pass approach to capture frames, detect motion, analyze motion distribution in quadrants, and apply a corresponding camera transformation with motion-centered zoom. Features multi-pass motion analysis, temporal smoothing, adaptive decay, quadrant-based aggregation, dynamic zoom/focus, and debug visualization.",
+        "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-motionfocus.gif",
+        "licence": "Creative Commons Attribution 4.0 International",
+        "license": "CC BY 4.0"
+      },
+      {
+        "name": "Motion Trails",
+        "filename": "AS_VFX_MotionTrails.1.fx",
+        "type": "VFX",
+        "shortDescription": "Creates trailing motion blur effects for moving objects or the entire scene.",
+        "longDescription": "Applies trailing motion blur to moving objects or the whole scene. Features adjustable trail length, direction, fade, and blending. Useful for simulating speed, action, or ghosting effects in dynamic scenes.",
+        "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-motiontrails.gif",
+        "licence": "Creative Commons Attribution 4.0 International",
+        "license": "CC BY 4.0"
+      },
+      {
+        "filename": "AS_VFX_RadialLensDistortion.1.fx",
+        "type": "VFX",
+        "name": "Radial Lens Distortion",
+        "shortDescription": "Emulates radial and lens-specific distortions including blur, chromatic aberration, and geometric warping.",
+        "longDescription": "Simulates various lens distortions including tangential (rotational) blur, chromatic aberration (tangential or horizontal), and geometric barrel/pincushion distortion. Effects are strongest at the edges and diminish towards a configurable center point. Includes presets for emulating specific lens characteristics, plus global strength and focus falloff controls. Ensures consistent effect visibility regardless of source alpha by controlling alpha during blending.",
+        "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-radiallensdistortion.gif",
+        "licence": "Creative Commons Attribution 4.0 International",
+        "license": "CC BY 4.0"
+      },
+      {
+        "name": "Radiant Fire",
+        "filename": "AS_VFX_RadiantFire.1.fx",
+        "type": "VFX",
+        "shortDescription": "Simulates radiant, glowing fire with animated flames and color gradients.",
+        "longDescription": "Generates radiant, glowing fire effects with animated flames and customizable color gradients. Features controls for flame shape, speed, intensity, and palette. Ideal for magical, fantasy, or atmospheric visuals.",
+        "credits": {
+          "description": "Flame generation inspired by '301's Fire Shader - Remix 3' by mu6k.",
+          "externalUrl": "https://www.shadertoy.com/view/4ttGWM",
+          "originalAuthor": "mu6k",
+          "originalTitle": "301's Fire Shader - Remix 3",
+          "licence": "CC Share-Alike Non-Commercial",
+          "license": "CC BY-NC-SA"
+        },
+        "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-radiantfire.gif",
+        "licence": "CC Share-Alike Non-Commercial",
+        "license": "CC BY-NC-SA"
+      },
+      {
+        "name": "Rainy Window",
+        "filename": "AS_VFX_RainyWindow.1.fx",
+        "type": "VFX",
+        "shortDescription": "Simulates raindrops and streaks on a window with refraction and blur effects.",
+        "longDescription": "Creates the illusion of raindrops and streaks running down a window, with realistic refraction and blur. Features adjustable rain density, drop size, streak speed, and blending. Perfect for moody, cinematic, or weather-themed scenes.",
+        "credits": {
+          "description": "Inspired by 'Heartfelt' by Martijn Steinrucken (BigWings).",
+          "externalUrl": "https://www.shadertoy.com/view/ltffzl",
+          "originalAuthor": "Martijn Steinrucken (BigWings)",
+          "originalTitle": "Heartfelt",
+          "licence": "CC Share-Alike Non-Commercial",
+          "license": "CC BY-NC-SA"
+        },
+        "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-rainywindow.gif",
+        "licence": "CC Share-Alike Non-Commercial",
+        "license": "CC BY-NC-SA"
+      },
+      {
+        "name": "Screen Ring",
+        "filename": "AS_VFX_ScreenRing.1.fx",
+        "type": "VFX",
+        "shortDescription": "Draws animated rings or circular overlays with customizable size, color, and animation.",
+        "longDescription": "Draws animated rings or circular overlays on the screen. Features controls for ring count, size, thickness, color, and animation speed. Useful for HUDs, overlays, or stylized transitions.",
+        "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-screenring.gif",
+        "licence": "Creative Commons Attribution 4.0 International",
+        "license": "CC BY 4.0"
+      },
+      {
+        "name": "Sparkle Bloom",
+        "filename": "AS_VFX_SparkleBloom.1.fx",
+        "type": "VFX",
+        "shortDescription": "Adds sparkling bloom highlights with animated glints and color controls.",
+        "longDescription": "Adds sparkling bloom highlights to bright areas, with animated glints and customizable color. Features controls for sparkle density, size, intensity, and animation. Ideal for magical, festive, or dreamy visuals.",
+        "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-sparklebloom.gif",
+        "licence": "Creative Commons Attribution 4.0 International",
+        "license": "CC BY 4.0"
+      },
+      {
+        "name": "Spectrum Ring",
+        "filename": "AS_VFX_SpectrumRing.1.fx",
+        "type": "VFX",
+        "shortDescription": "Visualizes audio spectrum as a ring with customizable bands, colors, and animation.",
+        "longDescription": "Displays an audio spectrum analyzer in a ring format. Features adjustable band count, radius, thickness, color palette, and animation speed. Supports audio reactivity for dynamic, music-driven visuals. Ideal for overlays, music videos, and live performances.",
+        "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-SpectrumRing.gif",
+        "licence": "Creative Commons Attribution 4.0 International",
+        "license": "CC BY 4.0"
+      },
+      {
+        "name": "Stencil Mask",
+        "filename": "AS_VFX_StencilMask.1.fx",
+        "type": "VFX",
+        "shortDescription": "Applies a stencil mask for selective effect application with shape and position controls.",
+        "longDescription": "Applies a stencil mask to selectively reveal or hide parts of the scene. Features controls for mask shape, size, position, feathering, and blending. Useful for transitions, overlays, or compositing effects.",
+        "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-StencilMask.gif",
+        "licence": "Creative Commons Attribution 4.0 International",
+        "license": "CC BY 4.0"
+      },
+      {
+        "name": "Tilted Grid",
+        "filename": "AS_VFX_TiltedGrid.1.fx",
+        "type": "VFX",
+        "shortDescription": "Draws a tilted, animated grid overlay with customizable angle, spacing, and color.",
+        "longDescription": "Draws a tilted, animated grid overlay on the scene. Features controls for grid angle, spacing, line thickness, color, and animation speed. Useful for stylized overlays, retro visuals, or compositional guides.",
+        "credits": {
+          "externalUrl": "https://www.youtube.com/watch?v=Tfj6RDqXEHM",
+          "originalAuthor": "FencerDevLog",
+          "originalTitle": "Godot 4: Tilted Grid Effect Tutorial",
+          "licence": "Creative Commons Attribution 4.0 International",
+          "license": "CC BY 4.0"
+        },
+        "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-tiltedgrid.gif",
+        "licence": "Creative Commons Attribution 4.0 International",
+        "license": "CC BY 4.0"
+      },
+      {
+        "name": "Volumetric Light",
+        "filename": "AS_VFX_VolumetricLight.1.fx",
+        "type": "VFX",
+        "shortDescription": "Simulates volumetric light rays and god rays with customizable source, color, and intensity.",
+        "longDescription": "Simulates volumetric light rays (god rays) emanating from a source. Features controls for light position, color, intensity, ray length, and blending. Useful for dramatic, atmospheric, or mystical scene lighting.",
+        "credits": {
+          "externalUrl": "https://www.shadertoy.com/view/wftXzr",
+          "originalAuthor": "int_45h",
+          "originalTitle": "fake volumetric 2d light wip",
+          "licence": "CC Share-Alike Non-Commercial",
+          "license": "CC BY-NC-SA"
+        },
+        "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-volumetriclight.gif",
+        "licence": "CC Share-Alike Non-Commercial",
+        "license": "CC BY-NC-SA"
+      },
+      {
+        "name": "VUMeter",
+        "filename": "AS_VFX_VUMeter.1.fx",
+        "type": "VFX",
+        "shortDescription": "Displays a classic VU meter with audio-reactive bars and customizable appearance.",
+        "longDescription": "Displays a classic VU meter with audio-reactive bars. Features controls for bar count, orientation, color, peak hold, and animation. Ideal for music visualizations, overlays, and live performance feedback.",
+        "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-VUMeter.gif",
+        "licence": "Creative Commons Attribution 4.0 International",
+        "license": "CC BY 4.0"
+      },
+      {
+        "name": "Warp Distort",
+        "filename": "AS_VFX_WarpDistort.1.fx",
+        "type": "VFX",
+        "shortDescription": "Applies animated warp distortion with customizable strength, direction, and speed.",
+        "longDescription": "Applies animated warp distortion to the scene. Features controls for distortion strength, direction, speed, and blending. Useful for psychedelic, dreamlike, or transition effects.",
+        "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-Warp.gif",
+        "licence": "Creative Commons Attribution 4.0 International",
+        "license": "CC BY 4.0"
+      },
+      {
+        "name": "Water Surface",
+        "filename": "AS_VFX_WaterSurface.1.fx",
+        "type": "VFX",
+        "shortDescription": "Simulates animated water surface with ripples, reflections, and customizable color.",
+        "longDescription": "Simulates an animated water surface with dynamic ripples, reflections, and customizable color. Features controls for wave speed, amplitude, direction, and reflection intensity. Useful for aquatic, dreamy, or atmospheric effects.",
+        "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-watersurface.gif",
+        "licence": "Creative Commons Attribution 4.0 International",
+        "license": "CC BY 4.0"
       }
     ],
     "GFX": [
@@ -681,7 +757,8 @@
         "shortDescription": "A versatile aspect ratio framing tool for subject positioning and composition.",
         "longDescription": "A versatile aspect ratio framing tool designed to help position subjects for social media posts, photography, and video composition. Features preset aspect ratios for common social media and photography formats (1:1, 16:9, 4:5, etc.), custom aspect ratio input, adjustable clipped area color and opacity, optional composition guides (rule of thirds, golden ratio, center lines), horizontal/vertical alignment controls, and adjustable border appearance. Perfect for precise subject positioning and consistent framing across platforms.",
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-aspectratio.gif",
-        "licence": "Creative Commons Attribution 4.0 International"
+        "licence": "Creative Commons Attribution 4.0 International",
+        "license": "CC BY 4.0"
       },
       {
         "name": "Audio Direction",
@@ -690,7 +767,8 @@
         "shortDescription": "Visualizes audio directionality as animated arrows or indicators, ideal for music-driven scenes or overlays.",
         "longDescription": "Displays animated arrows or indicators that visualize the directionality of audio sources in real time. Features customizable arrow count, size, color, and animation speed. Supports audio reactivity for direction, magnitude, and color. Useful for music visualizations, DJ overlays, or any scene where audio direction feedback is desired.",
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-audiodirection.gif",
-        "licence": "Creative Commons Attribution 4.0 International"
+        "licence": "Creative Commons Attribution 4.0 International",
+        "license": "CC BY 4.0"
       },
       {
         "name": "Brush Stroke",
@@ -699,7 +777,8 @@
         "shortDescription": "Transforms the scene with painterly brush stroke textures and dynamic, layered paint effects.",
         "longDescription": "Applies painterly brush stroke textures to the scene, simulating layered paint effects. Features customizable brush size, direction, density, and color blending. Includes animation controls for evolving brush patterns and supports palette-based colorization. Ideal for artistic transformations and stylized overlays.",
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-brushstroke.gif",
-        "licence": "Creative Commons Attribution 4.0 International"
+        "licence": "Creative Commons Attribution 4.0 International",
+        "license": "CC BY 4.0"
       },
       {
         "name": "Cinematic Diffusion",
@@ -708,7 +787,8 @@
         "shortDescription": "High-quality cinematic diffusion/bloom filter with 8 classic presets and a fully customizable mode.",
         "longDescription": "A high-quality cinematic diffusion/bloom filter that replicates classic film diffusion looks. Features 8 built-in presets (Pro-Mist, Hollywood Black Magic, etc.) and a fully customizable mode. Multi-pass downsampling ensures smooth, natural glows. Ideal for virtual photography and cinematic shots.",
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-cinematicdiffusion.gif",
-        "licence": "Creative Commons Attribution 4.0 International"
+        "licence": "Creative Commons Attribution 4.0 International",
+        "license": "CC BY 4.0"
       },
       {
         "name": "Hand Drawing",
@@ -722,9 +802,11 @@
           "externalUrl": "https://www.shadertoy.com/view/XtVGD1",
           "originalAuthor": "Flockaroo",
           "originalTitle": "notebook drawings",
-          "licence": "CC Share-Alike Non-Commercial"
+          "licence": "CC Share-Alike Non-Commercial",
+          "license": "CC BY-NC-SA"
         },
-        "licence": "CC Share-Alike Non-Commercial"
+        "licence": "CC Share-Alike Non-Commercial",
+        "license": "CC BY-NC-SA"
       },
       {
         "name": "MultiLayer Halftone",
@@ -733,7 +815,8 @@
         "shortDescription": "Highly customizable multi-layer halftone (up to 4 layers) with various patterns, isolation methods, and blending options.",
         "longDescription": "Creates a highly customizable multi-layer halftone effect with support for up to four independent layers. Each layer can use different pattern types (dots, lines, crosshatch), isolation methods (brightness, RGB, hue, depth), colors, thresholds, scales, densities, and angles. Features layer blending with transparency support.",
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-multilayerhalftone.gif",
-        "licence": "Creative Commons Attribution 4.0 International"
+        "licence": "Creative Commons Attribution 4.0 International",
+        "license": "CC BY 4.0"
       },
       {
         "name": "Vignette Plus",
@@ -746,11 +829,20 @@
           "externalUrl": "https://www.shadertoy.com/view/XfjyWG",
           "originalAuthor": "blandprix",
           "originalTitle": "Hexagonal Wipe",
-          "licence": "CC Share-Alike Non-Commercial"
+          "licence": "CC Share-Alike Non-Commercial",
+          "license": "CC BY-NC-SA"
         },
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-vignetteplus.gif",
-        "licence": "CC Share-Alike Non-Commercial"
+        "licence": "CC Share-Alike Non-Commercial",
+        "license": "CC BY-NC-SA"
       }
     ]
+  },
+  "total": 57,
+  "byType": {
+    "LFX": 3,
+    "BGX": 26,
+    "VFX": 21,
+    "GFX": 7
   }
 }
