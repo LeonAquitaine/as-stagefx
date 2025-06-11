@@ -99,7 +99,7 @@ The collection includes these foundation libraries used by all shaders:
 {{longDescription}}
 {{#if credits}}
 <br><br>
-{{#if credits.originalTitle}}Based on '<a href="{{credits.externalUrl}}" target="_new">{{credits.originalTitle}}</a>' by {{credits.originalAuthor}}<br>{{/if}}
+{{#if credits.originalTitle}}Based on '<a href="{{credits.externalUrl}}" target="_new">{{credits.originalTitle}}</a>' by {{credits.originalAuthor}}{{/if}}
 {{/if}}
 {{#if licence}}<strong>License:</strong> {{licence}} <span style="color:#888;font-size:90%">({{license}})</span>{{/if}}
 </td>

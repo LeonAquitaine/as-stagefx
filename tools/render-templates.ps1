@@ -36,6 +36,25 @@ $catalogStats | Add-Member -MemberType NoteProperty -Name BGXAdapted -Value $BGX
 $catalogStats | Add-Member -MemberType NoteProperty -Name OtherAdapted -Value $OtherAdapted -Force
 $catalogStats | Add-Member -MemberType NoteProperty -Name OriginalWorks -Value $OriginalWorks -Force
 
+# Load default license info from package-config.json
+$packageConfigPath = "$PSScriptRoot/../config/package-config.json"
+$packageConfig = Get-Content -Path $packageConfigPath -Raw | ConvertFrom-Json
+$defaultLicenseDesc = $packageConfig.license.description
+$defaultLicenseCode = $packageConfig.license.code
+
+# Before rendering, blank out licence/license fields if they match the default
+foreach ($group in $catalogStats.grouped.PSObject.Properties) {
+    $items = $group.Value
+    foreach ($item in $items) {
+        if ($item.licence -eq $defaultLicenseDesc) { $item.licence = $null }
+        if ($item.license -eq $defaultLicenseCode) { $item.license = $null }
+        if ($item.credits) {
+            if ($item.credits.licence -eq $defaultLicenseDesc) { $item.credits.licence = $null }
+            if ($item.credits.license -eq $defaultLicenseCode) { $item.credits.license = $null }
+        }
+    }
+}
+
 # Helper: Get value from nested property path (e.g., "grouped.VFX.0.name")
 function Get-CatalogValue($obj, $path) {
     $parts = $path -split '\.'
