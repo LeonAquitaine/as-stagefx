@@ -189,6 +189,11 @@ foreach ($item in $catalog) {
 }
 $catalog = $uniqueCatalog.Values
 
+# Load package config for default license info
+$packageConfig = Get-Content -Path $ConfigPath -Raw | ConvertFrom-Json
+$defaultLicenseDesc = $packageConfig.license.description
+$defaultLicenseCode = $packageConfig.license.code
+
 # Set licence and license code for all shaders and update credits block
 foreach ($entry in $catalog) {
     $isShadertoy = $false
@@ -200,11 +205,11 @@ foreach ($entry in $catalog) {
         $isShadertoy = $true
     }
     if (-not $isShadertoy) {
-        $entry | Add-Member -NotePropertyName 'licence' -NotePropertyValue 'Creative Commons Attribution 4.0 International' -Force
-        $entry | Add-Member -NotePropertyName 'license' -NotePropertyValue 'CC BY 4.0' -Force
+        $entry | Add-Member -NotePropertyName 'licence' -NotePropertyValue $defaultLicenseDesc -Force
+        $entry | Add-Member -NotePropertyName 'license' -NotePropertyValue $defaultLicenseCode -Force
         if ($entry.credits) {
-            $entry.credits | Add-Member -NotePropertyName 'licence' -NotePropertyValue 'Creative Commons Attribution 4.0 International' -Force
-            $entry.credits | Add-Member -NotePropertyName 'license' -NotePropertyValue 'CC BY 4.0' -Force
+            $entry.credits | Add-Member -NotePropertyName 'licence' -NotePropertyValue $defaultLicenseDesc -Force
+            $entry.credits | Add-Member -NotePropertyName 'license' -NotePropertyValue $defaultLicenseCode -Force
         }
     }
 }
