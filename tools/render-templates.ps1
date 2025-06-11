@@ -180,6 +180,21 @@ function Remove-AllIfBlocks {
     return $content
 }
 
+# Before rendering, blank out licence/license fields for each item if they match the default, for all grouped categories (BGX, GFX, LFX, VFX),
+# so the README template will only show license info if it differs from the default.
+foreach ($cat in @('BGX','GFX','LFX','VFX')) {
+    if ($catalogStats.grouped.$cat) {
+        foreach ($item in $catalogStats.grouped.$cat) {
+            if ($item.licence -eq $defaultLicenseDesc) { $item.licence = $null }
+            if ($item.license -eq $defaultLicenseCode) { $item.license = $null }
+            if ($item.credits) {
+                if ($item.credits.licence -eq $defaultLicenseDesc) { $item.credits.licence = $null }
+                if ($item.credits.license -eq $defaultLicenseCode) { $item.credits.license = $null }
+            }
+        }
+    }
+}
+
 foreach ($key in $Templates.Keys) {
     $templatePath = $Templates[$key].Template
     $outPath = $Templates[$key].Out
