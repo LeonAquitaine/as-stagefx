@@ -29,6 +29,7 @@ The collection includes these foundation libraries used by all shaders:
 <br><br>
 {{#if credits.originalTitle}}Based on '<a href="{{credits.externalUrl}}" target="_new">{{credits.originalTitle}}</a>' by {{credits.originalAuthor}}<br>{{/if}}
 {{/if}}
+{{#if licence}}<br><strong>License:</strong> {{licence}}{{/if}}
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="{{imageUrl}}" alt="{{name}} Effect" style="max-width:100%;">
@@ -52,6 +53,7 @@ The collection includes these foundation libraries used by all shaders:
 <br><br>
 {{#if credits.originalTitle}}Based on '<a href="{{credits.externalUrl}}" target="_new">{{credits.originalTitle}}</a>' by {{credits.originalAuthor}}<br>{{/if}}
 {{/if}}
+{{#if licence}}<br><strong>License:</strong> {{licence}}{{/if}}
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="{{imageUrl}}" alt="{{name}} Effect" style="max-width:100%;">
@@ -75,6 +77,7 @@ The collection includes these foundation libraries used by all shaders:
 <br><br>
 {{#if credits.originalTitle}}Based on '<a href="{{credits.externalUrl}}" target="_new">{{credits.originalTitle}}</a>' by {{credits.originalAuthor}}<br>{{/if}}
 {{/if}}
+{{#if licence}}<br><strong>License:</strong> {{licence}}{{/if}}
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="{{imageUrl}}" alt="{{name}} Effect" style="max-width:100%;">
@@ -98,6 +101,7 @@ The collection includes these foundation libraries used by all shaders:
 <br><br>
 {{#if credits.originalTitle}}Based on '<a href="{{credits.externalUrl}}" target="_new">{{credits.originalTitle}}</a>' by {{credits.originalAuthor}}<br>{{/if}}
 {{/if}}
+{{#if licence}}<br><strong>License:</strong> {{licence}}{{/if}}
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="{{imageUrl}}" alt="{{name}} Effect" style="max-width:100%;">

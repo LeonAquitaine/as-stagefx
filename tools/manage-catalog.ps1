@@ -189,6 +189,22 @@ foreach ($item in $catalog) {
 }
 $catalog = $uniqueCatalog.Values
 
+# Set licence for all shaders and update credits block
+foreach ($entry in $catalog) {
+    $isShadertoy = $false
+    if ($entry.credits -and $entry.credits.externalUrl -and ($entry.credits.externalUrl -match 'shadertoy.com')) {
+        $entry | Add-Member -NotePropertyName 'licence' -NotePropertyValue 'CC Share-Alike Non-Commercial' -Force
+        $entry.credits | Add-Member -NotePropertyName 'licence' -NotePropertyValue 'CC Share-Alike Non-Commercial' -Force
+        $isShadertoy = $true
+    }
+    if (-not $isShadertoy) {
+        $entry | Add-Member -NotePropertyName 'licence' -NotePropertyValue 'Creative Commons Attribution 4.0 International' -Force
+        if ($entry.credits) {
+            $entry.credits | Add-Member -NotePropertyName 'licence' -NotePropertyValue 'Creative Commons Attribution 4.0 International' -Force
+        }
+    }
+}
+
 # Sort by type, then name
 $catalog = $catalog | Sort-Object type, name
 
