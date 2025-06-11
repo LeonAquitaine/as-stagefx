@@ -1,14 +1,9 @@
 {
-  "buildDate": "2025-06-08T14:01:53Z",
-  "version": "1.8.6",
   "packages": [
     {
-      "fxhDependencyCount": 4,
-      "name": "AS_StageFX",
-      "version": "1.8.6",
-      "shaderCount": 57,
       "textureDependencyCount": 3,
-      "description": "The complete collection of all AS StageFX shaders and utilities",
+      "shaderCount": 57,
+      "version": "1.8.6",
       "shaders": [
         "AS_BGX_BlueCorona.1.fx",
         "AS_BGX_Constellation.1.fx",
@@ -80,15 +75,15 @@
           "AS_Noise.1.fxh",
           "AS_Perspective.1.fxh"
         ]
-      }
+      },
+      "description": "The complete collection of all AS StageFX shaders and utilities",
+      "name": "AS_StageFX",
+      "fxhDependencyCount": 4
     },
     {
-      "fxhDependencyCount": 3,
-      "name": "AS_StageFX_Backgrounds",
-      "version": "1.8.6",
-      "shaderCount": 26,
       "textureDependencyCount": 1,
-      "description": "Complete collection of background effects (Requires Essentials)",
+      "shaderCount": 26,
+      "version": "1.8.6",
       "shaders": [
         "AS_BGX_BlueCorona.1.fx",
         "AS_BGX_Constellation.1.fx",
@@ -126,15 +121,15 @@
           "AS_Palette.1.fxh",
           "AS_Noise.1.fxh"
         ]
-      }
+      },
+      "description": "Complete collection of background effects (Requires Essentials)",
+      "name": "AS_StageFX_Backgrounds",
+      "fxhDependencyCount": 3
     },
     {
-      "fxhDependencyCount": 5,
-      "name": "AS_StageFX_Essentials",
-      "version": "1.8.6",
-      "shaderCount": 12,
       "textureDependencyCount": 0,
-      "description": "Core library files and essential visual effects for general use",
+      "shaderCount": 12,
+      "version": "1.8.6",
       "shaders": [
         true,
         "AS_BGX_TimeCrystal.1.fx",
@@ -158,15 +153,15 @@
           "AS_Noise.1.fxh",
           "AS_Perspective.1.fxh"
         ]
-      }
+      },
+      "description": "Core library files and essential visual effects for general use",
+      "name": "AS_StageFX_Essentials",
+      "fxhDependencyCount": 5
     },
     {
-      "fxhDependencyCount": 4,
-      "name": "AS_StageFX_VisualEffects",
-      "version": "1.8.6",
-      "shaderCount": 31,
       "textureDependencyCount": 3,
-      "description": "Complete collection of visual effects (Requires Essentials)",
+      "shaderCount": 31,
+      "version": "1.8.6",
       "shaders": [
         "AS_GFX_AspectRatio.1.fx",
         "AS_GFX_AudioDirection.1.fx",
@@ -212,7 +207,12 @@
           "AS_Noise.1.fxh",
           "AS_Perspective.1.fxh"
         ]
-      }
+      },
+      "description": "Complete collection of visual effects (Requires Essentials)",
+      "name": "AS_StageFX_VisualEffects",
+      "fxhDependencyCount": 4
     }
-  ]
+  ],
+  "buildDate": "2025-06-11T11:06:03Z",
+  "version": "1.8.6"
 }
