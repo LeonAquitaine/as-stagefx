@@ -267,12 +267,22 @@ This document lists all external sources, original authors, and inspiration cred
 - **Original Title**: 
 - **Notes**: 
 - **Source**: 
+### AS_GFX_FocusFrame.1.fx - Focus Frame
+- **Original Author**: 
+- **Original Title**: 
+- **Notes**: 
+- **Source**: 
 ### AS_GFX_HandDrawing.1.fx - Hand Drawing
 - **Original Author**: Flockaroo
 - **Original Title**: notebook drawings
 - **Notes**: Based on 'notebook drawings' by Flockaroo (2016).
 - **Source**: https://www.shadertoy.com/view/XtVGD1
 ### AS_GFX_MultiLayerHalftone.1.fx - MultiLayer Halftone
+- **Original Author**: 
+- **Original Title**: 
+- **Notes**: 
+- **Source**: 
+### AS_GFX_TiltShift.1.fx - Tilt-Shift
 - **Original Author**: 
 - **Original Title**: 
 - **Notes**: 

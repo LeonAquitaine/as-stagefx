@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.9.0] - 2025-06-11
+
+### New Features
+- Introduced a Focus Frame effect that highlights a central area with customizable size, aspect ratio, edge softness, background blur, zoom, and brightness. The effect supports depth masking, blending controls, and debug visualization.
+- Added a Tilt-Shift / Depth of Field effect featuring depth-aware, high-quality blurring with adjustable focus depth, focus zone size, falloff curve, and maximum blur amount. Includes a debug overlay to visualize the focus line.
+
 ## [1.8.4] - 2025-06-06
 
 ### New Features

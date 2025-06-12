@@ -1,37 +1,12 @@
 {
+  "byType": {
+    "VFX": 21,
+    "BGX": 26,
+    "GFX": 9,
+    "LFX": 3
+  },
+  "total": 59,
   "grouped": {
-    "LFX": [
-      {
-        "name": "Candle Flame",
-        "filename": "AS_LFX_CandleFlame.1.fx",
-        "type": "LFX",
-        "shortDescription": "Simulates a realistic, animated candle flame with flicker, glow, and color controls.",
-        "longDescription": "Renders a realistic animated candle flame with natural flicker and glow. Features customizable flame shape, color, flicker speed, and intensity. Includes controls for flame position, scale, and blending. Ideal for atmospheric lighting and cozy scene effects.",
-        "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-Candle.gif",
-        "licence": "Creative Commons Attribution 4.0 International",
-        "license": "CC BY 4.0"
-      },
-      {
-        "name": "Laser Show",
-        "filename": "AS_LFX_LaserShow.1.fx",
-        "type": "LFX",
-        "shortDescription": "Projects animated laser beams and patterns with customizable color, speed, and audio reactivity.",
-        "longDescription": "Projects animated laser beams and geometric patterns onto the stage. Features customizable beam count, color, speed, and spread. Supports audio reactivity for beam movement and intensity. Includes controls for rotation, position, and blending. Perfect for concert, club, or sci-fi lighting effects.",
-        "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-lasershow.gif",
-        "licence": "Creative Commons Attribution 4.0 International",
-        "license": "CC BY 4.0"
-      },
-      {
-        "name": "Stage Spotlights",
-        "filename": "AS_LFX_StageSpotlights.1.fx",
-        "type": "LFX",
-        "shortDescription": "Simulates moving stage spotlights with beam controls, color, and audio reactivity.",
-        "longDescription": "Simulates moving stage spotlights with adjustable beam width, color, intensity, and movement patterns. Features multiple spotlights with independent controls, audio reactivity for movement and brightness, and blending options for integration with other effects. Ideal for live performance and dramatic scene lighting.",
-        "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-Spotlights.gif",
-        "licence": "Creative Commons Attribution 4.0 International",
-        "license": "CC BY 4.0"
-      }
-    ],
     "VFX": [
       {
         "name": "Boom Sticker",
@@ -791,6 +766,16 @@
         "license": "CC BY 4.0"
       },
       {
+        "name": "Focus Frame",
+        "filename": "AS_GFX_FocusFrame.1.fx",
+        "type": "GFX",
+        "shortDescription": "Creates a focused frame with a stylized background and soft, feathered edges for cinematic compositions.",
+        "longDescription": "This shader creates a \"focus frame\" effect by defining a clear, centered rectangular area with a soft, feathered edge. The frame's aspect ratio is fully adjustable. The surrounding space is rendered as a blurred, zoomed, and dimmed version of the background, ideal for creating cinematic compositions. Features a fully adjustable central frame with controls for size and aspect ratio, soft feathered edges for smooth blending between focus area and background, high-quality performant two-pass Gaussian blur for the background, intuitive controls for composition and background effects, depth-aware rendering with standard blending, and debug visualization for frame boundaries.",
+        "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-focusframe.gif",
+        "licence": "Creative Commons Attribution 4.0 International",
+        "license": "CC BY 4.0"
+      },
+      {
         "name": "Hand Drawing",
         "filename": "AS_GFX_HandDrawing.1.fx",
         "type": "GFX",
@@ -819,6 +804,16 @@
         "license": "CC BY 4.0"
       },
       {
+        "name": "Tilt-Shift",
+        "filename": "AS_GFX_TiltShift.1.fx",
+        "type": "GFX",
+        "shortDescription": "High-quality, depth-aware tilt-shift/DoF shader with realistic bokeh effects and precise depth-based focusing.",
+        "longDescription": "This shader simulates a realistic camera lens by applying a high-quality, depth-aware blur. Unlike simple screen-space effects, this shader uses the scene's depth buffer to allow for precise focusing. You can select a focal point in the scene's depth, and objects closer or further away will be smoothly blurred, creating a beautiful and realistic \"bokeh\" or \"tilt-shift\" effect. Features depth-based focusing allowing precise scene depth selection, focus zone control to define the size of the in-focus area (depth of field), high-quality performant two-pass Gaussian blur driven by depth calculation, depth-aware edge detection that correctly handles foreground and background blur bleeding for realistic effects, interactive debug mode showing focus line when left mouse button is held, and standard blend mode controls for integration.",
+        "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-tiltshift.gif",
+        "licence": "Creative Commons Attribution 4.0 International",
+        "license": "CC BY 4.0"
+      },
+      {
         "name": "Vignette Plus",
         "filename": "AS_GFX_VignettePlus.1.fx",
         "type": "GFX",
@@ -836,13 +831,38 @@
         "licence": "CC Share-Alike Non-Commercial",
         "license": "CC BY-NC-SA"
       }
+    ],
+    "LFX": [
+      {
+        "name": "Candle Flame",
+        "filename": "AS_LFX_CandleFlame.1.fx",
+        "type": "LFX",
+        "shortDescription": "Simulates a realistic, animated candle flame with flicker, glow, and color controls.",
+        "longDescription": "Renders a realistic animated candle flame with natural flicker and glow. Features customizable flame shape, color, flicker speed, and intensity. Includes controls for flame position, scale, and blending. Ideal for atmospheric lighting and cozy scene effects.",
+        "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-Candle.gif",
+        "licence": "Creative Commons Attribution 4.0 International",
+        "license": "CC BY 4.0"
+      },
+      {
+        "name": "Laser Show",
+        "filename": "AS_LFX_LaserShow.1.fx",
+        "type": "LFX",
+        "shortDescription": "Projects animated laser beams and patterns with customizable color, speed, and audio reactivity.",
+        "longDescription": "Projects animated laser beams and geometric patterns onto the stage. Features customizable beam count, color, speed, and spread. Supports audio reactivity for beam movement and intensity. Includes controls for rotation, position, and blending. Perfect for concert, club, or sci-fi lighting effects.",
+        "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-lasershow.gif",
+        "licence": "Creative Commons Attribution 4.0 International",
+        "license": "CC BY 4.0"
+      },
+      {
+        "name": "Stage Spotlights",
+        "filename": "AS_LFX_StageSpotlights.1.fx",
+        "type": "LFX",
+        "shortDescription": "Simulates moving stage spotlights with beam controls, color, and audio reactivity.",
+        "longDescription": "Simulates moving stage spotlights with adjustable beam width, color, intensity, and movement patterns. Features multiple spotlights with independent controls, audio reactivity for movement and brightness, and blending options for integration with other effects. Ideal for live performance and dramatic scene lighting.",
+        "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-Spotlights.gif",
+        "licence": "Creative Commons Attribution 4.0 International",
+        "license": "CC BY 4.0"
+      }
     ]
-  },
-  "total": 57,
-  "byType": {
-    "LFX": 3,
-    "GFX": 7,
-    "BGX": 26,
-    "VFX": 21
   }
 }

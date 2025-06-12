@@ -1,6 +1,6 @@
 # AS-StageFX Shader Gallery
 
-This gallery provides detailed descriptions and visual examples of the complete AS-StageFX collection, which includes **57 shaders** across four categories: **26 Background (BGX)**, **7 Graphic (GFX)**, **3 Lighting (LFX)**, and **21 Visual (VFX)** effects.
+This gallery provides detailed descriptions and visual examples of the complete AS-StageFX collection, which includes **59 shaders** across four categories: **26 Background (BGX)**, **9 Graphic (GFX)**, **3 Lighting (LFX)**, and **21 Visual (VFX)** effects.
 
 For installation instructions and general information, please refer to the [main README](../README.md).
 
@@ -458,6 +458,17 @@ A high-quality cinematic diffusion/bloom filter that replicates classic film dif
 </tr>
 <tr>
 <td width="50%">
+<h3>Focus Frame </h3>
+<h5><code>AS_GFX_FocusFrame.1.fx</code></h5>
+This shader creates a "focus frame" effect by defining a clear, centered rectangular area with a soft, feathered edge. The frame's aspect ratio is fully adjustable. The surrounding space is rendered as a blurred, zoomed, and dimmed version of the background, ideal for creating cinematic compositions. Features a fully adjustable central frame with controls for size and aspect ratio, soft feathered edges for smooth blending between focus area and background, high-quality performant two-pass Gaussian blur for the background, intuitive controls for composition and background effects, depth-aware rendering with standard blending, and debug visualization for frame boundaries.
+
+</td>
+<td width="50%"><div style="text-align:center">
+<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-focusframe.gif" alt="Focus Frame Effect" style="max-width:100%;">
+</div></td>
+</tr>
+<tr>
+<td width="50%">
 <h3>Hand Drawing </h3>
 <h5><code>AS_GFX_HandDrawing.1.fx</code></h5>
 Transforms your scene into a stylized hand-drawn sketch or technical ink illustration with distinct linework and cross-hatching patterns. Features sophisticated line generation with customizable stroke directions and length, textured fills based on original image colors with noise-based variation, animated 'wobble' effect for an authentic hand-drawn feel, optional paper-like background pattern, depth-aware rendering with standard blending, and comprehensive controls for fine-tuning every aspect of the effect. Perfect for artistic transformations, comic/manga styles, or technical illustrations.
@@ -480,6 +491,17 @@ Creates a highly customizable multi-layer halftone effect with support for up to
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-multilayerhalftone.gif" alt="MultiLayer Halftone Effect" style="max-width:100%;">
+</div></td>
+</tr>
+<tr>
+<td width="50%">
+<h3>Tilt-Shift </h3>
+<h5><code>AS_GFX_TiltShift.1.fx</code></h5>
+This shader simulates a realistic camera lens by applying a high-quality, depth-aware blur. Unlike simple screen-space effects, this shader uses the scene's depth buffer to allow for precise focusing. You can select a focal point in the scene's depth, and objects closer or further away will be smoothly blurred, creating a beautiful and realistic "bokeh" or "tilt-shift" effect. Features depth-based focusing allowing precise scene depth selection, focus zone control to define the size of the in-focus area (depth of field), high-quality performant two-pass Gaussian blur driven by depth calculation, depth-aware edge detection that correctly handles foreground and background blur bleeding for realistic effects, interactive debug mode showing focus line when left mouse button is held, and standard blend mode controls for integration.
+
+</td>
+<td width="50%"><div style="text-align:center">
+<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-tiltshift.gif" alt="Tilt-Shift Effect" style="max-width:100%;">
 </div></td>
 </tr>
 <tr>
