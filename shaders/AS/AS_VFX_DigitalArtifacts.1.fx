@@ -405,4 +405,3 @@ technique AS_DigitalArtifacts < ui_label = "[AS] VFX: Digital Artifacts"; ui_too
 }
 
 #endif // __AS_VFX_DigitalArtifacts_1_fx
-

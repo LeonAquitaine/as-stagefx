@@ -131,16 +131,6 @@ static const float COLOR_NORMALIZATION = 0.75;  // Normalization factor for colo
 
 // --- Pattern Parameters ---
 
-
-
-
-
-
-
-
-
-
-
 uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Square Tiling Example E' by SnoopethDuckDuck\nLink: https://www.shadertoy.com/view/NdfBzn\nLicence: CC Share-Alike Non-Commercial\n\n";>;
 
 uniform float WaveAmplitude < ui_type = "slider"; ui_label = "Wave Amplitude"; ui_tooltip = "Controls the height of the wave distortion."; ui_min = WAVE_AMPLITUDE_MIN; ui_max = WAVE_AMPLITUDE_MAX; ui_step = WAVE_AMPLITUDE_STEP; ui_category = "Pattern"; > = WAVE_AMPLITUDE_DEFAULT;
@@ -380,19 +370,3 @@ technique AS_BGX_WavySquares < ui_label="[AS] BGX: Wavy Squares"; ui_tooltip="Dy
 }
 
 #endif // __AS_BGX_WavySquares_1_fx
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

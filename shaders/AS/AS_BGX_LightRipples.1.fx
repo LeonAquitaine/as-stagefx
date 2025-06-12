@@ -127,16 +127,6 @@ static const int MAX_LOOP_ITERATIONS = 3; // Fixed loop count from original
 
 // --- Pattern/Distortion ---
 
-
-
-
-
-
-
-
-
-
-
 uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Creation by Silexars' by Danguafer/Danilo Guanabara\nLink: https://www.shadertoy.com/view/XsXXDn\nLicence: CC Share-Alike Non-Commercial\n\n";>;
 
 uniform float UI_ZOffsetPerChannel < ui_type = "slider"; ui_label = "RGB Time Offset"; ui_tooltip = "Time offset between RGB channels, affects color separation."; ui_min = Z_OFFSET_PER_CHANNEL_MIN; ui_max = Z_OFFSET_PER_CHANNEL_MAX; ui_step = Z_OFFSET_PER_CHANNEL_STEP; ui_category = "Pattern/Distortion"; > = Z_OFFSET_PER_CHANNEL_DEFAULT;
@@ -346,19 +336,3 @@ technique AS_BGX_LightRipples < ui_label="[AS] BGX: Light Ripples"; ui_tooltip="
 }
 
 #endif // __AS_BGX_LightRipples_1_fx
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

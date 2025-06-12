@@ -136,7 +136,6 @@ static const float DETAIL_GLOW_MIN = 0.0;
 static const float DETAIL_GLOW_MAX = 50.0;
 static const float DETAIL_GLOW_DEFAULT = 10.0;
 
-
 // ============================================================================
 // UI DECLARATIONS - Organized by category
 // ============================================================================
@@ -144,16 +143,6 @@ static const float DETAIL_GLOW_DEFAULT = 10.0;
 //------------------------------------------------------------------------------------------------
 // Primary Spiral Controls
 //------------------------------------------------------------------------------------------------
-
-
-
-
-
-
-
-
-
-
 
 uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Logarithmic spiral of spheres' by mrange\nLink: https://www.shadertoy.com/view/msGXRD\nLicence: CC Share-Alike Non-Commercial\n\n";>;
 
@@ -365,7 +354,6 @@ float3 effect_render(float2 p_eff, float time_eff,
     aa_glow_val = min(aa_glow_val, glow_intensity * 100.0f); // Cap relative to glow_intensity
     col_out += gcol * aa_glow_val;
 
-
     col_out = aces_approx_convert(col_out);
     col_out = sRGB_convert(col_out);
 
@@ -497,18 +485,3 @@ technique AS_BGX_LogSpirals_Tech <
 } // end namespace ASLogSpirals
 
 #endif // __AS_BGX_LogSpirals_fx
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

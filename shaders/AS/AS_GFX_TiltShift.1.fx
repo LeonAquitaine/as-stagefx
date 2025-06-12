@@ -215,7 +215,6 @@ float4 PS_TiltShift_BlurV(float4 pos : SV_Position, float2 texcoord : TEXCOORD) 
     return float4(final_color, 1.0);
 }
 
-
 // ============================================================================
 // TECHNIQUE
 // ============================================================================

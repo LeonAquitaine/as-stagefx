@@ -897,5 +897,3 @@ ui_label = "[AS] GFX: Aspect Ratio"; ui_tooltip = "Aspect ratio framing tool for
 }
 
 #endif // __AS_GFX_AspectRatio_1_fx
-
-

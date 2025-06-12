@@ -144,7 +144,6 @@ static const float AUDIO_INTENSITY_MIN = 0.0;
 static const float AUDIO_INTENSITY_MAX = 2.0;
 static const float AUDIO_INTENSITY_DEFAULT = 0.5;
 
-
 // ============================================================================
 // STICKER UI MACRO
 // ============================================================================
@@ -185,15 +184,6 @@ STICKER_UI(4, false, float2(POSITION_DEFAULT, POSITION_DEFAULT - 0.2), SCALE_DEF
 // ============================================================================
 // AUDIO REACTIVITY
 // ============================================================================
-
-
-
-
-
-
-
-
-
 
 uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'StageDepth.fx' by Marot Satil\nLink: https://github.com/Otakumouse/stormshade/blob/master/v4.X/reshade-shaders/Shader%20Library/Recommended/StageDepth.fx\nLicence: Creative Commons Attribution 4.0 International\n\n";>;
 
@@ -479,18 +469,3 @@ technique AS_BoomSticker < ui_label = "[AS] VFX: BoomSticker"; ui_tooltip = "Mul
 }
 
 #endif // __AS_VFX_BoomSticker_1_fx
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

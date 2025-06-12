@@ -56,16 +56,6 @@ sampler VolumetricLight_ThresholdSampler { Texture = VolumetricLight_ThresholdBu
 
 // Tunable Constants
 
-
-
-
-
-
-
-
-
-
-
 uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'fake volumetric 2d light wip' by int_45h\nLink: https://www.shadertoy.com/view/wftXzr\nLicence: CC Share-Alike Non-Commercial\n\n";>;
 
 uniform float LightBrightness < ui_type = "slider"; ui_label = "Light Source Brightness"; ui_tooltip = "Intensity of the light source for rays."; ui_min = 0.01; ui_max = 0.5; ui_category = "Tunable Constants"; > = 0.1;
@@ -251,17 +241,3 @@ technique AS_VFX_VolumetricLight
 }
 
 #endif // __AS_VFX_VolumetricLight_1_fx
-
-
-
-
-
-
-
-
-
-
-
-
-
-

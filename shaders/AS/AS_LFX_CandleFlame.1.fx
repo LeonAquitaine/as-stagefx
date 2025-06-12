@@ -536,4 +536,3 @@ technique AS_LFX_CandleFlame < ui_label = "[AS] LFX: Candle Flame"; ui_tooltip =
 }
 
 #endif // __AS_LFX_CandleFlame_1_fx
-

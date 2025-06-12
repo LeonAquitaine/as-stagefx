@@ -108,16 +108,6 @@ static const float3 DEFAULT_LOOK_AT_POSITION = float3(0.0f, 0.0f, 0.0f);
 
 // --- Animation ---
 
-
-
-
-
-
-
-
-
-
-
 uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Outline 2020 Freestyle Live code' by NuSan\nLink: https://www.shadertoy.com/view/tsBBzG\nLicence: CC Share-Alike Non-Commercial\n\n";>;
 
 uniform float GlobalTimeScale < ui_type = "drag"; ui_min = 0.0; ui_max = 3.0; ui_step = 0.01; ui_label = "Global Animation Speed"; ui_tooltip = "Multiplies the master time for all animations."; ui_category = "Animation"; > = DEFAULT_GLOBAL_TIME_SCALE;
@@ -587,18 +577,3 @@ technique AS_BGX_PastRacer_Corridor <
     }
 }
 #endif
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

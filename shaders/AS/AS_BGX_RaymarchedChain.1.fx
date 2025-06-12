@@ -143,16 +143,6 @@
 
 // Chain Shape
 
-
-
-
-
-
-
-
-
-
-
 uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Corrente' by Elsio\nLink: https://www.shadertoy.com/view/ctSfRV\nLicence: CC Share-Alike Non-Commercial\n\n";>;
 
 uniform float PathScale < ui_type = "slider"; ui_label = "Path Curvature"; ui_min = PATH_SCALE_MIN; ui_max = PATH_SCALE_MAX; ui_category = "Chain Shape"; > = PATH_SCALE_DEFAULT;
@@ -294,7 +284,6 @@ float3 get_normal(float3 p) {
     );
 }
 
-
 // ============================================================================
 // PIXEL SHADER
 // ============================================================================
@@ -321,7 +310,6 @@ float4 PS_RaymarchedChain(float4 vpos : SV_Position, float2 texcoord : TEXCOORD)
     
     rd.yz = mul(rd.yz, fn_rot(camera_pitch_rad)); 
     rd.xz = mul(rd.xz, fn_rot(camera_yaw_rad));
-
 
     // Raymarching
     float s_step = 0.0; // Renamed 's' to 's_step'
@@ -363,16 +351,3 @@ technique AS_BGX_RaymarchedChain <
 }
 
 #endif // __AS_BGX_RaymarchedChain_1_fx
-
-
-
-
-
-
-
-
-
-
-
-
-

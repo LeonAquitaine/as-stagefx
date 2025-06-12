@@ -218,8 +218,9 @@ foreach ($entry in $catalog) {
                 }
             }
             if ($insertIdx -ge 0) {
-                # Insert a real blank line after the generated descriptor
-                $shaderLines = $shaderLines[0..($insertIdx-1)] + $descUniform + '' + $shaderLines[$insertIdx..($shaderLines.Count-1)]
+                # Only insert a blank line if the next line is not already blank
+                $afterDescriptor = if ($insertIdx -lt $shaderLines.Count -and $shaderLines[$insertIdx] -ne '') { @('') } else { @() }
+                $shaderLines = $shaderLines[0..($insertIdx-1)] + $descUniform + $afterDescriptor + $shaderLines[$insertIdx..($shaderLines.Count-1)]
                 Set-Content -Path $shaderPath -Value ($shaderLines -join "`r`n") -Encoding UTF8
                 Write-Host "[INFO] Updated as_shader_descriptor in $($entry.filename)"
             } else {
@@ -228,5 +229,21 @@ foreach ($entry in $catalog) {
         } else {
             Write-Host "[WARN] Shader file not found: $shaderPath" -ForegroundColor Yellow
         }
+    }
+}
+
+# --- Cleanup: Remove duplicated empty lines and trim file end ---
+foreach ($shaderFile in $shaderFiles) {
+    $shaderPath = $shaderFile.FullName
+    if (Test-Path $shaderPath) {
+        $shaderText = Get-Content -Path $shaderPath -Raw -Encoding UTF8
+        # Replace all duplicated newlines (2+ in a row) with a single newline, repeatedly until none remain
+        do {
+            $oldText = $shaderText
+            $shaderText = $shaderText -replace "(\r?\n){3,}", "`r`n`r`n"
+        } while ($shaderText -ne $oldText)
+        # Trim trailing whitespace and newlines from the end of the file
+        $shaderText = $shaderText.TrimEnd()
+        Set-Content -Path $shaderPath -Value $shaderText -Encoding UTF8
     }
 }

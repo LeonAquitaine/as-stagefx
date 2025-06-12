@@ -172,7 +172,6 @@ AS_BLENDAMOUNT_UI(BlendAmount)
 // --- Debug ---
 AS_DEBUG_UI("Off\0Audio\0Depth\0Particles Only\0")
 
-
 //------------------------------------------------------------------------------------------------
 // Helper Functions
 //------------------------------------------------------------------------------------------------
@@ -201,7 +200,6 @@ float4 drawSharpParticle(
     
     return float4(particleCalculatedColor, saturate(finalOpacity)); // Return particle's own color
 }
-
 
 // Function to process one layer of particles
 float3 processParticleLayer(
@@ -304,7 +302,6 @@ float3 processParticleLayer(
     return accumulatedActualLayerColor * accumulatedLayerAlpha; 
 }
 
-
 //------------------------------------------------------------------------------------------------
 // Pixel Shader
 //------------------------------------------------------------------------------------------------
@@ -358,7 +355,6 @@ float4 FloatingParticlesPS(float4 vpos : SV_Position, float2 texcoord : TexCoord
     // Blend Layer 1 (pre-multiplied) onto current color (initially baseSceneColor)
     colorWithParticles = premultipliedColor_L1 + colorWithParticles * (1.0 - alpha_L1);
     float totalParticleAlpha = alpha_L1;
-
 
     // --- Process Layer 2 ---
     float alpha_L2;
@@ -432,5 +428,3 @@ technique AS_VFX_DustMotes < ui_label = "[AS] VFX: Dust Motes"; ui_tooltip = "Si
 } // namespace ASDustMotes
 
 #endif // __AS_VFX_DustMotes_1_fx
-
-

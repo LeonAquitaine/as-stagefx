@@ -86,18 +86,7 @@ static float4 g_gc_currentEffectStyle; // Renamed from 'current_effect_state'
 // UI DECLARATIONS
 // ============================================================================
 
-
 // Palette & Style
-
-
-
-
-
-
-
-
-
-
 
 uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Golden apollian' by mrange\nLink: https://www.shadertoy.com/view/WlcfRS\nLicence: CC Share-Alike Non-Commercial\n\n";>;
 
@@ -542,18 +531,3 @@ technique GoldenApollian_Tech <
 }
 
 #endif // __AS_BGX_GoldenClockwork_1_fx
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

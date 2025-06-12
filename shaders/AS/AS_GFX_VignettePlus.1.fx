@@ -98,16 +98,6 @@ static const int DEBUG_PATTERN_ONLY = 4;
 
 // --- Group I: Main Effect Style & Appearance ---
 
-
-
-
-
-
-
-
-
-
-
 uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Hexagonal Wipe' by blandprix\nLink: https://www.shadertoy.com/view/XfjyWG\nLicence: CC Share-Alike Non-Commercial\n\n";>;
 
 uniform int EffectStyle < ui_type = "combo"; ui_label = "Visual Style"; ui_items = "Smooth Gradient\0Duotone: Circles\0Lines - Perpendicular\0Lines - Parallel\0"; ui_tooltip = "Selects the overall visual appearance of the effect."; ui_category = "Style"; > = STYLE_DUOTONE_CIRCLES;
@@ -473,18 +463,3 @@ technique AS_GFX_VignettePlus < ui_label = "[AS] GFX: Vignette Plus"; ui_tooltip
 } // namespace ASVignettePlus
 
 #endif // __AS_GFX_VignettePlus_1_fx
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

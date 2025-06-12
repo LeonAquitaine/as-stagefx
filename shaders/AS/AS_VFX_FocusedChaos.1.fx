@@ -151,20 +151,11 @@ static const float DITHER_STRENGTH_DEFAULT = 0.5f;
 
 // --- Animation Controls ---
 
-
-
-
 uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'BlackHole (swirl, portal)' by misterprada\nLink: https://www.shadertoy.com/view/lcfyDj\nLicence: CC Share-Alike Non-Commercial\n\n";>;
 
 AS_ANIMATION_UI(AnimationSpeed, AnimationKeyframe, "Animation") 
 
 // --- Vortex Shape Controls ---
-
-
-
-
-
-
 
 uniform float SwirlFactor           < ui_type = "slider"; ui_label = "Swirl Intensity"; ui_tooltip = "Controls the intensity and direction of the swirling effect."; ui_min = SWIRL_FACTOR_MIN; ui_max = SWIRL_FACTOR_MAX; ui_step = 0.01f; ui_category = "Vortex Shape"; > = SWIRL_FACTOR_DEFAULT;
 uniform float UvLengthPowerForAngle < ui_type = "slider"; ui_label = "Swirl Falloff"; ui_tooltip = "Adjusts how the swirl tightness changes from the center outwards."; ui_min = UV_LENGTH_POWER_FOR_ANGLE_MIN; ui_max = UV_LENGTH_POWER_FOR_ANGLE_MAX; ui_step = 0.01f; ui_category = "Vortex Shape"; > = UV_LENGTH_POWER_FOR_ANGLE_DEFAULT;
@@ -211,7 +202,6 @@ uniform float FinalMixFactorBias    < ui_type = "slider"; ui_label = "Core/Edge 
 uniform float EffectAlphaExponent   < ui_type = "slider"; ui_label = "Transparency Falloff"; ui_tooltip = "Controls the sharpness of the transparency falloff from core to edge."; ui_min = EFFECT_ALPHA_EXPONENT_MIN; ui_max = EFFECT_ALPHA_EXPONENT_MAX; ui_step = 0.01f; ui_category = "Final Mix"; > = EFFECT_ALPHA_EXPONENT_DEFAULT;
 uniform bool  EnableDithering       < ui_label = "Enable Dithering"; ui_tooltip = "Adds a small amount of noise to reduce color banding."; ui_category = "Final Mix"; > = true;
 uniform float DitherStrength        < ui_type = "slider"; ui_label = "Dither Strength"; ui_tooltip = "Strength of the dithering effect."; ui_min = DITHER_STRENGTH_MIN; ui_max = DITHER_STRENGTH_MAX; ui_step = 0.01f; ui_category = "Final Mix"; > = DITHER_STRENGTH_DEFAULT;
-
 
 // ============================================================================
 // HELPER FUNCTIONS (Noise Implementation from GLSL)
@@ -379,16 +369,3 @@ technique AS_VFX_FocusedChaos <
 }
 
 #endif // __AS_VFX_FocusedChaos_1_fx
-
-
-
-
-
-
-
-
-
-
-
-
-

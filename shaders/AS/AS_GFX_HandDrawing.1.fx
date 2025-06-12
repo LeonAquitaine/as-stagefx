@@ -188,16 +188,6 @@ static const float3 PAPER_PATTERN_TINT_DEFAULT = float3(64.0/255.0, 26.0/255.0, 
 
 // --- Overall Effect & Animation ---
 
-
-
-
-
-
-
-
-
-
-
 uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'notebook drawings' by Flockaroo\nLink: https://www.shadertoy.com/view/XtVGD1\nLicence: CC Share-Alike Non-Commercial\n\n";>;
 
 uniform float AnimationWobbleStrength < ui_type = "slider"; ui_label = "Animation Wobble Strength"; ui_min = ANIMATION_WOBBLE_STRENGTH_MIN; ui_max = ANIMATION_WOBBLE_STRENGTH_MAX; ui_step = 0.1; ui_tooltip = "Overall strength of the coordinate jitter effect, making the image 'wobble'"; ui_category = "Animation & Jitter"; > = ANIMATION_WOBBLE_STRENGTH_DEFAULT;
@@ -438,19 +428,3 @@ technique AS_GFX_HandDrawing <
 } // namespace ASHandDrawing
 
 #endif // __AS_GFX_HandDrawing_fx
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

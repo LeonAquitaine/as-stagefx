@@ -64,17 +64,6 @@ static const float LARGE_TILE_PROBABILITY_MIN = 0.1, LARGE_TILE_PROBABILITY_MAX 
 static const float MEDIUM_TILE_PROBABILITY_MIN = 0.3, MEDIUM_TILE_PROBABILITY_MAX = 0.9, MEDIUM_TILE_PROBABILITY_DEFAULT = 0.7;
 static const float PATTERN_SEED_MIN = 1.0, PATTERN_SEED_MAX = 100.0, PATTERN_SEED_DEFAULT = 57.0;
 
-
-
-
-
-
-
-
-
-
-
-
 uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Quadtree Truchet' by Shane\nLink: https://www.shadertoy.com/view/4t3BW4\nLicence: CC Share-Alike Non-Commercial\n\n";>;
 
 uniform float PatternScale < ui_type = "slider"; ui_label = "Pattern Scale"; ui_tooltip = "Initial zoom level of the pattern."; ui_min = PATTERN_SCALE_MIN; ui_max = PATTERN_SCALE_MAX; ui_category = "Pattern Settings"; > = PATTERN_SCALE_DEFAULT;
@@ -146,7 +135,6 @@ AS_BLENDAMOUNT_UI(BlendAmount)
 // Debug
 uniform bool ShowGrid < ui_label = "Show Quadtree Grid"; ui_tooltip = "Overlays the quadtree grid structure for debugging."; ui_category = "Debug"; > = false;
 uniform float GridLineWidth < ui_type = "slider"; ui_label = "Debug Grid Line Width"; ui_tooltip = "Width of the debug grid lines."; ui_min = GRID_LINE_WIDTH_MIN; ui_max = GRID_LINE_WIDTH_MAX; ui_category = "Debug"; > = GRID_LINE_WIDTH_DEFAULT;
-
 
 // ============================================================================
 // HELPER FUNCTIONS
@@ -341,7 +329,6 @@ float4 PS_ASBGXQuadtreeTruchet(float4 vpos : SV_Position, float2 texcoord : TEXC
       // Simple line pattern for non-spectrum modes if not stacked
     float pat3_lines = clamp(sin((oP.x - oP.y) * AS_TWO_PI * ReShade::ScreenSize.y / LinePatternFrequency) * 1.0 + 0.9, 0.0, 1.0) * 0.25 + 0.75;
 
-
     if (EnableStackedTiles) {
         float pw = 0.02; // Outline width for stacked view
         d -= pw / 2.0;
@@ -497,16 +484,3 @@ technique AS_BGX_QuadtreeTruchet <
 }
 
 #endif // __AS_BGX_QuadtreeTruchet_1_fx
-
-
-
-
-
-
-
-
-
-
-
-
-

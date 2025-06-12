@@ -74,16 +74,6 @@ static const float EPSILON = 1e-5f; static const float HALF_POINT = 0.5f; // Rem
 
 // --- UI Uniform Definitions ---
 
-
-
-
-
-
-
-
-
-
-
 uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Star Nest' by Kali\nLink: https://www.shadertoy.com/view/XlfGRj\nLicence: CC Share-Alike Non-Commercial\n\n";>;
 
 uniform int UI_Iterations < ui_type = "slider"; ui_label = "Fractal Iterations"; ui_min = ITERATIONS_MIN; ui_max = ITERATIONS_MAX; ui_category = "Fractal Parameters"; > = ITERATIONS_DEFAULT;
@@ -236,7 +226,6 @@ float4 ASCosmicKaleidoscopePS(float4 vpos : SV_POSITION, float2 texcoord : TEXCO
     else if (Cosmos_AudioTarget == 5) audio_CamMove *= audioReactivity;
     else if (Cosmos_AudioTarget == 6) audio_FractalRot *= audioReactivity; // Added Fractal Rotation Target
 
-
     // --- Time and Resolution ---
     // Calculate animation time with keyframe handling
     float iTime;
@@ -312,19 +301,3 @@ technique AS_BGX_CosmicKaleidoscope < ui_label="[AS] BGX: Cosmic Kaleidoscope"; 
 }
 
 #endif // __AS_BGX_CosmicKaleidoscope_1_fx
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

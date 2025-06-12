@@ -565,6 +565,3 @@ technique AS_LightWall < ui_label = "[AS] BGX: Light Wall"; ui_tooltip = "Soft g
 }
 
 #endif // __AS_BGX_LightWall_1_fx
-
-
-

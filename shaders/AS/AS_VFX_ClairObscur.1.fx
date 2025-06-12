@@ -283,16 +283,6 @@ sampler PetalAtlas_Sampler { Texture = PetalAtlasTexture; AddressU = CLAMP; Addr
 
 // ---- Petal Appearance ----
 
-
-
-
-
-
-
-
-
-
-
 uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on '[RGR] Hearts' by deeplo\nLink: https://www.shadertoy.com/view/ttcBRs\nLicence: CC Share-Alike Non-Commercial\n\n";>;
 
 uniform float3 PetalColor < ui_type = "color"; ui_label = "Petal Color"; ui_category = "Petals"; > = float3(1.0, 1.0, 1.0);
@@ -359,7 +349,6 @@ uniform int DebugMode <
                "Atlas Tile View\0"; 
     ui_tooltip = "Tools for visualizing different aspects of the effect.";
 > = 0;
-
 
 // --- Custom Vector Noise Function Based on AS_Noise Library ---
 // 2D->2D vector noise function that produces consistent, smooth 2D vector field
@@ -955,18 +944,3 @@ technique FlutteringPetals <
 }
 
 #endif // __AS_VFX_ClairObscur_1_fx
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

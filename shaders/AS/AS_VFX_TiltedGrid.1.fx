@@ -57,16 +57,6 @@ static const float CHAMFER_SIZE_DEFAULT = 0.2; // 20% of cell size
 // EFFECT-SPECIFIC PARAMETERS
 // ============================================================================
 
-
-
-
-
-
-
-
-
-
-
 uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Godot 4: Tilted Grid Effect Tutorial' by FencerDevLog\nLink: https://www.youtube.com/watch?v=Tfj6RDqXEHM\nLicence: Creative Commons Attribution 4.0 International\n\n";>;
 
 uniform float GridSize < ui_type = "slider"; ui_label = "Cell Size"; ui_tooltip = "Size of grid cells as percentage of screen height (0.1% to 20%)."; ui_min = GRID_SIZE_MIN; ui_max = GRID_SIZE_MAX; ui_step = 0.001; ui_category = "Grid Pattern"; > = GRID_SIZE_DEFAULT;
@@ -188,7 +178,6 @@ namespace AS_TiltedGrid {
             // Sharp version:
             // squareBorderMask = (min(distToEdge.x, distToEdge.y) < halfBorderWidth) ? 1.0 : 0.0;
         }
-
 
         // --- Calculate Additive Chamfer Corner Mask ---
         float chamferMask = 0.0;
@@ -331,18 +320,3 @@ technique AS_VFX_TiltedGrid < ui_label = "[AS] VFX: Tilted Grid"; ui_tooltip = "
 }
 
 #endif // __AS_VFX_TiltedGrid_1_fx
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

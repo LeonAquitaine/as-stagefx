@@ -132,16 +132,6 @@ static const float TONEMAP_EXPOSURE_DEFAULT = 4e8; // Was TonemapStrength
 
 // --- Animation Controls ---
 
-
-
-
-
-
-
-
-
-
-
 uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Sunset [280]' by Xor\nLink: https://www.shadertoy.com/view/wXjSRt\nLicence: CC Share-Alike Non-Commercial\n\n";>;
 
 uniform float AnimationSpeed < ui_type = "slider"; ui_label = "Speed"; ui_tooltip = "Cloud and color animation speed."; ui_min = ANIMATION_SPEED_MIN; ui_max = ANIMATION_SPEED_MAX; ui_step = 0.01; ui_category = "Animation"; > = ANIMATION_SPEED_DEFAULT;
@@ -261,16 +251,3 @@ technique AS_BGX_SunsetClouds <
 }
 
 #endif // __AS_BGX_SUNSETCLOUDS_1_FX
-
-
-
-
-
-
-
-
-
-
-
-
-
