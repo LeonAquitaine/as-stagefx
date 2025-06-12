@@ -49,7 +49,7 @@ AS-StageFX includes **{{total}} shaders** across four categories: **{{byType.BGX
 | Shader                 | Description                                                                                                | License   |
 | ---------------------- | ---------------------------------------------------------------------------------------------------------- | --------- |
 {{#each grouped.BGX}}
-| **{{name}}** | {{shortDescription}} | {{license}} |
+| **{{name}}** | {{shortDescription}} | {{licenseCode}} |
 {{/each}}
 
 ### Graphic Effects (GFX)
@@ -57,7 +57,7 @@ AS-StageFX includes **{{total}} shaders** across four categories: **{{byType.BGX
 | Shader                 | Description                                                                                                | License   |
 | ---------------------- | ---------------------------------------------------------------------------------------------------------- | --------- |
 {{#each grouped.GFX}}
-| **{{name}}** | {{shortDescription}} | {{license}} |
+| **{{name}}** | {{shortDescription}} | {{licenseCode}} |
 {{/each}}
 
 ### Lighting Effects (LFX)
@@ -65,7 +65,7 @@ AS-StageFX includes **{{total}} shaders** across four categories: **{{byType.BGX
 | Shader                 | Description                                                                                                | License   |
 | ---------------------- | ---------------------------------------------------------------------------------------------------------- | --------- |
 {{#each grouped.LFX}}
-| **{{name}}** | {{shortDescription}} | {{license}} |
+| **{{name}}** | {{shortDescription}} | {{licenseCode}} |
 {{/each}}
 
 ### Visual Effects (VFX)
@@ -73,7 +73,7 @@ AS-StageFX includes **{{total}} shaders** across four categories: **{{byType.BGX
 | Shader                 | Description                                                                                                | License   |
 | ---------------------- | ---------------------------------------------------------------------------------------------------------- | --------- |
 {{#each grouped.VFX}}
-| **{{name}}** | {{shortDescription}} | {{license}} |
+| **{{name}}** | {{shortDescription}} | {{licenseCode}} |
 {{/each}}
 
 ---
