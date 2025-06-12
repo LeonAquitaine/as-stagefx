@@ -74,6 +74,12 @@ static const float LIGHTNING_FREQ_APOCALYPSE = 4.0f;
 // TEXTURES AND SAMPLERS
 // ============================================================================
 // R=focus_val, GB=normal.xy, A=drop_coverage
+
+
+
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Heartfelt' by Martijn Steinrucken (BigWings)\nLink: https://www.shadertoy.com/view/ltffzl\nLicence: CC Share-Alike Non-Commercial\n\n";>;
+
 AS_CREATE_TEX_SAMPLER(RainyWindow_EffectMapTarget, RainyWindow_EffectMapSampler, float2(BUFFER_WIDTH, BUFFER_HEIGHT), RGBA16F, 1, POINT, CLAMP)
 
 AS_CREATE_TEX_SAMPLER(RainyWindow_HorizontalBlurTarget, RainyWindow_HorizontalBlurSampler, float2(BUFFER_WIDTH, BUFFER_HEIGHT), RGBA8, 1, POINT, CLAMP)
@@ -86,6 +92,13 @@ AS_CREATE_TEX_SAMPLER(RainyWindow_BlurredBackgroundTarget, RainyWindow_BlurredBa
 // ============================================================================
 
 // Rain & Droplet Appearance
+
+
+
+
+
+
+
 uniform float RainAmount < ui_type = "slider"; ui_label = "Rain Amount"; ui_tooltip = "Controls overall rain intensity and thus influences blur levels."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Rain Appearance"; > = 0.7;
 uniform float DropAnimationSpeed < ui_type = "slider"; ui_label = "Drop Animation Speed"; ui_tooltip = "Controls how fast the raindrops move and animate."; ui_min = DROPLET_SPEED_MIN; ui_max = DROPLET_SPEED_MAX; ui_step = 0.01; ui_category = "Rain Appearance"; > = 0.2;
 
@@ -416,5 +429,19 @@ technique AS_VFX_RainyWindow <
 }
 
 #endif // __AS_VFX_RainyWindow_1_fx
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

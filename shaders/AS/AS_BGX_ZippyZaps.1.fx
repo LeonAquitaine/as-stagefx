@@ -130,11 +130,24 @@ static const float FINAL_O_U_DOT_DIVISOR_STEP = 10.0;
 static const float FINAL_O_U_DOT_DIVISOR_DEFAULT = 250.0;
 
 // --- Stage ---
+
+
+
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Zippy Zaps' by SnoopethDuckDuck\nLink: https://www.shadertoy.com/view/XXyGzh\nLicence: CC Share-Alike Non-Commercial\n\n";>;
+
 AS_STAGEDEPTH_UI(EffectDepth)
 AS_ROTATION_UI(EffectSnapRotation, EffectFineRotation)
 AS_POSITION_SCALE_UI(Position, Scale)
 
 // --- Appearance ---
+
+
+
+
+
+
+
 uniform float U_CoordScalingFactor < ui_type = "slider"; ui_label = "Scaling Factor"; ui_tooltip = "Controls the initial zoom/scale of the effect. Smaller values zoom in (effect appears larger)."; ui_min = U_COORD_SCALING_MIN; ui_max = U_COORD_SCALING_MAX; ui_step = U_COORD_SCALING_STEP; ui_category = "Appearance"; > = U_COORD_SCALING_DEFAULT;
 uniform float Loop_A_Increment < ui_type = "slider"; ui_label = "Arc Growth Rate"; ui_tooltip = "Controls the rate of growth for lightning arcs in the effect."; ui_min = LOOP_A_INCREMENT_MIN; ui_max = LOOP_A_INCREMENT_MAX; ui_step = LOOP_A_INCREMENT_STEP; ui_category = "Appearance"; > = LOOP_A_INCREMENT_DEFAULT;
 uniform float SinArg_Denom_Offset < ui_type = "slider"; ui_label = "Arc Pattern Density"; ui_tooltip = "Controls the density and pattern of the lightning arcs."; ui_min = SIN_ARG_DENOM_OFFSET_MIN; ui_max = SIN_ARG_DENOM_OFFSET_MAX; ui_step = SIN_ARG_DENOM_OFFSET_STEP; ui_category = "Appearance"; > = SIN_ARG_DENOM_OFFSET_DEFAULT;
@@ -440,5 +453,19 @@ technique AS_BGX_ZippyZaps <ui_label="[AS] BGX: ZippyZaps"; ui_tooltip="Creates 
 }
 
 #endif // __AS_BGX_ZippyZaps_1_fx
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

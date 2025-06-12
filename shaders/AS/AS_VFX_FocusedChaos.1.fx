@@ -150,9 +150,22 @@ static const float DITHER_STRENGTH_DEFAULT = 0.5f;
 // ============================================================================
 
 // --- Animation Controls ---
+
+
+
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'BlackHole (swirl, portal)' by misterprada\nLink: https://www.shadertoy.com/view/lcfyDj\nLicence: CC Share-Alike Non-Commercial\n\n";>;
+
 AS_ANIMATION_UI(AnimationSpeed, AnimationKeyframe, "Animation") 
 
 // --- Vortex Shape Controls ---
+
+
+
+
+
+
+
 uniform float SwirlFactor           < ui_type = "slider"; ui_label = "Swirl Intensity"; ui_tooltip = "Controls the intensity and direction of the swirling effect."; ui_min = SWIRL_FACTOR_MIN; ui_max = SWIRL_FACTOR_MAX; ui_step = 0.01f; ui_category = "Vortex Shape"; > = SWIRL_FACTOR_DEFAULT;
 uniform float UvLengthPowerForAngle < ui_type = "slider"; ui_label = "Swirl Falloff"; ui_tooltip = "Adjusts how the swirl tightness changes from the center outwards."; ui_min = UV_LENGTH_POWER_FOR_ANGLE_MIN; ui_max = UV_LENGTH_POWER_FOR_ANGLE_MAX; ui_step = 0.01f; ui_category = "Vortex Shape"; > = UV_LENGTH_POWER_FOR_ANGLE_DEFAULT;
 
@@ -366,3 +379,16 @@ technique AS_VFX_FocusedChaos <
 }
 
 #endif // __AS_VFX_FocusedChaos_1_fx
+
+
+
+
+
+
+
+
+
+
+
+
+

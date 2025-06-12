@@ -847,11 +847,5 @@
     "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-watersurface.gif",
     "licence": "Creative Commons Attribution 4.0 International",
     "licenseCode": "CC BY 4.0"
-  },
-  {
-    "filename": "AS_VFX_LightTrails.1.fx",
-    "type": "VFX",
-    "licence": "Creative Commons Attribution 4.0 International",
-    "licenseCode": "CC BY 4.0"
   }
 ]

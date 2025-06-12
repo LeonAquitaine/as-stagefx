@@ -73,6 +73,19 @@ static const float COLOR_INTENSITY_DEFAULT = 1.0; static const float COLOR_INTEN
 static const float EPSILON = 1e-5f; static const float HALF_POINT = 0.5f; // Removed PI and TWOPI, use AS_PI and AS_TWO_PI from AS_Utils
 
 // --- UI Uniform Definitions ---
+
+
+
+
+
+
+
+
+
+
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Star Nest' by Kali\nLink: https://www.shadertoy.com/view/XlfGRj\nLicence: CC Share-Alike Non-Commercial\n\n";>;
+
 uniform int UI_Iterations < ui_type = "slider"; ui_label = "Fractal Iterations"; ui_min = ITERATIONS_MIN; ui_max = ITERATIONS_MAX; ui_category = "Fractal Parameters"; > = ITERATIONS_DEFAULT;
 uniform float UI_Formuparam < ui_type = "slider"; ui_label = "Fractal Parameter"; ui_min = FORMUPARAM_MIN; ui_max = FORMUPARAM_MAX; ui_step = FORMUPARAM_STEP; ui_category = "Fractal Parameters"; > = FORMUPARAM_DEFAULT;
 uniform float UI_Tile < ui_type = "slider"; ui_label = "Tiling / Domain Repetition"; ui_min = TILE_MIN; ui_max = TILE_MAX; ui_step = TILE_STEP; ui_category = "Fractal Parameters"; > = TILE_DEFAULT;
@@ -299,5 +312,19 @@ technique AS_BGX_CosmicKaleidoscope < ui_label="[AS] BGX: Cosmic Kaleidoscope"; 
 }
 
 #endif // __AS_BGX_CosmicKaleidoscope_1_fx
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

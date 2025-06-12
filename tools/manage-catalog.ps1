@@ -187,3 +187,46 @@ try {
     Write-Host $_.Exception.Message -ForegroundColor Red
     exit 1
 }
+
+# --- Update as_shader_descriptor in shader files based on catalog credits ---
+foreach ($entry in $catalog) {
+    if ($entry.credits) {
+        $shaderPath = Join-Path $shaderDir $entry.filename
+        if (Test-Path $shaderPath) {
+            $shaderLines = Get-Content -Path $shaderPath -Raw -Encoding UTF8 -ErrorAction Stop -Force | ForEach-Object { $_ -split "`r?`n" }
+            # Remove any existing as_shader_descriptor uniform lines (anywhere)
+            $shaderLines = $shaderLines | Where-Object { $_ -notmatch '^\s*uniform\s+int\s+as_shader_descriptor' }
+            # Build descriptor text with /n for line breaks
+            $descText = "Based on '$($entry.credits.originalTitle)' by $($entry.credits.originalAuthor)\nLink: $($entry.credits.externalUrl)"
+            $uiText = "\n$descText\n"
+            if ($entry.licence) {
+                $uiText += "Licence: $($entry.licence)\n\n"
+            }
+            # Escape only double quotes for HLSL string
+            $uiTextEscaped = $uiText -replace '"', '\\"'
+            $descUniform = 'uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "' + $uiTextEscaped + '";>;' 
+            # Find first uniform or AS_ UI macro line not inside a macro
+            $insertIdx = -1
+            $inMacro = $false
+            for ($i = 0; $i -lt $shaderLines.Count; $i++) {
+                $line = $shaderLines[$i]
+                if ($line -match '^\s*#\s*define') { $inMacro = $true }
+                elseif ($inMacro -and ($line -match '^\s*$' -or $line -match '^\s*#')) { $inMacro = $false }
+                if (-not $inMacro -and ($line -match '^\s*uniform ' -or $line -match '^\s*AS_[A-Z_]+')) {
+                    $insertIdx = $i
+                    break
+                }
+            }
+            if ($insertIdx -ge 0) {
+                # Insert a real blank line after the generated descriptor
+                $shaderLines = $shaderLines[0..($insertIdx-1)] + $descUniform + '' + $shaderLines[$insertIdx..($shaderLines.Count-1)]
+                Set-Content -Path $shaderPath -Value ($shaderLines -join "`r`n") -Encoding UTF8
+                Write-Host "[INFO] Updated as_shader_descriptor in $($entry.filename)"
+            } else {
+                Write-Host "[WARN] No uniform or AS_ UI macro group found in $($entry.filename), skipping descriptor insert." -ForegroundColor Yellow
+            }
+        } else {
+            Write-Host "[WARN] Shader file not found: $shaderPath" -ForegroundColor Yellow
+        }
+    }
+}

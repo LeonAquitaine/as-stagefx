@@ -97,6 +97,19 @@ sampler DigitalBrain_NoiseSampler { Texture = DigitalBrain_NoiseTex; AddressU = 
 // ============================================================================
 
 // Animation Controls
+
+
+
+
+
+
+
+
+
+
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Digital Brain' by srtuss\nLink: https://www.shadertoy.com/view/4sl3Dr\nLicence: CC Share-Alike Non-Commercial\n\n";>;
+
 uniform float CameraSpeed < ui_type = "slider"; ui_label = "Camera Speed"; ui_tooltip = "Controls how fast the camera moves through the pattern."; ui_min = CAMERA_SPEED_MIN; ui_max = CAMERA_SPEED_MAX; ui_step = CAMERA_SPEED_STEP; ui_category = "Animation Controls"; > = CAMERA_SPEED_DEFAULT;
 uniform float CameraMovementAmount < ui_type = "slider"; ui_label = "Camera Movement"; ui_tooltip = "Controls amplitude of camera movement animation."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Animation Controls"; > = 0.4;
 uniform float CameraRotationAmount < ui_type = "slider"; ui_label = "Camera Rotation"; ui_tooltip = "Controls amplitude of camera rotation animation."; ui_min = 0.0; ui_max = 2.0; ui_step = 0.01; ui_category = "Animation Controls"; > = 1.0;
@@ -423,4 +436,18 @@ technique AS_BGX_DigitalBrain <
 }
 
 #endif // __AS_BGX_DigitalBrain_1_fx
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

@@ -110,6 +110,19 @@ static const float STEP_INCREMENT = 1.0;     // Step increment for pre-increment
 // ============================================================================
 
 // --- Category: Raymarching Engine ---
+
+
+
+
+
+
+
+
+
+
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Fluorescent [292]' by Xor\nLink: https://www.shadertoy.com/view/WcGGDd\nLicence: CC Share-Alike Non-Commercial\n\n";>;
+
 uniform int IterationCount < ui_type = "slider"; ui_label = "Quality vs. Performance"; ui_tooltip = "Number of steps for ray marching. Higher values increase detail and accuracy but reduce performance significantly. Lower for speed, higher for final renders."; ui_min = ITERATIONS_MIN; ui_max = ITERATIONS_MAX; ui_category = "Raymarching Engine"; > = ITERATIONS_DEFAULT;
 uniform float StepBase < ui_type = "slider"; ui_label = "Minimum Ray Step Size"; ui_tooltip = "Smallest distance the ray advances in each step. Affects detail in dense areas and performance."; ui_min = STEP_BASE_MIN; ui_max = STEP_BASE_MAX; ui_category = "Raymarching Engine"; > = STEP_BASE_DEFAULT;
 uniform float StepScale < ui_type = "slider"; ui_label = "Adaptive Ray Step Scale"; ui_tooltip = "How much the ray step size adapts based on distance to surfaces. Influences detail and marching speed through empty space."; ui_min = STEP_SCALE_MIN; ui_max = STEP_SCALE_MAX; ui_category = "Raymarching Engine"; > = STEP_SCALE_DEFAULT;
@@ -259,3 +272,16 @@ technique AS_BGX_Fluorescent < ui_label = "[AS] BGX: Fluorescent"; ui_tooltip = 
 }
 
 #endif // __AS_BGX_Fluorescent_1_fx
+
+
+
+
+
+
+
+
+
+
+
+
+

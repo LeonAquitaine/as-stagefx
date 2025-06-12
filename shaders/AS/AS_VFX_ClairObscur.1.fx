@@ -282,6 +282,19 @@ sampler PetalAtlas_Sampler { Texture = PetalAtlasTexture; AddressU = CLAMP; Addr
 // --- UI Uniforms ---
 
 // ---- Petal Appearance ----
+
+
+
+
+
+
+
+
+
+
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on '[RGR] Hearts' by deeplo\nLink: https://www.shadertoy.com/view/ttcBRs\nLicence: CC Share-Alike Non-Commercial\n\n";>;
+
 uniform float3 PetalColor < ui_type = "color"; ui_label = "Petal Color"; ui_category = "Petals"; > = float3(1.0, 1.0, 1.0);
 uniform float PetalBaseAlpha < ui_type = "slider"; ui_label = "Opacity"; ui_category = "Petals"; ui_min = 0.0; ui_max = 1.0; > = 1.0;
 uniform float PetalBaseSize < ui_type = "slider"; ui_label = "Size"; ui_category = "Petals"; ui_min = 0.001; ui_max = 0.5; ui_step=0.001; > = 0.06; 
@@ -942,4 +955,18 @@ technique FlutteringPetals <
 }
 
 #endif // __AS_VFX_ClairObscur_1_fx
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
