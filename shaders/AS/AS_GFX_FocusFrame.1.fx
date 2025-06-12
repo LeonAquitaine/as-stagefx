@@ -49,6 +49,8 @@ sampler FocusFrame_BlurHSampler { Texture = FocusFrame_BlurHBuffer; };
 // UI DECLARATIONS
 // ============================================================================
 
+uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " ";ui_text ="\nCreates a focused rectangular frame with a blurred, dimmed background.\nIdeal for portrait compositions and drawing attention to subjects.\n\n";>;
+
 // -- Composition & Framing --
 uniform float FocusAreaSize < ui_type = "slider"; ui_label = "Frame Size"; ui_tooltip = "Controls the size of the central frame."; ui_min = 0.1; ui_max = 1.0; ui_category = "Composition & Framing"; > = 0.9;
 uniform float FrameAspectRatio < ui_type = "slider"; ui_label = "Frame Aspect Ratio"; ui_tooltip = "Controls the width-to-height ratio of the frame.\n1.0 = Square, < 1.0 = Tall, > 1.0 = Wide."; ui_min = 0.25; ui_max = 4.0; ui_step = 0.05; ui_category = "Composition & Framing"; > = 1.0;
