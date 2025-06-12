@@ -121,16 +121,6 @@ static const float COLOR_FACTOR = 0.001;
 
 // --- Pattern Parameters ---
 
-
-
-
-
-
-
-
-
-
-
 uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Blue Corona [256 Chars]' by SnoopethDuckDuck\nLink: https://www.shadertoy.com/view/XfKGWV\nLicence: CC Share-Alike Non-Commercial\n\n";>;
 
 uniform float PatternScale < ui_type = "slider"; ui_label = "Pattern Scale"; ui_tooltip = "Controls the overall scale of the corona pattern."; ui_min = PATTERN_SCALE_MIN; ui_max = PATTERN_SCALE_MAX; ui_step = PATTERN_SCALE_STEP; ui_category = "Pattern"; > = PATTERN_SCALE_DEFAULT;
@@ -316,18 +306,3 @@ technique AS_BGX_BlueCorona < ui_label="[AS] BGX: Blue Corona"; ui_tooltip="Crea
 }
 
 #endif // __AS_BGX_BlueCorona_1_fx
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
