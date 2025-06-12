@@ -96,46 +96,7 @@ if (Test-Path $imagesDir) {
             $effectName = $matches[1]
             
             # Define specific mappings for known mismatches
-            $specificMappings = @{
-                "CandleFlame" = "as-stagefx-Candle.gif"
-                "ClairObscur" = "as-stagefx-ClairObscur.gif"
-                "RadiantFire" = "as-stagefx-radiantfire.gif"
-                "SpectrumRing" = "as-stagefx-SpectrumRing.gif"
-                "StageSpotlights" = "as-stagefx-Spotlights.gif"
-                "StencilMask" = "as-stagefx-StencilMask.gif"
-                "VUMeter" = "as-stagefx-VUMeter.gif"
-                "WarpDistort" = "as-stagefx-Warp.gif"
-                "WaterSurface" = "as-stagefx-watersurface.gif"
-                "LightWall" = "as-stagefx-LightWall.gif"
-                "SparkleBloom" = "as-stagefx-sparklebloom.gif"
-                "BoomSticker" = "as-stagefx-BoomSticker.gif"
-                "DigitalGlitch" = "as-stagefx-DigitalGlitch.gif"
-                "LaserCannon" = "as-stagefx-LaserCannon.gif"
-                "LightTrail" = "as-stagefx-LightTrail.gif"
-                "PlasmaFlow" = "as-stagefx-PlasmaFlow.gif"
-                "WavySquares" = "as-stagefx-wavysquares.gif"
-                "WavySquiggles" = "as-stagefx-wavysquiggles.gif"
-                "ZippyZaps" = "as-stagefx-zippyzaps.gif"
-                "BlueCorona" = "as-stagefx-bluecorona.gif"
-                "CosmicKaleidoscope" = "as-stagefx-cosmickaleidoscope.gif"
-                "DigitalBrain" = "as-stagefx-digitalbrain.gif"
-                "GoldenClockwork" = "as-stagefx-goldenclockwork.gif"
-                "LightRipples" = "as-stagefx-lightripples.gif"
-                "MeltWave" = "as-stagefx-meltwave.gif"
-                "MistyGrid" = "as-stagefx-mistygrid.gif"
-                "ShineOn" = "as-stagefx-shineon.gif"
-                "StainedLights" = "as-stagefx-stainedlights.gif"
-                "TimeCrystal" = "as-stagefx-timecrystal.gif"
-                "VignettePlus" = "as-stagefx-vignetteplus.gif"
-                "AspectRatio" = "as-stagefx-aspectratio.gif"
-                "HalfTone" = "as-stagefx-halftone.gif"
-                "Grid" = "as-stagefx-grid.gif"
-                "Rain" = "as-stagefx-rain.gif"
-                "Constellation" = "as-stagefx-constellation.gif"
-                "CorridorTravel" = "as-stagefx-corridortravel.gif"
-                "Kaleidoscope" = "as-stagefx-kaleidoscope.gif"
-                "Misty" = "as-stagefx-misty.gif"
-            }
+            $specificMappings = @{}
             
             # Check specific mappings first
             if ($specificMappings.ContainsKey($effectName)) {
