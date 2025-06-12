@@ -199,17 +199,17 @@ foreach ($entry in $catalog) {
     $isShadertoy = $false
     if ($entry.credits -and $entry.credits.externalUrl -and ($entry.credits.externalUrl -match 'shadertoy.com')) {
         $entry | Add-Member -NotePropertyName 'licence' -NotePropertyValue 'CC Share-Alike Non-Commercial' -Force
-        $entry | Add-Member -NotePropertyName 'license' -NotePropertyValue 'CC BY-NC-SA' -Force
+        $entry | Add-Member -NotePropertyName 'licenseCode' -NotePropertyValue 'CC BY-NC-SA' -Force
         $entry.credits | Add-Member -NotePropertyName 'licence' -NotePropertyValue 'CC Share-Alike Non-Commercial' -Force
-        $entry.credits | Add-Member -NotePropertyName 'license' -NotePropertyValue 'CC BY-NC-SA' -Force
+        $entry.credits | Add-Member -NotePropertyName 'licenseCode' -NotePropertyValue 'CC BY-NC-SA' -Force
         $isShadertoy = $true
     }
     if (-not $isShadertoy) {
         $entry | Add-Member -NotePropertyName 'licence' -NotePropertyValue $defaultLicenseDesc -Force
-        $entry | Add-Member -NotePropertyName 'license' -NotePropertyValue $defaultLicenseCode -Force
+        $entry | Add-Member -NotePropertyName 'licenseCode' -NotePropertyValue $defaultLicenseCode -Force
         if ($entry.credits) {
             $entry.credits | Add-Member -NotePropertyName 'licence' -NotePropertyValue $defaultLicenseDesc -Force
-            $entry.credits | Add-Member -NotePropertyName 'license' -NotePropertyValue $defaultLicenseCode -Force
+            $entry.credits | Add-Member -NotePropertyName 'licenseCode' -NotePropertyValue $defaultLicenseCode -Force
         }
     }
 }
