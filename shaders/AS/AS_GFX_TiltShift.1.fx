@@ -19,11 +19,10 @@
  * - High-quality, performant two-pass Gaussian blur driven by the depth calculation.
  * - Depth-aware edge detection that correctly handles foreground and background blur
  * bleeding for a more realistic effect.
- *
- * IMPLEMENTATION OVERVIEW:
+ * * IMPLEMENTATION OVERVIEW:
  * 1.  (Pass 1) Calculates a "Circle of Confusion" (CoC) value for each pixel based
  * on its distance from the selected 'Focus Depth' and 'Focus Zone'. This CoC value
- * (0.0 for sharp, 1.0 for blurry) is stored in the alpha channel of CommonTex0.
+ * (0.0 for sharp, 1.0 for blurry) is stored in the alpha channel of as_TiltShiftTex0.
  * 2.  (Pass 2) A horizontal Gaussian blur is applied. The blur radius is determined
  * by the CoC value. A depth check ensures foreground blur can bleed over the background.
  * 3.  (Pass 3) A vertical Gaussian blur is applied to the result of Pass 2, again
@@ -42,12 +41,12 @@
 // INTERMEDIATE TEXTURES
 // ============================================================================
 
-// CommonTex0 will store: R, G, B, CoC
-// CommonTex1 will store: H-Blurred R, G, B, CoC
-texture CommonTex0 { Width = BUFFER_WIDTH; Height = BUFFER_HEIGHT; Format = RGBA8; };
-sampler sCommonTex0 { Texture = CommonTex0; };
-texture CommonTex1 { Width = BUFFER_WIDTH; Height = BUFFER_HEIGHT; Format = RGBA8; };
-sampler sCommonTex1 { Texture = CommonTex1; };
+// as_TiltShiftTex0 will store: R, G, B, CoC
+// as_TiltShiftTex1 will store: H-Blurred R, G, B, CoC
+texture as_TiltShiftTex0 { Width = BUFFER_WIDTH; Height = BUFFER_HEIGHT; Format = RGBA8; };
+sampler s_as_TiltShiftTex0 { Texture = as_TiltShiftTex0; };
+texture as_TiltShiftTex1 { Width = BUFFER_WIDTH; Height = BUFFER_HEIGHT; Format = RGBA8; };
+sampler s_as_TiltShiftTex1 { Texture = as_TiltShiftTex1; };
 
 // ============================================================================
 // TUNABLE CONSTANTS (Defaults and Ranges)
@@ -115,7 +114,7 @@ float4 PS_TiltShift_CoC(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : 
 // PASS 2: Horizontal Gaussian Blur
 float4 PS_TiltShift_BlurH(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target
 {
-    float4 centerTap = tex2D(sCommonTex0, texcoord);
+    float4 centerTap = tex2D(s_as_TiltShiftTex0, texcoord);
     float coc = centerTap.a;
     float center_depth = ReShade::GetLinearizedDepth(texcoord);
     int nSteps = floor(coc * MaxBlurAmount);
@@ -134,7 +133,7 @@ float4 PS_TiltShift_BlurH(float4 pos : SV_Position, float2 texcoord : TEXCOORD) 
 
         float offset = BLUR_AXIS_SCALE * iStep - BLUR_OFFSET_BIAS;
         float2 sample_coord = texcoord + blurAxisScaled * offset;
-        float4 currentTap = tex2Dlod(sCommonTex0, float4(sample_coord, 0, 0));
+        float4 currentTap = tex2Dlod(s_as_TiltShiftTex0, float4(sample_coord, 0, 0));
 
         float weight = exp(iStep * iStep * expCoeff);
         
@@ -157,7 +156,7 @@ float4 PS_TiltShift_BlurH(float4 pos : SV_Position, float2 texcoord : TEXCOORD) 
 // PASS 3: Vertical Gaussian Blur and Final Composite
 float4 PS_TiltShift_BlurV(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target
 {
-    float4 centerTap = tex2D(sCommonTex1, texcoord);
+    float4 centerTap = tex2D(s_as_TiltShiftTex1, texcoord);
     float coc = centerTap.a;
     float center_depth = ReShade::GetLinearizedDepth(texcoord);
     int nSteps = floor(coc * MaxBlurAmount);
@@ -178,7 +177,7 @@ float4 PS_TiltShift_BlurV(float4 pos : SV_Position, float2 texcoord : TEXCOORD) 
 
             float offset = BLUR_AXIS_SCALE * iStep - BLUR_OFFSET_BIAS;
             float2 sample_coord = texcoord + blurAxisScaled * offset;
-            float4 currentTap = tex2Dlod(sCommonTex1, float4(sample_coord, 0, 0));
+            float4 currentTap = tex2Dlod(s_as_TiltShiftTex1, float4(sample_coord, 0, 0));
 
             float weight = exp(iStep * iStep * expCoeff);
 
@@ -221,19 +220,23 @@ float4 PS_TiltShift_BlurV(float4 pos : SV_Position, float2 texcoord : TEXCOORD) 
 // TECHNIQUE
 // ============================================================================
 
-technique AS_GFX_TiltShift < requires_depth = true; >
+technique AS_GFX_TiltShift <
+    ui_label = "[AS] GFX: Tilt Shift";
+    ui_tooltip = "High-quality, depth-aware tilt-shift effect with realistic bokeh.\n"
+                 "Creates selective focus by blurring objects outside the chosen depth plane.";
+ requires_depth = true; >
 {
     pass CoC_Pass
     {
         VertexShader = PostProcessVS;
         PixelShader = PS_TiltShift_CoC;
-        RenderTarget = CommonTex0;
+        RenderTarget = as_TiltShiftTex0;
     }
     pass BlurH_Pass
     {
         VertexShader = PostProcessVS;
         PixelShader = PS_TiltShift_BlurH;
-        RenderTarget = CommonTex1;
+        RenderTarget = as_TiltShiftTex1;
     }
     pass BlurV_Pass
     {
