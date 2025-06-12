@@ -28,7 +28,7 @@ Creates a vibrant, abstract blue corona effect with fluid, dynamic motion. The e
 <br><br>
 Based on '<a href="https://www.shadertoy.com/view/XfKGWV" target="_new">Blue Corona [256 Chars]</a>' by SnoopethDuckDuck<br>
 
-<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">(CC BY-NC-SA)</span>
+<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">()</span>
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-bluecorona.gif" alt="Blue Corona Effect" style="max-width:100%;">
@@ -43,7 +43,7 @@ Creates an animated stellar constellation pattern with twinkling stars and conne
 <br><br>
 Based on '<a href="https://www.shadertoy.com/view/slfGzf" target="_new">old joseph</a>' by jairoandre<br>
 
-<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">(CC BY-NC-SA)</span>
+<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">()</span>
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-constellation.gif" alt="Constellation Effect" style="max-width:100%;">
@@ -58,7 +58,7 @@ Simulates an artistic flight through an abstract, glowing, patterned tunnel. Fea
 <br><br>
 Based on '<a href="https://www.shadertoy.com/view/3sXyRN" target="_new">Corridor Travel</a>' by NuSan<br>
 
-<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">(CC BY-NC-SA)</span>
+<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">()</span>
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-corridortravel.gif" alt="Corridor Travel Effect" style="max-width:100%;">
@@ -73,7 +73,7 @@ Renders a raymarched volumetric fractal resembling a Mandelbox or Mandelbulb. Fe
 <br><br>
 Based on '<a href="https://www.shadertoy.com/view/XlfGRj" target="_new">Star Nest</a>' by Kali<br>
 
-<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">(CC BY-NC-SA)</span>
+<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">()</span>
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-cosmickaleidoscope.gif" alt="Cosmic Kaleidoscope Effect" style="max-width:100%;">
@@ -88,7 +88,7 @@ Creates an abstract visualization of a 'digital brain' with evolving Voronoi pat
 <br><br>
 Based on '<a href="https://www.shadertoy.com/view/4sl3Dr" target="_new">Digital Brain</a>' by srtuss<br>
 
-<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">(CC BY-NC-SA)</span>
+<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">()</span>
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-digitalbrain.gif" alt="Digital Brain Effect" style="max-width:100%;">
@@ -103,7 +103,7 @@ Creates a vibrant neon fluorescent background effect that simulates the glow and
 <br><br>
 Based on '<a href="https://www.shadertoy.com/view/WcGGDd" target="_new">Fluorescent [292]</a>' by Xor<br>
 
-<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">(CC BY-NC-SA)</span>
+<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">()</span>
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-fluorescent.gif" alt="Fluorescent Effect" style="max-width:100%;">
@@ -118,7 +118,7 @@ Renders a mesmerizing and intricate animated background effect reminiscent of go
 <br><br>
 Based on '<a href="https://www.shadertoy.com/view/WlcfRS" target="_new">Golden apollian</a>' by mrange<br>
 
-<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">(CC BY-NC-SA)</span>
+<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">()</span>
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-goldenclockwork.gif" alt="Golden Clockwork Effect" style="max-width:100%;">
@@ -133,7 +133,7 @@ Creates a vibrant, ever-evolving fractal kaleidoscope pattern with animated tend
 <br><br>
 Based on '<a href="https://www.shadertoy.com/view/ddsyDN" target="_new">Kaleidoscope</a>' by Kanduvisla<br>
 
-<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">(CC BY-NC-SA)</span>
+<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">()</span>
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-kaleidoscope.gif" alt="Kaleidoscope Effect" style="max-width:100%;">
@@ -148,7 +148,7 @@ Creates a mesmerizing, rippling kaleidoscopic light pattern effect. Suitable as 
 <br><br>
 Based on '<a href="https://www.shadertoy.com/view/XsXXDn" target="_new">Creation by Silexars</a>' by Danguafer/Danilo Guanabara<br>
 
-<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">(CC BY-NC-SA)</span>
+<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">()</span>
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-lightripples.gif" alt="Light Ripples Effect" style="max-width:100%;">
@@ -162,7 +162,7 @@ This shader renders a seamless, soft, overlapping grid of light panels with vari
 
 </td>
 <td width="50%"><div style="text-align:center">
-<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-LightWall.gif" alt="Light Wall Effect" style="max-width:100%;">
+<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-lightwall.gif" alt="Light Wall Effect" style="max-width:100%;">
 </div></td>
 </tr>
 <tr>
@@ -189,7 +189,7 @@ Creates an organic spiral pattern based on logarithmic growth with animated sphe
 <br><br>
 Based on '<a href="https://www.shadertoy.com/view/msGXRD" target="_new">Logarithmic spiral of spheres</a>' by mrange<br>
 
-<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">(CC BY-NC-SA)</span>
+<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">()</span>
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-logspirals.gif" alt="Log Spirals Effect" style="max-width:100%;">
@@ -204,7 +204,7 @@ Creates a flowing, warping psychedelic effect inspired by 1970s visual aesthetic
 <br><br>
 Based on '<a href="https://www.shadertoy.com/view/XsX3zl" target="_new">70s Melt</a>' by tomorrowevening<br>
 
-<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">(CC BY-NC-SA)</span>
+<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">()</span>
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-meltwave.gif" alt="Melt Wave Effect" style="max-width:100%;">
@@ -219,7 +219,7 @@ Creates an abstract fractal-based grid background with a misty, ethereal appeara
 <br><br>
 Based on '<a href="https://www.shadertoy.com/view/wl2Szd" target="_new">[twitch] Misty Grid</a>' by NuSan<br>
 
-<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">(CC BY-NC-SA)</span>
+<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">()</span>
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-mistygrid.gif" alt="Misty Grid Effect" style="max-width:100%;">
@@ -234,7 +234,7 @@ A ray marching shader that generates one of two selectable abstract procedural s
 <br><br>
 Based on '<a href="https://www.shadertoy.com/view/tsBBzG" target="_new">Outline 2020 Freestyle Live code</a>' by NuSan<br>
 
-<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">(CC BY-NC-SA)</span>
+<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">()</span>
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-pastracer.gif" alt="Past Racer Effect" style="max-width:100%;">
@@ -249,10 +249,10 @@ Sophisticated, gentle, and flexible plasma effect for groovy, atmospheric visual
 <br><br>
 Based on '<a href="https://www.shadertoy.com/view/slSBDd" target="_new">Plasma Storm</a>' by fuzzmoon<br>
 
-<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">(CC BY-NC-SA)</span>
+<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">()</span>
 </td>
 <td width="50%"><div style="text-align:center">
-<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-PlasmaFlow.gif" alt="Plasma Flow Effect" style="max-width:100%;">
+<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-plasmaflow.gif" alt="Plasma Flow Effect" style="max-width:100%;">
 </div></td>
 </tr>
 <tr>
@@ -264,7 +264,7 @@ Renders dynamic, evolving volumetric clouds through raymarching techniques. Crea
 <br><br>
 Based on '<a href="https://www.shadertoy.com/view/3l23Rh" target="_new">Protean clouds</a>' by nimitz<br>
 
-<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">(CC BY-NC-SA)</span>
+<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">()</span>
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-proteanclouds.gif" alt="Protean Clouds Effect" style="max-width:100%;">
@@ -279,7 +279,7 @@ Creates a sophisticated multiscale recursive Truchet pattern with hierarchical t
 <br><br>
 Based on '<a href="https://www.shadertoy.com/view/4t3BW4" target="_new">Quadtree Truchet</a>' by Shane<br>
 
-<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">(CC BY-NC-SA)</span>
+<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">()</span>
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-quadtreetruchet.gif" alt="Quadtree Truchet Effect" style="max-width:100%;">
@@ -294,7 +294,7 @@ Renders a raymarched scene featuring an animated, endlessly twisting chain compo
 <br><br>
 Based on '<a href="https://www.shadertoy.com/view/ctSfRV" target="_new">Corrente</a>' by Elsio<br>
 
-<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">(CC BY-NC-SA)</span>
+<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">()</span>
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-raymarchedchain.gif" alt="Raymarched Chain Effect" style="max-width:100%;">
@@ -309,7 +309,7 @@ Creates dynamic and colorful patterns reminiscent of stained glass illuminated b
 <br><br>
 Based on '<a href="https://www.shadertoy.com/view/WlsSzM" target="_new">Stained Lights</a>' by 104<br>
 
-<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">(CC BY-NC-SA)</span>
+<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">()</span>
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-stainedlights.gif" alt="Stained Lights Effect" style="max-width:100%;">
@@ -324,7 +324,7 @@ Renders an animated scene of clouds at sunset using raymarching to create volume
 <br><br>
 Based on '<a href="https://www.shadertoy.com/view/wXjSRt" target="_new">Sunset [280]</a>' by Xor<br>
 
-<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">(CC BY-NC-SA)</span>
+<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">()</span>
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-sunsetclouds.gif" alt="Sunset Clouds Effect" style="max-width:100%;">
@@ -339,7 +339,7 @@ Creates a hypnotic, crystalline fractal structure with dynamic animation and col
 <br><br>
 Based on '<a href="https://www.shadertoy.com/view/lcl3z2" target="_new">Time Crystal</a>' by raphaeljmu<br>
 
-<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">(CC BY-NC-SA)</span>
+<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">()</span>
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-timecrystal.gif" alt="Time Crystal Effect" style="max-width:100%;">
@@ -354,7 +354,7 @@ Creates a psychedelic swirling vortex pattern. The effect is animated and featur
 <br><br>
 Based on '<a href="https://www.shadertoy.com/view/3fKGRd" target="_new">Vortex__ </a>' by LonkDong<br>
 
-<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">(CC BY-NC-SA)</span>
+<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">()</span>
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-vortex.gif" alt="Vortex Effect" style="max-width:100%;">
@@ -369,7 +369,7 @@ Creates a hypnotic pattern of wavy, animated square tiles that shift and transfo
 <br><br>
 Based on '<a href="https://www.shadertoy.com/view/NdfBzn" target="_new">Square Tiling Example E</a>' by SnoopethDuckDuck<br>
 
-<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">(CC BY-NC-SA)</span>
+<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">()</span>
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-wavysquares.gif" alt="Wavy Squares Effect" style="max-width:100%;">
@@ -384,7 +384,7 @@ Creates a mesmerizing pattern of adaptive wavy lines that follow a mouse or fixe
 <br><br>
 Based on '<a href="https://www.shadertoy.com/view/7sBfDD" target="_new">Interactive 2.5D Squiggles</a>' by SnoopethDuckDuck<br>
 
-<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">(CC BY-NC-SA)</span>
+<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">()</span>
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-wavysquiggles.gif" alt="Wavy Squiggles Effect" style="max-width:100%;">
@@ -399,7 +399,7 @@ Creates dynamic electric arcs and lightning patterns for a striking background e
 <br><br>
 Based on '<a href="https://www.shadertoy.com/view/XXyGzh" target="_new">Zippy Zaps</a>' by SnoopethDuckDuck<br>
 
-<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">(CC BY-NC-SA)</span>
+<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">()</span>
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-zippyzaps.gif" alt="Zippy Zaps Effect" style="max-width:100%;">
@@ -476,7 +476,7 @@ Transforms your scene into a stylized hand-drawn sketch or technical ink illustr
 <br><br>
 Based on '<a href="https://www.shadertoy.com/view/XtVGD1" target="_new">notebook drawings</a>' by Flockaroo<br>
 
-<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">(CC BY-NC-SA)</span>
+<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">()</span>
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://github.com/user-attachments/assets/4074ac6b-a385-4e0f-9d9a-c4d5dd0117cd" alt="Hand Drawing Effect" style="max-width:100%;">
@@ -513,7 +513,7 @@ A vignette shader that provides multiple visual styles and customizable pattern 
 <br><br>
 Based on '<a href="https://www.shadertoy.com/view/XfjyWG" target="_new">Hexagonal Wipe</a>' by blandprix<br>
 
-<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">(CC BY-NC-SA)</span>
+<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">()</span>
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-vignetteplus.gif" alt="Vignette Plus Effect" style="max-width:100%;">
@@ -578,7 +578,7 @@ Based on '<a href="https://github.com/Otakumouse/stormshade/blob/master/v4.X/res
 
 </td>
 <td width="50%"><div style="text-align:center">
-<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-BoomSticker.gif" alt="Boom Sticker Effect" style="max-width:100%;">
+<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-boomsticker.gif" alt="Boom Sticker Effect" style="max-width:100%;">
 </div></td>
 </tr>
 <tr>
@@ -590,7 +590,7 @@ Visualizes audio frequencies as a circular spectrum analyzer. Features adjustabl
 <br><br>
 Based on '<a href="https://www.shadertoy.com/view/tcyGW1" target="_new">Circular audio visualizer</a>' by AIandDesign
 
-<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">(CC BY-NC-SA)</span>
+<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">()</span>
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-circularspectrum.gif" alt="Circular Spectrum Effect" style="max-width:100%;">
@@ -605,10 +605,10 @@ Simulates dramatic chiaroscuro (light-dark) lighting, emphasizing strong contras
 <br><br>
 Based on '<a href="https://www.shadertoy.com/view/ttcBRs" target="_new">[RGR] Hearts</a>' by deeplo
 
-<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">(CC BY-NC-SA)</span>
+<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">()</span>
 </td>
 <td width="50%"><div style="text-align:center">
-<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-ClairObscur.gif" alt="Clair Obscur Effect" style="max-width:100%;">
+<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-clairobscur.gif" alt="Clair Obscur Effect" style="max-width:100%;">
 </div></td>
 </tr>
 <tr>
@@ -653,7 +653,7 @@ Creates a visually complex and dynamic abstract effect resembling a focused poin
 <br><br>
 Based on '<a href="https://www.shadertoy.com/view/lcfyDj" target="_new">BlackHole (swirl, portal)</a>' by misterprada
 
-<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">(CC BY-NC-SA)</span>
+<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">()</span>
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-focusedchaos.gif" alt="Focused Chaos Effect" style="max-width:100%;">
@@ -701,7 +701,7 @@ Generates radiant, glowing fire effects with animated flames and customizable co
 <br><br>
 Based on '<a href="https://www.shadertoy.com/view/4ttGWM" target="_new">301's Fire Shader - Remix 3</a>' by mu6k
 
-<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">(CC BY-NC-SA)</span>
+<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">()</span>
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-radiantfire.gif" alt="Radiant Fire Effect" style="max-width:100%;">
@@ -716,7 +716,7 @@ Creates the illusion of raindrops and streaks running down a window, with realis
 <br><br>
 Based on '<a href="https://www.shadertoy.com/view/ltffzl" target="_new">Heartfelt</a>' by Martijn Steinrucken (BigWings)
 
-<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">(CC BY-NC-SA)</span>
+<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">()</span>
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-rainywindow.gif" alt="Rainy Window Effect" style="max-width:100%;">
@@ -752,7 +752,7 @@ Displays an audio spectrum analyzer in a ring format. Features adjustable band c
 
 </td>
 <td width="50%"><div style="text-align:center">
-<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-SpectrumRing.gif" alt="Spectrum Ring Effect" style="max-width:100%;">
+<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-spectrumring.gif" alt="Spectrum Ring Effect" style="max-width:100%;">
 </div></td>
 </tr>
 <tr>
@@ -763,7 +763,7 @@ Applies a stencil mask to selectively reveal or hide parts of the scene. Feature
 
 </td>
 <td width="50%"><div style="text-align:center">
-<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-StencilMask.gif" alt="Stencil Mask Effect" style="max-width:100%;">
+<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-stencilmask.gif" alt="Stencil Mask Effect" style="max-width:100%;">
 </div></td>
 </tr>
 <tr>
@@ -790,7 +790,7 @@ Simulates volumetric light rays (god rays) emanating from a source. Features con
 <br><br>
 Based on '<a href="https://www.shadertoy.com/view/wftXzr" target="_new">fake volumetric 2d light wip</a>' by int_45h
 
-<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">(CC BY-NC-SA)</span>
+<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">()</span>
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-volumetriclight.gif" alt="Volumetric Light Effect" style="max-width:100%;">
@@ -804,7 +804,7 @@ Displays a classic VU meter with audio-reactive bars. Features controls for bar 
 
 </td>
 <td width="50%"><div style="text-align:center">
-<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-VUMeter.gif" alt="VUMeter Effect" style="max-width:100%;">
+<img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-vumeter.gif" alt="VUMeter Effect" style="max-width:100%;">
 </div></td>
 </tr>
 <tr>

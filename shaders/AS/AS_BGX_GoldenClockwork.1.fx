@@ -86,8 +86,10 @@ static float4 g_gc_currentEffectStyle; // Renamed from 'current_effect_state'
 // UI DECLARATIONS
 // ============================================================================
 
-
 // Palette & Style
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Golden apollian' by mrange\nLink: https://www.shadertoy.com/view/WlcfRS\nLicence: CC Share-Alike Non-Commercial\n\n";>;
+
 uniform float3 BaseRingColor < ui_type = "color"; ui_label = "Base Ring Color"; ui_category = "Palette & Style"; > = float3(1.0f, 0.65f, 0.25f);
 uniform float3 SunLightColor < ui_type = "color"; ui_label = "Sun Light Color"; ui_category = "Palette & Style"; > = float3(1.0f, 0.8f, 0.88f);
 uniform float3 PlaneObjectColor < ui_type = "color"; ui_label = "Plane Object Color"; ui_category = "Palette & Style"; > = float3(1.0f, 1.2f, 1.5f);
@@ -529,4 +531,3 @@ technique GoldenApollian_Tech <
 }
 
 #endif // __AS_BGX_GoldenClockwork_1_fx
-

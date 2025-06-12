@@ -132,6 +132,9 @@ static const float SMOOTH_GRADIENT_SCALE = 1.0; // Scaling factor for smooth gra
 // ============================================================================
 
 // --- Pattern Parameters ---
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Interactive 2.5D Squiggles' by SnoopethDuckDuck\nLink: https://www.shadertoy.com/view/7sBfDD\nLicence: CC Share-Alike Non-Commercial\n\n";>;
+
 uniform float RotationInfluence < ui_type = "slider"; ui_label = "Rotation Influence"; ui_tooltip = "Controls how angle affects the pattern rotation."; ui_min = ROTATION_INFLUENCE_MIN; ui_max = ROTATION_INFLUENCE_MAX; ui_step = ROTATION_INFLUENCE_STEP; ui_category = "Pattern"; > = ROTATION_INFLUENCE_DEFAULT;
 uniform float LineTargetDistance < ui_type = "slider"; ui_label = "Target Distance"; ui_tooltip = "Distance at which lines will form patterns."; ui_min = LINE_DISTANCE_MIN; ui_max = LINE_DISTANCE_MAX; ui_step = LINE_DISTANCE_STEP; ui_category = "Pattern"; > = LINE_DISTANCE_DEFAULT;
 uniform float LineThickness < ui_type = "slider"; ui_label = "Line Thickness"; ui_tooltip = "Controls the thickness of the pattern lines."; ui_min = LINE_THICKNESS_MIN; ui_max = LINE_THICKNESS_MAX; ui_step = LINE_THICKNESS_STEP; ui_category = "Pattern"; > = LINE_THICKNESS_DEFAULT;
@@ -369,4 +372,3 @@ technique AS_BGX_WavySquiggles < ui_label="[AS] BGX: Wavy Squiggles"; ui_tooltip
 }
 
 #endif // __AS_BGX_WavySquiggles_1_fx
-

@@ -91,7 +91,6 @@ AS_STAGEDEPTH_UI(StageDepth)
 uniform float Zoom < ui_type = "slider"; ui_label = "Zoom"; ui_min = ZOOM_MIN; ui_max = ZOOM_MAX; ui_step = 0.01; ui_category = "Transform"; > = ZOOM_DEFAULT;
 uniform float2 Pan < ui_type = "slider"; ui_label = "Position"; ui_min = PAN_MIN; ui_max = PAN_MAX; ui_step = 0.01; ui_category = "Transform"; > = PAN_DEFAULT;
 
-
 // --- Final Mix ---
 AS_BLENDMODE_UI_DEFAULT(BlendMode, 0)
 AS_BLENDAMOUNT_UI(BlendAmount)
@@ -289,5 +288,3 @@ technique AS_VUMeterBG < ui_label = "[AS] VFX: VU Meter"; ui_tooltip = "Displays
 }
 
 #endif // __AS_VFX_VUMeter_1_fx
-
-

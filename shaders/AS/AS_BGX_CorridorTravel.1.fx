@@ -52,6 +52,9 @@ static const float DEFAULT_FOV = 2.0f;
 // ============================================================================
 // QUALITY & PERFORMANCE
 // ============================================================================
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Corridor Travel' by NuSan\nLink: https://www.shadertoy.com/view/3sXyRN\nLicence: CC Share-Alike Non-Commercial\n\n";>;
+
 uniform int PR_Steps < ui_type = "drag"; ui_min = 1; ui_max = 100; ui_step = 1; ui_label = "Sample Count"; ui_tooltip = "Number of samples per pixel. Higher = better quality but slower."; ui_category = "Quality & Performance"; > = 30;
 uniform int PR_Bounces < ui_type = "drag"; ui_min = 0; ui_max = 5; ui_step = 1; ui_label = "Light Bounces"; ui_tooltip = "Number of light reflections per sample. More bounces = more detailed reflections."; ui_category = "Quality & Performance"; > = 3;
 
@@ -402,4 +405,3 @@ technique AS_BGX_CorridorTravel <
 }
 
 #endif // __AS_BGX_CorridorTravel_1_fx
-

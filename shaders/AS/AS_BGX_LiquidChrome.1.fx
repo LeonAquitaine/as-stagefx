@@ -47,12 +47,15 @@
 // STANDARD CONTROLS
 // ============================================================================
 
-
 // --- Audio Reactivity Controls ---
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Liquid Chrome' by iamsaitam\nLink: https://neort.io/art/bkm813c3p9f7drq1j86g\nLicence: Creative Commons Attribution 4.0 International\n\n";>;
+
 AS_AUDIO_UI(LiquidChrome_AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
 AS_AUDIO_MULT_UI(LiquidChrome_AudioMultiplier, "Audio Intensity", 1.0, 2.0, "Audio Reactivity")
 
 // --- Audio Target Selection ---
+
 uniform int LiquidChrome_AudioTarget <
     ui_type = "combo";
     ui_label = "Audio Target";
@@ -312,7 +315,3 @@ technique AS_BGX_LiquidChrome <
 }
 
 #endif // __AS_BGX_LiquidChrome_1_fx
-
-
-
-

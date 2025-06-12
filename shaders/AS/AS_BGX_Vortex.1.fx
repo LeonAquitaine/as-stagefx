@@ -89,17 +89,20 @@ static const float VORTEX_COLOR_OFFSET_DEFAULT = 0.0f;
 static const float VORTEX_SWIRL_RADIUS_OFFSET = 0.01f;   // Small offset to prevent division by zero in swirl calculation
 static const float VORTEX_EPSILON_SMALL = 0.001f;        // Small epsilon for rotation checks and scale division
 
-
 // ============================================================================
 // UI DECLARATIONS
 // ============================================================================
 
 // Position & Transformation
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Vortex__ ' by LonkDong\nLink: https://www.shadertoy.com/view/3fKGRd\nLicence: CC Share-Alike Non-Commercial\n\n";>;
+
 AS_POSITION_SCALE_UI(EffectCenter, EffectScale)
 
 // Palette & Style
 AS_PALETTE_SELECTION_UI(Vortex_Palette, "Color Palette", AS_PALETTE_FIRE, "Palette & Style")
 AS_DECLARE_CUSTOM_PALETTE(Vortex_, "Palette & Style")
+
 uniform float Vortex_ColorOffset < ui_type = "slider"; ui_label = "Palette Offset (Radial)"; ui_tooltip = "Shifts the start of the palette mapping along the radius."; ui_min = VORTEX_COLOR_OFFSET_MIN; ui_max = VORTEX_COLOR_OFFSET_MAX; ui_step = 0.01; ui_category = "Palette & Style"; > = VORTEX_COLOR_OFFSET_DEFAULT;
 uniform float Vortex_ColorFrequency < ui_type = "slider"; ui_label = "Palette Frequency (Radial)"; ui_tooltip = "Controls how many times the palette repeats from center to edge."; ui_min = VORTEX_COLOR_FREQ_MIN; ui_max = VORTEX_COLOR_FREQ_MAX; ui_step = 0.1; ui_category = "Palette & Style"; > = VORTEX_COLOR_FREQ_DEFAULT;
 

@@ -96,46 +96,7 @@ if (Test-Path $imagesDir) {
             $effectName = $matches[1]
             
             # Define specific mappings for known mismatches
-            $specificMappings = @{
-                "CandleFlame" = "as-stagefx-Candle.gif"
-                "ClairObscur" = "as-stagefx-ClairObscur.gif"
-                "RadiantFire" = "as-stagefx-radiantfire.gif"
-                "SpectrumRing" = "as-stagefx-SpectrumRing.gif"
-                "StageSpotlights" = "as-stagefx-Spotlights.gif"
-                "StencilMask" = "as-stagefx-StencilMask.gif"
-                "VUMeter" = "as-stagefx-VUMeter.gif"
-                "WarpDistort" = "as-stagefx-Warp.gif"
-                "WaterSurface" = "as-stagefx-watersurface.gif"
-                "LightWall" = "as-stagefx-LightWall.gif"
-                "SparkleBloom" = "as-stagefx-sparklebloom.gif"
-                "BoomSticker" = "as-stagefx-BoomSticker.gif"
-                "DigitalGlitch" = "as-stagefx-DigitalGlitch.gif"
-                "LaserCannon" = "as-stagefx-LaserCannon.gif"
-                "LightTrail" = "as-stagefx-LightTrail.gif"
-                "PlasmaFlow" = "as-stagefx-PlasmaFlow.gif"
-                "WavySquares" = "as-stagefx-wavysquares.gif"
-                "WavySquiggles" = "as-stagefx-wavysquiggles.gif"
-                "ZippyZaps" = "as-stagefx-zippyzaps.gif"
-                "BlueCorona" = "as-stagefx-bluecorona.gif"
-                "CosmicKaleidoscope" = "as-stagefx-cosmickaleidoscope.gif"
-                "DigitalBrain" = "as-stagefx-digitalbrain.gif"
-                "GoldenClockwork" = "as-stagefx-goldenclockwork.gif"
-                "LightRipples" = "as-stagefx-lightripples.gif"
-                "MeltWave" = "as-stagefx-meltwave.gif"
-                "MistyGrid" = "as-stagefx-mistygrid.gif"
-                "ShineOn" = "as-stagefx-shineon.gif"
-                "StainedLights" = "as-stagefx-stainedlights.gif"
-                "TimeCrystal" = "as-stagefx-timecrystal.gif"
-                "VignettePlus" = "as-stagefx-vignetteplus.gif"
-                "AspectRatio" = "as-stagefx-aspectratio.gif"
-                "HalfTone" = "as-stagefx-halftone.gif"
-                "Grid" = "as-stagefx-grid.gif"
-                "Rain" = "as-stagefx-rain.gif"
-                "Constellation" = "as-stagefx-constellation.gif"
-                "CorridorTravel" = "as-stagefx-corridortravel.gif"
-                "Kaleidoscope" = "as-stagefx-kaleidoscope.gif"
-                "Misty" = "as-stagefx-misty.gif"
-            }
+            $specificMappings = @{}
             
             # Check specific mappings first
             if ($specificMappings.ContainsKey($effectName)) {
@@ -225,4 +186,64 @@ try {
     Write-Host "[ERROR] Failed to write catalog file: $CatalogPath" -ForegroundColor Red
     Write-Host $_.Exception.Message -ForegroundColor Red
     exit 1
+}
+
+# --- Update as_shader_descriptor in shader files based on catalog credits ---
+foreach ($entry in $catalog) {
+    if ($entry.credits) {
+        $shaderPath = Join-Path $shaderDir $entry.filename
+        if (Test-Path $shaderPath) {
+            $shaderLines = Get-Content -Path $shaderPath -Raw -Encoding UTF8 -ErrorAction Stop -Force | ForEach-Object { $_ -split "`r?`n" }
+            # Remove any existing as_shader_descriptor uniform lines (anywhere)
+            $shaderLines = $shaderLines | Where-Object { $_ -notmatch '^\s*uniform\s+int\s+as_shader_descriptor' }
+            # Build descriptor text with /n for line breaks
+            $descText = "Based on '$($entry.credits.originalTitle)' by $($entry.credits.originalAuthor)\nLink: $($entry.credits.externalUrl)"
+            $uiText = "\n$descText\n"
+            if ($entry.licence) {
+                $uiText += "Licence: $($entry.licence)\n\n"
+            }
+            # Escape only double quotes for HLSL string
+            $uiTextEscaped = $uiText -replace '"', '\\"'
+            $descUniform = 'uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "' + $uiTextEscaped + '";>;' 
+            # Find first uniform or AS_ UI macro line not inside a macro
+            $insertIdx = -1
+            $inMacro = $false
+            for ($i = 0; $i -lt $shaderLines.Count; $i++) {
+                $line = $shaderLines[$i]
+                if ($line -match '^\s*#\s*define') { $inMacro = $true }
+                elseif ($inMacro -and ($line -match '^\s*$' -or $line -match '^\s*#')) { $inMacro = $false }
+                if (-not $inMacro -and ($line -match '^\s*uniform ' -or $line -match '^\s*AS_[A-Z_]+')) {
+                    $insertIdx = $i
+                    break
+                }
+            }
+            if ($insertIdx -ge 0) {
+                # Only insert a blank line if the next line is not already blank
+                $afterDescriptor = if ($insertIdx -lt $shaderLines.Count -and $shaderLines[$insertIdx] -ne '') { @('') } else { @() }
+                $shaderLines = $shaderLines[0..($insertIdx-1)] + $descUniform + $afterDescriptor + $shaderLines[$insertIdx..($shaderLines.Count-1)]
+                Set-Content -Path $shaderPath -Value ($shaderLines -join "`r`n") -Encoding UTF8
+                Write-Host "[INFO] Updated as_shader_descriptor in $($entry.filename)"
+            } else {
+                Write-Host "[WARN] No uniform or AS_ UI macro group found in $($entry.filename), skipping descriptor insert." -ForegroundColor Yellow
+            }
+        } else {
+            Write-Host "[WARN] Shader file not found: $shaderPath" -ForegroundColor Yellow
+        }
+    }
+}
+
+# --- Cleanup: Remove duplicated empty lines and trim file end ---
+foreach ($shaderFile in $shaderFiles) {
+    $shaderPath = $shaderFile.FullName
+    if (Test-Path $shaderPath) {
+        $shaderText = Get-Content -Path $shaderPath -Raw -Encoding UTF8
+        # Replace all duplicated newlines (2+ in a row) with a single newline, repeatedly until none remain
+        do {
+            $oldText = $shaderText
+            $shaderText = $shaderText -replace "(\r?\n){3,}", "`r`n`r`n"
+        } while ($shaderText -ne $oldText)
+        # Trim trailing whitespace and newlines from the end of the file
+        $shaderText = $shaderText.TrimEnd()
+        Set-Content -Path $shaderPath -Value $shaderText -Encoding UTF8
+    }
 }

@@ -110,6 +110,9 @@ static const float VIGNETTE_SIZE = 1.2;        // Size factor for vignette
 //------------------------------------------------------------------------------------------------
 
 // Fractal Parameters
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on '[twitch] Misty Grid' by NuSan\nLink: https://www.shadertoy.com/view/wl2Szd\nLicence: CC Share-Alike Non-Commercial\n\n";>;
+
 uniform float FractalScale < ui_type = "slider"; ui_label = "Fractal Scale"; ui_tooltip = "Controls the overall scale of the fractal pattern"; ui_category = "Fractal Parameters"; ui_min = 0.1; ui_max = 2.0; > = 0.7;
 uniform float FractalIterations < ui_type = "slider"; ui_label = "Detail Level"; ui_tooltip = "Controls the amount of detail in the fractal pattern"; ui_category = "Fractal Parameters"; ui_min = 1.0; ui_max = 5.0; ui_step = 1.0; > = 5.0;
 uniform float FoldingAmount < ui_type = "slider"; ui_label = "Folding Intensity"; ui_tooltip = "Controls how tightly the pattern folds on itself"; ui_category = "Fractal Parameters"; ui_min = 5.0; ui_max = 15.0; > = 10.0;
@@ -472,5 +475,3 @@ technique AS_BGX_MistyGrid <
 }
 
 #endif // __AS_BGX_MistyGrid_1_fx
-
-

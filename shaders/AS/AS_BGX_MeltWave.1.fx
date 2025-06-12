@@ -110,6 +110,9 @@ static const float AUDIO_MULTIPLIER_MAX = 5.0;
 // ============================================================================
 
 // --- Effect Settings ---
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on '70s Melt' by tomorrowevening\nLink: https://www.shadertoy.com/view/XsX3zl\nLicence: CC Share-Alike Non-Commercial\n\n";>;
+
 uniform int Iterations < ui_type = "slider"; ui_label = "Zoom Intensity"; ui_min = ITERATIONS_MIN; ui_max = ITERATIONS_MAX; ui_step = ITERATIONS_STEP; ui_category = "Effect Settings"; > = ITERATIONS_DEFAULT;
 uniform float Brightness < ui_type = "slider"; ui_label = "Brightness"; ui_min = BRIGHTNESS_MIN; ui_max = BRIGHTNESS_MAX; ui_step = BRIGHTNESS_STEP; ui_category = "Effect Settings"; > = BRIGHTNESS_DEFAULT;
 uniform float MeltIntensity < ui_type = "slider"; ui_label = "Melt Intensity"; ui_min = MELT_INTENSITY_MIN; ui_max = MELT_INTENSITY_MAX; ui_step = MELT_INTENSITY_STEP; ui_category = "Effect Settings"; > = MELT_INTENSITY_DEFAULT;
@@ -306,5 +309,3 @@ technique AS_BGX_MeltWave < ui_label="[AS] BGX: Melt Wave"; ui_tooltip = "Genera
 }
 
 #endif // __AS_BGX_MeltWave_1_fx
-
-

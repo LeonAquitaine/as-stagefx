@@ -82,10 +82,14 @@ static const float BLEND_AMOUNT_DEFAULT = 1.0; // Full effect strength
 
 // --- Palette & Style ---
 // Using standardized palette system
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Plasma Storm' by fuzzmoon\nLink: https://www.shadertoy.com/view/slSBDd\nLicence: CC Share-Alike Non-Commercial\n\n";>;
+
 AS_PALETTE_SELECTION_UI(PalettePreset, "Palette", AS_PALETTE_NEON, "Palette & Style")
 AS_DECLARE_CUSTOM_PALETTE(PlasmaFlow_, "Palette & Style")
 
 // --- Plasma Appearance ---
+
 uniform float PlasmaScale < ui_type = "slider"; ui_label = "Scale"; ui_tooltip = "Zoom/scale of the plasma pattern."; ui_min = SCALE_MIN; ui_max = SCALE_MAX; ui_step = 0.01; ui_category = "Plasma Appearance"; > = SCALE_DEFAULT;
 uniform float PlasmaComplexity < ui_type = "slider"; ui_label = "Complexity"; ui_tooltip = "Number of noise octaves (detail)."; ui_min = COMPLEXITY_MIN; ui_max = COMPLEXITY_MAX; ui_step = 0.1; ui_category = "Plasma Appearance"; > = COMPLEXITY_DEFAULT;
 uniform float PlasmaWarp < ui_type = "slider"; ui_label = "Warp Intensity"; ui_tooltip = "Strength of domain warping (swirliness)."; ui_min = WARP_MIN; ui_max = WARP_MAX; ui_step = 0.01; ui_category = "Plasma Appearance"; > = WARP_DEFAULT;
@@ -232,6 +236,3 @@ technique AS_PlasmaFlow_1 < ui_label = "[AS] BGX: Plasma Flow"; ui_tooltip = "Au
 }
 
 #endif // __AS_BGX_PlasmaFlow_1_fx
-
-
-

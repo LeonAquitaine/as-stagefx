@@ -43,7 +43,6 @@ sampler CinematicDiffusion_SampBlur2 { Texture = CinematicDiffusion_TexBlur2; Ad
 sampler CinematicDiffusion_SampBlur3 { Texture = CinematicDiffusion_TexBlur3; AddressU = CLAMP; AddressV = CLAMP; };
 sampler CinematicDiffusion_SampBlur4 { Texture = CinematicDiffusion_TexBlur4; AddressU = CLAMP; AddressV = CLAMP; };
 
-
 // ============================================================================
 // UI: UNIFORMS
 // ============================================================================
@@ -183,7 +182,6 @@ void PS_Combine(float4 pos : SV_Position, float2 texcoord : TEXCOORD, out float4
         outColor = float4(finalImage, 1.0);
     }
 }
-
 
 // ============================================================================
 // TECHNIQUE

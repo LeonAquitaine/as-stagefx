@@ -66,9 +66,13 @@ static float g_iTime_global_for_map;
 //--------------------------------------------------------------------------------------
 // UI UNIFORMS
 //--------------------------------------------------------------------------------------
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Protean clouds' by nimitz\nLink: https://www.shadertoy.com/view/3l23Rh\nLicence: CC Share-Alike Non-Commercial\n\n";>;
+
 AS_ANIMATION_UI(MasterTimeSpeed, MasterTimeKeyframe, "Global Animation")
 
 // --- Performance & Quality ---
+
 uniform int Raymarch_Steps < ui_category="Performance & Quality"; ui_type="slider"; ui_min=30; ui_max=250; ui_step=1; ui_label="Raymarch Steps"; ui_tooltip="Max steps for raymarching clouds. Original: 130"; > = 130;
 uniform int Noise_Octaves < ui_category="Performance & Quality"; ui_type="slider"; ui_min=1; ui_max=8; ui_step=1; ui_label="Noise Octaves"; ui_tooltip="Number of layers for cloud noise generation. Original: 5"; > = 5;
 uniform float DynamicStep_Min < ui_category="Performance & Quality"; ui_type="drag"; ui_min=0.01; ui_max=0.5; ui_step=0.01; ui_label="Min Dynamic Step Size"; ui_tooltip="Minimum step size for raymarching. Original: 0.09"; > = 0.09f;
@@ -297,6 +301,5 @@ technique AS_BGX_ProteanClouds_1 <
         PixelShader = PS_ProteanClouds;
     }
 }
-
 
 #endif // __AS_BGX_ProteanClouds_1_fx

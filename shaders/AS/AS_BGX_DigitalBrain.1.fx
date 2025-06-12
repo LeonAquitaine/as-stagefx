@@ -97,6 +97,9 @@ sampler DigitalBrain_NoiseSampler { Texture = DigitalBrain_NoiseTex; AddressU = 
 // ============================================================================
 
 // Animation Controls
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Digital Brain' by srtuss\nLink: https://www.shadertoy.com/view/4sl3Dr\nLicence: CC Share-Alike Non-Commercial\n\n";>;
+
 uniform float CameraSpeed < ui_type = "slider"; ui_label = "Camera Speed"; ui_tooltip = "Controls how fast the camera moves through the pattern."; ui_min = CAMERA_SPEED_MIN; ui_max = CAMERA_SPEED_MAX; ui_step = CAMERA_SPEED_STEP; ui_category = "Animation Controls"; > = CAMERA_SPEED_DEFAULT;
 uniform float CameraMovementAmount < ui_type = "slider"; ui_label = "Camera Movement"; ui_tooltip = "Controls amplitude of camera movement animation."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Animation Controls"; > = 0.4;
 uniform float CameraRotationAmount < ui_type = "slider"; ui_label = "Camera Rotation"; ui_tooltip = "Controls amplitude of camera rotation animation."; ui_min = 0.0; ui_max = 2.0; ui_step = 0.01; ui_category = "Animation Controls"; > = 1.0;
@@ -128,7 +131,6 @@ uniform float3 ColorMultiplier < ui_type = "color"; ui_label = "Color Multiplier
 uniform float ColorIntensity < ui_type = "slider"; ui_label = "Color Intensity"; ui_tooltip = "Overall brightness of the effect."; ui_min = 0.5; ui_max = 4.0; ui_step = 0.1; ui_category = "Color Settings"; > = 2.0;
 uniform bool UseClassicColors < ui_label = "Use Classic Blue Colors"; ui_tooltip = "Use the original blue-colored version instead of texture-based colors."; ui_category = "Color Settings"; > = false;
 uniform float3 ClassicColorBalance < ui_type = "slider"; ui_label = "Classic Color Balance"; ui_tooltip = "RGB balance for classic mode colors (higher values = stronger color)."; ui_min = 0.5; ui_max = 8.0; ui_step = 0.1; ui_category = "Color Settings"; > = float3(6.0, 4.0, 2.0);
-
 
 // Audio Reactivity
 AS_AUDIO_UI(DigitalBrain_AudioSource, "Audio Source", AS_AUDIO_BASS, "Audio Reactivity")
@@ -423,4 +425,3 @@ technique AS_BGX_DigitalBrain <
 }
 
 #endif // __AS_BGX_DigitalBrain_1_fx
-

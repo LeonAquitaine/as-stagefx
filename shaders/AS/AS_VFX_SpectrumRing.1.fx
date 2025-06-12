@@ -237,5 +237,3 @@ technique AS_SpectrumRing < ui_label = "[AS] VFX: Spectrum Ring"; ui_tooltip = "
 }
 
 #endif // __AS_VFX_SpectrumRing_1_fx
-
-
