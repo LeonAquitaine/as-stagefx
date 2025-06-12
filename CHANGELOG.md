@@ -1,10 +1,16 @@
 # Changelog
 
-## [1.9.0] - 2025-06-11
+## [1.9.1] - 2025-06-11
 
 ### New Features
 - Introduced a Focus Frame effect that highlights a central area with customizable size, aspect ratio, edge softness, background blur, zoom, and brightness. The effect supports depth masking, blending controls, and debug visualization.
 - Added a Tilt-Shift / Depth of Field effect featuring depth-aware, high-quality blurring with adjustable focus depth, focus zone size, falloff curve, and maximum blur amount. Includes a debug overlay to visualize the focus line.
+- Added visible attribution and license information for original shader inspirations directly in the UI of many shader effects.
+
+### Style
+- Updated and corrected aspect ratio preset labels for improved clarity.
+- Standardized and cleaned up image URLs and license fields in shader catalogs.
+- Improved consistency in shader file formatting by removing extraneous blank lines and trailing whitespace.
 
 ## [1.8.4] - 2025-06-06
 
@@ -28,3 +34,6 @@
 - Automated shader catalog updates and README generation integrated into build process.
 - Incremented version numbers and updated build metadata.
 - Standardized and reorganized JSON metadata for improved clarity and consistency.
+- Reorganized and regrouped shader catalog data for better structure and maintainability.
+- Removed a deprecated shader entry from the catalog.
+- Automated the addition of attribution metadata to shader files.
