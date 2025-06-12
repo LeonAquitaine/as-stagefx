@@ -163,7 +163,7 @@
     "type": "BGX",
     "shortDescription": "A seamless, soft, overlapping grid of light panels with various built-in patterns. Perfect for creating dance club and concert backdrops.",
     "longDescription": "This shader renders a seamless, soft, overlapping grid of light panels with various built-in patterns. Perfect for creating dance club and concert backdrops with fully customizable colors, patterns, and audio reactivity. Features 14 built-in patterns, audio-reactive panels that pulse to music, customizable color palettes with 9 presets and custom options, light burst effects and cross beams for dramatic highlighting, 3D perspective with tilt, pitch, and roll controls, and others.",
-    "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-LightWall.gif",
+    "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-lightwall.gif",
     "licence": "Creative Commons Attribution 4.0 International",
     "licenseCode": "CC BY 4.0"
   },
@@ -266,7 +266,7 @@
       "licence": "CC Share-Alike Non-Commercial",
       "licenseCode": "CC BY-NC-SA"
     },
-    "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-PlasmaFlow.gif",
+    "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-plasmaflow.gif",
     "licence": "CC Share-Alike Non-Commercial",
     "licenseCode": "CC BY-NC-SA"
   },
@@ -591,7 +591,7 @@
       "licence": "Creative Commons Attribution 4.0 International",
       "licenseCode": "CC BY 4.0"
     },
-    "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-BoomSticker.gif",
+    "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-boomsticker.gif",
     "licence": "Creative Commons Attribution 4.0 International",
     "licenseCode": "CC BY 4.0"
   },
@@ -627,7 +627,7 @@
       "licence": "CC Share-Alike Non-Commercial",
       "licenseCode": "CC BY-NC-SA"
     },
-    "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-ClairObscur.gif",
+    "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-clairobscur.gif",
     "licence": "CC Share-Alike Non-Commercial",
     "licenseCode": "CC BY-NC-SA"
   },
@@ -770,7 +770,7 @@
     "type": "VFX",
     "shortDescription": "Visualizes audio spectrum as a ring with customizable bands, colors, and animation.",
     "longDescription": "Displays an audio spectrum analyzer in a ring format. Features adjustable band count, radius, thickness, color palette, and animation speed. Supports audio reactivity for dynamic, music-driven visuals. Ideal for overlays, music videos, and live performances.",
-    "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-SpectrumRing.gif",
+    "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-spectrumring.gif",
     "licence": "Creative Commons Attribution 4.0 International",
     "licenseCode": "CC BY 4.0"
   },
@@ -780,7 +780,7 @@
     "type": "VFX",
     "shortDescription": "Applies a stencil mask for selective effect application with shape and position controls.",
     "longDescription": "Applies a stencil mask to selectively reveal or hide parts of the scene. Features controls for mask shape, size, position, feathering, and blending. Useful for transitions, overlays, or compositing effects.",
-    "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-StencilMask.gif",
+    "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-stencilmask.gif",
     "licence": "Creative Commons Attribution 4.0 International",
     "licenseCode": "CC BY 4.0"
   },
@@ -824,7 +824,7 @@
     "type": "VFX",
     "shortDescription": "Displays a classic VU meter with audio-reactive bars and customizable appearance.",
     "longDescription": "Displays a classic VU meter with audio-reactive bars. Features controls for bar count, orientation, color, peak hold, and animation. Ideal for music visualizations, overlays, and live performance feedback.",
-    "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-VUMeter.gif",
+    "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-vumeter.gif",
     "licence": "Creative Commons Attribution 4.0 International",
     "licenseCode": "CC BY 4.0"
   },
