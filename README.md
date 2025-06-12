@@ -40,7 +40,7 @@ AS-StageFX provides a collection of performant, customizable, and audio-reactive
 
 ## Available Shaders
 
-AS-StageFX includes **57 shaders** across four categories: **26 Background (BGX)**, **7 Graphic (GFX)**, **3 Lighting (LFX)**, and **21 Visual (VFX)** effects.
+AS-StageFX includes **59 shaders** across four categories: **26 Background (BGX)**, **9 Graphic (GFX)**, **3 Lighting (LFX)**, and **21 Visual (VFX)** effects.
 
 **Detailed descriptions and examples: [Shader Gallery](docs/gallery.md).**
 
@@ -83,8 +83,10 @@ AS-StageFX includes **57 shaders** across four categories: **26 Background (BGX)
 | **Audio Direction** | Visualizes audio directionality as animated arrows or indicators, ideal for music-driven scenes or overlays. |  |
 | **Brush Stroke** | Transforms the scene with painterly brush stroke textures and dynamic, layered paint effects. |  |
 | **Cinematic Diffusion** | High-quality cinematic diffusion/bloom filter with 8 classic presets and a fully customizable mode. |  |
+| **Focus Frame** | Creates a focused frame with a stylized background and soft, feathered edges for cinematic compositions. |  |
 | **Hand Drawing** | Transforms the scene into a stylized hand-drawn sketch with distinct linework. | CC BY-NC-SA |
 | **MultiLayer Halftone** | Highly customizable multi-layer halftone (up to 4 layers) with various patterns, isolation methods, and blending options. |  |
+| **Tilt-Shift** | High-quality, depth-aware tilt-shift/DoF shader with realistic bokeh effects and precise depth-based focusing. |  |
 | **Vignette Plus** | Advanced vignette effect with customizable shape, color, animation, blur, and audio reactivity. | CC BY-NC-SA |
 
 ### Lighting Effects (LFX)
