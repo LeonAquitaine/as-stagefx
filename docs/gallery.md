@@ -126,6 +126,21 @@ Based on '<a href="https://www.shadertoy.com/view/WlcfRS" target="_new">Golden a
 </tr>
 <tr>
 <td width="50%">
+<h3>Hologram </h3>
+<h5><code>AS_BGX_Hologram.1.fx</code></h5>
+Creates a dynamic, holographic plasma background with shifting rainbow colors and a plasma distortion effect that responds to a user-controlled viewpoint. Features dynamic plasma field with configurable scale and distortion; shifting spectral rainbow colors; user-controlled viewpoint for interactive effects; and full AS-StageFX integration for positioning, depth masking, and blending.
+
+<br><br>
+Based on '<a href="https://www.shadertoy.com/view/NlycDG" target="_new">Hologram stars</a>' by hypothete<br>
+
+<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">()</span>
+</td>
+<td width="50%"><div style="text-align:center">
+<img src="" alt="Hologram Effect" style="max-width:100%;">
+</div></td>
+</tr>
+<tr>
+<td width="50%">
 <h3>Kaleidoscope </h3>
 <h5><code>AS_BGX_Kaleidoscope.1.fx</code></h5>
 Creates a vibrant, ever-evolving fractal kaleidoscope pattern with animated tendrils. Perfect for psychedelic, cosmic, or abstract backgrounds with a hypnotic quality. Features adjustable kaleidoscope mirror count for symmetry control; fractal zoom and pattern rotation with animation controls; customizable wave parameters and color palette; audio reactivity for zoom, wave intensity, and pattern rotation; depth-aware rendering; and standard blend options.
@@ -405,21 +420,6 @@ Based on '<a href="https://www.shadertoy.com/view/XXyGzh" target="_new">Zippy Za
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-zippyzaps.gif" alt="Zippy Zaps Effect" style="max-width:100%;">
 </div></td>
 </tr>
-<tr>
-<td width="50%">
-<h3> </h3>
-<h5><code>AS_BGX_Hologram.1.fx</code></h5>
-
-
-<br><br>
-Based on '<a href="https://www.shadertoy.com/view/NlycDG" target="_new">Hologram stars</a>' by hypothete<br>
-
-<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">()</span>
-</td>
-<td width="50%"><div style="text-align:center">
-<img src="" alt=" Effect" style="max-width:100%;">
-</div></td>
-</tr>
 </table>
 
 ---
@@ -469,6 +469,36 @@ A high-quality cinematic diffusion/bloom filter that replicates classic film dif
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-cinematicdiffusion.gif" alt="Cinematic Diffusion Effect" style="max-width:100%;">
+</div></td>
+</tr>
+<tr>
+<td width="50%">
+<h3>Cosmic Glow </h3>
+<h5><code>AS_GFX_CosmicGlow.1.fx</code></h5>
+Renders an abstract, glowing overlay effect composed of hundreds of animated, rotating arcs arranged in concentric rings. Features animated, rotating arcs with customizable density and count; perspective distortion with axis inclination for realistic 3D viewing angles; two coloring modes: original mathematical formula or standard AS-StageFX palettes; audio reactivity targeting Ring Brightness, Arc Intensity, and Ring Count for dynamic effects; and full integration with AS-StageFX controls for animation, positioning, depth, and blending.
+
+<br><br>
+Based on '<a href="https://www.shadertoy.com/view/ls3XW8" target="_new">Cosmic</a>' by XorDev<br>
+
+<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">()</span>
+</td>
+<td width="50%"><div style="text-align:center">
+<img src="" alt="Cosmic Glow Effect" style="max-width:100%;">
+</div></td>
+</tr>
+<tr>
+<td width="50%">
+<h3>Depth Hologram </h3>
+<h5><code>AS_GFX_Hologram.1.fx</code></h5>
+This shader transforms the entire scene's depth buffer into a holographic field. Unlike a sticker, this effect uses the 3D information of the scene as the source for holographic parallax, color shifts, and lighting. Features uses scene's depth buffer as holographic data source; wavy, procedural noise pattern warped by scene geometry; shifting, spectral rainbow colors based on depth and view angle; 'Hue Compression' that adds more color detail to foreground objects with exponential falloff; optional background darkening to make the hologram pop; support for color palettes to create themed holographic effects; and sophisticated depth-based distortion calculations.
+
+<br><br>
+Based on '<a href="https://www.shadertoy.com/view/MdBSWV" target="_new">Protection hologram</a>' by Alexander Alekseev aka TDM<br>
+
+<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">()</span>
+</td>
+<td width="50%"><div style="text-align:center">
+<img src="" alt="Depth Hologram Effect" style="max-width:100%;">
 </div></td>
 </tr>
 <tr>
@@ -532,36 +562,6 @@ Based on '<a href="https://www.shadertoy.com/view/XfjyWG" target="_new">Hexagona
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-vignetteplus.gif" alt="Vignette Plus Effect" style="max-width:100%;">
-</div></td>
-</tr>
-<tr>
-<td width="50%">
-<h3> </h3>
-<h5><code>AS_GFX_CosmicGlow.1.fx</code></h5>
-
-
-<br><br>
-Based on '<a href="https://www.shadertoy.com/view/ls3XW8" target="_new">Cosmic</a>' by XorDev<br>
-
-<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">()</span>
-</td>
-<td width="50%"><div style="text-align:center">
-<img src="" alt=" Effect" style="max-width:100%;">
-</div></td>
-</tr>
-<tr>
-<td width="50%">
-<h3> </h3>
-<h5><code>AS_GFX_Hologram.1.fx</code></h5>
-
-
-<br><br>
-Based on '<a href="https://www.shadertoy.com/view/MdBSWV" target="_new">Protection hologram</a>' by Alexander Alekseev aka TDM<br>
-
-<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">()</span>
-</td>
-<td width="50%"><div style="text-align:center">
-<img src="" alt=" Effect" style="max-width:100%;">
 </div></td>
 </tr>
 </table>

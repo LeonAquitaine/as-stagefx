@@ -43,6 +43,11 @@ This document lists all external sources, original authors, and inspiration cred
 - **Original Title**: Golden apollian
 - **Notes**: 
 - **Source**: https://www.shadertoy.com/view/WlcfRS
+### AS_BGX_Hologram.1.fx - Hologram
+- **Original Author**: hypothete
+- **Original Title**: Hologram stars
+- **Notes**: 
+- **Source**: https://www.shadertoy.com/view/NlycDG
 ### AS_BGX_Kaleidoscope.1.fx - Kaleidoscope
 - **Original Author**: Kanduvisla
 - **Original Title**: Kaleidoscope
@@ -138,11 +143,6 @@ This document lists all external sources, original authors, and inspiration cred
 - **Original Title**: Zippy Zaps
 - **Notes**: 
 - **Source**: https://www.shadertoy.com/view/XXyGzh
-### AS_BGX_Hologram.1.fx - 
-- **Original Author**: hypothete
-- **Original Title**: Hologram stars
-- **Notes**: 
-- **Source**: https://www.shadertoy.com/view/NlycDG
 
 ## Shadertoy & External Adaptations (VFX)
 ### AS_VFX_BoomSticker.1.fx - Boom Sticker
@@ -272,6 +272,16 @@ This document lists all external sources, original authors, and inspiration cred
 - **Original Title**: 
 - **Notes**: 
 - **Source**: 
+### AS_GFX_CosmicGlow.1.fx - Cosmic Glow
+- **Original Author**: XorDev
+- **Original Title**: Cosmic
+- **Notes**: 
+- **Source**: https://www.shadertoy.com/view/ls3XW8
+### AS_GFX_Hologram.1.fx - Depth Hologram
+- **Original Author**: Alexander Alekseev aka TDM
+- **Original Title**: Protection hologram
+- **Notes**: 
+- **Source**: https://www.shadertoy.com/view/MdBSWV
 ### AS_GFX_FocusFrame.1.fx - Focus Frame
 - **Original Author**: 
 - **Original Title**: 
@@ -297,16 +307,6 @@ This document lists all external sources, original authors, and inspiration cred
 - **Original Title**: Hexagonal Wipe
 - **Notes**: Hexagonal grid implementation adapted from 'hexagonal wipe' by blandprix.
 - **Source**: https://www.shadertoy.com/view/XfjyWG
-### AS_GFX_CosmicGlow.1.fx - 
-- **Original Author**: XorDev
-- **Original Title**: Cosmic
-- **Notes**: 
-- **Source**: https://www.shadertoy.com/view/ls3XW8
-### AS_GFX_Hologram.1.fx - 
-- **Original Author**: Alexander Alekseev aka TDM
-- **Original Title**: Protection hologram
-- **Notes**: 
-- **Source**: https://www.shadertoy.com/view/MdBSWV
 
 ## Shadertoy & External Adaptations (LFX)
 ### AS_LFX_CandleFlame.1.fx - Candle Flame
