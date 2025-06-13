@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.9.2] - 2025-06-13
+
+### New Features
+- Introduced three new shaders: Hologram (background), Cosmic Glow (graphic overlay), and Depth Hologram (graphic overlay), each with unique visual effects and extensive customization options.
+
+### Bug Fixes
+- Corrected blend logic in the Hologram shader to ensure proper background darkening and effect blending.
+
 ## [1.9.1] - 2025-06-11
 
 ### New Features
