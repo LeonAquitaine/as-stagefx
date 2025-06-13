@@ -74,9 +74,6 @@ static const float  ARC_INTENSITY_DEFAULT = 0.6;
 static const float  COLOR_PHASE_MIN = 0.0;
 static const float  COLOR_PHASE_MAX = 5.0;
 static const float  COLOR_PHASE_DEFAULT = 1.0;
-static const float  PALETTE_CYCLE_COUNT_MIN = 0.1;
-static const float  PALETTE_CYCLE_COUNT_MAX = 10.0;
-static const float  PALETTE_CYCLE_COUNT_DEFAULT = 1.0;
 static const float  PALETTE_COMPRESSION_MIN = 0.5;
 static const float  PALETTE_COMPRESSION_MAX = 5.0;
 static const float  PALETTE_COMPRESSION_DEFAULT = 2.0;
@@ -90,7 +87,6 @@ AS_SCALE_UI(EffectScale)
 uniform bool UsePaletteColoring < ui_label = "Use Palette Coloring"; ui_tooltip = "If checked, uses the selected palette below. If unchecked, uses the original shader's mathematical coloring."; ui_category = "Palette & Style"; > = false;
 AS_PALETTE_SELECTION_UI(PaletteSelection, "Effect Palette", AS_PALETTE_CUSTOM, "Palette & Style")
 AS_DECLARE_CUSTOM_PALETTE(CosmicGlow_, "Palette & Style")
-uniform float PaletteCycleCount < ui_type = "slider"; ui_label = "Palette Cycle Count"; ui_tooltip = "Controls how many times the color gradient cycles back and forth (ping-pongs) per rotation."; ui_min = PALETTE_CYCLE_COUNT_MIN; ui_max = PALETTE_CYCLE_COUNT_MAX; ui_category = "Palette & Style"; > = PALETTE_CYCLE_COUNT_DEFAULT;
 uniform float PaletteCompression < ui_type = "slider"; ui_label = "Palette Compression"; ui_tooltip = "Controls the compression of the color palette."; ui_min = PALETTE_COMPRESSION_MIN; ui_max = PALETTE_COMPRESSION_MAX; ui_category = "Palette & Style"; > = PALETTE_COMPRESSION_DEFAULT;
 uniform float ColorPhase < ui_type = "slider"; ui_label = "Color Phase (Math Mode)"; ui_tooltip = "Adjusts the color separation when 'Use Palette Coloring' is off."; ui_min = COLOR_PHASE_MIN; ui_max = COLOR_PHASE_MAX; ui_category = "Palette & Style"; > = COLOR_PHASE_DEFAULT;
 
@@ -109,7 +105,7 @@ AS_ANIMATION_UI(AnimationSpeed, AnimationKeyframe, "Animation")
 // Audio Reactivity
 AS_AUDIO_UI(AudioSource, "Audio Source", AS_AUDIO_OFF, "Audio Reactivity")
 AS_AUDIO_MULT_UI(AudioMultiplier, "Audio Intensity", 1.0, 4.0, "Audio Reactivity")
-uniform int AudioTarget < ui_type = "combo"; ui_label = "Audio Target"; ui_items = "Ring Brightness\0Arc Intensity\0"; ui_category = "Audio Reactivity"; > = 0;
+uniform int AudioTarget < ui_type = "combo"; ui_label = "Audio Target"; ui_items = "Ring Brightness\0Arc Intensity\0Ring Count\0"; ui_category = "Audio Reactivity"; > = 0;
 
 // Stage Controls
 AS_STAGEDEPTH_UI(EffectDepth)
@@ -131,17 +127,15 @@ float4 PS_CosmicGlow(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_
 
     // --- Standard Setup ---
     if (ReShade::GetLinearizedDepth(texcoord) < EffectDepth - AS_DEPTH_EPSILON)
-        return orig;
-
-    float animSpeed = AnimationSpeed;
+        return orig;    float animSpeed = AnimationSpeed;
     float ringBrightness = RingBrightness;
     float arcIntensity = ArcIntensity;
-
-    if(AudioSource != AS_AUDIO_OFF)
+    float ringCount = RingCount;    if(AudioSource != AS_AUDIO_OFF)
     {
         float audioValue = AS_applyAudioReactivity(1.0, AudioSource, AudioMultiplier, true) - 1.0;
         if(AudioTarget == 0) ringBrightness += audioValue;
         if(AudioTarget == 1) arcIntensity += audioValue;
+        if(AudioTarget == 2) ringCount = clamp(ringCount + audioValue * 50.0, RING_COUNT_MIN, RING_COUNT_MAX);
     }
     float time = AS_getAnimationTime(animSpeed, AnimationKeyframe);
 
@@ -173,11 +167,9 @@ float4 PS_CosmicGlow(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_
     p.x /= perspectiveDivisor;
     p.y = (p.y - perspectiveStrength) / perspectiveDivisor;
 
-    p = p * float2x2(1, -1, 2, 2);
-
-    // --- Main Effect Loop ---
+    p = p * float2x2(1, -1, 2, 2);    // --- Main Effect Loop ---
     float3 finalColor = 0.0;
-    for (float i = 1.0; i < RingCount; i += 1.0)
+    for (float i = 1.0; i < ringCount; i += 1.0)
     {
         float2 uv_loop = p / (2.0 - p.y);
         
@@ -195,7 +187,7 @@ float4 PS_CosmicGlow(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_
             float normalizedAngle = frac(angle / AS_TWO_PI);
             
             // Generate a continuous phase for the triangle wave
-            float phase = normalizedAngle * PaletteCycleCount * AS_TWO_PI;
+            float phase = normalizedAngle * AS_TWO_PI;
             
             // The acos(cos(x)) pattern creates a smooth triangle wave from 0 -> PI -> 0...
             // We normalize it by AS_PI to get a 0 -> 1 -> 0... range for the palette.
