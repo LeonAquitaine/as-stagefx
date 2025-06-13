@@ -40,7 +40,7 @@ AS-StageFX provides a collection of performant, customizable, and audio-reactive
 
 ## Available Shaders
 
-AS-StageFX includes **59 shaders** across four categories: **26 Background (BGX)**, **9 Graphic (GFX)**, **3 Lighting (LFX)**, and **21 Visual (VFX)** effects.
+AS-StageFX includes **62 shaders** across four categories: **27 Background (BGX)**, **11 Graphic (GFX)**, **3 Lighting (LFX)**, and **21 Visual (VFX)** effects.
 
 **Detailed descriptions and examples: [Shader Gallery](docs/gallery.md).**
 
@@ -55,6 +55,7 @@ AS-StageFX includes **59 shaders** across four categories: **26 Background (BGX)
 | **Digital Brain** | Abstract visualization of a digital brain neural network with animated Voronoi patterns, neural-like connections, and electrical pulses. | CC BY-NC-SA |
 | **Fluorescent** | Creates a vibrant neon fluorescent background effect with raymarched volumetric patterns. Perfect for retro, cyberpunk, or futuristic atmospheres. | CC BY-NC-SA |
 | **Golden Clockwork** | Intricate, animated golden clockwork or Apollonian fractal patterns. | CC BY-NC-SA |
+| **Hologram** | Creates a dynamic, holographic plasma background with shifting rainbow colors and a plasma distortion effect that responds to a user-controlled viewpoint. | CC BY-NC-SA |
 | **Kaleidoscope** | Creates a vibrant, ever-evolving fractal kaleidoscope pattern with animated tendrils. Perfect for psychedelic, cosmic, or abstract backgrounds with a hypnotic quality. | CC BY-NC-SA |
 | **Light Ripples** | Mesmerizing, rippling kaleidoscopic light patterns with customizable distortion, animation, color palettes, and audio reactivity. | CC BY-NC-SA |
 | **Light Wall** | A seamless, soft, overlapping grid of light panels with various built-in patterns. Perfect for creating dance club and concert backdrops. | CC BY 4.0 |
@@ -83,6 +84,8 @@ AS-StageFX includes **59 shaders** across four categories: **26 Background (BGX)
 | **Audio Direction** | Visualizes audio directionality as animated arrows or indicators, ideal for music-driven scenes or overlays. | CC BY 4.0 |
 | **Brush Stroke** | Transforms the scene with painterly brush stroke textures and dynamic, layered paint effects. | CC BY 4.0 |
 | **Cinematic Diffusion** | High-quality cinematic diffusion/bloom filter with 8 classic presets and a fully customizable mode. | CC BY 4.0 |
+| **Cosmic Glow** | Renders an abstract, glowing overlay effect composed of hundreds of animated, rotating arcs arranged in concentric rings with distinct perspective quality and depth. | CC BY-NC-SA |
+| **Depth Hologram** | Transforms the entire scene's depth buffer into a holographic field, using 3D information for holographic parallax, color shifts, and lighting effects. | CC BY-NC-SA |
 | **Focus Frame** | Creates a focused frame with a stylized background and soft, feathered edges for cinematic compositions. | CC BY 4.0 |
 | **Hand Drawing** | Transforms the scene into a stylized hand-drawn sketch with distinct linework. | CC BY-NC-SA |
 | **MultiLayer Halftone** | Highly customizable multi-layer halftone (up to 4 layers) with various patterns, isolation methods, and blending options. | CC BY 4.0 |

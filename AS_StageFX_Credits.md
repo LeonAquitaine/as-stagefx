@@ -43,6 +43,11 @@ This document lists all external sources, original authors, and inspiration cred
 - **Original Title**: Golden apollian
 - **Notes**: 
 - **Source**: https://www.shadertoy.com/view/WlcfRS
+### AS_BGX_Hologram.1.fx - Hologram
+- **Original Author**: hypothete
+- **Original Title**: Hologram stars
+- **Notes**: 
+- **Source**: https://www.shadertoy.com/view/NlycDG
 ### AS_BGX_Kaleidoscope.1.fx - Kaleidoscope
 - **Original Author**: Kanduvisla
 - **Original Title**: Kaleidoscope
@@ -267,6 +272,16 @@ This document lists all external sources, original authors, and inspiration cred
 - **Original Title**: 
 - **Notes**: 
 - **Source**: 
+### AS_GFX_CosmicGlow.1.fx - Cosmic Glow
+- **Original Author**: XorDev
+- **Original Title**: Cosmic
+- **Notes**: 
+- **Source**: https://www.shadertoy.com/view/ls3XW8
+### AS_GFX_Hologram.1.fx - Depth Hologram
+- **Original Author**: Alexander Alekseev aka TDM
+- **Original Title**: Protection hologram
+- **Notes**: 
+- **Source**: https://www.shadertoy.com/view/MdBSWV
 ### AS_GFX_FocusFrame.1.fx - Focus Frame
 - **Original Author**: 
 - **Original Title**: 

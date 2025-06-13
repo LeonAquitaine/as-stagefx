@@ -1,11 +1,22 @@
 # Changelog
 
+## [1.9.2] - 2025-06-13
+
+### New Features
+- Introduced three new shaders: Hologram (background), Cosmic Glow (graphic overlay), and Depth Hologram (graphic overlay), each with unique visual effects and extensive customization options.
+
+### Bug Fixes
+- Corrected blend logic in the Hologram shader to ensure proper background darkening and effect blending.
+
 ## [1.9.1] - 2025-06-11
 
 ### New Features
 - Introduced a Focus Frame effect that highlights a central area with customizable size, aspect ratio, edge softness, background blur, zoom, and brightness. The effect supports depth masking, blending controls, and debug visualization.
 - Added a Tilt-Shift / Depth of Field effect featuring depth-aware, high-quality blurring with adjustable focus depth, focus zone size, falloff curve, and maximum blur amount. Includes a debug overlay to visualize the focus line.
 - Added visible attribution and license information for original shader inspirations directly in the UI of many shader effects.
+
+### Fixed
+- Fixed Hologram shader blend logic to ensure background darkening and all effect modifications are properly included in the final blend calculation, allowing blend mode and strength controls to work correctly.
 
 ### Style
 - Updated and corrected aspect ratio preset labels for improved clarity.

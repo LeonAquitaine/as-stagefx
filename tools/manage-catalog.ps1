@@ -236,14 +236,13 @@ foreach ($entry in $catalog) {
 foreach ($shaderFile in $shaderFiles) {
     $shaderPath = $shaderFile.FullName
     if (Test-Path $shaderPath) {
-        $shaderText = Get-Content -Path $shaderPath -Raw -Encoding UTF8
-        # Replace all duplicated newlines (2+ in a row) with a single newline, repeatedly until none remain
+        $shaderText = Get-Content -Path $shaderPath -Raw -Encoding UTF8        # Replace all duplicated newlines (2+ in a row) with a single newline, repeatedly until none remain
         do {
             $oldText = $shaderText
             $shaderText = $shaderText -replace "(\r?\n){3,}", "`r`n`r`n"
         } while ($shaderText -ne $oldText)
         # Trim trailing whitespace and newlines from the end of the file
-        $shaderText = $shaderText.TrimEnd()
+        $shaderText = ($shaderText -join "`r`n").TrimEnd()
         Set-Content -Path $shaderPath -Value $shaderText -Encoding UTF8
     }
 }

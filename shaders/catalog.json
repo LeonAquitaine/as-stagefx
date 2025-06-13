@@ -124,6 +124,24 @@
     "licenseCode": "CC BY-NC-SA"
   },
   {
+    "name": "Hologram",
+    "filename": "AS_BGX_Hologram.1.fx",
+    "type": "BGX",
+    "shortDescription": "Creates a dynamic, holographic plasma background with shifting rainbow colors and a plasma distortion effect that responds to a user-controlled viewpoint.",
+    "longDescription": "Creates a dynamic, holographic plasma background with shifting rainbow colors and a plasma distortion effect that responds to a user-controlled viewpoint. Features dynamic plasma field with configurable scale and distortion; shifting spectral rainbow colors; user-controlled viewpoint for interactive effects; and full AS-StageFX integration for positioning, depth masking, and blending.",
+    "credits": {
+      "originalTitle": "Hologram stars",
+      "externalUrl": "https://www.shadertoy.com/view/NlycDG",
+      "originalAuthor": "hypothete",
+      "platform": "Shadertoy",
+      "adaptedBy": "Leon Aquitaine",
+      "licence": "CC Share-Alike Non-Commercial",
+      "licenseCode": "CC BY-NC-SA"
+    },
+    "licence": "CC Share-Alike Non-Commercial",
+    "licenseCode": "CC BY-NC-SA"
+  },
+  {
     "name": "Kaleidoscope",
     "filename": "AS_BGX_Kaleidoscope.1.fx",
     "type": "BGX",
@@ -480,6 +498,42 @@
     "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-cinematicdiffusion.gif",
     "licence": "Creative Commons Attribution 4.0 International",
     "licenseCode": "CC BY 4.0"
+  },
+  {
+    "name": "Cosmic Glow",
+    "filename": "AS_GFX_CosmicGlow.1.fx",
+    "type": "GFX",
+    "shortDescription": "Renders an abstract, glowing overlay effect composed of hundreds of animated, rotating arcs arranged in concentric rings with distinct perspective quality and depth.",
+    "longDescription": "Renders an abstract, glowing overlay effect composed of hundreds of animated, rotating arcs arranged in concentric rings. Features animated, rotating arcs with customizable density and count; perspective distortion with axis inclination for realistic 3D viewing angles; two coloring modes: original mathematical formula or standard AS-StageFX palettes; audio reactivity targeting Ring Brightness, Arc Intensity, and Ring Count for dynamic effects; and full integration with AS-StageFX controls for animation, positioning, depth, and blending.",
+    "credits": {
+      "originalTitle": "Cosmic",
+      "externalUrl": "https://www.shadertoy.com/view/ls3XW8",
+      "originalAuthor": "XorDev",
+      "platform": "Shadertoy",
+      "adaptedBy": "Leon Aquitaine",
+      "licence": "CC Share-Alike Non-Commercial",
+      "licenseCode": "CC BY-NC-SA"
+    },
+    "licence": "CC Share-Alike Non-Commercial",
+    "licenseCode": "CC BY-NC-SA"
+  },
+  {
+    "name": "Depth Hologram",
+    "filename": "AS_GFX_Hologram.1.fx",
+    "type": "GFX",
+    "shortDescription": "Transforms the entire scene's depth buffer into a holographic field, using 3D information for holographic parallax, color shifts, and lighting effects.",
+    "longDescription": "This shader transforms the entire scene's depth buffer into a holographic field. Unlike a sticker, this effect uses the 3D information of the scene as the source for holographic parallax, color shifts, and lighting. Features uses scene's depth buffer as holographic data source; wavy, procedural noise pattern warped by scene geometry; shifting, spectral rainbow colors based on depth and view angle; 'Hue Compression' that adds more color detail to foreground objects with exponential falloff; optional background darkening to make the hologram pop; support for color palettes to create themed holographic effects; and sophisticated depth-based distortion calculations.",
+    "credits": {
+      "originalTitle": "Protection hologram",
+      "externalUrl": "https://www.shadertoy.com/view/MdBSWV",
+      "originalAuthor": "Alexander Alekseev aka TDM",
+      "creationDate": "2014",
+      "adaptedBy": "Leon Aquitaine",
+      "licence": "CC Share-Alike Non-Commercial",
+      "licenseCode": "CC BY-NC-SA"
+    },
+    "licence": "CC Share-Alike Non-Commercial",
+    "licenseCode": "CC BY-NC-SA"
   },
   {
     "name": "Focus Frame",
