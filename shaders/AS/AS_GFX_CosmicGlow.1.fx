@@ -1,5 +1,5 @@
 /**
- * AS_BGX_CosmicGlow.1.fx - Abstract radiating arc background
+ * AS_GFX_CosmicGlow.1.fx - Abstract radiating arc overlay
  * Author: Leon Aquitaine | License: CC BY 4.0
  *
  * CREDITS:
@@ -9,7 +9,7 @@
  * ===================================================================================
  *
  * DESCRIPTION:
- * Renders an abstract, glowing background effect composed of hundreds of animated,
+ * Renders an abstract, glowing overlay effect composed of hundreds of animated,
  * rotating arcs arranged in concentric rings. The effect has a distinct perspective
  * quality, giving it a sense of depth and motion.
  *
@@ -18,7 +18,7 @@
  * - True perspective distortion with axis inclination for realistic 3D viewing angles.
  * - Two coloring modes: original mathematical formula or standard AS-StageFX palettes.
  * - Ping-pong palette interpolation to eliminate hard color breaks.
- * - Audio reactivity targeting Ring Brightness and Arc Intensity for dynamic effects.
+ * - Audio reactivity targeting Ring Brightness, Arc Intensity, and Ring Count for dynamic effects.
  * - Full integration with AS-StageFX controls for animation, positioning, depth, and blending.
  *
  * IMPLEMENTATION OVERVIEW:
@@ -35,8 +35,8 @@
 // ============================================================================
 // TECHNIQUE GUARD
 // ============================================================================
-#ifndef __AS_BGX_CosmicGlow_1_fx
-#define __AS_BGX_CosmicGlow_1_fx
+#ifndef __AS_GFX_CosmicGlow_1_fx
+#define __AS_GFX_CosmicGlow_1_fx
 
 // ============================================================================
 // INCLUDES
@@ -80,6 +80,7 @@ static const float  PALETTE_COMPRESSION_DEFAULT = 2.0;
 
 // --- UI Uniforms ---
 // Position & Transformation
+
 uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Cosmic' by XorDev\nLink: https://www.shadertoy.com/view/ls3XW8\nLicence: CC Share-Alike Non-Commercial\n\n";>;
 
 AS_POS_UI(EffectCenter)
@@ -222,13 +223,9 @@ float4 PS_CosmicGlow(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_
 // ============================================================================
 // TECHNIQUE
 // ============================================================================
-technique AS_BGX_CosmicGlow <
-    ui_tooltip = "Renders an abstract, glowing background effect composed of hundreds of animated, "
-                 "rotating arcs arranged in concentric rings.\n\n"
-                 "Credits:\n"
-                 "Based on 'Cosmic' by XorDev\n"
-                 "Source: https://www.shadertoy.com/view/ls3XW8\n"
-                 "Adapted by Leon Aquitaine"; >
+technique AS_GFX_CosmicGlow <
+    ui_label = "[AS] GFX: Cosmic Glow";
+    ui_tooltip = "Renders an abstract, glowing overlay effect composed of animated, rotating arcs arranged in concentric rings."; >
 {
     pass
     {
@@ -237,4 +234,4 @@ technique AS_BGX_CosmicGlow <
     }
 }
 
-#endif // __AS_BGX_CosmicGlow_1_fx
+#endif // __AS_GFX_CosmicGlow_1_fx

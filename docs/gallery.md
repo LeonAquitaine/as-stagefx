@@ -1,6 +1,6 @@
 # AS-StageFX Shader Gallery
 
-This gallery provides detailed descriptions and visual examples of the complete AS-StageFX collection, which includes **62 shaders** across four categories: **28 Background (BGX)**, **10 Graphic (GFX)**, **3 Lighting (LFX)**, and **21 Visual (VFX)** effects.
+This gallery provides detailed descriptions and visual examples of the complete AS-StageFX collection, which includes **62 shaders** across four categories: **27 Background (BGX)**, **11 Graphic (GFX)**, **3 Lighting (LFX)**, and **21 Visual (VFX)** effects.
 
 For installation instructions and general information, please refer to the [main README](../README.md).
 
@@ -408,21 +408,6 @@ Based on '<a href="https://www.shadertoy.com/view/XXyGzh" target="_new">Zippy Za
 <tr>
 <td width="50%">
 <h3> </h3>
-<h5><code>AS_BGX_CosmicGlow.1.fx</code></h5>
-
-
-<br><br>
-Based on '<a href="https://www.shadertoy.com/view/ls3XW8" target="_new">Cosmic</a>' by XorDev<br>
-
-<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">()</span>
-</td>
-<td width="50%"><div style="text-align:center">
-<img src="" alt=" Effect" style="max-width:100%;">
-</div></td>
-</tr>
-<tr>
-<td width="50%">
-<h3> </h3>
 <h5><code>AS_BGX_Hologram.1.fx</code></h5>
 
 
@@ -547,6 +532,21 @@ Based on '<a href="https://www.shadertoy.com/view/XfjyWG" target="_new">Hexagona
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-vignetteplus.gif" alt="Vignette Plus Effect" style="max-width:100%;">
+</div></td>
+</tr>
+<tr>
+<td width="50%">
+<h3> </h3>
+<h5><code>AS_GFX_CosmicGlow.1.fx</code></h5>
+
+
+<br><br>
+Based on '<a href="https://www.shadertoy.com/view/ls3XW8" target="_new">Cosmic</a>' by XorDev<br>
+
+<strong>License:</strong> CC Share-Alike Non-Commercial <span style="color:#888;font-size:90%">()</span>
+</td>
+<td width="50%"><div style="text-align:center">
+<img src="" alt=" Effect" style="max-width:100%;">
 </div></td>
 </tr>
 <tr>
