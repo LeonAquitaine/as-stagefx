@@ -50,6 +50,9 @@
 // ============================================================================
 
 // --- Palette ---
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Protection hologram' by Alexander Alekseev aka TDM\nLink: https://www.shadertoy.com/view/MdBSWV\nLicence: CC Share-Alike Non-Commercial\n\n";>;
+
 AS_PALETTE_SELECTION_UI(HologramPalette, "Hologram Palette", AS_PALETTE_RAINBOW, "Palette & Style")
 
 // --- View Angle ---
