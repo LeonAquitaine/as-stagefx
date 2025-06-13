@@ -77,12 +77,12 @@ static const float  COLOR_PHASE_DEFAULT = 1.0;
 static const float  PALETTE_CYCLE_COUNT_MIN = 0.1;
 static const float  PALETTE_CYCLE_COUNT_MAX = 10.0;
 static const float  PALETTE_CYCLE_COUNT_DEFAULT = 1.0;
+static const float  PALETTE_COMPRESSION_MIN = 0.5;
+static const float  PALETTE_COMPRESSION_MAX = 5.0;
+static const float  PALETTE_COMPRESSION_DEFAULT = 2.0;
 
 // --- UI Uniforms ---
 // Position & Transformation
-
-uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Cosmic' by XorDev\nLink: https://www.shadertoy.com/view/ls3XW8\nLicence: CC Share-Alike Non-Commercial\n\n";>;
-
 AS_POS_UI(EffectCenter)
 AS_SCALE_UI(EffectScale)
 
@@ -91,6 +91,7 @@ uniform bool UsePaletteColoring < ui_label = "Use Palette Coloring"; ui_tooltip 
 AS_PALETTE_SELECTION_UI(PaletteSelection, "Effect Palette", AS_PALETTE_CUSTOM, "Palette & Style")
 AS_DECLARE_CUSTOM_PALETTE(CosmicGlow_, "Palette & Style")
 uniform float PaletteCycleCount < ui_type = "slider"; ui_label = "Palette Cycle Count"; ui_tooltip = "Controls how many times the color gradient cycles back and forth (ping-pongs) per rotation."; ui_min = PALETTE_CYCLE_COUNT_MIN; ui_max = PALETTE_CYCLE_COUNT_MAX; ui_category = "Palette & Style"; > = PALETTE_CYCLE_COUNT_DEFAULT;
+uniform float PaletteCompression < ui_type = "slider"; ui_label = "Palette Compression"; ui_tooltip = "Controls the compression of the color palette."; ui_min = PALETTE_COMPRESSION_MIN; ui_max = PALETTE_COMPRESSION_MAX; ui_category = "Palette & Style"; > = PALETTE_COMPRESSION_DEFAULT;
 uniform float ColorPhase < ui_type = "slider"; ui_label = "Color Phase (Math Mode)"; ui_tooltip = "Adjusts the color separation when 'Use Palette Coloring' is off."; ui_min = COLOR_PHASE_MIN; ui_max = COLOR_PHASE_MAX; ui_category = "Palette & Style"; > = COLOR_PHASE_DEFAULT;
 
 // Pattern
@@ -198,7 +199,7 @@ float4 PS_CosmicGlow(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_
             
             // The acos(cos(x)) pattern creates a smooth triangle wave from 0 -> PI -> 0...
             // We normalize it by AS_PI to get a 0 -> 1 -> 0... range for the palette.
-            float paletteValue = acos(cos(phase)) / AS_PI * 2;
+            float paletteValue = acos(cos(phase)) / AS_PI * PaletteCompression;
             
             if (PaletteSelection == AS_PALETTE_CUSTOM)
             {
