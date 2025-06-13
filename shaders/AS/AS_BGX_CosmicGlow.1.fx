@@ -15,10 +15,11 @@
  *
  * FEATURES:
  * - Animated, rotating arcs with customizable density and count.
- * - Perspective distortion for a 3D-like tunnel effect.
+ * - True perspective distortion with axis inclination for realistic 3D viewing angles.
  * - Two coloring modes: original mathematical formula or standard AS-StageFX palettes.
- * - Full integration with AS-StageFX controls for animation, audio reactivity,
- * positioning, depth, and blending.
+ * - Ping-pong palette interpolation to eliminate hard color breaks.
+ * - Audio reactivity targeting Ring Brightness and Arc Intensity for dynamic effects.
+ * - Full integration with AS-StageFX controls for animation, positioning, depth, and blending.
  *
  * IMPLEMENTATION OVERVIEW:
  * 1. A for-loop iterates to create a specified number of concentric rings.
@@ -52,9 +53,9 @@
 static const int    RING_COUNT_MIN = 1;
 static const int    RING_COUNT_MAX = 200;
 static const int    RING_COUNT_DEFAULT = 30;
-static const float  PERSPECTIVE_MIN = 0.0;
+static const float  PERSPECTIVE_MIN = -2.0;
 static const float  PERSPECTIVE_MAX = 5.0;
-static const float  PERSPECTIVE_DEFAULT = 2.0;
+static const float  PERSPECTIVE_DEFAULT = -0.9;
 static const float  RING_DENSITY_MIN = 1.0;
 static const float  RING_DENSITY_MAX = 200.0;
 static const float  RING_DENSITY_DEFAULT = 80.0;
@@ -73,6 +74,9 @@ static const float  ARC_INTENSITY_DEFAULT = 0.6;
 static const float  COLOR_PHASE_MIN = 0.0;
 static const float  COLOR_PHASE_MAX = 5.0;
 static const float  COLOR_PHASE_DEFAULT = 1.0;
+static const float  PALETTE_CYCLE_COUNT_MIN = 0.1;
+static const float  PALETTE_CYCLE_COUNT_MAX = 10.0;
+static const float  PALETTE_CYCLE_COUNT_DEFAULT = 1.0;
 
 
 // --- UI Uniforms ---
@@ -84,11 +88,12 @@ AS_SCALE_UI(EffectScale)
 uniform bool UsePaletteColoring < ui_label = "Use Palette Coloring"; ui_tooltip = "If checked, uses the selected palette below. If unchecked, uses the original shader's mathematical coloring."; ui_category = "Palette & Style"; > = false;
 AS_PALETTE_SELECTION_UI(PaletteSelection, "Effect Palette", AS_PALETTE_CUSTOM, "Palette & Style")
 AS_DECLARE_CUSTOM_PALETTE(CosmicGlow_, "Palette & Style")
+uniform float PaletteCycleCount < ui_type = "slider"; ui_label = "Palette Cycle Count"; ui_tooltip = "Controls how many times the color gradient cycles back and forth (ping-pongs) per rotation."; ui_min = PALETTE_CYCLE_COUNT_MIN; ui_max = PALETTE_CYCLE_COUNT_MAX; ui_category = "Palette & Style"; > = PALETTE_CYCLE_COUNT_DEFAULT;
 uniform float ColorPhase < ui_type = "slider"; ui_label = "Color Phase (Math Mode)"; ui_tooltip = "Adjusts the color separation when 'Use Palette Coloring' is off."; ui_min = COLOR_PHASE_MIN; ui_max = COLOR_PHASE_MAX; ui_category = "Palette & Style"; > = COLOR_PHASE_DEFAULT;
 
 // Pattern
 uniform int RingCount < ui_type = "slider"; ui_label = "Ring Count"; ui_tooltip = "Number of concentric rings to render."; ui_min = RING_COUNT_MIN; ui_max = RING_COUNT_MAX; ui_category = "Pattern"; > = RING_COUNT_DEFAULT;
-uniform float Perspective < ui_type = "slider"; ui_label = "Perspective"; ui_tooltip = "Strength of the perspective distortion effect."; ui_min = PERSPECTIVE_MIN; ui_max = PERSPECTIVE_MAX; ui_category = "Pattern"; > = PERSPECTIVE_DEFAULT;
+uniform float Perspective < ui_type = "slider"; ui_label = "Perspective"; ui_tooltip = "Controls viewing angle inclination. 0 = flat view (no distortion), higher values create 3D perspective as if viewing rings from an angled position."; ui_min = PERSPECTIVE_MIN; ui_max = PERSPECTIVE_MAX; ui_category = "Pattern"; > = PERSPECTIVE_DEFAULT;
 uniform float RingDensity < ui_type = "slider"; ui_label = "Ring Density"; ui_tooltip = "Controls the spacing and density of the rings."; ui_min = RING_DENSITY_MIN; ui_max = RING_DENSITY_MAX; ui_category = "Pattern"; > = RING_DENSITY_DEFAULT;
 uniform float RingFalloff < ui_type = "slider"; ui_label = "Ring Falloff"; ui_tooltip = "Adjusts the sharpness of the rings. Lower values are sharper."; ui_min = RING_FALLOFF_MIN; ui_max = RING_FALLOFF_MAX; ui_category = "Pattern"; > = RING_FALLOFF_DEFAULT;
 uniform float RingBrightness < ui_type = "slider"; ui_label = "Ring Brightness"; ui_tooltip = "Overall brightness of the effect."; ui_min = RING_BRIGHTNESS_MIN; ui_max = RING_BRIGHTNESS_MAX; ui_category = "Pattern"; > = RING_BRIGHTNESS_DEFAULT;
@@ -101,7 +106,7 @@ AS_ANIMATION_UI(AnimationSpeed, AnimationKeyframe, "Animation")
 // Audio Reactivity
 AS_AUDIO_UI(AudioSource, "Audio Source", AS_AUDIO_OFF, "Audio Reactivity")
 AS_AUDIO_MULT_UI(AudioMultiplier, "Audio Intensity", 1.0, 4.0, "Audio Reactivity")
-uniform int AudioTarget < ui_type = "combo"; ui_label = "Audio Target"; ui_items = "None\0Animation Speed\0Perspective\0"; ui_category = "Audio Reactivity"; > = 0;
+uniform int AudioTarget < ui_type = "combo"; ui_label = "Audio Target"; ui_items = "Ring Brightness\0Arc Intensity\0"; ui_category = "Audio Reactivity"; > = 0;
 
 // Stage Controls
 AS_STAGEDEPTH_UI(EffectDepth)
@@ -126,42 +131,46 @@ float4 PS_CosmicGlow(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_
         return orig;
 
     float animSpeed = AnimationSpeed;
-    float perspective = Perspective;
-    if(AudioTarget > 0)
+    float ringBrightness = RingBrightness;
+    float arcIntensity = ArcIntensity;
+
+    if(AudioSource != AS_AUDIO_OFF)
     {
-        float audio = AS_applyAudioReactivity(1.0, AudioSource, AudioMultiplier, true);
-        if(AudioTarget == 1) animSpeed *= audio;
-        if(AudioTarget == 2) perspective *= audio;
+        float audioValue = AS_applyAudioReactivity(1.0, AudioSource, AudioMultiplier, true) - 1.0;
+        if(AudioTarget == 0) ringBrightness += audioValue;
+        if(AudioTarget == 1) arcIntensity += audioValue;
+    }
+    float time = AS_getAnimationTime(animSpeed, AnimationKeyframe);
+
+    // --- Apply Stage Controls (Position, Scale, Rotation) ---
+    float2 stageCoord = texcoord;
+    
+    stageCoord -= EffectCenter;
+    
+    stageCoord = (stageCoord - 0.5) / EffectScale + 0.5;
+
+    float globalRotation = AS_getRotationRadians(SnapRotation, FineRotation);
+    if (globalRotation != 0.0) {
+        float s, c;
+        sincos(-globalRotation, s, c);
+        float2 rotCenter = stageCoord - 0.5;
+        stageCoord = float2(rotCenter.x * c - rotCenter.y * s, rotCenter.x * s + rotCenter.y * c) + 0.5;
     }
 
-    float time = AS_getAnimationTime(animSpeed, AnimationKeyframe);
-    float globalRotation = AS_getRotationRadians(SnapRotation, FineRotation);
-
-    // --- Coordinate Transformation ---
-    // Manually construct the coordinate system according to AS-StageFX guidelines.
-    
-    // 1. Create a base coordinate system centered at (0,0)
-    float2 p = texcoord - 0.5;
-
-    // 2. Correct for aspect ratio to establish the "central square"
+    // --- Effect Coordinate System ---
+    float2 p = stageCoord - 0.5;
     if (ReShade::AspectRatio > 1.0)
         p.x *= ReShade::AspectRatio;
     else
         p.y /= ReShade::AspectRatio;
-        
-    // 3. Apply standard transformations in order: Scale -> Rotation -> Position.
-    p /= EffectScale;
 
-    float s, c;
-    sincos(-globalRotation, s, c);
-    p = float2(p.x * c - p.y * s, p.x * s + p.y * c);
-    
-    // The EffectCenter UI gives a range of [-1.5, 1.5]. We scale it by 0.5 to
-    // map a value of 1.0 to the edge of the central square.
-    p -= EffectCenter * 0.5;
+    float perspectiveStrength = Perspective * 0.5;
+    float perspectiveDivisor = 1.0 + p.y * perspectiveStrength;
+    perspectiveDivisor = max(perspectiveDivisor, 0.1);
+    p.x /= perspectiveDivisor;
+    p.y = (p.y - perspectiveStrength) / perspectiveDivisor;
 
-    // 4. Apply the shader's unique matrix for its perspective effect
-    p = p * float2x2(1, -1, 2, 2) * perspective;
+    p = p * float2x2(1, -1, 2, 2);
 
     // --- Main Effect Loop ---
     float3 finalColor = 0.0;
@@ -169,20 +178,25 @@ float4 PS_CosmicGlow(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_
     {
         float2 uv_loop = p / (2.0 - p.y);
         
-        // Calculate angle for the arcs
         float angle = atan2(uv_loop.y, uv_loop.x) * ceil(i * ArcCountMultiplier) + time * sin(i * i) + i * i;
-
-        // Create the rings using distance and attenuation
-        float ring_attenuation = RingBrightness / (abs(length(uv_loop) * RingDensity - i) + (RingFalloff / BUFFER_HEIGHT));
         
-        // Create the arc mask
-        float arc_mask = clamp(cos(angle), 0.0, ArcIntensity);        // --- Coloring ---
+        float ring_attenuation = ringBrightness / (abs(length(uv_loop) * RingDensity - i) + (RingFalloff / BUFFER_HEIGHT));
+        
+        float arc_mask = clamp(cos(angle), 0.0, arcIntensity);
+
+        // --- Coloring ---
         float3 effectColor;
         if (UsePaletteColoring)
         {
-            // Create ping-pong palette interpolation (0→1→0) to avoid hard color breaks
-            float rawValue = frac(angle / AS_TWO_PI) * 2.0 - 1.0; // Map [0,1] to [-1,1]
-            float paletteValue = 1.0 - abs(rawValue); // Create ping-pong: 0→1→0
+            // Use a continuous triangle wave for smooth, multi-cycle ping-pong interpolation.
+            float normalizedAngle = frac(angle / AS_TWO_PI);
+            
+            // Generate a continuous phase for the triangle wave
+            float phase = normalizedAngle * PaletteCycleCount * AS_TWO_PI;
+            
+            // The acos(cos(x)) pattern creates a smooth triangle wave from 0 -> PI -> 0...
+            // We normalize it by AS_PI to get a 0 -> 1 -> 0... range for the palette.
+            float paletteValue = acos(cos(phase)) / AS_PI;
             
             if (PaletteSelection == AS_PALETTE_CUSTOM)
             {
@@ -202,7 +216,7 @@ float4 PS_CosmicGlow(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_
     }
     
     // --- Debug View ---
-    if (DebugMode == 1) return float4(p, 0.0, 1.0);
+    if (DebugMode == 1) return float4(stageCoord, 0.0, 1.0);
 
     // --- Final Blending ---
     return AS_applyBlend(float4(finalColor, 1.0), orig, BlendMode, BlendAmount);
