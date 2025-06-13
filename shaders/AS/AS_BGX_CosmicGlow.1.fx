@@ -78,9 +78,11 @@ static const float  PALETTE_CYCLE_COUNT_MIN = 0.1;
 static const float  PALETTE_CYCLE_COUNT_MAX = 10.0;
 static const float  PALETTE_CYCLE_COUNT_DEFAULT = 1.0;
 
-
 // --- UI Uniforms ---
 // Position & Transformation
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Cosmic' by XorDev\nLink: https://www.shadertoy.com/view/ls3XW8\nLicence: CC Share-Alike Non-Commercial\n\n";>;
+
 AS_POS_UI(EffectCenter)
 AS_SCALE_UI(EffectScale)
 
@@ -196,7 +198,7 @@ float4 PS_CosmicGlow(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_
             
             // The acos(cos(x)) pattern creates a smooth triangle wave from 0 -> PI -> 0...
             // We normalize it by AS_PI to get a 0 -> 1 -> 0... range for the palette.
-            float paletteValue = acos(cos(phase)) / AS_PI;
+            float paletteValue = acos(cos(phase)) / AS_PI * 2;
             
             if (PaletteSelection == AS_PALETTE_CUSTOM)
             {
