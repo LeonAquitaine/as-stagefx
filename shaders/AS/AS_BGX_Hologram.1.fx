@@ -42,6 +42,9 @@
 // ============================================================================
 
 // --- Plasma & View ---
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Hologram stars' by hypothete\nLink: https://www.shadertoy.com/view/NlycDG\nLicence: CC Share-Alike Non-Commercial\n\n";>;
+
 AS_POSITION_SCALE_UI(ViewPosition, ViewPosition_Scale) 
 static const float HOLO_PLASMA_SCALE_MIN = 0.01;
 static const float HOLO_PLASMA_SCALE_MAX = 2.0;
@@ -116,7 +119,6 @@ float4 PS_BGX_Hologram(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : S
     // 4. Blend with scene
     return AS_applyBlend(float4(finalColor, 1.0), originalColor, BlendMode, BlendAmount);
 }
-
 
 // ============================================================================
 // TECHNIQUE
