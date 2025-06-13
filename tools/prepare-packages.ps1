@@ -44,7 +44,7 @@ function Test-IsPrerelease($filename) {
 function Get-ParsedShaderContentDependencies($shaderPath, $availableDependencies) {    $content = Get-Content -Path $shaderPath -Raw
     if (-not $content) {
         Write-Warning "Could not read content from $shaderPath"
-        return @{ FxhFiles = @(); Textures = @() }
+        return @{ FxhDependencies = @(); TextureDependencies = @() }
     }
     
     $fxhDependencies = @()
