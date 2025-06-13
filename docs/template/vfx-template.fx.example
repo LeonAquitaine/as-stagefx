@@ -59,7 +59,7 @@ AS_STAGEDEPTH_UI(EffectDepth)
 AS_ROTATION_UI(EffectRotationSnap, EffectRotationFine)
 
 // Final Mix
-AS_BLENDMODE_UI_DEFAULT(BlendMode, AS_BLEND_ADDITIVE)
+AS_BLENDMODE_UI_DEFAULT(BlendMode, AS_BLEND_LIGHTENITIVE)
 AS_BLENDAMOUNT_UI(BlendStrength)
 
 // Debug

@@ -7,6 +7,9 @@
 - Added a Tilt-Shift / Depth of Field effect featuring depth-aware, high-quality blurring with adjustable focus depth, focus zone size, falloff curve, and maximum blur amount. Includes a debug overlay to visualize the focus line.
 - Added visible attribution and license information for original shader inspirations directly in the UI of many shader effects.
 
+### Fixed
+- Fixed Hologram shader blend logic to ensure background darkening and all effect modifications are properly included in the final blend calculation, allowing blend mode and strength controls to work correctly.
+
 ### Style
 - Updated and corrected aspect ratio preset labels for improved clarity.
 - Standardized and cleaned up image URLs and license fields in shader catalogs.

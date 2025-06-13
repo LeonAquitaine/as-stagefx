@@ -41,8 +41,12 @@ function Test-IsPrerelease($filename) {
     return $false
 }
 
-function Get-ParsedShaderContentDependencies($shaderPath, $availableDependencies) {
-    $content = Get-Content -Path $shaderPath -Raw
+function Get-ParsedShaderContentDependencies($shaderPath, $availableDependencies) {    $content = Get-Content -Path $shaderPath -Raw
+    if (-not $content) {
+        Write-Warning "Could not read content from $shaderPath"
+        return @{ FxhFiles = @(); Textures = @() }
+    }
+    
     $fxhDependencies = @()
     $textureDependencies = @()
     $includePattern = '#include\s+["<]([^">]+)[">]'
@@ -146,8 +150,11 @@ $catalogItems = $catalog  # The catalog is already an array of shader objects
 $essentialShaders = @()
 foreach ($categoryName in $config.essentials.PSObject.Properties.Name) {
     $category = $config.essentials.$categoryName
-    foreach ($shader in $category) {
-        $essentialShaders += $shader
+    # Only process properties that are arrays (shader lists), skip boolean/string properties
+    if ($category -is [System.Array]) {
+        foreach ($shader in $category) {
+            $essentialShaders += $shader
+        }
     }
 }
 $backgroundShaders = $catalogItems | Where-Object { $_.type -eq 'BGX' } | ForEach-Object { $_.filename }

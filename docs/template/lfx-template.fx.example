@@ -67,7 +67,7 @@ AS_AUDIO_MULT_UI(Light_AudioMultiplier, "Audio Intensity", 1.0, 2.0, "Audio Reac
 uniform int Light_AudioTarget < ui_type = "combo"; ui_label = "Audio Target"; ui_items = "None\0Light Intensity\0Flicker Amount\0Bloom Size\0"; ui_category = "Audio Reactivity"; > = 0;
 
 // Final Mix
-AS_BLENDMODE_UI_DEFAULT(BlendMode, AS_BLEND_ADDITIVE)
+AS_BLENDMODE_UI_DEFAULT(BlendMode, AS_BLEND_LIGHTENITIVE)
 AS_BLENDAMOUNT_UI(BlendStrength)
 
 // Debug

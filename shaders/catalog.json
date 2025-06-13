@@ -442,6 +442,36 @@
     "licenseCode": "CC BY-NC-SA"
   },
   {
+    "type": "BGX",
+    "filename": "AS_BGX_Hologram.1.fx",
+    "credits": {
+      "originalTitle": "Hologram stars",
+      "externalUrl": "https://www.shadertoy.com/view/NlycDG",
+      "originalAuthor": "hypothete",
+      "platform": "Shadertoy",
+      "adaptedBy": "Leon Aquitaine",
+      "licence": "CC Share-Alike Non-Commercial",
+      "licenseCode": "CC BY-NC-SA"
+    },
+    "licence": "CC Share-Alike Non-Commercial",
+    "licenseCode": "CC BY-NC-SA"
+  },
+  {
+    "type": "BGX",
+    "filename": "AS_BGX_CosmicGlow.1.fx",
+    "credits": {
+      "originalTitle": "Cosmic",
+      "externalUrl": "https://www.shadertoy.com/view/ls3XW8",
+      "originalAuthor": "XorDev",
+      "platform": "Shadertoy",
+      "adaptedBy": "Leon Aquitaine",
+      "licence": "CC Share-Alike Non-Commercial",
+      "licenseCode": "CC BY-NC-SA"
+    },
+    "licence": "CC Share-Alike Non-Commercial",
+    "licenseCode": "CC BY-NC-SA"
+  },
+  {
     "name": "Aspect Ratio",
     "filename": "AS_GFX_AspectRatio.1.fx",
     "type": "GFX",
@@ -544,6 +574,21 @@
       "licenseCode": "CC BY-NC-SA"
     },
     "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-vignetteplus.gif",
+    "licence": "CC Share-Alike Non-Commercial",
+    "licenseCode": "CC BY-NC-SA"
+  },
+  {
+    "type": "GFX",
+    "filename": "AS_GFX_Hologram.1.fx",
+    "credits": {
+      "originalTitle": "Protection hologram",
+      "externalUrl": "https://www.shadertoy.com/view/MdBSWV",
+      "originalAuthor": "Alexander Alekseev aka TDM",
+      "creationDate": "2014",
+      "adaptedBy": "Leon Aquitaine",
+      "licence": "CC Share-Alike Non-Commercial",
+      "licenseCode": "CC BY-NC-SA"
+    },
     "licence": "CC Share-Alike Non-Commercial",
     "licenseCode": "CC BY-NC-SA"
   },

@@ -1,25 +1,26 @@
 {
-  "buildDate": "2025-06-12T19:31:57Z",
-  "version": "1.9.1",
+  "buildDate": "2025-06-13T18:23:40Z",
   "packages": [
     {
-      "name": "AS_StageFX",
-      "shaderCount": 59,
-      "version": "1.9.1",
+      "fxhDependencyCount": 4,
+      "textureDependencyCount": 3,
       "dependencies": {
-        "textures": [
-          "perlin512x8CNoise.png",
-          "AS_petals.atlas.png",
-          "perlin512x8Noise.png"
-        ],
         "fxh": [
           "AS_Utils.1.fxh",
           "AS_Palette.1.fxh",
           "AS_Noise.1.fxh",
           "AS_Perspective.1.fxh"
+        ],
+        "textures": [
+          "perlin512x8CNoise.png",
+          "AS_petals.atlas.png",
+          "perlin512x8Noise.png"
         ]
       },
-      "textureDependencyCount": 3,
+      "shaderCount": 62,
+      "name": "AS_StageFX",
+      "description": "The complete collection of all AS StageFX shaders and utilities",
+      "version": "1.9.2",
       "shaders": [
         "AS_BGX_BlueCorona.1.fx",
         "AS_BGX_Constellation.1.fx",
@@ -47,6 +48,8 @@
         "AS_BGX_WavySquares.1.fx",
         "AS_BGX_WavySquiggles.1.fx",
         "AS_BGX_ZippyZaps.1.fx",
+        "AS_BGX_Hologram.1.fx",
+        "AS_BGX_CosmicGlow.1.fx",
         "AS_GFX_AspectRatio.1.fx",
         "AS_GFX_AudioDirection.1.fx",
         "AS_GFX_BrushStroke.1.fx",
@@ -56,6 +59,7 @@
         "AS_GFX_MultiLayerHalftone.1.fx",
         "AS_GFX_TiltShift.1.fx",
         "AS_GFX_VignettePlus.1.fx",
+        "AS_GFX_Hologram.1.fx",
         "AS_LFX_CandleFlame.1.fx",
         "AS_LFX_LaserShow.1.fx",
         "AS_LFX_StageSpotlights.1.fx",
@@ -80,25 +84,25 @@
         "AS_VFX_VUMeter.1.fx",
         "AS_VFX_WarpDistort.1.fx",
         "AS_VFX_WaterSurface.1.fx"
-      ],
-      "fxhDependencyCount": 4,
-      "description": "The complete collection of all AS StageFX shaders and utilities"
+      ]
     },
     {
-      "name": "AS_StageFX_Backgrounds",
-      "shaderCount": 26,
-      "version": "1.9.1",
+      "fxhDependencyCount": 3,
+      "textureDependencyCount": 1,
       "dependencies": {
-        "textures": [
-          "perlin512x8CNoise.png"
-        ],
         "fxh": [
           "AS_Utils.1.fxh",
           "AS_Palette.1.fxh",
           "AS_Noise.1.fxh"
+        ],
+        "textures": [
+          "perlin512x8CNoise.png"
         ]
       },
-      "textureDependencyCount": 1,
+      "shaderCount": 28,
+      "name": "AS_StageFX_Backgrounds",
+      "description": "Complete collection of background effects (Requires Essentials)",
+      "version": "1.9.2",
       "shaders": [
         "AS_BGX_BlueCorona.1.fx",
         "AS_BGX_Constellation.1.fx",
@@ -125,28 +129,29 @@
         "AS_BGX_Vortex.1.fx",
         "AS_BGX_WavySquares.1.fx",
         "AS_BGX_WavySquiggles.1.fx",
-        "AS_BGX_ZippyZaps.1.fx"
-      ],
-      "fxhDependencyCount": 3,
-      "description": "Complete collection of background effects (Requires Essentials)"
+        "AS_BGX_ZippyZaps.1.fx",
+        "AS_BGX_Hologram.1.fx",
+        "AS_BGX_CosmicGlow.1.fx"
+      ]
     },
     {
-      "name": "AS_StageFX_Essentials",
-      "shaderCount": 12,
-      "version": "1.9.1",
+      "fxhDependencyCount": 5,
+      "textureDependencyCount": 0,
       "dependencies": {
-        "textures": [],
         "fxh": [
           "AS_Utils.1.fxh",
           "AS_Palette_Styles.1.fxh",
           "AS_Palette.1.fxh",
           "AS_Noise.1.fxh",
           "AS_Perspective.1.fxh"
-        ]
+        ],
+        "textures": []
       },
-      "textureDependencyCount": 0,
+      "shaderCount": 11,
+      "name": "AS_StageFX_Essentials",
+      "description": "Core library files and essential visual effects for general use",
+      "version": "1.9.2",
       "shaders": [
-        true,
         "AS_BGX_TimeCrystal.1.fx",
         "AS_BGX_StainedLights.1.fx",
         "AS_BGX_LightRipples.1.fx",
@@ -158,28 +163,28 @@
         "AS_VFX_SparkleBloom.1.fx",
         "AS_VFX_MotionTrails.1.fx",
         "AS_VFX_StencilMask.1.fx"
-      ],
-      "fxhDependencyCount": 5,
-      "description": "Core library files and essential visual effects for general use"
+      ]
     },
     {
-      "name": "AS_StageFX_VisualEffects",
-      "shaderCount": 33,
-      "version": "1.9.1",
+      "fxhDependencyCount": 4,
+      "textureDependencyCount": 3,
       "dependencies": {
-        "textures": [
-          "perlin512x8CNoise.png",
-          "AS_petals.atlas.png",
-          "perlin512x8Noise.png"
-        ],
         "fxh": [
           "AS_Utils.1.fxh",
           "AS_Palette.1.fxh",
           "AS_Noise.1.fxh",
           "AS_Perspective.1.fxh"
+        ],
+        "textures": [
+          "perlin512x8CNoise.png",
+          "AS_petals.atlas.png",
+          "perlin512x8Noise.png"
         ]
       },
-      "textureDependencyCount": 3,
+      "shaderCount": 34,
+      "name": "AS_StageFX_VisualEffects",
+      "description": "Complete collection of visual effects (Requires Essentials)",
+      "version": "1.9.2",
       "shaders": [
         "AS_GFX_AspectRatio.1.fx",
         "AS_GFX_AudioDirection.1.fx",
@@ -190,6 +195,7 @@
         "AS_GFX_MultiLayerHalftone.1.fx",
         "AS_GFX_TiltShift.1.fx",
         "AS_GFX_VignettePlus.1.fx",
+        "AS_GFX_Hologram.1.fx",
         "AS_LFX_CandleFlame.1.fx",
         "AS_LFX_LaserShow.1.fx",
         "AS_LFX_StageSpotlights.1.fx",
@@ -214,9 +220,8 @@
         "AS_VFX_VUMeter.1.fx",
         "AS_VFX_WarpDistort.1.fx",
         "AS_VFX_WaterSurface.1.fx"
-      ],
-      "fxhDependencyCount": 4,
-      "description": "Complete collection of visual effects (Requires Essentials)"
+      ]
     }
-  ]
+  ],
+  "version": "1.9.2"
 }

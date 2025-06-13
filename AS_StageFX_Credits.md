@@ -138,6 +138,16 @@ This document lists all external sources, original authors, and inspiration cred
 - **Original Title**: Zippy Zaps
 - **Notes**: 
 - **Source**: https://www.shadertoy.com/view/XXyGzh
+### AS_BGX_CosmicGlow.1.fx - 
+- **Original Author**: XorDev
+- **Original Title**: Cosmic
+- **Notes**: 
+- **Source**: https://www.shadertoy.com/view/ls3XW8
+### AS_BGX_Hologram.1.fx - 
+- **Original Author**: hypothete
+- **Original Title**: Hologram stars
+- **Notes**: 
+- **Source**: https://www.shadertoy.com/view/NlycDG
 
 ## Shadertoy & External Adaptations (VFX)
 ### AS_VFX_BoomSticker.1.fx - Boom Sticker
@@ -292,6 +302,11 @@ This document lists all external sources, original authors, and inspiration cred
 - **Original Title**: Hexagonal Wipe
 - **Notes**: Hexagonal grid implementation adapted from 'hexagonal wipe' by blandprix.
 - **Source**: https://www.shadertoy.com/view/XfjyWG
+### AS_GFX_Hologram.1.fx - 
+- **Original Author**: Alexander Alekseev aka TDM
+- **Original Title**: Protection hologram
+- **Notes**: 
+- **Source**: https://www.shadertoy.com/view/MdBSWV
 
 ## Shadertoy & External Adaptations (LFX)
 ### AS_LFX_CandleFlame.1.fx - Candle Flame

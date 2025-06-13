@@ -40,7 +40,7 @@ AS-StageFX provides a collection of performant, customizable, and audio-reactive
 
 ## Available Shaders
 
-AS-StageFX includes **59 shaders** across four categories: **26 Background (BGX)**, **9 Graphic (GFX)**, **3 Lighting (LFX)**, and **21 Visual (VFX)** effects.
+AS-StageFX includes **62 shaders** across four categories: **28 Background (BGX)**, **10 Graphic (GFX)**, **3 Lighting (LFX)**, and **21 Visual (VFX)** effects.
 
 **Detailed descriptions and examples: [Shader Gallery](docs/gallery.md).**
 
@@ -74,6 +74,8 @@ AS-StageFX includes **59 shaders** across four categories: **26 Background (BGX)
 | **Wavy Squares** | Hypnotic pattern of wavy, animated, transforming square tiles with dynamic size changes. Audio-reactive and depth-aware. | CC BY-NC-SA |
 | **Wavy Squiggles** | Mesmerizing pattern of adaptive wavy lines forming intricate, rotating designs. Audio-reactive and depth-aware. | CC BY-NC-SA |
 | **Zippy Zaps** | Dynamic electric arcs/lightning patterns with procedural generation, audio reactivity, and 3D positioning. | CC BY-NC-SA |
+| **** |  | CC BY-NC-SA |
+| **** |  | CC BY-NC-SA |
 
 ### Graphic Effects (GFX)
 
@@ -88,6 +90,7 @@ AS-StageFX includes **59 shaders** across four categories: **26 Background (BGX)
 | **MultiLayer Halftone** | Highly customizable multi-layer halftone (up to 4 layers) with various patterns, isolation methods, and blending options. | CC BY 4.0 |
 | **Tilt-Shift** | High-quality, depth-aware tilt-shift/DoF shader with realistic bokeh effects and precise depth-based focusing. | CC BY 4.0 |
 | **Vignette Plus** | Advanced vignette effect with customizable shape, color, animation, blur, and audio reactivity. | CC BY-NC-SA |
+| **** |  | CC BY-NC-SA |
 
 ### Lighting Effects (LFX)
 

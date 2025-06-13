@@ -80,6 +80,8 @@ static const float  PALETTE_COMPRESSION_DEFAULT = 2.0;
 
 // --- UI Uniforms ---
 // Position & Transformation
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Cosmic' by XorDev\nLink: https://www.shadertoy.com/view/ls3XW8\nLicence: CC Share-Alike Non-Commercial\n\n";>;
+
 AS_POS_UI(EffectCenter)
 AS_SCALE_UI(EffectScale)
 
