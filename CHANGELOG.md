@@ -4,9 +4,13 @@
 
 ### New Features
 - Introduced three new shaders: Hologram (background), Cosmic Glow (graphic overlay), and Depth Hologram (graphic overlay), each with unique visual effects and extensive customization options.
+- Added drop shadow feature to Focus Frame shader with RGBA color controls and uniform visual width on all sides regardless of aspect ratio.
+- Added shadow blur control to Focus Frame shader allowing users to choose between hard shadows (0.0) and fully blurred Gaussian shadows (1.0) that merge smoothly with the background.
+- Added shadow blend mode selection to Focus Frame shader with 7 different blend modes (Normal, Multiply, Screen, Overlay, Soft Light, Color Burn, Linear Burn) for creative shadow effects.
 
 ### Bug Fixes
 - Corrected blend logic in the Hologram shader to ensure proper background darkening and effect blending.
+- Fixed Focus Frame drop shadow to have truly uniform visual width on all sides by applying proper aspect ratio corrections to both shadow offsets and feathering.
 
 ## [1.9.1] - 2025-06-11
 
