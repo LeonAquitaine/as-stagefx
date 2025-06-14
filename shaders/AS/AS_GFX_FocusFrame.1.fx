@@ -56,6 +56,12 @@ uniform float FocusAreaSize < ui_type = "slider"; ui_label = "Frame Size"; ui_to
 uniform float FrameAspectRatio < ui_type = "slider"; ui_label = "Frame Aspect Ratio"; ui_tooltip = "Controls the width-to-height ratio of the frame.\n1.0 = Square, < 1.0 = Tall, > 1.0 = Wide."; ui_min = 0.25; ui_max = 4.0; ui_step = 0.05; ui_category = "Composition & Framing"; > = 1.0;
 uniform float Feather < ui_type = "slider"; ui_label = "Edge Softness"; ui_tooltip = "Controls how soft or sharp the frame's edge is. A higher value creates a smoother, more gradual blend."; ui_min = 0.0; ui_max = 0.1; ui_category = "Composition & Framing"; > = 0.005;
 
+// -- Drop Shadow --
+uniform float4 ShadowColor < ui_type = "color"; ui_label = "Shadow Color"; ui_tooltip = "RGBA color of the drop shadow. Alpha controls shadow opacity."; ui_category = "Drop Shadow"; > = float4(0.0, 0.0, 0.0, 0.5);
+uniform float ShadowSize < ui_type = "slider"; ui_label = "Shadow Size"; ui_tooltip = "Size of the drop shadow. 0 = no shadow, higher values create larger shadows."; ui_min = 0.0; ui_max = 0.05; ui_category = "Drop Shadow"; > = 0.0;
+uniform float ShadowBlur < ui_type = "slider"; ui_label = "Shadow Blur"; ui_tooltip = "Controls shadow edge softness. 0.0 = hard shadow, 1.0 = fully blurred Gaussian shadow that merges smoothly with background."; ui_min = 0.0; ui_max = 1.0; ui_category = "Drop Shadow"; > = 0.2;
+uniform int ShadowBlendMode < ui_type = "combo"; ui_label = "Shadow Blend Mode"; ui_tooltip = "How the shadow blends with the background."; ui_items = "Normal\0Multiply\0Screen\0Overlay\0Soft Light\0Color Burn\0Linear Burn\0"; ui_category = "Drop Shadow"; > = 1;
+
 // -- Background Effect --
 uniform float BackgroundZoom < ui_type = "slider"; ui_label = "Zoom"; ui_tooltip = "How much to magnify the background area outside the frame."; ui_min = 1.0; ui_max = 5.0; ui_category = "Background Effect"; > = 1.5;
 uniform float BlurAmount < ui_type = "slider"; ui_label = "Blurriness"; ui_tooltip = "The intensity of the background blur."; ui_min = 0.0; ui_max = 25.0; ui_category = "Background Effect"; > = 10.0;
@@ -78,6 +84,44 @@ AS_BLENDAMOUNT_UI(BlendStrength)
 static const float BLUR_EXP_COEFF_EPSILON = 1e-5; // For Gaussian blur denominator stability
 static const float BLUR_AXIS_SCALE = 2.0;         // Used for blur offset scaling
 static const float DEFAULT_MASK_POWER = 1.0;      // Reserved for future mask shaping
+
+// ============================================================================
+// HELPER FUNCTIONS
+// ============================================================================
+
+// Apply shadow blend modes
+float3 ApplyShadowBlend(float3 base, float3 shadow, int blendMode)
+{
+    switch (blendMode)
+    {
+        case 0: // Normal
+            return shadow;
+        case 1: // Multiply
+            return base * shadow;
+        case 2: // Screen
+            return 1.0 - (1.0 - base) * (1.0 - shadow);
+        case 3: // Overlay
+            return base < 0.5 ? 2.0 * base * shadow : 1.0 - 2.0 * (1.0 - base) * (1.0 - shadow);
+        case 4: // Soft Light
+        {
+            float3 result;
+            for (int i = 0; i < 3; i++)
+            {
+                if (shadow[i] < 0.5)
+                    result[i] = 2.0 * base[i] * shadow[i] + base[i] * base[i] * (1.0 - 2.0 * shadow[i]);
+                else
+                    result[i] = 2.0 * base[i] * (1.0 - shadow[i]) + sqrt(base[i]) * (2.0 * shadow[i] - 1.0);
+            }
+            return result;
+        }
+        case 5: // Color Burn
+            return 1.0 - (1.0 - base) / max(shadow, 0.001);
+        case 6: // Linear Burn
+            return base + shadow - 1.0;
+        default:
+            return shadow;
+    }
+}
 
 // ============================================================================
 // PIXEL SHADERS
@@ -157,18 +201,70 @@ float4 PS_FocusFrame_BlurV_and_Combine(float4 pos : SV_Position, float2 texcoord
 
     // 3. Define final min/max UVs
     float2 minUV = 0.5 - size * 0.5;
-    float2 maxUV = 0.5 + size * 0.5;
-
-    // --- Create a smoothed mask for the focus area ---
+    float2 maxUV = 0.5 + size * 0.5;    // --- Create a smoothed mask for the focus area ---
     float dist_x = min(texcoord.x - minUV.x, maxUV.x - texcoord.x);
     float dist_y = min(texcoord.y - minUV.y, maxUV.y - texcoord.y);
     // Adjust feathering based on the frame's aspect ratio to keep it visually consistent
     float mask_x = smoothstep(0.0, Feather / (ReShade::AspectRatio * FrameAspectRatio), dist_x / (ReShade::AspectRatio * FrameAspectRatio));
-    float mask_y = smoothstep(0.0, Feather, dist_y);    float mask = min(mask_x, mask_y);
-
-    // --- Final Composition ---
-    // First apply the focus frame effect (mask between blur and original)
-    float3 focusFrameResult = lerp(backgroundColor.rgb, originalColor.rgb, mask);
+    float mask_y = smoothstep(0.0, Feather, dist_y);
+    float mask = min(mask_x, mask_y);    // --- Create drop shadow mask (if shadow size > 0) ---
+    float shadowMask = 0.0;
+    if (ShadowSize > 0.0)
+    {
+        // Calculate uniform shadow offset in screen space
+        float2 uniformShadowOffset;
+        if (ReShade::AspectRatio >= 1.0) // Landscape or square
+        {
+            uniformShadowOffset = float2(ShadowSize / ReShade::AspectRatio, ShadowSize);
+        }
+        else // Portrait
+        {
+            uniformShadowOffset = float2(ShadowSize, ShadowSize * ReShade::AspectRatio);
+        }
+        
+        // Calculate shadow area bounds (larger than focus area)
+        float2 shadowMinUV = minUV - uniformShadowOffset;
+        float2 shadowMaxUV = maxUV + uniformShadowOffset;
+          // Calculate distances in screen space
+        float shadow_dist_x = min(texcoord.x - shadowMinUV.x, shadowMaxUV.x - texcoord.x);
+        float shadow_dist_y = min(texcoord.y - shadowMinUV.y, shadowMaxUV.y - texcoord.y);
+        
+        // Calculate shadow blur feathering based on ShadowBlur parameter
+        // At 0.0: use frame feathering for hard shadow
+        // At 1.0: use full shadow size for maximum Gaussian blur
+        float shadowFeatherAmount = lerp(Feather, ShadowSize, ShadowBlur);
+        
+        // Apply uniform feathering in screen space (aspect-ratio corrected)
+        float shadowFeatherX, shadowFeatherY;
+        if (ReShade::AspectRatio >= 1.0) // Landscape or square
+        {
+            shadowFeatherX = shadowFeatherAmount / ReShade::AspectRatio;
+            shadowFeatherY = shadowFeatherAmount;
+        }
+        else // Portrait
+        {
+            shadowFeatherX = shadowFeatherAmount;
+            shadowFeatherY = shadowFeatherAmount * ReShade::AspectRatio;
+        }
+        
+        float shadow_mask_x = smoothstep(0.0, shadowFeatherX, shadow_dist_x);
+        float shadow_mask_y = smoothstep(0.0, shadowFeatherY, shadow_dist_y);
+        shadowMask = min(shadow_mask_x, shadow_mask_y);
+        
+        // Subtract the focus area from the shadow to create a ring
+        shadowMask *= (1.0 - mask);
+    }// --- Final Composition ---
+    // Start with the blurred background
+    float3 compositeResult = backgroundColor.rgb;
+      // Apply drop shadow if enabled
+    if (ShadowSize > 0.0)
+    {
+        float3 blendedShadow = ApplyShadowBlend(compositeResult, ShadowColor.rgb, ShadowBlendMode);
+        compositeResult = lerp(compositeResult, blendedShadow, shadowMask * ShadowColor.a);
+    }
+    
+    // Apply the focus frame effect (mask between composite and original)
+    float3 focusFrameResult = lerp(compositeResult, originalColor.rgb, mask);
     
     // Apply stage depth masking - pixels in front of EffectDepth should be plainly copied
     float sceneDepth = ReShade::GetLinearizedDepth(texcoord);
