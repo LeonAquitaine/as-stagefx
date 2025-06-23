@@ -56,125 +56,151 @@
 // UI UNIFORMS
 // ============================================================================
 
-// FOG SETTINGS
+// FOG QUALITY & PERFORMANCE
 static const float FOG_PRECISION_MIN = 0.01;
 static const float FOG_PRECISION_MAX = 0.5;
 static const float FOG_PRECISION_DEFAULT = 0.1;
 uniform float Fog_Precision <
-    ui_type = "slider"; ui_label = "Ray March Precision";
+    ui_type = "slider"; ui_label = "Quality Level";
     ui_min = FOG_PRECISION_MIN; ui_max = FOG_PRECISION_MAX; ui_step = 0.01; ui_default = FOG_PRECISION_DEFAULT;
-    ui_category = "Fog Settings"; ui_tooltip = "Controls the precision of ray steps when accumulating fog. Lower values are more precise but slower.";
+    ui_category = "Quality & Performance"; ui_tooltip = "Fog rendering quality. Higher values = better quality but slower performance.";
 > = FOG_PRECISION_DEFAULT;
 
 static const float FOG_MULTIPLIER_MIN = 0.1;
 static const float FOG_MULTIPLIER_MAX = 1.0;
 static const float FOG_MULTIPLIER_DEFAULT = 0.34;
 uniform float Fog_Multiplier <
-    ui_type = "slider"; ui_label = "Ray Step Multiplier";
+    ui_type = "slider"; ui_label = "Speed Optimization";
     ui_min = FOG_MULTIPLIER_MIN; ui_max = FOG_MULTIPLIER_MAX; ui_step = 0.01; ui_default = FOG_MULTIPLIER_DEFAULT;
-    ui_category = "Fog Settings"; ui_tooltip = "Adjusts how much each ray step advances, affecting fog quality vs. performance.";
+    ui_category = "Quality & Performance"; ui_tooltip = "Performance optimization. Higher values = faster rendering but less detail.";
 > = FOG_MULTIPLIER_DEFAULT;
 
 static const int FOG_RAY_ITERATIONS_MIN = 10;
 static const int FOG_RAY_ITERATIONS_MAX = 200;
 static const int FOG_RAY_ITERATIONS_DEFAULT = 90;
 uniform int Fog_RayIterations <
-    ui_type = "slider"; ui_label = "Ray March Iterations";
+    ui_type = "slider"; ui_label = "Detail Complexity";
     ui_min = FOG_RAY_ITERATIONS_MIN; ui_max = FOG_RAY_ITERATIONS_MAX; ui_step = 1; ui_default = FOG_RAY_ITERATIONS_DEFAULT;
-    ui_category = "Fog Settings"; ui_tooltip = "Maximum number of steps the ray takes to accumulate fog. Higher values mean denser fog but higher performance cost.";
+    ui_category = "Quality & Performance"; ui_tooltip = "Fog detail complexity. Higher values = more detailed fog but slower performance.";
 > = FOG_RAY_ITERATIONS_DEFAULT;
 
-static const float FOG_MAX_DISTANCE_MIN = 50.0;
-static const float FOG_MAX_DISTANCE_MAX = 10000.0; // Increased max distance for larger scenes
-static const float FOG_MAX_DISTANCE_DEFAULT = 110.0;
+// FOG BASIC SETTINGS
+static const float FOG_MAX_DISTANCE_MIN = 0.0;
+static const float FOG_MAX_DISTANCE_MAX = 1.0;
+static const float FOG_MAX_DISTANCE_DEFAULT = 0.5;
 uniform float Fog_MaxDistance <
-    ui_type = "slider"; ui_label = "Max Fog Visibility Distance";
-    ui_min = FOG_MAX_DISTANCE_MIN; ui_max = FOG_MAX_DISTANCE_MAX; ui_step = 1.0; ui_default = FOG_MAX_DISTANCE_DEFAULT;
-    ui_category = "Fog Settings"; ui_tooltip = "The maximum distance at which fog is still visible and accumulated.";
+    ui_type = "slider"; ui_label = "Fog Reach Distance";
+    ui_min = FOG_MAX_DISTANCE_MIN; ui_max = FOG_MAX_DISTANCE_MAX; ui_step = 0.01; ui_default = FOG_MAX_DISTANCE_DEFAULT;
+    ui_category = "Basic Fog Settings"; ui_tooltip = "How far into the scene the fog extends. 0 = very close, 1 = maximum distance.";
 > = FOG_MAX_DISTANCE_DEFAULT;
 
 static const float FOG_START_MIN = 0.0;
-static const float FOG_START_MAX = 1000.0;
+static const float FOG_START_MAX = 1.0;
 static const float FOG_START_DEFAULT = 0.0;
 uniform float Fog_Start <
     ui_type = "slider"; ui_label = "Fog Start Distance";
-    ui_min = FOG_START_MIN; ui_max = FOG_START_MAX; ui_step = 1.0; ui_default = FOG_START_DEFAULT;
-    ui_category = "Fog Settings"; ui_tooltip = "Distance from camera where fog starts to appear. 0 = fog starts immediately.";
+    ui_min = FOG_START_MIN; ui_max = FOG_START_MAX; ui_step = 0.01; ui_default = FOG_START_DEFAULT;
+    ui_category = "Basic Fog Settings"; ui_tooltip = "Where fog begins to appear. 0 = starts immediately, 1 = starts at maximum distance.";
 > = FOG_START_DEFAULT;
 
 static const float FOG_DENSITY_MIN = 0.0;
 static const float FOG_DENSITY_MAX = 5.0; // Increased max density
 static const float FOG_DENSITY_DEFAULT = 0.7;
 uniform float Fog_Density <
-    ui_type = "slider"; ui_label = "Overall Fog Density";
+    ui_type = "slider"; ui_label = "Fog Thickness";
     ui_min = FOG_DENSITY_MIN; ui_max = FOG_DENSITY_MAX; ui_step = 0.01; ui_default = FOG_DENSITY_DEFAULT;
-    ui_category = "Fog Settings"; ui_tooltip = "Controls the overall thickness and opacity of the fog effect.";
+    ui_category = "Basic Fog Settings"; ui_tooltip = "Controls how thick and opaque the fog appears.";
 > = FOG_DENSITY_DEFAULT;
 
 static const float FOG_COLOR_R_DEFAULT = 0.6;
 static const float FOG_COLOR_G_DEFAULT = 0.65;
 static const float FOG_COLOR_B_DEFAULT = 0.7;
 uniform float3 Fog_Color <
-    ui_type = "color"; ui_label = "Fog Base Color";
-    ui_category = "Fog Settings"; ui_tooltip = "The color of the volumetric fog.";
+    ui_type = "color"; ui_label = "Fog Color";
+    ui_category = "Basic Fog Settings"; ui_tooltip = "The main color of the fog effect.";
 > = float3(FOG_COLOR_R_DEFAULT, FOG_COLOR_G_DEFAULT, FOG_COLOR_B_DEFAULT);
 
-// FOG ANIMATION & PARALLAX
+// FOG MOVEMENT & FLOW
 static const float FOG_TIME_WARP_MIN = -10.0; // Allow negative for reverse
 static const float FOG_TIME_WARP_MAX = 10.0;
 static const float FOG_TIME_WARP_DEFAULT = 7.0;
 uniform float Fog_XZ_ScrollSpeed <
-    ui_type = "slider"; ui_label = "Fog X/Z Scroll Speed";
+    ui_type = "slider"; ui_label = "Flow Speed";
     ui_min = FOG_TIME_WARP_MIN; ui_max = FOG_TIME_WARP_MAX; ui_step = 0.1; ui_default = FOG_TIME_WARP_DEFAULT;
-    ui_category = "Fog Animation"; ui_tooltip = "Controls the horizontal movement speed of the fog layers.";
+    ui_category = "Fog Movement"; ui_tooltip = "Overall fog movement speed. Negative values reverse the flow direction.";
 > = FOG_TIME_WARP_DEFAULT;
 
 static const float FOG_VERT_SPEED_MIN = -2.0; // Allow negative
 static const float FOG_VERT_SPEED_MAX = 2.0;
 static const float FOG_VERT_SPEED_DEFAULT = 0.5;
 uniform float Fog_VerticalSpeed <
-    ui_type = "slider"; ui_label = "Fog Vertical Speed";
+    ui_type = "slider"; ui_label = "Vertical Flow Speed";
     ui_min = FOG_VERT_SPEED_MIN; ui_max = FOG_VERT_SPEED_MAX; ui_step = 0.01; ui_default = FOG_VERT_SPEED_DEFAULT;
-    ui_category = "Fog Animation"; ui_tooltip = "Controls the vertical movement speed of the fog layers.";
+    ui_category = "Fog Movement"; ui_tooltip = "Controls how fast the fog rises or falls. Negative values make it sink.";
 > = FOG_VERT_SPEED_DEFAULT;
 
-// STANDARD ANIMATION CONTROLS
-AS_ANIMATION_UI(AnimationSpeed, AnimationKeyframe, "Animation")
+// FOG FLOW DIRECTION CONTROLS
+uniform int Fog_FlowPreset <
+    ui_type = "combo"; ui_label = "Flow Direction Presets";
+    ui_items = "Custom\0Right →\0Up-Right ↗\0Up ↑\0Up-Left ↖\0Left ←\0Down-Left ↙\0Down ↓\0Down-Right ↘\0";
+    ui_category = "Fog Movement"; ui_tooltip = "Quick presets for common fog flow directions. Select 'Custom' to use the manual direction slider below.";
+> = 0;
 
-// FOG LAYER OFFSET - These now control the fog's "origin" relative to the view, for parallax.
+static const float FOG_FLOW_DIRECTION_MIN = 0.0;
+static const float FOG_FLOW_DIRECTION_MAX = 360.0;
+static const float FOG_FLOW_DIRECTION_DEFAULT = 45.0;
+uniform float Fog_FlowDirection <
+    ui_type = "slider"; ui_label = "Custom Flow Direction (Degrees)";
+    ui_min = FOG_FLOW_DIRECTION_MIN; ui_max = FOG_FLOW_DIRECTION_MAX; ui_step = 1.0; ui_default = FOG_FLOW_DIRECTION_DEFAULT;
+    ui_category = "Fog Movement"; ui_tooltip = "Manual direction control when 'Custom' preset is selected. 0° = right, 90° = up, 180° = left, 270° = down.";
+> = FOG_FLOW_DIRECTION_DEFAULT;
+
+static const float FOG_TURBULENCE_MIN = 0.0;
+static const float FOG_TURBULENCE_MAX = 10.0;
+static const float FOG_TURBULENCE_DEFAULT = 3.0;
+uniform float Fog_Turbulence <
+    ui_type = "slider"; ui_label = "Flow Turbulence";
+    ui_min = FOG_TURBULENCE_MIN; ui_max = FOG_TURBULENCE_MAX; ui_step = 0.1; ui_default = FOG_TURBULENCE_DEFAULT;
+    ui_category = "Fog Movement"; ui_tooltip = "Adds swirling, turbulent motion to the fog flow. Higher values = more chaotic movement.";
+> = FOG_TURBULENCE_DEFAULT;
+
+// STANDARD ANIMATION CONTROLS
+AS_ANIMATION_UI(AnimationSpeed, AnimationKeyframe, "Keyframe Animation")
+
+// FOG POSITIONING - Controls where the fog appears relative to the camera
 static const float FOG_OFFSET_WORLD_MIN = -500.0;
 static const float FOG_OFFSET_WORLD_MAX = 500.0;
 uniform float Fog_Offset_World_X <
-    ui_type = "slider"; ui_label = "Fog Layer Offset X";
+    ui_type = "slider"; ui_label = "Left/Right Position";
     ui_min = FOG_OFFSET_WORLD_MIN; ui_max = FOG_OFFSET_WORLD_MAX; ui_step = 1.0; ui_default = 0.0;
-    ui_category = "Fog Layer Offset"; ui_tooltip = "Offsets the fog layers horizontally relative to the view origin.";
+    ui_category = "Fog Positioning"; ui_tooltip = "Shifts the fog cloud left (negative) or right (positive) relative to your view.";
 > = 0.0;
 uniform float Fog_Offset_World_Y <
-    ui_type = "slider"; ui_label = "Fog Layer Offset Y";
+    ui_type = "slider"; ui_label = "Up/Down Position";
     ui_min = FOG_OFFSET_WORLD_MIN; ui_max = FOG_OFFSET_WORLD_MAX; ui_step = 1.0; ui_default = -130.0;
-    ui_category = "Fog Layer Offset"; ui_tooltip = "Offsets the fog layers vertically relative to the view origin.";
+    ui_category = "Fog Positioning"; ui_tooltip = "Shifts the fog cloud up (positive) or down (negative) relative to your view.";
 > = -130.0;
 uniform float Fog_Offset_World_Z <
-    ui_type = "slider"; ui_label = "Fog Layer Offset Z";
+    ui_type = "slider"; ui_label = "Forward/Back Position";
     ui_min = FOG_OFFSET_WORLD_MIN; ui_max = FOG_OFFSET_WORLD_MAX; ui_step = 1.0; ui_default = -130.0;
-    ui_category = "Fog Layer Offset"; ui_tooltip = "Offsets the fog layers in depth relative to the view origin.";
+    ui_category = "Fog Positioning"; ui_tooltip = "Pushes the fog forward (positive) or backward (negative) in the scene.";
 > = -130.0;
 
 AS_ROTATION_UI(Fog_SnapRotation, Fog_FineRotation) // Corrected: Removed third argument causing warning
 
 
-// FOG NOISE TYPE
+// FOG PATTERN & TEXTURE
 static const int NOISE_TYPE_TRIANGLE = 0;
 static const int NOISE_TYPE_FOUR_D = 1;
 static const int NOISE_TYPE_TEXTURE = 2;
 static const int NOISE_TYPE_VALUE = 3;
 uniform int Fog_NoiseType <
-    ui_type = "combo"; ui_label = "Fog Noise Type";
-    ui_items = "Triangle Noise\0Four-D Noise\0Texture Noise\0Value Noise\0";
-    ui_category = "Fog Noise"; ui_tooltip = "Selects the procedural noise algorithm used to generate the fog's pattern.";
+    ui_type = "combo"; ui_label = "Fog Pattern Type";
+    ui_items = "Wispy & Organic\0Flowing & Dynamic\0Custom Texture\0Soft & Smooth\0";
+    ui_category = "Fog Appearance"; ui_tooltip = "Choose the visual pattern of your fog: Wispy for natural looks, Flowing for dynamic motion, Custom Texture for unique patterns, or Soft for gentle fog.";
 > = NOISE_TYPE_TRIANGLE;
 
-// TEXTURE NOISE SPECIFIC (requires a texture)
+// TEXTURE PATTERN SPECIFIC (requires a texture)
 #ifndef FrozenFog_Texture_Path
 #define FrozenFog_Texture_Path "perlin512x8CNoise.png" // Example noise texture
 #endif
@@ -183,8 +209,8 @@ uniform int Fog_NoiseType <
 
 texture FrozenFog_NoiseTexture <
     source = FrozenFog_Texture_Path;
-    ui_label = "Noise Texture (for 'Texture Noise')";
-    ui_tooltip = "The texture used when 'Texture Noise' type is selected. (perlin512x8CNoise.png recommended)";
+    ui_label = "Custom Fog Texture";
+    ui_tooltip = "The texture used for 'Custom Texture' pattern type. Best with seamless noise textures.";
 >{
     Width = FrozenFog_Texture_WIDTH; Height = FrozenFog_Texture_HEIGHT; Format = RGBA8;
 };
@@ -196,8 +222,8 @@ AS_BLENDAMOUNT_UI(LayeredFog_BlendAmount)
 
 // DEBUG FLAG
 uniform bool Debug_Enable <
-    ui_type = "checkbox"; ui_label = "Show Fog Effect Mask (Turns screen red)";
-    ui_category = "Debug"; ui_tooltip = "If enabled, visualizes the calculated fog density as a red mask for debugging.";
+    ui_type = "checkbox"; ui_label = "Show Fog Density Map (Red Overlay)";
+    ui_category = "Debug Tools"; ui_tooltip = "Shows where the fog appears as a red overlay - useful for adjusting fog positioning and density.";
 > = false;
 
 
@@ -331,14 +357,43 @@ float GetNoise3d(in float3 p, in float time_param)
 // FOG CALCULATION FUNCTIONS (re-purposed from original)
 // ============================================================================
 
+// Helper function to get the actual flow direction based on preset or custom value
+float GetFlowDirection()
+{
+    switch(Fog_FlowPreset)
+    {
+        case 0: return Fog_FlowDirection;  // Custom
+        case 1: return 0.0;    // Right →
+        case 2: return 45.0;   // Up-Right ↗
+        case 3: return 90.0;   // Up ↑
+        case 4: return 135.0;  // Up-Left ↖
+        case 5: return 180.0;  // Left ←
+        case 6: return 225.0;  // Down-Left ↙
+        case 7: return 270.0;  // Down ↓
+        case 8: return 315.0;  // Down-Right ↘
+        default: return Fog_FlowDirection; // Fallback to custom
+    }
+}
+
 // Original fogmap, adapted for general purpose fog particle density
 float fogmap(in float3 p_world_offset, in float distance_from_camera_approx, in float time_param)
 {
-    // Apply fog movement (parallax)
-    // The 'p_world_offset' here is the 3D sampling point in the fog volume.
-    // The original fogmap logic already applies scrolling to these coordinates.
-    p_world_offset.xz -= time_param * Fog_XZ_ScrollSpeed + sin(p_world_offset.z*0.3)*3.0; // XZ scrolling
-    p_world_offset.y -= time_param * Fog_VerticalSpeed; // Vertical movement
+    // Calculate directional flow based on user-specified direction (preset or custom)
+    float flow_direction_radians = radians(GetFlowDirection());
+    float2 flow_vector = float2(cos(flow_direction_radians), sin(flow_direction_radians));
+    
+    // Apply fog movement with user-controlled direction
+    float2 horizontal_movement = time_param * Fog_XZ_ScrollSpeed * flow_vector;
+    p_world_offset.x -= horizontal_movement.x;
+    p_world_offset.z -= horizontal_movement.y;
+    
+    // Add turbulence for more natural, swirling motion
+    float turbulence_factor = Fog_Turbulence * 0.3;
+    p_world_offset.xz += sin(p_world_offset.z * 0.3 + time_param * 0.5) * turbulence_factor;
+    p_world_offset.xz += cos(p_world_offset.x * 0.2 + time_param * 0.3) * turbulence_factor * 0.5;
+    
+    // Apply vertical movement
+    p_world_offset.y -= time_param * Fog_VerticalSpeed;
     
     // Original noise sampling logic for fog density
     return (max(GetNoise3d(p_world_offset*0.008+0.1, time_param)-0.1,0.0)*GetNoise3d(p_world_offset*0.1, time_param))*0.3 * Fog_Density;
@@ -363,10 +418,16 @@ float3 fogColour( in float3 base_color, float distance_val )
  * @return Accumulated fog density (0.0 to 1.0).
  */
 float calculateFogDensity(in float2 screen_uv, in float linearized_depth, in float time_param)
-{    // Convert linearized depth to a more intuitive world-like distance.
-    // Linearized depth is 0-1, we scale it to a reasonable world distance range
-    float scene_world_distance = linearized_depth * Fog_MaxDistance;    float accumulated_fog_density = 0.0;
-    float current_distance = Fog_Start; // Start fog accumulation at Fog_Start distance
+{
+    // Convert linearized depth to a normalized world distance (0-1)
+    // We'll use a reasonable world distance scale (e.g., 1000 units) internally
+    const float WORLD_SCALE = 1000.0;
+    float scene_world_distance = linearized_depth * WORLD_SCALE;
+    float max_fog_distance = Fog_MaxDistance * WORLD_SCALE;
+    float fog_start_distance = Fog_Start * WORLD_SCALE;
+
+    float accumulated_fog_density = 0.0;
+    float current_distance = fog_start_distance; // Start fog accumulation at normalized fog start distance
     float step_size_multiplier = Fog_Multiplier;
 
     // Simulate a ray_direction from screen UVs.
@@ -385,17 +446,17 @@ float calculateFogDensity(in float2 screen_uv, in float linearized_depth, in flo
                                             simulated_ray_direction.x * sin_rot + simulated_ray_direction.z * cos_rot);
     }
 
-
     // The 'ray_origin' for fog sampling is now the Fog Layer Offset
     // This allows parallax when the game camera moves without needing ViewOrigin/ViewToWorld
     float3 fog_volume_origin = float3(Fog_Offset_World_X, Fog_Offset_World_Y, Fog_Offset_World_Z);
+    
     for( int i=0; i<Fog_RayIterations; i++ )
     {
         // Stop if we hit the max fog distance or the actual scene geometry's distance
-        if(current_distance > Fog_MaxDistance || current_distance > scene_world_distance) break;
+        if(current_distance > max_fog_distance || current_distance > scene_world_distance) break;
 
         // Only accumulate fog if we're past the start distance
-        if(current_distance >= Fog_Start)
+        if(current_distance >= fog_start_distance)
         {
             // Calculate the 3D sampling point within the fog volume
             // This is where the simulated ray intersects the fog grid, shifted by the offset.
@@ -406,7 +467,9 @@ float calculateFogDensity(in float2 screen_uv, in float linearized_depth, in flo
         }
 
         // Advance the ray based on precision and original dynamic step increase logic
-        current_distance += (Fog_Precision * (1.0 + current_distance * 0.05)) * step_size_multiplier;
+        // Invert precision so higher values = better quality (more precise steps)
+        float step_precision = (FOG_PRECISION_MAX + FOG_PRECISION_MIN) - Fog_Precision; // Invert the scale
+        current_distance += (step_precision * (1.0 + current_distance * 0.05)) * step_size_multiplier;
         step_size_multiplier += 0.004;
     }
     return min(accumulated_fog_density, 1.0); // Clamp final density to 0-1
@@ -434,13 +497,14 @@ float4 PS_LayeredFog(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_
     float4 original_color = tex2D(ReShade::BackBuffer, texcoord);
 
     // Get linearized depth at this pixel from the scene
-    float scene_linear_depth = ReShade::GetLinearizedDepth(texcoord);
-
-    // Calculate fog density using the simulated ray and scene depth
+    float scene_linear_depth = ReShade::GetLinearizedDepth(texcoord);    // Calculate fog density using the simulated ray and scene depth
     // Use animated_time instead of time_val for time-based effects
-    float fog_density_factor = calculateFogDensity(texcoord, scene_linear_depth, animated_time);// Convert linearized depth to a world-like distance for the distance haze effect
-    // Scale linearized depth (0-1) to a reasonable distance range
-    float approximated_world_distance = scene_linear_depth * Fog_MaxDistance;
+    float fog_density_factor = calculateFogDensity(texcoord, scene_linear_depth, animated_time);
+
+    // Convert linearized depth to a world-like distance for the distance haze effect
+    // Use the same world scale for consistency
+    const float WORLD_SCALE = 1000.0;
+    float approximated_world_distance = scene_linear_depth * WORLD_SCALE;
 
     // Apply distance haze (from original shader) to the background color
     float3 distance_haze_color = fogColour(original_color.rgb, approximated_world_distance);
