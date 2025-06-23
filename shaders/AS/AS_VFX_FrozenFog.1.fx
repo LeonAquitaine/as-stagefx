@@ -131,9 +131,16 @@ uniform int Fog_NoiseType <
 
 // TEXTURE NOISE SPECIFIC (requires a texture)
 #ifndef FrozenFog_Texture_Path
-#define FrozenFog_Texture_Path "perlin512x8CNoise.png" // Example noise texture
+#define FrozenFog_Texture_Path "perlin512x8CNoise.png"
 #endif
-texture FrozenFog_NoiseTexture < source = FrozenFog_Texture_Path; ui_label = "Noise Texture (for 'Texture Noise')"; >;
+#define FrozenFog_Texture_WIDTH 512.0f
+#define FrozenFog_Texture_HEIGHT 512.0f
+
+
+
+texture FrozenFog_NoiseTexture < source = FrozenFog_Texture_Path; ui_label = "Noise Texture (for 'Texture Noise')";>{
+    Width = FrozenFog_Texture_WIDTH; Height = FrozenFog_Texture_HEIGHT; Format = RGBA8;
+};
 sampler FrozenFog_NoiseSampler { Texture = FrozenFog_NoiseTexture; AddressU = REPEAT; AddressV = REPEAT; };
 
 // SUN / SKY COLOR
