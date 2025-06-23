@@ -138,6 +138,9 @@ uniform float Fog_VerticalSpeed <
     ui_category = "Fog Animation"; ui_tooltip = "Controls the vertical movement speed of the fog layers.";
 > = FOG_VERT_SPEED_DEFAULT;
 
+// STANDARD ANIMATION CONTROLS
+AS_ANIMATION_UI(AnimationSpeed, AnimationKeyframe, "Animation")
+
 // FOG LAYER OFFSET - These now control the fog's "origin" relative to the view, for parallax.
 static const float FOG_OFFSET_WORLD_MIN = -500.0;
 static const float FOG_OFFSET_WORLD_MAX = 500.0;
@@ -415,25 +418,27 @@ float calculateFogDensity(in float2 screen_uv, in float linearized_depth, in flo
 // ============================================================================
 
 float4 PS_LayeredFog(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target
-{
-    // If debug mode is enabled, return a red mask proportional to fog density
+{    // If debug mode is enabled, return a red mask proportional to fog density
     if (Debug_Enable)
     {
         float time_val = AS_getTime();
+        float animated_time = AS_getAnimationTime(AnimationSpeed, AnimationKeyframe);
         float scene_linear_depth = ReShade::GetLinearizedDepth(texcoord);
-        float fog_density_factor_debug = calculateFogDensity(texcoord, scene_linear_depth, time_val);
+        float fog_density_factor_debug = calculateFogDensity(texcoord, scene_linear_depth, animated_time);
         return float4(fog_density_factor_debug, 0.0, 0.0, 1.0); // Red mask proportional to fog density
-    }
-
-    float time_val = AS_getTime();
+    }    float time_val = AS_getTime();
+    
+    // Apply standard animation system
+    float animated_time = AS_getAnimationTime(AnimationSpeed, AnimationKeyframe);
+    
     float4 original_color = tex2D(ReShade::BackBuffer, texcoord);
 
     // Get linearized depth at this pixel from the scene
     float scene_linear_depth = ReShade::GetLinearizedDepth(texcoord);
 
     // Calculate fog density using the simulated ray and scene depth
-    // The fog_volume_origin and rotation are handled inside calculateFogDensity
-    float fog_density_factor = calculateFogDensity(texcoord, scene_linear_depth, time_val);    // Convert linearized depth to a world-like distance for the distance haze effect
+    // Use animated_time instead of time_val for time-based effects
+    float fog_density_factor = calculateFogDensity(texcoord, scene_linear_depth, animated_time);// Convert linearized depth to a world-like distance for the distance haze effect
     // Scale linearized depth (0-1) to a reasonable distance range
     float approximated_world_distance = scene_linear_depth * Fog_MaxDistance;
 
