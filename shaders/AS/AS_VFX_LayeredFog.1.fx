@@ -139,20 +139,14 @@ uniform float Fog_VerticalSpeed <
     ui_category = "Fog Movement"; ui_tooltip = "Controls how fast the fog rises or falls. Negative values make it sink.";
 > = FOG_VERT_SPEED_DEFAULT;
 
-// FOG FLOW DIRECTION CONTROLS
-uniform int Fog_FlowPreset <
-    ui_type = "combo"; ui_label = "Flow Direction Presets";
-    ui_items = "Custom\0Right →\0Up-Right ↗\0Up ↑\0Up-Left ↖\0Left ←\0Down-Left ↙\0Down ↓\0Down-Right ↘\0";
-    ui_category = "Fog Movement"; ui_tooltip = "Quick presets for common fog flow directions. Select 'Custom' to use the manual direction slider below.";
-> = 0;
-
-static const float FOG_FLOW_DIRECTION_MIN = 0.0;
-static const float FOG_FLOW_DIRECTION_MAX = 360.0;
+// FOG FLOW DIRECTION CONTROL
+static const float FOG_FLOW_DIRECTION_MIN = -180.0;
+static const float FOG_FLOW_DIRECTION_MAX = 180.0;
 static const float FOG_FLOW_DIRECTION_DEFAULT = 45.0;
 uniform float Fog_FlowDirection <
-    ui_type = "slider"; ui_label = "Custom Flow Direction (Degrees)";
+    ui_type = "slider"; ui_label = "Flow Direction (Degrees)";
     ui_min = FOG_FLOW_DIRECTION_MIN; ui_max = FOG_FLOW_DIRECTION_MAX; ui_step = 1.0; ui_default = FOG_FLOW_DIRECTION_DEFAULT;
-    ui_category = "Fog Movement"; ui_tooltip = "Manual direction control when 'Custom' preset is selected. 0° = right, 90° = up, 180° = left, 270° = down.";
+    ui_category = "Fog Movement"; ui_tooltip = "Direction of fog flow in degrees. 0° = right, 90° = up, -90° = down, ±180° = left.";
 > = FOG_FLOW_DIRECTION_DEFAULT;
 
 static const float FOG_TURBULENCE_MIN = 0.0;
@@ -357,29 +351,10 @@ float GetNoise3d(in float3 p, in float time_param)
 // FOG CALCULATION FUNCTIONS (re-purposed from original)
 // ============================================================================
 
-// Helper function to get the actual flow direction based on preset or custom value
-float GetFlowDirection()
-{
-    switch(Fog_FlowPreset)
-    {
-        case 0: return Fog_FlowDirection;  // Custom
-        case 1: return 0.0;    // Right →
-        case 2: return 45.0;   // Up-Right ↗
-        case 3: return 90.0;   // Up ↑
-        case 4: return 135.0;  // Up-Left ↖
-        case 5: return 180.0;  // Left ←
-        case 6: return 225.0;  // Down-Left ↙
-        case 7: return 270.0;  // Down ↓
-        case 8: return 315.0;  // Down-Right ↘
-        default: return Fog_FlowDirection; // Fallback to custom
-    }
-}
-
 // Original fogmap, adapted for general purpose fog particle density
 float fogmap(in float3 p_world_offset, in float distance_from_camera_approx, in float time_param)
-{
-    // Calculate directional flow based on user-specified direction (preset or custom)
-    float flow_direction_radians = radians(GetFlowDirection());
+{    // Calculate directional flow based on user-specified direction
+    float flow_direction_radians = radians(Fog_FlowDirection);
     float2 flow_vector = float2(cos(flow_direction_radians), sin(flow_direction_radians));
     
     // Apply fog movement with user-controlled direction
