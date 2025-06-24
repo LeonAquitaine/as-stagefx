@@ -112,6 +112,24 @@ uniform float Fog_Density <
     ui_category = "Basic Fog Settings"; ui_tooltip = "Controls how thick and opaque the fog appears.";
 > = FOG_DENSITY_DEFAULT;
 
+static const float FOG_HEIGHT_MIN = 0.0;
+static const float FOG_HEIGHT_MAX = 1.0;
+static const float FOG_HEIGHT_DEFAULT = 1.0;
+uniform float Fog_Height <
+    ui_type = "slider"; ui_label = "Fog Height Coverage";
+    ui_min = FOG_HEIGHT_MIN; ui_max = FOG_HEIGHT_MAX; ui_step = 0.01; ui_default = FOG_HEIGHT_DEFAULT;
+    ui_category = "Basic Fog Settings"; ui_tooltip = "Controls how high the fog extends on screen. 0 = no fog, 0.25 = ground fog, 0.5 = waist-high fog, 1.0 = full screen fog.";
+> = FOG_HEIGHT_DEFAULT;
+
+static const float FOG_HORIZON_MIN = 0.0;
+static const float FOG_HORIZON_MAX = 1.0;
+static const float FOG_HORIZON_DEFAULT = 0.5;
+uniform float Fog_Horizon <
+    ui_type = "slider"; ui_label = "Horizon Line Position";
+    ui_min = FOG_HORIZON_MIN; ui_max = FOG_HORIZON_MAX; ui_step = 0.01; ui_default = FOG_HORIZON_DEFAULT;
+    ui_category = "Basic Fog Settings"; ui_tooltip = "Sets the 3D horizon reference for fog calculations. Close objects use this screen position, distant objects adjust higher automatically. 0 = bottom, 0.5 = center, 1.0 = top.";
+> = FOG_HORIZON_DEFAULT;
+
 static const float FOG_COLOR_R_DEFAULT = 0.6;
 static const float FOG_COLOR_G_DEFAULT = 0.65;
 static const float FOG_COLOR_B_DEFAULT = 0.7;
@@ -150,7 +168,7 @@ uniform float Fog_FlowDirection <
 > = FOG_FLOW_DIRECTION_DEFAULT;
 
 static const float FOG_TURBULENCE_MIN = 0.0;
-static const float FOG_TURBULENCE_MAX = 10.0;
+static const float FOG_TURBULENCE_MAX = 30.0;
 static const float FOG_TURBULENCE_DEFAULT = 3.0;
 uniform float Fog_Turbulence <
     ui_type = "slider"; ui_label = "Flow Turbulence";
@@ -409,7 +427,31 @@ float calculateFogDensity(in float2 screen_uv, in float linearized_depth, in flo
     // Assuming camera at (0,0,0) looking down -Z, with Y up.
     // This creates a perspective effect for fog layers.
     float2 normalized_screen_coords = (screen_uv - 0.5) * float2(ReShade::AspectRatio, 1.0) * 2.0; // [-Aspect, Aspect] x [-1, 1]
-    float3 simulated_ray_direction = normalize(float3(normalized_screen_coords.x, normalized_screen_coords.y, -1.0)); // Z is depth axis
+    float3 simulated_ray_direction = normalize(float3(normalized_screen_coords.x, normalized_screen_coords.y, -1.0)); // Z is depth axis    // Calculate fog height mask based on screen position and depth
+    // Use the horizon line as reference point for fog height calculations with depth awareness
+    float screen_height_factor = 1.0 - screen_uv.y; // 0 at top of screen, 1 at bottom
+    float horizon_line = 1.0 - Fog_Horizon; // Convert to same coordinate system (0 = top, 1 = bottom)
+    
+    // Calculate depth-aware horizon position
+    // The horizon should appear higher on screen for distant objects and lower for close objects
+    // This simulates how fog interacts with a 3D horizon plane
+    float depth_adjusted_horizon = horizon_line + (linearized_depth * (1.0 - horizon_line) * 0.5);
+    
+    // Calculate relative position from depth-adjusted horizon line
+    // Positive values = above horizon, Negative values = below horizon
+    float relative_to_horizon = screen_height_factor - depth_adjusted_horizon;
+    
+    // Create depth-aware height falloff
+    // The fog height coverage should also be influenced by depth
+    float depth_height_influence = saturate(linearized_depth * 2.0); // 0-0.5 depth range influences height
+    float effective_fog_height = Fog_Height + (depth_height_influence * (1.0 - Fog_Height) * 0.3);
+    
+    // Calculate height-based fog mask with smooth falloff from depth-adjusted horizon line
+    // Only show fog below the effective height limit from the horizon, but with depth awareness
+    float height_mask = 1.0 - smoothstep(-effective_fog_height * 0.2, effective_fog_height, relative_to_horizon);
+    
+    // Early exit if this pixel is above the fog height
+    if (height_mask <= 0.001) return 0.0;
 
     // Apply fog layer rotation to the simulated ray direction
     float fog_layer_rotation_radians = AS_getRotationRadians(Fog_SnapRotation, Fog_FineRotation);
@@ -439,14 +481,16 @@ float calculateFogDensity(in float2 screen_uv, in float linearized_depth, in flo
             
             // Accumulate fog density at this point
             accumulated_fog_density += fogmap(current_fog_sample_pos, current_distance, time_param);
-        }
-
-        // Advance the ray based on precision and original dynamic step increase logic
+        }        // Advance the ray based on precision and original dynamic step increase logic
         // Invert precision so higher values = better quality (more precise steps)
         float step_precision = (FOG_PRECISION_MAX + FOG_PRECISION_MIN) - Fog_Precision; // Invert the scale
         current_distance += (step_precision * (1.0 + current_distance * 0.05)) * step_size_multiplier;
         step_size_multiplier += 0.004;
     }
+    
+    // Apply height mask to final fog density
+    accumulated_fog_density *= height_mask;
+    
     return min(accumulated_fog_density, 1.0); // Clamp final density to 0-1
 }
 
