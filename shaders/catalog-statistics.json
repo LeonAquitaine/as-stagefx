@@ -1,12 +1,43 @@
 {
   "byType": {
+    "VFX": 22,
     "GFX": 11,
     "BGX": 27,
-    "VFX": 21,
     "LFX": 3
   },
-  "total": 62,
   "grouped": {
+    "LFX": [
+      {
+        "name": "Candle Flame",
+        "filename": "AS_LFX_CandleFlame.1.fx",
+        "type": "LFX",
+        "shortDescription": "Simulates a realistic, animated candle flame with flicker, glow, and color controls.",
+        "longDescription": "Renders a realistic animated candle flame with natural flicker and glow. Features customizable flame shape, color, flicker speed, and intensity. Includes controls for flame position, scale, and blending. Ideal for atmospheric lighting and cozy scene effects.",
+        "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-Candle.gif",
+        "licence": "Creative Commons Attribution 4.0 International",
+        "licenseCode": "CC BY 4.0"
+      },
+      {
+        "name": "Laser Show",
+        "filename": "AS_LFX_LaserShow.1.fx",
+        "type": "LFX",
+        "shortDescription": "Projects animated laser beams and patterns with customizable color, speed, and audio reactivity.",
+        "longDescription": "Projects animated laser beams and geometric patterns onto the stage. Features customizable beam count, color, speed, and spread. Supports audio reactivity for beam movement and intensity. Includes controls for rotation, position, and blending. Perfect for concert, club, or sci-fi lighting effects.",
+        "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-lasershow.gif",
+        "licence": "Creative Commons Attribution 4.0 International",
+        "licenseCode": "CC BY 4.0"
+      },
+      {
+        "name": "Stage Spotlights",
+        "filename": "AS_LFX_StageSpotlights.1.fx",
+        "type": "LFX",
+        "shortDescription": "Simulates moving stage spotlights with beam controls, color, and audio reactivity.",
+        "longDescription": "Simulates moving stage spotlights with adjustable beam width, color, intensity, and movement patterns. Features multiple spotlights with independent controls, audio reactivity for movement and brightness, and blending options for integration with other effects. Ideal for live performance and dramatic scene lighting.",
+        "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-Spotlights.gif",
+        "licence": "Creative Commons Attribution 4.0 International",
+        "licenseCode": "CC BY 4.0"
+      }
+    ],
     "GFX": [
       {
         "name": "Aspect Ratio",
@@ -615,6 +646,13 @@
     ],
     "VFX": [
       {
+        "filename": "AS_VFX_VolumetricFog.1.fx",
+        "type": "VFX",
+        "name": "",
+        "licence": "Creative Commons Attribution 4.0 International",
+        "licenseCode": "CC BY 4.0"
+      },
+      {
         "name": "Boom Sticker",
         "filename": "AS_VFX_BoomSticker.1.fx",
         "type": "VFX",
@@ -885,38 +923,7 @@
         "licence": "Creative Commons Attribution 4.0 International",
         "licenseCode": "CC BY 4.0"
       }
-    ],
-    "LFX": [
-      {
-        "name": "Candle Flame",
-        "filename": "AS_LFX_CandleFlame.1.fx",
-        "type": "LFX",
-        "shortDescription": "Simulates a realistic, animated candle flame with flicker, glow, and color controls.",
-        "longDescription": "Renders a realistic animated candle flame with natural flicker and glow. Features customizable flame shape, color, flicker speed, and intensity. Includes controls for flame position, scale, and blending. Ideal for atmospheric lighting and cozy scene effects.",
-        "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-Candle.gif",
-        "licence": "Creative Commons Attribution 4.0 International",
-        "licenseCode": "CC BY 4.0"
-      },
-      {
-        "name": "Laser Show",
-        "filename": "AS_LFX_LaserShow.1.fx",
-        "type": "LFX",
-        "shortDescription": "Projects animated laser beams and patterns with customizable color, speed, and audio reactivity.",
-        "longDescription": "Projects animated laser beams and geometric patterns onto the stage. Features customizable beam count, color, speed, and spread. Supports audio reactivity for beam movement and intensity. Includes controls for rotation, position, and blending. Perfect for concert, club, or sci-fi lighting effects.",
-        "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-lasershow.gif",
-        "licence": "Creative Commons Attribution 4.0 International",
-        "licenseCode": "CC BY 4.0"
-      },
-      {
-        "name": "Stage Spotlights",
-        "filename": "AS_LFX_StageSpotlights.1.fx",
-        "type": "LFX",
-        "shortDescription": "Simulates moving stage spotlights with beam controls, color, and audio reactivity.",
-        "longDescription": "Simulates moving stage spotlights with adjustable beam width, color, intensity, and movement patterns. Features multiple spotlights with independent controls, audio reactivity for movement and brightness, and blending options for integration with other effects. Ideal for live performance and dramatic scene lighting.",
-        "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-Spotlights.gif",
-        "licence": "Creative Commons Attribution 4.0 International",
-        "licenseCode": "CC BY 4.0"
-      }
     ]
-  }
+  },
+  "total": 63
 }

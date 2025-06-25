@@ -5,13 +5,6 @@
  * Original Source (Inspiration): https://www.shadertoy.com/view/Xls3D2 (Dave Hoskins)
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
  *
- * Updated to AS-StageFX Implementation Guide standards:
- * - Single-line uniform declarations for parsing tool compatibility
- * - Named constants replacing magic numbers with AS_Utils constants (AS_PI, AS_HALF, AS_EPSILON)
- * - Shader-prefixed texture names (VolumetricFog_NoiseTexture)
- * - Standard UI category organization following AS-StageFX order
- * - Resolution independence maintained throughout
- * 
  * ===================================================================================
  *
  * DESCRIPTION:
@@ -44,7 +37,6 @@
  * within the noise functions, relative to the camera's assumed fixed forward vector.
  * 5. The accumulated fog density is used to `lerp` between the original
  * backbuffer color and the defined `Fog_Color`.
- * 6. Includes intuitive controls organized into logical categories for easy parameter adjustment.
  *
  * ===================================================================================
  */
@@ -164,7 +156,6 @@ uniform float Fog_Offset_World_X < ui_type = "slider"; ui_label = "Left/Right Po
 uniform float Fog_Offset_World_Y < ui_type = "slider"; ui_label = "Up/Down Position"; ui_min = FOG_OFFSET_WORLD_MIN; ui_max = FOG_OFFSET_WORLD_MAX; ui_step = 1.0; ui_category = "Stage Position"; ui_tooltip = "Shifts the fog cloud up (positive) or down (negative) relative to your view."; > = -130.0;
 uniform float Fog_Offset_World_Z < ui_type = "slider"; ui_label = "Forward/Back Position"; ui_min = FOG_OFFSET_WORLD_MIN; ui_max = FOG_OFFSET_WORLD_MAX; ui_step = 1.0; ui_category = "Stage Position"; ui_tooltip = "Pushes the fog forward (positive) or backward (negative) in the scene."; > = -130.0;
 
-
 // FOG PATTERN & TEXTURE
 // TEXTURE PATTERN SPECIFIC (requires a texture)
 #ifndef VolumetricFog_Texture_Path
@@ -182,13 +173,9 @@ texture VolumetricFog_NoiseTexture <
 };
 sampler VolumetricFog_NoiseSampler { Texture = VolumetricFog_NoiseTexture; AddressU = REPEAT; AddressV = REPEAT; };
 
-
 // 7. FINAL MIX
 AS_BLENDMODE_UI_DEFAULT(VolumetricFog_BlendMode, AS_BLEND_NORMAL)
 AS_BLENDAMOUNT_UI(VolumetricFog_BlendAmount)
-
-
-
 
 // ============================================================================
 // CONSTANTS & HELPERS (from original shader, minimal changes)
@@ -198,8 +185,6 @@ AS_BLENDAMOUNT_UI(VolumetricFog_BlendAmount)
 #define MOD2 float2(.16632,.17369)
 
 float tri(in float x){return abs(frac(x)-AS_HALF);}
-float hash12(float2 p){return AS_hash12(p);} // Using AS_Noise.1.fxh hash
-
 
 // ============================================================================
 // NOISE FUNCTIONS - Adapted from original shader
@@ -315,7 +300,6 @@ float GetNoise3d(in float3 p, in float time_param)
     }
 }
 
-
 // ============================================================================
 // FOG CALCULATION FUNCTIONS (re-purposed from original)
 // ============================================================================
@@ -353,7 +337,6 @@ float3 fogColour( in float3 base_color, float distance_val )
     float3 extinction_factor = exp2(-distance_val*0.0001*float3(1.0,1.5,3.0));
     return base_color * extinction_factor + (1.0-extinction_factor)*float3(1.0,1.0,1.0); // Blends towards white based on distance
 }
-
 
 /**
  * calculateFogDensity
@@ -436,7 +419,6 @@ float calculateFogDensity(in float2 screen_uv, in float linearized_depth, in flo
     return min(accumulated_fog_density, 1.0); // Clamp final density to 0-1
 }
 
-
 // ============================================================================
 // PIXEL SHADER
 // ============================================================================
@@ -474,7 +456,7 @@ technique AS_VFX_VolumetricFog
 <
     ui_label = "[AS] VFX: Volumetric Fog";
     ui_tooltip = "Volumetric fog effect with depth interaction and customizable noise patterns.\n"
-                 "Creates atmospheric fog volumes that interact with scene geometry.";
+                 "Creates atmospheric fog that interacts with scene geometry.";
 >
 {
     pass

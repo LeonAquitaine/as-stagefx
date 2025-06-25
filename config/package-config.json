@@ -24,6 +24,7 @@
       "AS_VFX_BoomSticker.1.fx",
       "AS_VFX_SparkleBloom.1.fx",
       "AS_VFX_MotionTrails.1.fx",
+      "AS_VFX_VolumetricFog.1.fx",
       "AS_VFX_StencilMask.1.fx"
     ]
   },
@@ -51,6 +52,7 @@
       "AS_VFX_WarpDistort.1.fx",
       "AS_VFX_WaterSurface.1.fx",
       "AS_VFX_CircularSpectrum.1.fx",
+      "AS_VFX_VolumetricFog.1.fx",
       "AS_VFX_RadialLensDistortion.1.fx"
     ]
   },  "packageDescription": {
@@ -122,5 +124,5 @@
     "description": "Creative Commons Attribution 4.0 International",
     "code": "CC BY 4.0"
   },
-  "version": "1.9.2"
+  "version": "1.10.0"
 }
