@@ -44,7 +44,7 @@
  * within the noise functions, relative to the camera's assumed fixed forward vector.
  * 5. The accumulated fog density is used to `lerp` between the original
  * backbuffer color and the defined `Fog_Color`.
- * 6. Includes a debug mode to visualize the calculated fog density.
+ * 6. Includes intuitive controls organized into logical categories for easy parameter adjustment.
  *
  * ===================================================================================
  */
@@ -115,39 +115,40 @@ static const float FOG_HORIZON_MAX = 1.0;
 static const float FOG_HORIZON_DEFAULT = 0.5;
 uniform float2 Fog_HeightHorizon < ui_type = "slider"; ui_label = "Height & Horizon"; ui_min = FOG_HEIGHT_MIN; ui_max = FOG_HEIGHT_MAX; ui_step = 0.01; ui_category = "Effect Appearance"; ui_tooltip = "X: Fog height coverage (0 = no fog, 0.25 = ground fog, 0.5 = waist-high fog, 1.0 = full screen fog). Y: Horizon line position (0 = bottom, 0.5 = center, 1.0 = top)."; > = float2(FOG_HEIGHT_DEFAULT, FOG_HORIZON_DEFAULT);
 
+// 4. ANIMATION CONTROLS
+AS_ANIMATION_UI(AnimationSpeed, AnimationKeyframe, "Animation")
+
+// 5. FOG FLOW & MOVEMENT
 // FOG MOVEMENT & FLOW
 static const float FOG_TIME_WARP_MIN = -10.0; // Allow negative for reverse
 static const float FOG_TIME_WARP_MAX = 10.0;
 static const float FOG_TIME_WARP_DEFAULT = 7.0;
-uniform float Fog_XZ_ScrollSpeed < ui_type = "slider"; ui_label = "Flow Speed"; ui_min = FOG_TIME_WARP_MIN; ui_max = FOG_TIME_WARP_MAX; ui_step = 0.1; ui_category = "Animation"; ui_tooltip = "Overall fog movement speed. Negative values reverse the flow direction."; > = FOG_TIME_WARP_DEFAULT;
+uniform float Fog_XZ_ScrollSpeed < ui_type = "slider"; ui_label = "Flow Speed"; ui_min = FOG_TIME_WARP_MIN; ui_max = FOG_TIME_WARP_MAX; ui_step = 0.1; ui_category = "Fog Flow"; ui_tooltip = "Overall fog movement speed. Negative values reverse the flow direction."; > = FOG_TIME_WARP_DEFAULT;
 
 static const float FOG_VERT_SPEED_MIN = -2.0; // Allow negative
 static const float FOG_VERT_SPEED_MAX = 2.0;
 static const float FOG_VERT_SPEED_DEFAULT = 0.5;
-uniform float Fog_VerticalSpeed < ui_type = "slider"; ui_label = "Vertical Flow Speed"; ui_min = FOG_VERT_SPEED_MIN; ui_max = FOG_VERT_SPEED_MAX; ui_step = 0.01; ui_category = "Animation"; ui_tooltip = "Controls how fast the fog rises or falls. Negative values make it sink."; > = FOG_VERT_SPEED_DEFAULT;
+uniform float Fog_VerticalSpeed < ui_type = "slider"; ui_label = "Vertical Flow Speed"; ui_min = FOG_VERT_SPEED_MIN; ui_max = FOG_VERT_SPEED_MAX; ui_step = 0.01; ui_category = "Fog Flow"; ui_tooltip = "Controls how fast the fog rises or falls. Negative values make it sink."; > = FOG_VERT_SPEED_DEFAULT;
 
 // FOG FLOW DIRECTION CONTROL
 static const float FOG_FLOW_DIRECTION_MIN = -180.0;
 static const float FOG_FLOW_DIRECTION_MAX = 180.0;
 static const float FOG_FLOW_DIRECTION_DEFAULT = 45.0;
-uniform float Fog_FlowDirection < ui_type = "slider"; ui_label = "Flow Direction (Degrees)"; ui_min = FOG_FLOW_DIRECTION_MIN; ui_max = FOG_FLOW_DIRECTION_MAX; ui_step = 1.0; ui_category = "Animation"; ui_tooltip = "Direction of fog flow in degrees. 0° = right, 90° = up, -90° = down, ±180° = left."; > = FOG_FLOW_DIRECTION_DEFAULT;
+uniform float Fog_FlowDirection < ui_type = "slider"; ui_label = "Flow Direction (Degrees)"; ui_min = FOG_FLOW_DIRECTION_MIN; ui_max = FOG_FLOW_DIRECTION_MAX; ui_step = 1.0; ui_category = "Fog Flow"; ui_tooltip = "Direction of fog flow in degrees. 0° = right, 90° = up, -90° = down, ±180° = left."; > = FOG_FLOW_DIRECTION_DEFAULT;
 
 static const float FOG_TURBULENCE_MIN = 0.0;
 static const float FOG_TURBULENCE_MAX = 30.0;
 static const float FOG_TURBULENCE_DEFAULT = 3.0;
-uniform float Fog_Turbulence < ui_type = "slider"; ui_label = "Flow Turbulence"; ui_min = FOG_TURBULENCE_MIN; ui_max = FOG_TURBULENCE_MAX; ui_step = 0.1; ui_category = "Animation"; ui_tooltip = "Adds swirling, turbulent motion to the fog flow. Higher values = more chaotic movement."; > = FOG_TURBULENCE_DEFAULT;
+uniform float Fog_Turbulence < ui_type = "slider"; ui_label = "Flow Turbulence"; ui_min = FOG_TURBULENCE_MIN; ui_max = FOG_TURBULENCE_MAX; ui_step = 0.1; ui_category = "Fog Flow"; ui_tooltip = "Adds swirling, turbulent motion to the fog flow. Higher values = more chaotic movement."; > = FOG_TURBULENCE_DEFAULT;
 
-// 4. ANIMATION CONTROLS
-AS_ANIMATION_UI(AnimationSpeed, AnimationKeyframe, "Animation")
-
-// 5. STAGE/POSITION CONTROLS
+// 6. STAGE/POSITION CONTROLS
 static const float FOG_OFFSET_WORLD_MIN = -500.0;
 static const float FOG_OFFSET_WORLD_MAX = 500.0;
 uniform float Fog_Offset_World_X < ui_type = "slider"; ui_label = "Left/Right Position"; ui_min = FOG_OFFSET_WORLD_MIN; ui_max = FOG_OFFSET_WORLD_MAX; ui_step = 1.0; ui_category = "Stage Position"; ui_tooltip = "Shifts the fog cloud left (negative) or right (positive) relative to your view."; > = 0.0;
 uniform float Fog_Offset_World_Y < ui_type = "slider"; ui_label = "Up/Down Position"; ui_min = FOG_OFFSET_WORLD_MIN; ui_max = FOG_OFFSET_WORLD_MAX; ui_step = 1.0; ui_category = "Stage Position"; ui_tooltip = "Shifts the fog cloud up (positive) or down (negative) relative to your view."; > = -130.0;
 uniform float Fog_Offset_World_Z < ui_type = "slider"; ui_label = "Forward/Back Position"; ui_min = FOG_OFFSET_WORLD_MIN; ui_max = FOG_OFFSET_WORLD_MAX; ui_step = 1.0; ui_category = "Stage Position"; ui_tooltip = "Pushes the fog forward (positive) or backward (negative) in the scene."; > = -130.0;
 
-AS_ROTATION_UI(Fog_SnapRotation, Fog_FineRotation)
+uniform float Fog_Rotation < ui_type = "slider"; ui_label = "Fog Rotation"; ui_tooltip = "Rotate the fog layers for artistic positioning"; ui_min = -180.0; ui_max = 180.0; ui_step = 1.0; ui_category = "Stage Position"; > = 0.0;
 
 
 // FOG PATTERN & TEXTURE
@@ -168,12 +169,11 @@ texture LayeredFog_NoiseTexture <
 sampler LayeredFog_NoiseSampler { Texture = LayeredFog_NoiseTexture; AddressU = REPEAT; AddressV = REPEAT; };
 
 
-// 6. FINAL MIX
+// 7. FINAL MIX
 AS_BLENDMODE_UI_DEFAULT(LayeredFog_BlendMode, AS_BLEND_NORMAL)
 AS_BLENDAMOUNT_UI(LayeredFog_BlendAmount)
 
-// 7. DEBUG CONTROLS
-uniform bool Debug_Enable < ui_type = "checkbox"; ui_label = "Show Fog Density Map (Red Overlay)"; ui_category = "Debug"; ui_tooltip = "Shows where the fog appears as a red overlay - useful for adjusting fog positioning and density."; > = false;
+
 
 
 // ============================================================================
@@ -361,7 +361,7 @@ float calculateFogDensity(in float2 screen_uv, in float linearized_depth, in flo
     float step_precision = (FOG_PRECISION_MAX + FOG_PRECISION_MIN) - Fog_Precision;
     
     // Pre-calculate rotation values
-    float fog_layer_rotation_radians = AS_getRotationRadians(Fog_SnapRotation, Fog_FineRotation);
+    float fog_layer_rotation_radians = radians(Fog_Rotation);
     float cos_rot = cos(fog_layer_rotation_radians);
     float sin_rot = sin(fog_layer_rotation_radians);
     bool has_rotation = (fog_layer_rotation_radians != 0.0);
@@ -435,13 +435,6 @@ float4 PS_LayeredFog(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_
     
     // Get time values once
     float animated_time = AS_getAnimationTime(AnimationSpeed, AnimationKeyframe);
-    
-    // If debug mode is enabled, return a red mask proportional to fog density
-    if (Debug_Enable)
-    {
-        float fog_density_factor_debug = calculateFogDensity(texcoord, scene_linear_depth, animated_time);
-        return float4(fog_density_factor_debug, 0.0, 0.0, 1.0);
-    }
     
     // Calculate fog density using the simulated ray and scene depth
     float fog_density_factor = calculateFogDensity(texcoord, scene_linear_depth, animated_time);
