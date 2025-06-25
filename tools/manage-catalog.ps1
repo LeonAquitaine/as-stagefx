@@ -38,7 +38,14 @@ foreach ($shaderFile in $shaderFiles) {
         } else {
             $type = "OTHER"
         }
-        $newShaders += @{ filename = $filenameOnly; type = $type }
+        # Create new shader entry with minimal required properties
+        $newShader = @{ 
+            filename = $filenameOnly
+            type = $type
+            name = ""  # Will be populated later from shader metadata
+        }
+        $newShaders += $newShader
+        Write-Host "[NEW] Added shader: $filenameOnly (type: $type)" -ForegroundColor Green
     }
 }
 if ($newShaders.Count -gt 0) {
@@ -46,11 +53,77 @@ if ($newShaders.Count -gt 0) {
 }
 # Remove deleted/renamed shaders
 $catalog = $catalog | Where-Object { $shaderFiles.Name -contains $_.filename }
-# Sort
-$catalog = $catalog | Sort-Object -Property name, filename
+# Sort (handle entries that might not have a name property yet)
+$catalog = $catalog | Sort-Object -Property @{Expression={if($_.name) {$_.name} else {$_.filename}}}, filename
 # Save
 $catalog | ConvertTo-Json -Depth 20 | Set-Content -Path $CatalogPath -Encoding UTF8
 Write-Host "[SUCCESS] catalog.json updated."
+
+# --- Update shader-list.json ---
+$shaderListPath = "$PSScriptRoot/../config/shader-list.json"
+if (Test-Path $shaderListPath) {
+    $shaderList = Get-Content -Path $shaderListPath -Raw | ConvertFrom-Json
+    if ($null -eq $shaderList.shaders) { $shaderList.shaders = @() }
+    
+    # Get existing shader names from shader-list.json
+    $existingShaderNames = $shaderList.shaders | ForEach-Object { $_.name }
+    
+    # Add new shaders to shader-list.json if they were added to catalog
+    foreach ($newShader in $newShaders) {
+        # Extract shader name without .fx extension (e.g., AS_VFX_VolumetricFog.1)
+        $shaderName = [System.IO.Path]::GetFileNameWithoutExtension($newShader.filename)
+        
+        if (-not ($existingShaderNames -contains $shaderName)) {
+            # Determine performance rating based on shader type
+            $performance = switch ($newShader.type) {
+                "BGX" { "Moderate" }  # Backgrounds tend to be more complex
+                "VFX" { "Light" }     # Visual effects are often lighter
+                "GFX" { "Light" }     # Graphics effects are usually light
+                "LFX" { "Light" }     # Lighting effects are typically light
+                default { "Light" }
+            }
+            
+            # Create new shader entry for shader-list.json
+            $newShaderListEntry = @{
+                credits = @{
+                    license = "Creative Commons Attribution 4.0 International"
+                }
+                name = $shaderName
+                performance = $performance
+                filename = $newShader.filename
+                author = "Leon Aquitaine"
+            }
+            
+            $shaderList.shaders += $newShaderListEntry
+            Write-Host "[NEW] Added to shader-list.json: $shaderName (performance: $performance)" -ForegroundColor Green
+        }
+    }
+    
+    # Update count and save shader-list.json
+    $shaderList.count = $shaderList.shaders.Count
+    $shaderList.generated = Get-Date -Format "yyyy-MM-dd"
+    
+    # Remove deleted/renamed shaders from shader-list.json
+    $validShaderNames = $shaderFiles | ForEach-Object { 
+        [System.IO.Path]::GetFileNameWithoutExtension($_.Name) 
+    }
+    $originalCount = $shaderList.shaders.Count
+    $shaderList.shaders = $shaderList.shaders | Where-Object { 
+        $validShaderNames -contains $_.name 
+    }
+    $removedCount = $originalCount - $shaderList.shaders.Count
+    if ($removedCount -gt 0) {
+        Write-Host "[REMOVED] Cleaned up $removedCount deleted shaders from shader-list.json" -ForegroundColor Yellow
+    }
+    
+    # Update final count
+    $shaderList.count = $shaderList.shaders.Count
+    
+    $shaderList | ConvertTo-Json -Depth 10 | Set-Content -Path $shaderListPath -Encoding UTF8
+    Write-Host "[SUCCESS] shader-list.json updated."
+} else {
+    Write-Host "[WARNING] shader-list.json not found: $shaderListPath" -ForegroundColor Yellow
+}
 
 # Group shaders by type for statistics
 $groupedByType = @{}

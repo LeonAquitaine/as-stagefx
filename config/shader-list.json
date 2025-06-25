@@ -39,7 +39,8 @@
         "twitterReference": "https://x.com/cmzw_/status/1787147460772864188",
         "additionalCredit": "celestianmaze",
         "adaptedBy": "Leon Aquitaine"
-      },      "name": "AS_VFX_FocusedChaos.1",
+      },
+      "name": "AS_VFX_FocusedChaos.1",
       "performance": "Moderate",
       "filename": "[PRE] AS_VFX_FocusedChaos.1.fx",
       "author": "Leon Aquitaine"
@@ -57,36 +58,9 @@
       "credits": {
         "license": "Creative Commons Attribution 4.0 International"
       },
-      "name": "AS_BGX_StudioBackdrop.1",
-      "performance": "Light",
-      "filename": "[PRE] AS_BGX_StudioBackdrop.1.fx",
-      "author": "Leon Aquitaine"
-    },
-    {
-      "credits": {
-        "license": "Creative Commons Attribution 4.0 International"
-      },
       "name": "AS_BGX_Vortex.1",
       "performance": "Moderate",
       "filename": "[PRE] AS_BGX_Vortex.1.fx",
-      "author": "Leon Aquitaine"
-    },
-    {
-      "credits": {
-        "license": "Creative Commons Attribution 4.0 International"
-      },
-      "name": "AS_BGX_Wisps.1",
-      "performance": "Heavy",
-      "filename": "[PRE] AS_BGX_Wisps.1.fx",
-      "author": "Leon Aquitaine"
-    },
-    {
-      "credits": {
-        "license": "Creative Commons Attribution 4.0 International"
-      },
-      "name": "AS_GFX_ArtDecoFrame.1",
-      "performance": "Light",
-      "filename": "[PRE] AS_GFX_ArtDecoFrame.1.fx",
       "author": "Leon Aquitaine"
     },
     {
@@ -102,15 +76,6 @@
       "credits": {
         "license": "Creative Commons Attribution 4.0 International"
       },
-      "name": "AS_GFX_RippedPaper.1",
-      "performance": "Moderate",
-      "filename": "[PRE] AS_GFX_RippedPaper.1.fx",
-      "author": "Leon Aquitaine"
-    },
-    {
-      "credits": {
-        "license": "Creative Commons Attribution 4.0 International"
-      },      
       "name": "AS_VFX_RadialLensDistortion.1",
       "performance": "Light",
       "filename": "AS_VFX_RadialLensDistortion.1.fx",
@@ -136,8 +101,8 @@
       },
       "name": "AS_BGX_RaymarchedChain.1",
       "performance": "Heavy",
-        "filename": "AS_BGX_RaymarchedChain.1.fx",
-        "author": "Leon Aquitaine"
+      "filename": "AS_BGX_RaymarchedChain.1.fx",
+      "author": "Leon Aquitaine"
     },
     {
       "credits": {
@@ -151,7 +116,8 @@
       "performance": "Heavy",
       "filename": "AS_BGX_BlueCorona.1.fx",
       "author": "Leon Aquitaine"
-    },{
+    },
+    {
       "credits": {
         "originalName": "Old Joseph",
         "link": "https://www.shadertoy.com/view/slfGzf",
@@ -309,7 +275,8 @@
       "performance": "Moderate",
       "filename": "AS_BGX_PastRacer.1.fx",
       "author": "Leon Aquitaine"
-    },    {
+    },
+    {
       "credits": {
         "license": "Creative Commons Attribution 4.0 International"
       },
@@ -331,16 +298,6 @@
       "name": "AS_BGX_QuadtreeTruchet.1",
       "performance": "Moderate",
       "filename": "AS_BGX_QuadtreeTruchet.1.fx",
-      "author": "Leon Aquitaine"
-    },
-    {
-      "credits": {
-        "originalName": "Shine Effect",
-        "license": "Creative Commons Attribution 4.0 International"
-      },
-      "name": "AS_BGX_ShineOn.1",
-      "performance": "Light",
-      "filename": "AS_BGX_ShineOn.1.fx",
       "author": "Leon Aquitaine"
     },
     {
@@ -661,7 +618,8 @@
       "performance": "Light",
       "filename": "AS_VFX_VUMeter.1.fx",
       "author": "Leon Aquitaine"
-    },    {
+    },
+    {
       "credits": {
         "license": "Creative Commons Attribution 4.0 International"
       },
@@ -693,7 +651,22 @@
       "performance": "Medium",
       "filename": "AS_BGX_Fluorescent.1.fx",
       "author": "Leon Aquitaine"
-    }  ],
-  "count": 47,
-  "generated": "2025-06-02"
+    },
+    {
+      "credits": {
+        "originalName": "Frozen wasteland",
+        "link": "https://www.shadertoy.com/view/Xls3D2",
+        "author": "Dave Hoskins",
+        "platform": "Shadertoy",
+        "license": "Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License",
+        "adaptedBy": "Leon Aquitaine"
+      },
+      "name": "AS_VFX_VolumetricFog.1",
+      "performance": "Moderate",
+      "filename": "AS_VFX_VolumetricFog.1.fx",
+      "author": "Leon Aquitaine"
+    }
+  ],
+  "count": 57,
+  "generated": "2025-06-24"
 }
