@@ -83,7 +83,12 @@
     },
     {
       "credits": {
-        "license": "Creative Commons Attribution 4.0 International"
+        "originalName": "fake volumetric 2d light wip",
+        "link": "https://www.shadertoy.com/view/wftXzr",
+        "author": "int_45h",
+        "platform": "Shadertoy",
+        "license": "Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)",
+        "adaptedBy": "Leon Aquitaine"
       },
       "name": "AS_VFX_VolumetricLight.1",
       "performance": "Moderate",
@@ -668,5 +673,5 @@
     }
   ],
   "count": 57,
-  "generated": "2025-06-24"
+  "generated": "2025-06-26"
 }

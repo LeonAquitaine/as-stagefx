@@ -41,6 +41,8 @@
       "AS_GFX_AspectRatio.1.fx",
       "AS_GFX_BrushStroke.1.fx",
       "AS_GFX_HandDrawing.1.fx",
+      "AS_GFX_FocusFrame.1.fx",
+      "AS_GFX_TiltShift.1.fx",
       "AS_GFX_AudioDirection.1.fx"
     ],
     "vfx": [
@@ -52,7 +54,9 @@
       "AS_VFX_WarpDistort.1.fx",
       "AS_VFX_WaterSurface.1.fx",
       "AS_VFX_CircularSpectrum.1.fx",
+      "AS_VFX_TiltedGrid.1.fx",
       "AS_VFX_VolumetricFog.1.fx",
+      "AS_VFX_VolumetricLight.1.fx",
       "AS_VFX_RadialLensDistortion.1.fx"
     ]
   },  "packageDescription": {
