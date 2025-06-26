@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.10.1] - 2025-06-26
+
+### New Features
+- Added new graphics and visual effect shaders to the package, expanding available effects.
+
+### Bug Fixes
+- Corrected aspect ratio preset labels and values for improved accuracy in orientation descriptions.
+
+### Documentation
+- Updated shader metadata to include detailed attribution, licensing, and source information.
+- Revised license and attribution text in shader headers to clarify usage restrictions.
+
+### Chores
+- Restructured and reordered metadata and statistics files for improved clarity and consistency.
+- Updated build and generation dates in relevant metadata files.
+
 ## [1.9.2] - 2025-06-13
 
 ### New Features
