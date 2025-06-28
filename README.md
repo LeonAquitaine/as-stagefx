@@ -40,7 +40,7 @@ AS-StageFX provides a collection of performant, customizable, and audio-reactive
 
 ## Available Shaders
 
-AS-StageFX includes **63 shaders** across four categories: **27 Background (BGX)**, **11 Graphic (GFX)**, **3 Lighting (LFX)**, and **22 Visual (VFX)** effects.
+AS-StageFX includes **64 shaders** across four categories: **28 Background (BGX)**, **11 Graphic (GFX)**, **3 Lighting (LFX)**, and **22 Visual (VFX)** effects.
 
 **Detailed descriptions and examples: [Shader Gallery](docs/gallery.md).**
 
@@ -48,6 +48,7 @@ AS-StageFX includes **63 shaders** across four categories: **27 Background (BGX)
 
 | Shader                 | Description                                                                                                | License   |
 | ---------------------- | ---------------------------------------------------------------------------------------------------------- | --------- |
+| **** |  |  |
 | **Blue Corona** | Vibrant, abstract blue corona with fluid, dynamic motion and hypnotic, organic, plasma-like visuals. Customizable and audio-reactive. | CC BY-NC-SA |
 | **Constellation** | Creates an animated stellar constellation pattern with twinkling stars and connecting lines. Perfect for cosmic, night sky, or abstract network visualizations with a hand-drawn aesthetic. | CC BY-NC-SA |
 | **Corridor Travel** | Simulates an artistic flight through an abstract, glowing, patterned tunnel with pseudo-DOF, motion blur, and light bounce simulation. | CC BY-NC-SA |

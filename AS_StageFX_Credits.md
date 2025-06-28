@@ -8,6 +8,11 @@ This document lists all external sources, original authors, and inspiration cred
 ---
 
 ## Shadertoy & External Adaptations (BGX)
+### AS_BGX_PlasmaDance.1.fx - 
+- **Original Author**: 
+- **Original Title**: 
+- **Notes**: 
+- **Source**: 
 ### AS_BGX_BlueCorona.1.fx - Blue Corona
 - **Original Author**: SnoopethDuckDuck
 - **Original Title**: Blue Corona [256 Chars]
