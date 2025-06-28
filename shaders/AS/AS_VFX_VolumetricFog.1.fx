@@ -1,6 +1,6 @@
 /**
  * AS_VFX_VolumetricFog.1.fx - Volumetric Fog Effect (Screen-Space Depth)
- * Author: Leon Aquitaine (Re-architected to avoid ReShade::ViewOrigin/ViewToWorld) 
+ * Author: Leon Aquitaine
  * License: Creative Commons Attribution 4.0 International
  * Original Source (Inspiration): https://www.shadertoy.com/view/Xls3D2 (Dave Hoskins)
  * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
@@ -11,32 +11,28 @@
  * This shader generates a volumetric fog effect that blends with the existing scene
  * based on screen-space depth. It simulates fog accumulation by ray-marching through
  * 3D space derived from screen coordinates, stopping at the actual scene depth.
- * This creates realistic depth interaction, making the fog respond naturally to
- * subjects at different distances in the scene.
  *
  * FEATURES:
  * - Depth-aware volumetric fog for realistic atmospheric perspective.
  * - Ray-marched fog volume with proper depth interaction.
  * - Supports multiple procedural noise types (Triangle, Four-D, Texture, Value)
- * to define the fog's appearance (e.g., wispy, volumetric, uniform).
+ *   to define the fog's appearance (e.g., wispy, volumetric, uniform).
  * - Customizable fog color, overall density, and max visibility distance.
  * - Adjustable fog animation speed (horizontal and vertical flow).
  * - Tunable fog volume offset and rotation for creative positioning relative to the screen.
- * - Seamless integration with ReShade's linearized depth buffer.
- * - Standard AS-StageFX UI controls for easy parameter adjustment.
  *
  * IMPLEMENTATION OVERVIEW:
  * 1. Derives a screen-space ray direction from `texcoord` and `ReShade::AspectRatio`.
  * 2. Fetches the linearized depth (`ReShade::GetLinearizedDepth`) of the scene
- * at the current pixel, and converts it to a world-like distance.
+ *    at the current pixel, and converts it to a world-like distance.
  * 3. Uses a ray-marching loop (`calculateFogDensity`) to step along
- * this screen-space ray, sampling fog density based on chosen noise type.
- * The loop stops when it hits the converted scene depth or max fog distance.
+ *    this screen-space ray, sampling fog density based on chosen noise type.
+ *    The loop stops when it hits the converted scene depth or max fog distance.
  * 4. Fog volume movement is achieved by applying time-based scrolling
- * and world-space offsets/rotations directly to the 3D sampling coordinates
- * within the noise functions, relative to the camera's assumed fixed forward vector.
+ *    and world-space offsets/rotations directly to the 3D sampling coordinates
+ *    within the noise functions, relative to the camera's assumed fixed forward vector.
  * 5. The accumulated fog density is used to `lerp` between the original
- * backbuffer color and the defined `Fog_Color`.
+ *    backbuffer color and the defined `Fog_Color`.
  *
  * ===================================================================================
  */
@@ -139,7 +135,6 @@ uniform float Fog_Turbulence < ui_type = "slider"; ui_label = "Turbulence"; ui_m
 
 // 4. ANIMATION CONTROLS
 AS_ANIMATION_UI(AnimationSpeed, AnimationKeyframe, "Animation")
-
 AS_ROTATION_UI(VolumetricFog_SnapRotation, VolumetricFog_FineRotation)
 
 // 6. POSITION - Stage positioning controls
@@ -344,7 +339,7 @@ float3 fogColour( in float3 base_color, float distance_val )
  */
 float calculateFogDensity(in float2 screen_uv, in float linearized_depth, in float time_param)
 {
-    // Apply standard rotation to screen coordinates
+    // Apply standard rotation to screen coordinates around center
     float rotation_radians = AS_getRotationRadians(VolumetricFog_SnapRotation, VolumetricFog_FineRotation);
     float2 rotated_uv = AS_applyRotation(screen_uv, rotation_radians);
     
@@ -366,7 +361,7 @@ float calculateFogDensity(in float2 screen_uv, in float linearized_depth, in flo
     float current_distance = fog_start_distance;
     float step_size_multiplier = Fog_Multiplier;
 
-    // Simulate a ray_direction from rotated screen UVs
+    // Simulate a ray_direction from rotated screen UVs (for screen-centered rotation)
     float2 normalized_screen_coords = (rotated_uv - AS_HALF) * float2(ReShade::AspectRatio, 1.0) * 2.0;
     float3 simulated_ray_direction = normalize(float3(normalized_screen_coords.x, normalized_screen_coords.y, -1.0));    // Calculate fog height mask based on rotated screen position and depth (optimized)
     float screen_height_factor = 1.0 - rotated_uv.y; // 0 at top of screen, 1 at bottom
