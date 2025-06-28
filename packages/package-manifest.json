@@ -1,6 +1,8 @@
 {
   "packages": [
     {
+      "version": "1.10.2",
+      "description": "The complete collection of all AS StageFX shaders and utilities",
       "dependencies": {
         "fxh": [
           "AS_Utils.1.fxh",
@@ -14,11 +16,10 @@
           "perlin512x8Noise.png"
         ]
       },
-      "description": "The complete collection of all AS StageFX shaders and utilities",
+      "name": "AS_StageFX",
+      "textureDependencyCount": 3,
       "fxhDependencyCount": 4,
-      "shaderCount": 64,
       "shaders": [
-        "AS_BGX_PlasmaDance.1.fx",
         "AS_BGX_BlueCorona.1.fx",
         "AS_BGX_Constellation.1.fx",
         "AS_BGX_CorridorTravel.1.fx",
@@ -83,11 +84,11 @@
         "AS_VFX_WarpDistort.1.fx",
         "AS_VFX_WaterSurface.1.fx"
       ],
-      "textureDependencyCount": 3,
-      "name": "AS_StageFX",
-      "version": "1.10.2"
+      "shaderCount": 63
     },
     {
+      "version": "1.10.2",
+      "description": "Complete collection of background effects (Requires Essentials)",
       "dependencies": {
         "fxh": [
           "AS_Utils.1.fxh",
@@ -98,11 +99,10 @@
           "perlin512x8CNoise.png"
         ]
       },
-      "description": "Complete collection of background effects (Requires Essentials)",
+      "name": "AS_StageFX_Backgrounds",
+      "textureDependencyCount": 1,
       "fxhDependencyCount": 3,
-      "shaderCount": 28,
       "shaders": [
-        "AS_BGX_PlasmaDance.1.fx",
         "AS_BGX_BlueCorona.1.fx",
         "AS_BGX_Constellation.1.fx",
         "AS_BGX_CorridorTravel.1.fx",
@@ -131,11 +131,11 @@
         "AS_BGX_WavySquiggles.1.fx",
         "AS_BGX_ZippyZaps.1.fx"
       ],
-      "textureDependencyCount": 1,
-      "name": "AS_StageFX_Backgrounds",
-      "version": "1.10.2"
+      "shaderCount": 27
     },
     {
+      "version": "1.10.2",
+      "description": "Core library files and essential visual effects for general use",
       "dependencies": {
         "fxh": [
           "AS_Utils.1.fxh",
@@ -148,9 +148,9 @@
           "perlin512x8CNoise.png"
         ]
       },
-      "description": "Core library files and essential visual effects for general use",
+      "name": "AS_StageFX_Essentials",
+      "textureDependencyCount": 1,
       "fxhDependencyCount": 5,
-      "shaderCount": 12,
       "shaders": [
         "AS_BGX_TimeCrystal.1.fx",
         "AS_BGX_StainedLights.1.fx",
@@ -165,11 +165,11 @@
         "AS_VFX_VolumetricFog.1.fx",
         "AS_VFX_StencilMask.1.fx"
       ],
-      "textureDependencyCount": 1,
-      "name": "AS_StageFX_Essentials",
-      "version": "1.10.2"
+      "shaderCount": 12
     },
     {
+      "version": "1.10.2",
+      "description": "Complete collection of visual effects (Requires Essentials)",
       "dependencies": {
         "fxh": [
           "AS_Utils.1.fxh",
@@ -183,9 +183,9 @@
           "perlin512x8Noise.png"
         ]
       },
-      "description": "Complete collection of visual effects (Requires Essentials)",
+      "name": "AS_StageFX_VisualEffects",
+      "textureDependencyCount": 3,
       "fxhDependencyCount": 4,
-      "shaderCount": 36,
       "shaders": [
         "AS_GFX_AspectRatio.1.fx",
         "AS_GFX_AudioDirection.1.fx",
@@ -224,11 +224,9 @@
         "AS_VFX_WarpDistort.1.fx",
         "AS_VFX_WaterSurface.1.fx"
       ],
-      "textureDependencyCount": 3,
-      "name": "AS_StageFX_VisualEffects",
-      "version": "1.10.2"
+      "shaderCount": 36
     }
   ],
-  "buildDate": "2025-06-28T17:14:34Z",
-  "version": "1.10.2"
+  "version": "1.10.2",
+  "buildDate": "2025-06-28T17:26:25Z"
 }

@@ -670,17 +670,8 @@
       "performance": "Moderate",
       "filename": "AS_VFX_VolumetricFog.1.fx",
       "author": "Leon Aquitaine"
-    },
-    {
-      "author": "Leon Aquitaine",
-      "filename": "AS_BGX_PlasmaDance.1.fx",
-      "name": "AS_BGX_PlasmaDance.1",
-      "credits": {
-        "license": "Creative Commons Attribution 4.0 International"
-      },
-      "performance": "Moderate"
     }
   ],
-  "count": 58,
+  "count": 57,
   "generated": "2025-06-28"
 }
