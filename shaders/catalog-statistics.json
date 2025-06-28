@@ -1,11 +1,7 @@
 {
+  "total": 63,
   "grouped": {
     "BGX": [
-      {
-        "filename": "AS_BGX_PlasmaDance.1.fx",
-        "name": "",
-        "type": "BGX"
-      },
       {
         "name": "Blue Corona",
         "filename": "AS_BGX_BlueCorona.1.fx",
@@ -924,11 +920,10 @@
       }
     ]
   },
-  "total": 64,
   "byType": {
-    "BGX": 28,
     "GFX": 11,
+    "LFX": 3,
     "VFX": 22,
-    "LFX": 3
+    "BGX": 27
   }
 }
