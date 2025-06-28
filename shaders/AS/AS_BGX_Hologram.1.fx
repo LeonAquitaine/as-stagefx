@@ -6,6 +6,18 @@
  * Source URL: https://www.shadertoy.com/view/NlycDG
  *
  * ===================================================================================
+ * 
+ * CHANGELOG:
+ * 
+ * Version 1.10.2:
+ * New Features:
+ * - Added a new screen-space rotation control for volumetric fog, allowing users to rotate the fog effect relative to the screen.
+ * 
+ * Improvements:
+ * - Reorganized fog UI controls into clearer categories for easier navigation and adjustment.
+ * - Refined UI labels and tooltips for improved clarity and consistency.
+ * 
+ * ===================================================================================
  *
  * DESCRIPTION:
  * Creates a dynamic, holographic plasma background with shifting rainbow colors

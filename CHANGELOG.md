@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.10.2] - 2025-06-28
+
+### New Features
+- Added a new screen-space rotation control for volumetric fog, allowing users to rotate the fog effect relative to the screen.
+
+### Improvements
+- Reorganized fog UI controls into clearer categories for easier navigation and adjustment.
+- Refined UI labels and tooltips for improved clarity and consistency.
+
 ## [1.10.1] - 2025-06-26
 
 ### New Features

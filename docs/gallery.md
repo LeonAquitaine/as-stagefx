@@ -1,6 +1,6 @@
 # AS-StageFX Shader Gallery
 
-This gallery provides detailed descriptions and visual examples of the complete AS-StageFX collection, which includes **63 shaders** across four categories: **27 Background (BGX)**, **11 Graphic (GFX)**, **3 Lighting (LFX)**, and **22 Visual (VFX)** effects.
+This gallery provides detailed descriptions and visual examples of the complete AS-StageFX collection, which includes **64 shaders** across four categories: **28 Background (BGX)**, **11 Graphic (GFX)**, **3 Lighting (LFX)**, and **22 Visual (VFX)** effects.
 
 For installation instructions and general information, please refer to the [main README](../README.md).
 
@@ -19,6 +19,16 @@ The collection includes these foundation libraries used by all shaders:
 ## Background Effects (BGX)
 
 <table>
+<tr>
+<td width="50%">
+<h3> </h3>
+<h5><code>AS_BGX_PlasmaDance.1.fx</code></h5>
+
+</td>
+<td width="50%"><div style="text-align:center">
+<img src="" alt=" Effect" style="max-width:100%;">
+</div></td>
+</tr>
 <tr>
 <td width="50%">
 <h3>Blue Corona </h3>
