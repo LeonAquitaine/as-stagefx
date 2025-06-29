@@ -23,6 +23,7 @@ uniform float PaintSpec < ui_type = "slider"; ui_label = "Paint Specularity"; ui
  *
  * FEATURES:
  * - Procedural brush strokes with customizable detail, size, and bending.
+ * - Depth-based brush detail control for realistic depth of field effects.
  * - Luminance-driven brush stroke density.
  * - Optional color keying for background replacement.
  * - Customizable source image contrast and brightness.
@@ -115,6 +116,9 @@ static const float SRCBRIGHT_DEFAULT = 1.0;
 static const float BRUSHDETAIL_MIN = 0.0;
 static const float BRUSHDETAIL_MAX = 1.0;
 static const float BRUSHDETAIL_DEFAULT = 0.1;
+static const float DEPTH_DETAIL_INFLUENCE_MIN = 0.0;
+static const float DEPTH_DETAIL_INFLUENCE_MAX = 2.0;
+static const float DEPTH_DETAIL_INFLUENCE_DEFAULT = 0.0;
 static const float STROKEBEND_MIN = -2.0;
 static const float STROKEBEND_MAX = 2.0;
 static const float STROKEBEND_DEFAULT = -1.0;
@@ -150,7 +154,7 @@ uniform bool UseCanvasEffect < ui_label = "Enable Canvas Effect"; ui_category = 
 
 // 3. Brush Settings
 uniform float BrushDetail < ui_type = "slider"; ui_label = "Brush Detail"; ui_min = BRUSHDETAIL_MIN; ui_max = BRUSHDETAIL_MAX; ui_step = 0.01; ui_category = "Brush"; ui_tooltip = "Controls the level of detail captured by brush strokes (higher value = more detail)."; > = BRUSHDETAIL_DEFAULT;
-uniform bool UseDepthBasedDetail < ui_label = "Depth-Based Detail"; ui_category = "Brush"; ui_tooltip = "When enabled, brush detail decreases with distance from camera for realistic depth of field."; > = false;
+uniform float DepthDetailInfluence < ui_type = "slider"; ui_label = "Depth Detail Influence"; ui_min = DEPTH_DETAIL_INFLUENCE_MIN; ui_max = DEPTH_DETAIL_INFLUENCE_MAX; ui_step = 0.01; ui_category = "Brush"; ui_tooltip = "Controls how much depth affects brush detail. 0 = no influence, higher values = less detail at greater distances."; > = DEPTH_DETAIL_INFLUENCE_DEFAULT;
 uniform float StrokeBend < ui_type = "slider"; ui_label = "Stroke Bend"; ui_min = STROKEBEND_MIN; ui_max = STROKEBEND_MAX; ui_step = 0.01; ui_category = "Brush"; ui_tooltip = "Controls the bending of individual brush strokes."; > = STROKEBEND_DEFAULT;
 uniform float BrushSize < ui_type = "slider"; ui_label = "Brush Size Multiplier"; ui_min = BRUSHSIZE_MIN; ui_max = BRUSHSIZE_MAX; ui_step = 0.01; ui_category = "Brush"; ui_tooltip = "Multiplies the size of the generated brush strokes."; > = BRUSHSIZE_DEFAULT;
 
@@ -398,15 +402,16 @@ float4 PS_OilPaintingDrawing(float4 pos : SV_Position, float2 texcoord : TEXCOOR
             
             // Calculate effective brush detail (potentially depth-based)
             float effectiveBrushDetail = BrushDetail;
-            if (UseDepthBasedDetail) {
+            if (DepthDetailInfluence > 0.0) {
                 // Sample depth at brush position
                 float2 brushUV = brushPos.xy / Res;
                 brushUV = saturate(brushUV);
                 float brushDepth = ReShade::GetLinearizedDepth(brushUV);
                 
-                // Scale brush detail based on depth (closer = more detail, further = less detail)
-                // Map depth from [0,1] to [0.2, 1.0] for detail scaling
-                float depthScale = lerp(1.0, 0.2, saturate(brushDepth));
+                // Scale brush detail based on depth and influence strength
+                // At DepthDetailInfluence = 1.0, far objects (depth = 1) get 50% detail
+                // At DepthDetailInfluence = 2.0, far objects (depth = 1) get 25% detail
+                float depthScale = lerp(1.0, 1.0 - (DepthDetailInfluence * 0.5), saturate(brushDepth));
                 effectiveBrushDetail *= depthScale;
             }
             
