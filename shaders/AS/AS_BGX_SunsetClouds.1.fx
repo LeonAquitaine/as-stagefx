@@ -213,11 +213,13 @@ float4 AS_BGX_SunsetClouds_PS(float4 vpos : SV_Position, float2 texcoord : TEXCO
     for (i = 0; i < CloudDetail; i++) // Using CloudDetail UI
     {
         float3 p = depth_z * rayDir;
-        step_dist_d_loop = TurbulenceScaleStart; // Using TurbulenceScaleStart UI
-        while(step_dist_d_loop < TurbulenceScaleEnd) // Using TurbulenceScaleEnd UI
+        step_dist_d_loop = max(TurbulenceScaleStart, 0.01); // Using TurbulenceScaleStart UI with minimum to prevent division by zero
+        int safetyCounter = 0; // Prevent infinite loops
+        while(step_dist_d_loop < TurbulenceScaleEnd && safetyCounter < 20) // Using TurbulenceScaleEnd UI with safety limit
         {
             p += TurbulenceIntensity * sin(p.yzx * step_dist_d_loop - TurbulenceAnimFactor * time) / step_dist_d_loop; // Using UI variables
             step_dist_d_loop *= 2.0;
+            safetyCounter++; // Increment safety counter
         }
 
         signed_dist_s = CloudAltitude - abs(p.y); // Using CloudAltitude UI
