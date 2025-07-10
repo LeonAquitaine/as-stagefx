@@ -85,12 +85,16 @@ static const float AS_EDGE_AA = 0.05f;        // Standard anti-aliasing edge siz
 #ifndef __LISTENINGWAY_INSTALLED
     // Since we're not including ListeningwayUniforms.fxh anymore,
     // provide a complete compatible implementation directly here
-    #define LISTENINGWAY_NUM_BANDS 32
+    #define LISTENINGWAY_NUM_BANDS 64
     #define __LISTENINGWAY_INSTALLED 1
 
     // Create fallback uniforms with the same interface as the real Listeningway
     uniform float Listeningway_Volume < source = "listeningway_volume"; > = 0.0f;
     uniform float Listeningway_FreqBands[LISTENINGWAY_NUM_BANDS] < source = "listeningway_freqbands"; > = {
+        0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+        0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+        0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+        0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
         0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
         0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
         0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
@@ -202,7 +206,7 @@ static const float AS_SCREEN_CENTER_Y = 0.5f;    // Screen center Y coordinate
 
 // Default number of frequency bands
 #ifndef LISTENINGWAY_NUM_BANDS
-    #define LISTENINGWAY_NUM_BANDS 32
+    #define LISTENINGWAY_NUM_BANDS 64
 #endif
 #define AS_DEFAULT_NUM_BANDS LISTENINGWAY_NUM_BANDS
 
@@ -427,9 +431,9 @@ float AS_getVU(int source) {
 #if defined(__LISTENINGWAY_INSTALLED)
     if (source == 0) return Listeningway_Volume;
     if (source == 1) return Listeningway_Beat;
-    if (source == 2) return Listeningway_FreqBands[min(0, LISTENINGWAY_NUM_BANDS - 1)]; 
-    if (source == 3) return Listeningway_FreqBands[min(14, LISTENINGWAY_NUM_BANDS - 1)];
-    if (source == 4) return Listeningway_FreqBands[min(28, LISTENINGWAY_NUM_BANDS - 1)]; 
+    if (source == 2) return Listeningway_FreqBands[0]; // Bass - first band
+    if (source == 3) return Listeningway_FreqBands[min(LISTENINGWAY_NUM_BANDS / 3, LISTENINGWAY_NUM_BANDS - 1)]; // Mid-bass - 1/3 through spectrum
+    if (source == 4) return Listeningway_FreqBands[min((LISTENINGWAY_NUM_BANDS * 7) / 8, LISTENINGWAY_NUM_BANDS - 1)]; // Treble - 7/8 through spectrum
 #endif
     return 0.0;
 }
@@ -590,13 +594,14 @@ float AS_getAudioSourceSafe(int source, float fallbackValue = 0.0) {
     return (source == AS_AUDIO_SOLID) ? 1.0 : fallbackValue;
 }
 
-float AS_getSmoothedAudio(int source, float smoothing = 0.1) {
-    static float previousValue = 0.0; 
-    float currentValue = AS_getAudioSourceSafe(source); 
-    float smoothed = lerp(previousValue, currentValue, saturate(smoothing)); 
-    previousValue = smoothed;
-    return smoothed;
-}
+// DEPRECATED: AS_getSmoothedAudio - Removed due to static variable causing crashes
+// Static variables in shaders can cause race conditions and crashes when accessed by multiple pixels
+// Use external smoothing or implement per-frame smoothing outside of pixel shaders instead
+// 
+// float AS_getSmoothedAudio(int source, float smoothing = 0.1) {
+//     // DO NOT USE: static variables are unsafe in pixel shaders
+//     return AS_getAudioSourceSafe(source); 
+// }
 
 float AS_getFreqByPercent(float percent) {
 #if defined(__LISTENINGWAY_INSTALLED)
