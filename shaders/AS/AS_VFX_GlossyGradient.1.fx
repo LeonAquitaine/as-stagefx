@@ -47,28 +47,21 @@
 // UI DECLARATIONS
 // ============================================================================
 
-uniform float AnimationSpeed <
-    ui_type = "slider";
-    ui_label = "Animation Speed";
-    ui_min = 0.0; ui_max = 3.0;
-    ui_tooltip = "Controls the speed of pattern evolution";
-    ui_category = "Animation";
-> = 1.0;
-
+// --- Pattern Parameters ---
 uniform int Iterations <
     ui_type = "slider";
     ui_label = "Pattern Iterations";
     ui_min = 3; ui_max = 15;
     ui_tooltip = "Number of iterations for pattern complexity";
-    ui_category = "Pattern Control";
+    ui_category = "Pattern";
 > = 9;
 
 uniform float PatternScale <
     ui_type = "slider";
     ui_label = "Pattern Scale";
     ui_min = 0.1; ui_max = 3.0;
-    ui_tooltip = "Overall scale of the trigonometric pattern";
-    ui_category = "Pattern Control";
+    ui_tooltip = "Overall scale of the gradient pattern";
+    ui_category = "Pattern";
 > = 1.0;
 
 uniform float WaveIntensity <
@@ -76,17 +69,10 @@ uniform float WaveIntensity <
     ui_label = "Wave Intensity";
     ui_min = 0.1; ui_max = 2.0;
     ui_tooltip = "Intensity of the wave calculations";
-    ui_category = "Pattern Control";
+    ui_category = "Pattern";
 > = 1.0;
 
-uniform float TimeMultiplier <
-    ui_type = "slider";
-    ui_label = "Time Multiplier";
-    ui_min = 0.1; ui_max = 1.0;
-    ui_tooltip = "Base time scaling factor";
-    ui_category = "Animation";
-> = 0.3;
-
+// --- Color Controls ---
 uniform float ColorIntensity <
     ui_type = "slider";
     ui_label = "Color Intensity";
@@ -95,53 +81,21 @@ uniform float ColorIntensity <
     ui_category = "Color";
 > = 1.0;
 
-uniform float RedChannel <
+uniform float3 ChannelWeights <
     ui_type = "slider";
-    ui_label = "Red Channel Weight";
+    ui_label = "Channel Weights";
     ui_min = 0.0; ui_max = 2.0;
-    ui_tooltip = "Weight of the red color channel";
+    ui_tooltip = "RGB channel weight distribution";
     ui_category = "Color";
-> = 0.7;
+> = float3(0.7, 0.5, 0.3);
 
-uniform float GreenChannel <
+uniform float3 ChannelOffsets <
     ui_type = "slider";
-    ui_label = "Green Channel Weight";
-    ui_min = 0.0; ui_max = 2.0;
-    ui_tooltip = "Weight of the green color channel";
-    ui_category = "Color";
-> = 0.5;
-
-uniform float BlueChannel <
-    ui_type = "slider";
-    ui_label = "Blue Channel Weight";
-    ui_min = 0.0; ui_max = 2.0;
-    ui_tooltip = "Weight of the blue color channel";
-    ui_category = "Color";
-> = 0.3;
-
-uniform float RedOffset <
-    ui_type = "slider";
-    ui_label = "Red Offset";
+    ui_label = "Channel Offsets";
     ui_min = 0.0; ui_max = 1.0;
-    ui_tooltip = "Base offset for red channel";
+    ui_tooltip = "Base offset for each RGB channel";
     ui_category = "Color";
-> = 0.3;
-
-uniform float GreenOffset <
-    ui_type = "slider";
-    ui_label = "Green Offset";
-    ui_min = 0.0; ui_max = 1.0;
-    ui_tooltip = "Base offset for green channel";
-    ui_category = "Color";
-> = 0.2;
-
-uniform float BlueOffset <
-    ui_type = "slider";
-    ui_label = "Blue Offset";
-    ui_min = 0.0; ui_max = 1.0;
-    ui_tooltip = "Base offset for blue channel";
-    ui_category = "Color";
-> = 0.5;
+> = float3(0.3, 0.2, 0.5);
 
 uniform bool EnableColorGrading <
     ui_label = "Enable Color Grading";
@@ -156,6 +110,15 @@ uniform float ColorGradingIntensity <
     ui_tooltip = "Intensity of the color grading effect";
     ui_category = "Color";
 > = 0.5;
+
+// --- Standard AS Controls ---
+AS_ANIMATION_UI(AnimationSpeed, AnimationKeyframe, "Animation")
+
+uniform int AudioTarget < ui_type = "combo"; ui_label = "Audio Target";
+    ui_items = "None\0Animation Speed\0Pattern Scale\0Wave Intensity\0Color Intensity\0";
+    ui_tooltip = "Select which parameter reacts to audio";
+    ui_category = "Audio Reactivity";
+> = 0;
 
 AS_AUDIO_UI(AudioSource, "Audio Source", AS_AUDIO_VOLUME, "Audio Reactivity")
 AS_AUDIO_MULT_UI(AudioMultiplier, "Audio Multiplier", AS_RANGE_AUDIO_MULT_DEFAULT, 5.0, "Audio Reactivity")
@@ -172,44 +135,60 @@ AS_DEBUG_UI("Off\0Pattern Values\0Accumulator A\0Accumulator D\0")
 // ============================================================================
 
 float3 calculateGlossyGradientPattern(float2 uv, float time, float audioValue) {
-    // Apply position and scale transformations
-    uv -= EffectCenter;
-    uv /= EffectScale;
+    // Center UV coordinates for proper rotation around center
+    uv -= 0.5;
     
-    // Apply rotation if needed
+    // Apply rotation around center if needed
     float rotation = AS_getRotationRadians(SnapRotation, FineRotation);
     if (abs(rotation) > AS_EPSILON) {
         uv = AS_rotate2D(uv, rotation);
     }
     
+    // Apply position and scale transformations
+    uv -= EffectCenter;
+    uv /= EffectScale;
+    
+    // Apply audio reactivity to selected parameters
+    float animSpeed_final = AnimationSpeed;
+    float patternScale_final = PatternScale;
+    float waveIntensity_final = WaveIntensity;
+    float colorIntensity_final = ColorIntensity;
+    
+    if (AudioTarget > 0 && AudioMultiplier > 0.0) {
+        float audioMod = audioValue * AudioMultiplier;
+        if (AudioTarget == 1) { // Animation Speed
+            animSpeed_final = AnimationSpeed + (AnimationSpeed * audioMod * 0.5);
+        } else if (AudioTarget == 2) { // Pattern Scale
+            patternScale_final = PatternScale + (PatternScale * audioMod * 0.3);
+        } else if (AudioTarget == 3) { // Wave Intensity
+            waveIntensity_final = WaveIntensity + (WaveIntensity * audioMod * 0.4);
+        } else if (AudioTarget == 4) { // Color Intensity
+            colorIntensity_final = ColorIntensity + (ColorIntensity * audioMod * 0.6);
+        }
+    }
+    
     // Scale the pattern
-    uv *= PatternScale;
+    uv *= patternScale_final;
     
     // Initialize accumulators - matching original algorithm
-    float d = -(time * TimeMultiplier * AnimationSpeed);
+    float d = -(time * 0.3); // Using fixed time multiplier for consistency
     float a = 0.0;
-    
-    // Apply audio reactivity to initial values
-    if (AudioMultiplier > 0.0) {
-        d += audioValue * AudioMultiplier * 0.1;
-        a += audioValue * AudioMultiplier * 0.05;
-    }
     
     // Main trigonometric iteration loop
     for (float i = 0.0; i < Iterations; i += 1.0) {
-        a += cos(d + i * uv.x - a) * WaveIntensity;
-        d += 0.5 * sin(a + i * uv.y) * WaveIntensity;
+        a += cos(d + i * uv.x - a) * waveIntensity_final;
+        d += 0.5 * sin(a + i * uv.y) * waveIntensity_final;
     }
     
     // Restore time offset
-    d += (time * TimeMultiplier * AnimationSpeed);
+    d += (time * 0.3);
     
-    // Calculate RGB channels using the accumulated values
-    float r = cos(uv.x * a) * RedChannel + RedOffset;
-    float g = cos(uv.y * d) * GreenChannel + GreenOffset;
-    float b = cos(a + d) * BlueChannel + BlueOffset;
+    // Calculate RGB channels using the accumulated values and consolidated parameters
+    float r = cos(uv.x * a) * ChannelWeights.r + ChannelOffsets.r;
+    float g = cos(uv.y * d) * ChannelWeights.g + ChannelOffsets.g;
+    float b = cos(a + d) * ChannelWeights.b + ChannelOffsets.b;
     
-    float3 col = float3(r, g, b) * ColorIntensity;
+    float3 col = float3(r, g, b) * colorIntensity_final;
     
     // Apply color grading if enabled
     if (EnableColorGrading) {
@@ -225,7 +204,7 @@ float3 calculateGlossyGradientPattern(float2 uv, float time, float audioValue) {
 
 float4 PS_GlossyGradient(float4 vpos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target {
     float4 finalColor = tex2D(ReShade::BackBuffer, texcoord);
-    float time = AS_getTime();
+    float time = AS_getAnimationTime(AnimationSpeed, AnimationKeyframe);
     
     // Get audio reactivity value
     float audioValue = AS_getAudioSource(AudioSource) * AudioMultiplier;
