@@ -255,7 +255,7 @@ float4 GenerateEffectMapsPS(float4 vpos : SV_Position, float2 texcoord : TEXCOOR
 
     float hiddenRotation = AS_PI; 
     float actualRotation = -AS_getRotationRadians(SnapRotation, FineRotation) + hiddenRotation;
-    float2 centered_uv_no_perspective = AS_transformCoord(texcoord, PositionOffset, Scale, actualRotation); // Renamed to clarify
+    float2 centered_uv_no_perspective = AS_transformUVCentered(texcoord, PositionOffset, Scale, actualRotation); // Renamed to clarify
     
     // Apply perspective transform
     float2 aspect_corrected_centered_uv = centered_uv_no_perspective;

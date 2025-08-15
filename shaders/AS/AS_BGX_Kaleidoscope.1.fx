@@ -202,7 +202,7 @@ float2 kaleidoscope_transform(float2 uv, int sectors) {
     float num_sectors_float = (float)sectors;
     float slice_angle_rad = AS_PI / num_sectors_float; 
     
-    angle = fmod(angle, 2.0 * slice_angle_rad);
+    angle = AS_mod(angle, 2.0 * slice_angle_rad);
     if (angle < 0.0) {
         angle += 2.0 * slice_angle_rad;
     }

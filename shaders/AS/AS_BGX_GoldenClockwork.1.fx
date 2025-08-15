@@ -58,7 +58,7 @@ sampler sBackBuffer { Texture = ReShade::BackBufferTex; SRGBTexture = true; }; /
 // ============================================================================
 // CONSTANTS & MACROS (Replaces original COMMON section)
 // ============================================================================
-#define ROT(a)          float2x2(cos(a), sin(a), -sin(a), cos(a))
+// Rotation now uses AS_rot2x2 from AS_Utils
 #define PSIN(x)         (0.5f + 0.5f * sin(x))
 #define LESS(a, b, c)   lerp(a, b, step(0.0f, c))
 #define SABS(x, k)      LESS((0.5f / (k)) * (x) * (x) + (k) * 0.5f, abs(x), abs(x) - (k))
@@ -238,13 +238,13 @@ float3 ddoffset_path(float z) {
 float weird(float2 p, float h_param, float current_time_scaled, float final_fractal_scale) {
     float z = 4.0f;
     float tm = 0.1f * current_time_scaled + h_param * 10.0f; 
-    p = mul(p, ROT(tm * 0.5f));
+    p = mul(p, AS_rot2x2(tm * 0.5f));
     float r = 0.5f;
     float4 off_local = float4(r * PSIN(tm * sqrt(3.0f)), r * PSIN(tm * sqrt(1.5f)), r * PSIN(tm * sqrt(2.0f)), 0.0f);
     float4 pp = float4(p.x, p.y, 0.0f, 0.0f) + off_local;
     pp.w = 0.125f * (1.0f - tanh_approx(length(pp.xyz)));
-    pp.yz = mul(pp.yz, ROT(tm));
-    pp.xz = mul(pp.xz, ROT(tm * sqrt(0.5f)));
+    pp.yz = mul(pp.yz, AS_rot2x2(tm));
+    pp.xz = mul(pp.xz, AS_rot2x2(tm * sqrt(0.5f)));
     pp /= z;
     float d = apollian(pp, 0.8f + h_param, final_fractal_scale);
     return d * z;
@@ -312,7 +312,7 @@ float4 plane(float3 ro, float3 rd, float3 pp_plane, float pd, float3 off_param, 
     float3 lp1 = ro + loff_plane;
     float3 lp2 = ro + loff_plane * float3(-2.0f, 1.0f, 1.0f);
 
-    float2x2 rot_mat_plane = ROT(AS_TWO_PI * h_hash);
+    float2x2 rot_mat_plane = AS_rot2x2(AS_TWO_PI * h_hash);
 
     float2 d2_val = df_transformed(pp_plane, off_param, s_scale_plane, rot_mat_plane, h_hash, golden_clockwork_time, final_fractal_scale, final_k_strength, final_k_reps);
 

@@ -380,7 +380,7 @@ float4 PS_OilPaintingDrawing(float4 pos : SV_Position, float2 texcoord : TEXCOOR
             brushPos.xy += gridW * (getRand_idx(pidx + int(animTime * 123.0)).xy - 0.5);
             
             // More trigonal grid by displacing every 2nd line
-            brushPos.x += gridW * 0.5 * (fmod(float(pidx2) / float(NumY2), 2.0) - 0.5);
+            brushPos.x += gridW * 0.5 * (AS_mod(float(pidx2) / float(NumY2), 2.0) - 0.5);
             
             float2 g = getGradMax(brushPos.xy, gridW * 1.0) * 0.5 + getGradMax(brushPos.xy, gridW * 0.12) * 0.5
                        + 0.0003 * sin(current_pos / Res * 20.0); // Add some gradient to plain areas

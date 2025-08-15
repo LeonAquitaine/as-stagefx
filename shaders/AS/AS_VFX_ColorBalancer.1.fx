@@ -285,7 +285,7 @@ float3 AS_srgb_to_linear(float3 c_srgb) {
 
 // Normalize hue to 0-360 range
 float norm_hue(float h) {
-    return fmod(fmod(h, 360.0) + 360.0, 360.0);
+    return AS_mod(AS_mod(h, 360.0) + 360.0, 360.0);
 }
 
 // RGB to HSL conversion

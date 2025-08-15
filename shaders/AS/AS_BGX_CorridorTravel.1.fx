@@ -275,7 +275,7 @@ float4 PS_CorridorTravel(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0)
     
     // Apply position and scale only (without rotation) using standard AS function
     // Rotation will be handled separately in the 3D scene
-    float2 uv = AS_transformCoord(texcoord, CorridorTravel_Position, CorridorTravel_Scale, 0.0);
+    float2 uv = AS_transformUVCentered(texcoord, CorridorTravel_Position, CorridorTravel_Scale, 0.0);
     
     float3 total_color = float3(0.0f, 0.0f, 0.0f);
     

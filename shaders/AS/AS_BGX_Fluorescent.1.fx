@@ -165,7 +165,7 @@ float4 PS_Fluorescent(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : 
     float2 rotatedCoord = AS_applyRotation(centeredCoord, rotation);
     
     // Apply position and scale
-    float2 transformedCoord = AS_applyPosScale(rotatedCoord, Position, Scale);
+    float2 transformedCoord = AS_applyPositionAndScale(rotatedCoord, Position, Scale);
     
     float4 finalColor = float4(0.0, 0.0, 0.0, 0.0); // Accumulated color
     float time = AS_getAnimationTime(AnimationSpeed, AnimationKeyframe);

@@ -356,7 +356,7 @@ float3 HSVtoRGB(float3 hsv) {
     float s = hsv.y;
     float v = hsv.z;
     float c = v * s;
-    float x = c * (1.0 - abs(fmod(h, ARTDECO_SQUARE_SPACE_SCALE) - 1.0));
+    float x = c * (1.0 - abs(AS_mod(h, ARTDECO_SQUARE_SPACE_SCALE) - 1.0));
     float m = v - c;
     
     float3 rgb;

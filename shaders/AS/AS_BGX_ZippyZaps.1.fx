@@ -334,7 +334,7 @@ float4 ShaderToyPS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD0) : SV_
 
         float2 val_for_tanh_vec = tanhArgFactor * dot_u_u_scalar * cos_res_for_tanh; 
         
-        float2 tanh_term_vec = stanh(val_for_tanh_vec) / Tanh_Divisor; 
+    float2 tanh_term_vec = tanh(val_for_tanh_vec) / Tanh_Divisor; 
 
         // Invert the Arc Flow Factor behavior - higher values now create more chaotic patterns
         // by inverting the mix factor scaling (1.0 - factor)

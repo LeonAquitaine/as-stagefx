@@ -215,9 +215,9 @@ float4 PS_GFX_Hologram(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : S
     float3 baseColor;
     if (HologramPalette == AS_PALETTE_RAINBOW) {
         // Rainbow mode - original logic
-        float r = fmod(hue_input * 6.0 + 0.0, 6.0);
-        float g = fmod(hue_input * 6.0 + 2.0, 6.0);
-        float b = fmod(hue_input * 6.0 + 4.0, 6.0);
+    float r = AS_mod(hue_input * 6.0 + 0.0, 6.0);
+    float g = AS_mod(hue_input * 6.0 + 2.0, 6.0);
+    float b = AS_mod(hue_input * 6.0 + 4.0, 6.0);
         float3 hue = clamp(abs(float3(r, g, b) - 3.0) - 1.0, 0.0, 1.0);
         
         float3 gray = 0.7;

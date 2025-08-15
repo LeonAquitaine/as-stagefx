@@ -114,7 +114,8 @@ static float3 g_lp;
 static float3 g_pp;
 static float2 g_c;
 
-float2x2 rot(float a) { return float2x2(cos(a), sin(a), -sin(a), cos(a)); }
+// Use centralized rotation helper
+// float2x2 rot(float a) { return float2x2(cos(a), sin(a), -sin(a), cos(a)); }
 
 // License: MIT, author: Inigo Quilez
 float3 aces_approx(float3 v) {
@@ -169,7 +170,7 @@ float modPolar3(inout float2 p) {
 }
 
 float df(float3 p, float time) {
-    const float2x2 R1 = rot(AS_PI / 3.0);
+    const float2x2 R1 = AS_rot2x2(AS_PI / 3.0);
     const float2 off2 = mul(R1, float2(SimplexOff, 0.0));
 
     float loff = -2.0 * g_h.x * time;

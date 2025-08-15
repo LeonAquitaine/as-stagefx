@@ -298,7 +298,7 @@ float4 PS_RaymarchedChain(float4 vpos : SV_Position, float2 texcoord : TEXCOORD)
     
     // Apply standard AS coordinate transformation
     float effect_rotation = AS_getRotationRadians(EffectRotationSnap * -1, EffectRotationFine * -1);
-    float2 uv_norm = AS_transformCoord(texcoord, EffectCenter, EffectScale, effect_rotation);
+    float2 uv_norm = AS_transformUVCentered(texcoord, EffectCenter, EffectScale, effect_rotation);
     
     // Camera setup
     float3 ro = CameraPosition; // Camera position from UI

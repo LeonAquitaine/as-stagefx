@@ -231,9 +231,9 @@ float4 PS_CircularSpectrumDots(float4 vpos : SV_Position, float2 texcoord : TexC
     {
                 return originalColor;    }
 
-    // Standard AS coordinate transformation using AS_transformCoord
+    // Standard AS coordinate transformation using AS_transformUVCentered
     float globalRotation = AS_getRotationRadians(SnapRotation, FineRotation);
-    float2 uv = AS_transformCoord(texcoord, EffectCenter, EffectScale, globalRotation);    // Level-of-detail optimization: reduce quality for pixels far from center
+    float2 uv = AS_transformUVCentered(texcoord, EffectCenter, EffectScale, globalRotation);    // Level-of-detail optimization: reduce quality for pixels far from center
     float2 center_offset = uv - float2(0.0, 0.0);
     float distance_from_center = length(center_offset);
     

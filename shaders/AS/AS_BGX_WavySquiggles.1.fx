@@ -282,7 +282,7 @@ float4 WavySquigglesPS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD) : 
         float2 fpos = frac(sc * uv + 0.5 * i * patternCenter) - 0.5;
         
         // Apply rotation based on angle of direction vector
-        fpos = mul(Rot(a), fpos);
+    fpos = mul(AS_rot2x2(a), fpos);
         
         // Use x-component of rotated pattern for distance calculation
         float d = abs(fpos.x);

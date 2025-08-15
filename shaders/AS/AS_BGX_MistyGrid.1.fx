@@ -172,8 +172,8 @@ float3 fr_hlsl(float3 p, float t_param, float effect_time, float fold_amount) {
     // The loop should be unrollable by the compiler as it's small and fixed.
     int iterations = clamp((int)FractalIterations, 1, 5);
     for (int i = 0; i < iterations; ++i) {
-        float t2 = t_param + (float)i;        p.xy = mul(p.xy, rot_hlsl(t2));
-        p.yz = mul(p.yz, rot_hlsl(t2 * 0.7));
+    float t2 = t_param + (float)i;        p.xy = mul(p.xy, AS_rot2x2(t2));
+    p.yz = mul(p.yz, AS_rot2x2(t2 * 0.7));
 
         float fold_dist = fold_amount;
         p = (frac(p / fold_dist - 0.5) - 0.5) * fold_dist; // Domain folding
@@ -217,7 +217,7 @@ float map_hlsl(float3 p, float effect_time, inout float at_acc, inout float at2_
     
     float fold_dist_map = 1.0;
     float3 p_box3 = (frac(p_fr1 / fold_dist_map - 0.5) - 0.5) * fold_dist_map; // Using p_fr1 for this box
-    float d3 = box_hlsl(p_box3, BOX3_SIZE);
+    float d3 = AS_sdfBox(p_box3, BOX3_SIZE);
     d = d - d3 * BOOLEAN_FACTOR; // Subtracting another SDF (boolean subtraction or erosion)    // Accumulate 'at_acc' based on proximity to the current surface 'd'
     at_acc += AT1_FACTOR / (AT1_FACTOR + abs(d));
 
@@ -242,7 +242,7 @@ void cam_hlsl(inout float3 p, float effect_time, float rotationAngle) {
     float t_cam_internal = effect_time * CAM_TIME_FACTOR * CameraSpeed; // Apply camera speed
 
     // Apply standard rotation
-    float2x2 baseCamRot = rot_hlsl(rotationAngle);
+    float2x2 baseCamRot = AS_rot2x2(rotationAngle);
     p.xy = mul(p.xy, baseCamRot);
     
     // Apply animated rotations
@@ -301,7 +301,7 @@ float4 MainPS(float4 vpos : SV_Position, float2 texcoord : TexCoord) : SV_Target
 
     // Apply standard AS coordinate transformations
     float2 centerCoord = AS_centeredUVWithAspect(texcoord, ReShade::AspectRatio);
-    centerCoord = AS_applyPosScale(centerCoord, EffectPosition, EffectScale);
+    centerCoord = AS_applyPositionAndScale(centerCoord, EffectPosition, EffectScale);
 
     // Initialize accumulators for this pixel
     float at_accumulator = 0.0;

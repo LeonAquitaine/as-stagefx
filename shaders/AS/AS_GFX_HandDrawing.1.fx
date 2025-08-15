@@ -354,7 +354,7 @@ float4 PS_HandDrawn(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : SV
                 
                 // Calculate line intensity based on gradient alignment with stroke direction
                 fact = dot(g, v_stroke_dir) - 0.5f * abs(dot(g, v_stroke_dir.yx * float2(1.0f, -1.0f)));
-                fact2 = dot(normalize(g + EPSILON.xx), v_stroke_dir.yx * float2(1.0f, -1.0f));
+                fact2 = dot(normalize(g + AS_EPSILON.xx), v_stroke_dir.yx * float2(1.0f, -1.0f));
                 
                 // Clamp and adjust line intensity
                 fact = clamp(fact, 0.0f, MaxIndividualLineOpacity);
@@ -372,7 +372,7 @@ float4 PS_HandDrawn(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : SV
     }
 
     // Normalize fill color accumulation
-    if (sum_factor > EPSILON) 
+    if (sum_factor > AS_EPSILON) 
         col2_accum /= sum_factor; 
     else 
         col2_accum = 0.0f.xxx;

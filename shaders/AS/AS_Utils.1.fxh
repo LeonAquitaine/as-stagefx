@@ -403,27 +403,7 @@ float AS_mod(float x, float y) {
     return x - y * floor(x / y);
 }
 
-// Avoid shadowing HLSL's fmod intrinsic
-
-// Back-compat: Some ported shaders use fmod in places ReShade HLSL lacks overloads.
-// Map to a safe scalar modulus implementation. For vectors, apply per-component.
-#ifndef AS_FMOD_COMPAT
-#define AS_FMOD_COMPAT 1
-float fmod(float x, float y) { return AS_mod(x, y); }
-float2 fmod(float2 x, float2 y) { return float2(AS_mod(x.x, y.x), AS_mod(x.y, y.y)); }
-float3 fmod(float3 x, float3 y) { return float3(AS_mod(x.x, y.x), AS_mod(x.y, y.y), AS_mod(x.z, y.z)); }
-float4 fmod(float4 x, float4 y) { return float4(AS_mod(x.x, y.x), AS_mod(x.y, y.y), AS_mod(x.z, y.z), AS_mod(x.w, y.w)); }
-float fmod(float x, float y, float dummy) { return AS_mod(x, y); } // defensive extra signature
-#endif
-
-// Back-compat: Rot() alias used by a few older shaders → map to AS_rot2x2
-float2x2 Rot(float radians) { return AS_rot2x2(radians); }
-
-// Back-compat: stanh (saturating tanh) for float/scalar and vector types
-float stanh(float x) { return tanh(x); }
-float2 stanh(float2 x) { return float2(tanh(x.x), tanh(x.y)); }
-float3 stanh(float3 x) { return float3(tanh(x.x), tanh(x.y), tanh(x.z)); }
-float4 stanh(float4 x) { return float4(tanh(x.x), tanh(x.y), tanh(x.z), tanh(x.w)); }
+// Avoid shadowing HLSL's fmod intrinsic — prefer AS_mod directly
 
 // Depth mask helper commonly referenced by effects: maps linear depth into [0,1] mask
 // depth: linearized scene depth at pixel
@@ -885,21 +865,7 @@ float2 AS_applyPosScale(float2 coord, float2 pos, float scale)
     return AS_applyPositionAndScale(coord, pos, scale);
 }
 
-// Math/epsilon legacy macro
-#ifndef EPSILON
-    #define EPSILON AS_EPSILON
-#endif
-
-// Legacy helpers used in a few older ports
-float2x2 rot_hlsl(float angleRadians)
-{
-    return AS_rot2x2(angleRadians);
-}
-
-float box_hlsl(float3 p, float3 halfSize)
-{
-    return AS_sdfBox(p, halfSize);
-}
+// (Removed) Legacy EPSILON macro alias and legacy rot_hlsl/box_hlsl helpers
 
 // ============================================================================
 // DEPTH, SURFACE & VISUAL EFFECTS

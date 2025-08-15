@@ -221,7 +221,7 @@ float4 PS_MeltWave(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Ta
     float c = cos(-rotation);
     float2 rotated = float2(centered.x * c - centered.y * s, centered.x * s + centered.y * c);
     // Now apply position and scale
-    float2 p = AS_applyPosScale(rotated, Position, Scale);
+    float2 p = AS_applyPositionAndScale(rotated, Position, Scale);
     p *= 2.0; // Expand to -2 to 2 range for effect intensity
     // Apply aspect ratio correction for resolution independence
     p.x /= aspectRatio;
