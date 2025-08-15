@@ -670,8 +670,17 @@
       "performance": "Moderate",
       "filename": "AS_VFX_VolumetricFog.1.fx",
       "author": "Leon Aquitaine"
+    },
+    {
+      "name": "AS_VFX_GlossyGradient.1",
+      "filename": "AS_VFX_GlossyGradient.1.fx",
+      "credits": {
+        "license": "Creative Commons Attribution 4.0 International"
+      },
+      "performance": "Light",
+      "author": "Leon Aquitaine"
     }
   ],
-  "count": 57,
-  "generated": "2025-06-28"
+  "count": 58,
+  "generated": "2025-08-15"
 }

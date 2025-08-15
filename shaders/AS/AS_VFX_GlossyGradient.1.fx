@@ -226,7 +226,7 @@ float4 PS_GlossyGradient(float4 vpos : SV_Position, float2 texcoord : TEXCOORD) 
     }
     
     // Apply blend mode
-    finalColor = AS_applyBlend(float4(col, 1.0), finalColor, BlendMode, BlendAmount);
+    finalColor = AS_blendRGBA(float4(col, 1.0), finalColor, BlendMode, BlendAmount);
     
     return finalColor;
 }

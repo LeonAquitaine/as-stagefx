@@ -478,7 +478,7 @@ float4 PS_BloomH(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Targ
     }
     
     // Normalize and apply intensity
-    color /= max(weightSum, 1e-6);
+    color /= max(weightSum, AS_STABILITY_EPSILON);
     color *= bloomIntensity;
     
     return color;
@@ -531,7 +531,7 @@ float4 PS_BloomV(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Targ
         }
         
         // Normalize
-        bloomColor /= max(weightSum, 1e-6);
+    bloomColor /= max(weightSum, AS_STABILITY_EPSILON);
         bloom = bloomColor.rgb;
     }
     
@@ -542,7 +542,7 @@ float4 PS_BloomV(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Targ
     result += sparkles + bloom;
     
     // Apply blend mode and amount
-    float3 blendedColor = AS_applyBlend(result, originalColor.rgb, BlendMode);
+    float3 blendedColor = AS_blendRGB(result, originalColor.rgb, BlendMode);
     result = lerp(originalColor.rgb, blendedColor, DebugMode == 5 ? 1.0 : BlendAmount);
     
     return float4(result, originalColor.a);

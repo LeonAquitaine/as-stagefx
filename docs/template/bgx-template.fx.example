@@ -125,7 +125,7 @@ float4 EffectPS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD) : SV_TARG
     effectColor = lerp(BackgroundColor, effectColor, noiseValue);
     
     // Apply blending
-    float3 blendedColor = AS_applyBlend(effectColor, originalColor.rgb, BlendMode);
+    float3 blendedColor = AS_blendRGB(effectColor, originalColor.rgb, BlendMode);
     float4 finalColor = float4(blendedColor, 1.0);
     finalColor = lerp(originalColor, finalColor, BlendStrength);
     

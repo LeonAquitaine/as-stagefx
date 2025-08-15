@@ -50,7 +50,7 @@ namespace ASPastRacer {
 // ============================================================================
 
 // --- Scene Constants ---
-static const float AS_PI = 3.1415926535f;
+// Use AS_PI from AS_Utils
 static const int DEFAULT_SCENE_SELECTION = 0;
 static const float DEFAULT_GLOBAL_TIME_SCALE = 1.0f;
 
@@ -209,9 +209,7 @@ float GetTickedValue(float tTick, float dTick, float transitionPower) {
 float SDF_Box(float3 pBox, float3 sBox) { pBox = abs(pBox) - sBox; return max(pBox.x, max(pBox.y, pBox.z));}
 
 // --- Transformation Utilities ---
-float2x2 GetRotationMatrix(float angleRot) {
-    float ca = cos(angleRot); float sa = sin(angleRot); return float2x2(ca, -sa, sa, ca); 
-}
+// Use shared rotation matrix helper (negated angle to preserve original clockwise rotation semantics)
 
 // --- Scene-Specific Effects ---
 float SDE_GridPattern(float3 pGrid, float timeVal) {
@@ -220,8 +218,8 @@ float SDE_GridPattern(float3 pGrid, float timeVal) {
     for(int iGrid = 0; iGrid < 3; ++iGrid) {
         float iGridF = (float)iGrid;
         pGrid *= 1.7f; 
-        pGrid.xz = mul(pGrid.xz, GetRotationMatrix(0.3f + iGridF)); 
-        pGrid.xy = mul(pGrid.xy, GetRotationMatrix(0.4f + iGridF * 1.3f)); 
+    pGrid.xz = mul(pGrid.xz, AS_rot2x2(-(0.3f + iGridF))); 
+    pGrid.xy = mul(pGrid.xy, AS_rot2x2(-(0.4f + iGridF * 1.3f))); 
         pGrid += float3(0.1f, 0.3f, -0.13f) * (iGridF + 1.0f); 
         float3 gComp = abs(frac(pGrid) - 0.5f) * 2.0f;
         vGrid -= min(gComp.x, min(gComp.y, gComp.z)) * 0.7f;
@@ -237,13 +235,13 @@ float SDE_DescribeWorld_Scene0(float3 pWorld, float timeVal, inout float accAt, 
     // Apply scene-specific animation speed
     float animatedTime = timeVal * S0AnimSpeed;
     
-    pWorld.xz = mul(pWorld.xz, GetRotationMatrix(sin(-length(pWorld.xz) * 0.07f + animatedTime * 1.0f) * 1.0f));
+    pWorld.xz = mul(pWorld.xz, AS_rot2x2(-sin(-length(pWorld.xz) * 0.07f + animatedTime * 1.0f) * 1.0f));
     pWorld.y += pow(smoothstep(0.0f, 1.0f, sin(-pow(length(pWorld.xz), 2.0f) * 0.001f + animatedTime * 4.0f)), 3.0f) * 4.0f;
     dWorld = -pWorld.y; 
     for(int iMap0 = 0; iMap0 < 4; ++iMap0) {
         float iMap0F = (float)iMap0;
         float3 p2Map0 = pWorld;
-        p2Map0.xz = mul(p2Map0.xz, GetRotationMatrix(iMap0F + 0.7f));
+    p2Map0.xz = mul(p2Map0.xz, AS_rot2x2(-(iMap0F + 0.7f)));
         p2Map0.xz -= 7.0f; 
         float2 repIdVec = GetRepeatID2(p2Map0.xz, float2(10.0f, 10.0f));
         float2 rndForFft = Hash2DTo2D(repIdVec); 
@@ -254,23 +252,23 @@ float SDE_DescribeWorld_Scene0(float3 pWorld, float timeVal, inout float accAt, 
         dWorld = min(dWorld, SDF_Box(p2Map0, float3(S0BoxSize, 0.3f * fftVal, S0BoxSize)));
     }
     float3 p3Map0 = pWorld; float t3Map0 = animatedTime * 0.13f;
-    p3Map0.xz = mul(p3Map0.xz, GetRotationMatrix(t3Map0));
-    p3Map0.xy = mul(p3Map0.xy, GetRotationMatrix(t3Map0 * 1.3f));
+    p3Map0.xz = mul(p3Map0.xz, AS_rot2x2(-t3Map0));
+    p3Map0.xy = mul(p3Map0.xy, AS_rot2x2(-(t3Map0 * 1.3f)));
     p3Map0 = RepeatCentered3(p3Map0, float3(5.0f, 5.0f, 5.0f));
     float d2Map0 = SDF_Box(p3Map0, float3(1.7f, 1.7f, 1.7f)); 
     dWorld = min(dWorld, dWorld - d2Map0 * 0.1f);
     float3 p4Map0 = pWorld; float t4Map0Rot = animatedTime * 1.33f;
     p4Map0.xz = RepeatCentered2(p4Map0.xz, float2(200.0f, 200.0f));
-    p4Map0.yz = mul(p4Map0.yz, GetRotationMatrix(t4Map0Rot));
-    p4Map0.xz = mul(p4Map0.xz, GetRotationMatrix(t4Map0Rot * 1.3f));
+    p4Map0.yz = mul(p4Map0.yz, AS_rot2x2(-t4Map0Rot));
+    p4Map0.xz = mul(p4Map0.xz, AS_rot2x2(-(t4Map0Rot * 1.3f)));
     
     // Apply flare scale to the first flare accumulator
     accAt += 0.04f * S0FlareScale / (1.2f + abs(length(p4Map0.xz) - 17.0f));
     
     float3 p5Map0 = pWorld; float t5Map0 = animatedTime * 1.23f;
     p5Map0.xz = RepeatCentered2(p5Map0.xz, float2(200.0f, 200.0f));
-    p5Map0.yz = mul(p5Map0.yz, GetRotationMatrix(t5Map0 * 0.7f));
-    p5Map0.xy = mul(p5Map0.xy, GetRotationMatrix(t5Map0));
+    p5Map0.yz = mul(p5Map0.yz, AS_rot2x2(-(t5Map0 * 0.7f)));
+    p5Map0.xy = mul(p5Map0.xy, AS_rot2x2(-t5Map0));
     
     // Apply flare scale to the second flare accumulator
     accAt2 += 0.04f * S0FlareScale / (1.2f + abs(SDF_Box(p5Map0, float3(37.0f, 37.0f, 37.0f))));
@@ -285,7 +283,7 @@ float SDE_DescribeWorld_Scene1(float3 pWorld, float timeVal, inout float accAt, 
     
     float ppyMap1 = pWorld.y;
     pWorld.y = RepeatCentered(pWorld.y, 300.0f);
-    pWorld.xz = mul(pWorld.xz, GetRotationMatrix(sin(-length(pWorld.xz) * 0.0007f + animatedTime * 0.5f + ppyMap1 * 0.005f) * 1.0f));
+    pWorld.xz = mul(pWorld.xz, AS_rot2x2(-sin(-length(pWorld.xz) * 0.0007f + animatedTime * 0.5f + ppyMap1 * 0.005f) * 1.0f));
     float3 p4Map1 = pWorld;
     
     // Apply tunnel size uniform
@@ -295,7 +293,7 @@ float SDE_DescribeWorld_Scene1(float3 pWorld, float timeVal, inout float accAt, 
     dWorld = max(dWorld, -SDF_Box(p4Map1, float3(ssMap1, 100.0f, ssMap1)));
     dWorld = max(dWorld, -SDF_Box(p4Map1, float3(100.0f, ssMap1, ssMap1)));
     float3 p3Map1 = pWorld;
-    p3Map1.xz = mul(p3Map1.xz, GetRotationMatrix(sin(animatedTime * 3.0f + pWorld.y * 0.01f) * 0.3f));
+    p3Map1.xz = mul(p3Map1.xz, AS_rot2x2(-sin(animatedTime * 3.0f + pWorld.y * 0.01f) * 0.3f));
     p3Map1.xz = abs(p3Map1.xz) - 30.0f;
     p3Map1.xz = abs(p3Map1.xz) - 10.0f * (sin(animatedTime + pWorld.y * 0.05f) * 0.5f + 0.5f);
     dWorld = min(dWorld, length(p3Map1.xz) - 5.0f);
@@ -307,16 +305,16 @@ float SDE_DescribeWorld_Scene1(float3 pWorld, float timeVal, inout float accAt, 
     
     float3 p6Map1 = pWorld; float t6Map1 = animatedTime * 1.33f;
     p6Map1.xz = RepeatCentered2(p6Map1.xz, float2(40.0f, 40.0f));
-    p6Map1.yz = mul(p6Map1.yz, GetRotationMatrix(t6Map1));
-    p6Map1.xz = mul(p6Map1.xz, GetRotationMatrix(t6Map1 * 1.3f));
+    p6Map1.yz = mul(p6Map1.yz, AS_rot2x2(-t6Map1));
+    p6Map1.xz = mul(p6Map1.xz, AS_rot2x2(-(t6Map1 * 1.3f)));
     accAt += 0.04f / (1.2f + abs(length(p6Map1.xz) - 17.0f));
     float3 p5Map1 = pWorld; float t5Map1 = animatedTime * 1.23f;
-    p5Map1.yz = mul(p5Map1.yz, GetRotationMatrix(t5Map1 * 0.7f));
-    p5Map1.xy = mul(p5Map1.xy, GetRotationMatrix(t5Map1));
+    p5Map1.yz = mul(p5Map1.yz, AS_rot2x2(-(t5Map1 * 0.7f)));
+    p5Map1.xy = mul(p5Map1.xy, AS_rot2x2(-t5Map1));
     accAt2 += 0.04f / (0.7f + abs(SDF_Box(p5Map1, float3(37.0f, 37.0f, 37.0f))));
     float3 p7Map1 = pWorld; float t3Map1 = animatedTime * 0.13f;
-    p7Map1.xz = mul(p7Map1.xz, GetRotationMatrix(t3Map1));
-    p7Map1.xy = mul(p7Map1.xy, GetRotationMatrix(t3Map1 * 1.3f));
+    p7Map1.xz = mul(p7Map1.xz, AS_rot2x2(-t3Map1));
+    p7Map1.xy = mul(p7Map1.xy, AS_rot2x2(-(t3Map1 * 1.3f)));
     p7Map1 = RepeatCentered3(p7Map1, float3(5.0f, 5.0f, 5.0f));
     float d7Map1 = SDF_Box(p7Map1, float3(1.7f, 1.7f, 1.7f)); 
     dWorld = min(dWorld, dWorld * 0.7f - d7Map1 * 0.7f); 
@@ -336,16 +334,15 @@ float4 PS_PastRacer_Common(float4 vpos, float2 texcoord, bool isScene0)
         return tex2D(ReShade::BackBuffer, texcoord);
     }
     
-    // Time calculation
+        // Time calculation
     float masterTime = AS_getTime() * GlobalTimeScale;
     float currentTime = AS_mod(masterTime, 300.0f);
-      // UV Setup - applying resolution-independent aspect ratio correction
-    float2 uv = texcoord - 0.5f; 
-    uv.x *= ReShade::AspectRatio; 
-    uv.y *= -1.0f;
+            // UV Setup - apply resolution-independent aspect ratio correction via shared helper
+        float2 uv = AS_centeredUVWithAspect(texcoord, ReShade::AspectRatio);
+        uv.y *= -1.0f; // Match original coordinate system (invert Y)
     
     // Calculate a resolution scale factor to ensure consistent sizing across different resolutions
-    float resolutionScale = (float)BUFFER_HEIGHT / 1080.0;
+    float resolutionScale = (float)BUFFER_HEIGHT / AS_RESOLUTION_BASE_HEIGHT;
     
     // Accumulators for flare effects
     float atAccumulator = 0.0f;
@@ -389,8 +386,8 @@ float4 PS_PastRacer_Common(float4 vpos, float2 texcoord, bool isScene0)
     float camAdv = currentTime * 0.1f; 
     if (!DisableCameraAutomation) {
         // Apply camera shake scaled by the user's setting
-        initialRayOrigin.yz = mul(initialRayOrigin.yz, GetRotationMatrix(sin(camAdv * 0.3f) * CameraShakeAmount + 0.5f));
-        initialRayOrigin.xz = mul(initialRayOrigin.xz, GetRotationMatrix(camAdv));
+    initialRayOrigin.yz = mul(initialRayOrigin.yz, AS_rot2x2(-(sin(camAdv * 0.3f) * CameraShakeAmount + 0.5f)));
+    initialRayOrigin.xz = mul(initialRayOrigin.xz, AS_rot2x2(-camAdv));
     }
  
     // Scene-specific camera adjustments
@@ -519,8 +516,8 @@ float4 PS_PastRacer_Common(float4 vpos, float2 texcoord, bool isScene0)
     accumulatedColor += lightingColor2 * (1.0f - actualLightingPart); // Mix in the "other" lighting based on the part not taken by flare mood
     
     // Apply post-processing
-    // Vignette
-    accumulatedColor *= (VignetteStrength - length(uv));
+    // Vignette (clamped to avoid negative inversion near corners)
+    accumulatedColor *= saturate(VignetteStrength - length(uv));
     
     // Glow
     accumulatedColor += max(accumulatedColor.yzx - 1.0f, 0.0f) * GlowIntensity;
@@ -530,7 +527,7 @@ float4 PS_PastRacer_Common(float4 vpos, float2 texcoord, bool isScene0)
     
     // Apply blend mode with background
     float4 originalColor = tex2D(ReShade::BackBuffer, texcoord);
-    float3 blended = AS_applyBlend(accumulatedColor, originalColor.rgb, BlendMode);
+    float3 blended = AS_blendRGB(accumulatedColor, originalColor.rgb, BlendMode);
     float3 result = lerp(originalColor.rgb, blended, BlendAmount);
         
     return float4(result, originalColor.a);

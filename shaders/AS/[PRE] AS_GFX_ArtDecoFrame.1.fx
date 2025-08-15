@@ -169,7 +169,7 @@ static const float BORDER_THICKNESS_MIN = 0.001f;
 static const float BORDER_THICKNESS_MAX = 0.1f;
 static const float BORDER_THICKNESS_DEFAULT = 0.02f;
 
-static const float TRAMLINE_THICKNESS_MIN = 0.0005f;
+static const float TRAMLINE_THICKNESS_MIN = AS_MIN_STROKE_THICKNESS;
 static const float TRAMLINE_THICKNESS_MAX = 0.01f;
 static const float TRAMLINE_THICKNESS_DEFAULT = 0.0015f;
 
@@ -189,7 +189,7 @@ static const float FAN_BASE_RADIUS_MIN = AS_RANGE_ZERO_ONE_MIN;
 static const float FAN_BASE_RADIUS_MAX = AS_HALF;
 static const float FAN_BASE_RADIUS_DEFAULT = 0.05f;
 
-static const float FAN_LINE_THICKNESS_MIN = 0.0005f;
+static const float FAN_LINE_THICKNESS_MIN = AS_MIN_STROKE_THICKNESS;
 static const float FAN_LINE_THICKNESS_MAX = 0.005f;
 static const float FAN_LINE_THICKNESS_DEFAULT = 0.001f;
 
@@ -213,14 +213,16 @@ static const float PALETTE_BLEND_DEFAULT = 0.3f;
 
 // Rotation constants
 static const float ARTDECO_SNAP_ROTATION_STEP = 90.0f;
-static const float ARTDECO_DEGREES_TO_RADIANS = AS_PI / 180.0f;
+// Use centralized conversion constants from AS_Utils
+// AS_DEGREES_TO_RADIANS already provided
 
 // Fan drawing constants
 static const float ARTDECO_FAN_MIN_DIST_INIT = 10.0f;
 static const float ARTDECO_BORDER_EDGE_DOUBLE = ARTDECO_BORDER_EDGE * 2.0f;
 
 // Palette integration constants
-static const float ARTDECO_PALETTE_RESOLUTION_BASE = 1080.0f;
+// Use centralized resolution baseline
+static const float ARTDECO_PALETTE_RESOLUTION_BASE = AS_RESOLUTION_BASE_HEIGHT;
 static const float ARTDECO_PALETTE_BLEND_FACTOR = 0.3f;
 static const int ARTDECO_PALETTE_NOISE_OCTAVES = 4;
 static const float ARTDECO_PALETTE_NOISE_LACUNARITY = 2.0f;
@@ -229,9 +231,9 @@ static const float ARTDECO_PALETTE_NOISE_GAIN = AS_HALF;
 // Coordinate transformation constants
 static const float ARTDECO_SQUARE_SPACE_SCALE = 2.0f;
 static const float ARTDECO_SCREEN_CENTER_FACTOR = AS_HALF;
-static const float ARTDECO_HSV_HUE_DIVISOR = 60.0f;
+static const float ARTDECO_HSV_HUE_DIVISOR = 60.0f; // TODO: could use AS_RADIANS_TO_DEGREES if angles were in radians
 static const float ARTDECO_THICKNESS_HALF_FACTOR = AS_HALF;
-static const float ARTDECO_EPSILON = 0.000001f;
+static const float ARTDECO_EPSILON = AS_EPS_SAFE;
 static const float ARTDECO_FILL_ALPHA_THRESHOLD = 0.1f;
 
 // === UI Controls ===
@@ -387,7 +389,7 @@ float3 GenerateProceduralGold(float2 uv, bool isFill) {
     float noiseBrightness_final = NoiseBrightness;
     
     if (AudioTarget > 0) {
-        float audioValue = AS_applyAudioReactivity(1.0, AudioSource, AudioMultiplier, true) - 1.0;
+    float audioValue = AS_audioModulateMul(1.0, AudioSource, AudioMultiplier, true) - 1.0;
         
         if (AudioTarget == 1) { // Gold Brightness
             goldBrightness_final = GoldBrightness + (GoldBrightness * audioValue * ARTDECO_AUDIO_BRIGHTNESS_SCALE);
@@ -614,9 +616,9 @@ float4 PS_Main(float4 pos : SV_Position, float2 uv : TEXCOORD) : SV_Target
     if (FanEnable && FansBehindDiamond) {
         float top_fan_y_dir = MirrorFansGlobally ? -1.0 : 1.0;
         float bottom_fan_y_dir = MirrorFansGlobally ? 1.0 : -1.0;
-        float3 goldLineColor = GenerateProceduralGold(uv, false);float4 upper_fan = drawFan(sq_base, float2(0.0, FanYOffset), top_fan_y_dir, FanLineCount, FanSpreadDegrees * ARTDECO_DEGREES_TO_RADIANS, FanBaseRadius, FanLength, FanLineThickness, goldLineColor);
+    float3 goldLineColor = GenerateProceduralGold(uv, false);float4 upper_fan = drawFan(sq_base, float2(0.0, FanYOffset), top_fan_y_dir, FanLineCount, FanSpreadDegrees * AS_DEGREES_TO_RADIANS, FanBaseRadius, FanLength, FanLineThickness, goldLineColor);
         output_color.rgb = lerp(output_color.rgb, upper_fan.rgb, upper_fan.a);
-        float4 lower_fan = drawFan(sq_base, float2(0.0, -FanYOffset), bottom_fan_y_dir, FanLineCount, FanSpreadDegrees * ARTDECO_DEGREES_TO_RADIANS, FanBaseRadius, FanLength, FanLineThickness, goldLineColor);
+    float4 lower_fan = drawFan(sq_base, float2(0.0, -FanYOffset), bottom_fan_y_dir, FanLineCount, FanSpreadDegrees * AS_DEGREES_TO_RADIANS, FanBaseRadius, FanLength, FanLineThickness, goldLineColor);
         output_color.rgb = lerp(output_color.rgb, lower_fan.rgb, lower_fan.a);    
         }    // 2. Main Diamond
     float3 fillColor = FrameFillColorBackup; // Keep original dark background
@@ -654,10 +656,10 @@ float4 PS_Main(float4 pos : SV_Position, float2 uv : TEXCOORD) : SV_Target
     if (FanEnable && !FansBehindDiamond) { 
         float top_fan_y_dir = MirrorFansGlobally ? -1.0 : 1.0;
         float bottom_fan_y_dir = MirrorFansGlobally ? 1.0 : -1.0;
-        float3 goldLineColorFans = GenerateProceduralGold(uv, false);float4 upper_fan = drawFan(sq_base, float2(0.0, FanYOffset), top_fan_y_dir, FanLineCount, FanSpreadDegrees * ARTDECO_DEGREES_TO_RADIANS, FanBaseRadius, effective_fan_length, FanLineThickness, goldLineColorFans);
+    float3 goldLineColorFans = GenerateProceduralGold(uv, false);float4 upper_fan = drawFan(sq_base, float2(0.0, FanYOffset), top_fan_y_dir, FanLineCount, FanSpreadDegrees * AS_DEGREES_TO_RADIANS, FanBaseRadius, effective_fan_length, FanLineThickness, goldLineColorFans);
         upper_fan.a *= diamond_clip_mask; 
         output_color.rgb = lerp(output_color.rgb, upper_fan.rgb, upper_fan.a);
-        float4 lower_fan = drawFan(sq_base, float2(0.0, -FanYOffset), bottom_fan_y_dir, FanLineCount, FanSpreadDegrees * ARTDECO_DEGREES_TO_RADIANS, FanBaseRadius, effective_fan_length, FanLineThickness, goldLineColorFans);lower_fan.a *= diamond_clip_mask; 
+    float4 lower_fan = drawFan(sq_base, float2(0.0, -FanYOffset), bottom_fan_y_dir, FanLineCount, FanSpreadDegrees * AS_DEGREES_TO_RADIANS, FanBaseRadius, effective_fan_length, FanLineThickness, goldLineColorFans);lower_fan.a *= diamond_clip_mask; 
         output_color.rgb = lerp(output_color.rgb, lower_fan.rgb, lower_fan.a);
     }    // === PALETTE INTEGRATION ===
     // Use gold surface noise as palette coordinate for cohesive color integration
@@ -676,12 +678,12 @@ float4 PS_Main(float4 pos : SV_Position, float2 uv : TEXCOORD) : SV_Target
       // === STAGE DEPTH AND FINAL PROCESSING ===
     // Apply stage depth masking
     float sceneDepth = ReShade::GetLinearizedDepth(uv);
-    float depthMask = AS_depthMask(sceneDepth, EffectDepth, 1.0, 1.0);
+    float depthMask = AS_depthFalloffMask(sceneDepth, EffectDepth, 1.0, 1.0);
     output_color.a *= depthMask;
     
     // Apply blend mode with background
     float4 background = tex2D(ReShade::BackBuffer, uv);
-    output_color = AS_applyBlend(background, output_color, BlendMode, BlendAmount);
+    output_color = AS_blendFgOverBg(output_color, background, BlendMode, BlendAmount);
     
     return output_color;
 }

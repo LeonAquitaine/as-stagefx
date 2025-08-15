@@ -115,7 +115,7 @@ float4 PS_SpectrumRing(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : S
     float4 orig = tex2D(ReShade::BackBuffer, texcoord);
     float sceneDepth = ReShade::GetLinearizedDepth(texcoord);
     
-    if (sceneDepth < EffectDepth - 0.0005)
+    if (sceneDepth < EffectDepth - AS_DEPTH_EPSILON)
         return orig;
     
     // Calculate spectrum ring position and coordinates
@@ -223,7 +223,7 @@ float4 PS_SpectrumRing(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : S
     }
     
     // Apply blend mode and blend amount
-    float3 blended = AS_applyBlend(color, orig.rgb, BlendMode);
+    float3 blended = AS_blendRGB(color, orig.rgb, BlendMode);
     float blendAlpha = edge * mask * alpha * BlendAmount;
     
     return float4(lerp(orig.rgb, blended, blendAlpha), 1.0);

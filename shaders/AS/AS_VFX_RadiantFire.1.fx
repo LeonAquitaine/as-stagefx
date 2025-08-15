@@ -370,7 +370,7 @@ float4 RenderFlamePS(float4 vpos : SV_Position, float2 texcoord : TexCoord) : SV
     
     float4 finalColorWithAlpha = float4(finalOutputColor, 1.0f);
     float4 baseSceneColorWithAlpha = float4(baseSceneColor, 1.0f); 
-    return AS_applyBlend(finalColorWithAlpha, baseSceneColorWithAlpha, OutputBlendMode, OutputBlendAmount);
+    return AS_blendRGBA(finalColorWithAlpha, baseSceneColorWithAlpha, OutputBlendMode, OutputBlendAmount);
 }
 
 // ============================================================================

@@ -44,7 +44,6 @@
 // ============================================================================
 // TUNABLE CONSTANTS
 // ============================================================================
-static const float PI = 3.1415926535f;
 static const float DEFAULT_TUNNEL_SIZE_XY = 0.9f;
 static const float DEFAULT_TUNNEL_LENGTH = 1000.0f;
 static const float DEFAULT_FOV = 2.0f;
@@ -68,9 +67,9 @@ uniform float PR_CamTime_TickStrength < ui_type = "drag"; ui_min = 0.0; ui_max =
 
 // --- Camera Animation ---
 uniform float PR_CamAnim_TimeScale < ui_type = "drag"; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_label = "Camera Speed"; ui_tooltip = "Speed of the camera's procedural animation path."; ui_category = "Animation"; > = 0.3f;
-uniform float PR_CamAnim_XZ_RotAmount < ui_type = "drag"; ui_min = 0.0; ui_max = 3.14159; ui_step = 0.01; ui_label = "Horizontal Rotation"; ui_tooltip = "Amplitude of camera rotation on the horizontal plane (yaw)."; ui_category = "Animation"; > = 0.3f;
+uniform float PR_CamAnim_XZ_RotAmount < ui_type = "drag"; ui_min = 0.0; ui_max = AS_PI; ui_step = 0.01; ui_label = "Horizontal Rotation"; ui_tooltip = "Amplitude of camera rotation on the horizontal plane (yaw)."; ui_category = "Animation"; > = 0.3f;
 uniform float PR_CamAnim_XY_TimeFactor < ui_type = "drag"; ui_min = 0.1; ui_max = 2.0; ui_step = 0.01; ui_label = "Roll Rotation Speed"; ui_tooltip = "Speed of camera roll rotation."; ui_category = "Animation"; > = 0.7f;
-uniform float PR_CamAnim_XY_RotAmount < ui_type = "drag"; ui_min = 0.0; ui_max = 3.14159; ui_step = 0.01; ui_label = "Roll Rotation Amount"; ui_tooltip = "Amplitude of camera roll rotation."; ui_category = "Animation"; > = 0.4f;
+uniform float PR_CamAnim_XY_RotAmount < ui_type = "drag"; ui_min = 0.0; ui_max = AS_PI; ui_step = 0.01; ui_label = "Roll Rotation Amount"; ui_tooltip = "Amplitude of camera roll rotation."; ui_category = "Animation"; > = 0.4f;
 
 // ============================================================================
 // EMISSIVE PATTERN
@@ -168,19 +167,15 @@ uniform float PR_Gamma < ui_type = "drag"; ui_min = 1.0; ui_max = 3.0; ui_step =
 // HELPER FUNCTIONS
 // ============================================================================
 
-float2x2 GetRotationMatrix(float angle) {
-    float ca = cos(angle);
-    float sa = sin(angle);
-    return float2x2(ca, -sa, sa, ca); 
-}
+// Use shared rotation matrix helper
 
 void ApplyCameraTransform(inout float3 p, float t_cam, float cam_anim_time_scale, 
                                                        float cam_anim_xz_rot_amount, 
                                                        float cam_anim_xy_time_factor, 
                                                        float cam_anim_xy_rot_amount) {
     t_cam *= cam_anim_time_scale; 
-    p.xz = mul(p.xz, GetRotationMatrix(sin(t_cam) * cam_anim_xz_rot_amount)); 
-    p.xy = mul(p.xy, GetRotationMatrix(sin(t_cam * cam_anim_xy_time_factor) * cam_anim_xy_rot_amount)); 
+    p.xz = mul(p.xz, AS_rot2x2(-(sin(t_cam) * cam_anim_xz_rot_amount))); 
+    p.xy = mul(p.xy, AS_rot2x2(-(sin(t_cam * cam_anim_xy_time_factor) * cam_anim_xy_rot_amount))); 
 }
 
 float Hash1D(float t) {
@@ -220,7 +215,7 @@ float GetProcessedCamTime(float t_input, float base_speed, float tick_period, fl
 // Apply rotation around the origin to both ray origin and direction
 // This ensures proper 3D rotation of the scene
 void RotateSceneAroundCenter(inout float3 ray_origin, inout float3 ray_direction, float angle) {
-    if (abs(angle) < 0.0001f) return; // Skip if no rotation
+    if (abs(angle) < AS_EPS_SAFE) return; // Skip if no rotation
     
     float s = sin(angle);
     float c = cos(angle);
@@ -318,7 +313,7 @@ float4 PS_CorridorTravel(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0)
         for(int bounce = 0; bounce < PR_Bounces; ++bounce) { // Use uniform PR_Bounces
             float bounce_float = (float)bounce;
             
-            float3 inv_ray_dir = 1.0f / (ray_direction + 1e-6f); 
+            float3 inv_ray_dir = 1.0f / (ray_direction + AS_STABILITY_EPSILON); 
             float3 t_to_near_planes = ( box_extents - ray_origin) * inv_ray_dir;
             float3 t_to_far_planes  = (-box_extents - ray_origin) * inv_ray_dir;
             float3 box_t_artistic = max(t_to_near_planes, t_to_far_planes); 
@@ -381,7 +376,7 @@ float4 PS_CorridorTravel(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0)
     total_color = pow(total_color, 1.0f / PR_Gamma);
       // Apply standard AS blending between effect and original color
     float4 effectColor = float4(total_color, 1.0);
-    float4 finalColor = float4(AS_applyBlend(effectColor.rgb, originalColor.rgb, CorridorTravel_BlendMode), 1.0);
+    float4 finalColor = float4(AS_blendRGB(effectColor.rgb, originalColor.rgb, CorridorTravel_BlendMode), 1.0);
     finalColor = lerp(originalColor, finalColor, CorridorTravel_BlendAmount);
         
     return finalColor;

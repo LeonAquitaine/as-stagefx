@@ -148,16 +148,8 @@ float4 PS_AS_BGX_Vortex_1(float4 vpos : SV_Position, float2 texcoord : TEXCOORD)
     // First get normalized screen coordinates (0 to 1)
     float2 screenUV = texcoord;
     
-    // Convert to centered coordinates (-0.5 to 0.5)
-    float2 centered = screenUV - 0.5;
-    
-    // Apply aspect ratio correction to ensure the vortex is circular, not elliptical
-    // This correction should make the 'centered' space visually square before other transforms.
-    if (ReShade::AspectRatio >= 1.0) { // Wider than tall
-        centered.x *= ReShade::AspectRatio;
-    } else { // Taller than wide
-        centered.y /= ReShade::AspectRatio;
-    }
+    // Center and apply aspect correction using shared helper
+    float2 centered = AS_centeredUVWithAspect(screenUV, ReShade::AspectRatio);
     
     // Apply position offset from UI
     // EffectCenter components are typically -1 to 1 for full screen span in the dominant axis.
@@ -212,7 +204,7 @@ float4 PS_AS_BGX_Vortex_1(float4 vpos : SV_Position, float2 texcoord : TEXCOORD)
     float effectAlpha = mask * brightnessF;
     float4 effectColor = float4(color, effectAlpha);
     
-    finalColor = AS_applyBlend(effectColor, finalColor, BlendMode, BlendStrength);
+    finalColor = AS_blendRGBA(effectColor, finalColor, BlendMode, BlendStrength);
 
     return finalColor;
 }

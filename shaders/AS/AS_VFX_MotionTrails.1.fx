@@ -254,7 +254,7 @@ void PS_EchoComposite(
     float3 echoEffect = echoColor.rgb;
     
     // --- Apply blend mode using AS_Utils helper ---
-    float3 blendedResult = AS_applyBlend(echoEffect, originalColor.rgb, BlendMode);
+    float3 blendedResult = AS_blendRGB(echoEffect, originalColor.rgb, BlendMode);
     
     // --- Final blend with original using user-defined strength ---
     float3 finalResult = lerp(originalColor.rgb, blendedResult, BlendAmount * echoColor.a);

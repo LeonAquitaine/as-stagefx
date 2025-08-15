@@ -611,7 +611,7 @@ float4 PS_Template(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Ta
     
     float3 effectColor = float3(1,0,0); // Your effect here
     
-    return AS_applyBlend(float4(effectColor, 1.0), orig, BlendMode, BlendAmount);
+    return AS_blendRGBA(float4(effectColor, 1.0), orig, BlendMode, BlendAmount);
 }
 
 technique AS_TypeCode_EffectName {

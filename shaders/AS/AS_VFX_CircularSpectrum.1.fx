@@ -378,7 +378,7 @@ float4 PS_CircularSpectrumDots(float4 vpos : SV_Position, float2 texcoord : TexC
     
     effectColor += bloomAccumulator; 
 
-    return AS_applyBlend(float4(effectColor, 1.0), originalColor, BlendMode, BlendAmount);
+    return AS_blendRGBA(float4(effectColor, 1.0), originalColor, BlendMode, BlendAmount);
 }
 
 // ============================================================================

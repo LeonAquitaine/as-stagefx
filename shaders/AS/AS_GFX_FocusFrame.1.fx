@@ -81,7 +81,7 @@ AS_BLENDAMOUNT_UI(BlendStrength)
 // ============================================================================
 // TUNABLE CONSTANTS (Defaults and Ranges)
 // ============================================================================
-static const float BLUR_EXP_COEFF_EPSILON = 1e-5; // For Gaussian blur denominator stability
+// Use centralized AS_GAUSS_EXP_EPSILON for Gaussian blur denominator stability
 static const float BLUR_AXIS_SCALE = 2.0;         // Used for blur offset scaling
 static const float DEFAULT_MASK_POWER = 1.0;      // Reserved for future mask shaping
 
@@ -138,7 +138,7 @@ float4 PS_FocusFrame_BlurH(float4 pos : SV_Position, float2 texcoord : TEXCOORD)
     const float2 zoomUV = 0.5 + (texcoord - 0.5) / BackgroundZoom;
     if (nSteps <= 0) return tex2D(ReShade::BackBuffer, zoomUV);
 
-    const float expCoeff = -2.0 / (nSteps * nSteps + BLUR_EXP_COEFF_EPSILON);
+    const float expCoeff = -2.0 / (nSteps * nSteps + AS_GAUSS_EXP_EPSILON);
     const float2 blurAxisScaled = float2(ReShade::PixelSize.x, 0.0);
 
     for (float iStep = -nSteps; iStep <= nSteps; iStep++)
@@ -167,7 +167,7 @@ float4 PS_FocusFrame_BlurV_and_Combine(float4 pos : SV_Position, float2 texcoord
     }
     else
     {
-        const float expCoeff = -2.0 / (nSteps * nSteps + BLUR_EXP_COEFF_EPSILON);
+    const float expCoeff = -2.0 / (nSteps * nSteps + AS_GAUSS_EXP_EPSILON);
         const float2 blurAxisScaled = float2(0.0, ReShade::PixelSize.y);
 
         for (float iStep = -nSteps; iStep <= nSteps; iStep++)
@@ -271,7 +271,7 @@ float4 PS_FocusFrame_BlurV_and_Combine(float4 pos : SV_Position, float2 texcoord
     float depthMask = sceneDepth >= EffectDepth ? 1.0 : 0.0;
     
     // Then apply blend mode and strength to blend the entire effect with the scene
-    float3 blended = AS_applyBlend(focusFrameResult, originalColor.rgb, BlendMode);
+    float3 blended = AS_blendRGB(focusFrameResult, originalColor.rgb, BlendMode);
     float3 result = lerp(originalColor.rgb, blended, BlendStrength * depthMask);
     
     return float4(result, originalColor.a);

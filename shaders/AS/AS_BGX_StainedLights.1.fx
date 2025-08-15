@@ -155,7 +155,7 @@ float3 hash32(float2 p)
 
 // Pattern generation function
 float4 generatePattern(float2 uv) {
-    float v = abs(cos(uv.x * AS_PI * 2.0) + cos(uv.y * AS_PI * 2.0)) * 0.5;
+    float v = abs(cos(uv.x * AS_TWO_PI) + cos(uv.y * AS_TWO_PI)) * AS_HALF;
     uv.x -= 0.5;
     float3 cid2 = hash32(floor(float2(uv.x - uv.y, uv.x + uv.y)));
     return float4(cid2, v);
@@ -195,7 +195,7 @@ float4 StainedLightsPS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) :
 
     // Get animation time
     float t;
-    if (animSpeedFinal <= 0.0001f) {
+    if (animSpeedFinal <= AS_MIN_NORM) {
         // When animation speed is effectively zero, use keyframe directly
         t = AnimationKeyframe;
     } else {
@@ -204,14 +204,11 @@ float4 StainedLightsPS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) :
     }
 
     // Setup UV coordinates for pattern generation
-    float2 uv = texcoord - 0.5f; // Center texcoord (becomes -0.5 to 0.5 range)
-    
-    float current_aspectRatio = ReShade::ScreenSize.x / ReShade::ScreenSize.y;
-    uv.x *= current_aspectRatio; // Correct aspect ratio to make coordinates square for pattern logic
+    float2 uv = AS_centeredUVWithAspect(texcoord, ReShade::AspectRatio); // Centered, aspect-corrected
 
     // Apply global rotation (to the square, centered UVs)
     float current_rotationRadians = AS_getRotationRadians(EffectSnapRotation, EffectFineRotation);
-    if (abs(current_rotationRadians) > 0.001f) { // Apply rotation if significant
+    if (abs(current_rotationRadians) > AS_EPS_SAFE) { // Apply rotation if significant
         float s_rot = sin(current_rotationRadians);
         float c_rot = cos(current_rotationRadians);
         uv = float2(
@@ -224,7 +221,7 @@ float4 StainedLightsPS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) :
     uv *= patternScaleFinal;
 
     // Apply base animation offset/pan (in the scaled, rotated, square space)
-    uv -= float2(t * 0.5f, -t * 0.3f);
+    uv -= float2(t * AS_HALF, -t * 0.3f);
     
     // Generate pattern
     float4 o = float4(1.0, 1.0, 1.0, 1.0);
@@ -248,7 +245,7 @@ float4 StainedLightsPS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) :
     o.a = 1.0; // Ensure alpha is 1 after all color operations
 
     // Blend with original scene
-    float4 finalColor = float4(AS_applyBlend(o.rgb, originalColor.rgb, BlendMode), 1.0);
+    float4 finalColor = float4(AS_blendRGB(o.rgb, originalColor.rgb, BlendMode), 1.0);
     finalColor = lerp(originalColor, finalColor, BlendStrength);
     
     // Show debug overlay if enabled

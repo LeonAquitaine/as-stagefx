@@ -44,7 +44,7 @@
 // INCLUDES
 // ============================================================================
 #include "ReShade.fxh"
-#include "AS_Utils.1.fxh" // For AS_PI, AS_applyBlend, etc.
+#include "AS_Utils.1.fxh" // For AS_PI, blend helpers (AS_blendRGB/RGBA), etc.
 
 // ============================================================================
 // CONSTANTS
@@ -280,7 +280,7 @@ uniform bool DebugShowToneMasks < ui_type = "checkbox"; ui_label = "Show Tone Ma
 // Helper function to convert sRGB to linear RGB (approximate)
 // Could be part of AS_Utils.fxh
 float3 AS_srgb_to_linear(float3 c_srgb) {
-    return pow(abs(c_srgb), 2.2); // abs to handle potential negative inputs, though color usually isn't
+    return pow(abs(c_srgb), AS_GAMMA_SRGB); // central sRGB gamma exponent
 }
 
 // Normalize hue to 0-360 range
@@ -341,16 +341,16 @@ float3 hsl_to_rgb(float3 hsl) {
 // Could be part of AS_Utils.fxh
 float3 blend_hsl_weighted(float3 hsl1, float w1, float3 hsl2, float w2, float3 hsl3, float w3) {
     // Convert hues to vectors for robust averaging
-    float h1_rad = radians(hsl1.x);
-    float h2_rad = radians(hsl2.x);
-    float h3_rad = radians(hsl3.x);
+    float h1_rad = AS_radians(hsl1.x);
+    float h2_rad = AS_radians(hsl2.x);
+    float h3_rad = AS_radians(hsl3.x);
 
     // Weighted sum of vectors
     float avg_cos = w1 * cos(h1_rad) + w2 * cos(h2_rad) + w3 * cos(h3_rad);
     float avg_sin = w1 * sin(h1_rad) + w2 * sin(h2_rad) + w3 * sin(h3_rad);
 
     // Convert average vector back to hue angle
-    float final_h = degrees(atan2(avg_sin, avg_cos));
+    float final_h = AS_degrees(atan2(avg_sin, avg_cos));
     final_h = norm_hue(final_h); // Ensure 0-360
 
     // Average saturation and lightness directly using weights
@@ -449,7 +449,7 @@ float4 PS_ColorBalancer(float4 pos : SV_Position, float2 texcoord : TexCoord) : 
     // --- Tone Segmentation ---
     // Convert sRGB to Linear for perceptually accurate luminance calculation
     float3 linear_color_rgb = AS_srgb_to_linear(original_color_rgb);
-    float scene_lum = dot(linear_color_rgb, float3(0.2126, 0.7152, 0.0722)); // Luminance from linear RGB for segmentation
+    float scene_lum = dot(linear_color_rgb, AS_LUMA_REC709); // Luminance from linear RGB for segmentation
     
     float Ws, Wm, Wh; // Shadow, Midtone, Highlight weights
     get_tonal_weights(scene_lum, ShadowThreshold, HighlightThreshold, LuminanceSoftSplit, Ws, Wm, Wh);
@@ -568,7 +568,7 @@ float4 PS_ColorBalancer(float4 pos : SV_Position, float2 texcoord : TexCoord) : 
     float3 final_color_rgb = hsl_to_rgb(blended_hsl); // Use the new blended_hsl
     
     // Corrected blend function call
-    return AS_applyBlend(float4(final_color_rgb, 1.0), float4(original_color_rgb, 1.0), BlendMode, BlendAmount);
+    return AS_blendRGBA(float4(final_color_rgb, 1.0), float4(original_color_rgb, 1.0), BlendMode, BlendAmount);
 }
 
 // ============================================================================

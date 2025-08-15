@@ -117,9 +117,8 @@ float4 PS_BGX_Hologram(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : S
 
     // 1. Set up coordinates
     float rotation = AS_getRotationRadians(SnapRotation, FineRotation);
-    float2 uv = AS_transformCoord(texcoord, EffectPosition, EffectScale, rotation);
-    float2 centered_uv = (uv - 0.5) * 2.0;
-    centered_uv.x *= ReShade::AspectRatio;    // 2. Get animated time
+    float2 uv = AS_transformUVCentered(texcoord, EffectPosition, EffectScale, rotation);
+    float2 centered_uv = AS_centeredUVWithAspect(uv, ReShade::AspectRatio) * 2.0;    // 2. Get animated time
     float time = AS_getAnimationTime(AnimationSpeed, AnimationKeyframe);
     
     // 3. Generate plasma effect
@@ -129,7 +128,7 @@ float4 PS_BGX_Hologram(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : S
     float3 finalColor = max(rainbow, MinBrightness);
 
     // 4. Blend with scene
-    return AS_applyBlend(float4(finalColor, 1.0), originalColor, BlendMode, BlendAmount);
+    return AS_blendRGBA(float4(finalColor, 1.0), originalColor, BlendMode, BlendAmount);
 }
 
 // ============================================================================

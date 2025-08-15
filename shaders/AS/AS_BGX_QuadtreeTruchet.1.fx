@@ -46,7 +46,7 @@
 #define __AS_BGX_QuadtreeTruchet_1_fx
 
 #include "ReShade.fxh"
-#include "AS_Utils.1.fxh" // For AS_getAnimationTime, AS_applyBlend, AS_PI, etc.
+#include "AS_Utils.1.fxh" // For AS_getAnimationTime, AS_blendRGB/RGBA, AS_PI, etc.
 #include "AS_Noise.1.fxh" // For AS_hash22
 #include "AS_Palette.1.fxh" // For AS palette support
 
@@ -140,12 +140,7 @@ uniform float GridLineWidth < ui_type = "slider"; ui_label = "Debug Grid Line Wi
 // HELPER FUNCTIONS
 // ============================================================================
 
-// Standard 2D rotation matrix.
-float2x2 r2(float a) {
-    float c = cos(a);
-    float s = sin(a);
-    return float2x2(c, s, -s, c);
-}
+// Use shared rotation matrix helper AS_rot2x2 from AS_Utils
 
 // ============================================================================
 // PIXEL SHADER
@@ -163,7 +158,7 @@ float4 PS_ASBGXQuadtreeTruchet(float4 vpos : SV_Position, float2 texcoord : TEXC
     float time = AS_getAnimationTime(AnimationSpeed, AnimationKeyframe);
 
     // Screen coordinates, centered, aspect corrected (y ranges approx -0.5 to 0.5).
-    float2 uv_screen_centered = (texcoord - 0.5) * float2(ReShade::AspectRatio, 1.0);
+    float2 uv_screen_centered = AS_centeredUVWithAspect(texcoord, ReShade::AspectRatio);
 
     // Apply audio reactivity to selected parameters
     float patternScale_final = PatternScale;
@@ -193,7 +188,7 @@ float4 PS_ASBGXQuadtreeTruchet(float4 vpos : SV_Position, float2 texcoord : TEXC
     }    // Scaling, rotation and translation for pattern space.
     float2 oP = uv_screen_centered * patternScale_final;
     float anim_time_scaled = time * AnimationTimeScale; // Original used iTime/8.
-    oP = mul(r2(sin(anim_time_scaled) * AS_PI / 8.0 * rotationSpeed_final), oP); // AS_PI/8.0 part of original angle calc.
+    oP = mul(AS_rot2x2(sin(anim_time_scaled) * AS_PI / 8.0 * rotationSpeed_final), oP); // AS_PI/8.0 part of original angle calc.
     oP.y -= PanSpeedY * time; // Original was oP -= vec2(cos(iTime/8.)*0., -iTime); which simplifies to oP.y += iTime with speed control
     
     // Apply stage offset
@@ -422,7 +417,7 @@ float4 PS_ASBGXQuadtreeTruchet(float4 vpos : SV_Position, float2 texcoord : TEXC
     }
     
     // Mild spotlight.
-    col *= max(SpotlightIntensity - length(uv_screen_centered) * SpotlightRadius, 0.0);    // Debug Grid Visualization
+    col *= AS_spotlightMask(uv_screen_centered, SpotlightIntensity, SpotlightRadius);    // Debug Grid Visualization
     if (ShowGrid) {
         // Get grid colors from palette
         float3 vCol1, vCol2;
@@ -467,7 +462,7 @@ float4 PS_ASBGXQuadtreeTruchet(float4 vpos : SV_Position, float2 texcoord : TEXC
     col = sqrt(max(col, 0.0));
     float4 final_effect_color = float4(col, 1.0);
 
-    return AS_applyBlend(final_effect_color, orig_color, BlendMode, BlendAmount);
+    return AS_blendRGBA(final_effect_color, orig_color, BlendMode, BlendAmount);
 }
 
 // ============================================================================

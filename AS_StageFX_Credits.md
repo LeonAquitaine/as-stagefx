@@ -145,6 +145,11 @@ This document lists all external sources, original authors, and inspiration cred
 - **Source**: https://www.shadertoy.com/view/XXyGzh
 
 ## Shadertoy & External Adaptations (VFX)
+### AS_VFX_GlossyGradient.1.fx - 
+- **Original Author**: 
+- **Original Title**: 
+- **Notes**: 
+- **Source**: 
 ### AS_VFX_VolumetricFog.1.fx - 
 - **Original Author**: 
 - **Original Title**: 

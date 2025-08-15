@@ -50,7 +50,7 @@
 // INCLUDES
 // ============================================================================
 #include "ReShade.fxh"
-#include "AS_Utils.1.fxh" // Contains AS_PI, AS_HALF_PI, AS_getTime, AS_applyBlend, AS_BLEND_OPAQUE, etc.
+#include "AS_Utils.1.fxh" // Contains AS_PI, AS_HALF_PI, AS_timeSeconds, AS_blendRGB/RGBA, AS_BLEND_OPAQUE, etc.
 // AS_Palette.1.fxh is not strictly needed as custom color logic is primary here.
 
 // ============================================================================
@@ -305,8 +305,8 @@ float4 PS_RaymarchedChain(float4 vpos : SV_Position, float2 texcoord : TEXCOORD)
     float3 rd = normalize(float3(uv_norm.x, uv_norm.y, 1.0)); // Ray direction
     
     // Apply camera rotation to ray direction (in radians)
-    float camera_pitch_rad = CameraPitch * (AS_PI / 180.0);
-    float camera_yaw_rad = CameraYaw * (AS_PI / 180.0);
+    float camera_pitch_rad = AS_radians(CameraPitch);
+    float camera_yaw_rad = AS_radians(CameraYaw);
     
     rd.yz = mul(rd.yz, fn_rot(camera_pitch_rad)); 
     rd.xz = mul(rd.xz, fn_rot(camera_yaw_rad));
@@ -332,7 +332,7 @@ float4 PS_RaymarchedChain(float4 vpos : SV_Position, float2 texcoord : TEXCOORD)
         col_final = BackgroundColor; // Use the full RGBA from background color
     }
 
-    col_final = saturate(col_final);    return AS_applyBlend(col_final, original_color, BlendMode, BlendStrength);
+    col_final = saturate(col_final);    return AS_blendRGBA(col_final, original_color, BlendMode, BlendStrength);
 }
 
 } // namespace ASRaymarchedChain

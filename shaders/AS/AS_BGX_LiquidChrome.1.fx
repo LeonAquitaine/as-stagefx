@@ -136,21 +136,21 @@ uniform float stripe_scale <
 > = 200.0f;
 
 uniform float color_phase_r <
-    ui_type = "drag"; ui_min = -6.28318; ui_max = 6.28318; ui_step = 0.01; // Approx -2PI to 2PI
+    ui_type = "drag"; ui_min = -AS_TWO_PI; ui_max = AS_TWO_PI; ui_step = 0.01; // Approx -2PI to 2PI
     ui_label = "Red Hue Cycle";
     ui_tooltip = "Shifts the color palette by adjusting the cycle for the red channel. Experiment for different color schemes.";
     ui_category = "Color Tuning";
 > = 0.2f;
 
 uniform float color_phase_g <
-    ui_type = "drag"; ui_min = -6.28318; ui_max = 6.28318; ui_step = 0.01;
+    ui_type = "drag"; ui_min = -AS_TWO_PI; ui_max = AS_TWO_PI; ui_step = 0.01;
     ui_label = "Green Hue Cycle";
     ui_tooltip = "Shifts the color palette by adjusting the cycle for the green channel.";
     ui_category = "Color Tuning";
 > = 0.1f;
 
 uniform float color_phase_b <
-    ui_type = "drag"; ui_min = -6.28318; ui_max = 6.28318; ui_step = 0.01;
+    ui_type = "drag"; ui_min = -AS_TWO_PI; ui_max = AS_TWO_PI; ui_step = 0.01;
     ui_label = "Blue Hue Cycle";
     ui_tooltip = "Shifts the color palette by adjusting the cycle for the blue channel.";
     ui_category = "Color Tuning";
@@ -191,7 +191,8 @@ AS_BLENDMODE_UI(LiquidChrome_BlendMode)
 AS_BLENDAMOUNT_UI(LiquidChrome_BlendAmount)
 
 // Internal constant for safety, not a UI tunable
-static const float SAFE_DENOMINATOR_EPSILON = 1e-6f;
+// Use centralized stability epsilon
+// static const float SAFE_DENOMINATOR_EPSILON = 1e-6f;
 
 // --- Pixel Shader ---
 float4 PS_LiquidChrome(float4 vpos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target
@@ -212,17 +213,9 @@ float4 PS_LiquidChrome(float4 vpos : SV_Position, float2 texcoord : TEXCOORD) : 
     float patternScaleMod = (LiquidChrome_AudioTarget == 3) ? 1.0 + audioMod : 1.0;
     
     // Apply standard coordinate transformation with proper aspect ratio handling
-    // Step 1: Center coordinates and apply aspect ratio correction
+    // Step 1: Center coordinates and apply aspect ratio correction via shared helper
     float aspectRatio = ReShade::AspectRatio;
-    float2 centered_coord;
-    
-    if (aspectRatio >= 1.0) { // Wider or square
-        centered_coord.x = (texcoord.x - 0.5) * aspectRatio;
-        centered_coord.y = texcoord.y - 0.5;
-    } else { // Taller
-        centered_coord.x = texcoord.x - 0.5;
-        centered_coord.y = (texcoord.y - 0.5) / aspectRatio;
-    }
+    float2 centered_coord = AS_centeredUVWithAspect(texcoord, aspectRatio);
     
     // Step 2: Apply rotation
     float2 rotated_coord = centered_coord;
@@ -265,14 +258,9 @@ float4 PS_LiquidChrome(float4 vpos : SV_Position, float2 texcoord : TEXCOORD) : 
     if (stripe_iterations > 0)
     {
         // Get UV coords in normalized screen space for vertical stripes
-        float2 stripe_coords;
-        if (aspectRatio >= 1.0) {
-            stripe_coords.x = st.x / aspectRatio + 0.5;
-            stripe_coords.y = st.y + 0.5;
-        } else {
-            stripe_coords.x = st.x + 0.5;
-            stripe_coords.y = st.y * aspectRatio + 0.5;
-        }
+    float2 stripe_coords = st;
+    if (aspectRatio >= 1.0) stripe_coords.x /= aspectRatio; else stripe_coords.y *= aspectRatio;
+    stripe_coords += 0.5;
         
         // Ensure we're in [0,1] range for proper modulo operation
         stripe_coords = clamp(stripe_coords, 0.0, 1.0);
@@ -281,7 +269,7 @@ float4 PS_LiquidChrome(float4 vpos : SV_Position, float2 texcoord : TEXCOORD) : 
         {
             float period_multiplier = i + 1.0f;
             float current_stripe_period = stripe_period_base * period_multiplier;
-            len += 1.0f / (abs(AS_mod(stripe_coords.x, current_stripe_period) * stripe_scale) + SAFE_DENOMINATOR_EPSILON);
+            len += 1.0f / (abs(AS_mod(stripe_coords.x, current_stripe_period) * stripe_scale) + AS_STABILITY_EPSILON);
         }
     }
       // Final Color Calculation with audio-reactive color cycling if selected
@@ -297,7 +285,7 @@ float4 PS_LiquidChrome(float4 vpos : SV_Position, float2 texcoord : TEXCOORD) : 
       float4 result = float4(color, 1.0f);
     
     // Blend with original using selected blend mode and opacity
-    float4 blended = float4(AS_applyBlend(result.rgb, orig.rgb, LiquidChrome_BlendMode), 1.0f);
+    float4 blended = float4(AS_blendRGB(result.rgb, orig.rgb, LiquidChrome_BlendMode), 1.0f);
     return lerp(orig, blended, LiquidChrome_BlendAmount);
 }
 

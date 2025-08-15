@@ -119,14 +119,9 @@ float4 PS_VUMeterBG(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_T
     float2 center = float2(0.5, 0.5);
     float rotationAngle = AS_getRotationRadians(SnapRotate, FineRotate);
     
-    // Calculate screen aspect ratio
-    float aspectRatio = float(BUFFER_WIDTH) / float(BUFFER_HEIGHT);
-    
-    // First center the UV coordinates
-    float2 centeredUV = texcoord - center;
-    
-    // Apply aspect ratio correction to prevent stretching
-    centeredUV.x *= aspectRatio;
+    // Prepare centered coordinates with aspect correction for uniform rotation/zoom behavior
+    float aspectRatio = ReShade::AspectRatio;
+    float2 centeredUV = AS_centeredUVWithAspect(texcoord, aspectRatio);
     
     // Apply position (pan) in screen space before rotation
     // This makes left/right and up/down consistent regardless of rotation
@@ -143,8 +138,8 @@ float4 PS_VUMeterBG(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_T
         zoomedUV.x * sinAngle + zoomedUV.y * cosAngle
     );
     
-    // Undo aspect ratio correction
-    rotatedUV.x /= aspectRatio;
+    // Undo aspect ratio correction to return to normalized texture space
+    if (aspectRatio >= 1.0) rotatedUV.x /= aspectRatio; else rotatedUV.y *= aspectRatio;
     
     // Return to 0-1 range
     float2 uv = rotatedUV + center;
@@ -275,7 +270,7 @@ float4 PS_VUMeterBG(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_T
     }
     // At the end, blend with the original scene
     float4 orig = tex2D(ReShade::BackBuffer, texcoord);
-    float3 blended = AS_applyBlend(effectColor.rgb, orig.rgb, BlendMode);
+    float3 blended = AS_blendRGB(effectColor.rgb, orig.rgb, BlendMode);
     float3 result = lerp(orig.rgb, blended, BlendAmount * effectColor.a);
     return float4(result, orig.a);
 }

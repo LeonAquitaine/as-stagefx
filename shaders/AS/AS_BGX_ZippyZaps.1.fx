@@ -177,7 +177,7 @@ AS_BLENDAMOUNT_UI(BlendStrength)
 AS_DEBUG_UI("Off\0Show Audio Reactivity\0")
 
 // --- Internal Constants ---
-static const float EPSILON = 1e-6f;                // Small value to prevent division by zero
+// Use centralized AS_EPS_SAFE instead of local EPSILON
 static const float HALF_POINT = 0.5f;              // Half point for coordinate centering
 static const float INITIAL_A_LOOP = 0.5f;          // Initial value for a_loop
 static const float LOOP_T_INCREMENT = 1.0f;        // Time increment per loop iteration
@@ -295,7 +295,7 @@ float4 ShaderToyPS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD0) : SV_
         float S1_len_arg = (1.0f + i_loop * dot(v_loop_state, v_loop_state)); 
 
         float sin_arg_denom_val = (SinArg_Denom_Offset - dot(u, u)); 
-        if (abs(sin_arg_denom_val) < EPSILON) sin_arg_denom_val = sign(sin_arg_denom_val + SIGN_BIAS) * EPSILON; 
+    if (abs(sin_arg_denom_val) < AS_EPS_SAFE) sin_arg_denom_val = sign(sin_arg_denom_val + SIGN_BIAS) * AS_EPS_SAFE; 
 
         float2 sin_arg_vec = (SinArg_U_Scale * u / sin_arg_denom_val) - (SinArg_Swizzle_Factor * u.yx) + float2(t_loop, t_loop); 
         float2 sin_result_vec = sin(sin_arg_vec); 
@@ -303,7 +303,7 @@ float4 ShaderToyPS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD0) : SV_
         float2 vec_for_length = S1_len_arg * sin_result_vec; 
         
         float denominator = length(vec_for_length); 
-        if (denominator < EPSILON) denominator = EPSILON; 
+    if (denominator < AS_EPS_SAFE) denominator = AS_EPS_SAFE; 
 
         float4 const_1_vec = float4(1.0f, 1.0f, 1.0f, 1.0f);
         float4 t_loop_vec4 = float4(t_loop, t_loop, t_loop, t_loop);
@@ -354,18 +354,18 @@ float4 ShaderToyPS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD0) : SV_
     // --- Final o calculation ---
     float4 o_min_13 = min(o, FinalO_MinClamp);
     float4 o_safe_for_div = o;
-    o_safe_for_div.x = (abs(o.x) < EPSILON) ? ((o.x >= 0.0f ? 1.0f : -1.0f) * EPSILON) : o.x;
-    o_safe_for_div.y = (abs(o.y) < EPSILON) ? ((o.y >= 0.0f ? 1.0f : -1.0f) * EPSILON) : o.y;
-    o_safe_for_div.z = (abs(o.z) < EPSILON) ? ((o.z >= 0.0f ? 1.0f : -1.0f) * EPSILON) : o.z;
-    o_safe_for_div.w = (abs(o.w) < EPSILON) ? ((o.w >= 0.0f ? 1.0f : -1.0f) * EPSILON) : o.w;
+    o_safe_for_div.x = (abs(o.x) < AS_EPS_SAFE) ? ((o.x >= 0.0f ? 1.0f : -1.0f) * AS_EPS_SAFE) : o.x;
+    o_safe_for_div.y = (abs(o.y) < AS_EPS_SAFE) ? ((o.y >= 0.0f ? 1.0f : -1.0f) * AS_EPS_SAFE) : o.y;
+    o_safe_for_div.z = (abs(o.z) < AS_EPS_SAFE) ? ((o.z >= 0.0f ? 1.0f : -1.0f) * AS_EPS_SAFE) : o.z;
+    o_safe_for_div.w = (abs(o.w) < AS_EPS_SAFE) ? ((o.w >= 0.0f ? 1.0f : -1.0f) * AS_EPS_SAFE) : o.w;
 
     float4 o_div_term = FinalO_DivNumerator / o_safe_for_div;
     
     float4 final_denom = o_min_13 + o_div_term;
-    final_denom.x = (abs(final_denom.x) < EPSILON) ? ((final_denom.x >= 0.0f ? 1.0f : -1.0f) * EPSILON) : final_denom.x;
-    final_denom.y = (abs(final_denom.y) < EPSILON) ? ((final_denom.y >= 0.0f ? 1.0f : -1.0f) * EPSILON) : final_denom.y;
-    final_denom.z = (abs(final_denom.z) < EPSILON) ? ((final_denom.z >= 0.0f ? 1.0f : -1.0f) * EPSILON) : final_denom.z;
-    final_denom.w = (abs(final_denom.w) < EPSILON) ? ((final_denom.w >= 0.0f ? 1.0f : -1.0f) * EPSILON) : final_denom.w;
+    final_denom.x = (abs(final_denom.x) < AS_EPS_SAFE) ? ((final_denom.x >= 0.0f ? 1.0f : -1.0f) * AS_EPS_SAFE) : final_denom.x;
+    final_denom.y = (abs(final_denom.y) < AS_EPS_SAFE) ? ((final_denom.y >= 0.0f ? 1.0f : -1.0f) * AS_EPS_SAFE) : final_denom.y;
+    final_denom.z = (abs(final_denom.z) < AS_EPS_SAFE) ? ((final_denom.z >= 0.0f ? 1.0f : -1.0f) * AS_EPS_SAFE) : final_denom.z;
+    final_denom.w = (abs(final_denom.w) < AS_EPS_SAFE) ? ((final_denom.w >= 0.0f ? 1.0f : -1.0f) * AS_EPS_SAFE) : final_denom.w;
 
     float4 const_main_div_num_vec = float4(finalOMainDivNumerator, finalOMainDivNumerator, finalOMainDivNumerator, finalOMainDivNumerator);
     float dot_u_term_scalar = dot(u, u) / FinalO_UDotDivisor; 
@@ -394,7 +394,7 @@ float4 ShaderToyPS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD0) : SV_
         originalRGB = originalRGB * OriginalColorIntensity;
         
         // Apply saturation adjustment (lerp toward gray at lower saturation)
-        float3 grayColor = dot(originalRGB, float3(0.299, 0.587, 0.114));
+    float3 grayColor = dot(originalRGB, AS_LUMA_REC709);
         finalRGB = lerp(grayColor, originalRGB, OriginalColorSaturation);
     } else {
         // Map color using palette
@@ -407,7 +407,7 @@ float4 ShaderToyPS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD0) : SV_
     o = float4(finalRGB, 1.0f);
 
     // Blend with original color using standard blend mode function
-    float3 blendedColor = AS_applyBlend(finalRGB, originalColor.rgb, BlendMode);
+    float3 blendedColor = AS_blendRGB(finalRGB, originalColor.rgb, BlendMode);
     float4 finalColor = float4(lerp(originalColor.rgb, blendedColor, BlendStrength), originalColor.a);
     
     // Show debug overlay if enabled

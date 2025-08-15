@@ -49,7 +49,7 @@ namespace ASKaleidoscope {
 // CONSTANTS
 // ============================================================================
 
-static const float EPSILON = 0.00001f; // Local epsilon
+// Use centralized AS_EPS_SAFE from AS_Utils
 
 // ============================================================================
 // TUNABLE CONSTANTS (Defaults and Ranges)
@@ -234,16 +234,14 @@ float4 PS_Kaleidoscope(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) :
     
     // 2. Apply base pattern rotation with audio reactivity
     float audioModulatedRotation = BasePatternRotationSpeed * (1.0 + masterAudioLevel * AudioGain_Rotation);
-    if (abs(audioModulatedRotation) > EPSILON) {
+    if (abs(audioModulatedRotation) > AS_EPS_SAFE) {
         float baseRotAngle = animationTime * audioModulatedRotation;
-        float sRot = sin(baseRotAngle);
-        float cRot = cos(baseRotAngle);
-        float2x2 baseRotMatrix = float2x2(cRot, sRot, -sRot, cRot); 
-        normalizedUV = mul(normalizedUV, baseRotMatrix);
+        // Apply rotation using shared helper (rotates around origin)
+        normalizedUV = AS_applyRotation(normalizedUV, baseRotAngle);
     }
 
     // 3. Apply pattern pulsing zoom
-    if (abs(GlobalPulsingZoomStrength) > EPSILON) {
+    if (abs(GlobalPulsingZoomStrength) > AS_EPS_SAFE) {
         float zoomFactor = 1.0 + sin(animationTime * GlobalPulsingZoomSpeed) * GlobalPulsingZoomStrength;
         normalizedUV *= zoomFactor;
     }
@@ -264,7 +262,7 @@ float4 PS_Kaleidoscope(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) :
     float audioModulatedZoom = FractalZoomBase;
     
     // Add zoom pulsing from animation
-    if (abs(FractalZoomPulseStrength) > EPSILON) {
+    if (abs(FractalZoomPulseStrength) > AS_EPS_SAFE) {
         audioModulatedZoom += sin(animationTime * FractalZoomPulseSpeed) * FractalZoomPulseStrength;
     }
     
@@ -311,11 +309,11 @@ float4 PS_Kaleidoscope(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) :
         
         // Apply sine wave distortion with audio reactivity
         float waveEffect = sin(distance * WaveFrequency + animationTime * WaveMotionSpeed);
-        waveEffect /= max(EPSILON, audioModulatedWaveAmplitude);
+    waveEffect /= max(AS_EPS_SAFE, audioModulatedWaveAmplitude);
         waveEffect = abs(waveEffect);
         
         // Apply power function to create "tendril" effect
-        float intensity = pow(0.01 / (waveEffect + EPSILON), 1.2);
+    float intensity = pow(0.01 / (waveEffect + AS_EPS_SAFE), 1.2);
         
         // Add to final color
         finalColor += color * intensity;
@@ -326,7 +324,7 @@ float4 PS_Kaleidoscope(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) :
     float depthMask = depth >= EffectDepth;
     
     // Blend the final color with the original scene
-    float3 blended = AS_applyBlend(saturate(finalColor), originalColor.rgb, BlendMode);
+    float3 blended = AS_blendRGB(saturate(finalColor), originalColor.rgb, BlendMode);
     
     return float4(lerp(originalColor.rgb, blended, BlendStrength * depthMask), 1.0);
 }

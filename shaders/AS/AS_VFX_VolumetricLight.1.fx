@@ -94,16 +94,7 @@ AS_BLENDAMOUNT_UI(BlendAmount)
 // ============================================================================
 float2 GetAspectCorrectedCenteredUV(float2 tc)
 {
-    float2 uv = tc - 0.5;
-    if (ReShade::AspectRatio >= 1.0) 
-    {
-        uv.x *= ReShade::AspectRatio;
-    }
-    else 
-    {
-        uv.y /= ReShade::AspectRatio;
-    }
-    return uv;
+    return AS_centeredUVWithAspect(tc, ReShade::AspectRatio);
 }
 
 // ============================================================================
@@ -192,6 +183,7 @@ float4 PS_VolumetricLight_Composite(float4 pos : SV_Position, float2 texcoord : 
         float2 sample_pos_centered = uvn + sample_offset_along_ray + random_jitter;
         
         float2 sample_tc = sample_pos_centered;
+        // Convert from centered, aspect-corrected space back to [0,1] texture UVs
         if (ReShade::AspectRatio >= 1.0) 
         {
             sample_tc.x /= ReShade::AspectRatio;
@@ -219,7 +211,7 @@ float4 PS_VolumetricLight_Composite(float4 pos : SV_Position, float2 texcoord : 
     }
     
     float4 original_scene_color = tex2D(ReShade::BackBuffer, texcoord); 
-    return AS_applyBlend(float4(accumulated_rays.rgb, 1.0), original_scene_color, BlendMode, BlendAmount);
+    return AS_blendRGBA(float4(accumulated_rays.rgb, 1.0), original_scene_color, BlendMode, BlendAmount);
 }
 
 // ============================================================================

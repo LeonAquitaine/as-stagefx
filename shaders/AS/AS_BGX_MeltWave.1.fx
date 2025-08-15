@@ -214,7 +214,7 @@ float4 PS_MeltWave(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Ta
     
     // --- Coordinate Transformation: Center → Rotate → Position/Scale ---
     float aspectRatio = ReShade::AspectRatio;
-    float2 centered = AS_centerCoord(texcoord, aspectRatio); // Centered, aspect-corrected
+    float2 centered = AS_centeredUVWithAspect(texcoord, aspectRatio); // Centered, aspect-corrected
     // Apply rotation around center
     float rotation = AS_getRotationRadians(RotationSnap, RotationFine);
     float s = sin(-rotation);
@@ -256,14 +256,14 @@ float4 PS_MeltWave(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Ta
         processed_col = raw_pattern_col;
         
         // Apply original saturation (from UI)
-        float luminance = dot(processed_col, float3(0.299, 0.587, 0.114));
+    float luminance = dot(processed_col, AS_LUMA_REC709);
         processed_col = lerp(luminance.xxx, processed_col, Saturation);
         
         // Apply original tint color (from UI)
         processed_col *= TintColor;
     } else {
         // Use palette color
-        float palette_map_value = dot(raw_pattern_col, float3(0.299, 0.587, 0.114)); // Use luminance of raw pattern
+    float palette_map_value = dot(raw_pattern_col, AS_LUMA_REC709); // Use luminance of raw pattern
         processed_col = getMeltWaveColor(palette_map_value, time);
     }
 
@@ -278,7 +278,7 @@ float4 PS_MeltWave(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Ta
     float4 effectColor = float4(processed_col, extrusion);
     
     // Blend with UI BackgroundColor using standard AS blend function
-    float3 blendedColor = AS_applyBlend(effectColor.rgb, BackgroundColor, BlendMode);
+    float3 blendedColor = AS_blendRGB(effectColor.rgb, BackgroundColor, BlendMode);
     float3 finalColor = lerp(BackgroundColor, blendedColor, BlendAmount * effectColor.a);
     
     // Debug mode handling

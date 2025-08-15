@@ -65,7 +65,7 @@ sampler sBackBuffer { Texture = ReShade::BackBufferTex; SRGBTexture = true; }; /
 #define L2(x)           dot(x, x)
 #define PLANE_PERIOD    5.0f
 
-static const float3 std_gamma   = float3(2.2f, 2.2f, 2.2f);
+static const float3 std_gamma   = float3(AS_GAMMA_SRGB, AS_GAMMA_SRGB, AS_GAMMA_SRGB);
 static float3 G_baseRingCol; // Will be initialized in PS_GoldenApollian from uniform
 
 // Define individual const float4 "effect" style equivalents
@@ -504,7 +504,7 @@ float4 PS_GoldenApollian(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0)
 
     float3 blended_col = col;
     if (GoldenClockwork_BlendMode > 0 && BlendOpacity > 0.001) {
-        blended_col = AS_applyBlend(col, back_col, GoldenClockwork_BlendMode); 
+    blended_col = AS_blendRGB(col, back_col, GoldenClockwork_BlendMode); 
     }
     
     return float4(blended_col, BlendOpacity);

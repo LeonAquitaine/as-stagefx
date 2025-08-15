@@ -245,7 +245,7 @@ float4 PS_GFX_Hologram(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : S
     
     float4 finalColor = float4(effectResult, 1.0);
 
-    return AS_applyBlend(finalColor, originalColor, BlendMode, BlendAmount);
+    return AS_blendRGBA(finalColor, originalColor, BlendMode, BlendAmount);
 }
 
 // ============================================================================

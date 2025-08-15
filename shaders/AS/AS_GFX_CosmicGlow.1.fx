@@ -158,11 +158,7 @@ float4 PS_CosmicGlow(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_
     }
 
     // --- Effect Coordinate System ---
-    float2 p = stageCoord - 0.5;
-    if (ReShade::AspectRatio > 1.0)
-        p.x *= ReShade::AspectRatio;
-    else
-        p.y /= ReShade::AspectRatio;
+    float2 p = AS_centeredUVWithAspect(stageCoord, ReShade::AspectRatio);
 
     float perspectiveStrength = Perspective * 0.5;
     float perspectiveDivisor = 1.0 + p.y * perspectiveStrength;
@@ -217,7 +213,7 @@ float4 PS_CosmicGlow(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_
     if (DebugMode == 1) return float4(stageCoord, 0.0, 1.0);
 
     // --- Final Blending ---
-    return AS_applyBlend(float4(finalColor, 1.0), orig, BlendMode, BlendAmount);
+    return AS_blendRGBA(float4(finalColor, 1.0), orig, BlendMode, BlendAmount);
 }
 
 // ============================================================================

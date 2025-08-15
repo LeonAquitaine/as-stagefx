@@ -54,7 +54,7 @@ namespace ASVignettePlus {
 // ============================================================================
 
 // --- Threshold Constants ---
-static const float ALPHA_EPSILON = 0.00001f; // Minimum alpha threshold for processing
+// Use centralized alpha epsilon threshold
 static const float CENTER_COORD = 0.5f; // Screen center coordinate
 static const float PERCENT_TO_NORMAL = 0.01f; // Conversion from percentage to 0-1 range
 static const float FULL_OPACITY = 1.0f; // Full opacity value
@@ -212,7 +212,7 @@ float GetCompositionFactor(float2 texcoord, float rotation_radians, int mirrorSt
                        ReShade::ScreenSize.y * abs(sin_angle));
     
     // Normalize to [0,1] range for directional factor
-    float base_directional_factor = (projected_value_pixel_scaled / (max_extent_pixel_scaled + ALPHA_EPSILON)) * CENTER_COORD + CENTER_COORD;
+    float base_directional_factor = (projected_value_pixel_scaled / (max_extent_pixel_scaled + AS_ALPHA_EPSILON)) * CENTER_COORD + CENTER_COORD;
     base_directional_factor = saturate(base_directional_factor); // Ensure it's 0-1 before mirroring logic
 
     // Apply mirroring based on selected style
@@ -273,12 +273,11 @@ float4 ApplySmoothGradientPS(float raw_alpha_param, float3 color) {
 
 float4 ApplyDuotoneCirclesPS(float2 texcoord, float raw_alpha_param, float3 color,
                             float circle_cell_radius_base, float coverage_boost_uniform) {
-    if (raw_alpha_param <= ALPHA_EPSILON) 
+    if (raw_alpha_param <= AS_ALPHA_EPSILON) 
         return float4(color, 0.0f);
     
     // Prepare UV coordinates with aspect ratio correction
-    float2 uv_dither = texcoord; 
-    uv_dither.y /= ReShade::AspectRatio;
+    float2 uv_dither = AS_centeredUVWithAspect(texcoord, ReShade::AspectRatio) + CENTER_COORD;
     
     // Calculate grid density from cell radius
     float current_grid_density = 1.0f / circle_cell_radius_base;
@@ -305,7 +304,7 @@ float4 ApplyDuotoneCirclesPS(float2 texcoord, float raw_alpha_param, float3 colo
 float4 ApplyDuotoneLinesSharedLogic(float2 texcoord, float raw_alpha_param, float3 color,
                                    float line_cycle_width_uv, float effect_rotation_rad, 
                                    float coverage_boost_uniform, bool use_u_component_for_banding) {
-    if (raw_alpha_param <= ALPHA_EPSILON) 
+    if (raw_alpha_param <= AS_ALPHA_EPSILON) 
         return float4(color, 0.0f);
     
     // Center coordinates for rotation
@@ -333,7 +332,7 @@ float4 ApplyDuotoneLinesSharedLogic(float2 texcoord, float raw_alpha_param, floa
     }
     
     // Normalize position to [0,1] range and calculate cycle position
-    float norm_pos_banding = (comp_pixels / (max_extent_pixels + ALPHA_EPSILON)) * CENTER_COORD + CENTER_COORD;
+    float norm_pos_banding = (comp_pixels / (max_extent_pixels + AS_ALPHA_EPSILON)) * CENTER_COORD + CENTER_COORD;
     float cycle_in_raw = saturate(norm_pos_banding) / line_cycle_width_uv;
     float coord_cycle = frac(cycle_in_raw);
     
@@ -428,7 +427,7 @@ float4 VignettePlusPS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : 
     // Apply blend mode if amount is less than full
     if (BlendAmount < FULL_OPACITY) {
         float4 background = float4(original_color, FULL_OPACITY);
-        final_color = AS_applyBlend(effect_result, background, BlendMode, BlendAmount);
+    final_color = AS_blendRGBA(effect_result, background, BlendMode, BlendAmount);
     }
     
     // Handle debug modes

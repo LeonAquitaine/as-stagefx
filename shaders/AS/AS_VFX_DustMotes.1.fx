@@ -66,10 +66,10 @@ static const float LAYER1_SEED_OFFSET = 0.0;
 static const float LAYER2_SEED_OFFSET = 10.0;
 
 // --- Thresholds & Minimums ---
-static const float MIN_GRID_CELL_UV_SIZE = 0.00001f;
+static const float MIN_GRID_CELL_UV_SIZE = AS_EPS_SAFE;
 static const float PARTICLE_ALPHA_DRAW_THRESHOLD = 0.001f;
 static const float ACCUMULATED_ALPHA_BLEND_THRESHOLD = 0.0001f;
-static const float MIN_BLUR_AMOUNT_THRESHOLD = 0.00001f;
+static const float MIN_BLUR_AMOUNT_THRESHOLD = AS_EPS_SAFE;
 static const float MIN_TOTAL_ALPHA_FOR_BLUR_THRESHOLD = 0.001f;
 
 // --- Debug ---

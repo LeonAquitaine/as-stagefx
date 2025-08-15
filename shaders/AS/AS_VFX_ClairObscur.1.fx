@@ -122,8 +122,8 @@ static const float ROTATION_OSC_AMP4 = 0.20;
 static const float ROTATION_VARIATION_FINAL_SCALE = 0.5; // Final scaling for rotation variation
 
 // Special math constants for rotation
-static const float ROTATION_MICRO_FREQ1 = 3.14159;    // PI
-static const float ROTATION_MICRO_FREQ2 = 2.71828;    // e
+static const float ROTATION_MICRO_FREQ1 = AS_PI;    // PI
+static const float ROTATION_MICRO_FREQ2 = AS_E;    // e
 static const float ROTATION_MICRO_AMP = 0.10;
 static const float ROTATION_NOISE_INFLUENCE1 = 0.3;    // Noise influence on frequency 1
 static const float ROTATION_NOISE_INFLUENCE2 = 0.2;    // Noise influence on frequency 2
@@ -369,7 +369,7 @@ float2 AS_VectorNoise2D(float2 uv) {
 float2 ps_rotate(float2 p_to_rotate, float rad) { float s = sin(rad); float c = cos(rad); return float2(p_to_rotate.x * c - p_to_rotate.y * s, p_to_rotate.x * s + p_to_rotate.y * c); }
 
 // --- Voronoi and Particle Drawing ---
-float degToRad(float deg) { return deg * AS_PI / 180.0; }
+// Use AS_radians(deg) from AS_Utils instead of local conversion
 float calcVoronoiPointRotRad(float2 rootUV, float time) { return time * VoronoiPointSpinSpeed * (AS_hash21(rootUV) - 0.5) * 2.0 * AS_TWO_PI; }
 float2 getVoronoiPoint(float2 rootUV, float rad) { float2 calculatedPt = AS_hash22(rootUV) - 0.5; calculatedPt = ps_rotate(calculatedPt, rad) * 0.66; calculatedPt += rootUV + float2(0.5, 0.5); return calculatedPt; }
 
@@ -455,7 +455,7 @@ float4 DrawPetalInstance(float2 uvForVoronoiLookup, float2 originalScreenUV, flo
         return float4(0.0, 0.0, 0.0, 0.0);
     }    
       // Apply subtle wobble to alpha for more natural appearance
-    lifetimeAlpha = max(0.001, lifetimeAlpha * (1.0 + lifetimeOscillation * LIFECYCLE_MICRO_OSC_FACTOR));
+    lifetimeAlpha = max(AS_ALPHA_EPSILON, lifetimeAlpha * (1.0 + lifetimeOscillation * LIFECYCLE_MICRO_OSC_FACTOR));
 
     float2 petalSpaceUV_raw = uvForVoronoiLookup - finalPetalInstanceCenter;
     
@@ -504,7 +504,7 @@ float4 DrawPetalInstance(float2 uvForVoronoiLookup, float2 originalScreenUV, flo
     float chaosComponent = (noise1 * noise2) * 0.15;
     
     // Create additional complexity with non-harmonic frequencies
-    float microVariation = sin(timeBase * 3.14159) * sin(timeBase * 2.71828) * 0.10;
+    float microVariation = sin(timeBase * AS_PI) * sin(timeBase * AS_E) * 0.10;
     
     // Combine all oscillations with different weights
     float rawVariation = oscillation1 + oscillation2 + oscillation3 + oscillation4 + microVariation + chaosComponent;
@@ -543,7 +543,7 @@ float4 DrawPetalInstance(float2 uvForVoronoiLookup, float2 originalScreenUV, flo
 
     float sizeVariation = (petalRandomFactor - 0.5) * 2.0 * PetalSizeVariation;
     float currentPetalVisualSize = PetalBaseSize * (1.0 + sizeVariation); 
-    if (currentPetalVisualSize <= 0.0001) currentPetalVisualSize = 0.0001;    float2 texLookupUV = (rotatedPetalSpaceUV / currentPetalVisualSize) + 0.5;
+    if (currentPetalVisualSize <= AS_MIN_NORM) currentPetalVisualSize = AS_MIN_NORM;    float2 texLookupUV = (rotatedPetalSpaceUV / currentPetalVisualSize) + 0.5;
 
     // Sample from atlas based on petal type and random variant
     // Check if texture coordinates are within valid range (0 to 1)

@@ -344,7 +344,7 @@ float4 proceduralFlame(
     float width_at_y = pow(saturate(1.0 - distorted_uv.y), FlameCurve);
 
     // Normalized horizontal distance relative to width, applying sharpness.
-    float h_dist_norm = abs(distorted_uv.x * 2.0) / (width_at_y + 1e-6);
+    float h_dist_norm = abs(distorted_uv.x * 2.0) / (width_at_y + AS_STABILITY_EPSILON);
     float sharp_h_dist_norm = h_dist_norm * FlameSharpness;
 
     // Main shape mask based on horizontal distance.
@@ -422,15 +422,7 @@ float4 PS_ProceduralDepthPlaneFlame(float4 pos : SV_Position, float2 uv : TEXCOO
 
     // --- Coordinate System Setup ---
     float aspectRatio = ReShade::AspectRatio; // BUFFER_WIDTH / BUFFER_HEIGHT
-    float2 screen_coords; // Centered coords, shortest dimension spans [-0.5, 0.5]
-
-    if (aspectRatio >= 1.0) { // Wider than tall, or square
-        screen_coords.x = (uv.x - 0.5) * aspectRatio; // Spans [-0.5*AR, 0.5*AR]
-        screen_coords.y = uv.y - 0.5;                 // Spans [-0.5, 0.5] (Shortest)
-    } else { // Taller than wide
-        screen_coords.x = uv.x - 0.5;                 // Spans [-0.5, 0.5] (Shortest)
-        screen_coords.y = (uv.y - 0.5) / aspectRatio; // Spans [-0.5/AR, 0.5/AR]
-    }
+    float2 screen_coords = AS_centeredUVWithAspect(uv, aspectRatio); // Centered coords; shortest dimension spans [-0.5, 0.5]
     // Note: Y still increases downwards here.
 
     // 2. Apply inverse global rotation
@@ -487,9 +479,9 @@ float4 PS_ProceduralDepthPlaneFlame(float4 pos : SV_Position, float2 uv : TEXCOO
 
         float2 rel_uv;
         // Avoid division by zero
-        rel_uv.x = (flameDimInScreenCoords.x > 1e-5) ? diff.x / flameDimInScreenCoords.x : 0.0;
+    rel_uv.x = (flameDimInScreenCoords.x > AS_GAUSS_EXP_EPSILON) ? diff.x / flameDimInScreenCoords.x : 0.0;
         // Negate diff.y because screen_coords.y increases downwards, but rel_uv.y increases upwards
-        rel_uv.y = (flameDimInScreenCoords.y > 1e-5) ? -diff.y / flameDimInScreenCoords.y : 0.0;
+    rel_uv.y = (flameDimInScreenCoords.y > AS_GAUSS_EXP_EPSILON) ? -diff.y / flameDimInScreenCoords.y : 0.0;
 
         // --- Bounding Box Check --- Keep bounds slightly generous
         if (rel_uv.y >= -0.1 && rel_uv.y < 1.1 && abs(rel_uv.x) < 1.5) {
@@ -506,7 +498,7 @@ float4 PS_ProceduralDepthPlaneFlame(float4 pos : SV_Position, float2 uv : TEXCOO
 
             // --- Apply Effect ---
             if (flame.a > 0.0) {
-                float3 blended = AS_applyBlend(flame.rgb * flame.a, finalResult.rgb, BlendMode);
+                float3 blended = AS_blendRGB(flame.rgb * flame.a, finalResult.rgb, BlendMode);
                 finalResult = float4(lerp(finalResult.rgb, blended, BlendAmount), orig.a);
             }
         }

@@ -177,11 +177,7 @@ AS_DEBUG_UI("Off\0Show Audio Reactivity\0")
 // HELPER FUNCTIONS
 // ============================================================================
 
-// Standard 2D rotation matrix, assuming pre-multiplication with a column vector
-float2x2 Rot(float a) {
-    float c = cos(a), s = sin(a);
-    return float2x2(c, -s, s, c); // [row0: c, -s] [row1: s, c]
-}
+// Use shared rotation matrix helper
 
 // Get color from the currently selected palette
 float3 getWavySquigglesColor(float t, float time) {
@@ -237,9 +233,8 @@ float4 WavySquigglesPS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD) : 
     float rotationRadians = AS_getRotationRadians(EffectSnapRotation, EffectFineRotation);
     
     // --- POSITION HANDLING ---
-    // Step 1: Center and correct for aspect ratio
-    float2 p_centered = (texcoord - AS_HALF) * 2.0;          // Center coordinates (-1 to 1)
-    p_centered.x *= ReShade::AspectRatio;                // Correct for aspect ratio
+    // Step 1: Center and correct for aspect ratio using shared helper
+    float2 p_centered = AS_centeredUVWithAspect(texcoord, ReShade::AspectRatio) * 2.0; // [-1,1]
     
     // Step 2: Apply rotation around center FIRST (negative rotation for clockwise)
     float sinRot, cosRot;
@@ -337,7 +332,7 @@ float4 WavySquigglesPS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD) : 
     float4 effectColor = float4(finalRGB, 1.0);
     
     // --- Final Blending & Debug ---
-    float4 finalColor = float4(AS_applyBlend(effectColor.rgb, originalColor.rgb, BlendMode), 1.0);
+    float4 finalColor = float4(AS_blendRGB(effectColor.rgb, originalColor.rgb, BlendMode), 1.0);
     finalColor = lerp(originalColor, finalColor, BlendStrength);
     
     // Show debug overlay if enabled

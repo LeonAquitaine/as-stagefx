@@ -78,7 +78,7 @@ static const float RING_THICKNESS_DEFAULT = 0.2;  // 20% of radius
 
 // Internal Constants
 static const float ROTATION_SPEED_SCALE = 0.1; // Multiplier for RotationSpeed UI value
-static const float DEPTH_EPSILON = 0.0001;     // Small offset for depth checks and division
+// Use centralized epsilon from AS_Utils: AS_DEPTH_EPSILON
 
 // ============================================================================
 // EFFECT-SPECIFIC PARAMETERS
@@ -202,16 +202,8 @@ float4 PS_ScreenRing(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_
     float globalRotation = AS_getRotationRadians(SnapRotation, FineRotation); // Get rotation angle
 
     // --- Calculate Screen Geometry (Following AS Standards) ---
-    // 1. Map texcoord [0,1] to centered_uv [-0.5, 0.5]
-    float2 centered_uv = texcoord - 0.5;
-
-    // 2. Apply aspect ratio correction to centered_uv
-    float2 aspect_corrected_uv = centered_uv;
-    if (aspectRatio >= 1.0) { // Wide screen
-         aspect_corrected_uv.x *= aspectRatio;
-    } else { // Tall screen
-         aspect_corrected_uv.y /= aspectRatio;
-    }
+    // 1-2. Center and apply aspect ratio correction using shared helper
+    float2 aspect_corrected_uv = AS_centeredUVWithAspect(texcoord, aspectRatio);
 
     // 3. Apply inverse global rotation to aspect_corrected_uv
     float sinRot = sin(-globalRotation);
@@ -237,8 +229,8 @@ float4 PS_ScreenRing(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_
     float radiusNorm = radiusInput;
     float thicknessNorm = radiusNorm * saturate(thicknessInput);
 
-    float effectiveRadiusNorm = max(0.0001, radiusNorm);
-    float effectiveThicknessNorm = max(0.0001, thicknessNorm);
+    float effectiveRadiusNorm = max(AS_MIN_NORM, radiusNorm);
+    float effectiveThicknessNorm = max(AS_MIN_NORM, thicknessNorm);
 
     // --- Check if Pixel is on the Ring ---
     float distDelta = abs(screenDistNorm - effectiveRadiusNorm);
@@ -253,14 +245,14 @@ float4 PS_ScreenRing(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_
     if (ringFactor > 0.0)
     {
         // Check depth using targetDepthZ (from TargetDepth uniform)
-        bool visible = targetDepthZ <= sceneDepth + DEPTH_EPSILON;
+    bool visible = targetDepthZ <= sceneDepth + AS_DEPTH_EPSILON_SMALL;
 
         if (visible)
         {
             // --- Texture Mapping ---
             // Use the calculated angle and screenDistNorm
             float texU = frac(angle / AS_TWO_PI + 0.5);
-            float texV = 1.0 - saturate(0.5 + (screenDistNorm - effectiveRadiusNorm) / (effectiveThicknessNorm + DEPTH_EPSILON));
+            float texV = 1.0 - saturate(0.5 + (screenDistNorm - effectiveRadiusNorm) / (effectiveThicknessNorm + AS_DEPTH_EPSILON_SMALL));
 
             float4 texColor = tex2D(ScreenRing_RingSampler, float2(texU, texV));
             
@@ -275,7 +267,7 @@ float4 PS_ScreenRing(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_
                 float3 paletteColor = getScreenRingPaletteColor(texU, timer);
                 
                 // Apply saturation and brightness adjustments
-                float luminance = dot(paletteColor, float3(0.299, 0.587, 0.114));
+                float luminance = dot(paletteColor, AS_LUMA_REC709);
                 paletteColor = lerp(luminance.xxx, paletteColor, PaletteSaturation) * PaletteBrightness;
                 
                 // Apply palette based on target mode
@@ -294,7 +286,7 @@ float4 PS_ScreenRing(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_
                 // Incorporate the texture's alpha channel into the final alpha calculation
                 float finalAlpha = ringFactor * texColor.a * BlendAmount;
 
-                float3 blendedColor = AS_applyBlend(ringColor, orig.rgb, BlendMode);
+                float3 blendedColor = AS_blendRGB(ringColor, orig.rgb, BlendMode);
 
                 finalResult = float4(lerp(orig.rgb, blendedColor, finalAlpha), orig.a);
             }
@@ -305,10 +297,7 @@ float4 PS_ScreenRing(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_
         // Recalculate values using the new method for debug views
         float2 effect_screen_coords = TargetScreenXY * 0.5;
         float globalRotation = AS_getRotationRadians(SnapRotation, FineRotation);
-        float2 centered_uv = texcoord - 0.5;
-        float2 aspect_corrected_uv = centered_uv;
-        if (aspectRatio >= 1.0) aspect_corrected_uv.x *= aspectRatio;
-        else aspect_corrected_uv.y /= aspectRatio;
+    float2 aspect_corrected_uv = AS_centeredUVWithAspect(texcoord, aspectRatio);
         float sinRot = sin(-globalRotation);
         float cosRot = cos(-globalRotation);
         float2 rotated_uv;
@@ -336,15 +325,15 @@ float4 PS_ScreenRing(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_
              // Recalculate effective radius/thickness based on inputs
              float radiusNorm = radiusInput;
              float thicknessNorm = radiusNorm * saturate(thicknessInput);
-             float effectiveRadiusNorm = max(0.0001, radiusNorm);
-             float effectiveThicknessNorm = max(0.0001, thicknessNorm);
+             float effectiveRadiusNorm = max(AS_MIN_NORM, radiusNorm);
+             float effectiveThicknessNorm = max(AS_MIN_NORM, thicknessNorm);
 
-             float texV = 1.0 - saturate(0.5 + (screenDistNorm - effectiveRadiusNorm) / (effectiveThicknessNorm + DEPTH_EPSILON));
+             float texV = 1.0 - saturate(0.5 + (screenDistNorm - effectiveRadiusNorm) / (effectiveThicknessNorm + AS_DEPTH_EPSILON_SMALL));
              return float4(texU, texV, 0.0, 1.0);
         }
         if (DebugMode == 4) {
              // Check depth using targetDepthZ (from TargetDepth uniform)
-             bool visible = targetDepthZ <= sceneDepth + DEPTH_EPSILON;
+             bool visible = targetDepthZ <= sceneDepth + AS_DEPTH_EPSILON_SMALL;
              float debugVal = visible ? 1.0 : 0.0;
              return float4(debugVal, debugVal, debugVal, 1.0);
         }

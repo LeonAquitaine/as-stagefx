@@ -315,7 +315,7 @@ float4 PS_Constellation(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) 
     float depthMask = depth >= EffectDepth;
     
     // Blend the final color with the original scene
-    float3 blended = AS_applyBlend(saturate(finalColor), originalColor.rgb, BlendMode);
+    float3 blended = AS_blendRGB(saturate(finalColor), originalColor.rgb, BlendMode);
     return float4(lerp(originalColor.rgb, blended, BlendStrength * depthMask), 1.0f);
 }
 

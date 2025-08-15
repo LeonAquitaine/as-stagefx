@@ -145,33 +145,32 @@ float3 getArcColor(float audioIntensity) {
  * edge_softness_units: Softness for edges, in same units as radius/thickness
  */
 float calculateArcVisualMask(float2 texcoord, float target_direction_rad, float arc_span_deg, float arc_radius_norm, float arc_thickness_norm, float edge_softness_units) {
-    float2 centered_uv = texcoord - 0.5; 
+    // Use shared polar helper to get angle (standard: 0 rad at +X) and radius in aspect-corrected centered space
+    float2 polar = AS_polarAngleRadius(texcoord, ReShade::AspectRatio);
+    // Match existing convention where 0 rad points UP by rotating +90 degrees
+    float pixel_angle_rad = polar.x + (AS_PI * 0.5f);
 
-    float pixel_angle_rad = atan2(centered_uv.x, -centered_uv.y); 
-    
     float angle_diff_rad = pixel_angle_rad - target_direction_rad;
     angle_diff_rad = AS_mod(angle_diff_rad + AS_PI, AS_TWO_PI) - AS_PI;
-    
+
     float half_arc_span_rad = AS_radians(arc_span_deg) * 0.5;
-    
-    float angular_falloff_rad = max(AS_radians(1.0), half_arc_span_rad * ANGULAR_FALLOFF_FACTOR); 
+
+    float angular_falloff_rad = max(AS_radians(1.0), half_arc_span_rad * ANGULAR_FALLOFF_FACTOR);
     float angleMask = smoothstep(half_arc_span_rad + angular_falloff_rad, half_arc_span_rad - angular_falloff_rad, abs(angle_diff_rad));
 
-    float2 aspect_corrected_centered_uv = centered_uv;
-    aspect_corrected_centered_uv.x *= ReShade::AspectRatio; 
-    float dist_from_center_norm = length(aspect_corrected_centered_uv); 
+    float dist_from_center_norm = polar.y;
 
     float r_inner = arc_radius_norm - arc_thickness_norm * 0.5;
     float r_outer = arc_radius_norm + arc_thickness_norm * 0.5;
 
-    if (r_inner >= r_outer) return 0.0f; 
+    if (r_inner >= r_outer) return 0.0f;
 
-    float radial_falloff = edge_softness_units * 0.5; 
+    float radial_falloff = edge_softness_units * 0.5;
 
     float smooth_inner = smoothstep(r_inner - radial_falloff, r_inner + radial_falloff, dist_from_center_norm);
     float smooth_outer = 1.0 - smoothstep(r_outer - radial_falloff, r_outer + radial_falloff, dist_from_center_norm);
     float radiusMask = smooth_inner * smooth_outer;
-    
+
     return saturate(angleMask * radiusMask);
 }
 
@@ -201,7 +200,7 @@ float4 AudioDirectionPS(float4 position : SV_Position, float2 texcoord : TEXCOOR
     
     float4 arc_primitive_color = float4(arc_color, saturate(arc_mask_value * current_intensity));
     
-    float4 result = AS_applyBlend(arc_primitive_color, backdrop_color, BlendMode, BlendStrength);
+    float4 result = AS_blendRGBA(arc_primitive_color, backdrop_color, BlendMode, BlendStrength);
     
     return result;
 }

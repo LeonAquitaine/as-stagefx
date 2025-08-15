@@ -227,23 +227,11 @@ float4 PS_DigitalBrain(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) :
     if (depth < StageDepth - AS_DEPTH_EPSILON)
         return originalColor;
     
-    // Apply position offset and scaling
-    // We'll do this directly while maintaining aspect ratio
-    float2 positionAdjustedUV = texcoord;
-    
-    // Calculate normalized offset (centered around 0.5)
-    float2 centeredUV = texcoord - 0.5;
-      // Apply proper aspect ratio compensation for positioning
-    if (ReShade::AspectRatio > 1.0)
-        centeredUV.x *= ReShade::AspectRatio;
-    else
-        centeredUV.y *= ReShade::AspectRatio;
-        
-    // Apply scale
+    // Apply position offset and scaling using shared aspect-corrected centering
+    float2 centeredUV = AS_centeredUVWithAspect(texcoord, ReShade::AspectRatio);
     centeredUV *= Scale;
-      // Apply offset and recenter
     centeredUV += PositionOffset * 0.5; // Convert from [-1,1] to [-0.5,0.5] range
-    positionAdjustedUV = centeredUV + 0.5;
+    float2 positionAdjustedUV = centeredUV + 0.5;
     
     // Calculate animation time with keyframe handling
     float currentTime;
@@ -338,12 +326,8 @@ float4 PS_DigitalBrain(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) :
         f *= FrequencyMultiplier;
         a *= AmplitudeDecay;
     }// Apply advanced vignette with user controls
-    // Adjust for aspect ratio to ensure circular vignette regardless of screen dimensions
-    float2 vignetteUV = suv;
-    if (ReShade::AspectRatio > 1.0)
-        vignetteUV.x /= ReShade::AspectRatio; // Correct for wider screens
-    else
-        vignetteUV.y *= ReShade::AspectRatio; // Correct for taller screens
+    // Use shared helper for aspect-correct centered UVs for circular vignette behavior
+    float2 vignetteUV = AS_centeredUVWithAspect(texcoord, ReShade::AspectRatio);
         
     float vignetteX = abs(vignetteUV.x);
     float vignetteY = abs(vignetteUV.y);
@@ -380,16 +364,12 @@ float4 PS_DigitalBrain(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) :
     else if (DebugMode == 3)
     {
         // Show the vignette mask
-        float2 vignetteUV = suv;
-        if (ReShade::AspectRatio > 1.0)
-            vignetteUV.x /= ReShade::AspectRatio;
-        else
-            vignetteUV.y *= ReShade::AspectRatio;
+        float2 vignetteUV = AS_centeredUVWithAspect(texcoord, ReShade::AspectRatio);
         
         float vignetteX = abs(vignetteUV.x);
         float vignetteY = abs(vignetteUV.y);
         float vignetteFactor = pow(pow(vignetteX, VignetteRoundness) + pow(vignetteY, VignetteRoundness), 1.0/VignetteRoundness);
-        float vignetteMask = exp(-VignetteStrength * vignetteFactor) * VignetteRadius;
+    float vignetteMask = exp(-VignetteStrength * vignetteFactor) * VignetteRadius;
         return float4(vignetteMask.xxx, originalColor.a);
     }
     else if (DebugMode == 4) 
@@ -403,7 +383,7 @@ float4 PS_DigitalBrain(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) :
     }
     
     // Apply the standard blend function for final output
-    float3 blendedColor = AS_applyBlend(col, originalColor.rgb, BlendMode);
+    float3 blendedColor = AS_blendRGB(col, originalColor.rgb, BlendMode);
     return float4(lerp(originalColor.rgb, blendedColor, BlendStrength), originalColor.a);
 }
 

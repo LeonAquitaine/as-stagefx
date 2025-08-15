@@ -77,7 +77,7 @@ static const float EFFECT_SCALE_MIN = 1.0;
 static const float EFFECT_SCALE_MAX = 20.0;
 static const float EFFECT_SCALE_DEFAULT = 12.053; // Updated based on UI optimization
 static const float COLOR_PHASE_MIN = 0.0;
-static const float COLOR_PHASE_MAX = 6.28318; // 2*PI
+static const float COLOR_PHASE_MAX = AS_TWO_PI; // 2*PI
 static const float COLOR_PHASE_R_DEFAULT = 2.0;
 static const float COLOR_PHASE_G_DEFAULT = 3.0;
 static const float COLOR_PHASE_B_DEFAULT = 4.0;
@@ -158,8 +158,7 @@ float4 PS_Fluorescent(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : 
     }
     
     // Apply coordinate transformations: center → rotate → position/scale
-    float aspectRatio = ReShade::AspectRatio;
-    float2 centeredCoord = AS_centerCoord(texcoord, aspectRatio);
+    float2 centeredCoord = AS_centeredUVWithAspect(texcoord, ReShade::AspectRatio);
     
     // Apply rotation
     float rotation = AS_getRotationRadians(EffectSnapRotation, EffectFineRotation);
@@ -241,7 +240,7 @@ float4 PS_Fluorescent(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : 
     float4 originalColor = tex2D(ReShade::BackBuffer, texcoord);
     
     // Apply the blend mode between effect and original background
-    float3 blendedColor = AS_applyBlend(effectOutput.rgb, originalColor.rgb, BlendMode);
+    float3 blendedColor = AS_blendRGB(effectOutput.rgb, originalColor.rgb, BlendMode);
     
     // Mix between original and blended result based on BlendAmount
     float3 finalResult = lerp(originalColor.rgb, blendedColor, BlendAmount);

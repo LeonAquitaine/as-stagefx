@@ -648,7 +648,7 @@ float3 DrawGuides(float2 texcoord, float3 originalColor, float3 guideColor, floa
                 // Apply rotation if enabled
                 float2 rotatedCoord = frameCoord;
                 if (PatternAdvanced && PatternRotation != 0.0) {
-                    rotatedCoord = RotatePoint(frameCoord, float2(0.5, 0.5), PatternRotation * AS_PI / 180.0);
+                    rotatedCoord = RotatePoint(frameCoord, float2(0.5, 0.5), AS_radians(PatternRotation));
                 }
                 
                 if (actualSubType == 0 || actualSubType == 1) {

@@ -393,7 +393,7 @@ float4 PS_DigitalArtifacts(float4 pos : SV_Position, float2 texcoord : TEXCOORD)
     }
     
     // Apply blend mode and depth mask
-    float3 blendedColor = AS_applyBlend(effectColor, originalColor.rgb, BlendMode);
+    float3 blendedColor = AS_blendRGB(effectColor, originalColor.rgb, BlendMode);
     return float4(lerp(originalColor.rgb, blendedColor, depthMask * BlendAmount), originalColor.a);
 }
 

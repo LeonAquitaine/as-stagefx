@@ -93,7 +93,7 @@ static const float STEP_DISTANCE_LIMIT = 6.0;  // Distance limit for step calcul
 // Color and visualization constants
 static const float COLOR_EXPONENT = 8.0;       // Exponent for color interpolation
 static const float COLOR_BLEND = 0.5;          // Blend factor between primary and secondary colors
-static const float3 LUMA_WEIGHTS = float3(0.2126, 0.7152, 0.0722); // Standard Rec. 709 luma weights
+static const float3 LUMA_WEIGHTS = AS_LUMA_REC709; // Standard Rec. 709 luma weights (centralized)
 static const float COLOR_BRIGHTNESS_MULT = 15.0; // Multiplier for brightness adjustment
 static const float DEBUG_SCALE = 0.05;         // Scale factor for debug visualization
 
@@ -151,18 +151,7 @@ AS_DEBUG_UI("Off\0Show Accumulator 1\0Show Accumulator 2\0Show Accumulator 3\0Sh
 // Helper Functions
 //------------------------------------------------------------------------------------------------
 
-// Standard rotation matrix function
-float2x2 rot_hlsl(float a) {
-    float ca = cos(a);
-    float sa = sin(a);
-    return float2x2(ca, sa, -sa, ca);
-}
-
-// Box signed distance function (SDF)
-float box_hlsl(float3 p, float3 s) {
-    p = abs(p) - s;
-    return max(p.x, max(p.y, p.z));
-}
+// Use shared rotation and SDF helpers from AS_Utils
 
 /**
  * Fractal iteration function. * @param p Input point.
@@ -210,18 +199,18 @@ float map_hlsl(float3 p, float effect_time, inout float at_acc, inout float at2_
     float rotationAngle = AS_getRotationRadians(EffectSnapRotation, EffectFineRotation);
 
     // Apply rotation to the initial space
-    float2x2 rotMat = rot_hlsl(rotationAngle);
+    float2x2 rotMat = AS_rot2x2(rotationAngle);
     p.xy = mul(p.xy, rotMat);
       // Initial rotations based on p's components and time
-    p.xy = mul(p.xy, rot_hlsl((p.z * ROT_Z_FACTOR + effect_time * ROT_TIME_FACTOR) * ROT_SPEED_XY));
-    p.yz = mul(p.yz, rot_hlsl((p.x * ROT_X_FACTOR) * ROT_SPEED_YZ));
+    p.xy = mul(p.xy, AS_rot2x2((p.z * ROT_Z_FACTOR + effect_time * ROT_TIME_FACTOR) * ROT_SPEED_XY));
+    p.yz = mul(p.yz, AS_rot2x2((p.x * ROT_X_FACTOR) * ROT_SPEED_YZ));
 
     float t_map_internal = effect_time * 0.5; // Corresponds to 't' inside GLSL map
     float3 p_fr1 = fr_hlsl(p, t_map_internal * FR1_TIME_FACTOR, effect_time, foldingAmountFinal);
     float3 p_fr2 = fr_hlsl(p + float3(FR2_OFFSET_X, 0.0, 0.0), t_map_internal * FR2_TIME_FACTOR, effect_time, foldingAmountFinal);
 
-    float d1 = box_hlsl(p_fr1, BOX1_SIZE);
-    float d2 = box_hlsl(p_fr2, BOX2_SIZE);
+    float d1 = AS_sdfBox(p_fr1, BOX1_SIZE);
+    float d2 = AS_sdfBox(p_fr2, BOX2_SIZE);
 
     // Combine distances and apply further modifications
     float d = max(abs(d1), abs(d2)) - BOOLEAN_OFFSET; // Note: abs(d1), abs(d2) used here.
@@ -233,7 +222,7 @@ float map_hlsl(float3 p, float effect_time, inout float at_acc, inout float at2_
     at_acc += AT1_FACTOR / (AT1_FACTOR + abs(d));
 
     // Further SDF operations using the initial point 'initial_p'
-    float d5_box_boundary = box_hlsl(initial_p, BOUNDARY_BOX_SIZE);
+    float d5_box_boundary = AS_sdfBox(initial_p, BOUNDARY_BOX_SIZE);
     
     float fold_dist2_map = 8.0;
     float3 p_sphere_like = initial_p;
@@ -257,15 +246,15 @@ void cam_hlsl(inout float3 p, float effect_time, float rotationAngle) {
     p.xy = mul(p.xy, baseCamRot);
     
     // Apply animated rotations
-    p.yz = mul(p.yz, rot_hlsl(t_cam_internal));
-    p.zx = mul(p.zx, rot_hlsl(t_cam_internal * CAM_ZX_TIME_FACTOR));
+    p.yz = mul(p.yz, AS_rot2x2(t_cam_internal));
+    p.zx = mul(p.zx, AS_rot2x2(t_cam_internal * CAM_ZX_TIME_FACTOR));
 }
 
 // Note: Using AS_randomNoise21 from AS_Noise.1.fxh instead of a custom implementation
 //------------------------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------------------------
-// Note: We're using the standard AS_applyBlend function from AS_Utils.1.fxh instead of a custom implementation
+// Note: Using AS_blendRGB/AS_blendRGBA from AS_Utils.1.fxh for compositing
 //------------------------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------------------------
@@ -311,8 +300,7 @@ float4 MainPS(float4 vpos : SV_Position, float2 texcoord : TexCoord) : SV_Target
     float local_time = AS_getAnimationTime(animSpeedFinal, AnimKeyframe);
 
     // Apply standard AS coordinate transformations
-    float2 centerCoord = texcoord - 0.5; // Center coords
-    centerCoord.x *= ReShade::AspectRatio; // Correct aspect ratio
+    float2 centerCoord = AS_centeredUVWithAspect(texcoord, ReShade::AspectRatio);
     centerCoord = AS_applyPosScale(centerCoord, EffectPosition, EffectScale);
 
     // Initialize accumulators for this pixel
@@ -454,7 +442,7 @@ float4 MainPS(float4 vpos : SV_Position, float2 texcoord : TexCoord) : SV_Target
         }
     }    // Final composition
     float4 result = float4(final_color, 1.0);
-    result = AS_applyBlend(result, background, BlendMode, BlendAmount);
+    result = AS_blendRGBA(result, background, BlendMode, BlendAmount);
     
     return result;
 }

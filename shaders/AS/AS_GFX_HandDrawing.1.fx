@@ -50,8 +50,9 @@ namespace ASHandDrawing {
 // CONSTANTS
 // ============================================================================
 static const float AS_HALF = 0.5;
-static const float AS_PI2 = 6.28318530717959f;
-static const float EPSILON = 0.0001f;
+// Use centralized constants
+// static const float AS_PI2 = 6.28318530717959f; // replaced by AS_TAU
+// static const float EPSILON = 0.0001f;          // replaced by AS_EPSILON
 
 //--------------------------------------------------------------------------------------
 // Texture Definition (User can change NOISE_TEXTURE_PATH_HANDDRAWN before compilation or in UI)
@@ -322,7 +323,7 @@ float4 PS_HandDrawn(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : SV
     for (int i = 0; i < NumberOfStrokeDirections; i++)
     {
         // Calculate angle for this stroke direction
-        float ang = AS_PI2 / (float)NumberOfStrokeDirections * ((float)i + 0.8f);
+    float ang = AS_TAU / (float)NumberOfStrokeDirections * ((float)i + 0.8f);
         float2 v_stroke_dir = float2(cos(ang), sin(ang));
         
         // Sample along the stroke direction
@@ -406,7 +407,7 @@ float4 PS_HandDrawn(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : SV
     float depthMask = ReverseDepth ? (depth <= EffectDepth) : (depth >= EffectDepth);
     
     // Apply blend mode and strength with depth consideration
-    float3 blended = AS_applyBlend(final_col, originalColor.rgb, BlendMode);
+    float3 blended = AS_blendRGB(final_col, originalColor.rgb, BlendMode);
     return float4(lerp(originalColor.rgb, blended, BlendStrength * depthMask), 1.0f);
 }
 

@@ -362,7 +362,7 @@ float calculateFogDensity(in float2 screen_uv, in float linearized_depth, in flo
     float step_size_multiplier = Fog_Multiplier;
 
     // Simulate a ray_direction from rotated screen UVs (for screen-centered rotation)
-    float2 normalized_screen_coords = (rotated_uv - AS_HALF) * float2(ReShade::AspectRatio, 1.0) * 2.0;
+    float2 normalized_screen_coords = AS_centeredUVWithAspect(rotated_uv, ReShade::AspectRatio) * 2.0;
     float3 simulated_ray_direction = normalize(float3(normalized_screen_coords.x, normalized_screen_coords.y, -1.0));    // Calculate fog height mask based on rotated screen position and depth (optimized)
     float screen_height_factor = 1.0 - rotated_uv.y; // 0 at top of screen, 1 at bottom
     float horizon_line = 1.0 - Fog_HeightHorizon.y; // Convert to same coordinate system
@@ -438,7 +438,7 @@ float4 PS_VolumetricFog(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : 
     float3 final_color_rgb = lerp(distance_haze_color, Fog_Color.rgb, fog_density_factor);
 
 	// Apply final blending over the original backbuffer.
-    return AS_applyBlend(float4(final_color_rgb, 1.0), original_color, VolumetricFog_BlendMode, VolumetricFog_BlendAmount);
+    return AS_blendRGBA(float4(final_color_rgb, 1.0), original_color, VolumetricFog_BlendMode, VolumetricFog_BlendAmount);
 }
 
 // ============================================================================

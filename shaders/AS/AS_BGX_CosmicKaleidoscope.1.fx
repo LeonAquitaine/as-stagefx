@@ -70,7 +70,7 @@ static const int AUDIO_TARGET_DEFAULT = 2; static const float AUDIO_MULTIPLIER_D
 // Palette & Style
 static const float COLOR_INTENSITY_DEFAULT = 1.0; static const float COLOR_INTENSITY_MAX = 3.0; static const float COLOR_CYCLE_SPEED_DEFAULT = 0.1; static const float COLOR_CYCLE_SPEED_MAX = 2.0;
 // --- Internal Constants ---
-static const float EPSILON = 1e-5f; static const float HALF_POINT = 0.5f; // Removed PI and TWOPI, use AS_PI and AS_TWO_PI from AS_Utils
+// Use centralized AS_EPS_SAFE and AS_HALF constants
 
 // --- UI Uniform Definitions ---
 
@@ -182,7 +182,7 @@ float4 renderCosmosCrystal(float3 ro, float3 rd, float iTime,
         [loop] 
         for (int i = 0; i < iterations; ++i) 
         {
-            p = abs(p) / max(dot(p, p), 1e-8f) - current_formuparam; // Safeguard dot product division with small epsilon
+            p = abs(p) / max(dot(p, p), AS_STABILITY_EPSILON) - current_formuparam; // Safeguard dot product division with centralized epsilon
             float p_len = length(p);
             a += abs(p_len - pa); 
             pa = p_len; 
@@ -270,7 +270,7 @@ float4 ASCosmicKaleidoscopePS(float4 vpos : SV_POSITION, float2 texcoord : TEXCO
     effectColor.rgb = saturate(finalRGB); 
 
     // --- Final Blending & Debug ---
-    float4 finalColor = float4(AS_applyBlend(effectColor.rgb, originalColor.rgb, BlendMode), 1.0f);
+    float4 finalColor = float4(AS_blendRGB(effectColor.rgb, originalColor.rgb, BlendMode), 1.0f);
     finalColor = lerp(originalColor, finalColor, BlendStrength);
     
     if (DebugMode != AS_DEBUG_OFF) {

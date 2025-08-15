@@ -217,7 +217,7 @@ float4 PS_TiltedGrid(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_
     // --- Initial Setup & Depth Test ---
     float4 orig = tex2D(ReShade::BackBuffer, texcoord);
     float depth = ReShade::GetLinearizedDepth(texcoord);
-    if (depth < EffectDepth - 0.0005)
+    if (depth < EffectDepth - AS_DEPTH_EPSILON)
         return orig;
 
     // --- Constants & Inputs ---
@@ -303,7 +303,7 @@ float4 PS_TiltedGrid(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_
     }
 
     // --- Final Blending ---
-    float3 blendedColor = AS_applyBlend(finalColor, orig.rgb, BlendMode);
+    float3 blendedColor = AS_blendRGB(finalColor, orig.rgb, BlendMode);
     return float4(lerp(orig.rgb, blendedColor, BlendAmount), orig.a);
 }
 

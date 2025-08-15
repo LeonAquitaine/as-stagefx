@@ -51,7 +51,7 @@ sampler s_as_TiltShiftTex1 { Texture = as_TiltShiftTex1; };
 // ============================================================================
 // TUNABLE CONSTANTS (Defaults and Ranges)
 // ============================================================================
-static const float BLUR_EXP_COEFF_EPSILON = 1e-5; // For Gaussian blur denominator stability
+// Use centralized AS_GAUSS_EXP_EPSILON for Gaussian blur denominator stability
 static const float BLUR_AXIS_SCALE = 2.0;         // Used for blur offset scaling
 static const float BLUR_OFFSET_BIAS = 0.5;        // Bias for blur sample offsets
 static const float DEPTH_BLEED_FACTOR = 10.0;     // Controls depth-aware anti-bleed sensitivity
@@ -124,7 +124,7 @@ float4 PS_TiltShift_BlurH(float4 pos : SV_Position, float2 texcoord : TEXCOORD) 
     float3 gaussianSum = centerTap.rgb;
     float gaussianSumWeight = 1.0;
 
-    const float expCoeff = -2.0 / (nSteps * nSteps + BLUR_EXP_COEFF_EPSILON);
+    const float expCoeff = -2.0 / (nSteps * nSteps + AS_GAUSS_EXP_EPSILON);
     const float2 blurAxisScaled = float2(ReShade::PixelSize.x, 0.0);
 
     for (float iStep = -nSteps; iStep <= nSteps; iStep++)
@@ -168,7 +168,7 @@ float4 PS_TiltShift_BlurV(float4 pos : SV_Position, float2 texcoord : TEXCOORD) 
         float3 gaussianSum = centerTap.rgb;
         float gaussianSumWeight = 1.0;
 
-        const float expCoeff = -2.0 / (nSteps * nSteps + BLUR_EXP_COEFF_EPSILON);
+    const float expCoeff = -2.0 / (nSteps * nSteps + AS_GAUSS_EXP_EPSILON);
         const float2 blurAxisScaled = float2(0.0, ReShade::PixelSize.y);
 
         for (float iStep = -nSteps; iStep <= nSteps; iStep++)
@@ -197,7 +197,7 @@ float4 PS_TiltShift_BlurV(float4 pos : SV_Position, float2 texcoord : TEXCOORD) 
 
     // Apply blend controls
     float4 original_color = tex2D(ReShade::BackBuffer, texcoord);
-    float3 final_color = AS_applyBlend(blurred_color, original_color.rgb, BlendMode);
+    float3 final_color = AS_blendRGB(blurred_color, original_color.rgb, BlendMode);
     final_color = lerp(original_color.rgb, final_color, BlendStrength);
 
     // Debug: Show focus line when left mouse button is held

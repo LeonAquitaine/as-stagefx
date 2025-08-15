@@ -256,10 +256,7 @@ float4 TimeCrystalPS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : S
     }
     
     // Apply rotation to coordinates
-    float2 screenCenter = float2(0.5, 0.5);
-    float2 centeredCoord = texcoord - screenCenter;
-    float aspectRatio = ReShade::ScreenSize.x / ReShade::ScreenSize.y;
-    centeredCoord.x *= aspectRatio;
+    float2 centeredCoord = AS_centeredUVWithAspect(texcoord, ReShade::AspectRatio);
     
     float rotationRadians = AS_getRotationRadians(EffectSnapRotation, EffectFineRotation);
     float s = sin(rotationRadians);
@@ -311,7 +308,7 @@ float4 TimeCrystalPS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : S
         color *= OriginalColorIntensity;
         
         // Apply saturation adjustment
-        float luminance = dot(color, float3(0.299, 0.587, 0.114));
+    float luminance = dot(color, AS_LUMA_REC709);
         color = lerp(luminance, color, OriginalColorSaturation);
     }
     
@@ -322,7 +319,7 @@ float4 TimeCrystalPS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : S
     float4 effectColor = float4(color, 1.0);
     
     // Blend with original scene
-    float4 finalColor = float4(AS_applyBlend(effectColor.rgb, originalColor.rgb, BlendMode), 1.0);
+    float4 finalColor = float4(AS_blendRGB(effectColor.rgb, originalColor.rgb, BlendMode), 1.0);
     finalColor = lerp(originalColor, finalColor, BlendStrength);
     
     // Show debug overlay if enabled

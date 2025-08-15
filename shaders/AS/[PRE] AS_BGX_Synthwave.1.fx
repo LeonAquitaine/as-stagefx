@@ -94,8 +94,9 @@ uniform float PatternSharpness < ui_type = "slider"; ui_label = "Pattern Edges";
 
 static const float MaxDistance = 10.0;
 static const float Tolerance = 3e-3;
-static const float NormalEpsilon = 1e-3;
-static const float SimplexOff = 1.4142135623730950488016887242097f / 3.0f; // sqrt(2) / 3
+// Use centralized utils constants for clarity and DRY
+static const float NormalEpsilon = AS_NORMAL_EPSILON;
+static const float SimplexOff = AS_SQRT_TWO_THIRD; // sqrt(2) / 3
 
 // HSV to RGB conversion from original shader
 // License: WTFPL, author: sam hocevar
@@ -113,10 +114,7 @@ static float3 g_lp;
 static float3 g_pp;
 static float2 g_c;
 
-float2x2 rot(float a) {
-    float s = sin(a), c = cos(a);
-    return float2x2(c, s, -s, c);
-}
+float2x2 rot(float a) { return float2x2(cos(a), sin(a), -sin(a), cos(a)); }
 
 // License: MIT, author: Inigo Quilez
 float3 aces_approx(float3 v) {
@@ -390,7 +388,7 @@ float4 PS_Synthwave(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_T
     float4 finalEffect = float4(effectColor, depthMask);
     
     // Apply blending using AS controls
-    return AS_applyBlend(finalEffect, originalColor, BlendMode, BlendAmount);
+    return AS_blendRGBA(finalEffect, originalColor, BlendMode, BlendAmount);
 }
 
 technique AS_BGX_Synthwave <

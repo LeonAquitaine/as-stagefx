@@ -211,10 +211,10 @@ float4 PS_RadialLensDistortion(float4 pos : SV_Position, float2 texcoord : TEXCO
     effect_center_uv = EffectCenterUV;
     
     if (abs(lensDistortionStrength) > AS_EPSILON) {
-        float2 vec_from_center = texcoord - effect_center_uv;
-        float2 vec_from_center_aspect_corrected = vec_from_center;
-        if (ReShade::AspectRatio > UNITY_VALUE) vec_from_center_aspect_corrected.x /= ReShade::AspectRatio;
-        else vec_from_center_aspect_corrected.y *= ReShade::AspectRatio;
+    float2 vec_from_center = texcoord - effect_center_uv;
+    float2 vec_from_center_aspect_corrected = vec_from_center;
+    if (ReShade::AspectRatio > UNITY_VALUE) vec_from_center_aspect_corrected.x /= ReShade::AspectRatio;
+    else vec_from_center_aspect_corrected.y *= ReShade::AspectRatio;
         float r_aspect_corrected = length(vec_from_center_aspect_corrected);
         vec_from_center *= (UNITY_VALUE + lensDistortionStrength * r_aspect_corrected);
         texcoord_for_effect = effect_center_uv + vec_from_center;
@@ -303,7 +303,7 @@ float4 PS_RadialLensDistortion(float4 pos : SV_Position, float2 texcoord : TEXCO
     calculated_effect_rgb.b = b_accum / current_sample_count;
 
     // Apply RGB effect with full opacity, preserve original alpha
-    float4 blended_rgb = AS_applyBlend(float4(calculated_effect_rgb.rgb, UNITY_VALUE), original_color_sample, BlendMode, BlendAmount);
+    float4 blended_rgb = AS_blendRGBA(float4(calculated_effect_rgb.rgb, UNITY_VALUE), original_color_sample, BlendMode, BlendAmount);
     
     return float4(blended_rgb.rgb, original_color_sample.a);
 }

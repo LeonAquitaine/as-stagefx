@@ -549,10 +549,10 @@ float4 PS_StageGrid(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_T
     float3 fx = renderLavaLampGrid(uv);
     float4 orig = tex2D(ReShade::BackBuffer, texcoord);
     float sceneDepth = ReShade::GetLinearizedDepth(texcoord);
-    if (sceneDepth < StageDepth - 0.0005)
+    if (sceneDepth < StageDepth - AS_DEPTH_EPSILON)
         return orig;
     fx = saturate(fx);
-    float3 blended = AS_applyBlend(fx, orig.rgb, BlendMode);
+    float3 blended = AS_blendRGB(fx, orig.rgb, BlendMode);
     float3 result = lerp(orig.rgb, blended, BlendAmount);
     return float4(result, orig.a);
 }

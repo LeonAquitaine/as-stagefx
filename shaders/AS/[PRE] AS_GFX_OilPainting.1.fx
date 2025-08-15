@@ -300,7 +300,7 @@ float2 quad(float2 p1, float2 p2, float2 p3, float2 p4, int idx) {
 // Get value from oil painting buffer for relief lighting
 float getVal_local(float2 uv_val) {
     float2 Res = float2(BUFFER_WIDTH, BUFFER_HEIGHT);
-    return length(tex2Dlod(OilPainting_Sampler, float4(uv_val, 0.0, 0.5 + 0.5 * log2(Res.x / 1920.0))).xyz) * 1.0;
+    return length(tex2Dlod(OilPainting_Sampler, float4(uv_val, 0.0, 0.5 + 0.5 * log2(Res.x / AS_RESOLUTION_BASE_WIDTH))).xyz) * 1.0;
 }
 
 // Get gradient from oil painting buffer
@@ -348,7 +348,7 @@ float4 PS_OilPaintingDrawing(float4 pos : SV_Position, float2 texcoord : TEXCOOR
     float layerScaleFact = QualityPercent / 100.0;
 
     // Number of grid positions on highest detail level
-    int NumGrid = int(float(0x10000 / 2) * min(pow(Res.x / 1920.0, 0.5), 1.0) * (1.0 - layerScaleFact * layerScaleFact));
+    int NumGrid = int(float(0x10000 / 2) * min(pow(Res.x / AS_RESOLUTION_BASE_WIDTH, 0.5), 1.0) * (1.0 - layerScaleFact * layerScaleFact));
     
     float aspect = Res.x / Res.y;
     int NumX = int(sqrt(float(NumGrid) * aspect) + 0.5);

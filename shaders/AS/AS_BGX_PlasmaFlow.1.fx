@@ -174,7 +174,7 @@ float4 PS_PlasmaFlow(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_
     // Get original color and apply depth cutoff
     float4 orig = tex2D(ReShade::BackBuffer, texcoord);
     float sceneDepth = ReShade::GetLinearizedDepth(texcoord);
-    if (sceneDepth < EffectDepth - 0.0005)
+    if (sceneDepth < EffectDepth - AS_DEPTH_EPSILON)
         return orig;
 
     // --- Plasma Parameter Calculation ---
@@ -192,9 +192,7 @@ float4 PS_PlasmaFlow(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_
     float colorAudio = AS_getAudioSource(AudioColorSource) * AudioColorMult;
 
     // --- UV and Domain Warping ---
-    float2 uv = texcoord;
-    uv = AS_aspectCorrect(uv, BUFFER_WIDTH, BUFFER_HEIGHT);
-    uv -= 0.5;
+    float2 uv = AS_centeredUVWithAspect(texcoord, ReShade::AspectRatio);
     uv.x *= PlasmaStretch;
     uv += 0.5;
     float2 p = uv * PlasmaScale;
@@ -222,7 +220,7 @@ float4 PS_PlasmaFlow(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_
     if (DebugMode == 3) return float4(colorAudio.xxx, 1.0); // Audio
 
     // --- Blending ---
-    float3 finalColor = AS_applyBlend(plasmaColor, orig.rgb, BlendMode);
+    float3 finalColor = AS_blendRGB(plasmaColor, orig.rgb, BlendMode);
     finalColor = lerp(orig.rgb, finalColor, BlendAmount);
 
     return float4(finalColor, 1.0);

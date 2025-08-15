@@ -227,7 +227,7 @@ float4 PS_WaterSurface(float4 vpos : SV_Position, float2 texcoord : TEXCOORD) : 
 
     // --- Blending ---
     float3 waterWithReflection = lerp(WaterColor, reflectionColor.rgb, ReflectionIntensity * WaterTransparency);
-    float3 blendedColor = AS_applyBlend(waterWithReflection, originalColor.rgb, BlendMode);
+    float3 blendedColor = AS_blendRGB(waterWithReflection, originalColor.rgb, BlendMode);
     float3 result = lerp(originalColor.rgb, blendedColor, edgeFade * BlendAmount);
 
     // Normal Mode Output

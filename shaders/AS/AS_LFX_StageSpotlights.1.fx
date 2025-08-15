@@ -259,7 +259,7 @@ float3 ProcessSpotlight(float2 diff, SpotlightParams params, out float maskValue
     // --- Core Light Beam Calculation ---
     // 1. Calculate angle to light direction
     float dirDot = 0.0;
-    if (dist > 1e-5) {
+    if (dist > AS_GAUSS_EXP_EPSILON) {
         // For normal pixels: calculate projection onto light direction
         dirDot = dot(normalize(-diff), spotDir);
     } else {
@@ -339,14 +339,7 @@ float3 renderSpotlights(float2 texcoord, float audioPulse, out float3 spotSum, o
     
     // Step 1: Convert texcoord [0,1] to normalized central square space [-1,1]
     // This creates the uniform coordinate space where the central square is exactly [-1,1]²
-    float2 uv_norm;
-    if (aspectRatio >= 1.0) { // Wider or square
-        uv_norm.x = (texcoord.x - 0.5) * 2.0 * aspectRatio;
-        uv_norm.y = (texcoord.y - 0.5) * 2.0;
-    } else { // Taller
-        uv_norm.x = (texcoord.x - 0.5) * 2.0;
-        uv_norm.y = (texcoord.y - 0.5) * 2.0 / aspectRatio;
-    }
+    float2 uv_norm = AS_centeredUVWithAspect(texcoord, aspectRatio) * 2.0;
     // uv_norm is now in a system where the central square is exactly [-1,1]² regardless of aspect ratio
     
     // Step 2: Apply inverse global rotation
@@ -400,7 +393,7 @@ float3 renderBokeh(float2 uv, float3 spotSum) {
         
         float size = BokehSize * (0.7 + rnd.x * 0.6) * screenMinDim * 0.1;
         float dist_sq = dot(uv_screen - pos, uv_screen - pos);
-        float fade = exp(-dist_sq / max(size * size, 1e-5));
+    float fade = exp(-dist_sq / max(size * size, AS_GAUSS_EXP_EPSILON));
         
         bokeh += spotSum * fade;
     }
@@ -415,7 +408,7 @@ float4 PS_Spotlights(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_
     float sceneDepth = ReShade::GetLinearizedDepth(texcoord);
     
     // Skip effect if pixel is closer than stage depth
-    if (sceneDepth < StageDepth - 0.0005)
+    if (sceneDepth < StageDepth - AS_DEPTH_EPSILON)
         return orig;
     
     // Calculate spotlight and bokeh effects
@@ -433,7 +426,7 @@ float4 PS_Spotlights(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_
     fx = saturate(fx);
     
     // Apply appropriate blend mode
-    float3 blended = AS_applyBlend(fx, orig.rgb, BlendMode);
+    float3 blended = AS_blendRGB(fx, orig.rgb, BlendMode);
     float3 result = lerp(orig.rgb, blended, BlendAmount);
     
     return float4(result, orig.a);

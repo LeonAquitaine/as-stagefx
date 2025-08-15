@@ -172,7 +172,7 @@ void PS_Combine(float4 pos : SV_Position, float2 texcoord : TEXCOORD, out float4
     bloom *= tint * intensity;
 
     // Blend back with original and apply contrast
-    float3 finalImage = AS_applyBlend(float4(bloom, 1.0), float4(originalColor, 1.0), BlendMode, BlendAmount).rgb;
+    float3 finalImage = AS_blendRGBA(float4(bloom, 1.0), float4(originalColor, 1.0), BlendMode, BlendAmount).rgb;
     finalImage = pow(finalImage, contrast);
 
     // Debug split screen: left = original, right = effect

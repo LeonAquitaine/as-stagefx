@@ -200,9 +200,8 @@ float4 BlueCoronaPS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD) : SV_
     float rotationRadians = AS_getRotationRadians(EffectSnapRotation, EffectFineRotation);
     
     // --- POSITION HANDLING ---
-    // Step 1: Center and correct for aspect ratio
-    float2 p_centered = (texcoord - AS_HALF) * 2.0;          // Center coordinates (-1 to 1)
-    p_centered.x *= ReShade::AspectRatio;                // Correct for aspect ratio
+    // Center and correct for aspect ratio using shared helper
+    float2 p_centered = AS_centeredUVWithAspect(texcoord, ReShade::AspectRatio) * 2.0; // [-1,1]
     
     // Step 2: Apply rotation around center (negative rotation for clockwise)
     float sinRot, cosRot;
@@ -215,10 +214,8 @@ float4 BlueCoronaPS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD) : SV_
     // Step 3: Apply position and scale
     float2 coordsAdjusted = p_rotated / Scale - Position;
     
-    // Generate normalized coordinates for the algorithm
-    // Important: We need to preserve aspect ratio correction here
+    // Generate normalized coordinates for the algorithm (already aspect-corrected)
     float2 aspectCorrectedCoords = coordsAdjusted;
-    aspectCorrectedCoords.y *= ReShade::AspectRatio / BUFFER_WIDTH * BUFFER_HEIGHT;
     
     // Scale to screen space but maintain aspect ratio
     float2 f_loop_var = float2(1.0, 1.0);  // Use normalized coordinates instead of screen resolution
@@ -271,7 +268,7 @@ float4 BlueCoronaPS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD) : SV_
     float4 effectColor = float4(effectColorRGB, 1.0);
     
     // --- Final Blending & Debug ---
-    float4 finalColor = float4(AS_applyBlend(effectColor.rgb,originalColor.rgb, BlendMode), 1.0);
+    float4 finalColor = float4(AS_blendRGB(effectColor.rgb,originalColor.rgb, BlendMode), 1.0);
     finalColor = lerp(originalColor, finalColor, BlendStrength);
     
     // Show debug overlay if enabled

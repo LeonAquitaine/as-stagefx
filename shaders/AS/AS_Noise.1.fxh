@@ -199,6 +199,79 @@ float AS_PerlinNoise3DA(float3 p, float time) {
 }
 
 // ============================================================================
+// SIMPLEX NOISE 3D (misterprada/celestianmaze compatible variant)
+// ============================================================================
+
+// mod helpers to avoid reliance on fmod overloads
+float4 ASN_mod2894(float4 x) { return x - floor(x * (1.0f/289.0f)) * 289.0f; }
+float3 ASN_mod2893(float3 x) { return x - floor(x * (1.0f/289.0f)) * 289.0f; }
+
+float4 ASN_perm4(float4 x) { return ASN_mod2894(((x * 34.0f) + 1.0f) * x); }
+float4 ASN_taylorInvSqrt4(float4 r) { return 1.79284291400159f - 0.85373472095314f * r; }
+
+float AS_SimplexNoise3D(float3 v)
+{
+    const float2 C = float2(1.0f/6.0f, 1.0f/3.0f);
+    const float4 D = float4(0.0f, 0.5f, 1.0f, 2.0f);
+    float3 i  = floor(v + dot(v, float3(C.y, C.y, C.y)));
+    float3 x0 =    v - i + dot(i, float3(C.x, C.x, C.x));
+
+    float3 g = step(x0.yzx, x0.xyz);
+    float3 l = 1.0f - g;
+    float3 i1 = min(g.xyz, l.zxy);
+    float3 i2 = max(g.xyz, l.zxy);
+
+    float3 x1 = x0 - i1 + float3(C.x, C.x, C.x);
+    float3 x2 = x0 - i2 + float3(C.y, C.y, C.y);
+    float3 x3 = x0 - 1.0f + float3(0.5f, 0.5f, 0.5f);
+
+    i = ASN_mod2893(i);
+    float4 p = ASN_perm4(ASN_perm4(ASN_perm4( i.z + float4(0.0f, i1.z, i2.z, 1.0f)) + i.y + float4(0.0f, i1.y, i2.y, 1.0f)) + i.x + float4(0.0f, i1.x, i2.x, 1.0f));
+    float n_ = 1.0f/7.0f;
+    float3 ns = n_ * float3(D.w, D.y, D.z) - float3(D.x, D.z, D.x);
+    float4 j = p - 49.0f * floor(p * ns.z * ns.z);
+    float4 x_ = floor(j * ns.z);
+    float4 y_ = floor(j - 7.0f * x_);
+    float4 x = x_ * ns.x + ns.yyyy;
+    float4 y = y_ * ns.x + ns.yyyy;
+    float4 h = 1.0f - abs(x) - abs(y);
+
+    float4 b0 = float4(x.xy, y.xy);
+    float4 b1 = float4(x.zw, y.zw);
+
+    float4 s0 = floor(b0) * 2.0f + 1.0f;
+    float4 s1 = floor(b1) * 2.0f + 1.0f;
+    float4 sh = -step(h, float4(0.0f, 0.0f, 0.0f, 0.0f));
+
+    float4 a0 = b0.xzyw + s0.xzyw * sh.xxyy;
+    float4 a1 = b1.xzyw + s1.xzyw * sh.zzww;
+
+    float3 p0 = float3(a0.xy, h.x);
+    float3 p1 = float3(a0.zw, h.y);
+    float3 p2 = float3(a1.xy, h.z);
+    float3 p3 = float3(a1.zw, h.w);
+
+    float4 norm = ASN_taylorInvSqrt4(float4(dot(p0,p0), dot(p1,p1), dot(p2,p2), dot(p3,p3)));
+    p0 *= norm.x; p1 *= norm.y; p2 *= norm.z; p3 *= norm.w;
+
+    float4 m = max(0.6f - float4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0f);
+    m = m * m;
+    return 42.0f * dot(m * m, float4(dot(p0,x0), dot(p1,x1), dot(p2,x2), dot(p3,x3)));
+}
+
+float AS_fbm3D(float3 x, const int it)
+{
+    float v = 0.0f; float a = 0.5f;
+    float3 shift = float3(100.0f, 100.0f, 100.0f);
+    [loop]
+    for (int i = 0; i < 32; ++i) {
+        if (i < it) { v += a * AS_SimplexNoise3D(x); x = x * 2.0f + shift; a *= 0.5f; }
+        else { break; }
+    }
+    return v;
+}
+
+// ============================================================================
 // FBM (FRACTAL BROWNIAN MOTION)
 // ============================================================================
 

@@ -245,9 +245,8 @@ float4 WavySquaresPS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD) : SV
     float rotationRadians = AS_getRotationRadians(EffectSnapRotation, EffectFineRotation);
     
     // --- POSITION HANDLING ---
-    // Step 1: Center and correct for aspect ratio
-    float2 p_centered = (texcoord - AS_HALF) * 2.0;          // Center coordinates (-1 to 1)
-    p_centered.x *= ReShade::AspectRatio;                // Correct for aspect ratio
+    // Step 1: Center and correct for aspect ratio using shared helper
+    float2 p_centered = AS_centeredUVWithAspect(texcoord, ReShade::AspectRatio) * 2.0; // [-1,1]
     
     // Step 2: Apply rotation around center FIRST (negative rotation for clockwise)
     float sinRot, cosRot;
@@ -335,7 +334,7 @@ float4 WavySquaresPS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD) : SV
     float4 effectColor = float4(finalRGB, 1.0);
     
     // --- Final Blending & Debug ---
-    float4 finalColor = float4(AS_applyBlend(effectColor.rgb, originalColor.rgb, BlendMode), 1.0);
+    float4 finalColor = float4(AS_blendRGB(effectColor.rgb, originalColor.rgb, BlendMode), 1.0);
     finalColor = lerp(originalColor, finalColor, BlendStrength);
     
     // Show debug overlay if enabled

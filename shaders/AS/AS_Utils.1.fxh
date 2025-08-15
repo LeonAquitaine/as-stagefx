@@ -57,12 +57,17 @@ static const float AS_QUARTER_PI = 0.7853981633974483096156608458199f;
 static const float AS_INV_PI = 0.3183098861837906715377675267450f;
 static const float AS_E = 2.7182818284590452353602874713527f;
 static const float AS_GOLDEN_RATIO = 1.6180339887498948482045868343656f;
+static const float AS_ONE = 1.0f;                        // Unity value
+static const float AS_ZERO = 0.0f;                       // Zero value
 
 // Physics & graphics constants
 static const float AS_EPSILON = 1e-6f;          // Very small number to avoid division by zero
 static const float AS_EPS_SAFE = 1e-5f;      // Slightly larger epsilon for screen-space operations
 static const float AS_DEGREES_TO_RADIANS = AS_PI / 180.0f;
 static const float AS_RADIANS_TO_DEGREES = 180.0f / AS_PI;
+static const float AS_INV_255 = 0.0039215686274509803921568627451f; // 1/255 for color normalization
+static const float AS_GAMMA_SRGB = 2.2f;         // Standard sRGB gamma exponent
+static const float3 AS_LUMA_REC709 = float3(0.2126f, 0.7152f, 0.0722f); // Rec.709 luminance weights
 
 // Common numerical constants
 static const float AS_HALF = 0.5f;                          // 1/2 - useful for centered coordinates
@@ -70,10 +75,23 @@ static const float AS_QUARTER = 0.25f;                        // 1/4
 static const float AS_THIRD = 0.3333333333333333333333333333333f;    // 1/3
 static const float AS_TWO_THIRDS = 0.6666666666666666666666666666667f; // 2/3
 static const float AS_SQRT_TWO = 1.4142135623730950488016887242097f; // Square root of 2, useful for diagonal calculations
+static const float AS_SQRT_TWO_THIRD = AS_SQRT_TWO / 3.0f; // sqrt(2)/3, used by some simplex formulations
+static const float AS_MIN_NORM = 0.0001f;        // Small minimum for normalized radii/thickness to avoid collapse
+static const float AS_NORMAL_EPSILON = 1e-3f;    // Epsilon for finite difference normal estimation in SDF/raymarching
+// Friendly alias for 2π
+#define AS_TAU AS_TWO_PI
 
 // Depth testing constants 
 static const float AS_DEPTH_EPSILON = 0.0005f;  // Standard depth epsilon for z-fighting prevention
 static const float AS_EDGE_AA = 0.05f;        // Standard anti-aliasing edge size for smoothstep
+
+// Additional stability/epsilon constants used across effects (centralized to avoid magic numbers)
+static const float AS_DEPTH_EPSILON_SMALL = 0.0001f; // Tighter depth epsilon for precise comparisons
+static const float AS_STABILITY_EPSILON = 1e-6f;     // Generic small epsilon for denominators/weights
+static const float AS_ALPHA_EPSILON = 1e-5f;         // Minimum alpha threshold for masking/visibility
+static const float AS_GAUSS_EXP_EPSILON = 1e-5f;     // Gaussian exponent denominator stability constant
+static const float AS_MIN_STROKE_THICKNESS = 0.0005f; // Min line/stroke thickness in normalized screen units
+static const float AS_OPAQUE_ALPHA = 1.0f;           // Opaque alpha value (semantic alias)
 
 // ============================================================================
 // UI STANDARDIZATION & MACROS
@@ -271,14 +289,15 @@ uniform float scaleName < ui_type = "slider"; ui_label = "Scale"; ui_tooltip = "
 
 // --- Position Helper Functions ---
 // Applies position offset and scaling to centered coordinates
-float2 AS_applyPosScale(float2 coord, float2 pos, float scale) {
+// Applies position and scale to a centered coordinate (x right, y up)
+float2 AS_applyPositionAndScale(float2 coord, float2 pos, float scale) {
     coord.x -= pos.x;
     coord.y += pos.y; 
     return coord / max(scale, AS_EPSILON); 
 }
 
 // Converts normalized texcoord to centered, aspect-corrected coordinates
-float2 AS_centerCoord(float2 texcoord, float aspectRatio) {
+float2 AS_centeredUVWithAspect(float2 texcoord, float aspectRatio) {
     float2 centered = texcoord - 0.5;
     if (aspectRatio >= 1.0) {
         centered.x *= aspectRatio;
@@ -288,11 +307,11 @@ float2 AS_centerCoord(float2 texcoord, float aspectRatio) {
     return centered;
 }
 
-// All-in-one function that handles the common position/scale pattern
-float2 AS_transformCoord(float2 texcoord, float2 pos, float scale, float rotation) {
+// All-in-one UV transform: center + position/scale + optional rotation (radians)
+float2 AS_transformUVCentered(float2 texcoord, float2 pos, float scale, float rotation) {
     float aspectRatio = ReShade::AspectRatio;
-    float2 centered = AS_centerCoord(texcoord, aspectRatio);
-    float2 positioned = AS_applyPosScale(centered, pos, scale);
+    float2 centered = AS_centeredUVWithAspect(texcoord, aspectRatio);
+    float2 positioned = AS_applyPositionAndScale(centered, pos, scale);
     if (abs(rotation) > AS_EPSILON) {
         float s = sin(rotation);
         float c = cos(rotation);
@@ -323,35 +342,128 @@ float2 AS_rotate2D(float2 p, float a)
 float2 AS_applyRotation(float2 coord, float rotation)
 { return AS_rotate2D(coord, rotation);}
 
+// Build a 2x2 rotation matrix (radians)
+float2x2 AS_rot2x2(float radians)
+{
+    float s = sin(radians);
+    float c = cos(radians);
+    return float2x2(c, s, -s, c);
+}
+
+// Compute polar angle (atan2) and radius from texcoord using aspect-corrected centered space
+// Returns float2(angleRadians, radius)
+float2 AS_polarAngleRadius(float2 texcoord, float aspectRatio)
+{
+    float2 p = AS_centeredUVWithAspect(texcoord, aspectRatio);
+    return float2(atan2(p.y, p.x), length(p));
+}
+
+// Apply simple screen-space dithering using a hash pattern; strength is in [0,2] approx.
+float3 AS_applyDither(float3 rgb, float2 texcoord, float strength)
+{
+    if (strength <= AS_EPSILON) return rgb;
+    // Local lightweight hash to avoid cross-header dependency
+    float2 p = texcoord * ReShade::ScreenSize.xy * 0.25f;
+    float n = frac(sin(dot(p, float2(12.9898f, 78.233f))) * 43758.5453f);
+    float adj = (n - 0.5f) * (strength * AS_INV_255);
+    return saturate(rgb + adj);
+}
+
+// Spotlight falloff mask using aspect-corrected centered UVs
+float AS_spotlightMask(float2 centeredAspectUV, float intensity, float radius)
+{
+    return max(intensity - length(centeredAspectUV) * max(radius, AS_EPSILON), 0.0);
+}
+
+// Simple radial vignette mask in [0,1], power controls hardness
+float AS_vignetteMask(float2 texcoord, float power)
+{
+    float2 p = texcoord - 0.5;
+    float r = length(p) / 0.70710678; // normalize to roughly [0,1] at corners
+    return pow(saturate(1.0 - r), max(0.1f, power));
+}
+
+// Depth check helper: returns true if the scene is behind the effect plane
+bool AS_isSceneBehind(float2 texcoord, float effectDepth)
+{
+    float sceneDepth = ReShade::GetLinearizedDepth(texcoord);
+    return sceneDepth >= effectDepth - AS_DEPTH_EPSILON;
+}
+
+// Signed distance to axis-aligned box of half-size s at origin
+float AS_sdfBox(float3 p, float3 s)
+{
+    p = abs(p) - s;
+    return max(p.x, max(p.y, p.z));
+}
+
 // --- Math Helpers ---
 float AS_mod(float x, float y) {
     if (abs(y) < AS_EPSILON) return x;
     return x - y * floor(x / y);
 }
 
-float fmod(float x, float y) { // Ensure fmod is available if AS_mod is used as a replacement
-    return AS_mod(x, y);
-}
+// Avoid shadowing HLSL's fmod intrinsic
 
+// Back-compat: Some ported shaders use fmod in places ReShade HLSL lacks overloads.
+// Map to a safe scalar modulus implementation. For vectors, apply per-component.
+#ifndef AS_FMOD_COMPAT
+#define AS_FMOD_COMPAT 1
+float fmod(float x, float y) { return AS_mod(x, y); }
+float2 fmod(float2 x, float2 y) { return float2(AS_mod(x.x, y.x), AS_mod(x.y, y.y)); }
+float3 fmod(float3 x, float3 y) { return float3(AS_mod(x.x, y.x), AS_mod(x.y, y.y), AS_mod(x.z, y.z)); }
+float4 fmod(float4 x, float4 y) { return float4(AS_mod(x.x, y.x), AS_mod(x.y, y.y), AS_mod(x.z, y.z), AS_mod(x.w, y.w)); }
+float fmod(float x, float y, float dummy) { return AS_mod(x, y); } // defensive extra signature
+#endif
+
+// Back-compat: Rot() alias used by a few older shaders → map to AS_rot2x2
+float2x2 Rot(float radians) { return AS_rot2x2(radians); }
+
+// Back-compat: stanh (saturating tanh) for float/scalar and vector types
+float stanh(float x) { return tanh(x); }
+float2 stanh(float2 x) { return float2(tanh(x.x), tanh(x.y)); }
+float3 stanh(float3 x) { return float3(tanh(x.x), tanh(x.y), tanh(x.z)); }
+float4 stanh(float4 x) { return float4(tanh(x.x), tanh(x.y), tanh(x.z), tanh(x.w)); }
+
+// Depth mask helper commonly referenced by effects: maps linear depth into [0,1] mask
+// depth: linearized scene depth at pixel
+// nearPlane/farPlane: effect planes in linear depth space
+// curve: controls falloff curve (>1 sharper, <1 softer)
+float AS_depthMask(float depth, float nearPlane, float farPlane, float curve)
+{
+    float d = saturate((depth - nearPlane) / max(farPlane - nearPlane, AS_EPSILON));
+    d = pow(d, max(curve, 0.0001f));
+    return 1.0f - d;
+}
 
 // ============================================================================
 // VISUAL EFFECTS & BLEND MODES
 // ============================================================================
 
 // --- Blend Functions ---
-float3 AS_applyBlend(float3 fgColor, float3 bgColor, int blendMode) {
+// Blend helpers — explicit foreground-over-background naming to avoid confusion
+// Foreground-over-background RGB blend (no opacity handling)
+float3 AS_blendRgbFgOverBg(float3 fgColor, float3 bgColor, int blendMode) {
     // Assuming ComHeaders::Blending::Blend is available from Blending.fxh
     // The Blend function in Blending.fxh is:
     // float3 Blend(const int type, const float3 backdrop, const float3 source, const float opacity = 1.0)
     return ComHeaders::Blending::Blend(blendMode, bgColor, fgColor, 1.0).rgb; 
 }
 
-float4 AS_applyBlend(float4 fgColor, float4 bgColor, int blendMode, float blendOpacity) {
-    float3 effect_rgb = AS_applyBlend(fgColor.rgb, bgColor.rgb, blendMode);
+// Foreground-over-background RGBA blend (with opacity)
+float4 AS_blendFgOverBg(float4 fgColor, float4 bgColor, int blendMode, float blendOpacity) {
+    float3 effect_rgb = AS_blendRgbFgOverBg(fgColor.rgb, bgColor.rgb, blendMode);
     float final_opacity = saturate(fgColor.a * blendOpacity);
     float3 final_rgb = lerp(bgColor.rgb, effect_rgb, final_opacity);
     return float4(final_rgb, bgColor.a); 
 }
+
+// Semantic aliases (clear entry points)
+float3 AS_blendRGB(float3 fgRgb, float3 bgRgb, int mode) { return AS_blendRgbFgOverBg(fgRgb, bgRgb, mode); }
+float4 AS_blendRGBA(float4 fgRgba, float4 bgRgba, int mode, float opacity) { return AS_blendFgOverBg(fgRgba, bgRgba, mode, opacity); }
+
+// Back-compat shim for existing call sites that use AS_applyBlend in both RGB and RGBA forms
+// (Deprecated) AS_applyBlend shims removed after migration to AS_blendRGB / AS_blendRGBA
 
 float3 AS_paletteLerp(float3 c0, float3 c1, float t) {
     return lerp(c0, c1, t);
@@ -387,7 +499,8 @@ float2x2 AS_mul_float2x2_float2x2(float2x2 A, float2x2 B)
 // --- Time Functions ---
 uniform int frameCount < source = "framecount"; >; 
 
-float AS_getTime() {
+// Returns elapsed time in seconds, preferring Listeningway clocks when available
+float AS_timeSeconds() {
 #if defined(__LISTENINGWAY_INSTALLED)
     if (Listeningway_TotalPhases120Hz > AS_EPSILON) {
         return Listeningway_TotalPhases120Hz * (1.0f / 120.0f); 
@@ -398,6 +511,9 @@ float AS_getTime() {
 #endif
     return float(frameCount) * (1.0f / 60.0f);
 }
+
+// Back-compat alias: some shaders still call AS_getTime()
+float AS_getTime() { return AS_timeSeconds(); }
 
 // --- Listeningway Helpers ---
 int AS_getFreqBands() {
@@ -438,7 +554,8 @@ float AS_getVU(int source) {
     return 0.0;
 }
 
-float AS_getAudioSource(int source) {
+// Returns a normalized audio level for the given abstracted source
+float AS_audioLevelFromSource(int source) {
     if (source == AS_AUDIO_OFF)   return 0.0;         
     if (source == AS_AUDIO_SOLID)  return 1.0;         
 #if defined(__LISTENINGWAY_INSTALLED)
@@ -459,15 +576,17 @@ float AS_getAudioSource(int source) {
     return 0.0; 
 }
 
-float AS_applyAudioReactivity(float baseValue, int audioSource, float multiplier, bool enableFlag) {
+// Multiplies baseValue by (1 + audioLevel * multiplier) when enabled
+float AS_audioModulateMul(float baseValue, int audioSource, float multiplier, bool enableFlag) {
     if (!enableFlag || audioSource == AS_AUDIO_OFF) return baseValue;
-    float audioLevel = AS_getAudioSource(audioSource);
+    float audioLevel = AS_audioLevelFromSource(audioSource);
     return baseValue * (1.0 + audioLevel * multiplier);
 }
 
-float AS_applyAudioReactivityEx(float baseValue, int audioSource, float multiplier, bool enableFlag, int mode) {
+// mode 0 = multiplicative (default), mode 1 = additive
+float AS_audioModulate(float baseValue, int audioSource, float multiplier, bool enableFlag, int mode) {
     if (!enableFlag || audioSource == AS_AUDIO_OFF) return baseValue;
-    float audioLevel = AS_getAudioSource(audioSource);
+    float audioLevel = AS_audioLevelFromSource(audioSource);
     if (mode == 1) { // Additive mode
         return baseValue + (audioLevel * multiplier);
     } else { // Multiplicative mode (default)
@@ -512,7 +631,7 @@ float2 AS_getStereoBalance() {
 float AS_getStereoAudioReactivity(float position, int audioSource) {
     if (audioSource == AS_AUDIO_OFF) return 0.0;
     if (!AS_isStereoAvailable()) {
-        return AS_getAudioSource(audioSource);
+        return AS_audioLevelFromSource(audioSource);
     }
 #if defined(__LISTENINGWAY_INSTALLED)
     float2 stereoBalance = AS_getStereoBalance(); // This uses Listeningway_AudioPan
@@ -526,7 +645,7 @@ float AS_getStereoAudioReactivity(float position, int audioSource) {
     if (audioSource == AS_AUDIO_VOLUME_RIGHT) 
         return Listeningway_VolumeRight * rightWeight; 
 
-    float generalAudioValue = AS_getAudioSource(audioSource);
+    float generalAudioValue = AS_audioLevelFromSource(audioSource);
 
     if (audioSource == AS_AUDIO_BASS || audioSource == AS_AUDIO_MID || audioSource == AS_AUDIO_TREBLE || audioSource == AS_AUDIO_BEAT) {
          float panEffect = (position < 0) ? stereoBalance.x : stereoBalance.y; 
@@ -539,7 +658,7 @@ float AS_getStereoAudioReactivity(float position, int audioSource) {
     
     return generalAudioValue; 
 #else     
-    return AS_getAudioSource(audioSource);
+    return AS_audioLevelFromSource(audioSource);
 #endif
 }
 
@@ -579,7 +698,7 @@ uniform float multName < ui_type = "slider"; ui_label = label " Multiplier"; ui_
 // ============================================================================
 // ENHANCED AUDIO HELPER FUNCTIONS
 // ============================================================================
-float AS_applyAudioReactivityStereo(float baseValue, int audioSource, float multiplier, float stereoPosition, bool enableFlag) {
+float AS_audioModulateMulStereo(float baseValue, int audioSource, float multiplier, float stereoPosition, bool enableFlag) {
     if (!enableFlag || audioSource == AS_AUDIO_OFF) return baseValue;
     float audioLevel = AS_getStereoAudioReactivity(stereoPosition, audioSource);
     return baseValue * (1.0 + audioLevel * multiplier);
@@ -588,7 +707,7 @@ float AS_applyAudioReactivityStereo(float baseValue, int audioSource, float mult
 float AS_getAudioSourceSafe(int source, float fallbackValue = 0.0) {
 #if defined(__LISTENINGWAY_INSTALLED)
     if (Listeningway_TotalPhases120Hz > AS_EPSILON || Listeningway_Volume > AS_EPSILON || Listeningway_AudioFormat > 0) { 
-        return AS_getAudioSource(source);
+    return AS_audioLevelFromSource(source);
     }
 #endif
     return (source == AS_AUDIO_SOLID) ? 1.0 : fallbackValue;
@@ -704,7 +823,7 @@ float AS_getAnimationTime(float speed, float keyframe) {
     if (abs(speed) < AS_EPSILON) { 
         return keyframe;
     }
-    return (AS_getTime() * speed) + keyframe;
+    return (AS_timeSeconds() * speed) + keyframe;
 }
 
 float2 AS_aspectCorrect(float2 uv, float width, float height) { // Corrected parameter name
@@ -732,15 +851,66 @@ float2 AS_rescaleToScreen(float2 uv) {
 }
 
 // ============================================================================
+// BACK-COMPAT SHIMS (Legacy function aliases)
+// ----------------------------------------------------------------------------
+// Many existing shaders refer to legacy helper names. These aliases map them to
+// the newer centralized implementations to preserve backward compatibility.
+// ============================================================================
+
+// Audio reactivity (legacy names)
+float AS_applyAudioReactivity(float baseValue, int audioSource, float multiplier, bool enableFlag)
+{
+    return AS_audioModulate(baseValue, audioSource, multiplier, enableFlag, 0);
+}
+
+float AS_applyAudioReactivityEx(float baseValue, int audioSource, float multiplier, bool enableFlag, int mode)
+{
+    return AS_audioModulate(baseValue, audioSource, multiplier, enableFlag, mode);
+}
+
+// Direct audio source level (legacy front alias)
+float AS_getAudioSource(int source)
+{
+    return AS_audioLevelFromSource(source);
+}
+
+// Coordinate transforms (legacy names)
+float2 AS_transformCoord(float2 texcoord, float2 pos, float scale, float rotation)
+{
+    return AS_transformUVCentered(texcoord, pos, scale, rotation);
+}
+
+float2 AS_applyPosScale(float2 coord, float2 pos, float scale)
+{
+    return AS_applyPositionAndScale(coord, pos, scale);
+}
+
+// Math/epsilon legacy macro
+#ifndef EPSILON
+    #define EPSILON AS_EPSILON
+#endif
+
+// Legacy helpers used in a few older ports
+float2x2 rot_hlsl(float angleRadians)
+{
+    return AS_rot2x2(angleRadians);
+}
+
+float box_hlsl(float3 p, float3 halfSize)
+{
+    return AS_sdfBox(p, halfSize);
+}
+
+// ============================================================================
 // DEPTH, SURFACE & VISUAL EFFECTS
 // ============================================================================
-float AS_depthMask(float depth, float nearPlane, float farPlane, float curve) {
+float AS_depthFalloffMask(float depth, float nearPlane, float farPlane, float curve) {
     farPlane = max(nearPlane + AS_EPS_SAFE, farPlane); 
     float mask = smoothstep(nearPlane, farPlane, depth);
     return 1.0 - pow(mask, max(0.1f, curve)); 
 }
 
-float3 AS_reconstructNormal(float2 texcoord) {
+float3 AS_normalFromDepth(float2 texcoord) {
     float depth = ReShade::GetLinearizedDepth(texcoord);
     float px = max(abs(ReShade::PixelSize.x), AS_EPSILON);
     float py = max(abs(ReShade::PixelSize.y), AS_EPSILON);
@@ -753,22 +923,22 @@ float3 AS_reconstructNormal(float2 texcoord) {
     return normalize(cross(dy, dx)); 
 }
 
-float AS_fresnel(float3 normal, float3 viewDir, float power) {
+float AS_fresnelTerm(float3 normal, float3 viewDir, float power) {
     normal = normalize(normal); 
     viewDir = normalize(viewDir);
     return pow(1.0 - saturate(dot(normal, viewDir)), max(0.1f, power)); 
 }
 
-float stanh(float x, float safetyThreshold = 12.0) {
+float AS_safeTanh(float x, float safetyThreshold = 12.0) {
     if (abs(x) <= safetyThreshold) {
         return tanh(x);
     }
     return sign(x) * (1.0f - exp(-abs(x - sign(x) * safetyThreshold)) * (1.0f - tanh(safetyThreshold * sign(x))));
 }
 
-float2 stanh(float2 x, float safetyThreshold = 12.0) { return float2(stanh(x.x, safetyThreshold), stanh(x.y, safetyThreshold)); }
-float3 stanh(float3 x, float safetyThreshold = 12.0) { return float3(stanh(x.x, safetyThreshold), stanh(x.y, safetyThreshold), stanh(x.z, safetyThreshold)); }
-float4 stanh(float4 x, float safetyThreshold = 12.0) { return float4(stanh(x.x, safetyThreshold), stanh(x.y, safetyThreshold), stanh(x.z, safetyThreshold), stanh(x.w, safetyThreshold)); }
+float2 AS_safeTanh(float2 x, float safetyThreshold = 12.0) { return float2(AS_safeTanh(x.x, safetyThreshold), AS_safeTanh(x.y, safetyThreshold)); }
+float3 AS_safeTanh(float3 x, float safetyThreshold = 12.0) { return float3(AS_safeTanh(x.x, safetyThreshold), AS_safeTanh(x.y, safetyThreshold), AS_safeTanh(x.z, safetyThreshold)); }
+float4 AS_safeTanh(float4 x, float safetyThreshold = 12.0) { return float4(AS_safeTanh(x.x, safetyThreshold), AS_safeTanh(x.y, safetyThreshold), AS_safeTanh(x.z, safetyThreshold), AS_safeTanh(x.w, safetyThreshold)); }
 
 float AS_fadeInOut(float cycle, float fadeInEnd, float fadeOutStart) {
     fadeInEnd = saturate(fadeInEnd);
@@ -785,13 +955,13 @@ float AS_fadeInOut(float cycle, float fadeInEnd, float fadeOutStart) {
 }
 
 float AS_applySway(float swayAngle, float swaySpeed) {
-    float time = AS_getTime();
+    float time = AS_timeSeconds();
     float swayPhase = time * swaySpeed;
     return AS_radians(swayAngle) * sin(swayPhase);
 }
 
 float AS_applyAudioSway(float swayAngle, float swaySpeed, int audioSource, float audioMult) {
-    float time = AS_getTime();
+    float time = AS_timeSeconds();
     float audioLevel = AS_getAudioSourceSafe(audioSource); 
     float reactiveAngle = swayAngle * (1.0 + audioLevel * audioMult);
     float swayPhase = time * swaySpeed;
@@ -805,7 +975,7 @@ float4 AS_debugOutput(int mode, float4 orig, float4 value1, float4 value2, float
     return orig; 
 }
 
-float AS_starMask(float2 p, float size, float points, float angle) {
+float AS_starShapeMask(float2 p, float size, float points, float angle) {
     float2 uv = p / max(size, AS_EPS_SAFE); 
     float a = atan2(uv.y, uv.x) + AS_radians(angle); 
     float r = length(uv); 
