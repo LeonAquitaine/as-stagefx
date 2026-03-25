@@ -5,7 +5,8 @@
 param(
     [string]$CatalogPath = "../shaders/catalog.json",
     [switch]$ShowDetails = $false,
-    [switch]$ShowCount = $true
+    [switch]$ShowCount = $true,
+    [switch]$FailOnIssues = $false
 )
 
 # Resolve the catalog path relative to script location
@@ -322,6 +323,15 @@ try {
     } else {
         Write-Host "✅ All images in docs/res/img/ are associated with catalog entries" -ForegroundColor Green
     }
+
+    # Honor fail behavior for CI/CD or strict runs
+    if ($FailOnIssues -and $totalIssues -gt 0) {
+        Write-Error "Pre-release issues detected ($totalIssues). Failing as requested (-FailOnIssues)."
+        exit 2
+    }
+
+    # Explicit success exit code when no issues or not failing on issues
+    exit 0
 
 } catch {
     Write-Error "Failed to process catalog: $_"

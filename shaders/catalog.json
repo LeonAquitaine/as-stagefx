@@ -391,6 +391,15 @@
     "licenseCode": "CC BY-NC-SA"
   },
   {
+    "name": "Vinyl Disc",
+    "type": "BGX",
+    "filename": "AS_BGX_VinylDisc.1.fx",
+    "shortDescription": "Spinning vinyl record with iridescent grooves, customizable LP presets, label textures, and animated neon backgrounds.",
+    "longDescription": "Renders a spinning vinyl record with realistic concentric grooves and thin-film iridescence. Features multiple LP color presets including picture disc mode, customizable label with texture support, configurable groove detail, palette-driven or rainbow iridescence with wedge reflection model, 5 background styles, and full audio reactivity.",
+    "licence": "Creative Commons Attribution 4.0 International",
+    "licenseCode": "CC BY 4.0"
+  },
+  {
     "name": "Vortex",
     "filename": "AS_BGX_Vortex.1.fx",
     "type": "BGX",
@@ -460,6 +469,15 @@
     "licenseCode": "CC BY-NC-SA"
   },
   {
+    "name": "Anamorphic Flare",
+    "type": "GFX",
+    "filename": "AS_GFX_AnamorphicFlare.1.fx",
+    "shortDescription": "Horizontal anamorphic streak flares from bright areas, simulating cinema lens optics.",
+    "longDescription": "Simulates the characteristic horizontal streak flares produced by anamorphic cinema lenses. Detects bright areas in the scene and stretches them into wide horizontal streaks with palette-based coloring, configurable streak length, and audio reactivity.",
+    "licence": "Creative Commons Attribution 4.0 International",
+    "licenseCode": "CC BY 4.0"
+  },
+  {
     "name": "Aspect Ratio",
     "filename": "AS_GFX_AspectRatio.1.fx",
     "type": "GFX",
@@ -476,6 +494,15 @@
     "shortDescription": "Visualizes audio directionality as animated arrows or indicators, ideal for music-driven scenes or overlays.",
     "longDescription": "Displays animated arrows or indicators that visualize the directionality of audio sources in real time. Features customizable arrow count, size, color, and animation speed. Supports audio reactivity for direction, magnitude, and color. Useful for music visualizations, DJ overlays, or any scene where audio direction feedback is desired.",
     "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-audiodirection.gif",
+    "licence": "Creative Commons Attribution 4.0 International",
+    "licenseCode": "CC BY 4.0"
+  },
+  {
+    "name": "Bleach Bypass",
+    "type": "GFX",
+    "filename": "AS_GFX_BleachBypass.1.fx",
+    "shortDescription": "Desaturated high-contrast metallic look from the bleach bypass film process.",
+    "longDescription": "Emulates the bleach bypass (silver retention) film development process. Skips the bleach step to retain silver halide, producing a gritty, desaturated, high-contrast image with metallic sheen. Features configurable strength, contrast, and silver retention controls.",
     "licence": "Creative Commons Attribution 4.0 International",
     "licenseCode": "CC BY 4.0"
   },
@@ -500,6 +527,15 @@
     "licenseCode": "CC BY 4.0"
   },
   {
+    "name": "Color Pop",
+    "type": "GFX",
+    "filename": "AS_GFX_ColorPop.1.fx",
+    "shortDescription": "Selective desaturation that keeps one hue range vivid against a monochrome scene.",
+    "longDescription": "Isolates a single hue range and desaturates everything else for dramatic color-pop photography. Features configurable target hue, range width, smooth falloff, and background desaturation level.",
+    "licence": "Creative Commons Attribution 4.0 International",
+    "licenseCode": "CC BY 4.0"
+  },
+  {
     "name": "Cosmic Glow",
     "filename": "AS_GFX_CosmicGlow.1.fx",
     "type": "GFX",
@@ -516,6 +552,15 @@
     },
     "licence": "CC Share-Alike Non-Commercial",
     "licenseCode": "CC BY-NC-SA"
+  },
+  {
+    "name": "Cross Processing",
+    "type": "GFX",
+    "filename": "AS_GFX_CrossProcessing.1.fx",
+    "shortDescription": "Simulates cross-processed film with dramatic color shifts from chemistry mismatches.",
+    "longDescription": "Recreates the look of developing film in the wrong chemistry (E-6 in C-41 or vice versa). Features 5 classic cross-processing presets with per-channel curve manipulation, producing dramatic color shifts, elevated contrast, and distinctive color casts.",
+    "licence": "Creative Commons Attribution 4.0 International",
+    "licenseCode": "CC BY 4.0"
   },
   {
     "name": "Depth Hologram",
@@ -536,12 +581,48 @@
     "licenseCode": "CC BY-NC-SA"
   },
   {
+    "name": "Faded Blacks",
+    "type": "GFX",
+    "filename": "AS_GFX_FadedBlacks.1.fx",
+    "shortDescription": "Lifts black shadows to milky gray, brown, or blue for the signature vintage film look.",
+    "longDescription": "Creates the popular Instagram-style faded blacks aesthetic by lifting shadow levels. Converts deep blacks into soft milky tones with configurable fade color, amount, and tonal range for vintage film and editorial photography looks.",
+    "licence": "Creative Commons Attribution 4.0 International",
+    "licenseCode": "CC BY 4.0"
+  },
+  {
+    "name": "Film Stock",
+    "type": "GFX",
+    "filename": "AS_GFX_FilmStock.1.fx",
+    "shortDescription": "Emulates classic analog film stocks with grain, color science, and tonal character.",
+    "longDescription": "Comprehensive film stock emulation with multiple preset profiles from warm Kodak Gold to punchy Tri-X black and white. Features accurate color science, film grain, tonal curves, and halation characteristics for each film type.",
+    "licence": "Creative Commons Attribution 4.0 International",
+    "licenseCode": "CC BY 4.0"
+  },
+  {
     "name": "Focus Frame",
     "filename": "AS_GFX_FocusFrame.1.fx",
     "type": "GFX",
     "shortDescription": "Creates a focused frame with a stylized background and soft, feathered edges for cinematic compositions.",
     "longDescription": "This shader creates a \"focus frame\" effect by defining a clear, centered rectangular area with a soft, feathered edge. The frame's aspect ratio is fully adjustable. The surrounding space is rendered as a blurred, zoomed, and dimmed version of the background, ideal for creating cinematic compositions. Features a fully adjustable central frame with controls for size and aspect ratio, soft feathered edges for smooth blending between focus area and background, high-quality performant two-pass Gaussian blur for the background, intuitive controls for composition and background effects, depth-aware rendering with standard blending, and debug visualization for frame boundaries.",
     "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-focusframe.gif",
+    "licence": "Creative Commons Attribution 4.0 International",
+    "licenseCode": "CC BY 4.0"
+  },
+  {
+    "name": "Gradient Map",
+    "type": "GFX",
+    "filename": "AS_GFX_GradientMap.1.fx",
+    "shortDescription": "Maps scene luminance to a color gradient using the palette system for cinematic grading.",
+    "longDescription": "Converts scene luminance values to colors from the AS StageFX palette system. Dark areas map to palette color 1, bright areas to color 5, with smooth interpolation between. Enables dramatic cinematic color grading with any of the 25+ built-in palettes or custom colors.",
+    "licence": "Creative Commons Attribution 4.0 International",
+    "licenseCode": "CC BY 4.0"
+  },
+  {
+    "name": "Halation",
+    "type": "GFX",
+    "filename": "AS_GFX_Halation.1.fx",
+    "shortDescription": "Film halation with warm red/orange bloom around bright areas characteristic of analog film.",
+    "longDescription": "Simulates halation, the warm glow caused by light reflecting off the film backing plate in analog cameras. The red channel blooms wider than green and blue, creating the characteristic warm halo around highlights seen in classic film photography.",
     "licence": "Creative Commons Attribution 4.0 International",
     "licenseCode": "CC BY 4.0"
   },
@@ -564,12 +645,39 @@
     "licenseCode": "CC BY-NC-SA"
   },
   {
+    "name": "Light Wrap",
+    "type": "GFX",
+    "filename": "AS_GFX_LightWrap.1.fx",
+    "shortDescription": "Bleeds bright background light around foreground edges for natural compositing.",
+    "longDescription": "Multi-pass effect that isolates bright background areas, applies alpha-weighted Gaussian blur, and composites the result around foreground subjects using depth separation. Features Fresnel-based surface reach control, luminance threshold, solid color or palette-based silhouette modes, and configurable blur radius.",
+    "licence": "Creative Commons Attribution 4.0 International",
+    "licenseCode": "CC BY 4.0"
+  },
+  {
     "name": "MultiLayer Halftone",
     "filename": "AS_GFX_MultiLayerHalftone.1.fx",
     "type": "GFX",
     "shortDescription": "Highly customizable multi-layer halftone (up to 4 layers) with various patterns, isolation methods, and blending options.",
     "longDescription": "Creates a highly customizable multi-layer halftone effect with support for up to four independent layers. Each layer can use different pattern types (dots, lines, crosshatch), isolation methods (brightness, RGB, hue, depth), colors, thresholds, scales, densities, and angles. Features layer blending with transparency support.",
     "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-multilayerhalftone.gif",
+    "licence": "Creative Commons Attribution 4.0 International",
+    "licenseCode": "CC BY 4.0"
+  },
+  {
+    "name": "Orton Effect",
+    "type": "GFX",
+    "filename": "AS_GFX_OrtonEffect.1.fx",
+    "shortDescription": "Dreamy glow combining sharp detail with soft luminous overlay for ethereal mood.",
+    "longDescription": "Classic portrait photography technique that isolates bright areas, applies multi-pass Gaussian blur, then multiplies the sharp original with the soft overlay. Creates a dreamy, painterly quality ideal for fantasy portraits and landscapes.",
+    "licence": "Creative Commons Attribution 4.0 International",
+    "licenseCode": "CC BY 4.0"
+  },
+  {
+    "name": "Soft Diffusion",
+    "type": "GFX",
+    "filename": "AS_GFX_SoftDiffusion.1.fx",
+    "shortDescription": "Beauty portrait soft diffusion filter that smooths midtones while preserving edges.",
+    "longDescription": "Three-pass beauty filter that selectively softens midtone skin areas while preserving sharp edges and details. Creates the classic glamour photography skin glow look with configurable softness and edge preservation.",
     "licence": "Creative Commons Attribution 4.0 International",
     "licenseCode": "CC BY 4.0"
   },
@@ -602,6 +710,15 @@
     "licenseCode": "CC BY-NC-SA"
   },
   {
+    "name": "Y2K Digicam",
+    "type": "GFX",
+    "filename": "AS_GFX_Y2KDigicam.1.fx",
+    "shortDescription": "Early 2000s point-and-shoot digital camera simulation with flash, grain, and artifacts.",
+    "longDescription": "Recreates the aesthetic of early 2000s consumer digital cameras. Features flash wash, color cast, digital noise grain, chromatic aberration, barrel distortion, and vignette for authentic Y2K nostalgia photography.",
+    "licence": "Creative Commons Attribution 4.0 International",
+    "licenseCode": "CC BY 4.0"
+  },
+  {
     "name": "Candle Flame",
     "filename": "AS_LFX_CandleFlame.1.fx",
     "type": "LFX",
@@ -628,20 +745,6 @@
     "shortDescription": "Simulates moving stage spotlights with beam controls, color, and audio reactivity.",
     "longDescription": "Simulates moving stage spotlights with adjustable beam width, color, intensity, and movement patterns. Features multiple spotlights with independent controls, audio reactivity for movement and brightness, and blending options for integration with other effects. Ideal for live performance and dramatic scene lighting.",
     "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-Spotlights.gif",
-    "licence": "Creative Commons Attribution 4.0 International",
-    "licenseCode": "CC BY 4.0"
-  },
-  {
-    "type": "VFX",
-    "filename": "AS_VFX_GlossyGradient.1.fx",
-    "name": "",
-    "licence": "Creative Commons Attribution 4.0 International",
-    "licenseCode": "CC BY 4.0"
-  },
-  {
-    "filename": "AS_VFX_VolumetricFog.1.fx",
-    "type": "VFX",
-    "name": "",
     "licence": "Creative Commons Attribution 4.0 International",
     "licenseCode": "CC BY 4.0"
   },
@@ -710,6 +813,15 @@
     "licenseCode": "CC BY 4.0"
   },
   {
+    "name": "Cross-Screen Stars",
+    "type": "VFX",
+    "filename": "AS_VFX_CrossScreenStars.1.fx",
+    "shortDescription": "Star-shaped diffraction spikes on bright highlights simulating a cross-screen lens filter.",
+    "longDescription": "Adds 4 or 6-point star diffraction spikes on bright areas in the scene. Simulates a physical cross-screen (star) filter attached to a camera lens with configurable spike count, length, rotation, brightness threshold, and audio reactivity.",
+    "licence": "Creative Commons Attribution 4.0 International",
+    "licenseCode": "CC BY 4.0"
+  },
+  {
     "name": "Digital Artifacts",
     "filename": "AS_VFX_DigitalArtifacts.1.fx",
     "type": "VFX",
@@ -720,12 +832,30 @@
     "licenseCode": "CC BY 4.0"
   },
   {
+    "name": "Double Exposure",
+    "type": "VFX",
+    "filename": "AS_VFX_DoubleExposure.1.fx",
+    "shortDescription": "Classic double exposure blending the scene with a transformed copy using depth separation.",
+    "longDescription": "Creates a double exposure effect by blending the scene with a scaled, repositioned, or rotated copy of itself. Uses depth buffer separation so foreground silhouettes are filled with background imagery, mimicking analog film double exposure technique.",
+    "licence": "Creative Commons Attribution 4.0 International",
+    "licenseCode": "CC BY 4.0"
+  },
+  {
     "name": "Dust Motes",
     "filename": "AS_VFX_DustMotes.1.fx",
     "type": "VFX",
     "shortDescription": "Adds floating dust motes and particles with customizable density, size, and animation.",
     "longDescription": "Simulates floating dust motes and particles drifting through the scene. Features controls for particle density, size, speed, color, and depth of field. Includes animation and blending options for subtle atmospheric enhancement.",
     "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-dustmotes.gif",
+    "licence": "Creative Commons Attribution 4.0 International",
+    "licenseCode": "CC BY 4.0"
+  },
+  {
+    "name": "Film Burn",
+    "type": "VFX",
+    "filename": "AS_VFX_FilmBurn.1.fx",
+    "shortDescription": "Animated warm overexposure spreading from frame edges simulating film overheating.",
+    "longDescription": "Generates procedural film burn effects with warm overexposure drifting from frame edges. Simulates the look of film overheating in a projector gate with animated burn patterns, palette-based coloring, and audio reactivity.",
     "licence": "Creative Commons Attribution 4.0 International",
     "licenseCode": "CC BY 4.0"
   },
@@ -747,6 +877,24 @@
     "licenseCode": "CC BY-NC-SA"
   },
   {
+    "type": "VFX",
+    "filename": "AS_VFX_GlossyGradient.1.fx",
+    "name": "Glossy Gradient",
+    "shortDescription": "Smooth flowing gradient patterns with mathematical precision for stylish backgrounds.",
+    "longDescription": "Generates smooth, mathematically precise gradient patterns ideal for stylish backgrounds and color overlays. Features animated flow, palette-based coloring, and configurable gradient parameters with audio reactivity.",
+    "licence": "Creative Commons Attribution 4.0 International",
+    "licenseCode": "CC BY 4.0"
+  },
+  {
+    "name": "Light Leak",
+    "type": "VFX",
+    "filename": "AS_VFX_LightLeak.1.fx",
+    "shortDescription": "Organic blobs of warm light drifting across the frame like light leaking into a film camera.",
+    "longDescription": "Generates procedural warm light blobs that drift organically across the frame, simulating light leaking through gaps in a film camera body. Features palette-based coloring, animated drift, configurable blob count and size, and audio reactivity.",
+    "licence": "Creative Commons Attribution 4.0 International",
+    "licenseCode": "CC BY 4.0"
+  },
+  {
     "filename": "AS_VFX_MotionFocus.1.fx",
     "type": "VFX",
     "name": "Motion Focus",
@@ -763,6 +911,33 @@
     "shortDescription": "Creates trailing motion blur effects for moving objects or the entire scene.",
     "longDescription": "Applies trailing motion blur to moving objects or the whole scene. Features adjustable trail length, direction, fade, and blending. Useful for simulating speed, action, or ghosting effects in dynamic scenes.",
     "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-motiontrails.gif",
+    "licence": "Creative Commons Attribution 4.0 International",
+    "licenseCode": "CC BY 4.0"
+  },
+  {
+    "name": "Neon Edge Glow",
+    "type": "VFX",
+    "filename": "AS_VFX_NeonEdgeGlow.1.fx",
+    "shortDescription": "Cyberpunk-style neon edge glow using depth-based edge detection for vivid rim lighting.",
+    "longDescription": "Detects edges using the depth buffer and applies vivid neon-colored glow around foreground subjects. Creates a cyberpunk/synthwave aesthetic with configurable edge detection sensitivity, glow color from palette, and audio-reactive intensity.",
+    "licence": "Creative Commons Attribution 4.0 International",
+    "licenseCode": "CC BY 4.0"
+  },
+  {
+    "name": "Pixel Sort",
+    "type": "VFX",
+    "filename": "AS_VFX_PixelSort.1.fx",
+    "shortDescription": "Glitch art pixel sorting that streaks pixels by brightness for dramatic stylized distortions.",
+    "longDescription": "Implements directional pixel sorting glitch art. Sorts pixels along rows or columns based on luminance or hue thresholds, creating dramatic streaked distortions. Features configurable sort direction, threshold, streak length, and audio-reactive intensity.",
+    "licence": "Creative Commons Attribution 4.0 International",
+    "licenseCode": "CC BY 4.0"
+  },
+  {
+    "name": "Prism Overlay",
+    "type": "VFX",
+    "filename": "AS_VFX_PrismOverlay.1.fx",
+    "shortDescription": "Crystal prism held in front of the lens creating rainbow refractions and dreamy distortions.",
+    "longDescription": "Simulates holding a crystal prism in front of the camera lens. Uses SDF crystal geometry with chromatic aberration to create rainbow refraction effects and dreamy distortions. Features configurable prism shape, refraction strength, and positioning.",
     "licence": "Creative Commons Attribution 4.0 International",
     "licenseCode": "CC BY 4.0"
   },
@@ -843,6 +1018,15 @@
     "licenseCode": "CC BY 4.0"
   },
   {
+    "name": "Speed Lines",
+    "type": "VFX",
+    "filename": "AS_VFX_SpeedLines.1.fx",
+    "shortDescription": "Radial zoom blur from a configurable center point simulating motion and speed.",
+    "longDescription": "Creates radial zoom blur emanating from a configurable center point. Simulates motion, speed, and impact effects with adjustable blur strength, sample count, and beat-reactive intensity for dynamic action scenes.",
+    "licence": "Creative Commons Attribution 4.0 International",
+    "licenseCode": "CC BY 4.0"
+  },
+  {
     "name": "Stencil Mask",
     "filename": "AS_VFX_StencilMask.1.fx",
     "type": "VFX",
@@ -866,6 +1050,15 @@
       "licenseCode": "CC BY 4.0"
     },
     "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-tiltedgrid.gif",
+    "licence": "Creative Commons Attribution 4.0 International",
+    "licenseCode": "CC BY 4.0"
+  },
+  {
+    "filename": "AS_VFX_VolumetricFog.1.fx",
+    "type": "VFX",
+    "name": "Volumetric Fog",
+    "shortDescription": "Atmospheric fog with procedural noise, wind, and depth layering for outdoor scenes.",
+    "longDescription": "Adds atmospheric volumetric fog with procedural noise-based density variation. Features wind direction and speed controls, depth-based layering, configurable fog color and density, and audio-reactive intensity for dynamic environmental atmosphere.",
     "licence": "Creative Commons Attribution 4.0 International",
     "licenseCode": "CC BY 4.0"
   },

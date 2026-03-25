@@ -679,8 +679,197 @@
       },
       "performance": "Light",
       "author": "Leon Aquitaine"
+    },
+    {
+      "author": "Leon Aquitaine",
+      "credits": {
+        "license": "Creative Commons Attribution 4.0 International"
+      },
+      "filename": "AS_BGX_VinylDisc.1.fx",
+      "name": "AS_BGX_VinylDisc.1",
+      "performance": "Moderate"
+    },
+    {
+      "author": "Leon Aquitaine",
+      "credits": {
+        "license": "Creative Commons Attribution 4.0 International"
+      },
+      "filename": "AS_GFX_AnamorphicFlare.1.fx",
+      "name": "AS_GFX_AnamorphicFlare.1",
+      "performance": "Light"
+    },
+    {
+      "author": "Leon Aquitaine",
+      "credits": {
+        "license": "Creative Commons Attribution 4.0 International"
+      },
+      "filename": "AS_GFX_BleachBypass.1.fx",
+      "name": "AS_GFX_BleachBypass.1",
+      "performance": "Light"
+    },
+    {
+      "author": "Leon Aquitaine",
+      "credits": {
+        "license": "Creative Commons Attribution 4.0 International"
+      },
+      "filename": "AS_GFX_ColorPop.1.fx",
+      "name": "AS_GFX_ColorPop.1",
+      "performance": "Light"
+    },
+    {
+      "author": "Leon Aquitaine",
+      "credits": {
+        "license": "Creative Commons Attribution 4.0 International"
+      },
+      "filename": "AS_GFX_CrossProcessing.1.fx",
+      "name": "AS_GFX_CrossProcessing.1",
+      "performance": "Light"
+    },
+    {
+      "author": "Leon Aquitaine",
+      "credits": {
+        "license": "Creative Commons Attribution 4.0 International"
+      },
+      "filename": "AS_GFX_FadedBlacks.1.fx",
+      "name": "AS_GFX_FadedBlacks.1",
+      "performance": "Light"
+    },
+    {
+      "author": "Leon Aquitaine",
+      "credits": {
+        "license": "Creative Commons Attribution 4.0 International"
+      },
+      "filename": "AS_GFX_FilmStock.1.fx",
+      "name": "AS_GFX_FilmStock.1",
+      "performance": "Light"
+    },
+    {
+      "author": "Leon Aquitaine",
+      "credits": {
+        "license": "Creative Commons Attribution 4.0 International"
+      },
+      "filename": "AS_GFX_GradientMap.1.fx",
+      "name": "AS_GFX_GradientMap.1",
+      "performance": "Light"
+    },
+    {
+      "author": "Leon Aquitaine",
+      "credits": {
+        "license": "Creative Commons Attribution 4.0 International"
+      },
+      "filename": "AS_GFX_Halation.1.fx",
+      "name": "AS_GFX_Halation.1",
+      "performance": "Light"
+    },
+    {
+      "author": "Leon Aquitaine",
+      "credits": {
+        "license": "Creative Commons Attribution 4.0 International"
+      },
+      "filename": "AS_GFX_LightWrap.1.fx",
+      "name": "AS_GFX_LightWrap.1",
+      "performance": "Light"
+    },
+    {
+      "author": "Leon Aquitaine",
+      "credits": {
+        "license": "Creative Commons Attribution 4.0 International"
+      },
+      "filename": "AS_GFX_OrtonEffect.1.fx",
+      "name": "AS_GFX_OrtonEffect.1",
+      "performance": "Light"
+    },
+    {
+      "author": "Leon Aquitaine",
+      "credits": {
+        "license": "Creative Commons Attribution 4.0 International"
+      },
+      "filename": "AS_GFX_SoftDiffusion.1.fx",
+      "name": "AS_GFX_SoftDiffusion.1",
+      "performance": "Light"
+    },
+    {
+      "author": "Leon Aquitaine",
+      "credits": {
+        "license": "Creative Commons Attribution 4.0 International"
+      },
+      "filename": "AS_GFX_Y2KDigicam.1.fx",
+      "name": "AS_GFX_Y2KDigicam.1",
+      "performance": "Light"
+    },
+    {
+      "author": "Leon Aquitaine",
+      "credits": {
+        "license": "Creative Commons Attribution 4.0 International"
+      },
+      "filename": "AS_VFX_CrossScreenStars.1.fx",
+      "name": "AS_VFX_CrossScreenStars.1",
+      "performance": "Light"
+    },
+    {
+      "author": "Leon Aquitaine",
+      "credits": {
+        "license": "Creative Commons Attribution 4.0 International"
+      },
+      "filename": "AS_VFX_DoubleExposure.1.fx",
+      "name": "AS_VFX_DoubleExposure.1",
+      "performance": "Light"
+    },
+    {
+      "author": "Leon Aquitaine",
+      "credits": {
+        "license": "Creative Commons Attribution 4.0 International"
+      },
+      "filename": "AS_VFX_FilmBurn.1.fx",
+      "name": "AS_VFX_FilmBurn.1",
+      "performance": "Light"
+    },
+    {
+      "author": "Leon Aquitaine",
+      "credits": {
+        "license": "Creative Commons Attribution 4.0 International"
+      },
+      "filename": "AS_VFX_LightLeak.1.fx",
+      "name": "AS_VFX_LightLeak.1",
+      "performance": "Light"
+    },
+    {
+      "author": "Leon Aquitaine",
+      "credits": {
+        "license": "Creative Commons Attribution 4.0 International"
+      },
+      "filename": "AS_VFX_NeonEdgeGlow.1.fx",
+      "name": "AS_VFX_NeonEdgeGlow.1",
+      "performance": "Light"
+    },
+    {
+      "author": "Leon Aquitaine",
+      "credits": {
+        "license": "Creative Commons Attribution 4.0 International"
+      },
+      "filename": "AS_VFX_PixelSort.1.fx",
+      "name": "AS_VFX_PixelSort.1",
+      "performance": "Light"
+    },
+    {
+      "author": "Leon Aquitaine",
+      "credits": {
+        "license": "Creative Commons Attribution 4.0 International"
+      },
+      "filename": "AS_VFX_PrismOverlay.1.fx",
+      "name": "AS_VFX_PrismOverlay.1",
+      "performance": "Light"
+    },
+    {
+      "author": "Leon Aquitaine",
+      "credits": {
+        "license": "Creative Commons Attribution 4.0 International"
+      },
+      "filename": "AS_VFX_SpeedLines.1.fx",
+      "name": "AS_VFX_SpeedLines.1",
+      "performance": "Light"
     }
   ],
-  "count": 58,
-  "generated": "2025-08-15"
+  "count": 79,
+  "generated": "2026-03-24"
 }
