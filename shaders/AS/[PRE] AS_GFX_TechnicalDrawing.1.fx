@@ -48,6 +48,8 @@
 #include "AS_Utils.1.fxh"
 #include "AS_Noise.1.fxh" // For AS_hash functions
 
+uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " "; ui_text = "AS StageFX | Technical Drawing Effect by Leon Aquitaine"; > = 0;
+
 // ============================================================================
 // TUNABLE CONSTANTS
 // ============================================================================
@@ -159,7 +161,7 @@ float4 PS_HandDrawing(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV
     float2 p_scaled = fragCoord_px / max(BUFFER_WIDTH, BUFFER_HEIGHT);
     
     // Truncate time for "frame-based" animation as in original
-    float time = AnimationSpeed * round(AnimationSpeed * AS_getTime());
+    float time = AnimationSpeed * round(AnimationSpeed * AS_timeSeconds());
     p_scaled += AS_hash21(time); // Use AS_hash21
     float2 c = customVoronoi(VoronoiScale * p_scaled);
 

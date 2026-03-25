@@ -37,17 +37,25 @@
 #ifndef __AS_VFX_MotionTrails_1_fx
 #define __AS_VFX_MotionTrails_1_fx
 
+#include "ReShade.fxh"
 #include "AS_Utils.1.fxh"
+
+uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " "; ui_text = "\nDepth-tracked motion trails that fade over time with audio-reactive timing.\nPerfect for dance videos and action sequences.\n\nAS StageFX | Music-Reactive Motion Trails by Leon Aquitaine\n"; > = 0;
 
 // --- Helper Functions and Namespace ---
 namespace AS_DepthEcho {
     // Use AS_Utils' audio functions directly instead of creating a local wrapper
     float getAudioSource(int source) {
-        return AS_getAudioSource(source);
+        return AS_audioLevelFromSource(source);
     }
 }
 
 // --- Tunable Constants ---
+static const float BEAT_TRIGGER_THRESHOLD = 0.9f;
+static const float BEAT_RELEASE_THRESHOLD = 0.7f;
+static const float PHASE_WRAPAROUND = 65536.0f;
+static const float ASSUMED_FPS = 60.0f;
+
 static const float FECHO_DEPTHCUTOFF_MIN = 0.01;
 static const float FECHO_DEPTHCUTOFF_MAX = 0.5;
 static const float FECHO_DEPTHCUTOFF_DEFAULT = 0.04;
@@ -121,7 +129,7 @@ void PS_TimingCaptureUpdate(
     float captureStoredLastFrame = prevTimingCapture.g; // Previous capture state
     
     // Define variables
-    float currentPhase = AS_getTime() * 60.0; // Use AS_Utils' time function which already handles Listeningway fallback
+    float currentPhase = AS_timeSeconds() * ASSUMED_FPS; // Use AS_Utils' time function which already handles Listeningway fallback
     bool capture = false;
     
     // Determine if we should capture based on the selected capture mode
@@ -140,7 +148,7 @@ void PS_TimingCaptureUpdate(
             // Shorter intervals when audio is high (faster captures)
             baseInterval = max(25.0, fEcho_TimeInterval * (1.0 - audioValue * Echo_TimingMult));
             
-            float intervalInPhases = baseInterval * (60.0 / 1000.0);
+            float intervalInPhases = baseInterval * (ASSUMED_FPS / 1000.0);
             
             // Force initialization if needed
             if (lastCapturePhase < 0.001f) {
@@ -151,7 +159,7 @@ void PS_TimingCaptureUpdate(
             // --- Timing Check using Previous Frame's Phase ---
             float phaseDifference = currentPhase - lastCapturePhase;
             if (lastCapturePhase > 1.0f && phaseDifference < -100.0f) {
-                phaseDifference += 65536.0f;
+                phaseDifference += PHASE_WRAPAROUND;
             }
             
             // Capture if phaseDifference exceeds our interval threshold
@@ -171,12 +179,12 @@ void PS_TimingCaptureUpdate(
             static bool onBeat = false;
             
             // If not on beat and beat is high, trigger and set flag
-            if (!onBeat && beatValue >= 0.9) {
+            if (!onBeat && beatValue >= BEAT_TRIGGER_THRESHOLD) {
                 capture = true;
                 onBeat = true;
             }
             // If on beat and beat drops below threshold, unset flag
-            else if (onBeat && beatValue < 0.7) {
+            else if (onBeat && beatValue < BEAT_RELEASE_THRESHOLD) {
                 onBeat = false;
             }
             break;
@@ -254,10 +262,7 @@ void PS_EchoComposite(
     float3 echoEffect = echoColor.rgb;
     
     // --- Apply blend mode using AS_Utils helper ---
-    float3 blendedResult = AS_blendRGB(echoEffect, originalColor.rgb, BlendMode);
-    
-    // --- Final blend with original using user-defined strength ---
-    float3 finalResult = lerp(originalColor.rgb, blendedResult, BlendAmount * echoColor.a);
+    float3 finalResult = AS_composite(echoEffect, originalColor.rgb, BlendMode, BlendAmount * echoColor.a);
 
     // --- Debug Modes ---
     if (DebugMode > 0)

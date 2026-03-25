@@ -108,12 +108,8 @@ float get_plasma(in float2 uv, in float offset) {
 // ============================================================================
 float4 PS_BGX_Hologram(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target
 {
-    float4 originalColor = tex2D(ReShade::BackBuffer, texcoord);
-    float sceneDepth = ReShade::GetLinearizedDepth(texcoord);
-    if(sceneDepth < EffectDepth - AS_DEPTH_EPSILON)
-    {
-        return originalColor;
-    }
+    // Depth-aware early return
+    AS_DEPTH_EARLY_RETURN(texcoord, EffectDepth)
 
     // 1. Set up coordinates
     float rotation = AS_getRotationRadians(SnapRotation, FineRotation);
@@ -128,7 +124,7 @@ float4 PS_BGX_Hologram(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : S
     float3 finalColor = max(rainbow, MinBrightness);
 
     // 4. Blend with scene
-    return AS_blendRGBA(float4(finalColor, 1.0), originalColor, BlendMode, BlendAmount);
+    return AS_blendRGBA(float4(finalColor, 1.0), _as_originalColor, BlendMode, BlendAmount);
 }
 
 // ============================================================================

@@ -70,7 +70,7 @@ sampler SamplerFlameState_B
 // ============================================================================
 // NAMESPACE
 // ============================================================================
-namespace ASRadiantFire {
+namespace AS_RadiantFire {
 
 // ============================================================================
 // CONSTANTS 
@@ -141,16 +141,16 @@ uniform float FlameColorThresholdCore < ui_type = "slider"; ui_label = "Core Tem
 uniform float FlameColorThresholdMid < ui_type = "slider"; ui_label = "Mid Temperature"; ui_tooltip = "Temperature threshold for the flame's mid color."; ui_min = 0.1; ui_max = 1.0; ui_step = 0.01; ui_category = "Flame Appearance"; > = DEFAULT_FLAME_COLOR_THRESHOLD_MID;
 
 // --- Global Controls ---
-uniform float AnimationSpeed < ui_type = "slider"; ui_label = "Animation Speed"; ui_tooltip = "Controls the overall speed of the fire animation."; ui_min = 0.1f; ui_max = 3.0f; ui_step = 0.05f; ui_category = "Animation"; > = TIME_SCALE_NORMAL;
-uniform float2 FireRepulsionCenterPos < ui_type = "drag"; ui_label = "Repulsion Center (XY)"; ui_tooltip = "Normalized screen position (0-1) the fire radiates AWAY from."; ui_min = 0.0; ui_max = 1.0; ui_speed = 0.01; ui_category = "Animation"; > = DEFAULT_FIRE_REPULSION_CENTER_POS;
+uniform float AnimationSpeed < ui_type = "slider"; ui_label = "Animation Speed"; ui_tooltip = "Controls the overall speed of the fire animation."; ui_min = 0.1f; ui_max = 3.0f; ui_step = 0.05f; ui_category = AS_CAT_ANIMATION; > = TIME_SCALE_NORMAL;
+uniform float2 FireRepulsionCenterPos < ui_type = "drag"; ui_label = "Repulsion Center (XY)"; ui_tooltip = "Normalized screen position (0-1) the fire radiates AWAY from."; ui_min = 0.0; ui_max = 1.0; ui_speed = 0.01; ui_category = AS_CAT_ANIMATION; > = DEFAULT_FIRE_REPULSION_CENTER_POS;
 
 // --- Subject & Edges ---
 
 AS_STAGEDEPTH_UI(SubjectDepthCutoff)
-uniform float EdgeDetectionSensitivity < ui_type = "slider"; ui_label = "Depth Sensitivity"; ui_tooltip = "Sensitivity of edge detection based on depth changes."; ui_min = 1.0; ui_max = 200.0; ui_step = 1.0; ui_category = "Stage"; > = DEFAULT_EDGE_DETECTION_SENSITIVITY;
-uniform float EdgeSoftness < ui_type = "slider"; ui_label = "Depth Edge"; ui_tooltip = "Softness of the detected subject edges for fire generation."; ui_min = 0.001; ui_max = 0.5; ui_step = 0.001; ui_category = "Stage"; > = DEFAULT_EDGE_SOFTNESS;
-uniform float SourceInjectionStrength < ui_type = "slider"; ui_label = "Edge Fire Strength"; ui_tooltip = "Amount of 'heat' injected at subject edges to start flames."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Stage"; > = DEFAULT_SOURCE_INJECTION_STRENGTH;
-uniform bool OverlaySubject < ui_type = "bool"; ui_label = "Subject: Overlay on Fire"; ui_tooltip = "If checked, the original subject is drawn on top of the fire."; ui_category = "Stage"; > = DEFAULT_OVERLAY_SUBJECT;
+uniform float EdgeDetectionSensitivity < ui_type = "slider"; ui_label = "Depth Sensitivity"; ui_tooltip = "Sensitivity of edge detection based on depth changes."; ui_min = 1.0; ui_max = 200.0; ui_step = 1.0; ui_category = AS_CAT_STAGE; > = DEFAULT_EDGE_DETECTION_SENSITIVITY;
+uniform float EdgeSoftness < ui_type = "slider"; ui_label = "Depth Edge"; ui_tooltip = "Softness of the detected subject edges for fire generation."; ui_min = 0.001; ui_max = 0.5; ui_step = 0.001; ui_category = AS_CAT_STAGE; > = DEFAULT_EDGE_SOFTNESS;
+uniform float SourceInjectionStrength < ui_type = "slider"; ui_label = "Edge Fire Strength"; ui_tooltip = "Amount of 'heat' injected at subject edges to start flames."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = AS_CAT_STAGE; > = DEFAULT_SOURCE_INJECTION_STRENGTH;
+uniform bool OverlaySubject < ui_type = "bool"; ui_label = "Subject: Overlay on Fire"; ui_tooltip = "If checked, the original subject is drawn on top of the fire."; ui_category = AS_CAT_STAGE; > = DEFAULT_OVERLAY_SUBJECT;
 
 AS_ROTATION_UI(EffectSnapRotation, EffectFineRotation)
 
@@ -166,7 +166,7 @@ AS_DEBUG_UI("Off\0Subject Mask\0Edge Factor\0Flame Buffer Temp (R)\0Flame Buffer
 // ============================================================================
 
 float GetTimeWithSpeed() {
-    return AS_getTime() * AnimationSpeed; 
+    return AS_timeSeconds() * AnimationSpeed; 
 }
 
 float2 RotateVector(float2 vec, float angle_rad) {
@@ -402,6 +402,6 @@ technique AS_VFX_RadiantFire <
     }
 }
 
-} // namespace ASRadiantFire
+} // namespace AS_RadiantFire
 
 #endif // __AS_VFX_RadiantFire_1_fx_v2_9 // Updated guard

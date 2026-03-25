@@ -39,7 +39,7 @@
 #define __AS_BGX_CorridorTravel_1_fx
 
 #include "ReShade.fxh"     // For ReShade::ScreenSize, ReShade::AspectRatio, PostProcessVS
-#include "AS_Utils.1.fxh"  // For AS_getTime(), AS_mod() (Assumed available)
+#include "AS_Utils.1.fxh"  // For AS_timeSeconds(), AS_mod() (Assumed available)
 
 // ============================================================================
 // TUNABLE CONSTANTS
@@ -49,32 +49,16 @@ static const float DEFAULT_TUNNEL_LENGTH = 1000.0f;
 static const float DEFAULT_FOV = 2.0f;
 
 // ============================================================================
-// QUALITY & PERFORMANCE
+// EFFECT-SPECIFIC PARAMETERS
 // ============================================================================
-
-uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Corridor Travel' by NuSan\nLink: https://www.shadertoy.com/view/3sXyRN\nLicence: CC Share-Alike Non-Commercial\n\n";>;
-
-uniform int PR_Steps < ui_type = "drag"; ui_min = 1; ui_max = 100; ui_step = 1; ui_label = "Sample Count"; ui_tooltip = "Number of samples per pixel. Higher = better quality but slower."; ui_category = "Quality & Performance"; > = 30;
-uniform int PR_Bounces < ui_type = "drag"; ui_min = 0; ui_max = 5; ui_step = 1; ui_label = "Light Bounces"; ui_tooltip = "Number of light reflections per sample. More bounces = more detailed reflections."; ui_category = "Quality & Performance"; > = 3;
-
-// ============================================================================
-// ANIMATION CONTROLS
-// ============================================================================
-// --- Time Stepping Parameters ---
-uniform float PR_CamTime_BaseSpeed < ui_type = "drag"; ui_min = 0.1; ui_max = 5.0; ui_step = 0.1; ui_label = "Forward Speed"; ui_tooltip = "Base movement speed through the corridor."; ui_category = "Animation"; > = 1.9f;
-uniform float PR_CamTime_TickPeriod < ui_type = "drag"; ui_min = 0.1; ui_max = 5.0; ui_step = 0.1; ui_label = "Tick Period"; ui_tooltip = "Period for the 'stepping' motion effect."; ui_category = "Animation"; > = 1.9f;
-uniform float PR_CamTime_TickStrength < ui_type = "drag"; ui_min = 0.0; ui_max = 3.0; ui_step = 0.1; ui_label = "Tick Strength"; ui_tooltip = "Intensity of the 'stepping' motion effect."; ui_category = "Animation"; > = 1.0f;
-
-// --- Camera Animation ---
-uniform float PR_CamAnim_TimeScale < ui_type = "drag"; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_label = "Camera Speed"; ui_tooltip = "Speed of the camera's procedural animation path."; ui_category = "Animation"; > = 0.3f;
-uniform float PR_CamAnim_XZ_RotAmount < ui_type = "drag"; ui_min = 0.0; ui_max = AS_PI; ui_step = 0.01; ui_label = "Horizontal Rotation"; ui_tooltip = "Amplitude of camera rotation on the horizontal plane (yaw)."; ui_category = "Animation"; > = 0.3f;
-uniform float PR_CamAnim_XY_TimeFactor < ui_type = "drag"; ui_min = 0.1; ui_max = 2.0; ui_step = 0.01; ui_label = "Roll Rotation Speed"; ui_tooltip = "Speed of camera roll rotation."; ui_category = "Animation"; > = 0.7f;
-uniform float PR_CamAnim_XY_RotAmount < ui_type = "drag"; ui_min = 0.0; ui_max = AS_PI; ui_step = 0.01; ui_label = "Roll Rotation Amount"; ui_tooltip = "Amplitude of camera roll rotation."; ui_category = "Animation"; > = 0.4f;
 
 // ============================================================================
 // EMISSIVE PATTERN
 // ============================================================================
-uniform float3 PR_Emission_BaseTint < ui_type = "color"; ui_label = "Base Color"; ui_tooltip = "Base color for the main emissive pattern."; ui_category = "Emissive Pattern"; > = float3(1.0f, 0.5f, 0.2f); 
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Corridor Travel' by NuSan\nLink: https://www.shadertoy.com/view/3sXyRN\nLicence: CC Share-Alike Non-Commercial\n\n";>;
+
+uniform float3 PR_Emission_BaseTint < ui_type = "color"; ui_label = "Base Color"; ui_tooltip = "Base color for the main emissive pattern."; ui_category = "Emissive Pattern"; > = float3(1.0f, 0.5f, 0.2f);
 
 uniform float PR_Emission_Wave1_Freq < ui_type = "drag"; ui_min = 0.001; ui_max = 0.2; ui_step = 0.001; ui_label = "Wave 1 Frequency"; ui_tooltip = "Frequency of the first wave pattern."; ui_category = "Emissive Pattern"; > = 0.025f;
 uniform float PR_Emission_Wave1_Amp < ui_type = "drag"; ui_min = 0.0; ui_max = 2.0; ui_step = 0.01; ui_label = "Wave 1 Amplitude"; ui_tooltip = "Strength of the first wave pattern."; ui_category = "Emissive Pattern"; > = 0.9f;
@@ -121,8 +105,8 @@ uniform float PR_GridPattern_Threshold < ui_type = "drag"; ui_min = 0.0; ui_max 
 uniform float3 PR_Floor_Color < ui_type = "color"; ui_label = "Color"; ui_category = "Floor Effect"; ui_category_closed = true; > = float3(0.7f, 0.5f, 1.2f);
 uniform float PR_Floor_Y_Threshold < ui_type = "drag"; ui_min = -2.0; ui_max = 0.0; ui_step = 0.01; ui_label = "Height"; ui_tooltip = "Height at which the floor effect appears."; ui_category = "Floor Effect"; > = -0.9f;
 uniform float PR_Floor_CurvePeriod < ui_type = "drag"; ui_min = 0.05; ui_max = 1.0; ui_step = 0.01; ui_label = "Animation Period"; ui_tooltip = "Time period for the floor effect animation."; ui_category = "Floor Effect"; > = 0.2f;
-uniform float PR_Floor_CurveScale < ui_type = "drag"; ui_min = 0.0; ui_max = 5.0; ui_step = 0.1; ui_label = "Intensity"; ui_tooltip = "Intensity of the floor effect."; ui_category = "Floor Effect"; > = 2.0f; 
-uniform float PR_Floor_CurveBias < ui_type = "drag"; ui_min = 0.0; ui_max = 5.0; ui_step = 0.1; ui_label = "Intensity Offset"; ui_tooltip = "Offset applied to the floor effect intensity."; ui_category = "Floor Effect"; > = 1.0f; 
+uniform float PR_Floor_CurveScale < ui_type = "drag"; ui_min = 0.0; ui_max = 5.0; ui_step = 0.1; ui_label = "Intensity"; ui_tooltip = "Intensity of the floor effect."; ui_category = "Floor Effect"; > = 2.0f;
+uniform float PR_Floor_CurveBias < ui_type = "drag"; ui_min = 0.0; ui_max = 5.0; ui_step = 0.1; ui_label = "Intensity Offset"; ui_tooltip = "Offset applied to the floor effect intensity."; ui_category = "Floor Effect"; > = 1.0f;
 uniform float PR_Floor_HashThreshold < ui_type = "drag"; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_label = "Pattern Density"; ui_tooltip = "Controls the density of the floor effect pattern."; ui_category = "Floor Effect"; > = 0.2f;
 
 // ============================================================================
@@ -134,15 +118,29 @@ uniform float PR_DofDistFactor < ui_type = "drag"; ui_min = 0.01; ui_max = 1.0; 
 uniform float PR_MotionBlurTimeDelta < ui_type = "drag"; ui_min = 0.0; ui_max = 0.2; ui_step = 0.001; ui_label = "Motion Blur"; ui_tooltip = "Time jitter between samples for motion blur. Higher values increase blur length."; ui_category = "Depth of Field"; > = 0.05f;
 
 // ============================================================================
+// ANIMATION CONTROLS
+// ============================================================================
+// --- Time Stepping Parameters ---
+uniform float PR_CamTime_BaseSpeed < ui_type = "drag"; ui_min = 0.1; ui_max = 5.0; ui_step = 0.1; ui_label = "Forward Speed"; ui_tooltip = "Base movement speed through the corridor."; ui_category = AS_CAT_ANIMATION; > = 1.9f;
+uniform float PR_CamTime_TickPeriod < ui_type = "drag"; ui_min = 0.1; ui_max = 5.0; ui_step = 0.1; ui_label = "Tick Period"; ui_tooltip = "Period for the 'stepping' motion effect."; ui_category = AS_CAT_ANIMATION; > = 1.9f;
+uniform float PR_CamTime_TickStrength < ui_type = "drag"; ui_min = 0.0; ui_max = 3.0; ui_step = 0.1; ui_label = "Tick Strength"; ui_tooltip = "Intensity of the 'stepping' motion effect."; ui_category = AS_CAT_ANIMATION; > = 1.0f;
+
+// --- Camera Animation ---
+uniform float PR_CamAnim_TimeScale < ui_type = "drag"; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_label = "Camera Speed"; ui_tooltip = "Speed of the camera's procedural animation path."; ui_category = AS_CAT_ANIMATION; > = 0.3f;
+uniform float PR_CamAnim_XZ_RotAmount < ui_type = "drag"; ui_min = 0.0; ui_max = AS_PI; ui_step = 0.01; ui_label = "Horizontal Rotation"; ui_tooltip = "Amplitude of camera rotation on the horizontal plane (yaw)."; ui_category = AS_CAT_ANIMATION; > = 0.3f;
+uniform float PR_CamAnim_XY_TimeFactor < ui_type = "drag"; ui_min = 0.1; ui_max = 2.0; ui_step = 0.01; ui_label = "Roll Rotation Speed"; ui_tooltip = "Speed of camera roll rotation."; ui_category = AS_CAT_ANIMATION; > = 0.7f;
+uniform float PR_CamAnim_XY_RotAmount < ui_type = "drag"; ui_min = 0.0; ui_max = AS_PI; ui_step = 0.01; ui_label = "Roll Rotation Amount"; ui_tooltip = "Amplitude of camera roll rotation."; ui_category = AS_CAT_ANIMATION; > = 0.4f;
+
+AS_ANIMATION_SPEED_UI(PR_OverallTimeScale, "Animation")
+AS_ANIMATION_KEYFRAME_UI(CorridorTravel_AnimationKeyframe, "Animation")
+
+// ============================================================================
 // AUDIO REACTIVITY
 // ============================================================================
 AS_AUDIO_UI(CorridorTravel_AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
 AS_AUDIO_MULT_UI(CorridorTravel_AudioMultiplier, "Audio Intensity", 1.0, 2.0, "Audio Reactivity")
 
-uniform int CorridorTravel_AudioTarget < ui_type = "combo"; ui_label = "Audio Target"; ui_tooltip = "Select which parameter will be modulated by audio"; ui_items = "None\0Global Speed\0Camera Animation\0Pattern Scale\0Emission Brightness\0"; ui_category = "Audio Reactivity"; > = 1;
-
-AS_ANIMATION_SPEED_UI(PR_OverallTimeScale, "Animation")
-AS_ANIMATION_KEYFRAME_UI(CorridorTravel_AnimationKeyframe, "Animation")
+AS_AUDIO_TARGET_UI(CorridorTravel_AudioTarget, "None\0Global Speed\0Camera Animation\0Pattern Scale\0Emission Brightness\0", 1)
 
 // ============================================================================
 // STAGE CONTROLS
@@ -150,6 +148,12 @@ AS_ANIMATION_KEYFRAME_UI(CorridorTravel_AnimationKeyframe, "Animation")
 AS_STAGEDEPTH_UI(CorridorTravel_EffectDepth)
 AS_ROTATION_UI(CorridorTravel_SnapRotation, CorridorTravel_FineRotation)
 AS_POSITION_SCALE_UI(CorridorTravel_Position, CorridorTravel_Scale)
+
+// ============================================================================
+// QUALITY & PERFORMANCE
+// ============================================================================
+uniform int PR_Steps < ui_type = "drag"; ui_min = 1; ui_max = 100; ui_step = 1; ui_label = "Sample Count"; ui_tooltip = "Number of samples per pixel. Higher = better quality but slower."; ui_category = AS_CAT_PERFORMANCE; > = 30;
+uniform int PR_Bounces < ui_type = "drag"; ui_min = 0; ui_max = 5; ui_step = 1; ui_label = "Light Bounces"; ui_tooltip = "Number of light reflections per sample. More bounces = more detailed reflections."; ui_category = AS_CAT_PERFORMANCE; > = 3;
 
 // ============================================================================
 // BLEND CONTROLS
@@ -160,8 +164,8 @@ AS_BLENDAMOUNT_UI(CorridorTravel_BlendAmount)
 // ============================================================================
 // FINAL ADJUSTMENTS
 // ============================================================================
-uniform float PR_FinalBrightness < ui_type = "drag"; ui_min = 0.1; ui_max = 5.0; ui_step = 0.05; ui_label = "Brightness"; ui_tooltip = "Final brightness adjustment."; ui_category = "Final Adjustments"; > = 2.0f;
-uniform float PR_Gamma < ui_type = "drag"; ui_min = 1.0; ui_max = 3.0; ui_step = 0.01; ui_label = "Gamma"; ui_tooltip = "Gamma correction. Standard is 2.2."; ui_category = "Final Adjustments"; > = 2.2f;
+uniform float PR_FinalBrightness < ui_type = "drag"; ui_min = 0.1; ui_max = 5.0; ui_step = 0.05; ui_label = "Brightness"; ui_tooltip = "Final brightness adjustment."; ui_category = AS_CAT_FINAL; > = 2.0f;
+uniform float PR_Gamma < ui_type = "drag"; ui_min = 1.0; ui_max = 3.0; ui_step = 0.01; ui_label = "Gamma"; ui_tooltip = "Gamma correction. Standard is 2.2."; ui_category = AS_CAT_FINAL; > = 2.2f;
 
 // ============================================================================
 // HELPER FUNCTIONS
@@ -247,7 +251,7 @@ float4 PS_CorridorTravel(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0)
     // Apply audio reactivity based on selected target
     float audioFactor = 0.0;
     if (CorridorTravel_AudioTarget > 0) {
-        audioFactor = AS_applyAudioReactivity(1.0, CorridorTravel_AudioSource, CorridorTravel_AudioMultiplier, true) - 1.0;
+        audioFactor = AS_audioModulate(1.0, CorridorTravel_AudioSource, CorridorTravel_AudioMultiplier, true, 0) - 1.0;
     }
     
     // Modify parameters based on audio target selection
@@ -266,8 +270,7 @@ float4 PS_CorridorTravel(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0)
         emissionBrightness += emissionBrightness * audioFactor;
     }
       // Stage depth is handled by testing if we should render at all
-    float depthSample = ReShade::GetLinearizedDepth(texcoord);
-    if (depthSample < CorridorTravel_EffectDepth)
+    if (AS_isInFrontOfStage(texcoord, CorridorTravel_EffectDepth))
         return originalColor;
       
     // Get rotation value from UI controls - will be applied to 3D scene
@@ -292,7 +295,7 @@ float4 PS_CorridorTravel(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0)
         float3 ray_origin = float3(0.0f, 0.0f, -1.0f);
         
         // We need to properly center the UV for the ray direction
-        // uv from AS_transformCoord is already centered and aspect-ratio corrected
+    // uv from AS_transformUVCentered is already centered and aspect-ratio corrected
         float2 ray_uv = uv;
         
         // Apply depth of field
@@ -376,8 +379,7 @@ float4 PS_CorridorTravel(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0)
     total_color = pow(total_color, 1.0f / PR_Gamma);
       // Apply standard AS blending between effect and original color
     float4 effectColor = float4(total_color, 1.0);
-    float4 finalColor = float4(AS_blendRGB(effectColor.rgb, originalColor.rgb, CorridorTravel_BlendMode), 1.0);
-    finalColor = lerp(originalColor, finalColor, CorridorTravel_BlendAmount);
+    float4 finalColor = float4(AS_composite(effectColor.rgb, originalColor.rgb, CorridorTravel_BlendMode, CorridorTravel_BlendAmount), 1.0);
         
     return finalColor;
 }

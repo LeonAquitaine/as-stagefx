@@ -46,7 +46,7 @@
 #include "AS_Utils.1.fxh"
 #include "AS_Palette.1.fxh"
 
-namespace ASMeltWave {
+namespace AS_MeltWave {
 
 // ============================================================================
 // TUNABLE CONSTANTS (Defaults and Ranges)
@@ -118,21 +118,21 @@ uniform float Brightness < ui_type = "slider"; ui_label = "Brightness"; ui_min =
 uniform float MeltIntensity < ui_type = "slider"; ui_label = "Melt Intensity"; ui_min = MELT_INTENSITY_MIN; ui_max = MELT_INTENSITY_MAX; ui_step = MELT_INTENSITY_STEP; ui_category = "Effect Settings"; > = MELT_INTENSITY_DEFAULT;
 
 // --- Palette & Style ---
-uniform bool UseOriginalColors < ui_type = "toggle"; ui_label = "Use Original Math Colors"; ui_tooltip = "If enabled, uses the original mathematical coloring method. Otherwise, uses palettes."; ui_category = "Palette & Style"; > = true;
-uniform float Saturation < ui_type = "slider"; ui_label = "Original Color Saturation"; ui_tooltip = "Saturation for original math colors (if Use Original Math Colors is enabled)."; ui_min = SATURATION_MIN; ui_max = SATURATION_MAX; ui_step = SATURATION_STEP; ui_category = "Palette & Style"; > = SATURATION_DEFAULT;
-uniform float3 TintColor < ui_type = "color"; ui_label = "Original Color Tint"; ui_tooltip = "Tint for original math colors (if Use Original Math Colors is enabled)."; ui_category = "Palette & Style"; > = float3(1.0, 1.0, 1.0);
-AS_PALETTE_SELECTION_UI(PalettePreset, "Color Palette", AS_PALETTE_NEON, "Palette & Style")
-AS_DECLARE_CUSTOM_PALETTE(MeltWave_, "Palette & Style")
-uniform float ColorCycleSpeed < ui_type = "slider"; ui_label = "Palette Color Cycle Speed"; ui_tooltip = "Controls how fast palette colors cycle. 0 = static. Only active if not using original math colors."; ui_min = COLOR_CYCLE_SPEED_MIN; ui_max = COLOR_CYCLE_SPEED_MAX; ui_step = COLOR_CYCLE_SPEED_STEP; ui_category = "Palette & Style"; > = COLOR_CYCLE_SPEED_DEFAULT;
-uniform float3 BackgroundColor < ui_type = "color"; ui_label = "Background Color"; ui_tooltip = "Solid background color the effect is blended onto."; ui_category = "Palette & Style"; > = float3(0.0, 0.0, 0.0);
+uniform bool UseOriginalColors < ui_type = "toggle"; ui_label = "Use Original Math Colors"; ui_tooltip = "If enabled, uses the original mathematical coloring method. Otherwise, uses palettes."; ui_category = AS_CAT_PALETTE; > = true;
+uniform float Saturation < ui_type = "slider"; ui_label = "Original Color Saturation"; ui_tooltip = "Saturation for original math colors (if Use Original Math Colors is enabled)."; ui_min = SATURATION_MIN; ui_max = SATURATION_MAX; ui_step = SATURATION_STEP; ui_category = AS_CAT_PALETTE; > = SATURATION_DEFAULT;
+uniform float3 TintColor < ui_type = "color"; ui_label = "Original Color Tint"; ui_tooltip = "Tint for original math colors (if Use Original Math Colors is enabled)."; ui_category = AS_CAT_PALETTE; > = float3(1.0, 1.0, 1.0);
+AS_PALETTE_SELECTION_UI(PalettePreset, "Color Palette", AS_PALETTE_NEON, AS_CAT_PALETTE)
+AS_DECLARE_CUSTOM_PALETTE(MeltWave_, AS_CAT_PALETTE)
+uniform float ColorCycleSpeed < ui_type = "slider"; ui_label = "Palette Color Cycle Speed"; ui_tooltip = "Controls how fast palette colors cycle. 0 = static. Only active if not using original math colors."; ui_min = COLOR_CYCLE_SPEED_MIN; ui_max = COLOR_CYCLE_SPEED_MAX; ui_step = COLOR_CYCLE_SPEED_STEP; ui_category = AS_CAT_PALETTE; > = COLOR_CYCLE_SPEED_DEFAULT;
+AS_BACKGROUND_COLOR_UI(BackgroundColor, float3(0.0, 0.0, 0.0), AS_CAT_PALETTE)
 
 // --- Audio Reactivity ---
-AS_AUDIO_UI(MeltWave_AudioSource, "Audio Source", AS_AUDIO_BASS, "Audio Reactivity")
-AS_AUDIO_MULT_UI(MeltWave_AudioMultiplier, "Audio Multiplier", AUDIO_MULTIPLIER_DEFAULT, AUDIO_MULTIPLIER_MAX, "Audio Reactivity")
-uniform int MeltWave_AudioTarget < ui_type = "combo"; ui_label = "Audio Target"; ui_items = "Melt Intensity\0Animation Speed\0Brightness\0Zoom\0All\0"; ui_category = "Audio Reactivity"; > = 2;
+AS_AUDIO_UI(MeltWave_AudioSource, "Audio Source", AS_AUDIO_BASS, AS_CAT_AUDIO)
+AS_AUDIO_MULT_UI(MeltWave_AudioMultiplier, "Audio Multiplier", AUDIO_MULTIPLIER_DEFAULT, AUDIO_MULTIPLIER_MAX, AS_CAT_AUDIO)
+AS_AUDIO_TARGET_UI(MeltWave_AudioTarget, "Melt Intensity\0Animation Speed\0Brightness\0Zoom\0All\0", 2)
 
 // --- Animation Controls ---
-AS_ANIMATION_UI(AnimationSpeed, AnimationKeyframe, "Animation")
+AS_ANIMATION_UI(AnimationSpeed, AnimationKeyframe, AS_CAT_ANIMATION)
 
 // --- Position Controls ---
 AS_POSITION_SCALE_UI(Position, Scale)
@@ -165,13 +165,7 @@ float3 getMeltWaveColor(float t, float time) {
     
     t = saturate(t); // Ensure t is in [0,1]
     
-    if (PalettePreset == AS_PALETTE_CUSTOM) {
-        // Use custom palette
-        return AS_GET_INTERPOLATED_CUSTOM_COLOR(MeltWave_, t);
-    }
-    
-    // Use preset palette
-    return AS_getInterpolatedColor(PalettePreset, t);
+    return AS_GET_PALETTE_COLOR(MeltWave_, PalettePreset, t);
 }
 
 // ============================================================================
@@ -179,14 +173,8 @@ float3 getMeltWaveColor(float t, float time) {
 // ============================================================================
 
 float4 PS_MeltWave(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target {
-    // Get original pixel color and depth
-    float4 originalColor = tex2D(ReShade::BackBuffer, texcoord);
-    float depth = ReShade::GetLinearizedDepth(texcoord);
-    
-    // Apply depth test
-    if (depth < EffectDepth) {
-        return originalColor;
-    }
+    // Depth-aware early return
+    AS_DEPTH_EARLY_RETURN(texcoord, EffectDepth)
     
     // Handle audio reactivity
     float zoomIntensity = float(Iterations);
@@ -194,7 +182,7 @@ float4 PS_MeltWave(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Ta
     float brightnessValue = Brightness;
     float animationValue = AnimationSpeed;
     
-    float audioReactivity = AS_applyAudioReactivity(1.0, MeltWave_AudioSource, MeltWave_AudioMultiplier, true);
+    float audioReactivity = AS_audioModulate(1.0, MeltWave_AudioSource, MeltWave_AudioMultiplier, true, 0);
     
     if (MeltWave_AudioTarget == 0 || MeltWave_AudioTarget == 4) { // Melt Intensity or All
         meltValue *= audioReactivity;
@@ -256,8 +244,7 @@ float4 PS_MeltWave(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Ta
         processed_col = raw_pattern_col;
         
         // Apply original saturation (from UI)
-    float luminance = dot(processed_col, AS_LUMA_REC709);
-        processed_col = lerp(luminance.xxx, processed_col, Saturation);
+        processed_col = AS_adjustSaturation(processed_col, Saturation);
         
         // Apply original tint color (from UI)
         processed_col *= TintColor;
@@ -291,10 +278,10 @@ float4 PS_MeltWave(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Ta
     }
     
     // Final output
-    return float4(lerp(originalColor.rgb, finalColor, BlendAmount), originalColor.a);
+    return float4(lerp(_as_originalColor.rgb, finalColor, BlendAmount), _as_originalColor.a);
 }
 
-} // namespace ASMeltWave
+} // namespace AS_MeltWave
 
 // ============================================================================
 // TECHNIQUE
@@ -304,7 +291,7 @@ technique AS_BGX_MeltWave < ui_label="[AS] BGX: Melt Wave"; ui_tooltip = "Genera
 {
     pass {
         VertexShader = PostProcessVS;
-        PixelShader = ASMeltWave::PS_MeltWave;
+        PixelShader = AS_MeltWave::PS_MeltWave;
     }
 }
 

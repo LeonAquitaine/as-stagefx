@@ -33,8 +33,8 @@
 // ============================================================================
 // TECHNIQUE GUARD - Prevents duplicate loading of the same shader
 // ============================================================================
-#ifndef __AS_BGX_LogSpirals_fx
-#define __AS_BGX_LogSpirals_fx
+#ifndef __AS_BGX_LogSpirals_1_fx
+#define __AS_BGX_LogSpirals_1_fx
 
 // ============================================================================
 // INCLUDES
@@ -43,7 +43,7 @@
 #include "AS_Utils.1.fxh"    // Custom header for AS utilities
 #include "AS_Palette.1.fxh"  // Color palette system
 
-namespace ASLogSpirals {
+namespace AS_LogSpirals {
 
 // ============================================================================
 // CONSTANTS
@@ -178,36 +178,31 @@ uniform float AmbientLightLevel < ui_type = "slider"; ui_label = "Ambient Light 
 // Color Controls
 //------------------------------------------------------------------------------------------------
 uniform float ColorHueFactor < ui_type = "slider"; ui_label = "Primary Color Hue Factor"; ui_min = COLOR_HUE_MIN; ui_max = COLOR_HUE_MAX; ui_step = 0.01; ui_tooltip = "Controls the hue variation of the primary colors."; ui_category = "Color Controls"; > = COLOR_HUE_DEFAULT;
-uniform float3 BackgroundColor < ui_type = "color"; ui_label = "Background Color"; ui_tooltip = "Base color for the background. Set all channels to 0 for black background."; ui_category = "Color Controls";> = float3(0.0, 0.0, 0.0);
+AS_BACKGROUND_COLOR_UI(BackgroundColor, float3(0.0, 0.0, 0.0), "Color Controls")
 uniform float GlowColorIntensity < ui_type = "slider"; ui_label = "Ambient Glow Intensity"; ui_min = GLOW_INTENSITY_MIN; ui_max = GLOW_INTENSITY_MAX; ui_step = 0.001; ui_tooltip = "Controls the intensity of the ambient glow effect."; ui_category = "Color Controls"; > = GLOW_INTENSITY_DEFAULT;
 uniform float OutputBrightness < ui_type = "slider"; ui_label = "Output Brightness Boost"; ui_min = BRIGHTNESS_MIN; ui_max = BRIGHTNESS_MAX; ui_step = 0.01; ui_tooltip = "Overall brightness adjustment."; ui_category = "Color Controls"; > = BRIGHTNESS_DEFAULT;
 uniform float DetailGlowStrength < ui_type = "slider"; ui_label = "Detail-based Glow Strength"; ui_min = DETAIL_GLOW_MIN; ui_max = DETAIL_GLOW_MAX; ui_step = 0.1; ui_tooltip = "Controls the strength of detail-based glow effects."; ui_category = "Color Controls"; > = DETAIL_GLOW_DEFAULT;
 //------------------------------------------------------------------------------------------------
 // Palette & Style
 //------------------------------------------------------------------------------------------------
-uniform bool UseOriginalColors < ui_label = "Use Original Colors"; ui_tooltip = "When enabled, uses the original mathematical colors. When disabled, uses palettes."; ui_category = "Palette & Style";> = true;
+uniform bool UseOriginalColors < ui_label = "Use Original Colors"; ui_tooltip = "When enabled, uses the original mathematical colors. When disabled, uses palettes."; ui_category = AS_CAT_PALETTE;> = true;
 
-AS_PALETTE_SELECTION_UI(PalettePreset, "Color Palette", AS_PALETTE_ELECTRIC, "Palette & Style")
-AS_DECLARE_CUSTOM_PALETTE(Spiral_, "Palette & Style")
+AS_PALETTE_SELECTION_UI(PalettePreset, "Color Palette", AS_PALETTE_ELECTRIC, AS_CAT_PALETTE)
+AS_DECLARE_CUSTOM_PALETTE(Spiral_, AS_CAT_PALETTE)
 
-uniform float ColorCycleSpeed < ui_type = "slider"; ui_label = "Color Cycle Speed"; ui_tooltip = "Controls how fast palette colors cycle. 0 = static."; ui_min = -2.0; ui_max = 2.0; ui_step = 0.1; ui_category = "Palette & Style";> = 0.0;
+uniform float ColorCycleSpeed < ui_type = "slider"; ui_label = "Color Cycle Speed"; ui_tooltip = "Controls how fast palette colors cycle. 0 = static."; ui_min = -2.0; ui_max = 2.0; ui_step = 0.1; ui_category = AS_CAT_PALETTE;> = 0.0;
 
 //------------------------------------------------------------------------------------------------
 // Audio Reactivity
 //------------------------------------------------------------------------------------------------
-AS_AUDIO_UI(Spiral_AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
-AS_AUDIO_MULT_UI(Spiral_AudioMultiplier, "Audio Intensity", 1.0, 2.0, "Audio Reactivity")
-uniform int Spiral_AudioTarget < 
-    ui_type = "combo"; 
-    ui_label = "Audio Target Parameter"; 
-    ui_items = "None\0Animation Speed\0Global Rotation\0Arm Twist\0Sphere Size\0Brightness\0"; 
-    ui_category = "Audio Reactivity"; 
-> = 0;
+AS_AUDIO_UI(Spiral_AudioSource, "Audio Source", AS_AUDIO_BEAT, AS_CAT_AUDIO)
+AS_AUDIO_MULT_UI(Spiral_AudioMultiplier, "Audio Intensity", 1.0, 2.0, AS_CAT_AUDIO)
+AS_AUDIO_TARGET_UI(Spiral_AudioTarget, "None\0Animation Speed\0Global Rotation\0Arm Twist\0Sphere Size\0Brightness\0", 0)
 
 //------------------------------------------------------------------------------------------------
 // Animation Controls
 //------------------------------------------------------------------------------------------------
-AS_ANIMATION_UI(AnimationSpeed, AnimationKeyframe, "Animation")
+AS_ANIMATION_UI(AnimationSpeed, AnimationKeyframe, AS_CAT_ANIMATION)
 
 //------------------------------------------------------------------------------------------------
 // Stage/Position
@@ -233,8 +228,7 @@ float forward_exp(float l, float exp_base) { // Pass expansion base
 }
 
 float reverse_exp(float l, float exp_base) { // Pass expansion base
-    if (abs(l) < AS_ALPHA_EPSILON && l <= 0.0f) l = AS_ALPHA_EPSILON;
-    else if (abs(l) < AS_ALPHA_EPSILON) l = AS_ALPHA_EPSILON;
+    if (abs(l) < AS_ALPHA_EPSILON) l = AS_ALPHA_EPSILON;
     float log2_exp_base = log2(exp_base);
     if (abs(log2_exp_base) < AS_ALPHA_EPSILON) return l / (sign(log2_exp_base) * AS_ALPHA_EPSILON);
     return log2(l) / log2_exp_base;
@@ -365,14 +359,8 @@ float3 effect_render(float2 p_eff, float time_eff,
 // ============================================================================
 float4 LogSpiralsPS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : SV_Target0
 {
-    // Get original background color for blending and depth check
-    float4 originalColor = tex2D(ReShade::BackBuffer, texcoord);
-    float depth = ReShade::GetLinearizedDepth(texcoord);
-    
-    // Apply depth test - skip effect if pixel is closer than effect depth
-    if (depth < EffectDepth) {
-        return originalColor;
-    }
+    // Depth-aware early return
+    AS_DEPTH_EARLY_RETURN(texcoord, EffectDepth)
       // Apply audio reactivity to selected parameters
     float anim_speed = AnimationSpeed;
     float rot_speed = GlobalRotationSpeed;
@@ -380,7 +368,7 @@ float4 LogSpiralsPS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : SV
     float sphere_radius = SphereBaseRadiusScale;
     float bright = OutputBrightness;
     
-    float audioReactivity = AS_applyAudioReactivity(1.0, Spiral_AudioSource, Spiral_AudioMultiplier, true);
+    float audioReactivity = AS_audioModulate(1.0, Spiral_AudioSource, Spiral_AudioMultiplier, true, 0);
     
     // Apply audio reactivity to targeted parameter
     if (Spiral_AudioTarget == 1) anim_speed *= audioReactivity;
@@ -403,7 +391,7 @@ float4 LogSpiralsPS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : SV
     );
       // Step 3: Apply position and scale
     float2 p_final = p_rotated / Scale - Position; // Calculate the spiral effect
-    // Ensure modPolar is resolved by using the fully qualified name ASLogSpirals::modPolar    // Get animated time using standard animation control with audio reactivity applied
+    // Ensure modPolar is resolved by using the fully qualified name AS_LogSpirals::modPolar    // Get animated time using standard animation control with audio reactivity applied
     float animatedTime = AS_getAnimationTime(anim_speed, AnimationKeyframe);
       float3 col = effect_render(
         p_final, 
@@ -431,15 +419,11 @@ float4 LogSpiralsPS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : SV
         float t = intensity;
         if (ColorCycleSpeed != 0.0) {
             float cycleRate = ColorCycleSpeed * COLOR_CYCLE_RATE_SCALE;
-            t = frac(t + cycleRate * animatedTime); // Use animatedTime instead of AS_getTime()
+            t = frac(t + cycleRate * animatedTime); // Use animatedTime instead of AS_timeSeconds()
         }
         
         // Get color from palette system
-        if (PalettePreset == AS_PALETTE_CUSTOM) {
-            final_color = AS_GET_INTERPOLATED_CUSTOM_COLOR(Spiral_, t);
-        } else {
-            final_color = AS_getInterpolatedColor(PalettePreset, t);
-        }
+        final_color = AS_GET_PALETTE_COLOR(Spiral_, PalettePreset, t);
         
         // Modulate palette color by spiral intensity
         final_color *= intensity;
@@ -449,8 +433,7 @@ float4 LogSpiralsPS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : SV
     float4 effectColor = float4(final_color, 1.0f);
     
     // Apply blend mode and strength
-    float4 finalColor = float4(AS_blendRGB(effectColor.rgb, originalColor.rgb, BlendMode), 1.0);
-    finalColor = lerp(originalColor, finalColor, BlendStrength);
+    float4 finalColor = float4(AS_composite(effectColor.rgb, _as_originalColor.rgb, BlendMode, BlendStrength), 1.0);
     
     // Show debug overlay if enabled
     if (DebugMode != AS_DEBUG_OFF) {
@@ -481,6 +464,6 @@ technique AS_BGX_LogSpirals_Tech <
     }
 }
 
-} // end namespace ASLogSpirals
+} // end namespace AS_LogSpirals
 
-#endif // __AS_BGX_LogSpirals_fx
+#endif // __AS_BGX_LogSpirals_1_fx

@@ -38,8 +38,8 @@
 // ============================================================================
 // TECHNIQUE GUARD
 // ============================================================================
-#ifndef __AS_GFX_BRUSHSTROKE_1_FX
-#define __AS_GFX_BRUSHSTROKE_1_FX
+#ifndef __AS_GFX_BrushStroke_1_fx
+#define __AS_GFX_BrushStroke_1_fx
 
 // ============================================================================
 // INCLUDES
@@ -47,6 +47,8 @@
 #include "ReShade.fxh"
 #include "AS_Utils.1.fxh"
 #include "AS_Noise.1.fxh" // For AS_Fbm2D
+
+uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " "; ui_text = "\nStylized ink brush stroke band with textured edges and drop shadow.\nPerfect for title cards and cinematic framing.\n\nAS StageFX | Stylized Brush Stroke Band Effect by Leon Aquitaine\n"; > = 0;
 
 // ============================================================================
 // CONSTANTS
@@ -124,13 +126,13 @@ uniform float MinInkThresholdAtCenter < ui_type = "slider"; ui_label = "Min Ink 
 uniform float EdgeExtendFactor < ui_type = "slider"; ui_label = "Edge Extend Factor"; ui_tooltip = "How far (relative to half stroke height) ink can 'bleed' or 'splatter' beyond the nominal stroke height."; ui_min = BRUSHSTROKE_EXTEND_MIN; ui_max = BRUSHSTROKE_EXTEND_MAX; ui_step = 0.01f; ui_category = "Stroke Appearance"; > = BRUSHSTROKE_EXTEND_DEFAULT;
 
 // --- Category: Colors ---
-uniform float3 StrokeColor < ui_type = "color"; ui_label = "Stroke Color"; ui_category = "Colors"; > = float3(0.1f, 0.1f, 0.1f); 
+uniform float3 StrokeColor < ui_type = "color"; ui_label = "Stroke Color"; ui_category = AS_CAT_COLOR; > = float3(0.1f, 0.1f, 0.1f); 
 
-uniform bool InvertStroke < ui_type = "input"; ui_label = "Invert Stroke"; ui_tooltip = "When enabled, stroke areas become transparent and non-stroke areas are filled with stroke color."; ui_category = "Colors"; > = false;
+uniform bool InvertStroke < ui_type = "input"; ui_label = "Invert Stroke"; ui_tooltip = "When enabled, stroke areas become transparent and non-stroke areas are filled with stroke color."; ui_category = AS_CAT_COLOR; > = false;
 
-uniform float StrokeTextureShadowIntensity < ui_type = "slider"; ui_label = "Ink Texture Shadow Intensity"; ui_tooltip = "Darkens parts of the ink based on FBM noise values, adding texture to the main stroke."; ui_min = BRUSHSTROKE_SHADOW_INT_MIN; ui_max = BRUSHSTROKE_SHADOW_INT_MAX; ui_step = 0.01f; ui_category = "Colors"; > = BRUSHSTROKE_SHADOW_INT_DEFAULT;
+uniform float StrokeTextureShadowIntensity < ui_type = "slider"; ui_label = "Ink Texture Shadow Intensity"; ui_tooltip = "Darkens parts of the ink based on FBM noise values, adding texture to the main stroke."; ui_min = BRUSHSTROKE_SHADOW_INT_MIN; ui_max = BRUSHSTROKE_SHADOW_INT_MAX; ui_step = 0.01f; ui_category = AS_CAT_COLOR; > = BRUSHSTROKE_SHADOW_INT_DEFAULT;
 
-uniform float StrokeTextureHighlightIntensity < ui_type = "slider"; ui_label = "Ink Texture Highlight Intensity"; ui_tooltip = "Brightens parts of the ink based on FBM noise values, adding texture to the main stroke."; ui_min = BRUSHSTROKE_HIGHLIGHT_INT_MIN; ui_max = BRUSHSTROKE_HIGHLIGHT_INT_MAX; ui_step = 0.01f; ui_category = "Colors"; > = BRUSHSTROKE_HIGHLIGHT_INT_DEFAULT;
+uniform float StrokeTextureHighlightIntensity < ui_type = "slider"; ui_label = "Ink Texture Highlight Intensity"; ui_tooltip = "Brightens parts of the ink based on FBM noise values, adding texture to the main stroke."; ui_min = BRUSHSTROKE_HIGHLIGHT_INT_MIN; ui_max = BRUSHSTROKE_HIGHLIGHT_INT_MAX; ui_step = 0.01f; ui_category = AS_CAT_COLOR; > = BRUSHSTROKE_HIGHLIGHT_INT_DEFAULT;
 
 // --- Category: Shadow Settings ---
 uniform float ShadowOpacity < ui_type = "slider"; ui_label = "Shadow Opacity"; ui_tooltip = "Opacity of the drop shadow. 0.0 disables the shadow."; ui_min = BRUSHSTROKE_SHADOW_OPACITY_MIN; ui_max = BRUSHSTROKE_SHADOW_OPACITY_MAX; ui_step = 0.01f; ui_category = "Shadow Settings"; ui_category_closed = true; > = BRUSHSTROKE_SHADOW_OPACITY_DEFAULT;
@@ -146,9 +148,9 @@ uniform bool EnableCountershadow < ui_label = "Enable Countershadow"; ui_tooltip
 uniform float3 CounterShadowColor < ui_type = "color"; ui_label = "Countershadow Color"; ui_category = "Shadow Settings"; > = float3(0.0f, 0.0f, 0.0f);
 
 // --- Category: Audio Reactivity ---
-AS_AUDIO_UI(AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
-AS_AUDIO_MULT_UI(AudioMultiplier, "Audio Intensity", 1.0, 2.0, "Audio Reactivity")
-uniform int AudioTarget < ui_type = "combo"; ui_label = "Audio Target"; ui_items = "None\0Stroke Height\0Ink Contrast\0Shadow Opacity\0"; ui_category = "Audio Reactivity"; ui_category_closed = true; > = 0;
+AS_AUDIO_UI(AudioSource, "Audio Source", AS_AUDIO_BEAT, AS_CAT_AUDIO)
+AS_AUDIO_MULT_UI(AudioMultiplier, "Audio Intensity", 1.0, 2.0, AS_CAT_AUDIO)
+AS_AUDIO_TARGET_UI(AudioTarget, "None\0Stroke Height\0Ink Contrast\0Shadow Opacity\0", 0)
 
 // --- Category: Stage/Position Controls ---
 AS_POSITION_SCALE_UI(StrokeCenter, StrokeScale)
@@ -214,12 +216,8 @@ float GetStrokeAlpha(
 // ============================================================================
 float4 PS_BrushStroke(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target
 {
-    float4 original_color = tex2D(ReShade::BackBuffer, texcoord);
-    float depth = ReShade::GetLinearizedDepth(texcoord);
-      // Depth test - render behind scene objects
-    if (depth < StrokeDepth) {
-        return original_color;
-    }
+    // Depth-aware early return
+    AS_DEPTH_EARLY_RETURN(texcoord, StrokeDepth)
       // Get rotation in radians
     float rotation = AS_getRotationRadians(StrokeRotationSnap, StrokeRotationFine);
     
@@ -232,7 +230,7 @@ float4 PS_BrushStroke(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV
     float current_shadow_opacity = ShadowOpacity;
     
     if (AudioTarget > 0) {
-        float audioReactivity = AS_applyAudioReactivity(1.0, AudioSource, AudioMultiplier, true);
+        float audioReactivity = AS_audioModulate(1.0, AudioSource, AudioMultiplier, true, 0);
         
         if (AudioTarget == 1) { // Stroke Height
             current_band_height = BandHeight * audioReactivity;
@@ -249,7 +247,7 @@ float4 PS_BrushStroke(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV
     }
     
     float main_stroke_fbm_noise; // Will be filled by GetStrokeAlpha    // --- Shadow Pass ---
-    float3 background_with_shadow = original_color.rgb;
+    float3 background_with_shadow = _as_originalColor.rgb;
     if (current_shadow_opacity > AS_ALPHA_EPSILON)
     {
         // Shadow angle is relative to stroke rotation
@@ -330,8 +328,7 @@ float4 PS_BrushStroke(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV
     float3 final_stroke_color = InvertStroke ? modified_stroke_color : modified_stroke_color;
     float3 final_background = InvertStroke ? background_with_shadow : background_with_shadow;    // Apply blending
     float3 effect_color = lerp(final_background, final_stroke_color, final_alpha);
-    float3 blended_color = AS_blendRGB(effect_color, original_color.rgb, BlendMode);
-    float4 final_color = lerp(original_color, float4(blended_color, 1.0), BlendStrength);
+    float4 final_color = AS_compositeRGBA(effect_color, _as_originalColor, BlendMode, BlendStrength);
 
     return final_color;
 }
@@ -348,4 +345,4 @@ technique AS_GFX_BrushStroke < ui_label = "[AS] GFX: Brush Stroke"; ui_tooltip =
     }
 }
 
-#endif // __AS_GFX_BRUSHSTROKE_1_FX
+#endif // __AS_GFX_BrushStroke_1_fx

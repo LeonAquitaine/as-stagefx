@@ -36,6 +36,8 @@
 #include "ReShade.fxh"
 #include "AS_Utils.1.fxh"
 
+uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " "; ui_text = "\nUp to 4 customizable halftone layers (dots, lines, crosshatch).\nCreate comic book, newspaper, and pop art styles.\n\nAS StageFX | Multi-Layer Halftone Effect by Leon Aquitaine\n"; > = 0;
+
 // ============================================================================
 // HELPER MACROS & CONSTANTS
 // ============================================================================

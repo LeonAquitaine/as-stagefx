@@ -36,14 +36,15 @@
 #ifndef __AS_VFX_StencilMask_1_fx
 #define __AS_VFX_StencilMask_1_fx
 
+#include "ReShade.fxh"
 #include "AS_Utils.1.fxh"
+
+uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " "; ui_text = "\nDepth-based subject cutout with customizable border and projected shadow.\nPerfect for character isolation and compositing.\n\nAS StageFX | Stencil Mask Effect by Leon Aquitaine\n"; > = 0;
 
 // ============================================================================
 // TUNABLE CONSTANTS
 // ============================================================================
 // Using AS_PI from AS_Utils instead of local PI definition
-static const int MAX_SHADOW_SAMPLES = 16; // Note: Not currently used, consider removing if final
-static const float MAX_EDGE_BIAS = 10.0; // Note: Not currently used, consider removing if final
 static const float FOREGROUNDPLANE_MIN = 0.0;
 static const float FOREGROUNDPLANE_MAX = 1.0;
 static const float FOREGROUNDPLANE_DEFAULT = 0.05;
@@ -63,47 +64,39 @@ static const float SHADOWOFFSET_MIN = -0.05;
 static const float SHADOWOFFSET_MAX = 0.05;
 static const float SHADOWOFFSET_DEFAULT_X = 0.003;
 static const float SHADOWOFFSET_DEFAULT_Y = 0.003;
-static const float SHADOWBLUR_MIN = 0.0;
-static const float SHADOWBLUR_MAX = 20.0;
-static const float SHADOWBLUR_DEFAULT = 4.0;
-static const float SHADOWEXPAND_MIN = 0.0;
-static const float SHADOWEXPAND_MAX = 5.0;
-static const float SHADOWEXPAND_DEFAULT = 1.5;
 
 // --- Subject Detection ---
-uniform float ForegroundPlane < ui_type = "slider"; ui_label = "Foreground Plane"; ui_tooltip = "Depth threshold for foreground subjects."; ui_min = FOREGROUNDPLANE_MIN; ui_max = FOREGROUNDPLANE_MAX; ui_step = 0.01; ui_category = "Effect-Specific Appearance"; > = FOREGROUNDPLANE_DEFAULT;
+uniform float ForegroundPlane < ui_type = "slider"; ui_label = "Foreground Plane"; ui_tooltip = "Depth threshold for foreground subjects."; ui_min = FOREGROUNDPLANE_MIN; ui_max = FOREGROUNDPLANE_MAX; ui_step = 0.01; ui_category = AS_CAT_APPEARANCE; > = FOREGROUNDPLANE_DEFAULT;
 
 // --- Border Settings ---
-uniform int BorderStyle < ui_type = "combo"; ui_label = "Border Style"; ui_items = "Solid\0Glow\0Dash\0"; ui_category = "Effect-Specific Appearance"; > = 0; // Category updated
-uniform float3 BorderColor < ui_type = "color"; ui_label = "Border Color"; ui_category = "Effect-Specific Appearance"; > = float3(1.0, 1.0, 1.0); // Category updated
-uniform float BorderOpacity < ui_type = "slider"; ui_label = "Border Opacity"; ui_min = BORDEROPACITY_MIN; ui_max = BORDEROPACITY_MAX; ui_step = 0.01; ui_category = "Effect-Specific Appearance"; > = BORDEROPACITY_DEFAULT; // Renamed, Label updated, Category updated
-uniform float BorderThickness < ui_type = "slider"; ui_label = "Border Thickness"; ui_min = BORDERTHICKNESS_MIN; ui_max = BORDERTHICKNESS_MAX; ui_step = 0.001; ui_category = "Effect-Specific Appearance"; > = BORDERTHICKNESS_DEFAULT; // Category updated
-uniform float MeltStrength < ui_type = "slider"; ui_label = "Border Melt"; ui_tooltip = "Smooths/melts jagged border ends. 0 = off, higher = more smoothing."; ui_min = MELTSTRENGTH_MIN; ui_max = MELTSTRENGTH_MAX; ui_step = 0.01; ui_category = "Effect-Specific Appearance"; > = MELTSTRENGTH_DEFAULT; // Category updated
+uniform int BorderStyle < ui_type = "combo"; ui_label = "Border Style"; ui_items = "Solid\0Glow\0Dash\0"; ui_category = AS_CAT_APPEARANCE; > = 0; // Category updated
+uniform float3 BorderColor < ui_type = "color"; ui_label = "Border Color"; ui_category = AS_CAT_APPEARANCE; > = float3(1.0, 1.0, 1.0); // Category updated
+uniform float BorderOpacity < ui_type = "slider"; ui_label = "Border Opacity"; ui_min = BORDEROPACITY_MIN; ui_max = BORDEROPACITY_MAX; ui_step = 0.01; ui_category = AS_CAT_APPEARANCE; > = BORDEROPACITY_DEFAULT; // Renamed, Label updated, Category updated
+uniform float BorderThickness < ui_type = "slider"; ui_label = "Border Thickness"; ui_min = BORDERTHICKNESS_MIN; ui_max = BORDERTHICKNESS_MAX; ui_step = 0.001; ui_category = AS_CAT_APPEARANCE; > = BORDERTHICKNESS_DEFAULT; // Category updated
+uniform float MeltStrength < ui_type = "slider"; ui_label = "Border Melt"; ui_tooltip = "Smooths/melts jagged border ends. 0 = off, higher = more smoothing."; ui_min = MELTSTRENGTH_MIN; ui_max = MELTSTRENGTH_MAX; ui_step = 0.01; ui_category = AS_CAT_APPEARANCE; > = MELTSTRENGTH_DEFAULT; // Category updated
 // 0: 4 dir, 1: 8 dir, 2: 16 dir, 3: 32 dir, 4: 64 dir
-uniform int BorderSmoothing < ui_type = "combo"; ui_label = "Border Smoothing"; ui_items = "Potato\0Low\0Medium\0High\0AI Overlord\0"; ui_category = "Effect-Specific Appearance"; > = 2; // Category updated
+uniform int BorderSmoothing < ui_type = "combo"; ui_label = "Border Smoothing"; ui_items = "Potato\0Low\0Medium\0High\0AI Overlord\0"; ui_category = AS_CAT_APPEARANCE; > = 2; // Category updated
 
 // --- Shadow Settings ---
-uniform bool EnableShadow < ui_label = "Enable Shadow"; ui_category = "Effect-Specific Appearance"; > = true; // Category updated
-uniform float3 ShadowColor < ui_type = "color"; ui_label = "Shadow Color"; ui_category = "Effect-Specific Appearance"; > = float3(0.0, 0.0, 0.0); // Category updated
-uniform float ShadowOpacity < ui_type = "slider"; ui_label = "Shadow Opacity"; ui_min = SHADOWOPACITY_MIN; ui_max = SHADOWOPACITY_MAX; ui_step = 0.01; ui_category = "Effect-Specific Appearance"; > = SHADOWOPACITY_DEFAULT; // Renamed, Label updated, Category updated
-uniform float2 ShadowOffset < ui_type = "slider"; ui_min = SHADOWOFFSET_MIN; ui_max = SHADOWOFFSET_MAX; ui_step = 0.001; ui_label = "Shadow Offset"; ui_category = "Effect-Specific Appearance"; > = float2(SHADOWOFFSET_DEFAULT_X, SHADOWOFFSET_DEFAULT_Y); // Category updated
-uniform float ShadowBlur < ui_type = "slider"; ui_label = "Shadow Blur"; ui_min = SHADOWBLUR_MIN; ui_max = SHADOWBLUR_MAX; ui_step = 0.1; ui_category = "Effect-Specific Appearance"; > = SHADOWBLUR_DEFAULT; // Category updated // Note: Not currently used, consider implementing or removing
-uniform float ShadowExpand < ui_type = "slider"; ui_label = "Shadow Expand"; ui_min = SHADOWEXPAND_MIN; ui_max = SHADOWEXPAND_MAX; ui_step = 0.1; ui_category = "Effect-Specific Appearance"; > = SHADOWEXPAND_DEFAULT; // Category updated // Note: Not currently used, consider implementing or removing
+uniform bool EnableShadow < ui_label = "Enable Shadow"; ui_category = AS_CAT_APPEARANCE; > = true; // Category updated
+uniform float3 ShadowColor < ui_type = "color"; ui_label = "Shadow Color"; ui_category = AS_CAT_APPEARANCE; > = float3(0.0, 0.0, 0.0); // Category updated
+uniform float ShadowOpacity < ui_type = "slider"; ui_label = "Shadow Opacity"; ui_min = SHADOWOPACITY_MIN; ui_max = SHADOWOPACITY_MAX; ui_step = 0.01; ui_category = AS_CAT_APPEARANCE; > = SHADOWOPACITY_DEFAULT; // Renamed, Label updated, Category updated
+uniform float2 ShadowOffset < ui_type = "slider"; ui_min = SHADOWOFFSET_MIN; ui_max = SHADOWOFFSET_MAX; ui_step = 0.001; ui_label = "Shadow Offset"; ui_category = AS_CAT_APPEARANCE; > = float2(SHADOWOFFSET_DEFAULT_X, SHADOWOFFSET_DEFAULT_Y); // Category updated
 
 // --- Audio Reactivity ---
 // Use standard AS_Utils audio macros and controls
-uniform float AudioIntensity < ui_type = "slider"; ui_label = "Audio Intensity"; ui_tooltip = "Scales the audio input for all audio-reactive features."; ui_min = 0.0; ui_max = 3.0; ui_step = 0.01; ui_category = "Audio Reactivity"; > = 1.0;
+uniform float AudioIntensity < ui_type = "slider"; ui_label = "Audio Intensity"; ui_tooltip = "Scales the audio input for all audio-reactive features."; ui_min = 0.0; ui_max = 3.0; ui_step = 0.01; ui_category = AS_CAT_AUDIO; > = 1.0;
 
 // Audio source selectors for each reactive parameter
-uniform int BorderPulseSource < ui_type = "combo"; ui_label = "Border Pulse Source"; ui_items = "Off\0Solid\0Volume\0Beat\0Bass\0Treble\0Mid\0"; ui_tooltip = "Audio source that controls border pulsing effect."; ui_category = "Audio Reactivity"; > = 3; // Default to Beat
+uniform int BorderPulseSource < ui_type = "combo"; ui_label = "Border Pulse Source"; ui_items = "Off\0Solid\0Volume\0Beat\0Bass\0Treble\0Mid\0"; ui_tooltip = "Audio source that controls border pulsing effect."; ui_category = AS_CAT_AUDIO; > = 3; // Default to Beat
 
-uniform int BorderThicknessSource < ui_type = "combo"; ui_label = "Border Thickness Source"; ui_items = "Off\0Solid\0Volume\0Beat\0Bass\0Treble\0Mid\0"; ui_tooltip = "Audio source that controls border thickness modulation."; ui_category = "Audio Reactivity"; > = 2; // Default to Volume
+uniform int BorderThicknessSource < ui_type = "combo"; ui_label = "Border Thickness Source"; ui_items = "Off\0Solid\0Volume\0Beat\0Bass\0Treble\0Mid\0"; ui_tooltip = "Audio source that controls border thickness modulation."; ui_category = AS_CAT_AUDIO; > = 2; // Default to Volume
 
-uniform int ShadowMovementSource < ui_type = "combo"; ui_label = "Shadow Movement Source"; ui_items = "Off\0Solid\0Volume\0Beat\0Bass\0Treble\0Mid\0"; ui_tooltip = "Audio source that controls shadow movement."; ui_category = "Audio Reactivity"; > = 4; // Default to Bass
+uniform int ShadowMovementSource < ui_type = "combo"; ui_label = "Shadow Movement Source"; ui_items = "Off\0Solid\0Volume\0Beat\0Bass\0Treble\0Mid\0"; ui_tooltip = "Audio source that controls shadow movement."; ui_category = AS_CAT_AUDIO; > = 4; // Default to Bass
 
 // --- Debug ---
 // Direct uniform for debug dropdown to bypass macro issues
-uniform int DebugMode < ui_type = "combo"; ui_label = "Debug View"; ui_items = "Off\0Subject Mask\0Border Only\0Shadow Only\0Audio\0"; ui_category = "Debug"; > = 0;
+uniform int DebugMode < ui_type = "combo"; ui_label = "Debug View"; ui_items = "Off\0Subject Mask\0Border Only\0Shadow Only\0Audio\0"; ui_category = AS_CAT_DEBUG; > = 0;
 
 // --- Helper Functions ---
 namespace AS_StencilMask {
@@ -180,11 +173,11 @@ namespace AS_StencilMask {
 float4 PS_StencilMask(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target {
     if (DebugMode == 4) {
         // Use AS_getAudioSource instead of direct Listeningway_Beat reference
-        float audioValue = AS_getAudioSource(AS_AUDIO_BEAT);
+        float audioValue = AS_audioLevelFromSource(AS_AUDIO_BEAT);
         return float4(audioValue, audioValue, audioValue, 1.0);
     }
     float4 originalColor = tex2D(ReShade::BackBuffer, texcoord);
-    float time = AS_getTime();
+    float time = AS_timeSeconds();
 
     // --- Audio Reactivity Values ---
     float audioPulse = 0.0;
@@ -193,13 +186,13 @@ float4 PS_StencilMask(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV
     
     // Get audio values based on selected sources using AS_Utils functions
     // Border Pulse
-    audioPulse = AS_getAudioSource(BorderPulseSource);
+    audioPulse = AS_audioLevelFromSource(BorderPulseSource);
     
     // Shadow Movement
-    shadowMovement = AS_getAudioSource(ShadowMovementSource);
+    shadowMovement = AS_audioLevelFromSource(ShadowMovementSource);
     
     // Border Thickness
-    borderThicknessAudio = AS_getAudioSource(BorderThicknessSource);
+    borderThicknessAudio = AS_audioLevelFromSource(BorderThicknessSource);
     
     // Apply audio intensity multiplier
     audioPulse *= AudioIntensity;

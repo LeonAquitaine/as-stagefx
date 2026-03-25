@@ -35,8 +35,8 @@
 // ============================================================================
 // TECHNIQUE GUARD - Prevents duplicate loading of the same shader
 // ============================================================================
-#ifndef __AS_GFX_HandDrawing_fx
-#define __AS_GFX_HandDrawing_fx
+#ifndef __AS_GFX_HandDrawing_1_fx
+#define __AS_GFX_HandDrawing_1_fx
 
 // ============================================================================
 // INCLUDES
@@ -44,7 +44,7 @@
 #include "ReShade.fxh"
 #include "AS_Utils.1.fxh"
 
-namespace ASHandDrawing {
+namespace AS_HandDrawing {
 
 // ============================================================================
 // CONSTANTS
@@ -187,16 +187,12 @@ static const float3 PAPER_PATTERN_TINT_DEFAULT = float3(64.0/255.0, 26.0/255.0, 
 // UI DECLARATIONS - Organized by category
 // ============================================================================
 
-// --- Overall Effect & Animation ---
+// --- Effect-Specific Parameters ---
+
+// --- Line Work & Strokes ---
 
 uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'notebook drawings' by Flockaroo\nLink: https://www.shadertoy.com/view/XtVGD1\nLicence: CC Share-Alike Non-Commercial\n\n";>;
 
-uniform float AnimationWobbleStrength < ui_type = "slider"; ui_label = "Animation Wobble Strength"; ui_min = ANIMATION_WOBBLE_STRENGTH_MIN; ui_max = ANIMATION_WOBBLE_STRENGTH_MAX; ui_step = 0.1; ui_tooltip = "Overall strength of the coordinate jitter effect, making the image 'wobble'"; ui_category = "Animation & Jitter"; > = ANIMATION_WOBBLE_STRENGTH_DEFAULT;
-uniform float AnimationWobbleSpeed < ui_type = "slider"; ui_label = "Animation Wobble Speed"; ui_min = ANIMATION_WOBBLE_SPEED_MIN; ui_max = ANIMATION_WOBBLE_SPEED_MAX; ui_step = 0.01; ui_tooltip = "Speed of the wobble animation"; ui_category = "Animation & Jitter"; > = ANIMATION_WOBBLE_SPEED_DEFAULT;
-uniform float2 AnimationWobbleFrequency < ui_type = "drag"; ui_label = "Animation Wobble Pattern (X, Y Freq)"; ui_min = ANIMATION_WOBBLE_FREQ_MIN; ui_max = ANIMATION_WOBBLE_FREQ_MAX; ui_step = 0.01; ui_tooltip = "Frequency of sine waves for X and Y axis wobble"; ui_category = "Animation & Jitter"; > = ANIMATION_WOBBLE_FREQ_DEFAULT;
-uniform float EffectScaleReferenceHeight < ui_type = "slider"; ui_label = "Effect Scale Reference Height"; ui_min = EFFECT_SCALE_REF_HEIGHT_MIN; ui_max = EFFECT_SCALE_REF_HEIGHT_MAX; ui_step = 10.0; ui_tooltip = "Reference screen height for scaling effects like jitter and stroke length"; ui_category = "Animation & Jitter"; > = EFFECT_SCALE_REF_HEIGHT_DEFAULT;
-
-// --- Line Work & Strokes ---
 uniform int NumberOfStrokeDirections < ui_type = "slider"; ui_label = "Number of Stroke Directions"; ui_min = NUM_STROKE_DIRECTIONS_MIN; ui_max = NUM_STROKE_DIRECTIONS_MAX; ui_step = 1; ui_tooltip = "Number of different angles for hatching/strokes. Affects density and performance"; ui_category = "Line Work & Strokes"; > = NUM_STROKE_DIRECTIONS_DEFAULT;
 uniform int LineLengthSamples < ui_type = "slider"; ui_label = "Line Length (Samples per Direction)"; ui_min = LINE_LENGTH_SAMPLES_MIN; ui_max = LINE_LENGTH_SAMPLES_MAX; ui_step = 1; ui_tooltip = "Number of samples along each stroke direction, effectively line length. Affects detail and performance"; ui_category = "Line Work & Strokes"; > = LINE_LENGTH_SAMPLES_DEFAULT;
 uniform float MaxIndividualLineOpacity < ui_type = "slider"; ui_label = "Max Individual Line Opacity"; ui_min = MAX_LINE_OPACITY_MIN; ui_max = MAX_LINE_OPACITY_MAX; ui_step = 0.001; ui_tooltip = "Clamps the maximum opacity/intensity of a single calculated stroke fragment"; ui_category = "Line Work & Strokes"; > = MAX_LINE_OPACITY_DEFAULT;
@@ -229,10 +225,18 @@ uniform float3 PaperPatternTint < ui_type = "color"; ui_label = "Paper Pattern C
 uniform float PaperPatternSharpness < ui_type = "slider"; ui_label = "Paper Pattern Sharpness"; ui_min = PAPER_PATTERN_SHARPNESS_MIN; ui_max = PAPER_PATTERN_SHARPNESS_MAX; ui_step = 1.0; ui_tooltip = "Sharpness of the paper pattern lines"; ui_category = "Background & Paper"; > = PAPER_PATTERN_SHARPNESS_DEFAULT;
 
 //------------------------------------------------------------------------------------------------
+// Animation
+//------------------------------------------------------------------------------------------------
+uniform float AnimationWobbleStrength < ui_type = "slider"; ui_label = "Animation Wobble Strength"; ui_min = ANIMATION_WOBBLE_STRENGTH_MIN; ui_max = ANIMATION_WOBBLE_STRENGTH_MAX; ui_step = 0.1; ui_tooltip = "Overall strength of the coordinate jitter effect, making the image 'wobble'"; ui_category = AS_CAT_ANIMATION; > = ANIMATION_WOBBLE_STRENGTH_DEFAULT;
+uniform float AnimationWobbleSpeed < ui_type = "slider"; ui_label = "Animation Wobble Speed"; ui_min = ANIMATION_WOBBLE_SPEED_MIN; ui_max = ANIMATION_WOBBLE_SPEED_MAX; ui_step = 0.01; ui_tooltip = "Speed of the wobble animation"; ui_category = AS_CAT_ANIMATION; > = ANIMATION_WOBBLE_SPEED_DEFAULT;
+uniform float2 AnimationWobbleFrequency < ui_type = "drag"; ui_label = "Animation Wobble Pattern (X, Y Freq)"; ui_min = ANIMATION_WOBBLE_FREQ_MIN; ui_max = ANIMATION_WOBBLE_FREQ_MAX; ui_step = 0.01; ui_tooltip = "Frequency of sine waves for X and Y axis wobble"; ui_category = AS_CAT_ANIMATION; > = ANIMATION_WOBBLE_FREQ_DEFAULT;
+uniform float EffectScaleReferenceHeight < ui_type = "slider"; ui_label = "Effect Scale Reference Height"; ui_min = EFFECT_SCALE_REF_HEIGHT_MIN; ui_max = EFFECT_SCALE_REF_HEIGHT_MAX; ui_step = 10.0; ui_tooltip = "Reference screen height for scaling effects like jitter and stroke length"; ui_category = AS_CAT_ANIMATION; > = EFFECT_SCALE_REF_HEIGHT_DEFAULT;
+
+//------------------------------------------------------------------------------------------------
 // Stage & Depth
 //------------------------------------------------------------------------------------------------
 AS_STAGEDEPTH_UI(EffectDepth)
-uniform bool ReverseDepth < ui_label = "Reverse Depth"; ui_tooltip = "Reverses the depth detection method"; ui_category = "Stage"; > = false;
+uniform bool ReverseDepth < ui_label = "Reverse Depth"; ui_tooltip = "Reverses the depth detection method"; ui_category = AS_CAT_STAGE; > = false;
 
 //------------------------------------------------------------------------------------------------
 // Final Mix
@@ -301,7 +305,7 @@ float4 PS_HandDrawn(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : SV
     float4 originalColor = tex2D(ReShade::BackBuffer, texcoord);
     
     // Calculate animation time
-    float time_s = AS_getTime() / 1000.0f;
+    float time_s = AS_timeSeconds() / 1000.0f;
 
     // Scale effect based on resolution to maintain consistency
     float norm_height_factor = Res_Screen.y / EffectScaleReferenceHeight;
@@ -407,8 +411,7 @@ float4 PS_HandDrawn(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : SV
     float depthMask = ReverseDepth ? (depth <= EffectDepth) : (depth >= EffectDepth);
     
     // Apply blend mode and strength with depth consideration
-    float3 blended = AS_blendRGB(final_col, originalColor.rgb, BlendMode);
-    return float4(lerp(originalColor.rgb, blended, BlendStrength * depthMask), 1.0f);
+    return float4(AS_composite(final_col, originalColor.rgb, BlendMode, BlendStrength * depthMask), 1.0f);
 }
 
 // ============================================================================
@@ -426,6 +429,6 @@ technique AS_GFX_HandDrawing <
     }
 }
 
-} // namespace ASHandDrawing
+} // namespace AS_HandDrawing
 
-#endif // __AS_GFX_HandDrawing_fx
+#endif // __AS_GFX_HandDrawing_1_fx

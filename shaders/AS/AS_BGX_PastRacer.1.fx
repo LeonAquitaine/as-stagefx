@@ -43,7 +43,7 @@
 #include "ReShade.fxh"
 #include "AS_Utils.1.fxh" // For time, audio, UI utilities, and constants
 
-namespace ASPastRacer {
+namespace AS_PastRacer {
 
 // ============================================================================
 // CONSTANTS
@@ -106,18 +106,10 @@ static const float3 DEFAULT_LOOK_AT_POSITION = float3(0.0f, 0.0f, 0.0f);
 // UNIFORMS
 // ============================================================================
 
-// --- Animation ---
+// --- Camera ---
 
 uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Outline 2020 Freestyle Live code' by NuSan\nLink: https://www.shadertoy.com/view/tsBBzG\nLicence: CC Share-Alike Non-Commercial\n\n";>;
 
-uniform float GlobalTimeScale < ui_type = "drag"; ui_min = 0.0; ui_max = 3.0; ui_step = 0.01; ui_label = "Global Animation Speed"; ui_tooltip = "Multiplies the master time for all animations."; ui_category = "Animation"; > = DEFAULT_GLOBAL_TIME_SCALE;
-
-// --- Quality & Performance ---
-uniform int RayMarchSteps < ui_type = "drag"; ui_min = 10; ui_max = 200; ui_step = 1; ui_label = "Ray March Steps"; ui_tooltip = "Maximum steps for ray marching. Higher is more accurate but slower."; ui_category = "Quality & Performance"; > = DEFAULT_RAY_MARCH_STEPS;
-uniform float MaxTraceDistance < ui_type = "drag"; ui_min = 50.0; ui_max = 1000.0; ui_step = 10.0; ui_label = "Max Trace Distance"; ui_tooltip = "Maximum distance a ray will travel."; ui_category = "Quality & Performance"; > = DEFAULT_MAX_TRACE_DISTANCE;
-uniform float HitEpsilon < ui_type = "drag"; ui_min = 0.001; ui_max = 0.1; ui_step = 0.001; ui_label = "Hit Precision (Epsilon)"; ui_tooltip = "Threshold for considering a ray to have hit a surface."; ui_category = "Quality & Performance"; > = DEFAULT_HIT_EPSILON;
-
-// --- Camera ---
 uniform float FieldOfView < ui_type = "drag"; ui_min = 0.1; ui_max = 2.0; ui_step = 0.01; ui_label = "Field of View"; ui_tooltip = "Controls the camera's field of view. Smaller is more zoomed in (larger value for fov parameter in code)."; ui_category = "Camera"; > = DEFAULT_FIELD_OF_VIEW;
 uniform float CameraShakeAmount < ui_type = "drag"; ui_min = 0.0; ui_max = 1.0; ui_step = 0.05; ui_label = "Camera Shake"; ui_tooltip = "Amount of procedural camera shake"; ui_category = "Camera"; > = DEFAULT_CAMERA_SHAKE_AMOUNT;
 uniform float3 LightDirection < ui_type = "drag"; ui_min = -1.0; ui_max = 1.0; ui_step = 0.1; ui_label = "Light Direction"; ui_tooltip = "Direction of the main light source"; ui_category = "Camera"; > = DEFAULT_LIGHT_DIRECTION;
@@ -126,14 +118,6 @@ uniform float2 CameraPositionXZ < ui_type = "drag"; ui_min = -50.0; ui_max = 50.
 uniform float CameraPositionY < ui_type = "drag"; ui_min = -50.0; ui_max = 50.0; ui_step = 1.0; ui_label = "Camera Height Y"; ui_tooltip = "Vertical position offset of the camera"; ui_category = "Camera"; > = DEFAULT_CAMERA_POSITION_Y;
 uniform bool DisableCameraAutomation < ui_label = "Manual Camera Mode"; ui_tooltip = "When enabled, disables automatic camera movement and uses only the manual settings"; ui_category = "Camera"; > = DEFAULT_DISABLE_CAMERA_AUTOMATION;
 uniform float3 LookAtPosition < ui_type = "drag"; ui_min = -50.0; ui_max = 50.0; ui_step = 1.0; ui_label = "Look At Position"; ui_tooltip = "Position the camera is looking at"; ui_category = "Camera"; > = DEFAULT_LOOK_AT_POSITION;
-
-// --- Palette & Style ---
-uniform float3 Scene0PrimaryColor < ui_type = "color"; ui_label = "Scene 0: Primary Color"; ui_tooltip = "Primary color for audio-reactive boxes in Scene 0"; ui_category = "Palette & Style"; > = DEFAULT_SCENE0_PRIMARY_COLOR;
-uniform float3 Scene0SecondaryColor < ui_type = "color"; ui_label = "Scene 0: Secondary Color"; ui_tooltip = "Secondary color for flare effects in Scene 0"; ui_category = "Palette & Style"; > = DEFAULT_SCENE0_SECONDARY_COLOR;
-uniform float3 Scene1PrimaryColor < ui_type = "color"; ui_label = "Scene 1: Primary Color"; ui_tooltip = "Primary color for corridor structure in Scene 1"; ui_category = "Palette & Style"; > = DEFAULT_SCENE1_PRIMARY_COLOR;
-uniform float3 DiffuseColor < ui_type = "color"; ui_label = "Diffuse Light Color"; ui_tooltip = "Color of the diffuse lighting"; ui_category = "Palette & Style"; > = DEFAULT_DIFFUSE_COLOR;
-uniform float3 SkyTintHorizon < ui_type = "color"; ui_label = "Sky Color (Horizon)"; ui_tooltip = "Color of the sky at the horizon"; ui_category = "Palette & Style"; > = DEFAULT_SKY_HORIZON_COLOR;
-uniform float3 SkyTintZenith < ui_type = "color"; ui_label = "Sky Color (Zenith)"; ui_tooltip = "Color of the sky at its brightest point"; ui_category = "Palette & Style"; > = DEFAULT_SKY_ZENITH_COLOR;
 
 // --- Effect-Specific Parameters (Scene 0) ---
 uniform float S0BoxSize < ui_type = "drag"; ui_min = 0.1; ui_max = 5.0; ui_step = 0.1; ui_label = "Box Size (Scene 0)"; ui_tooltip = "Size of the audio-reactive boxes"; ui_category = "Effect 1: Audio Boxes"; ui_category_closed = true; > = DEFAULT_S0_BOX_SIZE;
@@ -145,20 +129,36 @@ uniform float S1TunnelSize < ui_type = "drag"; ui_min = 5.0; ui_max = 50.0; ui_s
 uniform float S1GridPatternIntensity < ui_type = "drag"; ui_min = 0.0; ui_max = 20.0; ui_step = 0.1; ui_label = "Grid Pattern Intensity (Scene 1)"; ui_tooltip = "Intensity of the grid pattern displacement"; ui_category = "Effect 2: Corridor"; > = DEFAULT_S1_GRID_PATTERN_INTENSITY;
 uniform float S1AnimSpeed < ui_type = "drag"; ui_min = 0.1; ui_max = 5.0; ui_step = 0.1; ui_label = "Animation Speed (Scene 1)"; ui_tooltip = "Speed multiplier for scene-specific animations"; ui_category = "Effect 2: Corridor"; > = DEFAULT_S1_ANIM_SPEED;
 
-// --- Audio Reactivity ---
-uniform float FFTMultiplier < ui_type = "drag"; ui_min = 0.0; ui_max = 100.0; ui_step = 1.0; ui_label = "Box Height Audio Strength"; ui_tooltip = "Multiplies the audio frequency band value, affecting Scene 0's box heights."; ui_category = "Audio Reactivity"; > = DEFAULT_FFT_MULTIPLIER;
-AS_AUDIO_UI(S0FlareAudioSource, "Flare Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
-AS_AUDIO_MULT_UI(S0FlareAudioMultiplier, "Flare Audio Intensity", AS_RANGE_AUDIO_MULT_DEFAULT, AS_RANGE_AUDIO_MULT_MAX, "Audio Reactivity")
+// --- Palette & Style ---
+uniform float3 Scene0PrimaryColor < ui_type = "color"; ui_label = "Scene 0: Primary Color"; ui_tooltip = "Primary color for audio-reactive boxes in Scene 0"; ui_category = AS_CAT_PALETTE; > = DEFAULT_SCENE0_PRIMARY_COLOR;
+uniform float3 Scene0SecondaryColor < ui_type = "color"; ui_label = "Scene 0: Secondary Color"; ui_tooltip = "Secondary color for flare effects in Scene 0"; ui_category = AS_CAT_PALETTE; > = DEFAULT_SCENE0_SECONDARY_COLOR;
+uniform float3 Scene1PrimaryColor < ui_type = "color"; ui_label = "Scene 1: Primary Color"; ui_tooltip = "Primary color for corridor structure in Scene 1"; ui_category = AS_CAT_PALETTE; > = DEFAULT_SCENE1_PRIMARY_COLOR;
+uniform float3 DiffuseColor < ui_type = "color"; ui_label = "Diffuse Light Color"; ui_tooltip = "Color of the diffuse lighting"; ui_category = AS_CAT_PALETTE; > = DEFAULT_DIFFUSE_COLOR;
+uniform float3 SkyTintHorizon < ui_type = "color"; ui_label = "Sky Color (Horizon)"; ui_tooltip = "Color of the sky at the horizon"; ui_category = AS_CAT_PALETTE; > = DEFAULT_SKY_HORIZON_COLOR;
+uniform float3 SkyTintZenith < ui_type = "color"; ui_label = "Sky Color (Zenith)"; ui_tooltip = "Color of the sky at its brightest point"; ui_category = AS_CAT_PALETTE; > = DEFAULT_SKY_ZENITH_COLOR;
 
 // --- Lighting & Effects ---
-uniform float LightIntensity < ui_type = "drag"; ui_min = 0.1; ui_max = 20.0; ui_step = 0.1; ui_label = "Light Intensity"; ui_tooltip = "Brightness multiplier for the main light source"; ui_category = "Lighting & Effects"; > = DEFAULT_LIGHT_INTENSITY;
-uniform float SpecularPower < ui_type = "drag"; ui_min = 1.0; ui_max = 50.0; ui_step = 1.0; ui_label = "Specular Hardness"; ui_tooltip = "Controls the size of specular highlights (higher = smaller, sharper)"; ui_category = "Lighting & Effects"; > = DEFAULT_SPECULAR_POWER;
-uniform float SpecularIntensity < ui_type = "drag"; ui_min = 0.0; ui_max = 5.0; ui_step = 0.1; ui_label = "Specular Intensity"; ui_tooltip = "Brightness of specular highlights"; ui_category = "Lighting & Effects"; > = DEFAULT_SPECULAR_INTENSITY;
-uniform float GlowIntensity < ui_type = "drag"; ui_min = 0.0; ui_max = 2.0; ui_step = 0.05; ui_label = "Glow Intensity"; ui_tooltip = "Intensity of the post-glow effect (bloom-like)"; ui_category = "Lighting & Effects"; > = DEFAULT_GLOW_INTENSITY;
+uniform float LightIntensity < ui_type = "drag"; ui_min = 0.1; ui_max = 20.0; ui_step = 0.1; ui_label = "Light Intensity"; ui_tooltip = "Brightness multiplier for the main light source"; ui_category = AS_CAT_LIGHTING; > = DEFAULT_LIGHT_INTENSITY;
+uniform float SpecularPower < ui_type = "drag"; ui_min = 1.0; ui_max = 50.0; ui_step = 1.0; ui_label = "Specular Hardness"; ui_tooltip = "Controls the size of specular highlights (higher = smaller, sharper)"; ui_category = AS_CAT_LIGHTING; > = DEFAULT_SPECULAR_POWER;
+uniform float SpecularIntensity < ui_type = "drag"; ui_min = 0.0; ui_max = 5.0; ui_step = 0.1; ui_label = "Specular Intensity"; ui_tooltip = "Brightness of specular highlights"; ui_category = AS_CAT_LIGHTING; > = DEFAULT_SPECULAR_INTENSITY;
+uniform float GlowIntensity < ui_type = "drag"; ui_min = 0.0; ui_max = 2.0; ui_step = 0.05; ui_label = "Glow Intensity"; ui_tooltip = "Intensity of the post-glow effect (bloom-like)"; ui_category = AS_CAT_LIGHTING; > = DEFAULT_GLOW_INTENSITY;
+
+// --- Animation ---
+uniform float GlobalTimeScale < ui_type = "drag"; ui_min = 0.0; ui_max = 3.0; ui_step = 0.01; ui_label = "Global Animation Speed"; ui_tooltip = "Multiplies the master time for all animations."; ui_category = AS_CAT_ANIMATION; > = DEFAULT_GLOBAL_TIME_SCALE;
+
+// --- Audio Reactivity ---
+uniform float FFTMultiplier < ui_type = "drag"; ui_min = 0.0; ui_max = 100.0; ui_step = 1.0; ui_label = "Box Height Audio Strength"; ui_tooltip = "Multiplies the audio frequency band value, affecting Scene 0's box heights."; ui_category = AS_CAT_AUDIO; > = DEFAULT_FFT_MULTIPLIER;
+AS_AUDIO_UI(S0FlareAudioSource, "Flare Audio Source", AS_AUDIO_BEAT, AS_CAT_AUDIO)
+AS_AUDIO_MULT_UI(S0FlareAudioMultiplier, "Flare Audio Intensity", AS_RANGE_AUDIO_MULT_DEFAULT, AS_RANGE_AUDIO_MULT_MAX, AS_CAT_AUDIO)
+
+// --- Quality & Performance ---
+uniform int RayMarchSteps < ui_type = "drag"; ui_min = 10; ui_max = 200; ui_step = 1; ui_label = "Ray March Steps"; ui_tooltip = "Maximum steps for ray marching. Higher is more accurate but slower."; ui_category = AS_CAT_PERFORMANCE; > = DEFAULT_RAY_MARCH_STEPS;
+uniform float MaxTraceDistance < ui_type = "drag"; ui_min = 50.0; ui_max = 1000.0; ui_step = 10.0; ui_label = "Max Trace Distance"; ui_tooltip = "Maximum distance a ray will travel."; ui_category = AS_CAT_PERFORMANCE; > = DEFAULT_MAX_TRACE_DISTANCE;
+uniform float HitEpsilon < ui_type = "drag"; ui_min = 0.001; ui_max = 0.1; ui_step = 0.001; ui_label = "Hit Precision (Epsilon)"; ui_tooltip = "Threshold for considering a ray to have hit a surface."; ui_category = AS_CAT_PERFORMANCE; > = DEFAULT_HIT_EPSILON;
 
 // --- Final Mix (Blend) ---
-uniform float VignetteStrength < ui_type = "drag"; ui_min = 0.0; ui_max = 2.0; ui_step = 0.01; ui_label = "Vignette Strength"; ui_tooltip = "Strength of the screen-edge darkening effect."; ui_category = "Final Mix"; > = DEFAULT_VIGNETTE_STRENGTH;
-uniform float Gamma < ui_type = "drag"; ui_min = 1.0; ui_max = 3.0; ui_step = 0.01; ui_label = "Gamma Correction"; ui_tooltip = "Final gamma adjustment. Standard is often 2.2."; ui_category = "Final Mix"; > = DEFAULT_GAMMA;
+uniform float VignetteStrength < ui_type = "drag"; ui_min = 0.0; ui_max = 2.0; ui_step = 0.01; ui_label = "Vignette Strength"; ui_tooltip = "Strength of the screen-edge darkening effect."; ui_category = AS_CAT_FINAL; > = DEFAULT_VIGNETTE_STRENGTH;
+uniform float Gamma < ui_type = "drag"; ui_min = 1.0; ui_max = 3.0; ui_step = 0.01; ui_label = "Gamma Correction"; ui_tooltip = "Final gamma adjustment. Standard is often 2.2."; ui_category = AS_CAT_FINAL; > = DEFAULT_GAMMA;
 
 // --- Stage/Transform ---
 AS_STAGEDEPTH_UI(StageDepth)
@@ -328,14 +328,11 @@ float SDE_DescribeWorld_Scene1(float3 pWorld, float timeVal, inout float accAt, 
 // --- Common ray marching function ---
 float4 PS_PastRacer_Common(float4 vpos, float2 texcoord, bool isScene0)
 {
-    // Stage depth cut-out - early return if depth is less than stage depth
-    float depth = ReShade::GetLinearizedDepth(texcoord);
-    if (depth < StageDepth) {
-        return tex2D(ReShade::BackBuffer, texcoord);
-    }
+    // Depth-aware early return
+    AS_DEPTH_EARLY_RETURN(texcoord, StageDepth)
     
         // Time calculation
-    float masterTime = AS_getTime() * GlobalTimeScale;
+    float masterTime = AS_timeSeconds() * GlobalTimeScale;
     float currentTime = AS_mod(masterTime, 300.0f);
             // UV Setup - apply resolution-independent aspect ratio correction via shared helper
         float2 uv = AS_centeredUVWithAspect(texcoord, ReShade::AspectRatio);
@@ -367,14 +364,14 @@ float4 PS_PastRacer_Common(float4 vpos, float2 texcoord, bool isScene0)
     {
         if (S0FlareAudioSource == AS_AUDIO_BEAT)
         {
-            float beatLevel = AS_getAudioSource(AS_AUDIO_BEAT); // This is a pulse [0,1] that decays
+            float beatLevel = AS_audioLevelFromSource(AS_AUDIO_BEAT); // This is a pulse [0,1] that decays
             actualLightingPart = beatLevel; // Flare "mood" (at/at2 dominance) pulses with the beat
             flareIntensityMod = S0FlareAudioMultiplier; // Control brightness of the beat-triggered flare
         }
         else if (S0FlareAudioSource != AS_AUDIO_OFF) // Other audio sources (Volume, Bands, Solid)
         {
             // actualLightingPart remains baseLightingPart (slow sine wave for mood timing)
-            float audioLevel = AS_getAudioSource(S0FlareAudioSource);
+            float audioLevel = AS_audioLevelFromSource(S0FlareAudioSource);
             flareIntensityMod = audioLevel * S0FlareAudioMultiplier; // Flare intensity continuously modulated
         }
         // If S0FlareAudioSource is AS_AUDIO_OFF, actualLightingPart is baseLightingPart, 
@@ -527,8 +524,7 @@ float4 PS_PastRacer_Common(float4 vpos, float2 texcoord, bool isScene0)
     
     // Apply blend mode with background
     float4 originalColor = tex2D(ReShade::BackBuffer, texcoord);
-    float3 blended = AS_blendRGB(accumulatedColor, originalColor.rgb, BlendMode);
-    float3 result = lerp(originalColor.rgb, blended, BlendAmount);
+    float3 result = AS_composite(accumulatedColor, originalColor.rgb, BlendMode, BlendAmount);
         
     return float4(result, originalColor.a);
 }
@@ -545,7 +541,7 @@ float4 PS_PastRacer_Scene1(float4 vpos : SV_Position, float2 texcoord : TEXCOORD
     return PS_PastRacer_Common(vpos, texcoord, false);
 }
 
-} // namespace ASPastRacer
+} // namespace AS_PastRacer
 
 // ============================================================================
 // TECHNIQUE DEFINITION
@@ -558,7 +554,7 @@ technique AS_BGX_PastRacer_AudioBoxes <
     pass
     {
         VertexShader = PostProcessVS;
-        PixelShader = ASPastRacer::PS_PastRacer_Scene0;
+        PixelShader = AS_PastRacer::PS_PastRacer_Scene0;
     }
 }
 
@@ -570,7 +566,7 @@ technique AS_BGX_PastRacer_Corridor <
     pass
     {
         VertexShader = PostProcessVS;
-        PixelShader = ASPastRacer::PS_PastRacer_Scene1;
+        PixelShader = AS_PastRacer::PS_PastRacer_Scene1;
     }
 }
-#endif
+#endif // __AS_BGX_PastRacer_1_fx

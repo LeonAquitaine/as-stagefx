@@ -151,18 +151,15 @@ AS_BLENDAMOUNT_UI(BlendAmount)
 // ============================================================================
 float4 PS_Fluorescent(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : SV_Target
 {
-    // Apply stage depth test
-    float depth = ReShade::GetLinearizedDepth(texcoord);
-    if (depth < StageDepth) {
-        return tex2D(ReShade::BackBuffer, texcoord);
-    }
+    // Depth-aware early return
+    AS_DEPTH_EARLY_RETURN(texcoord, StageDepth)
     
     // Apply coordinate transformations: center → rotate → position/scale
     float2 centeredCoord = AS_centeredUVWithAspect(texcoord, ReShade::AspectRatio);
     
     // Apply rotation
     float rotation = AS_getRotationRadians(EffectSnapRotation, EffectFineRotation);
-    float2 rotatedCoord = AS_applyRotation(centeredCoord, rotation);
+    float2 rotatedCoord = AS_rotate2D(centeredCoord, rotation);
     
     // Apply position and scale
     float2 transformedCoord = AS_applyPositionAndScale(rotatedCoord, Position, Scale);
@@ -240,10 +237,7 @@ float4 PS_Fluorescent(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : 
     float4 originalColor = tex2D(ReShade::BackBuffer, texcoord);
     
     // Apply the blend mode between effect and original background
-    float3 blendedColor = AS_blendRGB(effectOutput.rgb, originalColor.rgb, BlendMode);
-    
-    // Mix between original and blended result based on BlendAmount
-    float3 finalResult = lerp(originalColor.rgb, blendedColor, BlendAmount);
+    float3 finalResult = AS_composite(effectOutput.rgb, originalColor.rgb, BlendMode, BlendAmount);
     
     return float4(finalResult, originalColor.a);
 }

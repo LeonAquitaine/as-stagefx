@@ -42,7 +42,7 @@
 #include "AS_Utils.1.fxh"
 #include "AS_Palette.1.fxh"
 
-namespace ASVortex {
+namespace AS_Vortex {
 
 // ============================================================================
 // CONSTANTS
@@ -100,11 +100,11 @@ uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = 
 AS_POSITION_SCALE_UI(EffectCenter, EffectScale)
 
 // Palette & Style
-AS_PALETTE_SELECTION_UI(Vortex_Palette, "Color Palette", AS_PALETTE_FIRE, "Palette & Style")
-AS_DECLARE_CUSTOM_PALETTE(Vortex_, "Palette & Style")
+AS_PALETTE_SELECTION_UI(Vortex_Palette, "Color Palette", AS_PALETTE_FIRE, AS_CAT_PALETTE)
+AS_DECLARE_CUSTOM_PALETTE(Vortex_, AS_CAT_PALETTE)
 
-uniform float Vortex_ColorOffset < ui_type = "slider"; ui_label = "Palette Offset (Radial)"; ui_tooltip = "Shifts the start of the palette mapping along the radius."; ui_min = VORTEX_COLOR_OFFSET_MIN; ui_max = VORTEX_COLOR_OFFSET_MAX; ui_step = 0.01; ui_category = "Palette & Style"; > = VORTEX_COLOR_OFFSET_DEFAULT;
-uniform float Vortex_ColorFrequency < ui_type = "slider"; ui_label = "Palette Frequency (Radial)"; ui_tooltip = "Controls how many times the palette repeats from center to edge."; ui_min = VORTEX_COLOR_FREQ_MIN; ui_max = VORTEX_COLOR_FREQ_MAX; ui_step = 0.1; ui_category = "Palette & Style"; > = VORTEX_COLOR_FREQ_DEFAULT;
+uniform float Vortex_ColorOffset < ui_type = "slider"; ui_label = "Palette Offset (Radial)"; ui_tooltip = "Shifts the start of the palette mapping along the radius."; ui_min = VORTEX_COLOR_OFFSET_MIN; ui_max = VORTEX_COLOR_OFFSET_MAX; ui_step = 0.01; ui_category = AS_CAT_PALETTE; > = VORTEX_COLOR_OFFSET_DEFAULT;
+uniform float Vortex_ColorFrequency < ui_type = "slider"; ui_label = "Palette Frequency (Radial)"; ui_tooltip = "Controls how many times the palette repeats from center to edge."; ui_min = VORTEX_COLOR_FREQ_MIN; ui_max = VORTEX_COLOR_FREQ_MAX; ui_step = 0.1; ui_category = AS_CAT_PALETTE; > = VORTEX_COLOR_FREQ_DEFAULT;
 
 // Effect-Specific Appearance
 uniform float Vortex_SwirlFalloff < ui_type = "slider"; ui_label = "Swirl Falloff"; ui_tooltip = "Controls how much the swirl diminishes from the center"; ui_min = VORTEX_SWIRL_FALLOFF_MIN; ui_max = VORTEX_SWIRL_FALLOFF_MAX; ui_category = "Vortex Pattern"; > = VORTEX_SWIRL_FALLOFF_DEFAULT;
@@ -115,7 +115,7 @@ uniform float Vortex_BrightnessFalloff < ui_type = "slider"; ui_label = "Brightn
 uniform float Vortex_BrightnessIntensity < ui_type = "slider"; ui_label = "Overall Brightness Intensity"; ui_tooltip = "Final multiplier for the vortex brightness"; ui_min = VORTEX_BRIGHTNESS_INTENSITY_MIN; ui_max = VORTEX_BRIGHTNESS_INTENSITY_MAX; ui_category = "Vortex Pattern"; > = VORTEX_BRIGHTNESS_INTENSITY_DEFAULT;
 
 // Animation Controls
-AS_ANIMATION_UI(Vortex_AnimationSpeed, Vortex_AnimationKeyframe, "Animation")
+AS_ANIMATION_UI(Vortex_AnimationSpeed, Vortex_AnimationKeyframe, AS_CAT_ANIMATION)
 
 // Stage Controls
 AS_STAGEDEPTH_UI(EffectDepth)
@@ -130,11 +130,8 @@ AS_BLENDAMOUNT_UI(BlendStrength)
 // ============================================================================
 float4 PS_AS_BGX_Vortex_1(float4 vpos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target
 {
-    float4 finalColor = tex2D(ReShade::BackBuffer, texcoord); // Get original scene color    // Depth Check
-    if (ReShade::GetLinearizedDepth(texcoord) < EffectDepth - AS_DEPTH_EPSILON)
-    {
-        return finalColor;
-    }
+    // Depth-aware early return
+    AS_DEPTH_EARLY_RETURN(texcoord, EffectDepth)
     
     // Time
     // Vortex_AnimationSpeed and Vortex_AnimationKeyframe are directly used by AS_getAnimationTime
@@ -185,11 +182,7 @@ float4 PS_AS_BGX_Vortex_1(float4 vpos : SV_Position, float2 texcoord : TEXCOORD)
     float colorValue = frac(radialMap * Vortex_ColorFrequency + Vortex_ColorOffset);
     
     // Get color from palette
-    float3 baseColor;
-    if (Vortex_Palette == AS_PALETTE_CUSTOM) {
-        baseColor = AS_GET_INTERPOLATED_CUSTOM_COLOR(Vortex_, colorValue);    } else {
-        baseColor = AS_getInterpolatedColor(Vortex_Palette, colorValue);
-    }
+    float3 baseColor = AS_GET_PALETTE_COLOR(Vortex_, Vortex_Palette, colorValue);
     
     // Final Appearance
     // Calculate brightness based on radius (falls off towards Vortex_BrightnessFalloff)
@@ -204,12 +197,12 @@ float4 PS_AS_BGX_Vortex_1(float4 vpos : SV_Position, float2 texcoord : TEXCOORD)
     float effectAlpha = mask * brightnessF;
     float4 effectColor = float4(color, effectAlpha);
     
-    finalColor = AS_blendRGBA(effectColor, finalColor, BlendMode, BlendStrength);
+    _as_originalColor = AS_blendRGBA(effectColor, _as_originalColor, BlendMode, BlendStrength);
 
-    return finalColor;
+    return _as_originalColor;
 }
 
-} // namespace ASVortex
+} // namespace AS_Vortex
 
 // ============================================================================
 // TECHNIQUE DEFINITION
@@ -222,7 +215,7 @@ technique AS_BGX_Vortex <
     pass
     {
         VertexShader = PostProcessVS;
-        PixelShader = ASVortex::PS_AS_BGX_Vortex_1;
+        PixelShader = AS_Vortex::PS_AS_BGX_Vortex_1;
     }
 }
 

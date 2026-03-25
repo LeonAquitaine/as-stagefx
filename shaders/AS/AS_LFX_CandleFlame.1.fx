@@ -47,6 +47,9 @@
 #include "ReShade.fxh" // Standard ReShade functions and uniforms
 #include "AS_Utils.1.fxh"  // Utilities and audio reactivity
 #include "AS_Palette.1.fxh" // Color palette support
+#include "AS_Noise.1.fxh" // For AS_hash21
+
+uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " "; ui_text = "\nAnimated procedural candle flames with realistic flickering.\nPlace up to 4 flames for romantic or atmospheric lighting.\n\nAS StageFX | Procedural Candle Flame Effect by Leon Aquitaine\n"; > = 0;
 
 // ============================================================================
 // TUNABLE CONSTANTS (Defaults and Ranges)
@@ -133,10 +136,10 @@ FLAME_UI(4, false, float2(0.0, -0.4), 0.8,
 // ============================================================================
 // PALETTE & STYLE
 // ============================================================================
-AS_PALETTE_SELECTION_UI(PalettePreset, "Palette", AS_PALETTE_FIRE, "Palette & Style")
-AS_DECLARE_CUSTOM_PALETTE(CandleFlame_, "Palette & Style")
+AS_PALETTE_SELECTION_UI(PalettePreset, "Palette", AS_PALETTE_FIRE, AS_CAT_PALETTE)
+AS_DECLARE_CUSTOM_PALETTE(CandleFlame_, AS_CAT_PALETTE)
 
-uniform float ColorCycleSpeed < ui_type = "slider"; ui_label = "Color Cycle Speed"; ui_tooltip = "Controls how fast flame colors cycle. 0 = static"; ui_min = -5.0; ui_max = 5.0; ui_step = 0.1; ui_category = "Palette & Style"; > = 0.0;
+AS_COLOR_CYCLE_UI(ColorCycleSpeed, AS_CAT_PALETTE)
 
 // ============================================================================
 // FLAME APPEARANCE
@@ -150,21 +153,22 @@ uniform float FlameRedBrightness < ui_type = "slider"; ui_min = FLAME_RED_BRIGHT
 // ============================================================================
 // ANIMATION
 // ============================================================================
-AS_SWAYSPEED_UI(SwaySpeed, "Animation")
-AS_SWAYANGLE_UI(SwayAngle, "Animation")
-uniform float HorizontalSpeed < ui_type = "slider"; ui_min = 0.0; ui_max = 5.0; ui_step = 0.01; ui_label = "Horizontal Noise Speed"; ui_tooltip = "Speed of side-to-side movement."; ui_category = "Animation"; > = 0.1;
-uniform float HorizontalSway < ui_type = "slider"; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_label = "Horizontal Sway Amount"; ui_tooltip = "Amplitude of side-to-side movement."; ui_category = "Animation"; > = 0.1;
-uniform float VerticalSpeed < ui_type = "slider"; ui_min = 0.0; ui_max = 5.0; ui_step = 0.01; ui_label = "Vertical Noise Speed"; ui_tooltip = "Speed of upward 'licking' / vertical distortion."; ui_category = "Animation"; > = 0.4;
-uniform float IntensityFlickerSpeed < ui_type = "slider"; ui_min = 0.0; ui_max = 100.0; ui_step = 0.1; ui_label = "Intensity Flicker Speed"; ui_tooltip = "Speed of the brightness flickering effect."; ui_category = "Animation"; > = 60.0;
-uniform float NoiseScale < ui_type = "slider"; ui_min = NOISE_SCALE_MIN; ui_max = NOISE_SCALE_MAX; ui_label = "Noise Scale (for Intensity Flicker)"; ui_tooltip = "Spatial frequency of the noise used for intensity flicker."; ui_category = "Animation"; > = NOISE_SCALE_DEFAULT;
+AS_ANIMATION_UI(AnimationSpeed, AnimationKeyframe, AS_CAT_ANIMATION)
+AS_SWAYSPEED_UI(SwaySpeed, AS_CAT_ANIMATION)
+AS_SWAYANGLE_UI(SwayAngle, AS_CAT_ANIMATION)
+uniform float HorizontalSpeed < ui_type = "slider"; ui_min = 0.0; ui_max = 5.0; ui_step = 0.01; ui_label = "Horizontal Noise Speed"; ui_tooltip = "Speed of side-to-side movement."; ui_category = AS_CAT_ANIMATION; > = 0.1;
+uniform float HorizontalSway < ui_type = "slider"; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_label = "Horizontal Sway Amount"; ui_tooltip = "Amplitude of side-to-side movement."; ui_category = AS_CAT_ANIMATION; > = 0.1;
+uniform float VerticalSpeed < ui_type = "slider"; ui_min = 0.0; ui_max = 5.0; ui_step = 0.01; ui_label = "Vertical Noise Speed"; ui_tooltip = "Speed of upward 'licking' / vertical distortion."; ui_category = AS_CAT_ANIMATION; > = 0.4;
+uniform float IntensityFlickerSpeed < ui_type = "slider"; ui_min = 0.0; ui_max = 100.0; ui_step = 0.1; ui_label = "Intensity Flicker Speed"; ui_tooltip = "Speed of the brightness flickering effect."; ui_category = AS_CAT_ANIMATION; > = 60.0;
+uniform float NoiseScale < ui_type = "slider"; ui_min = NOISE_SCALE_MIN; ui_max = NOISE_SCALE_MAX; ui_label = "Noise Scale (for Intensity Flicker)"; ui_tooltip = "Spatial frequency of the noise used for intensity flicker."; ui_category = AS_CAT_ANIMATION; > = NOISE_SCALE_DEFAULT;
 
 // ============================================================================
 // AUDIO REACTIVITY
 // ============================================================================
-AS_AUDIO_UI(Flame_AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
-AS_AUDIO_MULT_UI(Flame_AudioMultiplier, "Intensity", 1.0, 2.0, "Audio Reactivity")
+AS_AUDIO_UI(Flame_AudioSource, "Audio Source", AS_AUDIO_BEAT, AS_CAT_AUDIO)
+AS_AUDIO_MULT_UI(Flame_AudioMultiplier, "Intensity", 1.0, 2.0, AS_CAT_AUDIO)
 
-uniform int AudioTarget < ui_type = "combo"; ui_label = "Audio Target Parameter"; ui_tooltip = "Select which parameter will be affected by audio reactivity"; ui_items = "Flame Height\0Flame Power\0Sway Angle\0All Parameters\0"; ui_category = "Audio Reactivity"; > = 0; // Default to Flame Height
+AS_AUDIO_TARGET_UI(AudioTarget, "Flame Height\0Flame Power\0Sway Angle\0All Parameters\0", 0)
 
 // ============================================================================
 // STAGE
@@ -260,20 +264,15 @@ FlameParams GetFlameParams(int flameIndex) {
 }
 
 // --- Improved Noise Functions (Perlin-like) ---
-// (Using provided improved noise functions)
-float hash(float2 p) {
-    p = 50.0 * frac(p * AS_INV_PI + float2(0.71, 0.113));
-    return -1.0 + 2.0 * frac(p.x * p.y * (p.x + p.y));
-}
-
+// Uses AS_hash21 from AS_Noise.1.fxh, remapped to [-1,1] range
 float noise(float2 p) {
     float2 i = floor(p);
     float2 f = frac(p);
     float2 u = f * f * f * (f * (f * 6.0 - 15.0) + 10.0); // Quintic interpolation
-    float a = hash(i);
-    float b = hash(i + float2(1.0, 0.0));
-    float c = hash(i + float2(0.0, 1.0));
-    float d = hash(i + float2(1.0, 1.0));
+    float a = -1.0 + 2.0 * AS_hash21(i);
+    float b = -1.0 + 2.0 * AS_hash21(i + float2(1.0, 0.0));
+    float c = -1.0 + 2.0 * AS_hash21(i + float2(0.0, 1.0));
+    float d = -1.0 + 2.0 * AS_hash21(i + float2(1.0, 1.0));
     return lerp(lerp(a, b, u.x), lerp(c, d, u.x), u.y);
 }
 
@@ -296,10 +295,7 @@ float3 getCandleFlameColor(float t, float time) {
         t = frac(t + cycleRate * time);
     }    t = saturate(t); // Ensure t is within valid range [0, 1]
     
-    if (PalettePreset == AS_PALETTE_CUSTOM) { // Use custom palette
-        return AS_GET_INTERPOLATED_CUSTOM_COLOR(CandleFlame_, t);
-    }
-    return AS_getInterpolatedColor(PalettePreset, t); // Use preset palette
+    return AS_GET_PALETTE_COLOR(CandleFlame_, PalettePreset, t);
 }
 
 /**
@@ -409,8 +405,8 @@ float4 PS_ProceduralDepthPlaneFlame(float4 pos : SV_Position, float2 uv : TEXCOO
     float4 orig = tex2D(ReShade::BackBuffer, uv);
     float pixel_scene_depth = ReShade::GetLinearizedDepth(uv);
 
-    float timer = AS_getTime();
-    float audioIntensity = AS_applyAudioReactivity(1.0, Flame_AudioSource, Flame_AudioMultiplier, true);
+    float timer = AS_getAnimationTime(AnimationSpeed, AnimationKeyframe);
+    float audioIntensity = AS_audioModulate(1.0, Flame_AudioSource, Flame_AudioMultiplier, true, 0);
 
     // Get audio-modified global parameters
     float currentSwayAngle = SwayAngle;
@@ -498,8 +494,7 @@ float4 PS_ProceduralDepthPlaneFlame(float4 pos : SV_Position, float2 uv : TEXCOO
 
             // --- Apply Effect ---
             if (flame.a > 0.0) {
-                float3 blended = AS_blendRGB(flame.rgb * flame.a, finalResult.rgb, BlendMode);
-                finalResult = float4(lerp(finalResult.rgb, blended, BlendAmount), orig.a);
+                finalResult = float4(AS_composite(flame.rgb * flame.a, finalResult.rgb, BlendMode, BlendAmount), orig.a);
             }
         }
     }

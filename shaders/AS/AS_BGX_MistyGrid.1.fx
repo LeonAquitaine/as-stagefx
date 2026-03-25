@@ -93,7 +93,6 @@ static const float STEP_DISTANCE_LIMIT = 6.0;  // Distance limit for step calcul
 // Color and visualization constants
 static const float COLOR_EXPONENT = 8.0;       // Exponent for color interpolation
 static const float COLOR_BLEND = 0.5;          // Blend factor between primary and secondary colors
-static const float3 LUMA_WEIGHTS = AS_LUMA_REC709; // Standard Rec. 709 luma weights (centralized)
 static const float COLOR_BRIGHTNESS_MULT = 15.0; // Multiplier for brightness adjustment
 static const float DEBUG_SCALE = 0.05;         // Scale factor for debug visualization
 
@@ -118,22 +117,22 @@ uniform float FractalIterations < ui_type = "slider"; ui_label = "Detail Level";
 uniform float FoldingAmount < ui_type = "slider"; ui_label = "Folding Intensity"; ui_tooltip = "Controls how tightly the pattern folds on itself"; ui_category = "Fractal Parameters"; ui_min = 5.0; ui_max = 15.0; > = 10.0;
 
 // Color Controls
-AS_PALETTE_SELECTION_UI(ColorPalette, "Color Palette", AS_PALETTE_CUSTOM, "Color Settings")
-AS_DECLARE_CUSTOM_PALETTE(MistyGrid_, "Color Settings")
-uniform float ColorSaturation < ui_type = "slider"; ui_label = "Saturation"; ui_tooltip = "Adjusts the saturation of the colors"; ui_category = "Color Settings"; ui_min = 0.0; ui_max = 2.0; > = 1.0;
-uniform float ColorBrightness < ui_type = "slider"; ui_label = "Brightness"; ui_tooltip = "Adjusts the brightness of the effect"; ui_category = "Color Settings"; ui_min = 0.0; ui_max = 2.0; > = 1.0;
+AS_PALETTE_SELECTION_UI(ColorPalette, "Color Palette", AS_PALETTE_CUSTOM, AS_CAT_COLOR)
+AS_DECLARE_CUSTOM_PALETTE(MistyGrid_, AS_CAT_COLOR)
+uniform float ColorSaturation < ui_type = "slider"; ui_label = "Saturation"; ui_tooltip = "Adjusts the saturation of the colors"; ui_category = AS_CAT_COLOR; ui_min = 0.0; ui_max = 2.0; > = 1.0;
+uniform float ColorBrightness < ui_type = "slider"; ui_label = "Brightness"; ui_tooltip = "Adjusts the brightness of the effect"; ui_category = AS_CAT_COLOR; ui_min = 0.0; ui_max = 2.0; > = 1.0;
 
 // Camera Controls
 uniform float CameraSpeed < ui_type = "slider"; ui_label = "Camera Speed"; ui_tooltip = "Controls how fast the camera moves through the scene"; ui_category = "Camera"; ui_min = 0.0; ui_max = 2.0; > = 0.5;
 uniform float CameraZoom < ui_type = "slider"; ui_label = "Camera Zoom"; ui_tooltip = "Adjusts the camera field of view"; ui_category = "Camera"; ui_min = 0.5; ui_max = 2.0; > = 1.0;
 
 // Audio Reactivity
-AS_AUDIO_UI(AudioSource, "Audio Source", AS_AUDIO_VOLUME, "Audio Reactivity")
-AS_AUDIO_MULT_UI(AudioMultiplier, "Audio Multiplier", 1.0, 2.0, "Audio Reactivity")
-uniform int AudioTarget < ui_type = "combo"; ui_label = "Audio Target"; ui_tooltip = "Select which parameter will react to audio"; ui_items = "Fractal Scale\0Folding Intensity\0Saturation\0Brightness\0Camera Zoom\0Animation Speed\0All\0"; ui_category = "Audio Reactivity"; > = 0;
+AS_AUDIO_UI(AudioSource, "Audio Source", AS_AUDIO_VOLUME, AS_CAT_AUDIO)
+AS_AUDIO_MULT_UI(AudioMultiplier, "Audio Multiplier", 1.0, 2.0, AS_CAT_AUDIO)
+AS_AUDIO_TARGET_UI(AudioTarget, "Fractal Scale\0Folding Intensity\0Saturation\0Brightness\0Camera Zoom\0Animation Speed\0All\0", 0)
 
 // Animation Controls
-AS_ANIMATION_UI(AnimSpeed, AnimKeyframe, "Animation")
+AS_ANIMATION_UI(AnimSpeed, AnimKeyframe, AS_CAT_ANIMATION)
 
 // Standard AS Controls
 AS_STAGEDEPTH_UI(EffectDepth)
@@ -165,7 +164,7 @@ float3 fr_hlsl(float3 p, float t_param, float effect_time, float fold_amount) {
     
     // Process audio reactivity if enabled for Fractal Scale
     if (AudioSource != AS_AUDIO_OFF && (AudioTarget == 0 || AudioTarget == 6)) { // Fractal Scale or All
-        float audioValue = AS_applyAudioReactivity(1.0, AudioSource, AudioMultiplier, true) - 1.0;
+        float audioValue = AS_audioModulate(1.0, AudioSource, AudioMultiplier, true, 0) - 1.0;
         s_factor += audioValue * 0.3;
     }
     
@@ -261,13 +260,8 @@ void cam_hlsl(inout float3 p, float effect_time, float rotationAngle) {
 // Pixel Shader
 //------------------------------------------------------------------------------------------------
 float4 MainPS(float4 vpos : SV_Position, float2 texcoord : TexCoord) : SV_Target
-{    // Get original background color
-    float4 background = tex2D(ReShade::BackBuffer, texcoord);
-      // Get depth and apply depth test
-    float depth = ReShade::GetLinearizedDepth(texcoord);
-    if (depth < EffectDepth) {
-        return background;
-    }
+{    // Depth-aware early return
+    AS_DEPTH_EARLY_RETURN(texcoord, EffectDepth)
     
     // Process audio reactivity for parameters other than Fractal Scale
     float audioReactiveMultiplier = 1.0;
@@ -278,7 +272,7 @@ float4 MainPS(float4 vpos : SV_Position, float2 texcoord : TexCoord) : SV_Target
     float animSpeedFinal = AnimSpeed;
     
     if (AudioSource != AS_AUDIO_OFF) {
-        float audioValue = AS_applyAudioReactivity(1.0, AudioSource, AudioMultiplier, true);
+        float audioValue = AS_audioModulate(1.0, AudioSource, AudioMultiplier, true, 0);
         
         // Apply audio reactivity based on target
         if (AudioTarget == 1 || AudioTarget == 6) { // Folding Intensity or All
@@ -349,15 +343,8 @@ float4 MainPS(float4 vpos : SV_Position, float2 texcoord : TexCoord) : SV_Target
     float primary_t = pow(abs(ray_direction.z), COLOR_EXPONENT);
     float secondary_t = pow(abs(ray_direction.y), COLOR_EXPONENT);
     
-    if (ColorPalette == AS_PALETTE_CUSTOM) {
-        // Use custom palette colors with the AS_GET_INTERPOLATED_CUSTOM_COLOR macro
-        sky_color_primary = AS_GET_INTERPOLATED_CUSTOM_COLOR(MistyGrid_, primary_t);
-        sky_color_secondary = AS_GET_INTERPOLATED_CUSTOM_COLOR(MistyGrid_, secondary_t);
-    } else {
-        // Use standard palette colors
-        sky_color_primary = AS_getInterpolatedColor(ColorPalette, primary_t);
-        sky_color_secondary = AS_getInterpolatedColor(ColorPalette, secondary_t);
-    }
+    sky_color_primary = AS_GET_PALETTE_COLOR(MistyGrid_, ColorPalette, primary_t);
+    sky_color_secondary = AS_GET_PALETTE_COLOR(MistyGrid_, ColorPalette, secondary_t);
     
     // Blend primary and secondary colors
     sky_color = lerp(sky_color_primary, sky_color_secondary, COLOR_BLEND);
@@ -373,8 +360,7 @@ float4 MainPS(float4 vpos : SV_Position, float2 texcoord : TexCoord) : SV_Target
     final_color = 1.0 - exp(-final_color * COLOR_BRIGHTNESS_MULT * colorBrightnessFinal);
     
     // Apply saturation adjustment with audio reactivity
-    float luma = dot(final_color, LUMA_WEIGHTS);
-    final_color = lerp(float3(luma, luma, luma), final_color, colorSaturationFinal);
+    final_color = AS_adjustSaturation(final_color, colorSaturationFinal);
       // Debug View handling
     if (DebugMode == 1) { // Show Accumulator 1
         return float4(at_accumulator * DEBUG_SCALE, 0, 0, 1);
@@ -391,7 +377,7 @@ float4 MainPS(float4 vpos : SV_Position, float2 texcoord : TexCoord) : SV_Target
     }
     else if (DebugMode == 5) { // Show Audio Reactivity
         if (AudioSource != AS_AUDIO_OFF) {
-            float audioValue = AS_applyAudioReactivity(1.0, AudioSource, AudioMultiplier, true);
+            float audioValue = AS_audioModulate(1.0, AudioSource, AudioMultiplier, true, 0);
             float audioVisualization = pow(audioValue, 2.0) * 5.0; // Exaggerate for visibility
             
             // Create a small meter in the corner
@@ -442,7 +428,7 @@ float4 MainPS(float4 vpos : SV_Position, float2 texcoord : TexCoord) : SV_Target
         }
     }    // Final composition
     float4 result = float4(final_color, 1.0);
-    result = AS_blendRGBA(result, background, BlendMode, BlendAmount);
+    result = AS_blendRGBA(result, _as_originalColor, BlendMode, BlendAmount);
     
     return result;
 }

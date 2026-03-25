@@ -53,7 +53,7 @@
 #include "AS_Palette.1.fxh"  
 #include "AS_Noise.1.fxh"  
 
-namespace ASWavySquares {
+namespace AS_WavySquares {
 
 // ============================================================================
 // TUNABLE CONSTANTS (Defaults and Ranges)
@@ -133,29 +133,29 @@ static const float COLOR_NORMALIZATION = 0.75;  // Normalization factor for colo
 
 uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Square Tiling Example E' by SnoopethDuckDuck\nLink: https://www.shadertoy.com/view/NdfBzn\nLicence: CC Share-Alike Non-Commercial\n\n";>;
 
-uniform float WaveAmplitude < ui_type = "slider"; ui_label = "Wave Amplitude"; ui_tooltip = "Controls the height of the wave distortion."; ui_min = WAVE_AMPLITUDE_MIN; ui_max = WAVE_AMPLITUDE_MAX; ui_step = WAVE_AMPLITUDE_STEP; ui_category = "Pattern"; > = WAVE_AMPLITUDE_DEFAULT;
-uniform float WaveFrequency < ui_type = "slider"; ui_label = "Wave Frequency"; ui_tooltip = "Controls how many waves appear across the pattern."; ui_min = WAVE_FREQUENCY_MIN; ui_max = WAVE_FREQUENCY_MAX; ui_step = WAVE_FREQUENCY_STEP; ui_category = "Pattern"; > = WAVE_FREQUENCY_DEFAULT;
-uniform float TileScale < ui_type = "slider"; ui_label = "Tile Scale"; ui_tooltip = "Base scale for the tile pattern. Higher values create smaller tiles."; ui_min = TILE_SCALE_MIN; ui_max = TILE_SCALE_MAX; ui_step = TILE_SCALE_STEP; ui_category = "Pattern"; > = TILE_SCALE_DEFAULT;
-uniform float ScaleVariation < ui_type = "slider"; ui_label = "Scale Variation"; ui_tooltip = "How much the scale varies across the pattern."; ui_min = SCALE_VARIATION_MIN; ui_max = SCALE_VARIATION_MAX; ui_step = SCALE_VARIATION_STEP; ui_category = "Pattern"; > = SCALE_VARIATION_DEFAULT;
-uniform float BoxSize < ui_type = "slider"; ui_label = "Box Size"; ui_tooltip = "Size of the square elements in the pattern."; ui_min = BOX_SIZE_MIN; ui_max = BOX_SIZE_MAX; ui_step = BOX_SIZE_STEP; ui_category = "Pattern"; > = BOX_SIZE_DEFAULT;
-uniform float BoxRoundness < ui_type = "slider"; ui_label = "Box Roundness"; ui_tooltip = "How rounded the corners of the boxes appear."; ui_min = BOX_ROUNDNESS_MIN; ui_max = BOX_ROUNDNESS_MAX; ui_step = BOX_ROUNDNESS_STEP; ui_category = "Pattern"; > = BOX_ROUNDNESS_DEFAULT;
-uniform float ShapeVariation < ui_type = "slider"; ui_label = "Shape Variation"; ui_tooltip = "How much the box shapes vary over time."; ui_min = SHAPE_VARIATION_MIN; ui_max = SHAPE_VARIATION_MAX; ui_step = SHAPE_VARIATION_STEP; ui_category = "Pattern"; > = SHAPE_VARIATION_DEFAULT;
+uniform float WaveAmplitude < ui_type = "slider"; ui_label = "Wave Amplitude"; ui_tooltip = "Controls the height of the wave distortion."; ui_min = WAVE_AMPLITUDE_MIN; ui_max = WAVE_AMPLITUDE_MAX; ui_step = WAVE_AMPLITUDE_STEP; ui_category = AS_CAT_PATTERN; > = WAVE_AMPLITUDE_DEFAULT;
+uniform float WaveFrequency < ui_type = "slider"; ui_label = "Wave Frequency"; ui_tooltip = "Controls how many waves appear across the pattern."; ui_min = WAVE_FREQUENCY_MIN; ui_max = WAVE_FREQUENCY_MAX; ui_step = WAVE_FREQUENCY_STEP; ui_category = AS_CAT_PATTERN; > = WAVE_FREQUENCY_DEFAULT;
+uniform float TileScale < ui_type = "slider"; ui_label = "Tile Scale"; ui_tooltip = "Base scale for the tile pattern. Higher values create smaller tiles."; ui_min = TILE_SCALE_MIN; ui_max = TILE_SCALE_MAX; ui_step = TILE_SCALE_STEP; ui_category = AS_CAT_PATTERN; > = TILE_SCALE_DEFAULT;
+uniform float ScaleVariation < ui_type = "slider"; ui_label = "Scale Variation"; ui_tooltip = "How much the scale varies across the pattern."; ui_min = SCALE_VARIATION_MIN; ui_max = SCALE_VARIATION_MAX; ui_step = SCALE_VARIATION_STEP; ui_category = AS_CAT_PATTERN; > = SCALE_VARIATION_DEFAULT;
+uniform float BoxSize < ui_type = "slider"; ui_label = "Box Size"; ui_tooltip = "Size of the square elements in the pattern."; ui_min = BOX_SIZE_MIN; ui_max = BOX_SIZE_MAX; ui_step = BOX_SIZE_STEP; ui_category = AS_CAT_PATTERN; > = BOX_SIZE_DEFAULT;
+uniform float BoxRoundness < ui_type = "slider"; ui_label = "Box Roundness"; ui_tooltip = "How rounded the corners of the boxes appear."; ui_min = BOX_ROUNDNESS_MIN; ui_max = BOX_ROUNDNESS_MAX; ui_step = BOX_ROUNDNESS_STEP; ui_category = AS_CAT_PATTERN; > = BOX_ROUNDNESS_DEFAULT;
+uniform float ShapeVariation < ui_type = "slider"; ui_label = "Shape Variation"; ui_tooltip = "How much the box shapes vary over time."; ui_min = SHAPE_VARIATION_MIN; ui_max = SHAPE_VARIATION_MAX; ui_step = SHAPE_VARIATION_STEP; ui_category = AS_CAT_PATTERN; > = SHAPE_VARIATION_DEFAULT;
 
 // --- Palette & Style ---
-uniform bool UseOriginalColors < ui_label = "Use Original Math Colors"; ui_tooltip = "When enabled, uses the mathematically calculated RGB colors instead of palettes."; ui_category = "Palette & Style"; > = true;
-uniform float OriginalColorIntensity < ui_type = "slider"; ui_label = "Original Color Intensity"; ui_tooltip = "Adjusts the intensity of original colors when enabled."; ui_min = 0.1; ui_max = ORIG_COLOR_INTENSITY_MAX; ui_step = 0.01; ui_category = "Palette & Style"; ui_spacing = 0; > = ORIG_COLOR_INTENSITY_DEFAULT;
-uniform float OriginalColorSaturation < ui_type = "slider"; ui_label = "Original Color Saturation"; ui_tooltip = "Adjusts the saturation of original colors when enabled."; ui_min = 0.0; ui_max = ORIG_COLOR_SATURATION_MAX; ui_step = 0.01; ui_category = "Palette & Style"; > = ORIG_COLOR_SATURATION_DEFAULT;
-AS_PALETTE_SELECTION_UI(PalettePreset, "Color Palette", AS_PALETTE_NEON, "Palette & Style")
-AS_DECLARE_CUSTOM_PALETTE(WavySquares_, "Palette & Style")
-uniform float ColorCycleSpeed < ui_type = "slider"; ui_label = "Color Cycle Speed"; ui_tooltip = "Controls how fast palette colors cycle. 0 = static."; ui_min = -COLOR_CYCLE_SPEED_MAX; ui_max = COLOR_CYCLE_SPEED_MAX; ui_step = 0.1; ui_category = "Palette & Style"; > = COLOR_CYCLE_SPEED_DEFAULT;
+AS_USE_PALETTE_UI(UseOriginalColors, AS_CAT_PALETTE)
+uniform float OriginalColorIntensity < ui_type = "slider"; ui_label = "Original Color Intensity"; ui_tooltip = "Adjusts the intensity of original colors when enabled."; ui_min = 0.1; ui_max = ORIG_COLOR_INTENSITY_MAX; ui_step = 0.01; ui_category = AS_CAT_PALETTE; ui_spacing = 0; > = ORIG_COLOR_INTENSITY_DEFAULT;
+uniform float OriginalColorSaturation < ui_type = "slider"; ui_label = "Original Color Saturation"; ui_tooltip = "Adjusts the saturation of original colors when enabled."; ui_min = 0.0; ui_max = ORIG_COLOR_SATURATION_MAX; ui_step = 0.01; ui_category = AS_CAT_PALETTE; > = ORIG_COLOR_SATURATION_DEFAULT;
+AS_PALETTE_SELECTION_UI(PalettePreset, "Color Palette", AS_PALETTE_NEON, AS_CAT_PALETTE)
+AS_DECLARE_CUSTOM_PALETTE(WavySquares_, AS_CAT_PALETTE)
+AS_COLOR_CYCLE_UI(ColorCycleSpeed, AS_CAT_PALETTE)
 
 // --- Animation ---
-AS_ANIMATION_UI(AnimationSpeed, AnimationKeyframe, "Animation")
+AS_ANIMATION_UI(AnimationSpeed, AnimationKeyframe, AS_CAT_ANIMATION)
 
 // --- Audio Reactivity ---
-AS_AUDIO_UI(WavySquares_AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
-AS_AUDIO_MULT_UI(WavySquares_AudioMultiplier, "Audio Intensity", AUDIO_MULTIPLIER_DEFAULT, AUDIO_MULTIPLIER_MAX, "Audio Reactivity")
-uniform int WavySquares_AudioTarget < ui_type = "combo"; ui_label = "Audio Target Parameter"; ui_items = "None\0Animation Speed\0Wave Amplitude\0Wave Frequency\0Tile Scale\0Box Size\0Box Roundness\0Shape Variation\0"; ui_category = "Audio Reactivity"; > = AUDIO_TARGET_DEFAULT;
+AS_AUDIO_UI(WavySquares_AudioSource, "Audio Source", AS_AUDIO_BEAT, AS_CAT_AUDIO)
+AS_AUDIO_MULT_UI(WavySquares_AudioMultiplier, "Audio Intensity", AUDIO_MULTIPLIER_DEFAULT, AUDIO_MULTIPLIER_MAX, AS_CAT_AUDIO)
+AS_AUDIO_TARGET_UI(WavySquares_AudioTarget, "None\0Animation Speed\0Wave Amplitude\0Wave Frequency\0Tile Scale\0Box Size\0Box Roundness\0Shape Variation\0", AUDIO_TARGET_DEFAULT)
 
 // --- Stage/Position ---
 AS_STAGEDEPTH_UI(EffectDepth)
@@ -187,10 +187,7 @@ float3 getWavySquaresColor(float t, float time) {
     }
     t = saturate(t); 
     
-    if (PalettePreset == AS_PALETTE_CUSTOM) { // Use custom palette
-        return AS_GET_INTERPOLATED_CUSTOM_COLOR(WavySquares_, t);
-    }
-    return AS_getInterpolatedColor(PalettePreset, t); // Use preset palette
+    return AS_GET_PALETTE_COLOR(WavySquares_, PalettePreset, t);
 }
 
 // Original color function from the SnoopethDuckDuck Shadertoy shader
@@ -210,13 +207,8 @@ float sdBox(float2 p, float2 b) {
 // ============================================================================
 float4 WavySquaresPS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD) : SV_TARGET {
     // Get original pixel color and depth
-    float4 originalColor = tex2D(ReShade::BackBuffer, texcoord);
-    float depth = ReShade::GetLinearizedDepth(texcoord);
-
-    // Apply depth test
-    if (depth < EffectDepth) {
-        return originalColor;
-    }
+    // Depth-aware early return
+    AS_DEPTH_EARLY_RETURN(texcoord, EffectDepth)
     
     // Apply audio reactivity to selected parameters
     float animSpeed = AnimationSpeed;
@@ -227,7 +219,7 @@ float4 WavySquaresPS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD) : SV
     float boxRound = BoxRoundness;
     float shapeVar = ShapeVariation;
     
-    float audioReactivity = AS_applyAudioReactivity(1.0, WavySquares_AudioSource, WavySquares_AudioMultiplier, true);
+    float audioReactivity = AS_audioModulate(1.0, WavySquares_AudioSource, WavySquares_AudioMultiplier, true, 0);
     
     // Map audio target combo index to parameter adjustment
     if (WavySquares_AudioTarget == 1) animSpeed *= audioReactivity;
@@ -319,8 +311,7 @@ float4 WavySquaresPS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD) : SV
         finalRGB = rawColor * OriginalColorIntensity;
         
         // Apply saturation adjustment
-        float3 grayColor = dot(finalRGB, float3(0.299, 0.587, 0.114)); // Luma calculation
-        finalRGB = lerp(grayColor, finalRGB, OriginalColorSaturation);
+        finalRGB = AS_adjustSaturation(finalRGB, OriginalColorSaturation);
     } else {
         // Use palette-based colors
         float3 paletteColor = getWavySquaresColor(c_val, time);
@@ -334,8 +325,7 @@ float4 WavySquaresPS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD) : SV
     float4 effectColor = float4(finalRGB, 1.0);
     
     // --- Final Blending & Debug ---
-    float4 finalColor = float4(AS_blendRGB(effectColor.rgb, originalColor.rgb, BlendMode), 1.0);
-    finalColor = lerp(originalColor, finalColor, BlendStrength);
+    float4 finalColor = float4(AS_composite(effectColor.rgb, _as_originalColor.rgb, BlendMode, BlendStrength), 1.0);
     
     // Show debug overlay if enabled
     if (DebugMode != AS_DEBUG_OFF) {
@@ -354,7 +344,7 @@ float4 WavySquaresPS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD) : SV
     return finalColor;
 }
 
-} // namespace ASWavySquares
+} // namespace AS_WavySquares
 
 // ============================================================================
 // TECHNIQUE
@@ -364,7 +354,7 @@ technique AS_BGX_WavySquares < ui_label="[AS] BGX: Wavy Squares"; ui_tooltip="Dy
     pass
     {
         VertexShader = PostProcessVS;
-        PixelShader = ASWavySquares::WavySquaresPS;
+        PixelShader = AS_WavySquares::WavySquaresPS;
     }
 }
 

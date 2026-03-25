@@ -43,82 +43,34 @@
 #include "ReShade.fxh"
 #include "AS_Utils.1.fxh"
 
+uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " "; ui_text = "\nSmooth, flowing gradient patterns with mathematical precision.\nIdeal for stylish backgrounds and color overlays.\n\nAS StageFX | Glossy Gradient Visual Effect by Leon Aquitaine\n"; > = 0;
+
 // ============================================================================
 // UI DECLARATIONS
 // ============================================================================
 
 // --- Pattern Parameters ---
-uniform int Iterations <
-    ui_type = "slider";
-    ui_label = "Pattern Iterations";
-    ui_min = 3; ui_max = 15;
-    ui_tooltip = "Number of iterations for pattern complexity";
-    ui_category = "Pattern";
-> = 9;
+uniform int Iterations < ui_type = "slider"; ui_label = "Pattern Iterations"; ui_min = 3; ui_max = 15; ui_tooltip = "Number of iterations for pattern complexity"; ui_category = AS_CAT_PATTERN; > = 9;
 
-uniform float PatternScale <
-    ui_type = "slider";
-    ui_label = "Pattern Scale";
-    ui_min = 0.1; ui_max = 3.0;
-    ui_tooltip = "Overall scale of the gradient pattern";
-    ui_category = "Pattern";
-> = 1.0;
+uniform float PatternScale < ui_type = "slider"; ui_label = "Pattern Scale"; ui_min = 0.1; ui_max = 3.0; ui_tooltip = "Overall scale of the gradient pattern"; ui_category = AS_CAT_PATTERN; > = 1.0;
 
-uniform float WaveIntensity <
-    ui_type = "slider";
-    ui_label = "Wave Intensity";
-    ui_min = 0.1; ui_max = 2.0;
-    ui_tooltip = "Intensity of the wave calculations";
-    ui_category = "Pattern";
-> = 1.0;
+uniform float WaveIntensity < ui_type = "slider"; ui_label = "Wave Intensity"; ui_min = 0.1; ui_max = 2.0; ui_tooltip = "Intensity of the wave calculations"; ui_category = AS_CAT_PATTERN; > = 1.0;
 
 // --- Color Controls ---
-uniform float ColorIntensity <
-    ui_type = "slider";
-    ui_label = "Color Intensity";
-    ui_min = 0.0; ui_max = 2.0;
-    ui_tooltip = "Overall color saturation and intensity";
-    ui_category = "Color";
-> = 1.0;
+uniform float ColorIntensity < ui_type = "slider"; ui_label = "Color Intensity"; ui_min = 0.0; ui_max = 2.0; ui_tooltip = "Overall color saturation and intensity"; ui_category = AS_CAT_COLOR; > = 1.0;
 
-uniform float3 ChannelWeights <
-    ui_type = "slider";
-    ui_label = "Channel Weights";
-    ui_min = 0.0; ui_max = 2.0;
-    ui_tooltip = "RGB channel weight distribution";
-    ui_category = "Color";
-> = float3(0.7, 0.5, 0.3);
+uniform float3 ChannelWeights < ui_type = "slider"; ui_label = "Channel Weights"; ui_min = 0.0; ui_max = 2.0; ui_tooltip = "RGB channel weight distribution"; ui_category = AS_CAT_COLOR; > = float3(0.7, 0.5, 0.3);
 
-uniform float3 ChannelOffsets <
-    ui_type = "slider";
-    ui_label = "Channel Offsets";
-    ui_min = 0.0; ui_max = 1.0;
-    ui_tooltip = "Base offset for each RGB channel";
-    ui_category = "Color";
-> = float3(0.3, 0.2, 0.5);
+uniform float3 ChannelOffsets < ui_type = "slider"; ui_label = "Channel Offsets"; ui_min = 0.0; ui_max = 1.0; ui_tooltip = "Base offset for each RGB channel"; ui_category = AS_CAT_COLOR; > = float3(0.3, 0.2, 0.5);
 
-uniform bool EnableColorGrading <
-    ui_label = "Enable Color Grading";
-    ui_tooltip = "Apply additional cosine-based color grading";
-    ui_category = "Color";
-> = true;
+uniform bool EnableColorGrading < ui_label = "Enable Color Grading"; ui_tooltip = "Apply additional cosine-based color grading"; ui_category = AS_CAT_COLOR; > = true;
 
-uniform float ColorGradingIntensity <
-    ui_type = "slider";
-    ui_label = "Color Grading Intensity";
-    ui_min = 0.0; ui_max = 2.0;
-    ui_tooltip = "Intensity of the color grading effect";
-    ui_category = "Color";
-> = 0.5;
+uniform float ColorGradingIntensity < ui_type = "slider"; ui_label = "Color Grading Intensity"; ui_min = 0.0; ui_max = 2.0; ui_tooltip = "Intensity of the color grading effect"; ui_category = AS_CAT_COLOR; > = 0.5;
 
 // --- Standard AS Controls ---
 AS_ANIMATION_UI(AnimationSpeed, AnimationKeyframe, "Animation")
 
-uniform int AudioTarget < ui_type = "combo"; ui_label = "Audio Target";
-    ui_items = "None\0Animation Speed\0Pattern Scale\0Wave Intensity\0Color Intensity\0";
-    ui_tooltip = "Select which parameter reacts to audio";
-    ui_category = "Audio Reactivity";
-> = 0;
+AS_AUDIO_TARGET_UI(AudioTarget, "None\0Animation Speed\0Pattern Scale\0Wave Intensity\0Color Intensity\0", 0)
 
 AS_AUDIO_UI(AudioSource, "Audio Source", AS_AUDIO_VOLUME, "Audio Reactivity")
 AS_AUDIO_MULT_UI(AudioMultiplier, "Audio Multiplier", AS_RANGE_AUDIO_MULT_DEFAULT, 5.0, "Audio Reactivity")
@@ -207,7 +159,7 @@ float4 PS_GlossyGradient(float4 vpos : SV_Position, float2 texcoord : TEXCOORD) 
     float time = AS_getAnimationTime(AnimationSpeed, AnimationKeyframe);
     
     // Get audio reactivity value
-    float audioValue = AS_getAudioSource(AudioSource) * AudioMultiplier;
+    float audioValue = AS_audioLevelFromSource(AudioSource) * AudioMultiplier;
     
     // Calculate the glossy gradient pattern
     float3 col = calculateGlossyGradientPattern(texcoord, time, audioValue);

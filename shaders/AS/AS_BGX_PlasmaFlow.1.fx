@@ -85,8 +85,8 @@ static const float BLEND_AMOUNT_DEFAULT = 1.0; // Full effect strength
 
 uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Plasma Storm' by fuzzmoon\nLink: https://www.shadertoy.com/view/slSBDd\nLicence: CC Share-Alike Non-Commercial\n\n";>;
 
-AS_PALETTE_SELECTION_UI(PalettePreset, "Palette", AS_PALETTE_NEON, "Palette & Style")
-AS_DECLARE_CUSTOM_PALETTE(PlasmaFlow_, "Palette & Style")
+AS_PALETTE_SELECTION_UI(PalettePreset, "Palette", AS_PALETTE_NEON, AS_CAT_PALETTE)
+AS_DECLARE_CUSTOM_PALETTE(PlasmaFlow_, AS_CAT_PALETTE)
 
 // --- Plasma Appearance ---
 
@@ -98,19 +98,19 @@ uniform float PlasmaBias < ui_type = "slider"; ui_label = "Plasma Bias"; ui_tool
 uniform float PlasmaContrast < ui_type = "slider"; ui_label = "Plasma Contrast"; ui_tooltip = "Compresses or expands the color bands. Lower = more blended, Higher = more distinct bands."; ui_min = CONTRAST_MIN; ui_max = CONTRAST_MAX; ui_step = 0.01; ui_category = "Plasma Appearance"; > = CONTRAST_DEFAULT;
 
 // --- Animation ---
-uniform float PlasmaSpeed < ui_type = "slider"; ui_label = "Speed"; ui_tooltip = "How quickly the plasma flows."; ui_min = SPEED_MIN; ui_max = SPEED_MAX; ui_step = 0.01; ui_category = "Animation"; > = SPEED_DEFAULT;
+uniform float PlasmaSpeed < ui_type = "slider"; ui_label = "Speed"; ui_tooltip = "How quickly the plasma flows."; ui_min = SPEED_MIN; ui_max = SPEED_MAX; ui_step = 0.01; ui_category = AS_CAT_ANIMATION; > = SPEED_DEFAULT;
 
 // --- Audio Reactivity ---
 
-AS_AUDIO_UI(AudioMoveSource, "Movement Source", AS_AUDIO_OFF, "Audio Reactivity")
-AS_AUDIO_MULT_UI(AudioMoveMult, "Movement Strength", 1.0, 4.0, "Audio Reactivity")
-AS_AUDIO_UI(AudioColorSource, "Color Source", AS_AUDIO_BASS, "Audio Reactivity")
-AS_AUDIO_MULT_UI(AudioColorMult, "Color Strength", 1.0, 4.0, "Audio Reactivity")
-AS_AUDIO_UI(AudioComplexitySource, "Complexity Source", AS_AUDIO_VOLUME, "Audio Reactivity")
-AS_AUDIO_MULT_UI(AudioComplexityMult, "Complexity Strength", 1.0, 4.0, "Audio Reactivity")
+AS_AUDIO_UI(AudioMoveSource, "Movement Source", AS_AUDIO_OFF, AS_CAT_AUDIO)
+AS_AUDIO_MULT_UI(AudioMoveMult, "Movement Strength", 1.0, 4.0, AS_CAT_AUDIO)
+AS_AUDIO_UI(AudioColorSource, "Color Source", AS_AUDIO_BASS, AS_CAT_AUDIO)
+AS_AUDIO_MULT_UI(AudioColorMult, "Color Strength", 1.0, 4.0, AS_CAT_AUDIO)
+AS_AUDIO_UI(AudioComplexitySource, "Complexity Source", AS_AUDIO_VOLUME, AS_CAT_AUDIO)
+AS_AUDIO_MULT_UI(AudioComplexityMult, "Complexity Strength", 1.0, 4.0, AS_CAT_AUDIO)
 
 // --- Color & Style ---
-uniform float ColorCycleSpeed < ui_type = "slider"; ui_label = "Color Cycle Speed"; ui_tooltip = "Controls how fast colors cycle when using palette colors. 0 = static"; ui_min = -1.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Color & Style"; ui_spacing = 1; > = 0.05;
+uniform float ColorCycleSpeed < ui_type = "slider"; ui_label = "Color Cycle Speed"; ui_tooltip = "Controls how fast colors cycle when using palette colors. 0 = static"; ui_min = -1.0; ui_max = 1.0; ui_step = 0.01; ui_category = AS_CAT_PALETTE; ui_spacing = 1; > = 0.05;
 
 // --- Stage Distance ---
 AS_STAGEDEPTH_UI(EffectDepth)
@@ -163,33 +163,27 @@ namespace AS_PlasmaFlow {
 }
 
 float3 PlasmaFlow_getPaletteColor(float t) {
-    if (PalettePreset == AS_PALETTE_CUSTOM) {
-        return AS_GET_INTERPOLATED_CUSTOM_COLOR(PlasmaFlow_, t);
-    }
-    return AS_getInterpolatedColor(PalettePreset, t);
+    return AS_GET_PALETTE_COLOR(PlasmaFlow_, PalettePreset, t);
 }
 
 // --- Main Effect ---
 float4 PS_PlasmaFlow(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target {
-    // Get original color and apply depth cutoff
-    float4 orig = tex2D(ReShade::BackBuffer, texcoord);
-    float sceneDepth = ReShade::GetLinearizedDepth(texcoord);
-    if (sceneDepth < EffectDepth - AS_DEPTH_EPSILON)
-        return orig;
+    // Depth-aware early return
+    AS_DEPTH_EARLY_RETURN(texcoord, EffectDepth)
 
     // --- Plasma Parameter Calculation ---
-    float time = AS_getTime();
+    float time = AS_timeSeconds();
     // Audio-reactive speed
-    float moveAudio = AS_getAudioSource(AudioMoveSource) * AudioMoveMult;
+    float moveAudio = AS_audioLevelFromSource(AudioMoveSource) * AudioMoveMult;
     float speed = PlasmaSpeed * (1.0 + moveAudio);
     // Audio-reactive complexity
-    float complexityAudio = AS_getAudioSource(AudioComplexitySource) * AudioComplexityMult;
+    float complexityAudio = AS_audioLevelFromSource(AudioComplexitySource) * AudioComplexityMult;
     float octaves = clamp(PlasmaComplexity + complexityAudio, COMPLEXITY_MIN, COMPLEXITY_MAX);
     // Audio-reactive warp
-    float warpAudio = AS_getAudioSource(AudioMoveSource) * AudioMoveMult;
+    float warpAudio = AS_audioLevelFromSource(AudioMoveSource) * AudioMoveMult;
     float warp = PlasmaWarp * (1.0 + warpAudio);
     // Audio-reactive color shift
-    float colorAudio = AS_getAudioSource(AudioColorSource) * AudioColorMult;
+    float colorAudio = AS_audioLevelFromSource(AudioColorSource) * AudioColorMult;
 
     // --- UV and Domain Warping ---
     float2 uv = AS_centeredUVWithAspect(texcoord, ReShade::AspectRatio);
@@ -220,8 +214,7 @@ float4 PS_PlasmaFlow(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_
     if (DebugMode == 3) return float4(colorAudio.xxx, 1.0); // Audio
 
     // --- Blending ---
-    float3 finalColor = AS_blendRGB(plasmaColor, orig.rgb, BlendMode);
-    finalColor = lerp(orig.rgb, finalColor, BlendAmount);
+    float3 finalColor = AS_composite(plasmaColor, _as_originalColor.rgb, BlendMode, BlendAmount);
 
     return float4(finalColor, 1.0);
 }

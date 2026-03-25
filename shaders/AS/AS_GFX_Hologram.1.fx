@@ -53,7 +53,7 @@
 
 uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Protection hologram' by Alexander Alekseev aka TDM\nLink: https://www.shadertoy.com/view/MdBSWV\nLicence: CC Share-Alike Non-Commercial\n\n";>;
 
-AS_PALETTE_SELECTION_UI(HologramPalette, "Hologram Palette", AS_PALETTE_RAINBOW, "Palette & Style")
+AS_PALETTE_SELECTION_UI(HologramPalette, "Hologram Palette", AS_PALETTE_RAINBOW, AS_CAT_PALETTE)
 
 // --- View Angle ---
 AS_POSITION_SCALE_UI(ViewAngle, ViewAngle_Scale)
@@ -126,7 +126,7 @@ uniform float HueCompression < ui_type = "slider"; ui_label = "Hue Compression";
 static const float HOLO_COLOR_SATURATION_MIN = 0.0;
 static const float HOLO_COLOR_SATURATION_MAX = 2.0;
 static const float HOLO_COLOR_SATURATION_DEFAULT = 0.5;
-uniform float ColorSaturation < ui_type = "slider"; ui_label = "Color Saturation"; ui_min = HOLO_COLOR_SATURATION_MIN; ui_max = HOLO_COLOR_SATURATION_MAX; ui_category = "Lighting & Color"; > = HOLO_COLOR_SATURATION_DEFAULT;
+uniform float ColorSaturation < ui_type = "slider"; ui_label = "Color Saturation"; ui_tooltip = "Controls the vividness of the holographic rainbow colors. Lower values produce a more subtle, desaturated look."; ui_min = HOLO_COLOR_SATURATION_MIN; ui_max = HOLO_COLOR_SATURATION_MAX; ui_category = "Lighting & Color"; > = HOLO_COLOR_SATURATION_DEFAULT;
 
 static const float HOLO_AMBIENT_MIN = 0.0;
 static const float HOLO_AMBIENT_MAX = 1.0;
@@ -146,7 +146,7 @@ uniform float HighlightPower < ui_type = "slider"; ui_label = "Highlight Sharpne
 static const float HOLO_HIGHLIGHT_BRIGHTNESS_MIN = 0.0;
 static const float HOLO_HIGHLIGHT_BRIGHTNESS_MAX = 5.0;
 static const float HOLO_HIGHLIGHT_BRIGHTNESS_DEFAULT = 1.5;
-uniform float HighlightBrightness < ui_type = "slider"; ui_label = "Highlight Brightness"; ui_min = HOLO_HIGHLIGHT_BRIGHTNESS_MIN; ui_max = HOLO_HIGHLIGHT_BRIGHTNESS_MAX; ui_category = "Lighting & Color"; > = HOLO_HIGHLIGHT_BRIGHTNESS_DEFAULT;
+uniform float HighlightBrightness < ui_type = "slider"; ui_label = "Highlight Brightness"; ui_tooltip = "Controls the peak brightness of specular highlights on holographic edges."; ui_min = HOLO_HIGHLIGHT_BRIGHTNESS_MIN; ui_max = HOLO_HIGHLIGHT_BRIGHTNESS_MAX; ui_category = "Lighting & Color"; > = HOLO_HIGHLIGHT_BRIGHTNESS_DEFAULT;
 
 // --- Animation ---
 AS_ANIMATION_UI(MasterTimeSpeed, MasterTimeKeyframe, "Global Animation")
@@ -166,7 +166,7 @@ float4 PS_GFX_Hologram(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : S
     float rawDepth = ReShade::GetLinearizedDepth(texcoord);
 
     // Stage depth check - only apply effect to pixels at or behind EffectDepth
-    if (rawDepth < EffectDepth) {
+    if (AS_isInFrontOfStage(texcoord, EffectDepth)) {
         return originalColor;
     }    // 1. Process Depth 
     float depthRange = max(AS_EPSILON, DepthEnd - DepthStart);

@@ -47,8 +47,9 @@
 // ============================================================================
 // INCLUDES
 // ============================================================================
+#include "ReShade.fxh"    // Standard ReShade functions and uniforms
 #include "AS_Utils.1.fxh" // Provides AS_getTime, AS_mod, AS_PI, AS_TWO_PI, etc.
-#include "ReShade.fxh"    // Standard ReShade functions and uniforms (already implicitly included by AS_Utils)
+#include "AS_Noise.1.fxh" // For AS_hash11
 
 //--------------------------------------------------------------------------------------
 // Samplers
@@ -65,8 +66,7 @@ sampler sBackBuffer { Texture = ReShade::BackBufferTex; SRGBTexture = true; }; /
 #define L2(x)           dot(x, x)
 #define PLANE_PERIOD    5.0f
 
-static const float3 std_gamma   = float3(AS_GAMMA_SRGB, AS_GAMMA_SRGB, AS_GAMMA_SRGB);
-static float3 G_baseRingCol; // Will be initialized in PS_GoldenApollian from uniform
+// G_baseRingCol removed: now computed locally in plane() to avoid mutable static race conditions
 
 // Define individual const float4 "effect" style equivalents
 // .x = lw, .y = tw, .z = sk, .w = cs
@@ -86,29 +86,29 @@ static float4 g_gc_currentEffectStyle; // Renamed from 'current_effect_state'
 // UI DECLARATIONS
 // ============================================================================
 
-// Palette & Style
+// Effect-Specific Parameters
 
 uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Golden apollian' by mrange\nLink: https://www.shadertoy.com/view/WlcfRS\nLicence: CC Share-Alike Non-Commercial\n\n";>;
 
-uniform float3 BaseRingColor < ui_type = "color"; ui_label = "Base Ring Color"; ui_category = "Palette & Style"; > = float3(1.0f, 0.65f, 0.25f);
-uniform float3 SunLightColor < ui_type = "color"; ui_label = "Sun Light Color"; ui_category = "Palette & Style"; > = float3(1.0f, 0.8f, 0.88f);
-uniform float3 PlaneObjectColor < ui_type = "color"; ui_label = "Plane Object Color"; ui_category = "Palette & Style"; > = float3(1.0f, 1.2f, 1.5f);
-uniform int EffectCycleMode < ui_type = "combo"; ui_label = "Effect Style"; ui_items = "Cycle Effects\0Style 1 (Thin Lines)\0Style 2 (Thin Lines + Center)\0Style 3 (Thin Lines + Center + Kaleido)\0Style 4 (Thick Lines + Center + Kaleido)\0Style 5 (Thick Lines + Kaleido)\0Style 6 (Thick Lines)\0"; ui_category = "Palette & Style"; ui_tooltip = "Selects the visual style of the fractal planes, or cycles through them."; > = 6;
-
-// Effect-Specific Parameters
 uniform float FractalGlobalScale < ui_type = "slider"; ui_label = "Fractal Global Scale"; ui_min = 0.1; ui_max = 2.0; ui_category = "Fractal Details"; ui_tooltip = "Adjusts the overall scale of the Apollonian fractal structures."; > = 1.0;
 uniform float KaleidoscopeStrength < ui_type = "slider"; ui_label = "Kaleidoscope Strength"; ui_min = 0.0; ui_max = 1.0; ui_category = "Kaleidoscope"; ui_tooltip = "Controls smoothness and extent of the kaleidoscopic effect. Applied if an effect style with kaleidoscope is active."; > = 0.5;
 uniform float KaleidoscopeRepetitions < ui_type = "slider"; ui_label = "Kaleidoscope Repetitions"; ui_min = 2.0; ui_max = 30.0; ui_step = 1.0; ui_category = "Kaleidoscope"; ui_tooltip = "Sets the number of repetitions for the kaleidoscope effect. Applied if an effect style with kaleidoscope is active."; > = 10.0;
 
-// Audio Reactivity
-AS_AUDIO_UI(GoldenClockwork_AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity") // Defines GoldenClockwork_AudioSource
-uniform float AudioReactivityAmount < ui_type = "slider"; ui_label = "Audio Reactivity Amount"; ui_min = 0.0; ui_max = 2.0; ui_category = "Audio Reactivity"; ui_tooltip = "General multiplier for how much audio affects the target parameter."; > = 1.0;
-uniform bool AudioReactPositive < ui_type = "checkbox"; ui_label = "Audio React Positive Only"; ui_category = "Audio Reactivity"; ui_tooltip = "If checked, audio makes the parameter increase. If unchecked, it can increase or decrease (centered)."; > = true;
-uniform int AudioReactiveTarget < ui_type = "combo"; ui_label = "Audio Reactive Target"; ui_items = "None\0Time Scale\0Path Speed\0Fractal Scale\0Kaleidoscope Strength\0Kaleidoscope Reps\0"; ui_category = "Audio Reactivity"; > = 0;
+// Palette & Style
+uniform float3 BaseRingColor < ui_type = "color"; ui_label = "Base Ring Color"; ui_tooltip = "Primary color of the clockwork ring structures. Warm tones complement the golden aesthetic."; ui_category = AS_CAT_PALETTE; > = float3(1.0f, 0.65f, 0.25f);
+uniform float3 SunLightColor < ui_type = "color"; ui_label = "Sun Light Color"; ui_tooltip = "Color of the simulated light source that illuminates the fractal planes."; ui_category = AS_CAT_PALETTE; > = float3(1.0f, 0.8f, 0.88f);
+uniform float3 PlaneObjectColor < ui_type = "color"; ui_label = "Plane Object Color"; ui_tooltip = "Tint color applied to the fractal objects on each plane layer."; ui_category = AS_CAT_PALETTE; > = float3(1.0f, 1.2f, 1.5f);
+uniform int EffectCycleMode < ui_type = "combo"; ui_label = "Effect Style"; ui_items = "Cycle Effects\0Style 1 (Thin Lines)\0Style 2 (Thin Lines + Center)\0Style 3 (Thin Lines + Center + Kaleido)\0Style 4 (Thick Lines + Center + Kaleido)\0Style 5 (Thick Lines + Kaleido)\0Style 6 (Thick Lines)\0"; ui_category = AS_CAT_PALETTE; ui_tooltip = "Selects the visual style of the fractal planes, or cycles through them."; > = 6;
 
 // Animation Controls
 AS_ANIMATION_UI(GlobalTimeScale, AnimationKeyframe, "Animation") // Defines GoldenClockwork_AnimationSpeed
-uniform float PathSpeed < ui_type = "slider"; ui_label = "Path Speed Multiplier"; ui_min = 0.0; ui_max = 3.0; ui_category = "Animation"; ui_tooltip = "Multiplies the speed of camera movement along the fractal path."; > = 1.0;
+uniform float PathSpeed < ui_type = "slider"; ui_label = "Path Speed Multiplier"; ui_min = 0.0; ui_max = 3.0; ui_category = AS_CAT_ANIMATION; ui_tooltip = "Multiplies the speed of camera movement along the fractal path."; > = 1.0;
+
+// Audio Reactivity
+AS_AUDIO_UI(GoldenClockwork_AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity") // Defines GoldenClockwork_AudioSource
+uniform float AudioReactivityAmount < ui_type = "slider"; ui_label = "Audio Reactivity Amount"; ui_min = 0.0; ui_max = 2.0; ui_category = AS_CAT_AUDIO; ui_tooltip = "General multiplier for how much audio affects the target parameter."; > = 1.0;
+uniform bool AudioReactPositive < ui_type = "checkbox"; ui_label = "Audio React Positive Only"; ui_category = AS_CAT_AUDIO; ui_tooltip = "If checked, audio makes the parameter increase. If unchecked, it can increase or decrease (centered)."; > = true;
+uniform int AudioReactiveTarget < ui_type = "combo"; ui_label = "Audio Reactive Target"; ui_tooltip = "Which parameter responds to audio input. Select None to disable audio reactivity."; ui_items = "None\0Time Scale\0Path Speed\0Fractal Scale\0Kaleidoscope Strength\0Kaleidoscope Reps\0"; ui_category = AS_CAT_AUDIO; > = 0;
 
 // Stage/Position Controls
 AS_STAGEDEPTH_UI(GoldenClockwork_EffectDepth)
@@ -122,11 +122,6 @@ AS_BLENDAMOUNT_UI(BlendOpacity)
 // ============================================================================
 // HELPER FUNCTIONS
 // ============================================================================
-float hash(float co) {
-    co += 100.0f;
-    return frac(sin(co * 12.9898f) * 13758.5453f);
-}
-
 float2 toPolar(float2 p) {
     return float2(length(p), atan2(p.y, p.x));
 }
@@ -156,8 +151,8 @@ float smoothKaleidoscope(inout float2 p, float sm, float rep) {
 
 float4 alphaBlend(float4 back, float4 front) {
     float w = front.w + back.w * (1.0f - front.w);
-    float3 xyz = (front.xyz * front.w + back.xyz * back.w * (1.0f - front.w)) / w; // Potential div by zero if w is 0
-    return w > 0.0001f ? float4(xyz, w) : float4(0.0f, 0.0f, 0.0f, 0.0f); // Added small epsilon for w check
+    float3 xyz = (front.xyz * front.w + back.xyz * back.w * (1.0f - front.w)) / max(w, AS_EPSILON);
+    return w > AS_EPSILON ? float4(xyz, w) : float4(0.0f, 0.0f, 0.0f, 0.0f);
 }
 
 float3 alphaBlend(float3 back, float4 front) {
@@ -209,7 +204,7 @@ float apollian(float4 p, float s_base, float fractal_scale_mod) {
 float getAudioModulationFactor() {
     if (GoldenClockwork_AudioSource == 0 || AudioReactiveTarget == 0) return 0.0;
 
-    float audio_signal = AS_applyAudioReactivity(1.0, GoldenClockwork_AudioSource, AudioReactivityAmount, AudioReactPositive);
+    float audio_signal = AS_audioModulate(1.0, GoldenClockwork_AudioSource, AudioReactivityAmount, AudioReactPositive, 0);
     return audio_signal - 1.0;
 }
 
@@ -304,7 +299,7 @@ float4 plane(float3 ro, float3 rd, float3 pp_plane, float pd, float3 off_param, 
         g_gc_currentEffectStyle = g_gc_effectStyles[clamp(EffectCycleMode - 1, 0, 5)]; // Use renamed globals
     }
 
-    float h_hash = hash(n_plane);
+    float h_hash = AS_hash11(n_plane);
     float s_scale_plane = 0.25f * lerp(0.5f, 0.25f, h_hash);
 
     const float3 nor_plane = float3(0.0f, 0.0f, -1.0f);
@@ -350,10 +345,11 @@ float4 plane(float3 ro, float3 rd, float3 pp_plane, float pd, float3 off_param, 
     col += 0.1125f * PlaneObjectColor * dif1 * (1.0f - exp(-ss_exp_plane * (max(sd1_val.x, 0.0f)))) / bl21;
     col += 0.1125f * PlaneObjectColor * dif2 * 0.5f * (1.0f - exp(-ss_exp_plane * (max(sd2_val.x, 0.0f)))) / bl22;
     
-    float3 ringCol = G_baseRingCol;
+    float3 baseRingCol = pow(BaseRingColor, float3(0.6f, 0.6f, 0.6f));
+    float3 ringCol = baseRingCol;
     ringCol *= clamp(0.1f + 2.5f * (0.1f + 0.25f * ((dif1 * dif1 / bl21 + dif2 * dif2 / bl22))), 0.0f, 1.0f);
-    ringCol += sqrt(G_baseRingCol) * spe1 * 2.0f;
-    ringCol += sqrt(G_baseRingCol) * spe2 * 2.0f;
+    ringCol += sqrt(baseRingCol) * spe1 * 2.0f;
+    ringCol += sqrt(baseRingCol) * spe2 * 2.0f;
     col = lerp(col, ringCol, smoothstep(-aa, aa, -d2_val.x));  
 
     float ha_val = smoothstep(-aa, aa, bd_val.y);
@@ -413,10 +409,9 @@ float3 main_color_logic(float3 ww, float3 uu, float3 vv, float3 ro, float2 p_coo
 
 float3 postProcess(float3 col_in, float2 q_uv) {
     float3 col = clamp(col_in, 0.0f, 1.0f);
-    col = pow(col, 1.0f / std_gamma); 
+    col = AS_linearToSrgb(col);
     col = col * 0.6f + 0.4f * col * col * (3.0f - 2.0f * col);
-    float gray = dot(col, float3(0.33f, 0.33f, 0.33f));
-    col = lerp(col, float3(gray, gray, gray), -0.4f);
+    col = AS_adjustSaturation(col, 1.4f);
     col *= 0.5f + 0.5f * pow(19.0f * q_uv.x * q_uv.y * (1.0f - q_uv.x) * (1.0f - q_uv.y), 0.7f);
     return col;
 }
@@ -449,12 +444,9 @@ float4 PS_GoldenApollian(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0)
     float3 back_col = tex2D(sBackBuffer, texcoord).rgb;
 
     // Depth Check - GoldenClockwork_EffectDepth is defined by AS_STAGEDEPTH_UI
-    float sceneDepth = ReShade::GetLinearizedDepth(texcoord);
-    if (sceneDepth < GoldenClockwork_EffectDepth) {
+    if (AS_isInFrontOfStage(texcoord, GoldenClockwork_EffectDepth)) {
         return float4(back_col, 1.0f); // Return original scene color if occluded
     }
-
-    G_baseRingCol = pow(BaseRingColor, float3(0.6f, 0.6f, 0.6f));
 
     float audio_modulation = getAudioModulationFactor();
 
@@ -496,9 +488,7 @@ float4 PS_GoldenApollian(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0)
 
     // Apply Rotation
     float angle = AS_getRotationRadians(GoldenClockwork_SnapRotation, GoldenClockwork_FineRotation);
-    float s = sin(angle);
-    float c = cos(angle);
-    p = float2(p.x * c - p.y * s, p.x * s + p.y * c);
+    p = AS_rotate2D(p, angle);
 
     float3 col = getSceneColor(p, q, golden_clockwork_time, final_path_speed, final_fractal_scale, final_k_strength, final_k_reps);
 

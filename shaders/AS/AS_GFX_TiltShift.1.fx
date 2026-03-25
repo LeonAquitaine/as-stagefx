@@ -37,6 +37,8 @@
 #include "ReShade.fxh"
 #include "AS_Utils.1.fxh"
 
+uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " "; ui_text = "\nDepth-aware tilt-shift blur for miniature/diorama look.\nMakes scenes look like tiny toy models.\n\nAS StageFX | Tilt-Shift / Depth of Field by Leon Aquitaine\n"; > = 0;
+
 // ============================================================================
 // INTERMEDIATE TEXTURES
 // ============================================================================
@@ -84,7 +86,7 @@ uniform float FocusFalloff < ui_type = "slider"; ui_label = "Focus Falloff Curve
 uniform float MaxBlurAmount < ui_type = "slider"; ui_label = "Max Blurriness"; ui_tooltip = "The maximum blur amount applied to objects completely out of focus."; ui_min = MAX_BLUR_MIN; ui_max = MAX_BLUR_MAX; ui_category = "Blur Quality"; > = MAX_BLUR_DEFAULT;
 
 // -- Debug Controls --
-uniform bool EnableFocusLineDebug < ui_type = "input"; ui_text = "Hold Left Mouse Button"; ui_label = "Show Focus Line"; ui_tooltip = "Shows a yellow line over pixels at the exact focus depth while left mouse button is held."; ui_category = "Debug"; ui_category_closed = true; > = false;
+uniform bool EnableFocusLineDebug < ui_type = "input"; ui_text = "Hold Left Mouse Button"; ui_label = "Show Focus Line"; ui_tooltip = "Shows a yellow line over pixels at the exact focus depth while left mouse button is held."; ui_category = AS_CAT_DEBUG; ui_category_closed = true; > = false;
 
 // ============================================================================
 // Final Mix
@@ -197,8 +199,7 @@ float4 PS_TiltShift_BlurV(float4 pos : SV_Position, float2 texcoord : TEXCOORD) 
 
     // Apply blend controls
     float4 original_color = tex2D(ReShade::BackBuffer, texcoord);
-    float3 final_color = AS_blendRGB(blurred_color, original_color.rgb, BlendMode);
-    final_color = lerp(original_color.rgb, final_color, BlendStrength);
+    float3 final_color = AS_composite(blurred_color, original_color.rgb, BlendMode, BlendStrength);
 
     // Debug: Show focus line when left mouse button is held
     if (EnableFocusLineDebug) {

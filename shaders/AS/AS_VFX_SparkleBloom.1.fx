@@ -43,6 +43,8 @@
 #include "ReShadeUI.fxh"
 #include "AS_Noise.1.fxh"
 
+uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " "; ui_text = "\nDynamic sparkles with lifecycle animation and multi-layer bloom glow.\nAdds magical shimmer to any scene.\n\nAS StageFX | Dynamic Sparkle Effect by Leon Aquitaine\n"; > = 0;
+
 // ============================================================================
 // TUNABLE CONSTANTS
 // ============================================================================
@@ -139,13 +141,6 @@ uniform float GlitterSharpness < ui_type = "slider"; ui_label = "Sharpness"; ui_
 uniform float FresnelPower < ui_type = "slider"; ui_label = "Edge Power"; ui_tooltip = "Controls how strongly edges are emphasized. Higher values make sparkles appear more prominently on edges."; ui_min = FRESNEL_POWER_MIN; ui_max = FRESNEL_POWER_MAX; ui_step = 0.1; ui_category = "Sparkle Appearance"; > = FRESNEL_POWER_DEFAULT;
 
 // ============================================================================
-// ANIMATION CONTROLS
-// ============================================================================
-uniform float GlitterSpeed < ui_type = "slider"; ui_label = "Speed"; ui_tooltip = "Sets how quickly sparkles animate and move. Higher values increase animation speed."; ui_min = GLITTERSPEED_MIN; ui_max = GLITTERSPEED_MAX; ui_step = 0.05; ui_category = "Animation Controls"; > = GLITTERSPEED_DEFAULT;
-uniform float GlitterLifetime < ui_type = "slider"; ui_label = "Lifetime"; ui_tooltip = "Determines how long each sparkle remains visible before fading out."; ui_min = GLITTERLIFETIME_MIN; ui_max = GLITTERLIFETIME_MAX; ui_step = 0.1; ui_category = "Animation Controls"; > = GLITTERLIFETIME_DEFAULT;
-uniform float TimeScale < ui_type = "slider"; ui_label = "Time Scale"; ui_tooltip = "Scales the overall animation timing for all sparkles. Use to speed up or slow down the effect globally."; ui_min = TIMESCALE_MIN; ui_max = TIMESCALE_MAX; ui_step = 0.5; ui_category = "Animation Controls"; > = TIMESCALE_DEFAULT;
-
-// ============================================================================
 // BLOOM EFFECT CONTROLS
 // ============================================================================
 uniform bool EnableBloom < ui_label = "Enable Bloom"; ui_tooltip = "Enables or disables the bloom (glow) effect around sparkles for a softer, more radiant look."; ui_category = "Bloom Effect"; > = true;
@@ -156,31 +151,38 @@ uniform int BloomQuality < ui_type = "combo"; ui_label = "Quality"; ui_tooltip =
 uniform bool BloomDither < ui_label = "Dither"; ui_tooltip = "Adds subtle noise to the bloom to reduce color banding and grid patterns."; ui_category = "Bloom Effect"; ui_bind = "EnableBloom"; > = true;
 
 // ============================================================================
-// AUDIO REACTIVITY
-// ============================================================================
-AS_AUDIO_UI(Listeningway_SparkleSource, "Sparkle Source", AS_AUDIO_BEAT, "Audio Reactivity")
-AS_AUDIO_MULT_UI(Listeningway_SparkleMultiplier, "Sparkle Intensity", 1.5, 5.0, "Audio Reactivity")
-AS_AUDIO_UI(Listeningway_BloomSource, "Bloom Source", AS_AUDIO_OFF, "Audio Reactivity")
-AS_AUDIO_MULT_UI(Listeningway_BloomMultiplier, "Bloom Intensity", 10.0, 10.0, "Audio Reactivity")
-AS_AUDIO_UI(Listeningway_TimeScaleSource, "Time Source", AS_AUDIO_OFF, "Audio Reactivity")
-AS_AUDIO_MULT_UI(Listeningway_TimeScaleBand1Multiplier, "Time Intensity", 1.0, 5.0, "Audio Reactivity")
-
-// ============================================================================
 // COLOR SETTINGS
 // ============================================================================
-uniform float3 GlitterColor < ui_type = "color"; ui_label = "Color"; ui_tooltip = "Sets the base color of all sparkles."; ui_category = "Color Settings"; > = float3(1.0, 1.0, 1.0);
-uniform bool DepthColoringEnable < ui_label = "Depth Color"; ui_tooltip = "If enabled, sparkles will change color based on their distance from the camera."; ui_category = "Color Settings"; > = true;
-uniform float3 NearColor < ui_type = "color"; ui_label = "Near Color"; ui_tooltip = "Color for sparkles close to the camera."; ui_category = "Color Settings"; > = float3(1.0, 204/255.0, 153/255.0);
-uniform float3 FarColor < ui_type = "color"; ui_label = "Far Color"; ui_tooltip = "Color for sparkles far from the camera."; ui_category = "Color Settings"; > = float3(153/255.0, 204/255.0, 1.0);
+uniform float3 GlitterColor < ui_type = "color"; ui_label = "Color"; ui_tooltip = "Sets the base color of all sparkles."; ui_category = AS_CAT_COLOR; > = float3(1.0, 1.0, 1.0);
+uniform bool DepthColoringEnable < ui_label = "Depth Color"; ui_tooltip = "If enabled, sparkles will change color based on their distance from the camera."; ui_category = AS_CAT_COLOR; > = true;
+uniform float3 NearColor < ui_type = "color"; ui_label = "Near Color"; ui_tooltip = "Color for sparkles close to the camera."; ui_category = AS_CAT_COLOR; > = float3(1.0, 204/255.0, 153/255.0);
+uniform float3 FarColor < ui_type = "color"; ui_label = "Far Color"; ui_tooltip = "Color for sparkles far from the camera."; ui_category = AS_CAT_COLOR; > = float3(153/255.0, 204/255.0, 1.0);
+
+// ============================================================================
+// ANIMATION CONTROLS
+// ============================================================================
+uniform float GlitterSpeed < ui_type = "slider"; ui_label = "Speed"; ui_tooltip = "Sets how quickly sparkles animate and move. Higher values increase animation speed."; ui_min = GLITTERSPEED_MIN; ui_max = GLITTERSPEED_MAX; ui_step = 0.05; ui_category = AS_CAT_ANIMATION; > = GLITTERSPEED_DEFAULT;
+uniform float GlitterLifetime < ui_type = "slider"; ui_label = "Lifetime"; ui_tooltip = "Determines how long each sparkle remains visible before fading out."; ui_min = GLITTERLIFETIME_MIN; ui_max = GLITTERLIFETIME_MAX; ui_step = 0.1; ui_category = AS_CAT_ANIMATION; > = GLITTERLIFETIME_DEFAULT;
+uniform float TimeScale < ui_type = "slider"; ui_label = "Time Scale"; ui_tooltip = "Scales the overall animation timing for all sparkles. Use to speed up or slow down the effect globally."; ui_min = TIMESCALE_MIN; ui_max = TIMESCALE_MAX; ui_step = 0.5; ui_category = AS_CAT_ANIMATION; > = TIMESCALE_DEFAULT;
+
+// ============================================================================
+// AUDIO REACTIVITY
+// ============================================================================
+AS_AUDIO_UI(Listeningway_SparkleSource, "Sparkle Source", AS_AUDIO_BEAT, AS_CAT_AUDIO)
+AS_AUDIO_MULT_UI(Listeningway_SparkleMultiplier, "Sparkle Intensity", 1.5, 5.0, AS_CAT_AUDIO)
+AS_AUDIO_UI(Listeningway_BloomSource, "Bloom Source", AS_AUDIO_OFF, AS_CAT_AUDIO)
+AS_AUDIO_MULT_UI(Listeningway_BloomMultiplier, "Bloom Intensity", 10.0, 10.0, AS_CAT_AUDIO)
+AS_AUDIO_UI(Listeningway_TimeScaleSource, "Time Source", AS_AUDIO_OFF, AS_CAT_AUDIO)
+AS_AUDIO_MULT_UI(Listeningway_TimeScaleBand1Multiplier, "Time Intensity", 1.0, 5.0, AS_CAT_AUDIO);
 
 // ============================================================================
 // DEPTH MASKING
 // ============================================================================
-uniform float NearPlane < ui_type = "slider"; ui_label = "Near"; ui_tooltip = "Controls the minimum distance from the camera where sparkles can appear. Lower values allow sparkles closer to the camera."; ui_min = NEARPLANE_MIN; ui_max = NEARPLANE_MAX; ui_step = 0.01; ui_category = "Depth Masking"; > = NEARPLANE_DEFAULT;
-uniform float FarPlane < ui_type = "slider"; ui_label = "Far"; ui_tooltip = "Controls the maximum distance from the camera where sparkles can appear. Lower values bring the cutoff closer."; ui_min = FARPLANE_MIN; ui_max = FARPLANE_MAX; ui_step = 0.01; ui_category = "Depth Masking"; > = FARPLANE_DEFAULT;
-uniform float DepthCurve < ui_type = "slider"; ui_label = "Curve"; ui_tooltip = "Adjusts how quickly sparkles fade out with distance. Higher values make the fade sharper."; ui_min = DEPTHCURVE_MIN; ui_max = DEPTHCURVE_MAX; ui_step = 0.1; ui_category = "Depth Masking"; > = DEPTHCURVE_DEFAULT;
-uniform bool AllowInfiniteCutoff < ui_label = "Infinite Cutoff"; ui_tooltip = "If enabled, sparkles can appear all the way to the horizon. If disabled, sparkles beyond the cutoff distance are hidden."; ui_category = "Depth Masking"; > = true;
-uniform bool ObeyOcclusion < ui_label = "Occlusion"; ui_tooltip = "If enabled, sparkles and bloom will be masked by scene depth, so they do not appear through objects."; ui_category = "Depth Masking"; > = true;
+uniform float NearPlane < ui_type = "slider"; ui_label = "Near"; ui_tooltip = "Controls the minimum distance from the camera where sparkles can appear. Lower values allow sparkles closer to the camera."; ui_min = NEARPLANE_MIN; ui_max = NEARPLANE_MAX; ui_step = 0.01; ui_category = AS_CAT_STAGE; > = NEARPLANE_DEFAULT;
+uniform float FarPlane < ui_type = "slider"; ui_label = "Far"; ui_tooltip = "Controls the maximum distance from the camera where sparkles can appear. Lower values bring the cutoff closer."; ui_min = FARPLANE_MIN; ui_max = FARPLANE_MAX; ui_step = 0.01; ui_category = AS_CAT_STAGE; > = FARPLANE_DEFAULT;
+uniform float DepthCurve < ui_type = "slider"; ui_label = "Curve"; ui_tooltip = "Adjusts how quickly sparkles fade out with distance. Higher values make the fade sharper."; ui_min = DEPTHCURVE_MIN; ui_max = DEPTHCURVE_MAX; ui_step = 0.1; ui_category = AS_CAT_STAGE; > = DEPTHCURVE_DEFAULT;
+uniform bool AllowInfiniteCutoff < ui_label = "Infinite Cutoff"; ui_tooltip = "If enabled, sparkles can appear all the way to the horizon. If disabled, sparkles beyond the cutoff distance are hidden."; ui_category = AS_CAT_STAGE; > = true;
+uniform bool ObeyOcclusion < ui_label = "Occlusion"; ui_tooltip = "If enabled, sparkles and bloom will be masked by scene depth, so they do not appear through objects."; ui_category = AS_CAT_STAGE; > = true;
 
 // ============================================================================
 // FINAL MIX
@@ -328,7 +330,7 @@ namespace AS_SparkleBloom {
 
 // --- Audio Source Helper ---
 float GetAudioSource(int source) {
-    return AS_getAudioSource(source);
+    return AS_audioLevelFromSource(source);
 }
 
 /*-----------------------------------.
@@ -384,7 +386,7 @@ float4 PS_RenderSparkles(float4 pos : SV_Position, float2 texcoord : TEXCOORD) :
     float actualTimeScale = TimeScale / TIME_DIVISOR;
     actualTimeScale += GetAudioSource(Listeningway_TimeScaleSource) * 
                         Listeningway_TimeScaleBand1Multiplier / TIME_DIVISOR;
-    float time = AS_getTime() * actualTimeScale;
+    float time = AS_timeSeconds() * actualTimeScale;
     
     // Generate sparkles
     float positionHash = AS_hash21(floor(texcoord * 10.0)).x * 10.0;
@@ -542,8 +544,7 @@ float4 PS_BloomV(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Targ
     result += sparkles + bloom;
     
     // Apply blend mode and amount
-    float3 blendedColor = AS_blendRGB(result, originalColor.rgb, BlendMode);
-    result = lerp(originalColor.rgb, blendedColor, DebugMode == 5 ? 1.0 : BlendAmount);
+    result = AS_composite(result, originalColor.rgb, BlendMode, DebugMode == 5 ? 1.0 : BlendAmount);
     
     return float4(result, originalColor.a);
 }

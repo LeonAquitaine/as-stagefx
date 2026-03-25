@@ -44,7 +44,7 @@
 #include "AS_Utils.1.fxh"
 #include "AS_Palette.1.fxh"
 
-namespace ASCosmicKaleidoscope {
+namespace AS_CosmicKaleidoscope {
 // ============================================================================
 // TUNABLE CONSTANTS (Defaults and Ranges from #defines)
 // ============================================================================
@@ -76,29 +76,29 @@ static const float COLOR_INTENSITY_DEFAULT = 1.0; static const float COLOR_INTEN
 
 uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Star Nest' by Kali\nLink: https://www.shadertoy.com/view/XlfGRj\nLicence: CC Share-Alike Non-Commercial\n\n";>;
 
-uniform int UI_Iterations < ui_type = "slider"; ui_label = "Fractal Iterations"; ui_min = ITERATIONS_MIN; ui_max = ITERATIONS_MAX; ui_category = "Fractal Parameters"; > = ITERATIONS_DEFAULT;
-uniform float UI_Formuparam < ui_type = "slider"; ui_label = "Fractal Parameter"; ui_min = FORMUPARAM_MIN; ui_max = FORMUPARAM_MAX; ui_step = FORMUPARAM_STEP; ui_category = "Fractal Parameters"; > = FORMUPARAM_DEFAULT;
-uniform float UI_Tile < ui_type = "slider"; ui_label = "Tiling / Domain Repetition"; ui_min = TILE_MIN; ui_max = TILE_MAX; ui_step = TILE_STEP; ui_category = "Fractal Parameters"; > = TILE_DEFAULT;
+uniform int UI_Iterations < ui_type = "slider"; ui_label = "Fractal Iterations"; ui_tooltip = "Number of fractal detail passes. Higher values reveal more intricate patterns but may reduce performance."; ui_min = ITERATIONS_MIN; ui_max = ITERATIONS_MAX; ui_category = "Fractal Parameters"; > = ITERATIONS_DEFAULT;
+uniform float UI_Formuparam < ui_type = "slider"; ui_label = "Fractal Parameter"; ui_tooltip = "Core fractal shaping value. Small changes produce dramatically different crystal structures."; ui_min = FORMUPARAM_MIN; ui_max = FORMUPARAM_MAX; ui_step = FORMUPARAM_STEP; ui_category = "Fractal Parameters"; > = FORMUPARAM_DEFAULT;
+uniform float UI_Tile < ui_type = "slider"; ui_label = "Tiling / Domain Repetition"; ui_tooltip = "Size of each repeating tile in the fractal space. Smaller values create denser, more repetitive patterns."; ui_min = TILE_MIN; ui_max = TILE_MAX; ui_step = TILE_STEP; ui_category = "Fractal Parameters"; > = TILE_DEFAULT;
 uniform int UI_MirrorCount < ui_type = "slider"; ui_label = "Mirror Count"; ui_tooltip = "Controls the kaleidoscope effect: 0=none, 1=2 copies, 2=4 copies, 3=8 copies, etc."; ui_min = MIRROR_COUNT_MIN; ui_max = MIRROR_COUNT_MAX; ui_category = "Fractal Parameters"; > = MIRROR_COUNT_DEFAULT;
-uniform int UI_Volsteps < ui_type = "slider"; ui_label = "Volume Steps (Quality)"; ui_min = VOLSTEPS_MIN; ui_max = VOLSTEPS_MAX; ui_category = "Raymarching"; > = VOLSTEPS_DEFAULT;
-uniform float UI_Stepsize < ui_type = "slider"; ui_label = "Step Size"; ui_min = STEPSIZE_MIN; ui_max = STEPSIZE_MAX; ui_step = STEPSIZE_STEP; ui_category = "Raymarching"; > = STEPSIZE_DEFAULT;
-uniform float UI_Zoom < ui_type = "slider"; ui_label = "Camera Zoom"; ui_min = ZOOM_MIN; ui_max = ZOOM_MAX; ui_step = ZOOM_STEP; ui_category = "Raymarching"; > = ZOOM_DEFAULT;
-uniform float UI_Distfading < ui_type = "slider"; ui_label = "Distance Fading"; ui_min = DISTFADING_MIN; ui_max = DISTFADING_MAX; ui_step = DISTFADING_STEP; ui_category = "Raymarching"; > = DISTFADING_DEFAULT;
-uniform float UI_Brightness < ui_type = "slider"; ui_label = "Brightness"; ui_min = BRIGHTNESS_MIN; ui_max = BRIGHTNESS_MAX; ui_step = BRIGHTNESS_STEP; ui_format = "%.4f"; ui_category = "Coloring & Appearance"; > = BRIGHTNESS_DEFAULT;
-uniform float UI_Darkmatter < ui_type = "slider"; ui_label = "Dark Matter / Absorption"; ui_min = DARKMATTER_MIN; ui_max = DARKMATTER_MAX; ui_step = DARKMATTER_STEP; ui_category = "Coloring & Appearance"; > = DARKMATTER_DEFAULT;
-uniform float UI_Saturation < ui_type = "slider"; ui_label = "Color Saturation"; ui_min = SATURATION_MIN; ui_max = SATURATION_MAX; ui_step = SATURATION_STEP; ui_category = "Coloring & Appearance"; > = SATURATION_DEFAULT;
-uniform bool UsePaletteColor < ui_label = "Use Palette Color Mapping"; ui_tooltip = "Overrides default coloring with palette lookup based on accumulated color length."; ui_category = "Coloring & Appearance"; > = false;
+uniform int UI_Volsteps < ui_type = "slider"; ui_label = "Volume Steps (Quality)"; ui_tooltip = "Number of raymarching steps through the volume. More steps improve quality but reduce performance."; ui_min = VOLSTEPS_MIN; ui_max = VOLSTEPS_MAX; ui_category = "Raymarching"; > = VOLSTEPS_DEFAULT;
+uniform float UI_Stepsize < ui_type = "slider"; ui_label = "Step Size"; ui_tooltip = "Distance traveled per raymarching step. Larger steps render faster but may miss fine details."; ui_min = STEPSIZE_MIN; ui_max = STEPSIZE_MAX; ui_step = STEPSIZE_STEP; ui_category = "Raymarching"; > = STEPSIZE_DEFAULT;
+uniform float UI_Zoom < ui_type = "slider"; ui_label = "Camera Zoom"; ui_tooltip = "Adjusts the field of view. Lower values zoom in closer to the fractal structures."; ui_min = ZOOM_MIN; ui_max = ZOOM_MAX; ui_step = ZOOM_STEP; ui_category = "Raymarching"; > = ZOOM_DEFAULT;
+uniform float UI_Distfading < ui_type = "slider"; ui_label = "Distance Fading"; ui_tooltip = "How quickly distant layers fade out. Lower values create a deeper, more layered look."; ui_min = DISTFADING_MIN; ui_max = DISTFADING_MAX; ui_step = DISTFADING_STEP; ui_category = "Raymarching"; > = DISTFADING_DEFAULT;
+uniform float UI_Brightness < ui_type = "slider"; ui_label = "Brightness"; ui_tooltip = "Overall brightness of the fractal effect. Very small values work best; increase carefully."; ui_min = BRIGHTNESS_MIN; ui_max = BRIGHTNESS_MAX; ui_step = BRIGHTNESS_STEP; ui_format = "%.4f"; ui_category = AS_CAT_APPEARANCE; > = BRIGHTNESS_DEFAULT;
+uniform float UI_Darkmatter < ui_type = "slider"; ui_label = "Dark Matter / Absorption"; ui_tooltip = "Controls how much light is absorbed in dense regions. Higher values darken the interior of the fractal."; ui_min = DARKMATTER_MIN; ui_max = DARKMATTER_MAX; ui_step = DARKMATTER_STEP; ui_category = AS_CAT_APPEARANCE; > = DARKMATTER_DEFAULT;
+uniform float UI_Saturation < ui_type = "slider"; ui_label = "Color Saturation"; ui_tooltip = "Intensity of colors in the fractal. Zero produces grayscale; values above 1.0 create vivid, oversaturated hues."; ui_min = SATURATION_MIN; ui_max = SATURATION_MAX; ui_step = SATURATION_STEP; ui_category = AS_CAT_APPEARANCE; > = SATURATION_DEFAULT;
+AS_USE_PALETTE_UI(UsePaletteColor, AS_CAT_APPEARANCE)
 AS_PALETTE_SELECTION_UI(PalettePreset, "Color Palette", AS_PALETTE_NEON, "Coloring & Appearance")
 AS_DECLARE_CUSTOM_PALETTE(CosmosCrystal_, "Coloring & Appearance") 
-uniform float ColorCycleSpeed < ui_type = "slider"; ui_label = "Palette Color Cycle Speed"; ui_min = -COLOR_CYCLE_SPEED_MAX; ui_max = COLOR_CYCLE_SPEED_MAX; ui_step = 0.1; ui_category = "Coloring & Appearance"; > = COLOR_CYCLE_SPEED_DEFAULT;
-uniform float ColorIntensity < ui_type = "slider"; ui_label = "Palette Color Intensity"; ui_min = 0.1; ui_max = COLOR_INTENSITY_MAX; ui_step = 0.01; ui_category = "Coloring & Appearance"; > = COLOR_INTENSITY_DEFAULT;
-uniform float AnimationKeyframe < ui_type = "slider"; ui_label = "Animation Keyframe"; ui_tooltip = "Sets a specific point in time for the animation. Useful for finding and saving specific patterns."; ui_min = ANIMATION_KEYFRAME_MIN; ui_max = ANIMATION_KEYFRAME_MAX; ui_step = ANIMATION_KEYFRAME_STEP; ui_category = "Animation"; > = ANIMATION_KEYFRAME_DEFAULT;
-uniform float AnimationSpeed < ui_type = "slider"; ui_label = "Time Speed (Evolution)"; ui_min = ANIMATION_SPEED_MIN; ui_max = ANIMATION_SPEED_MAX; ui_step = ANIMATION_SPEED_STEP; ui_category = "Animation"; > = ANIMATION_SPEED_DEFAULT;
-uniform float CameraMoveSpeed < ui_type = "slider"; ui_label = "Camera Movement Speed"; ui_min = CAMERA_MOVE_SPEED_MIN; ui_max = CAMERA_MOVE_SPEED_MAX; ui_step = CAMERA_MOVE_SPEED_STEP; ui_category = "Animation"; > = CAMERA_MOVE_SPEED_DEFAULT;
-uniform float FractalRotationSpeed < ui_type = "slider"; ui_label = "Fractal XY Rotation Speed"; ui_tooltip = "Speed of the internal XY rotation applied during raymarching."; ui_min = FRACTAL_ROTATION_SPEED_MIN; ui_max = FRACTAL_ROTATION_SPEED_MAX; ui_step = FRACTAL_ROTATION_SPEED_STEP; ui_category = "Animation"; > = FRACTAL_ROTATION_SPEED_DEFAULT; 
+AS_COLOR_CYCLE_UI(ColorCycleSpeed, AS_CAT_APPEARANCE)
+uniform float ColorIntensity < ui_type = "slider"; ui_label = "Palette Color Intensity"; ui_tooltip = "Strength of the palette color mapping. Higher values produce more vivid palette-driven colors."; ui_min = 0.1; ui_max = COLOR_INTENSITY_MAX; ui_step = 0.01; ui_category = AS_CAT_APPEARANCE; > = COLOR_INTENSITY_DEFAULT;
+uniform float AnimationKeyframe < ui_type = "slider"; ui_label = "Animation Keyframe"; ui_tooltip = "Sets a specific point in time for the animation. Useful for finding and saving specific patterns."; ui_min = ANIMATION_KEYFRAME_MIN; ui_max = ANIMATION_KEYFRAME_MAX; ui_step = ANIMATION_KEYFRAME_STEP; ui_category = AS_CAT_ANIMATION; > = ANIMATION_KEYFRAME_DEFAULT;
+uniform float AnimationSpeed < ui_type = "slider"; ui_label = "Time Speed (Evolution)"; ui_tooltip = "Speed of fractal evolution over time. Set to zero to freeze the animation at the current keyframe."; ui_min = ANIMATION_SPEED_MIN; ui_max = ANIMATION_SPEED_MAX; ui_step = ANIMATION_SPEED_STEP; ui_category = AS_CAT_ANIMATION; > = ANIMATION_SPEED_DEFAULT;
+uniform float CameraMoveSpeed < ui_type = "slider"; ui_label = "Camera Movement Speed"; ui_tooltip = "How fast the camera drifts through the fractal space. Zero keeps the camera stationary."; ui_min = CAMERA_MOVE_SPEED_MIN; ui_max = CAMERA_MOVE_SPEED_MAX; ui_step = CAMERA_MOVE_SPEED_STEP; ui_category = AS_CAT_ANIMATION; > = CAMERA_MOVE_SPEED_DEFAULT;
+uniform float FractalRotationSpeed < ui_type = "slider"; ui_label = "Fractal XY Rotation Speed"; ui_tooltip = "Speed of the internal XY rotation applied during raymarching."; ui_min = FRACTAL_ROTATION_SPEED_MIN; ui_max = FRACTAL_ROTATION_SPEED_MAX; ui_step = FRACTAL_ROTATION_SPEED_STEP; ui_category = AS_CAT_ANIMATION; > = FRACTAL_ROTATION_SPEED_DEFAULT; 
 AS_AUDIO_UI(Cosmos_AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity") 
 AS_AUDIO_MULT_UI(Cosmos_AudioMultiplier, "Audio Intensity", AUDIO_MULTIPLIER_DEFAULT, AUDIO_MULTIPLIER_MAX, "Audio Reactivity") 
-uniform int Cosmos_AudioTarget < ui_type = "combo"; ui_label = "Audio Target Parameter"; ui_items = "None\0Fractal Parameter\0Brightness\0Dark Matter\0Saturation\0Camera Move Speed\0Fractal Rotation Speed\0"; ui_category = "Audio Reactivity"; > = AUDIO_TARGET_DEFAULT;
+AS_AUDIO_TARGET_UI(Cosmos_AudioTarget, "None\0Fractal Parameter\0Brightness\0Dark Matter\0Saturation\0Camera Move Speed\0Fractal Rotation Speed\0", AUDIO_TARGET_DEFAULT)
 AS_STAGEDEPTH_UI(EffectDepth)
 AS_ROTATION_UI(EffectSnapRotation, EffectFineRotation)
 AS_POSITION_SCALE_UI(Position, Scale)
@@ -110,17 +110,11 @@ AS_DEBUG_UI("Off\0Show Audio Reactivity\0")
 // HELPER FUNCTIONS
 // ============================================================================
 
-// Standard 2D Rotation Matrix
-float2x2 rotMat(in float r) {
-    float c = cos(r); float s = sin(r); return float2x2(c, -s, s, c);
-}
-
 // Palette lookup helper
 float3 getCosmosCrystalColor(float t, float time) { 
     if (ColorCycleSpeed != 0.0) { t = frac(t + ColorCycleSpeed * 0.1 * time); }
     t = saturate(t); 
-    if (PalettePreset == AS_PALETTE_CUSTOM) { return AS_GET_INTERPOLATED_CUSTOM_COLOR(CosmosCrystal_, t); }
-    return AS_getInterpolatedColor(PalettePreset, t); 
+    return AS_GET_PALETTE_COLOR(CosmosCrystal_, PalettePreset, t);
 }
 
 // ============================================================================
@@ -172,7 +166,7 @@ float4 renderCosmosCrystal(float3 ro, float3 rd, float iTime,
         // --- End Tiling Fold ---
        
         // --- Apply Rotation (from Nayk's original, applied once per ray step r) ---
-        p.xy = mul(p.xy, rotMat(iTime * current_fractalrotspeed)); 
+        p.xy = mul(p.xy, AS_rot2x2(-(iTime * current_fractalrotspeed))); 
         // --- End Rotation ---
 
         float pa = 0.0f; 
@@ -201,8 +195,7 @@ float4 renderCosmosCrystal(float3 ro, float3 rd, float iTime,
     }
 
     // Apply saturation
-    float v_luma = dot(v, float3(0.333f, 0.333f, 0.333f)); // Corrected float3 constructor
-    v = lerp(v_luma.xxx, v, current_saturation); // Corrected lerp usage with explicit .xxx swizzle
+    v = AS_adjustSaturation(v, current_saturation);
 
     return float4(saturate(v * 0.01f), 1.0f); // Apply final scale and clamp
 }
@@ -210,14 +203,13 @@ float4 renderCosmosCrystal(float3 ro, float3 rd, float iTime,
 // ============================================================================
 // Main Pixel Shader
 // ============================================================================
-float4 ASCosmicKaleidoscopePS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD0) : SV_TARGET 
+float4 AS_CosmicKaleidoscopePS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD0) : SV_TARGET 
 {
-    float4 originalColor = tex2D(ReShade::BackBuffer, texcoord);
-    float depth = ReShade::GetLinearizedDepth(texcoord);
-    if (depth < EffectDepth) return originalColor;
+    // Depth-aware early return
+    AS_DEPTH_EARLY_RETURN(texcoord, EffectDepth)
 
     // --- Audio Reactivity ---
-    float audioReactivity = AS_applyAudioReactivity(1.0, Cosmos_AudioSource, Cosmos_AudioMultiplier, true);
+    float audioReactivity = AS_audioModulate(1.0, Cosmos_AudioSource, Cosmos_AudioMultiplier, true, 0);
     float audio_Formuparam = 1.0, audio_Brightness = 1.0, audio_DarkMatter = 1.0, audio_Saturation = 1.0, audio_CamMove = 1.0, audio_FractalRot = 1.0;
     if (Cosmos_AudioTarget == 1) audio_Formuparam *= audioReactivity;
     else if (Cosmos_AudioTarget == 2) audio_Brightness *= audioReactivity;
@@ -234,7 +226,7 @@ float4 ASCosmicKaleidoscopePS(float4 vpos : SV_POSITION, float2 texcoord : TEXCO
         iTime = AnimationKeyframe;
     } else {
         // Otherwise use animated time plus keyframe offset
-        iTime = (AS_getTime() * AnimationSpeed) + AnimationKeyframe;
+        iTime = (AS_timeSeconds() * AnimationSpeed) + AnimationKeyframe;
     }
     float2 iResolution = ReShade::ScreenSize;
 
@@ -250,7 +242,7 @@ float4 ASCosmicKaleidoscopePS(float4 vpos : SV_POSITION, float2 texcoord : TEXCO
     
     float3 rd = normalize(float3(uv * UI_Zoom, 1.0f));
     float rotationRadians = AS_getRotationRadians(EffectSnapRotation, EffectFineRotation);
-    rd.xy = mul(rd.xy, rotMat(rotationRadians)); // Apply screen-space rotation to direction
+    rd.xy = mul(rd.xy, AS_rot2x2(-rotationRadians)); // Apply screen-space rotation to direction
 
     // --- Render the effect ---
     float4 effectColor = renderCosmosCrystal(ro, rd, iTime, 
@@ -270,8 +262,7 @@ float4 ASCosmicKaleidoscopePS(float4 vpos : SV_POSITION, float2 texcoord : TEXCO
     effectColor.rgb = saturate(finalRGB); 
 
     // --- Final Blending & Debug ---
-    float4 finalColor = float4(AS_blendRGB(effectColor.rgb, originalColor.rgb, BlendMode), 1.0f);
-    finalColor = lerp(originalColor, finalColor, BlendStrength);
+    float4 finalColor = float4(AS_composite(effectColor.rgb, _as_originalColor.rgb, BlendMode, BlendStrength), 1.0f);
     
     if (DebugMode != AS_DEBUG_OFF) {
         float4 debugMask = float4(0, 0, 0, 0);
@@ -286,7 +277,7 @@ float4 ASCosmicKaleidoscopePS(float4 vpos : SV_POSITION, float2 texcoord : TEXCO
     return finalColor;
 }
 
-} // namespace ASCosmicKaleidoscope
+} // namespace AS_CosmicKaleidoscope
 
 // ============================================================================
 // TECHNIQUE
@@ -296,7 +287,7 @@ technique AS_BGX_CosmicKaleidoscope < ui_label="[AS] BGX: Cosmic Kaleidoscope"; 
     pass
     {
         VertexShader = PostProcessVS;
-        PixelShader = ASCosmicKaleidoscope::ASCosmicKaleidoscopePS;
+        PixelShader = AS_CosmicKaleidoscope::AS_CosmicKaleidoscopePS;
     }
 }
 

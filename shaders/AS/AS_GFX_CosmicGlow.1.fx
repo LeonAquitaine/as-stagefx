@@ -87,28 +87,28 @@ AS_POS_UI(EffectCenter)
 AS_SCALE_UI(EffectScale)
 
 // Palette & Style
-uniform bool UsePaletteColoring < ui_label = "Use Palette Coloring"; ui_tooltip = "If checked, uses the selected palette below. If unchecked, uses the original shader's mathematical coloring."; ui_category = "Palette & Style"; > = false;
-AS_PALETTE_SELECTION_UI(PaletteSelection, "Effect Palette", AS_PALETTE_CUSTOM, "Palette & Style")
-AS_DECLARE_CUSTOM_PALETTE(CosmicGlow_, "Palette & Style")
-uniform float PaletteCompression < ui_type = "slider"; ui_label = "Palette Compression"; ui_tooltip = "Controls the compression of the color palette."; ui_min = PALETTE_COMPRESSION_MIN; ui_max = PALETTE_COMPRESSION_MAX; ui_category = "Palette & Style"; > = PALETTE_COMPRESSION_DEFAULT;
-uniform float ColorPhase < ui_type = "slider"; ui_label = "Color Phase (Math Mode)"; ui_tooltip = "Adjusts the color separation when 'Use Palette Coloring' is off."; ui_min = COLOR_PHASE_MIN; ui_max = COLOR_PHASE_MAX; ui_category = "Palette & Style"; > = COLOR_PHASE_DEFAULT;
+uniform bool UsePaletteColoring < ui_label = "Use Palette Coloring"; ui_tooltip = "If checked, uses the selected palette below. If unchecked, uses the original shader's mathematical coloring."; ui_category = AS_CAT_PALETTE; > = false;
+AS_PALETTE_SELECTION_UI(PaletteSelection, "Effect Palette", AS_PALETTE_CUSTOM, AS_CAT_PALETTE)
+AS_DECLARE_CUSTOM_PALETTE(CosmicGlow_, AS_CAT_PALETTE)
+uniform float PaletteCompression < ui_type = "slider"; ui_label = "Palette Compression"; ui_tooltip = "Controls the compression of the color palette."; ui_min = PALETTE_COMPRESSION_MIN; ui_max = PALETTE_COMPRESSION_MAX; ui_category = AS_CAT_PALETTE; > = PALETTE_COMPRESSION_DEFAULT;
+uniform float ColorPhase < ui_type = "slider"; ui_label = "Color Phase (Math Mode)"; ui_tooltip = "Adjusts the color separation when 'Use Palette Coloring' is off."; ui_min = COLOR_PHASE_MIN; ui_max = COLOR_PHASE_MAX; ui_category = AS_CAT_PALETTE; > = COLOR_PHASE_DEFAULT;
 
 // Pattern
-uniform int RingCount < ui_type = "slider"; ui_label = "Ring Count"; ui_tooltip = "Number of concentric rings to render."; ui_min = RING_COUNT_MIN; ui_max = RING_COUNT_MAX; ui_category = "Pattern"; > = RING_COUNT_DEFAULT;
-uniform float Perspective < ui_type = "slider"; ui_label = "Perspective"; ui_tooltip = "Controls viewing angle inclination. 0 = flat view (no distortion), higher values create 3D perspective as if viewing rings from an angled position."; ui_min = PERSPECTIVE_MIN; ui_max = PERSPECTIVE_MAX; ui_category = "Pattern"; > = PERSPECTIVE_DEFAULT;
-uniform float RingDensity < ui_type = "slider"; ui_label = "Ring Density"; ui_tooltip = "Controls the spacing and density of the rings."; ui_min = RING_DENSITY_MIN; ui_max = RING_DENSITY_MAX; ui_category = "Pattern"; > = RING_DENSITY_DEFAULT;
-uniform float RingFalloff < ui_type = "slider"; ui_label = "Ring Falloff"; ui_tooltip = "Adjusts the sharpness of the rings. Lower values are sharper."; ui_min = RING_FALLOFF_MIN; ui_max = RING_FALLOFF_MAX; ui_category = "Pattern"; > = RING_FALLOFF_DEFAULT;
-uniform float RingBrightness < ui_type = "slider"; ui_label = "Ring Brightness"; ui_tooltip = "Overall brightness of the effect."; ui_min = RING_BRIGHTNESS_MIN; ui_max = RING_BRIGHTNESS_MAX; ui_category = "Pattern"; > = RING_BRIGHTNESS_DEFAULT;
-uniform float ArcCountMultiplier < ui_type = "slider"; ui_label = "Arc Count Multiplier"; ui_tooltip = "Controls how many arcs appear on each ring."; ui_min = ARC_COUNT_MULT_MIN; ui_max = ARC_COUNT_MULT_MAX; ui_step = 0.01; ui_category = "Pattern"; > = ARC_COUNT_MULT_DEFAULT;
-uniform float ArcIntensity < ui_type = "slider"; ui_label = "Arc Intensity"; ui_tooltip = "Controls the visibility of the arcs."; ui_min = ARC_INTENSITY_MIN; ui_max = ARC_INTENSITY_MAX; ui_category = "Pattern"; > = ARC_INTENSITY_DEFAULT;
+uniform int RingCount < ui_type = "slider"; ui_label = "Ring Count"; ui_tooltip = "Number of concentric rings to render."; ui_min = RING_COUNT_MIN; ui_max = RING_COUNT_MAX; ui_category = AS_CAT_PATTERN; > = RING_COUNT_DEFAULT;
+uniform float Perspective < ui_type = "slider"; ui_label = "Perspective"; ui_tooltip = "Controls viewing angle inclination. 0 = flat view (no distortion), higher values create 3D perspective as if viewing rings from an angled position."; ui_min = PERSPECTIVE_MIN; ui_max = PERSPECTIVE_MAX; ui_category = AS_CAT_PATTERN; > = PERSPECTIVE_DEFAULT;
+uniform float RingDensity < ui_type = "slider"; ui_label = "Ring Density"; ui_tooltip = "Controls the spacing and density of the rings."; ui_min = RING_DENSITY_MIN; ui_max = RING_DENSITY_MAX; ui_category = AS_CAT_PATTERN; > = RING_DENSITY_DEFAULT;
+uniform float RingFalloff < ui_type = "slider"; ui_label = "Ring Falloff"; ui_tooltip = "Adjusts the sharpness of the rings. Lower values are sharper."; ui_min = RING_FALLOFF_MIN; ui_max = RING_FALLOFF_MAX; ui_category = AS_CAT_PATTERN; > = RING_FALLOFF_DEFAULT;
+uniform float RingBrightness < ui_type = "slider"; ui_label = "Ring Brightness"; ui_tooltip = "Overall brightness of the effect."; ui_min = RING_BRIGHTNESS_MIN; ui_max = RING_BRIGHTNESS_MAX; ui_category = AS_CAT_PATTERN; > = RING_BRIGHTNESS_DEFAULT;
+uniform float ArcCountMultiplier < ui_type = "slider"; ui_label = "Arc Count Multiplier"; ui_tooltip = "Controls how many arcs appear on each ring."; ui_min = ARC_COUNT_MULT_MIN; ui_max = ARC_COUNT_MULT_MAX; ui_step = 0.01; ui_category = AS_CAT_PATTERN; > = ARC_COUNT_MULT_DEFAULT;
+uniform float ArcIntensity < ui_type = "slider"; ui_label = "Arc Intensity"; ui_tooltip = "Controls the visibility of the arcs."; ui_min = ARC_INTENSITY_MIN; ui_max = ARC_INTENSITY_MAX; ui_category = AS_CAT_PATTERN; > = ARC_INTENSITY_DEFAULT;
 
 // Animation
-AS_ANIMATION_UI(AnimationSpeed, AnimationKeyframe, "Animation")
+AS_ANIMATION_UI(AnimationSpeed, AnimationKeyframe, AS_CAT_ANIMATION)
 
 // Audio Reactivity
-AS_AUDIO_UI(AudioSource, "Audio Source", AS_AUDIO_OFF, "Audio Reactivity")
-AS_AUDIO_MULT_UI(AudioMultiplier, "Audio Intensity", 1.0, 4.0, "Audio Reactivity")
-uniform int AudioTarget < ui_type = "combo"; ui_label = "Audio Target"; ui_items = "Ring Brightness\0Arc Intensity\0Ring Count\0"; ui_category = "Audio Reactivity"; > = 0;
+AS_AUDIO_UI(AudioSource, "Audio Source", AS_AUDIO_OFF, AS_CAT_AUDIO)
+AS_AUDIO_MULT_UI(AudioMultiplier, "Audio Intensity", 1.0, 4.0, AS_CAT_AUDIO)
+AS_AUDIO_TARGET_UI(AudioTarget, "Ring Brightness\0Arc Intensity\0Ring Count\0", 0)
 
 // Stage Controls
 AS_STAGEDEPTH_UI(EffectDepth)
@@ -126,16 +126,13 @@ AS_DEBUG_UI("Off\0Transformed UV\0")
 // ============================================================================
 float4 PS_CosmicGlow(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target
 {
-    float4 orig = tex2D(ReShade::BackBuffer, texcoord);
-
-    // --- Standard Setup ---
-    if (ReShade::GetLinearizedDepth(texcoord) < EffectDepth - AS_DEPTH_EPSILON)
-        return orig;    float animSpeed = AnimationSpeed;
+    // Depth-aware early return
+    AS_DEPTH_EARLY_RETURN(texcoord, EffectDepth)    float animSpeed = AnimationSpeed;
     float ringBrightness = RingBrightness;
     float arcIntensity = ArcIntensity;
     float ringCount = RingCount;    if(AudioSource != AS_AUDIO_OFF)
     {
-        float audioValue = AS_applyAudioReactivity(1.0, AudioSource, AudioMultiplier, true) - 1.0;
+        float audioValue = AS_audioModulate(1.0, AudioSource, AudioMultiplier, true, 0) - 1.0;
         if(AudioTarget == 0) ringBrightness += audioValue;
         if(AudioTarget == 1) arcIntensity += audioValue;
         if(AudioTarget == 2) ringCount = clamp(ringCount + audioValue * 50.0, RING_COUNT_MIN, RING_COUNT_MAX);
@@ -192,14 +189,7 @@ float4 PS_CosmicGlow(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_
             // We normalize it by AS_PI to get a 0 -> 1 -> 0... range for the palette.
             float paletteValue = acos(cos(phase)) / AS_PI * PaletteCompression;
             
-            if (PaletteSelection == AS_PALETTE_CUSTOM)
-            {
-                effectColor = AS_GET_INTERPOLATED_CUSTOM_COLOR(CosmicGlow_, paletteValue);
-            }
-            else
-            {
-                effectColor = AS_getInterpolatedColor(PaletteSelection, paletteValue);
-            }
+            effectColor = AS_GET_PALETTE_COLOR(CosmicGlow_, PaletteSelection, paletteValue);
         }
         else // Original mathematical coloring
         {
@@ -213,7 +203,7 @@ float4 PS_CosmicGlow(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_
     if (DebugMode == 1) return float4(stageCoord, 0.0, 1.0);
 
     // --- Final Blending ---
-    return AS_blendRGBA(float4(finalColor, 1.0), orig, BlendMode, BlendAmount);
+    return AS_blendRGBA(float4(finalColor, 1.0), _as_originalColor, BlendMode, BlendAmount);
 }
 
 // ============================================================================

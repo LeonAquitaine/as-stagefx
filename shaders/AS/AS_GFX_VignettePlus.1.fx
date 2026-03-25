@@ -47,7 +47,7 @@
 // ============================================================================
 // NAMESPACE
 // ============================================================================
-namespace ASVignettePlus {
+namespace AS_VignettePlus {
 
 // ============================================================================
 // CONSTANTS
@@ -110,8 +110,8 @@ uniform float FalloffStart < ui_type = "slider"; ui_label = "Falloff Start (%)";
 uniform float FalloffEnd < ui_type = "slider"; ui_label = "Falloff End (%)"; ui_min = MIN_FALLOFF; ui_max = MAX_FALLOFF; ui_step = 0.1; ui_tooltip = "Defines where the effect becomes fully transparent after transitioning. Order of Start/End doesn't matter."; ui_category = "Falloff"; > = DEFAULT_FALLOFF_END;
 
 // --- Group III: Pattern Specifics (for Duotone/Lines) ---
-uniform float PatternElementSize < ui_type = "slider"; ui_label = "Pattern Element Size / Spacing"; ui_tooltip = "For Duotone/Lines: Controls the base size of circles, or spacing of lines."; ui_min = MIN_PATTERN_SIZE; ui_max = MAX_PATTERN_SIZE; ui_step = 0.001; ui_category = "Pattern"; > = DEFAULT_PATTERN_SIZE;
-uniform float PatternCoverageBoost < ui_type = "slider"; ui_label = "Pattern Coverage Boost"; ui_tooltip = "For Duotone/Lines: Slightly enlarges elements in solid areas to ensure full coverage. 1.0 = no boost."; ui_min = MIN_COVERAGE_BOOST; ui_max = MAX_COVERAGE_BOOST; ui_step = 0.005; ui_category = "Pattern"; > = DEFAULT_COVERAGE_BOOST;
+uniform float PatternElementSize < ui_type = "slider"; ui_label = "Pattern Element Size / Spacing"; ui_tooltip = "For Duotone/Lines: Controls the base size of circles, or spacing of lines."; ui_min = MIN_PATTERN_SIZE; ui_max = MAX_PATTERN_SIZE; ui_step = 0.001; ui_category = AS_CAT_PATTERN; > = DEFAULT_PATTERN_SIZE;
+uniform float PatternCoverageBoost < ui_type = "slider"; ui_label = "Pattern Coverage Boost"; ui_tooltip = "For Duotone/Lines: Slightly enlarges elements in solid areas to ensure full coverage. 1.0 = no boost."; ui_min = MIN_COVERAGE_BOOST; ui_max = MAX_COVERAGE_BOOST; ui_step = 0.005; ui_category = AS_CAT_PATTERN; > = DEFAULT_COVERAGE_BOOST;
 
 // --- Group IV: Direction & Orientation ---
 // --- Stage Depth Control ---
@@ -297,7 +297,7 @@ float4 ApplyDuotoneCirclesPS(float2 texcoord, float raw_alpha_param, float3 colo
     float aa_w = fwidth(dist);
     
     // Apply anti-aliasing with smoothstep
-    return float4(color, smoothstep(radius + aa_w * 0.5f, radius - aa_w * 0.5f, dist));
+    return float4(color, AS_smoothEdge(dist, radius, aa_w * 0.5f));
 }
 
 // Shared logic for both line pattern functions to reduce code duplication
@@ -349,7 +349,7 @@ float4 ApplyDuotoneLinesSharedLogic(float2 texcoord, float raw_alpha_param, floa
     float aa_w_cycle = fwidth(cycle_in_raw);
     
     // Apply anti-aliasing with smoothstep
-    return float4(color, smoothstep(edge_thresh + aa_w_cycle * 0.5f, edge_thresh - aa_w_cycle * 0.5f, val_to_test));
+    return float4(color, AS_smoothEdge(val_to_test, edge_thresh, aa_w_cycle * 0.5f));
 }
 
 // Pattern-specific wrapper functions for parallel and perpendicular lines
@@ -369,11 +369,8 @@ float4 ApplyDuotoneLinesPerpendicularPS(float2 texcoord, float raw_alpha, float3
 // Pixel Shader
 //------------------------------------------------------------------------------------------------
 float4 VignettePlusPS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : SV_Target {
-    // Get depth and handle depth-based masking
-    float depth = ReShade::GetLinearizedDepth(texcoord);
-    if (depth < EffectDepth) {
-        return tex2D(ReShade::BackBuffer, texcoord);
-    }
+    // Depth-aware early return
+    AS_DEPTH_EARLY_RETURN(texcoord, EffectDepth)
     
     // Get original pixel color
     float3 original_color = tex2D(ReShade::BackBuffer, texcoord).rgb;
@@ -455,10 +452,10 @@ technique AS_GFX_VignettePlus < ui_label = "[AS] GFX: Vignette Plus"; ui_tooltip
 {
     pass {
         VertexShader = PostProcessVS;
-        PixelShader = ASVignettePlus::VignettePlusPS;
+        PixelShader = AS_VignettePlus::VignettePlusPS;
     }
 }
 
-} // namespace ASVignettePlus
+} // namespace AS_VignettePlus
 
 #endif // __AS_GFX_VignettePlus_1_fx

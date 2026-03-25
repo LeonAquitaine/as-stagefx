@@ -48,7 +48,7 @@
 #include "AS_Utils.1.fxh"     
 #include "AS_Palette.1.fxh"  
 
-namespace ASTimeCrystal {
+namespace AS_TimeCrystal {
 // ============================================================================
 // TUNABLE CONSTANTS (Defaults and Ranges)
 // ============================================================================
@@ -120,35 +120,30 @@ static const float COLOR_CYCLE_SPEED_MAX = 2.0;
 
 uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Time Crystal' by raphaeljmu\nLink: https://www.shadertoy.com/view/lcl3z2\nLicence: CC Share-Alike Non-Commercial\n\n";>;
 
-uniform float UI_Iterations < ui_type = "slider"; ui_label = "Pattern Iterations"; ui_tooltip = "Number of fractal iterations. Higher values create more detailed patterns."; ui_min = ITERATIONS_MIN; ui_max = ITERATIONS_MAX; ui_step = ITERATIONS_STEP; ui_category = "Pattern"; > = ITERATIONS_DEFAULT;
-uniform float UI_PatternScale < ui_type = "slider"; ui_label = "Pattern Scale"; ui_tooltip = "Overall scale of the crystal pattern."; ui_min = PATTERN_SCALE_MIN; ui_max = PATTERN_SCALE_MAX; ui_step = PATTERN_SCALE_STEP; ui_category = "Pattern"; > = PATTERN_SCALE_DEFAULT;
-uniform float UI_EdgeCurve < ui_type = "slider"; ui_label = "Edge Curvature"; ui_tooltip = "Controls how sharp or smooth the crystal edges appear."; ui_min = EDGE_CURVE_MIN; ui_max = EDGE_CURVE_MAX; ui_step = EDGE_CURVE_STEP; ui_category = "Pattern"; > = EDGE_CURVE_DEFAULT;
-uniform float UI_EdgeMinX < ui_type = "slider"; ui_label = "Edge Threshold X"; ui_tooltip = "Primary threshold for edge highlighting."; ui_min = EDGE_MIN_X_MIN; ui_max = EDGE_MIN_X_MAX; ui_step = EDGE_MIN_X_STEP; ui_category = "Pattern"; > = EDGE_MIN_X_DEFAULT;
-uniform float UI_EdgeMinY < ui_type = "slider"; ui_label = "Edge Threshold Y"; ui_tooltip = "Secondary threshold for edge highlighting."; ui_min = EDGE_MIN_Y_MIN; ui_max = EDGE_MIN_Y_MAX; ui_step = EDGE_MIN_Y_STEP; ui_category = "Pattern"; > = EDGE_MIN_Y_DEFAULT;
-uniform float UI_CenterFade < ui_type = "slider"; ui_label = "Center Fade"; ui_tooltip = "Fading effect towards the center. Higher values increase the fade."; ui_min = CENTER_FADE_MIN; ui_max = CENTER_FADE_MAX; ui_step = CENTER_FADE_STEP; ui_category = "Pattern"; > = CENTER_FADE_DEFAULT;
-uniform float UI_PatternFrequency < ui_type = "slider"; ui_label = "Pattern Frequency"; ui_tooltip = "Frequency of patterns. Affects the detail density."; ui_min = PATTERN_FREQ_MIN; ui_max = PATTERN_FREQ_MAX; ui_step = PATTERN_FREQ_STEP; ui_category = "Pattern"; > = PATTERN_FREQ_DEFAULT;
+uniform float UI_Iterations < ui_type = "slider"; ui_label = "Pattern Iterations"; ui_tooltip = "Number of fractal iterations. Higher values create more detailed patterns."; ui_min = ITERATIONS_MIN; ui_max = ITERATIONS_MAX; ui_step = ITERATIONS_STEP; ui_category = AS_CAT_PATTERN; > = ITERATIONS_DEFAULT;
+uniform float UI_PatternScale < ui_type = "slider"; ui_label = "Pattern Scale"; ui_tooltip = "Overall scale of the crystal pattern."; ui_min = PATTERN_SCALE_MIN; ui_max = PATTERN_SCALE_MAX; ui_step = PATTERN_SCALE_STEP; ui_category = AS_CAT_PATTERN; > = PATTERN_SCALE_DEFAULT;
+uniform float UI_EdgeCurve < ui_type = "slider"; ui_label = "Edge Curvature"; ui_tooltip = "Controls how sharp or smooth the crystal edges appear."; ui_min = EDGE_CURVE_MIN; ui_max = EDGE_CURVE_MAX; ui_step = EDGE_CURVE_STEP; ui_category = AS_CAT_PATTERN; > = EDGE_CURVE_DEFAULT;
+uniform float UI_EdgeMinX < ui_type = "slider"; ui_label = "Edge Threshold X"; ui_tooltip = "Primary threshold for edge highlighting."; ui_min = EDGE_MIN_X_MIN; ui_max = EDGE_MIN_X_MAX; ui_step = EDGE_MIN_X_STEP; ui_category = AS_CAT_PATTERN; > = EDGE_MIN_X_DEFAULT;
+uniform float UI_EdgeMinY < ui_type = "slider"; ui_label = "Edge Threshold Y"; ui_tooltip = "Secondary threshold for edge highlighting."; ui_min = EDGE_MIN_Y_MIN; ui_max = EDGE_MIN_Y_MAX; ui_step = EDGE_MIN_Y_STEP; ui_category = AS_CAT_PATTERN; > = EDGE_MIN_Y_DEFAULT;
+uniform float UI_CenterFade < ui_type = "slider"; ui_label = "Center Fade"; ui_tooltip = "Fading effect towards the center. Higher values increase the fade."; ui_min = CENTER_FADE_MIN; ui_max = CENTER_FADE_MAX; ui_step = CENTER_FADE_STEP; ui_category = AS_CAT_PATTERN; > = CENTER_FADE_DEFAULT;
+uniform float UI_PatternFrequency < ui_type = "slider"; ui_label = "Pattern Frequency"; ui_tooltip = "Frequency of patterns. Affects the detail density."; ui_min = PATTERN_FREQ_MIN; ui_max = PATTERN_FREQ_MAX; ui_step = PATTERN_FREQ_STEP; ui_category = AS_CAT_PATTERN; > = PATTERN_FREQ_DEFAULT;
 
 // --- Palette & Style ---
-uniform bool UseOriginalColors < ui_label = "Use Original Math Colors"; ui_tooltip = "When enabled, uses the mathematically calculated RGB colors instead of palettes."; ui_category = "Palette & Style"; > = true;
-uniform float OriginalColorIntensity < ui_type = "slider"; ui_label = "Original Color Intensity"; ui_tooltip = "Adjusts the intensity of original colors when enabled."; ui_min = 0.1; ui_max = ORIG_COLOR_INTENSITY_MAX; ui_step = 0.01; ui_category = "Palette & Style"; ui_spacing = 0; > = ORIG_COLOR_INTENSITY_DEFAULT;
-uniform float OriginalColorSaturation < ui_type = "slider"; ui_label = "Original Color Saturation"; ui_tooltip = "Adjusts the saturation of original colors when enabled."; ui_min = 0.0; ui_max = ORIG_COLOR_SATURATION_MAX; ui_step = 0.01; ui_category = "Palette & Style"; > = ORIG_COLOR_SATURATION_DEFAULT;
-AS_PALETTE_SELECTION_UI(PalettePreset, "Color Palette", AS_PALETTE_NEON, "Palette & Style")
-AS_DECLARE_CUSTOM_PALETTE(TimeCrystal_, "Palette & Style")
-uniform float ColorCycleSpeed < ui_type = "slider"; ui_label = "Color Cycle Speed"; ui_tooltip = "Controls how fast palette colors cycle. 0 = static."; ui_min = -COLOR_CYCLE_SPEED_MAX; ui_max = COLOR_CYCLE_SPEED_MAX; ui_step = 0.1; ui_category = "Palette & Style"; > = COLOR_CYCLE_SPEED_DEFAULT;
+AS_USE_PALETTE_UI(UseOriginalColors, AS_CAT_PALETTE)
+uniform float OriginalColorIntensity < ui_type = "slider"; ui_label = "Original Color Intensity"; ui_tooltip = "Adjusts the intensity of original colors when enabled."; ui_min = 0.1; ui_max = ORIG_COLOR_INTENSITY_MAX; ui_step = 0.01; ui_category = AS_CAT_PALETTE; ui_spacing = 0; > = ORIG_COLOR_INTENSITY_DEFAULT;
+uniform float OriginalColorSaturation < ui_type = "slider"; ui_label = "Original Color Saturation"; ui_tooltip = "Adjusts the saturation of original colors when enabled."; ui_min = 0.0; ui_max = ORIG_COLOR_SATURATION_MAX; ui_step = 0.01; ui_category = AS_CAT_PALETTE; > = ORIG_COLOR_SATURATION_DEFAULT;
+AS_PALETTE_SELECTION_UI(PalettePreset, "Color Palette", AS_PALETTE_NEON, AS_CAT_PALETTE)
+AS_DECLARE_CUSTOM_PALETTE(TimeCrystal_, AS_CAT_PALETTE)
+AS_COLOR_CYCLE_UI(ColorCycleSpeed, AS_CAT_PALETTE)
 
 // --- Audio Reactivity ---
-AS_AUDIO_UI(TimeCrystal_AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
-AS_AUDIO_MULT_UI(TimeCrystal_AudioMultiplier, "Audio Intensity", AUDIO_MULTIPLIER_DEFAULT, AUDIO_MULTIPLIER_MAX, "Audio Reactivity")
-uniform int TimeCrystal_AudioTarget < 
-    ui_type = "combo"; 
-    ui_label = "Audio Target Parameter"; 
-    ui_items = "None\0Animation Speed\0Pattern Frequency\0Edge Threshold\0Center Fade\0"; 
-    ui_category = "Audio Reactivity"; 
-> = AUDIO_TARGET_DEFAULT;
+AS_AUDIO_UI(TimeCrystal_AudioSource, "Audio Source", AS_AUDIO_BEAT, AS_CAT_AUDIO)
+AS_AUDIO_MULT_UI(TimeCrystal_AudioMultiplier, "Audio Intensity", AUDIO_MULTIPLIER_DEFAULT, AUDIO_MULTIPLIER_MAX, AS_CAT_AUDIO)
+AS_AUDIO_TARGET_UI(TimeCrystal_AudioTarget, "None\0Animation Speed\0Pattern Frequency\0Edge Threshold\0Center Fade\0", AUDIO_TARGET_DEFAULT)
 
 // --- Animation ---
-uniform float AnimationKeyframe < ui_type = "slider"; ui_label = "Animation Keyframe"; ui_tooltip = "Sets a specific point in time for the animation. Useful for finding and saving specific patterns."; ui_min = ANIMATION_KEYFRAME_MIN; ui_max = ANIMATION_KEYFRAME_MAX; ui_step = ANIMATION_KEYFRAME_STEP; ui_category = "Animation"; > = ANIMATION_KEYFRAME_DEFAULT;
-uniform float AnimationSpeed < ui_type = "slider"; ui_label = "Animation Speed"; ui_tooltip = "Controls the overall animation speed of the effect. Set to 0 to pause animation and use keyframe only."; ui_min = ANIMATION_SPEED_MIN; ui_max = ANIMATION_SPEED_MAX; ui_step = ANIMATION_SPEED_STEP; ui_category = "Animation"; > = ANIMATION_SPEED_DEFAULT;
+uniform float AnimationKeyframe < ui_type = "slider"; ui_label = "Animation Keyframe"; ui_tooltip = "Sets a specific point in time for the animation. Useful for finding and saving specific patterns."; ui_min = ANIMATION_KEYFRAME_MIN; ui_max = ANIMATION_KEYFRAME_MAX; ui_step = ANIMATION_KEYFRAME_STEP; ui_category = AS_CAT_ANIMATION; > = ANIMATION_KEYFRAME_DEFAULT;
+uniform float AnimationSpeed < ui_type = "slider"; ui_label = "Animation Speed"; ui_tooltip = "Controls the overall animation speed of the effect. Set to 0 to pause animation and use keyframe only."; ui_min = ANIMATION_SPEED_MIN; ui_max = ANIMATION_SPEED_MAX; ui_step = ANIMATION_SPEED_STEP; ui_category = AS_CAT_ANIMATION; > = ANIMATION_SPEED_DEFAULT;
 
 // --- Stage ---
 AS_STAGEDEPTH_UI(EffectDepth)
@@ -189,10 +184,7 @@ float3 getTimeCrystalColor(float t, float time) {
     }
     t = saturate(t);
     
-    if (PalettePreset == AS_PALETTE_CUSTOM) { // Use custom palette
-        return AS_GET_INTERPOLATED_CUSTOM_COLOR(TimeCrystal_, t);
-    }
-    return AS_getInterpolatedColor(PalettePreset, t); // Use preset palette
+    return AS_GET_PALETTE_COLOR(TimeCrystal_, PalettePreset, t);
 }
 
 // Calculate proximity function for edge highlighting
@@ -211,7 +203,9 @@ float proximity(float d, float curvature, float min_x, float min_y) {
     float disc4 = 4.0 * (a * (XY - X - Y + 1.0) + XY);
     float disc2 = 2.0 * (X + Y) * (XY + 1.0);
     float disc = disc4 - disc2 + XY * XY + X2 + Y2 + 1.0;
-    float c = ((X - 1.0) * (Y + 1.0) + sqrt(disc)) / (2.0 * (X - 1.0));
+    float xm1 = X - 1.0;
+    float safe_xm1 = (abs(xm1) < AS_EPSILON) ? sign(xm1) * AS_EPSILON : xm1;
+    float c = ((X - 1.0) * (Y + 1.0) + sqrt(disc)) / (2.0 * safe_xm1);
 
     float b = a / (1.0 - c) - X;
 
@@ -223,13 +217,8 @@ float proximity(float d, float curvature, float min_x, float min_y) {
 // ============================================================================
 float4 TimeCrystalPS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : SV_TARGET {
     // Get original pixel color and depth
-    float4 originalColor = tex2D(ReShade::BackBuffer, texcoord);
-    float depth = ReShade::GetLinearizedDepth(texcoord);
-
-    // Apply depth test
-    if (depth < EffectDepth) {
-        return originalColor;
-    }
+    // Depth-aware early return
+    AS_DEPTH_EARLY_RETURN(texcoord, EffectDepth)
 
     // Apply audio reactivity to selected parameters
     float animSpeed = AnimationSpeed;
@@ -237,7 +226,7 @@ float4 TimeCrystalPS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : S
     float edgeThreshold = UI_EdgeMinX;
     float centerFade = UI_CenterFade;
     
-    float audioReactivity = AS_applyAudioReactivity(1.0, TimeCrystal_AudioSource, TimeCrystal_AudioMultiplier, true);
+    float audioReactivity = AS_audioModulate(1.0, TimeCrystal_AudioSource, TimeCrystal_AudioMultiplier, true, 0);
     
     // Map audio target combo index to parameter adjustment
     if (TimeCrystal_AudioTarget == 1) animSpeed *= audioReactivity;
@@ -252,7 +241,7 @@ float4 TimeCrystalPS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : S
         time = AnimationKeyframe;
     } else {
         // Otherwise use animated time plus keyframe offset
-        time = (AS_getTime() * animSpeed) + AnimationKeyframe;
+        time = (AS_timeSeconds() * animSpeed) + AnimationKeyframe;
     }
     
     // Apply rotation to coordinates
@@ -308,8 +297,7 @@ float4 TimeCrystalPS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : S
         color *= OriginalColorIntensity;
         
         // Apply saturation adjustment
-    float luminance = dot(color, AS_LUMA_REC709);
-        color = lerp(luminance, color, OriginalColorSaturation);
+        color = AS_adjustSaturation(color, OriginalColorSaturation);
     }
     
     // Ensure color is valid
@@ -319,8 +307,7 @@ float4 TimeCrystalPS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : S
     float4 effectColor = float4(color, 1.0);
     
     // Blend with original scene
-    float4 finalColor = float4(AS_blendRGB(effectColor.rgb, originalColor.rgb, BlendMode), 1.0);
-    finalColor = lerp(originalColor, finalColor, BlendStrength);
+    float4 finalColor = float4(AS_composite(effectColor.rgb, _as_originalColor.rgb, BlendMode, BlendStrength), 1.0);
     
     // Show debug overlay if enabled
     if (DebugMode != AS_DEBUG_OFF) {
@@ -339,7 +326,7 @@ float4 TimeCrystalPS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : S
     return finalColor;
 }
 
-} // namespace ASTimeCrystal
+} // namespace AS_TimeCrystal
 
 // ============================================================================
 // TECHNIQUE
@@ -349,7 +336,7 @@ technique AS_BGX_TimeCrystal < ui_label="[AS] BGX: Time Crystal"; ui_tooltip="Fr
     pass
     {
         VertexShader = PostProcessVS;
-        PixelShader = ASTimeCrystal::TimeCrystalPS;
+        PixelShader = AS_TimeCrystal::TimeCrystalPS;
     }
 }
 

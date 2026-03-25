@@ -66,20 +66,20 @@ uniform float LightThresholdMin < ui_type = "slider"; ui_label = "Ray Visibility
 uniform float LightThresholdMax < ui_type = "slider"; ui_label = "Ray Visibility Threshold Max"; ui_min = 0.0; ui_max = 1.0; ui_category = "Tunable Constants"; > = 0.51;
 
 // Palette & Style
-AS_PALETTE_SELECTION_UI(LightColorPalette, "Light Color Source", AS_PALETTE_CUSTOM, "Palette & Style")
-AS_DECLARE_CUSTOM_PALETTE(LightRay, "Palette & Style")
+AS_PALETTE_SELECTION_UI(LightColorPalette, "Light Color Source", AS_PALETTE_CUSTOM, AS_CAT_PALETTE)
+AS_DECLARE_CUSTOM_PALETTE(LightRay, AS_CAT_PALETTE)
 
 // Effect-Specific Parameters
 uniform int RaySteps < ui_type = "slider"; ui_label = "Ray Sample Steps"; ui_tooltip = "Number of samples along each ray. Higher is smoother but more expensive."; ui_min = 5; ui_max = 120; ui_category = "Ray Properties"; > = 30;
 uniform float RayLength < ui_type = "slider"; ui_label = "Ray Length Multiplier"; ui_tooltip = "Controls the length of the light rays."; ui_min = 0.05; ui_max = 0.5; ui_category = "Ray Properties"; > = 0.25;
 
 // Animation Controls
-uniform float RayRandomTimeScale < ui_type = "slider"; ui_label = "Ray Jitter Animation Speed"; ui_tooltip = "Speed of the random jitter animation for rays."; ui_min = 0.0; ui_max = 2000.0; ui_category = "Animation"; > = 1000.0;
+uniform float RayRandomTimeScale < ui_type = "slider"; ui_label = "Ray Jitter Animation Speed"; ui_tooltip = "Speed of the random jitter animation for rays."; ui_min = 0.0; ui_max = 2000.0; ui_category = AS_CAT_ANIMATION; > = 1000.0;
 
 // Audio Reactivity
-uniform int AudioSource < ui_type = "combo"; ui_label = "Audio Source"; ui_items = "Off\0Solid\0Volume\0Beat\0Bass\0Treble\0Mid\0"; ui_category = "Audio Reactivity"; ui_category_closed = true; > = 3;
-uniform int AudioTarget < ui_type = "combo"; ui_label = "Audio Target"; ui_items = "None\0Light Brightness\0Ray Length\0Jitter Speed\0"; ui_category = "Audio Reactivity"; ui_category_closed = true; > = 0;
-uniform float AudioMultiplier < ui_type = "slider"; ui_label = "Audio Multiplier"; ui_min = 0.0; ui_max = 2.0; ui_category = "Audio Reactivity"; ui_category_closed = true; > = 1.0;
+uniform int AudioSource < ui_type = "combo"; ui_label = "Audio Source"; ui_items = "Off\0Solid\0Volume\0Beat\0Bass\0Treble\0Mid\0"; ui_category = AS_CAT_AUDIO; ui_category_closed = true; > = 3;
+uniform int AudioTarget < ui_type = "combo"; ui_label = "Audio Target"; ui_items = "None\0Light Brightness\0Ray Length\0Jitter Speed\0"; ui_category = AS_CAT_AUDIO; ui_category_closed = true; > = 0;
+uniform float AudioMultiplier < ui_type = "slider"; ui_label = "Audio Multiplier"; ui_min = 0.0; ui_max = 2.0; ui_category = AS_CAT_AUDIO; ui_category_closed = true; > = 1.0;
 
 // Stage/Position Controls
 AS_POS_UI(LightSourcePos)
@@ -105,7 +105,7 @@ float4 PS_VolumetricLight_Threshold(float4 pos : SV_Position, float2 texcoord : 
     // Apply audio reactivity to light brightness
     float lightBrightness_final = LightBrightness;
     if (AudioTarget == 1) {
-        float audioValue = AS_applyAudioReactivity(1.0, AudioSource, AudioMultiplier, true);
+        float audioValue = AS_audioModulate(1.0, AudioSource, AudioMultiplier, true, 0);
         lightBrightness_final = LightBrightness * audioValue;
     }
 
@@ -143,10 +143,10 @@ float4 PS_VolumetricLight_Composite(float4 pos : SV_Position, float2 texcoord : 
     float rayTimeScale_final = RayRandomTimeScale;
     
     if (AudioTarget == 2) {
-        float audioValue = AS_applyAudioReactivity(1.0, AudioSource, AudioMultiplier, true);
+        float audioValue = AS_audioModulate(1.0, AudioSource, AudioMultiplier, true, 0);
         rayLength_final = RayLength * audioValue;
     } else if (AudioTarget == 3) {
-        float audioValue = AS_applyAudioReactivity(1.0, AudioSource, AudioMultiplier, true);
+        float audioValue = AS_audioModulate(1.0, AudioSource, AudioMultiplier, true, 0);
         rayTimeScale_final = RayRandomTimeScale * audioValue;
     }
 
@@ -157,7 +157,7 @@ float4 PS_VolumetricLight_Composite(float4 pos : SV_Position, float2 texcoord : 
     else light_pos_centered.y /= ReShade::AspectRatio;
 
     float4 accumulated_rays = float4(0.0, 0.0, 0.0, 0.0);
-    float current_time_seed = AS_mod(AS_getTime() * rayTimeScale_final, 200.0);
+    float current_time_seed = AS_mod(AS_timeSeconds() * rayTimeScale_final, 200.0);
 
     float2 dir_to_light = normalize(light_pos_centered - uvn);
     

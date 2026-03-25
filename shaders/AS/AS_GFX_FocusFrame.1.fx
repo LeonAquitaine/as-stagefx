@@ -49,7 +49,7 @@ sampler FocusFrame_BlurHSampler { Texture = FocusFrame_BlurHBuffer; };
 // UI DECLARATIONS
 // ============================================================================
 
-uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " ";ui_text ="\nCreates a focused rectangular frame with a blurred, dimmed background.\nIdeal for portrait compositions and drawing attention to subjects.\n\n";>;
+uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " ";ui_text = "\nSharp center frame with blurred, dimmed background.\nIdeal for drawing attention to your subject in portraits.\n\nAS StageFX | Focus Frame by Leon Aquitaine\n";>;
 
 // -- Composition & Framing --
 uniform float FocusAreaSize < ui_type = "slider"; ui_label = "Frame Size"; ui_tooltip = "Controls the size of the central frame."; ui_min = 0.1; ui_max = 1.0; ui_category = "Composition & Framing"; > = 0.9;
@@ -271,8 +271,7 @@ float4 PS_FocusFrame_BlurV_and_Combine(float4 pos : SV_Position, float2 texcoord
     float depthMask = sceneDepth >= EffectDepth ? 1.0 : 0.0;
     
     // Then apply blend mode and strength to blend the entire effect with the scene
-    float3 blended = AS_blendRGB(focusFrameResult, originalColor.rgb, BlendMode);
-    float3 result = lerp(originalColor.rgb, blended, BlendStrength * depthMask);
+    float3 result = AS_composite(focusFrameResult, originalColor.rgb, BlendMode, BlendStrength * depthMask);
     
     return float4(result, originalColor.a);
 }

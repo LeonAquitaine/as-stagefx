@@ -107,8 +107,8 @@ uniform int LightningFrequency < ui_type = "combo"; ui_label = "Lightning Freque
 uniform float LightningIntensity < ui_type = "slider"; ui_label = "Lightning Intensity"; ui_tooltip = "Controls the brightness of lightning flashes."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Special Effects"; > = 0.5;
 
 // Audio Reactivity
-AS_AUDIO_UI(RainAmount_AudioSource, "Rain Amount Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
-AS_AUDIO_MULT_UI(RainAmount_AudioMultiplier, "Rain Amount Audio Intensity", 1.0, 2.0, "Audio Reactivity")
+AS_AUDIO_UI(RainAmount_AudioSource, "Rain Amount Audio Source", AS_AUDIO_BEAT, AS_CAT_AUDIO)
+AS_AUDIO_MULT_UI(RainAmount_AudioMultiplier, "Rain Amount Audio Intensity", 1.0, 2.0, AS_CAT_AUDIO)
 
 AS_PERSPECTIVE_UI(PerspectiveAngles, PerspectiveZOffset, PerspectiveFocalLength, "Perspective") // Added Perspective Controls
 
@@ -274,10 +274,10 @@ float4 GenerateEffectMapsPS(float4 vpos : SV_Position, float2 texcoord : TEXCOOR
     
     float current_rain_amount = RainAmount;
     if (RainAmount_AudioSource != AS_AUDIO_OFF) {
-        current_rain_amount = AS_applyAudioReactivity(RainAmount, RainAmount_AudioSource, RainAmount_AudioMultiplier, true);
+        current_rain_amount = AS_audioModulate(RainAmount, RainAmount_AudioSource, RainAmount_AudioMultiplier, true, 0);
     }
     
-    float time_current_seconds = AS_getTime();
+    float time_current_seconds = AS_timeSeconds();
     float t_for_drops_animation = time_current_seconds * DropAnimationSpeed;
     
     // Calculate drop_coverage and trail_effect
@@ -314,9 +314,9 @@ float4 GenerateEffectMapsPS(float4 vpos : SV_Position, float2 texcoord : TEXCOOR
 }
 
 // PASS 1: Pure Horizontal Blur
-float4 PureHorizontalBlurPS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : SV_Target {    float depth = ReShade::GetLinearizedDepth(texcoord); // Depth check for blur pass
-    if (depth < StageDepth - AS_DEPTH_EPSILON) 
-        return tex2D(ReShade::BackBuffer, texcoord);
+float4 PureHorizontalBlurPS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : SV_Target {
+    // Depth-aware early return
+    AS_DEPTH_EARLY_RETURN(texcoord, StageDepth)
 
     float focus_val = tex2D(RainyWindow_EffectMapSampler, texcoord).r;
     float2 blur_direction = float2(1.0f, 0.0f);
@@ -327,8 +327,7 @@ float4 PureHorizontalBlurPS(float4 vpos : SV_Position, float2 texcoord : TEXCOOR
 
 // PASS 2: Pure Vertical Blur
 float4 PureVerticalBlurPS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : SV_Target {
-    float depth = ReShade::GetLinearizedDepth(texcoord); // Depth check for blur pass
-    if (depth < StageDepth - AS_DEPTH_EPSILON) 
+    if (AS_isInFrontOfStage(texcoord, StageDepth))
         return tex2D(RainyWindow_HorizontalBlurSampler, texcoord); // Pass through already H-blurred if culled
 
     float focus_val = tex2D(RainyWindow_EffectMapSampler, texcoord).r;
@@ -340,10 +339,8 @@ float4 PureVerticalBlurPS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0
 
 // PASS 3: Final Composite
 float4 FinalCompositePS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : SV_Target {
-    float4 original_scene_color = tex2D(ReShade::BackBuffer, texcoord);
-    float depth = ReShade::GetLinearizedDepth(texcoord);
-    
-    if (depth < StageDepth - AS_DEPTH_EPSILON) return original_scene_color;
+    // Depth-aware early return
+    AS_DEPTH_EARLY_RETURN(texcoord, StageDepth)
 
     float4 effect_map_data = tex2D(RainyWindow_EffectMapSampler, texcoord);
     // float focus_val_from_map = effect_map_data.r; // Not directly used here, but was used for blurring
@@ -365,7 +362,7 @@ float4 FinalCompositePS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) 
     // Lightning effect
     float3 final_pixel_color_lit = view_through_glass;
     if (EnableLightning) {
-        float time_current_seconds = AS_getTime(); // Get time again for this pass if needed
+        float time_current_seconds = AS_timeSeconds(); // Get time again for this pass if needed
         float frequencyMultiplier;
         switch (LightningFrequency) {
             case 0: frequencyMultiplier = LIGHTNING_FREQ_LIGHT_SUMMER; break;
@@ -382,8 +379,7 @@ float4 FinalCompositePS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) 
         final_pixel_color_lit += final_pixel_color_lit * lightning_flicker * LightningIntensity;
     }
     
-    float3 result_blended = AS_blendRGB(final_pixel_color_lit, original_scene_color.rgb, BlendMode);
-    return float4(lerp(original_scene_color.rgb, result_blended, BlendStrength), original_scene_color.a);
+    return AS_compositeRGBA(final_pixel_color_lit, _as_originalColor, BlendMode, BlendStrength);
 }
 
 // ============================================================================

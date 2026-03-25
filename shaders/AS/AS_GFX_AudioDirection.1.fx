@@ -37,8 +37,11 @@
 // ============================================================================
 // INCLUDES
 // ============================================================================
+#include "ReShade.fxh"
 #include "AS_Utils.1.fxh"
 #include "AS_Palette.1.fxh"
+
+uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " "; ui_text = "\nVisual arc indicator that points toward audio direction.\nUseful for streaming overlays and audio visualization.\n\nAS StageFX | Audio Direction Visualization by Leon Aquitaine\n"; > = 0;
 
 // ============================================================================
 // CONSTANTS
@@ -91,21 +94,21 @@ uniform float BaseIntensity < ui_type = "slider"; ui_label = "Base Opacity"; ui_
 uniform float EdgeSoftness < ui_type = "slider"; ui_label = "Edge Softness"; ui_tooltip = "How soft the edges of the arc appear"; ui_min = EDGE_SOFTNESS_MIN; ui_max = EDGE_SOFTNESS_MAX; ui_step = 0.001; ui_category = "Arc Style"; > = EDGE_SOFTNESS_DEFAULT;
 
 // --- Palette & Colors ---
-AS_PALETTE_SELECTION_UI(PaletteIndex, "Color Palette", 1, "Palette & Colors")
-AS_DECLARE_CUSTOM_PALETTE(Arc, "Palette & Colors")
-uniform float ColorInterpolation < ui_type = "slider"; ui_label = "Color Position"; ui_tooltip = "Position along the palette to sample colors from (0=first color, 1=last color)"; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Palette & Colors"; > = 0.5;
-AS_AUDIO_UI(ColorAudioSource, "Color Audio Source", AS_AUDIO_VOLUME, "Palette & Colors")
-uniform float ColorAudioMult < ui_type = "slider"; ui_label = "Color Audio Multiplier"; ui_tooltip = "How much audio affects color position along the palette"; ui_min = 0.0; ui_max = 2.0; ui_step = 0.01; ui_category = "Palette & Colors"; > = 1.0;
+AS_PALETTE_SELECTION_UI(PaletteIndex, "Color Palette", 1, AS_CAT_PALETTE)
+AS_DECLARE_CUSTOM_PALETTE(Arc, AS_CAT_PALETTE)
+uniform float ColorInterpolation < ui_type = "slider"; ui_label = "Color Position"; ui_tooltip = "Position along the palette to sample colors from (0=first color, 1=last color)"; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = AS_CAT_PALETTE; > = 0.5;
+AS_AUDIO_UI(ColorAudioSource, "Color Audio Source", AS_AUDIO_VOLUME, AS_CAT_PALETTE)
+uniform float ColorAudioMult < ui_type = "slider"; ui_label = "Color Audio Multiplier"; ui_tooltip = "How much audio affects color position along the palette"; ui_min = 0.0; ui_max = 2.0; ui_step = 0.01; ui_category = AS_CAT_PALETTE; > = 1.0;
 
 // --- Audio Reactivity ---
-AS_AUDIO_UI(LengthAudioSource, "Length Audio Source", AS_AUDIO_VOLUME, "Audio Reactivity")
-uniform float LengthAudioMult < ui_type = "slider"; ui_label = "Length Boost"; ui_tooltip = "How much audio extends the arc length"; ui_min = LENGTH_AUDIO_MULT_MIN; ui_max = LENGTH_AUDIO_MULT_MAX; ui_step = 1.0; ui_category = "Audio Reactivity"; > = LENGTH_AUDIO_MULT_DEFAULT;
+AS_AUDIO_UI(LengthAudioSource, "Length Audio Source", AS_AUDIO_VOLUME, AS_CAT_AUDIO)
+uniform float LengthAudioMult < ui_type = "slider"; ui_label = "Length Boost"; ui_tooltip = "How much audio extends the arc length"; ui_min = LENGTH_AUDIO_MULT_MIN; ui_max = LENGTH_AUDIO_MULT_MAX; ui_step = 1.0; ui_category = AS_CAT_AUDIO; > = LENGTH_AUDIO_MULT_DEFAULT;
 
-AS_AUDIO_UI(ThicknessAudioSource, "Thickness Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
-uniform float ThicknessAudioMult < ui_type = "slider"; ui_label = "Thickness Boost"; ui_tooltip = "How much audio thickens the arc"; ui_min = THICKNESS_AUDIO_MULT_MIN; ui_max = THICKNESS_AUDIO_MULT_MAX; ui_step = 0.001; ui_category = "Audio Reactivity"; > = THICKNESS_AUDIO_MULT_DEFAULT;
+AS_AUDIO_UI(ThicknessAudioSource, "Thickness Audio Source", AS_AUDIO_BEAT, AS_CAT_AUDIO)
+uniform float ThicknessAudioMult < ui_type = "slider"; ui_label = "Thickness Boost"; ui_tooltip = "How much audio thickens the arc"; ui_min = THICKNESS_AUDIO_MULT_MIN; ui_max = THICKNESS_AUDIO_MULT_MAX; ui_step = 0.001; ui_category = AS_CAT_AUDIO; > = THICKNESS_AUDIO_MULT_DEFAULT;
 
-AS_AUDIO_UI(IntensityAudioSource, "Opacity Audio Source", AS_AUDIO_SOLID, "Audio Reactivity")
-uniform float IntensityAudioMult < ui_type = "slider"; ui_label = "Opacity Boost"; ui_tooltip = "How much audio brightens the arc"; ui_min = INTENSITY_AUDIO_MULT_MIN; ui_max = INTENSITY_AUDIO_MULT_MAX; ui_step = 0.01; ui_category = "Audio Reactivity"; > = INTENSITY_AUDIO_MULT_DEFAULT;
+AS_AUDIO_UI(IntensityAudioSource, "Opacity Audio Source", AS_AUDIO_SOLID, AS_CAT_AUDIO)
+uniform float IntensityAudioMult < ui_type = "slider"; ui_label = "Opacity Boost"; ui_tooltip = "How much audio brightens the arc"; ui_min = INTENSITY_AUDIO_MULT_MIN; ui_max = INTENSITY_AUDIO_MULT_MAX; ui_step = 0.01; ui_category = AS_CAT_AUDIO; > = INTENSITY_AUDIO_MULT_DEFAULT;
 
 // --- Final Mix Category ---
 AS_BLENDMODE_UI_DEFAULT(BlendMode, 0) 
@@ -126,13 +129,8 @@ float3 getArcColor(float audioIntensity) {
         colorPosition = saturate(audioIntensity * ColorAudioMult);
     }
     
-    // Handle custom palette (index 0)
-    if (PaletteIndex == AS_PALETTE_CUSTOM) {
-        return AS_GET_INTERPOLATED_CUSTOM_COLOR(Arc, colorPosition);
-    }
-    
-    // Use built-in palette
-    return AS_getInterpolatedColor(PaletteIndex, colorPosition);
+    // Get color from selected palette
+    return AS_GET_PALETTE_COLOR(Arc, PaletteIndex, colorPosition);
 }
 
 /**
@@ -156,7 +154,7 @@ float calculateArcVisualMask(float2 texcoord, float target_direction_rad, float 
     float half_arc_span_rad = AS_radians(arc_span_deg) * 0.5;
 
     float angular_falloff_rad = max(AS_radians(1.0), half_arc_span_rad * ANGULAR_FALLOFF_FACTOR);
-    float angleMask = smoothstep(half_arc_span_rad + angular_falloff_rad, half_arc_span_rad - angular_falloff_rad, abs(angle_diff_rad));
+    float angleMask = AS_smoothEdge(abs(angle_diff_rad), half_arc_span_rad, angular_falloff_rad);
 
     float dist_from_center_norm = polar.y;
 
@@ -183,15 +181,15 @@ float4 AudioDirectionPS(float4 position : SV_Position, float2 texcoord : TEXCOOR
     float audio_pan_direction_rad = AS_getAudioDirectionRadians(); 
     
     // Apply audio reactivity to parameters (additive mode = 1)
-    float current_arc_span_deg = AS_applyAudioReactivityEx(BaseArcLengthDegrees, LengthAudioSource, LengthAudioMult, true, 1);
+    float current_arc_span_deg = AS_audioModulate(BaseArcLengthDegrees, LengthAudioSource, LengthAudioMult, true, 1);
     current_arc_span_deg = clamp(current_arc_span_deg, ARC_LENGTH_MIN, ARC_LENGTH_MAX);
 
-    float current_thickness = AS_applyAudioReactivityEx(BaseThickness, ThicknessAudioSource, ThicknessAudioMult, true, 1);
-    current_thickness = clamp(current_thickness, ARC_THICKNESS_MIN, ARC_THICKNESS_MAX);    float current_intensity = AS_applyAudioReactivityEx(BaseIntensity, IntensityAudioSource, IntensityAudioMult, true, 1);
+    float current_thickness = AS_audioModulate(BaseThickness, ThicknessAudioSource, ThicknessAudioMult, true, 1);
+    current_thickness = clamp(current_thickness, ARC_THICKNESS_MIN, ARC_THICKNESS_MAX);    float current_intensity = AS_audioModulate(BaseIntensity, IntensityAudioSource, IntensityAudioMult, true, 1);
     current_intensity = saturate(current_intensity);
 
     // Get audio intensity for color calculation
-    float audio_for_color = AS_getAudioSource(ColorAudioSource);
+    float audio_for_color = AS_audioLevelFromSource(ColorAudioSource);
     
     // Calculate arc color using palette system
     float3 arc_color = getArcColor(audio_for_color);

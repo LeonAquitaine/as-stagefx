@@ -37,8 +37,8 @@
 // ============================================================================
 // TECHNIQUE GUARD - Prevents duplicate loading of the same shader
 // ============================================================================
-#ifndef __AS_BGX_SUNSETCLOUDS_1_FX
-#define __AS_BGX_SUNSETCLOUDS_1_FX
+#ifndef __AS_BGX_SunsetClouds_1_fx
+#define __AS_BGX_SunsetClouds_1_fx
 
 // ============================================================================
 // INCLUDES
@@ -130,14 +130,10 @@ static const float TONEMAP_EXPOSURE_DEFAULT = 4e8; // Was TonemapStrength
 // UI DECLARATIONS
 // ============================================================================
 
-// --- Animation Controls ---
+// --- Cloud Shape & Detail ---
 
 uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Sunset [280]' by Xor\nLink: https://www.shadertoy.com/view/wXjSRt\nLicence: CC Share-Alike Non-Commercial\n\n";>;
 
-uniform float AnimationSpeed < ui_type = "slider"; ui_label = "Speed"; ui_tooltip = "Cloud and color animation speed."; ui_min = ANIMATION_SPEED_MIN; ui_max = ANIMATION_SPEED_MAX; ui_step = 0.01; ui_category = "Animation"; > = ANIMATION_SPEED_DEFAULT;
-uniform float AnimationKeyframe < ui_type = "slider"; ui_label = "Time Offset"; ui_tooltip = "Scrub the animation timeline."; ui_min = ANIMATION_KEYFRAME_MIN; ui_max = ANIMATION_KEYFRAME_MAX; ui_step = 0.1; ui_category = "Animation"; > = ANIMATION_KEYFRAME_DEFAULT;
-
-// --- Cloud Shape & Detail ---
 uniform float CloudAltitude < ui_type = "slider"; ui_label = "Altitude"; ui_tooltip = "Cloud layer height."; ui_min = CLOUD_ALTITUDE_MIN; ui_max = CLOUD_ALTITUDE_MAX; ui_step = 0.01; ui_category = "Clouds"; > = CLOUD_ALTITUDE_DEFAULT;
 uniform int CloudDetail < ui_type = "slider"; ui_label = "Detail"; ui_tooltip = "Raymarch steps (quality)."; ui_min = CLOUD_DETAIL_MIN; ui_max = CLOUD_DETAIL_MAX; ui_category = "Clouds"; > = CLOUD_DETAIL_DEFAULT;
 uniform float EffectRaymarchDepth < ui_type = "slider"; ui_label = "Raymarch Depth"; ui_tooltip = "Scales the depth of the raymarching effect (legacy, not a true cutout)."; ui_min = 0.1; ui_max = 3.0; ui_step = 0.01; ui_category = "Clouds"; > = 1.0;
@@ -149,9 +145,9 @@ uniform float TurbulenceScaleStart < ui_type = "slider"; ui_label = "Turb. Scale
 uniform float TurbulenceScaleEnd < ui_type = "slider"; ui_label = "Turb. Scale End"; ui_tooltip = "Largest swirl size."; ui_min = TURBULENCE_SCALE_END_MIN; ui_max = TURBULENCE_SCALE_END_MAX; ui_step = 1.0; ui_category = "Turbulence"; > = TURBULENCE_SCALE_END_DEFAULT;
 
 // --- Sunset Colors ---
-uniform float3 ColorPhase < ui_type = "slider"; ui_label = "Hue Phases"; ui_tooltip = "Red, green, blue phase shifts."; ui_min = COLOR_PHASE_R_MIN; ui_max = COLOR_PHASE_B_MAX; ui_step = 0.1; ui_category = "Color"; > = float3(COLOR_PHASE_R_DEFAULT, COLOR_PHASE_G_DEFAULT, COLOR_PHASE_B_DEFAULT);
-uniform float ColorAnimationSpeed < ui_type = "slider"; ui_label = "Color Speed"; ui_tooltip = "How fast sunset colors shift."; ui_min = COLOR_ANIM_FACTOR_MIN; ui_max = COLOR_ANIM_FACTOR_MAX; ui_step = 0.01; ui_category = "Color"; > = COLOR_ANIM_FACTOR_DEFAULT;
-uniform float ColorBrightnessBoost < ui_type = "slider"; ui_label = "Glow"; ui_tooltip = "Cloud color brightness boost."; ui_min = COLOR_BRIGHTNESS_ADD_MIN; ui_max = COLOR_BRIGHTNESS_ADD_MAX; ui_step = 0.01; ui_category = "Color"; > = COLOR_BRIGHTNESS_ADD_DEFAULT;
+uniform float3 ColorPhase < ui_type = "slider"; ui_label = "Hue Phases"; ui_tooltip = "Red, green, blue phase shifts."; ui_min = COLOR_PHASE_R_MIN; ui_max = COLOR_PHASE_B_MAX; ui_step = 0.1; ui_category = AS_CAT_COLOR; > = float3(COLOR_PHASE_R_DEFAULT, COLOR_PHASE_G_DEFAULT, COLOR_PHASE_B_DEFAULT);
+uniform float ColorAnimationSpeed < ui_type = "slider"; ui_label = "Color Speed"; ui_tooltip = "How fast sunset colors shift."; ui_min = COLOR_ANIM_FACTOR_MIN; ui_max = COLOR_ANIM_FACTOR_MAX; ui_step = 0.01; ui_category = AS_CAT_COLOR; > = COLOR_ANIM_FACTOR_DEFAULT;
+uniform float ColorBrightnessBoost < ui_type = "slider"; ui_label = "Glow"; ui_tooltip = "Cloud color brightness boost."; ui_min = COLOR_BRIGHTNESS_ADD_MIN; ui_max = COLOR_BRIGHTNESS_ADD_MAX; ui_step = 0.01; ui_category = AS_CAT_COLOR; > = COLOR_BRIGHTNESS_ADD_DEFAULT;
 
 // --- Output ---
 uniform float Exposure < ui_type = "slider"; ui_label = "Exposure"; ui_tooltip = "Final image brightness."; ui_min = TONEMAP_EXPOSURE_MIN; ui_max = TONEMAP_EXPOSURE_MAX; ui_step = 1e6; ui_category = "Output"; > = TONEMAP_EXPOSURE_DEFAULT;
@@ -163,6 +159,14 @@ uniform float AdvMarchSDFDivisor < ui_type = "slider"; ui_label = "Step Divisor"
 uniform float AdvColorSDFMod < ui_type = "slider"; ui_label = "Color SDF"; ui_tooltip = "Density modulates color."; ui_min = COLOR_SDF_MOD_MIN; ui_max = COLOR_SDF_MOD_MAX; ui_step = 0.001; ui_category = "Advanced"; ui_category_closed = true; > = COLOR_SDF_MOD_DEFAULT;
 uniform float AdvColorExpSDFMod < ui_type = "slider"; ui_label = "Color Exp SDF"; ui_tooltip = "Density modulates glow."; ui_min = COLOR_EXP_SDF_MOD_MIN; ui_max = COLOR_EXP_SDF_MOD_MAX; ui_step = 0.001; ui_category = "Advanced"; ui_category_closed = true; > = COLOR_EXP_SDF_MOD_DEFAULT;
 
+// --- Animation Controls ---
+uniform float AnimationSpeed < ui_type = "slider"; ui_label = "Speed"; ui_tooltip = "Cloud and color animation speed."; ui_min = ANIMATION_SPEED_MIN; ui_max = ANIMATION_SPEED_MAX; ui_step = 0.01; ui_category = AS_CAT_ANIMATION; > = ANIMATION_SPEED_DEFAULT;
+uniform float AnimationKeyframe < ui_type = "slider"; ui_label = "Time Offset"; ui_tooltip = "Scrub the animation timeline."; ui_min = ANIMATION_KEYFRAME_MIN; ui_max = ANIMATION_KEYFRAME_MAX; ui_step = 0.1; ui_category = AS_CAT_ANIMATION; > = ANIMATION_KEYFRAME_DEFAULT;
+
+// --- Final Mix ---
+AS_BLENDMODE_UI(BlendMode)
+AS_BLENDAMOUNT_UI(BlendAmount)
+
 // --- Stage/Transform ---
 AS_STAGEDEPTH_UI(EffectDepth)
 AS_ROTATION_UI(EffectSnapRotation, EffectFineRotation)
@@ -172,7 +176,8 @@ AS_ROTATION_UI(EffectSnapRotation, EffectFineRotation)
 // ============================================================================
 float4 AS_BGX_SunsetClouds_PS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : SV_Target
 {
-    float time = AS_getTime() * AnimationSpeed + AnimationKeyframe;
+    float4 originalColor = tex2D(ReShade::BackBuffer, texcoord);
+    float time = AS_timeSeconds() * AnimationSpeed + AnimationKeyframe;
     float2 iResolution = float2(BUFFER_WIDTH, BUFFER_HEIGHT);
     float2 fragCoord = vpos.xy;
 
@@ -189,12 +194,8 @@ float4 AS_BGX_SunsetClouds_PS(float4 vpos : SV_Position, float2 texcoord : TEXCO
     }
     float2 centeredCoord = uv * iResolution;
 
-    float4 originalColor = tex2D(ReShade::BackBuffer, texcoord);
-    float depth = ReShade::GetLinearizedDepth(texcoord);
-    // Apply depth test
-    if (depth < EffectDepth) {
-        return originalColor;
-    }
+    // Depth-aware early return
+    AS_DEPTH_EARLY_RETURN(texcoord, EffectDepth)
 
     int i = 0;
     float depth_z = 0.0;
@@ -232,9 +233,8 @@ float4 AS_BGX_SunsetClouds_PS(float4 vpos : SV_Position, float2 texcoord : TEXCO
     }
 
     outputColor = AS_TANH(outputColor * outputColor / Exposure); // Using Exposure UI with compatible tanh approximation
-    outputColor.a = 1.0;
 
-    return outputColor;
+    return float4(AS_composite(outputColor.rgb, originalColor.rgb, BlendMode, BlendAmount), 1.0);
 }
 
 // ============================================================================
@@ -252,4 +252,4 @@ technique AS_BGX_SunsetClouds <
     }
 }
 
-#endif // __AS_BGX_SUNSETCLOUDS_1_FX
+#endif // __AS_BGX_SunsetClouds_1_fx

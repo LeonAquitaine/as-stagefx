@@ -42,10 +42,12 @@
 #include "AS_Utils.1.fxh"
 #include "AS_Noise.1.fxh"
 
+uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " "; ui_text = "\nFloating dust particles with two layers and backlight glow.\nAdds atmosphere and depth to any indoor scene.\n\nAS StageFX | Floating Dust Motes Effect by Leon Aquitaine\n"; > = 0;
+
 // ============================================================================
 // NAMESPACE
 // ============================================================================
-namespace ASDustMotes {
+namespace AS_DustMotes {
 
 // ============================================================================
 // CONSTANTS
@@ -125,12 +127,12 @@ static const int DEFAULT_AUDIO_TARGET = 0; // Particle Size
 //------------------------------------------------------------------------------------------------
 
 // --- Appearance ---
-uniform float3 ParticleColorBright < ui_type = "color"; ui_label = "Particle Color: Bright"; ui_category = "Appearance"; > = DEFAULT_COLOR1_BRIGHT;
-uniform float3 ParticleColorDark < ui_type = "color"; ui_label = "Particle Color: Dark"; ui_category = "Appearance"; > = DEFAULT_COLOR2_DARK;
-uniform float ParticleColorVariation < ui_type = "slider"; ui_label = "Particle Color: Variation"; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Appearance"; > = DEFAULT_COLOR_VARIANCE;
-uniform float ParticleBrightnessVariation < ui_type = "slider"; ui_label = "Particle Brightness: Variation"; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Appearance"; > = DEFAULT_BRIGHTNESS_VARIANCE;
-uniform float DepthPerspectiveAmount < ui_type = "slider"; ui_label = "Depth: Haze & Perspective"; ui_tooltip = "How particles appear smaller/fainter with distance (pseudo-depth)."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Appearance"; > = DEFAULT_DEPTH_INFLUENCE;
-uniform float SizeBiasTowardLarge < ui_type = "slider"; ui_label = "Size Distribution: Bias to Large"; ui_tooltip = "Skews random size generation towards larger particles within min/max range for each layer."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Appearance"; > = DEFAULT_BIAS_LARGE_PARTICLES;
+uniform float3 ParticleColorBright < ui_type = "color"; ui_label = "Particle Color: Bright"; ui_tooltip = "The brightest color particles can take. Used for highlights and well-lit motes."; ui_category = AS_CAT_APPEARANCE; > = DEFAULT_COLOR1_BRIGHT;
+uniform float3 ParticleColorDark < ui_type = "color"; ui_label = "Particle Color: Dark"; ui_tooltip = "The darkest color particles can take. Used for shadowed or distant motes."; ui_category = AS_CAT_APPEARANCE; > = DEFAULT_COLOR2_DARK;
+uniform float ParticleColorVariation < ui_type = "slider"; ui_label = "Particle Color: Variation"; ui_tooltip = "How much each mote's color varies between the Bright and Dark color picks. 0 = uniform, 1 = full range."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = AS_CAT_APPEARANCE; > = DEFAULT_COLOR_VARIANCE;
+uniform float ParticleBrightnessVariation < ui_type = "slider"; ui_label = "Particle Brightness: Variation"; ui_tooltip = "Randomizes brightness across motes. Higher values create a mix of dim and bright particles."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = AS_CAT_APPEARANCE; > = DEFAULT_BRIGHTNESS_VARIANCE;
+uniform float DepthPerspectiveAmount < ui_type = "slider"; ui_label = "Depth: Haze & Perspective"; ui_tooltip = "How particles appear smaller/fainter with distance (pseudo-depth)."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = AS_CAT_APPEARANCE; > = DEFAULT_DEPTH_INFLUENCE;
+uniform float SizeBiasTowardLarge < ui_type = "slider"; ui_label = "Size Distribution: Bias to Large"; ui_tooltip = "Skews random size generation towards larger particles within min/max range for each layer."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = AS_CAT_APPEARANCE; > = DEFAULT_BIAS_LARGE_PARTICLES;
 
 // --- Layer 1 Controls (Fine Detail Layer) ---
 uniform float FineMotesDensity < ui_type = "slider"; ui_label = "Density"; ui_tooltip = "Controls the amount of fine motes. Lower values = more motes."; ui_min = 0.001; ui_max = 0.5; ui_step = 0.001; ui_category = "Fine Motes"; > = DEFAULT_L1_DENSITY_THRESHOLD;
@@ -160,7 +162,7 @@ uniform float ParticleAreaBlurAmount < ui_type = "slider"; ui_label = "Particle 
 // --- Audio Reactivity ---
 AS_AUDIO_UI(DustMotes_AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
 AS_AUDIO_MULT_UI(DustMotes_AudioMultiplier, "Audio Intensity", 1.0, 2.0, "Audio Reactivity")
-uniform int DustMotes_AudioTarget < ui_type = "combo"; ui_label = "Audio Target Parameter"; ui_tooltip = "Select which parameter will be affected by audio reactivity"; ui_items = "Particle Size\0Particle Opacity\0Blur Amount\0"; ui_category = "Audio Reactivity"; > = DEFAULT_AUDIO_TARGET;
+AS_AUDIO_TARGET_UI(DustMotes_AudioTarget, "Particle Size\0Particle Opacity\0Blur Amount\0", DEFAULT_AUDIO_TARGET)
 
 // --- Stage Controls ---
 AS_STAGEDEPTH_UI(EffectDepth)
@@ -309,7 +311,7 @@ float4 FloatingParticlesPS(float4 vpos : SV_Position, float2 texcoord : TexCoord
 {
     // Get depth and handle depth-based masking
     float depth = ReShade::GetLinearizedDepth(texcoord);
-    if (depth < EffectDepth) {
+    if (AS_isInFrontOfStage(texcoord, EffectDepth)) {
         return tex2D(ReShade::BackBuffer, texcoord);
     }
 
@@ -318,7 +320,7 @@ float4 FloatingParticlesPS(float4 vpos : SV_Position, float2 texcoord : TexCoord
     float aspectRatio = ReShade::ScreenSize.x / ReShade::ScreenSize.y;
 
     // Get audio reactivity values
-    float audioReactivity = AS_applyAudioReactivity(1.0, DustMotes_AudioSource, DustMotes_AudioMultiplier, true);
+    float audioReactivity = AS_audioModulate(1.0, DustMotes_AudioSource, DustMotes_AudioMultiplier, true, 0);
 
     // Coordinates to use for particle processing (no rotation)
     float2 rotatedCoord = texcoord;
@@ -421,10 +423,10 @@ technique AS_VFX_DustMotes < ui_label = "[AS] VFX: Dust Motes"; ui_tooltip = "Si
     pass
     {
         VertexShader = PostProcessVS;
-        PixelShader = ASDustMotes::FloatingParticlesPS;
+        PixelShader = AS_DustMotes::FloatingParticlesPS;
     }
 }
 
-} // namespace ASDustMotes
+} // namespace AS_DustMotes
 
 #endif // __AS_VFX_DustMotes_1_fx

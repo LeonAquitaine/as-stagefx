@@ -40,7 +40,7 @@
 #define __AS_VFX_ClairObscur_1_fx
 
 #include "ReShade.fxh"
-#include "AS_Utils.1.fxh" // For AS_getTime()
+#include "AS_Utils.1.fxh" // For AS_timeSeconds()
 #include "AS_Noise.1.fxh" // For noise functions and hash functions
 
 // ============================================================================
@@ -277,7 +277,7 @@ texture PetalAtlasTexture < source = __PETAL_ATLAS_TEXTURE_PATH; ui_label = "Pet
 sampler PetalAtlas_Sampler { Texture = PetalAtlasTexture; AddressU = CLAMP; AddressV = CLAMP; MinFilter = LINEAR; MagFilter = LINEAR; MipFilter = LINEAR; };
 
 // --- Shader Constants ---
-#define ALPHA_THRESHOLD 0.01      // Minimum alpha value for a petal to be considered visible
+// ALPHA_THRESHOLD is defined as static const above (line 57); #define duplicate removed
 
 // --- UI Uniforms ---
 
@@ -337,18 +337,7 @@ AS_BLENDMODE_UI(ClairObscur_BlendMode)
 AS_BLENDAMOUNT_UI(ClairObscur_BlendAmount)
 
 // ---- Debug Tools ----
-uniform int DebugMode <
-    ui_type = "combo"; ui_label = "Debug View";
-    ui_category = "Debug"; ui_category_closed = true;
-    ui_items = "Normal Effect\0"
-               "Density Visualization\0" 
-               "Cell Structure\0"
-               "Single Petal Alpha\0"
-               "Flutter Effect\0"
-               "Petal Texture Test\0"
-               "Atlas Tile View\0"; 
-    ui_tooltip = "Tools for visualizing different aspects of the effect.";
-> = 0;
+uniform int DebugMode < ui_type = "combo"; ui_label = "Debug View"; ui_category = AS_CAT_DEBUG; ui_category_closed = true; ui_items = "Normal Effect\0Density Visualization\0Cell Structure\0Single Petal Alpha\0Flutter Effect\0Petal Texture Test\0Atlas Tile View\0"; ui_tooltip = "Tools for visualizing different aspects of the effect."; > = 0;
 
 // --- Custom Vector Noise Function Based on AS_Noise Library ---
 // 2D->2D vector noise function that produces consistent, smooth 2D vector field
@@ -365,199 +354,196 @@ float2 AS_VectorNoise2D(float2 uv) {
     return lerp(v0, v1, f.x); 
 }
 
-// --- Helper Functions ---
-float2 ps_rotate(float2 p_to_rotate, float rad) { float s = sin(rad); float c = cos(rad); return float2(p_to_rotate.x * c - p_to_rotate.y * s, p_to_rotate.x * s + p_to_rotate.y * c); }
-
 // --- Voronoi and Particle Drawing ---
 // Use AS_radians(deg) from AS_Utils instead of local conversion
 float calcVoronoiPointRotRad(float2 rootUV, float time) { return time * VoronoiPointSpinSpeed * (AS_hash21(rootUV) - 0.5) * 2.0 * AS_TWO_PI; }
-float2 getVoronoiPoint(float2 rootUV, float rad) { float2 calculatedPt = AS_hash22(rootUV) - 0.5; calculatedPt = ps_rotate(calculatedPt, rad) * 0.66; calculatedPt += rootUV + float2(0.5, 0.5); return calculatedPt; }
+float2 getVoronoiPoint(float2 rootUV, float rad) { float2 calculatedPt = AS_hash22(rootUV) - 0.5; calculatedPt = AS_rotate2D(calculatedPt, rad) * 0.66; calculatedPt += rootUV + float2(0.5, 0.5); return calculatedPt; }
 
-// currentWindStrength parameter is kept here, but will receive 0.0f due to the #define path
-float4 DrawPetalInstance(float2 uvForVoronoiLookup, float2 originalScreenUV, float instanceSeed, float currentTime, 
-                         float currentLayerAlphaMod, float2 driftVelocityForSway) 
-{ 
-    float2 rootUV = floor(uvForVoronoiLookup);
+// --- Petal lifecycle result ---
+struct PetalLifecycleResult {
+    float alpha;         // Combined fade-in/fade-out alpha with wobble applied
+    float oscillation;   // Lifecycle-driven rotation oscillation amount
+    float normalizedTime; // Current position in lifecycle (0-1)
+    float instanceTimeRaw; // Raw (unmodulated) instance time for rotation calculations
+    float randomFactor;  // Per-petal random factor derived from cell + seed
+};
 
-    float2 density_sample_uv = frac(rootUV / DensityCellRepeatScale); 
-    float instanceDensityNoise = tex2D(PetalFlutter_samplerNoiseSource, density_sample_uv * NoiseTexScale + currentTime * 0.005).r; 
-    float instanceDensityFactor = smoothstep(
+// --- Petal Helper Functions ---
+
+// Calculate voronoi density factor for spawn culling
+// Returns 0 if the petal should not spawn, otherwise a density multiplier
+float calculateDensityFactor(float2 rootUV, float currentTime) {
+    float2 density_sample_uv = frac(rootUV / DensityCellRepeatScale);
+    float instanceDensityNoise = tex2D(PetalFlutter_samplerNoiseSource, density_sample_uv * NoiseTexScale + currentTime * DENSITY_PATTERN_ANIMATION_SPEED).r;
+    return smoothstep(
         DensityThreshold - DensityFadeRange * 0.5,
         DensityThreshold + DensityFadeRange * 0.5,
         instanceDensityNoise
-    );    if (instanceDensityFactor < ALPHA_THRESHOLD) { 
-        return float4(0.0, 0.0, 0.0, 0.0); 
-    }    float voronoiPointRotRad = calcVoronoiPointRotRad(rootUV, currentTime);
-    float2 petalInstanceCenter_NoSway = getVoronoiPoint(rootUV, voronoiPointRotRad);
-    
-    // Calculate sway time - we'll keep SimulationSpeed for legacy compatibility
-    float swayTime = currentTime * SimulationSpeed * BASE_SWAY_ANIMATION_SPEED + instanceSeed * SWAY_TIMING_OFFSET;
-    float swayAngle_calc = swayTime * (SWAY_BASE_FREQUENCY + AS_hash21(rootUV + 0.3) * SWAY_FREQUENCY_VARIATION) + AS_hash21(rootUV + instanceSeed * SWAY_PHASE_SEED_MULTIPLIER) * AS_TWO_PI;
-    float2 swayDirVec = float2(driftVelocityForSway.y, -driftVelocityForSway.x); 
-    if (length(swayDirVec) < 0.001) swayDirVec = float2(1.0, 0.0); 
-    else swayDirVec = normalize(swayDirVec);    float2 swayOffset = swayDirVec * sin(swayAngle_calc) * SwayMagnitude;
-    float2 finalPetalInstanceCenter = petalInstanceCenter_NoSway + swayOffset;
-    
-    float timeOffset = AS_hash21(rootUV + instanceSeed) * Lifetime;
-    // Keep using SimulationSpeed for backwards compatibility
-    float instanceTimeRaw = (currentTime * SimulationSpeed + timeOffset);
-    float time_val = instanceTimeRaw / Lifetime;
-    float normalizedTime = time_val - floor(time_val); 
-    
-    float petalRandomFactor = AS_hash21(rootUV + instanceSeed * 0.31);    // Create a smooth bell curve for the lifecycle - for both opacity and edge-on scaling
-    // This gives us a more natural appearance where petals gradually turn from edge-on to face-on and back
-    float fadeIn = smoothstep(0.0, FADE_IN_THRESHOLD, normalizedTime); 
-    float fadeOut = smoothstep(1.0, FADE_OUT_THRESHOLD, normalizedTime); 
-    float lifetimeAlpha = fadeIn * fadeOut;// Apply a subtle, additional oscillation to the rotation during lifecycle
-    // Creates a gentle wobbling effect as petals fall, like real petals in air
-    float lifetimeOscillation = 0.0;
-    if (RotationVariationAmplitude > 0.0) {        // Create lifecycle-specific texture coordinates for sampling noise
-        float2 lifecycleNoiseUV = float2(
-            frac(normalizedTime + petalRandomFactor * LIFECYCLE_NOISE_FACTOR1),
-            frac(petalRandomFactor * LIFECYCLE_NOISE_FACTOR2 + instanceTimeRaw * LIFECYCLE_NOISE_TIMING_FACTOR * RotationVariationSpeed)
-        );
-        
-        // Sample noise texture for organic variation
-        float lifecycleNoise = tex2D(PetalFlutter_samplerNoiseSource, lifecycleNoiseUV).r * 2.0 - 1.0; // -1 to 1
-        
-        // Create a complex oscillation based on lifecycle phase
-        float lifetimeFrequency = 1.0 + petalRandomFactor * 3.0;
-        
-        // Main cycle - one complete oscillation during lifecycle
-        float mainCycle = sin(normalizedTime * AS_TWO_PI * lifetimeFrequency * RotationVariationSpeed);
-        
-        // Add micro-oscillations that vary in intensity based on lifecycle phase
-        // These create subtle "turbulence" effects when petals are most vulnerable (beginning/end)
-        float entryPhase = smoothstep(0.0, 0.3, normalizedTime);
-        float exitPhase = smoothstep(1.0, 0.7, normalizedTime);
-        
-        // Calculate vulnerability - highest at beginning and end, lowest in middle
-        float vulnerability = 1.0 - (entryPhase * exitPhase * 4.0); // Peaks at 0 and 1, minimum at 0.5
-        
-        // Modify vulnerability by noise to make transitions less predictable
-        vulnerability *= (1.0 + lifecycleNoise * 0.3);
-        
-        // Create texture-driven micro-turbulence that's strongest at entry/exit
-        float microTurbulence = lifecycleNoise * vulnerability * 0.5;
-        
-        // Add a subtle higher frequency oscillation modulated by noise
-        float highFreqComponent = sin(normalizedTime * AS_TWO_PI * lifetimeFrequency * (2.5 + lifecycleNoise) * RotationVariationSpeed) * 0.2;
-        
-        // Combine oscillations with dynamic weighting based on lifecycle phase
-        // Main cycle dominates in middle, turbulence at edges
-        lifetimeOscillation = mainCycle * (1.0 - vulnerability * 0.7) + microTurbulence + highFreqComponent;
-        
-        // Scale by lifecycle phase and add a subtle non-linear response
-        // The sqrt makes smaller oscillations more pronounced
-        lifetimeOscillation *= lifetimeAlpha * 0.3 * sqrt(RotationVariationAmplitude);
-    }
-    if (lifetimeAlpha <= ALPHA_THRESHOLD) {
-        return float4(0.0, 0.0, 0.0, 0.0);
-    }    
-      // Apply subtle wobble to alpha for more natural appearance
-    lifetimeAlpha = max(AS_ALPHA_EPSILON, lifetimeAlpha * (1.0 + lifetimeOscillation * LIFECYCLE_MICRO_OSC_FACTOR));
+    );
+}
 
-    float2 petalSpaceUV_raw = uvForVoronoiLookup - finalPetalInstanceCenter;
-    
-    // Calculate natural, organic rotation with variation
-    float effectiveSpinSpeed = BasePetalSpinSpeed;    // Create unique characteristics for each petal's rotation variation
-    float baseFrequency = 1.0 + petalRandomFactor * 2.0;
-    float phaseOffset = petalRandomFactor * AS_TWO_PI; // Random phase offset for each petal
-      // Base linear rotation with random initial rotation
-    float baseSpinAngle = instanceTimeRaw * effectiveSpinSpeed * (PETAL_MIN_SPEED_FACTOR + petalRandomFactor * (PETAL_MAX_SPEED_FACTOR - PETAL_MIN_SPEED_FACTOR)) + petalRandomFactor * AS_TWO_PI;
-    
-    // Complex multi-frequency system with varied phases and amplitudes
+// Calculate sway offset perpendicular to drift direction
+float2 calculateSwayOffset(float2 rootUV, float instanceSeed, float currentTime, float2 driftVelocityForSway) {
+    float swayTime = currentTime * SimulationSpeed * BASE_SWAY_ANIMATION_SPEED + instanceSeed * SWAY_TIMING_OFFSET;
+    float swayAngle_calc = swayTime * (SWAY_BASE_FREQUENCY + AS_hash21(rootUV + SWAY_UV_OFFSET) * SWAY_FREQUENCY_VARIATION)
+                         + AS_hash21(rootUV + instanceSeed * SWAY_PHASE_SEED_MULTIPLIER) * AS_TWO_PI;
+
+    float2 swayDirVec = float2(driftVelocityForSway.y, -driftVelocityForSway.x);
+    if (length(swayDirVec) < MIN_SWAY_DIR_LENGTH)
+        swayDirVec = float2(DEFAULT_SWAY_DIR_X, DEFAULT_SWAY_DIR_Y);
+    else
+        swayDirVec = normalize(swayDirVec);
+
+    return swayDirVec * sin(swayAngle_calc) * SwayMagnitude;
+}
+
+// Calculate petal lifecycle: fade-in/out alpha and rotation oscillation
+// Returns a PetalLifecycleResult with alpha, oscillation, timing, and random seed
+PetalLifecycleResult calculatePetalLifecycle(float2 rootUV, float instanceSeed, float currentTime) {
+    PetalLifecycleResult result;
+
+    float timeOffset = AS_hash21(rootUV + instanceSeed) * Lifetime;
+    result.instanceTimeRaw = (currentTime * SimulationSpeed + timeOffset);
+    float time_val = result.instanceTimeRaw / Lifetime;
+    result.normalizedTime = time_val - floor(time_val);
+
+    result.randomFactor = AS_hash21(rootUV + instanceSeed * INSTANCE_SEED_FACTOR);
+
+    // Smooth bell curve for lifecycle opacity
+    float fadeIn = smoothstep(0.0, FADE_IN_THRESHOLD, result.normalizedTime);
+    float fadeOut = smoothstep(1.0, FADE_OUT_THRESHOLD, result.normalizedTime);
+    float lifetimeAlpha = fadeIn * fadeOut;
+
+    // Lifecycle-driven rotation oscillation (wobble during fall)
+    result.oscillation = 0.0;
+    if (RotationVariationAmplitude > 0.0) {
+        // Lifecycle-specific noise coordinates
+        float2 lifecycleNoiseUV = float2(
+            frac(result.normalizedTime + result.randomFactor * LIFECYCLE_NOISE_FACTOR1),
+            frac(result.randomFactor * LIFECYCLE_NOISE_FACTOR2 + result.instanceTimeRaw * LIFECYCLE_NOISE_TIMING_FACTOR * RotationVariationSpeed)
+        );
+        float lifecycleNoise = tex2D(PetalFlutter_samplerNoiseSource, lifecycleNoiseUV).r * 2.0 - 1.0;
+
+        float lifetimeFrequency = 1.0 + result.randomFactor * 3.0;
+
+        // Main cycle - one complete oscillation during lifecycle
+        float mainCycle = sin(result.normalizedTime * AS_TWO_PI * lifetimeFrequency * RotationVariationSpeed);
+
+        // Vulnerability peaks at start/end, minimum at midpoint
+        float entryPhase = smoothstep(0.0, LIFECYCLE_ENTRY_PHASE, result.normalizedTime);
+        float exitPhase = smoothstep(1.0, LIFECYCLE_EXIT_PHASE, result.normalizedTime);
+        float vulnerability = 1.0 - (entryPhase * exitPhase * LIFECYCLE_VULNERABILITY_SCALE);
+        vulnerability *= (1.0 + lifecycleNoise * LIFECYCLE_NOISE_INFLUENCE);
+
+        // Texture-driven micro-turbulence strongest at entry/exit
+        float microTurbulence = lifecycleNoise * vulnerability * LIFECYCLE_MICRO_TURBULENCE;
+
+        // Higher frequency oscillation modulated by noise
+        float highFreqComponent = sin(result.normalizedTime * AS_TWO_PI * lifetimeFrequency
+            * (LIFECYCLE_HIGH_FREQ_SCALE + lifecycleNoise) * RotationVariationSpeed) * LIFECYCLE_HIGH_FREQ_COMPONENT;
+
+        // Combine: main cycle dominates in middle, turbulence at edges
+        result.oscillation = mainCycle * (1.0 - vulnerability * LIFECYCLE_VULNERABILITY_WEIGHT)
+                           + microTurbulence + highFreqComponent;
+
+        // Scale by lifecycle phase with non-linear response
+        result.oscillation *= lifetimeAlpha * LIFECYCLE_AMPLITUDE_SCALE * sqrt(RotationVariationAmplitude);
+    }
+
+    // Apply subtle wobble to alpha for more natural appearance
+    result.alpha = max(AS_ALPHA_EPSILON, lifetimeAlpha * (1.0 + result.oscillation * LIFECYCLE_MICRO_OSC_FACTOR));
+
+    return result;
+}
+
+// Calculate the total spin angle including base rotation and multi-frequency variation
+float calculateRotationAngle(float petalRandomFactor, float instanceTimeRaw) {
+    // Base linear rotation with per-petal speed variation
+    float baseSpinAngle = instanceTimeRaw * BasePetalSpinSpeed
+        * (PETAL_MIN_SPEED_FACTOR + petalRandomFactor * (PETAL_MAX_SPEED_FACTOR - PETAL_MIN_SPEED_FACTOR))
+        + petalRandomFactor * AS_TWO_PI;
+
+    // Multi-frequency variation system
+    float baseFrequency = 1.0 + petalRandomFactor * PETAL_FREQUENCY_FACTOR;
+    float phaseOffset = petalRandomFactor * AS_TWO_PI;
     float timeBase = instanceTimeRaw * baseFrequency * RotationVariationSpeed;
-      // Sample noise texture for additional organic variation
-    // Create unique texture coordinates for each petal based on its random characteristics
+
+    // Sample noise at two locations for organic variation
     float2 noiseUV1 = float2(
-        frac(petalRandomFactor * NOISE_SCALE_FACTOR1 + timeBase * NOISE_TIME_FACTOR1), 
+        frac(petalRandomFactor * NOISE_SCALE_FACTOR1 + timeBase * NOISE_TIME_FACTOR1),
         frac(petalRandomFactor * NOISE_SCALE_FACTOR2 + timeBase * NOISE_TIME_FACTOR2)
     );
     float2 noiseUV2 = float2(
-        frac(petalRandomFactor * NOISE_SCALE_FACTOR3 + timeBase * NOISE_TIME_FACTOR3), 
+        frac(petalRandomFactor * NOISE_SCALE_FACTOR3 + timeBase * NOISE_TIME_FACTOR3),
         frac(petalRandomFactor * NOISE_SCALE_FACTOR4 + timeBase * NOISE_TIME_FACTOR4)
     );
-    
-    // Sample noise texture at two different locations and times for varied input
-    float noise1 = tex2D(PetalFlutter_samplerNoiseSource, noiseUV1).r * 2.0 - 1.0; // -1 to 1 range
-    float noise2 = tex2D(PetalFlutter_samplerNoiseSource, noiseUV2).r * 2.0 - 1.0; // -1 to 1 range
-    
-    // Use noise as multipliers for oscillation frequencies to create unpredictable timing
-    float freqModifier1 = 1.0 + noise1 * 0.3;
-    float freqModifier2 = 1.0 + noise2 * 0.2;
-    
-    // Primary slow oscillation with frequency modified by noise
-    float oscillation1 = sin(timeBase * 0.23 * freqModifier1 + phaseOffset) * 0.45;
-    
-    // Secondary medium oscillation with phase shift and frequency modified by noise
-    float oscillation2 = sin(timeBase * 0.57 * freqModifier2 + phaseOffset * 1.3) * 0.30;
-    
-    // Tertiary fast oscillation - creates fine detail
-    float oscillation3 = sin(timeBase * 1.38 + phaseOffset * 0.7) * 0.15;
-    
-    // Quarter-frequency very slow oscillation - adds long-term variation
-    float oscillation4 = sin(timeBase * 0.11 + phaseOffset * 1.7) * 0.20;
-    
-    // Add a chaotic component driven directly by the noise texture
-    // This creates non-sinusoidal, unpredictable movements that break the pattern
-    float chaosComponent = (noise1 * noise2) * 0.15;
-    
-    // Create additional complexity with non-harmonic frequencies
-    float microVariation = sin(timeBase * AS_PI) * sin(timeBase * AS_E) * 0.10;
-    
-    // Combine all oscillations with different weights
+    float noise1 = tex2D(PetalFlutter_samplerNoiseSource, noiseUV1).r * 2.0 - 1.0;
+    float noise2 = tex2D(PetalFlutter_samplerNoiseSource, noiseUV2).r * 2.0 - 1.0;
+
+    // Noise-modulated oscillation frequencies
+    float freqModifier1 = 1.0 + noise1 * ROTATION_NOISE_INFLUENCE1;
+    float freqModifier2 = 1.0 + noise2 * ROTATION_NOISE_INFLUENCE2;
+
+    // Multi-frequency oscillation layers
+    float oscillation1 = sin(timeBase * ROTATION_OSC_FREQ1 * freqModifier1 + phaseOffset * ROTATION_OSC_PHASE_FACTOR1) * ROTATION_OSC_AMP1;
+    float oscillation2 = sin(timeBase * ROTATION_OSC_FREQ2 * freqModifier2 + phaseOffset * ROTATION_OSC_PHASE_FACTOR2) * ROTATION_OSC_AMP2;
+    float oscillation3 = sin(timeBase * ROTATION_OSC_FREQ3 + phaseOffset * ROTATION_OSC_PHASE_FACTOR3) * ROTATION_OSC_AMP3;
+    float oscillation4 = sin(timeBase * ROTATION_OSC_FREQ4 + phaseOffset * ROTATION_OSC_PHASE_FACTOR4) * ROTATION_OSC_AMP4;
+
+    // Chaotic + non-harmonic components
+    float chaosComponent = (noise1 * noise2) * ROTATION_CHAOS_FACTOR;
+    float microVariation = sin(timeBase * ROTATION_MICRO_FREQ1) * sin(timeBase * ROTATION_MICRO_FREQ2) * ROTATION_MICRO_AMP;
+
     float rawVariation = oscillation1 + oscillation2 + oscillation3 + oscillation4 + microVariation + chaosComponent;
-    
-    // Apply a non-linear response curve using the noise values to create dynamic acceleration
-    float noiseInfluence = lerp(0.8, 1.2, (noise1 + 1.0) * 0.5); // 0.8 to 1.2 range
-    float normalizedVariation = rawVariation / (1.2 * noiseInfluence); // Normalize with noise-influenced scaling
-    
-    // Apply complex non-linear curve - stronger effect when variation is small, gentler when large
-    float curvedVariation = normalizedVariation * (1.0 - 0.2 * abs(normalizedVariation)) * (1.0 + noise2 * 0.1);
-    
-    // Apply the final variation scaled by user control parameter
-    float variationAngle = curvedVariation * RotationVariationAmplitude * 0.5;
-    
-    // Apply the variation by adding to the base angle (not multiplying)
-    float spinAngle = baseSpinAngle + variationAngle;
-    
-    float2 rotatedPetalSpaceUV = ps_rotate(petalSpaceUV_raw, spinAngle);
-      // Apply the lifecycle flip effect - scale differently based on normalized time
-    // When lifetimeAlpha is 0 (start/end of life) -> scale by FlipScaleMin
-    // When lifetimeAlpha is 1 (middle of life) -> scale by 1.0
-    // Apply the FlipLifecycleBias to make the transition between edge-on and face-on more controllable
-    // Higher bias means petals spend more time in the edge-on state
+
+    // Non-linear response curve with noise-influenced scaling
+    float noiseInfluence = lerp(NOISE_INFLUENCE_MIN, NOISE_INFLUENCE_MAX, (noise1 + 1.0) * 0.5);
+    float normalizedVariation = rawVariation / (NOISE_NORMALIZATION_FACTOR * noiseInfluence);
+    float curvedVariation = normalizedVariation * (1.0 - NONLINEAR_CURVE_FACTOR * abs(normalizedVariation))
+                          * (1.0 + noise2 * ROTATION_NOISE_NONLINEAR);
+
+    float variationAngle = curvedVariation * RotationVariationAmplitude * ROTATION_VARIATION_FINAL_SCALE;
+
+    return baseSpinAngle + variationAngle;
+}
+
+// Apply lifecycle flip effect and size variation to get final texture lookup UVs
+// Returns the UV in petal-local space ready for atlas sampling, or (-1,-1) if outside bounds
+float2 calculatePetalTransform(float2 petalSpaceUV_raw, float spinAngle, float lifetimeAlpha, float petalRandomFactor) {
+    float2 rotatedUV = AS_rotate2D(petalSpaceUV_raw, spinAngle);
+
+    // Lifecycle flip: edge-on at birth/death, face-on at midlife
     float biasedLifetimeAlpha = pow(lifetimeAlpha, 1.0 / FlipLifecycleBias);
     float flipScale = lerp(FlipScaleMin, 1.0, biasedLifetimeAlpha);
-    
-    // Apply the scale factor along the chosen axis (controlled by FlipAxis)
-    // When FlipAxis = 0.0 -> scale horizontally
-    // When FlipAxis = 1.0 -> scale vertically 
+
+    // Apply along chosen axis (FlipAxis: 0=horizontal, 1=vertical)
     float2 flipScaleFactor = lerp(float2(flipScale, 1.0), float2(1.0, flipScale), FlipAxis);
-    
-    // Apply scaling to UV coordinates correctly to simulate the edge-on effect
-    // We need to divide the UVs by the flipScaleFactor to make the petal appear thinner
-    // This makes the petal appear compressed along the chosen axis when entering/exiting
-    rotatedPetalSpaceUV = rotatedPetalSpaceUV / flipScaleFactor;
+    rotatedUV = rotatedUV / flipScaleFactor;
 
+    // Size variation per petal
     float sizeVariation = (petalRandomFactor - 0.5) * 2.0 * PetalSizeVariation;
-    float currentPetalVisualSize = PetalBaseSize * (1.0 + sizeVariation); 
-    if (currentPetalVisualSize <= AS_MIN_NORM) currentPetalVisualSize = AS_MIN_NORM;    float2 texLookupUV = (rotatedPetalSpaceUV / currentPetalVisualSize) + 0.5;
+    float currentPetalVisualSize = PetalBaseSize * (1.0 + sizeVariation);
+    if (currentPetalVisualSize <= AS_MIN_NORM) currentPetalVisualSize = AS_MIN_NORM;
 
-    // Sample from atlas based on petal type and random variant
-    // Check if texture coordinates are within valid range (0 to 1)
+    float2 texLookupUV = (rotatedUV / currentPetalVisualSize) + 0.5;
+
+    // Return (-1,-1) sentinel if outside valid texture range
     if (texLookupUV.x < 0.0 || texLookupUV.x > 1.0 || texLookupUV.y < 0.0 || texLookupUV.y > 1.0) {
-        return float4(0.0, 0.0, 0.0, 0.0); // Outside valid texture range
+        return float2(-1.0, -1.0);
     }
-      // Weighted selection of petal variant based on PetalVariety
-    int variant; // This will be our selected variant index
-    { // Scope for temporary variables for weighted selection logic
+    return texLookupUV;
+}
+
+// Select a weighted-random petal variant and sample the atlas texture
+// Returns the RGBA color from the atlas tile (unmodulated by lifecycle/density)
+float4 samplePetalFromAtlas(float2 texLookupUV, float petalRandomFactor) {
+    // Weighted selection of petal variant based on PetalVariety
+    int variant;
+    {
         float cumulative_petal_weights[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
         float total_selected_petal_weight = 0.0f;
-        int num_variants_in_pool = PetalVariety; // How many variants are active based on UI (1-4)
+        int num_variants_in_pool = PetalVariety;
 
-        // Calculate total and cumulative weights for the active variants
         if (num_variants_in_pool >= 1) {
             total_selected_petal_weight += PETAL_VARIANT_WEIGHTS[0];
             cumulative_petal_weights[0] = PETAL_VARIANT_WEIGHTS[0];
@@ -570,19 +556,17 @@ float4 DrawPetalInstance(float2 uvForVoronoiLookup, float2 originalScreenUV, flo
             total_selected_petal_weight += PETAL_VARIANT_WEIGHTS[2];
             cumulative_petal_weights[2] = cumulative_petal_weights[1] + PETAL_VARIANT_WEIGHTS[2];
         }
-        if (num_variants_in_pool >= 4) { // PetalVariety can be up to 4, matching ATLAS_PETALS_PER_TYPE
+        if (num_variants_in_pool >= 4) {
             total_selected_petal_weight += PETAL_VARIANT_WEIGHTS[3];
             cumulative_petal_weights[3] = cumulative_petal_weights[2] + PETAL_VARIANT_WEIGHTS[3];
         }
 
-        // Handle edge case of zero total weight (though PetalVariety min is 1, ensuring this is unlikely)
-        if (total_selected_petal_weight <= PETAL_WEIGHT_MINIMUM) { 
-            total_selected_petal_weight = 1.0f; 
+        if (total_selected_petal_weight <= PETAL_WEIGHT_MINIMUM) {
+            total_selected_petal_weight = 1.0f;
         }
 
         float random_roll = petalRandomFactor * total_selected_petal_weight;
-        
-        // Determine variant based on random_roll and cumulative_petal_weights
+
         if (num_variants_in_pool >= 1 && random_roll < cumulative_petal_weights[0]) {
             variant = 0;
         } else if (num_variants_in_pool >= 2 && random_roll < cumulative_petal_weights[1]) {
@@ -592,43 +576,66 @@ float4 DrawPetalInstance(float2 uvForVoronoiLookup, float2 originalScreenUV, flo
         } else if (num_variants_in_pool >= 4 && random_roll < cumulative_petal_weights[3]) {
             variant = 3;
         } else {
-            // Fallback: if random_roll was >= last cumulative weight (e.g. petalRandomFactor was 1.0)
-            // or if num_variants_in_pool was unexpectedly low.
-            // Default to the last variant within the active pool.
-            variant = num_variants_in_pool - 1; 
+            variant = num_variants_in_pool - 1;
         }
-        
-        // Final clamp to ensure variant index is valid for the atlas (0 to ATLAS_PETALS_PER_TYPE - 1)
-        // This is a safeguard, as 'variant' should already be within [0, num_variants_in_pool-1]
-        // and num_variants_in_pool is already clamped by UI (1-4) and <= ATLAS_PETALS_PER_TYPE.
         variant = clamp(variant, 0, ATLAS_PETALS_PER_TYPE - 1);
     }
-    // 'variant' now holds the weighted-randomly selected petal variant index.
-    
-    // Tile dimensions in normalized texture space (0.0-1.0)
-    float tileWidth = 1.0 / float(ATLAS_COLUMNS);   // 0.25 (4 columns)
-    float tileHeight = 1.0 / float(ATLAS_ROWS);     // 0.5 (2 rows)
-    
-    // Calculate offset to the specific tile
+
+    // Map to atlas tile coordinates
+    float tileWidth = 1.0 / float(ATLAS_COLUMNS);
+    float tileHeight = 1.0 / float(ATLAS_ROWS);
+
     float2 tileOffset;
-    tileOffset.x = float(variant) * tileWidth;      // x offset based on variant
-    tileOffset.y = float(PetalType) * tileHeight;   // y offset based on petal type
-    
-    // Transform the original UVs to the specific tile's coordinates
+    tileOffset.x = float(variant) * tileWidth;
+    tileOffset.y = float(PetalType) * tileHeight;
+
     float2 scaledUV;
     scaledUV.x = (texLookupUV.x * tileWidth) + tileOffset.x;
     scaledUV.y = (texLookupUV.y * tileHeight) + tileOffset.y;
-    
-    // Sample the atlas texture with the calculated coordinates
-    float4 petalTextureSample = tex2D(PetalAtlas_Sampler, scaledUV);
-    
-    float3 colorFromTexture = petalTextureSample.rgb;
-    float petalShapeAlpha = petalTextureSample.a;
 
-    float screenFade = 1.0; 
+    return tex2D(PetalAtlas_Sampler, scaledUV);
+}
 
-    float finalAlpha = petalShapeAlpha * lifetimeAlpha * PetalBaseAlpha * currentLayerAlphaMod * screenFade * instanceDensityFactor;
-    float3 finalPetalRgb = colorFromTexture * PetalColor.rgb;
+// --- Main petal instance drawing function ---
+// Orchestrates density check, positioning, lifecycle, rotation, transform, and texture sampling
+float4 DrawPetalInstance(float2 uvForVoronoiLookup, float2 originalScreenUV, float instanceSeed, float currentTime,
+                         float currentLayerAlphaMod, float2 driftVelocityForSway)
+{
+    float2 rootUV = floor(uvForVoronoiLookup);
+
+    // Early-out: density culling
+    float instanceDensityFactor = calculateDensityFactor(rootUV, currentTime);
+    if (instanceDensityFactor < ALPHA_THRESHOLD) {
+        return float4(0.0, 0.0, 0.0, 0.0);
+    }
+
+    // Petal center position with voronoi placement and sway
+    float voronoiPointRotRad = calcVoronoiPointRotRad(rootUV, currentTime);
+    float2 petalCenter = getVoronoiPoint(rootUV, voronoiPointRotRad)
+                       + calculateSwayOffset(rootUV, instanceSeed, currentTime, driftVelocityForSway);
+
+    // Lifecycle: alpha fade, oscillation, timing
+    PetalLifecycleResult lifecycle = calculatePetalLifecycle(rootUV, instanceSeed, currentTime);
+    if (lifecycle.alpha <= ALPHA_THRESHOLD) {
+        return float4(0.0, 0.0, 0.0, 0.0);
+    }
+
+    // Rotation: base spin + multi-frequency variation
+    float spinAngle = calculateRotationAngle(lifecycle.randomFactor, lifecycle.instanceTimeRaw);
+
+    // Transform: rotation, flip effect, size variation -> texture UV
+    float2 petalSpaceUV_raw = uvForVoronoiLookup - petalCenter;
+    float2 texLookupUV = calculatePetalTransform(petalSpaceUV_raw, spinAngle, lifecycle.alpha, lifecycle.randomFactor);
+    if (texLookupUV.x < 0.0) {
+        return float4(0.0, 0.0, 0.0, 0.0);
+    }
+
+    // Atlas sampling
+    float4 petalTextureSample = samplePetalFromAtlas(texLookupUV, lifecycle.randomFactor);
+
+    // Final compositing
+    float finalAlpha = petalTextureSample.a * lifecycle.alpha * PetalBaseAlpha * currentLayerAlphaMod * instanceDensityFactor;
+    float3 finalPetalRgb = petalTextureSample.rgb * PetalColor.rgb;
 
     return float4(finalPetalRgb, finalAlpha);
 }

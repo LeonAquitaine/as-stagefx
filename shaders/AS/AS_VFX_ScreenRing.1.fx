@@ -21,7 +21,7 @@
  *
  * IMPLEMENTATION OVERVIEW:
  * 1. Calculate pixel's angle and distance from the target screen position, correcting for aspect ratio.
- * 2. Apply rotation animation to the angle based on RotationSpeed and AS_getTime().
+ * 2. Apply rotation animation to the angle based on RotationSpeed and AS_timeSeconds().
  * 3. Determine if the pixel falls within the ring's radius and thickness band.
  * 4. Check depth buffer: If scene depth is closer than target depth, discard.
  * 5. Calculate texture UVs: U based on animated angle, V based on distance within the thickness band (flipped).
@@ -38,6 +38,8 @@
 #include "ReShade.fxh"
 #include "AS_Utils.1.fxh" // Includes ReShadeUI.fxh, provides UI macros, helpers
 #include "AS_Palette.1.fxh" // Color palette support
+
+uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " "; ui_text = "\nTextured ring overlay with palette coloring and depth occlusion.\nGreat for UI elements and decorative framing.\n\nAS StageFX | Screen-Space Textured Ring by Leon Aquitaine\n"; > = 0;
 
 // ============================================================================
 // TEXTURES
@@ -92,38 +94,38 @@ uniform float4 RingColor < ui_type = "color"; ui_label = "Ring Tint & Intensity"
 // ============================================================================
 // PALETTE & STYLE
 // ============================================================================
-AS_PALETTE_SELECTION_UI(PalettePreset, "Palette", AS_PALETTE_RAINBOW, "Palette Controls")
-AS_DECLARE_CUSTOM_PALETTE(Ring_, "Palette Controls")
+AS_PALETTE_SELECTION_UI(PalettePreset, "Palette", AS_PALETTE_RAINBOW, AS_CAT_PALETTE)
+AS_DECLARE_CUSTOM_PALETTE(Ring_, AS_CAT_PALETTE)
 
-uniform float ColorCycleSpeed < ui_type = "slider"; ui_label = "Color Cycle Speed"; ui_tooltip = "Controls how fast ring colors cycle. 0 = static"; ui_min = -5.0; ui_max = 5.0; ui_step = 0.1; ui_category = "Palette Controls"; > = 1.0;
-uniform int CycleMode < ui_type = "combo"; ui_label = "Cycle Mode"; ui_tooltip = "How colors cycle through the palette"; ui_items = "Sweep\0Wave\0Full\0"; ui_category = "Palette Controls"; > = 0;
-uniform float PaletteSaturation < ui_type = "slider"; ui_label = "Saturation"; ui_tooltip = "Palette color saturation"; ui_min = 0.0; ui_max = 2.0; ui_step = 0.01; ui_category = "Palette Controls"; > = 1.0;
-uniform float PaletteBrightness < ui_type = "slider"; ui_label = "Brightness"; ui_tooltip = "Palette color brightness"; ui_min = 0.0; ui_max = 2.0; ui_step = 0.01; ui_category = "Palette Controls"; > = 1.0;
-uniform int PaletteColorTarget < ui_type = "combo"; ui_label = "Target Colors"; ui_tooltip = "Which colors to replace with palette"; ui_items = "Black\0White\0All Non-transparent\0"; ui_category = "Palette Controls"; > = 1;
+AS_COLOR_CYCLE_UI(ColorCycleSpeed, AS_CAT_PALETTE)
+uniform int CycleMode < ui_type = "combo"; ui_label = "Cycle Mode"; ui_tooltip = "How colors cycle through the palette"; ui_items = "Sweep\0Wave\0Full\0"; ui_category = AS_CAT_PALETTE; > = 0;
+uniform float PaletteSaturation < ui_type = "slider"; ui_label = "Saturation"; ui_tooltip = "Palette color saturation"; ui_min = 0.0; ui_max = 2.0; ui_step = 0.01; ui_category = AS_CAT_PALETTE; > = 1.0;
+uniform float PaletteBrightness < ui_type = "slider"; ui_label = "Brightness"; ui_tooltip = "Palette color brightness"; ui_min = 0.0; ui_max = 2.0; ui_step = 0.01; ui_category = AS_CAT_PALETTE; > = 1.0;
+uniform int PaletteColorTarget < ui_type = "combo"; ui_label = "Target Colors"; ui_tooltip = "Which colors to replace with palette"; ui_items = "Black\0White\0All Non-transparent\0"; ui_category = AS_CAT_PALETTE; > = 1;
 
 // ============================================================================
 // ANIMATION CONTROLS
 // ============================================================================
-uniform float RotationSpeed < ui_type = "slider"; ui_label = "Rotation Speed"; ui_tooltip = "Speed and direction of texture rotation (-10 to +10)."; ui_min = -10.0; ui_max = 10.0; ui_step = 0.1; ui_category = "Animation Controls"; > = -2.0;
+uniform float RotationSpeed < ui_type = "slider"; ui_label = "Rotation Speed"; ui_tooltip = "Speed and direction of texture rotation (-10 to +10)."; ui_min = -10.0; ui_max = 10.0; ui_step = 0.1; ui_category = AS_CAT_ANIMATION; > = -2.0;
 
 // ============================================================================
 // AUDIO REACTIVITY (Example Setup)
 // ============================================================================
-AS_AUDIO_UI(Ring_AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity") // Removed extra 'true' argument
-AS_AUDIO_MULT_UI(Ring_AudioMultiplier, "Intensity", 0.1, 2.0, "Audio Reactivity")
-uniform int AudioTarget < ui_type = "combo"; ui_label = "Audio Target Parameter"; ui_tooltip = "Select parameter affected by audio"; ui_items = "None\0Radius\0Thickness\0Color Intensity\0"; ui_category = "Audio Reactivity"; > = 1;
+AS_AUDIO_UI(Ring_AudioSource, "Audio Source", AS_AUDIO_BEAT, AS_CAT_AUDIO) // Removed extra 'true' argument
+AS_AUDIO_MULT_UI(Ring_AudioMultiplier, "Intensity", 0.1, 2.0, AS_CAT_AUDIO)
+AS_AUDIO_TARGET_UI(AudioTarget, "None\0Radius\0Thickness\0Color Intensity\0", 1)
 
 // ============================================================================
 // STAGE CONTROLS
 // ============================================================================
-uniform float TargetDepth < ui_type = "slider"; ui_label = "Target Depth"; ui_tooltip = "Depth in scene (0=Near, 1=Far)."; ui_min = TARGET_DEPTH_MIN; ui_max = TARGET_DEPTH_MAX; ui_step = 0.001; ui_category = "Stage"; > = TARGET_DEPTH_DEFAULT;
+uniform float TargetDepth < ui_type = "slider"; ui_label = "Target Depth"; ui_tooltip = "Depth in scene (0=Near, 1=Far)."; ui_min = TARGET_DEPTH_MIN; ui_max = TARGET_DEPTH_MAX; ui_step = 0.001; ui_category = AS_CAT_STAGE; > = TARGET_DEPTH_DEFAULT;
 AS_ROTATION_UI(SnapRotation, FineRotation) // Add standard rotation controls
 
 // ============================================================================
 // POSITION CONTROLS
 // ============================================================================
 // Use centered coordinate system (-1.5 to 1.5 range, [-1,1] maps to central square)
-uniform float2 TargetScreenXY < ui_type = "drag"; ui_label = "Position"; ui_tooltip = "Screen position (-1.5 to 1.5 range, 0,0 is center, [-1,1] maps to central square)."; ui_min = -1.5; ui_max = 1.5; ui_step = 0.001; ui_category = "Position"; > = float2(0.0, 0.0);
+uniform float2 TargetScreenXY < ui_type = "drag"; ui_label = "Position"; ui_tooltip = "Screen position (-1.5 to 1.5 range, 0,0 is center, [-1,1] maps to central square)."; ui_min = -1.5; ui_max = 1.5; ui_step = 0.001; ui_category = AS_CAT_STAGE; > = float2(0.0, 0.0);
 
 // ============================================================================
 // FINAL MIX
@@ -163,10 +165,7 @@ float3 getScreenRingPaletteColor(float t, float timer) {
     }
       t = saturate(t); // Ensure t is within valid range [0, 1]
     
-    if (PalettePreset == AS_PALETTE_CUSTOM) { // Use custom palette
-        return AS_GET_INTERPOLATED_CUSTOM_COLOR(Ring_, t);
-    }
-    return AS_getInterpolatedColor(PalettePreset, t); // Use preset palette
+    return AS_GET_PALETTE_COLOR(Ring_, PalettePreset, t);
 }
 
 // ============================================================================
@@ -178,14 +177,14 @@ float4 PS_ScreenRing(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_
     float4 orig = tex2D(ReShade::BackBuffer, texcoord);
     float sceneDepth = ReShade::GetLinearizedDepth(texcoord);
     float aspectRatio = ReShade::AspectRatio;
-    float timer = AS_getTime();
+    float timer = AS_timeSeconds();
 
     // --- Get Target Info & Apply Audio Reactivity ---
     float radiusInput = RingRadius;
     float thicknessInput = RingThickness;
     float4 ringColorInput = RingColor;
 
-    if (AudioTarget > 0) {        float audioLevel = AS_getAudioSource(Ring_AudioSource);
+    if (AudioTarget > 0) {        float audioLevel = AS_audioLevelFromSource(Ring_AudioSource);
         float multiplier = Ring_AudioMultiplier;
         float audioFactor = (1.0 + audioLevel * multiplier);
 
@@ -238,7 +237,7 @@ float4 PS_ScreenRing(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_
 
     float aa = ReShade::PixelSize.y;
 
-    float ringFactor = smoothstep(halfThicknessNorm + aa, halfThicknessNorm - aa, distDelta);
+    float ringFactor = AS_smoothEdge(distDelta, halfThicknessNorm, aa);
 
     float4 finalResult = orig;
 
@@ -267,8 +266,7 @@ float4 PS_ScreenRing(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_
                 float3 paletteColor = getScreenRingPaletteColor(texU, timer);
                 
                 // Apply saturation and brightness adjustments
-                float luminance = dot(paletteColor, AS_LUMA_REC709);
-                paletteColor = lerp(luminance.xxx, paletteColor, PaletteSaturation) * PaletteBrightness;
+                paletteColor = AS_adjustSaturation(paletteColor, PaletteSaturation) * PaletteBrightness;
                 
                 // Apply palette based on target mode
                 if (PaletteColorTarget == 0) { // Black
@@ -286,9 +284,7 @@ float4 PS_ScreenRing(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_
                 // Incorporate the texture's alpha channel into the final alpha calculation
                 float finalAlpha = ringFactor * texColor.a * BlendAmount;
 
-                float3 blendedColor = AS_blendRGB(ringColor, orig.rgb, BlendMode);
-
-                finalResult = float4(lerp(orig.rgb, blendedColor, finalAlpha), orig.a);
+                finalResult = AS_compositeRGBA(ringColor, orig, BlendMode, finalAlpha);
             }
         }
     }

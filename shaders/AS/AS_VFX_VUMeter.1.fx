@@ -33,8 +33,11 @@
 #ifndef __AS_VFX_VUMeter_1_fx
 #define __AS_VFX_VUMeter_1_fx
 
+#include "ReShade.fxh"
 #include "AS_Utils.1.fxh"
 #include "AS_Palette.1.fxh"
+
+uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " "; ui_text = "\nAudio-reactive VU meter with bars, lines, and dots display modes.\nClassic audio visualizer for music streams.\n\nAS StageFX | Audio-Reactive VU Meter by Leon Aquitaine\n"; > = 0;
 
 // --- Tunable Constants ---
 static const float ZOOM_MIN = 0.2;
@@ -65,31 +68,31 @@ static const float BLENDAMOUNT_DEFAULT = 1.0;
 AS_ROTATION_UI(SnapRotate, FineRotate)
 
 // --- Appearance ---
-uniform bool MirrorBars < ui_type = "checkbox"; ui_label = "Mirrored"; ui_category = "Appearance"; > = false;
-uniform int PresentationMode < ui_type = "combo"; ui_label = "Mode"; ui_items = "Bars Vertical\0Bars Horizontal\0Line\0Dots\0"; ui_category = "Appearance"; > = 0;
-uniform float BackgroundAlpha < ui_type = "slider"; ui_label = "Background Alpha"; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Appearance"; > = 0.5;
+uniform bool MirrorBars < ui_type = "checkbox"; ui_label = "Mirrored"; ui_tooltip = "Mirrors the bars symmetrically from the center, creating a balanced visualizer look."; ui_category = AS_CAT_APPEARANCE; > = false;
+uniform int PresentationMode < ui_type = "combo"; ui_label = "Mode"; ui_tooltip = "Selects the visualization style: vertical or horizontal bars, a connected line, or individual dots."; ui_items = "Bars Vertical\0Bars Horizontal\0Line\0Dots\0"; ui_category = AS_CAT_APPEARANCE; > = 0;
+uniform float BackgroundAlpha < ui_type = "slider"; ui_label = "Background Alpha"; ui_tooltip = "Opacity of the dark backdrop behind the meter. 0 = fully transparent, 1 = solid black."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = AS_CAT_APPEARANCE; > = 0.5;
 
 // --- Bar/Line Shape Controls ---
-uniform float BarWidth < ui_type = "slider"; ui_label = "Bar Width"; ui_min = BARWIDTH_MIN; ui_max = BARWIDTH_MAX; ui_step = 0.001; ui_category = "Appearance"; > = BARWIDTH_DEFAULT;
-uniform float BarGap < ui_type = "slider"; ui_label = "Bar Spacing"; ui_min = BARGAP_MIN; ui_max = BARGAP_MAX; ui_step = 0.001; ui_category = "Appearance"; > = BARGAP_DEFAULT;
-uniform float BarRoundness < ui_type = "slider"; ui_label = "Bar Roundness"; ui_min = BARROUND_MIN; ui_max = BARROUND_MAX; ui_step = 0.01; ui_category = "Appearance"; > = BARROUND_DEFAULT;
-uniform float DotRadius < ui_type = "slider"; ui_label = "Dot Radius"; ui_min = 0.005; ui_max = 0.05; ui_step = 0.001; ui_category = "Appearance"; > = DOT_RADIUS;
-uniform float LineThickness < ui_type = "slider"; ui_label = "Line Thickness"; ui_min = 0.005; ui_max = 0.05; ui_step = 0.001; ui_category = "Appearance"; > = LINE_THICKNESS_DEFAULT;
+uniform float BarWidth < ui_type = "slider"; ui_label = "Bar Width"; ui_tooltip = "Width of each frequency bar in the visualizer."; ui_min = BARWIDTH_MIN; ui_max = BARWIDTH_MAX; ui_step = 0.001; ui_category = AS_CAT_APPEARANCE; > = BARWIDTH_DEFAULT;
+uniform float BarGap < ui_type = "slider"; ui_label = "Bar Spacing"; ui_tooltip = "Gap between adjacent frequency bars. Increase for a more spaced-out look."; ui_min = BARGAP_MIN; ui_max = BARGAP_MAX; ui_step = 0.001; ui_category = AS_CAT_APPEARANCE; > = BARGAP_DEFAULT;
+uniform float BarRoundness < ui_type = "slider"; ui_label = "Bar Roundness"; ui_tooltip = "Rounds the corners of bars, lines, and dots. 0 = sharp edges, 0.5 = fully rounded."; ui_min = BARROUND_MIN; ui_max = BARROUND_MAX; ui_step = 0.01; ui_category = AS_CAT_APPEARANCE; > = BARROUND_DEFAULT;
+uniform float DotRadius < ui_type = "slider"; ui_label = "Dot Radius"; ui_tooltip = "Size of each dot when using the Dots visualization mode."; ui_min = 0.005; ui_max = 0.05; ui_step = 0.001; ui_category = AS_CAT_APPEARANCE; > = DOT_RADIUS;
+uniform float LineThickness < ui_type = "slider"; ui_label = "Line Thickness"; ui_tooltip = "Thickness of the connecting line when using the Line visualization mode."; ui_min = 0.005; ui_max = 0.05; ui_step = 0.001; ui_category = AS_CAT_APPEARANCE; > = LINE_THICKNESS_DEFAULT;
 
 // --- Audio Reactivity ---
-uniform float Sensibility < ui_type = "slider"; ui_label = "Sensibility"; ui_min = SENSIBILITY_MIN; ui_max = SENSIBILITY_MAX; ui_step = 0.01; ui_category = "Audio Reactivity"; > = SENSIBILITY_DEFAULT;
+uniform float Sensibility < ui_type = "slider"; ui_label = "Sensibility"; ui_tooltip = "Amplifies or reduces the audio signal driving the meter. Higher values make the bars react more strongly."; ui_min = SENSIBILITY_MIN; ui_max = SENSIBILITY_MAX; ui_step = 0.01; ui_category = AS_CAT_AUDIO; > = SENSIBILITY_DEFAULT;
 
 // --- Palette & Style ---
 // Use the palette selection UI macro from our dedicated palette system
-AS_PALETTE_SELECTION_UI(PaletteMode, "Palette", AS_PALETTE_NEON, "Appearance")
-AS_DECLARE_CUSTOM_PALETTE(VUMeter_, "Appearance")
+AS_PALETTE_SELECTION_UI(PaletteMode, "Palette", AS_PALETTE_NEON, AS_CAT_APPEARANCE)
+AS_DECLARE_CUSTOM_PALETTE(VUMeter_, AS_CAT_APPEARANCE)
 
 // --- Stage Depth Controls ---
 AS_STAGEDEPTH_UI(StageDepth)
 
 // --- UI Controls ---
-uniform float Zoom < ui_type = "slider"; ui_label = "Zoom"; ui_min = ZOOM_MIN; ui_max = ZOOM_MAX; ui_step = 0.01; ui_category = "Transform"; > = ZOOM_DEFAULT;
-uniform float2 Pan < ui_type = "slider"; ui_label = "Position"; ui_min = PAN_MIN; ui_max = PAN_MAX; ui_step = 0.01; ui_category = "Transform"; > = PAN_DEFAULT;
+uniform float Zoom < ui_type = "slider"; ui_label = "Zoom"; ui_tooltip = "Scales the entire VU meter display. Lower values zoom in, higher values zoom out."; ui_min = ZOOM_MIN; ui_max = ZOOM_MAX; ui_step = 0.01; ui_category = AS_CAT_STAGE; > = ZOOM_DEFAULT;
+uniform float2 Pan < ui_type = "slider"; ui_label = "Position"; ui_tooltip = "Moves the VU meter on screen. X shifts horizontally, Y shifts vertically."; ui_min = PAN_MIN; ui_max = PAN_MAX; ui_step = 0.01; ui_category = AS_CAT_STAGE; > = PAN_DEFAULT;
 
 // --- Final Mix ---
 AS_BLENDMODE_UI_DEFAULT(BlendMode, 0)
@@ -100,20 +103,14 @@ namespace AS_VUMeterBG {
     float getSmoothedBand(int i, int bands) {
         return saturate(AS_getFreq(i)) * Sensibility;
     }    float3 getPaletteColorByValue(float value) {
-        if (PaletteMode == AS_PALETTE_CUSTOM) {
-            return AS_GET_INTERPOLATED_CUSTOM_COLOR(VUMeter_, value);
-        }
-        return AS_getInterpolatedColor(PaletteMode, value);
+        return AS_GET_PALETTE_COLOR(VUMeter_, PaletteMode, value);
     }
 }
 
 // --- Main Pixel Shader ---
 float4 PS_VUMeterBG(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target {
-    // Stage depth cutoff
-    float sceneDepth = ReShade::GetLinearizedDepth(texcoord);
-    if (sceneDepth < StageDepth - AS_DEPTH_EPSILON) {
-        return tex2D(ReShade::BackBuffer, texcoord);
-    }
+    // Depth-aware early return
+    AS_DEPTH_EARLY_RETURN(texcoord, StageDepth)
 
     // Apply transformations in the right order to ensure intuitive controls
     float2 center = float2(0.5, 0.5);
@@ -131,12 +128,7 @@ float4 PS_VUMeterBG(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_T
     float2 zoomedUV = centeredUV / Zoom;
     
     // Apply rotation
-    float sinAngle = sin(rotationAngle);
-    float cosAngle = cos(rotationAngle);
-    float2 rotatedUV = float2(
-        zoomedUV.x * cosAngle - zoomedUV.y * sinAngle,
-        zoomedUV.x * sinAngle + zoomedUV.y * cosAngle
-    );
+    float2 rotatedUV = AS_rotate2D(zoomedUV, rotationAngle);
     
     // Undo aspect ratio correction to return to normalized texture space
     if (aspectRatio >= 1.0) rotatedUV.x /= aspectRatio; else rotatedUV.y *= aspectRatio;
@@ -270,8 +262,7 @@ float4 PS_VUMeterBG(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_T
     }
     // At the end, blend with the original scene
     float4 orig = tex2D(ReShade::BackBuffer, texcoord);
-    float3 blended = AS_blendRGB(effectColor.rgb, orig.rgb, BlendMode);
-    float3 result = lerp(orig.rgb, blended, BlendAmount * effectColor.a);
+    float3 result = AS_composite(effectColor.rgb, orig.rgb, BlendMode, BlendAmount * effectColor.a);
     return float4(result, orig.a);
 }
 

@@ -39,6 +39,8 @@
 // ============================================================================
 #include "AS_Noise.1.fxh"
 
+uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " "; ui_text = "\nDirectional stage spotlights with color, sway, and bokeh particles.\nIdeal for concert photography and dramatic lighting.\n\nAS StageFX | Directional Stage Lighting Effect by Leon Aquitaine\n"; > = 0;
+
 // ============================================================================
 // HELPER MACROS & CONSTANTS
 // ============================================================================
@@ -120,6 +122,9 @@ SPOTLIGHT_UI(3, false, float3(0.8, 0.3, 1.0), float2(1.0, 0.0),
 SPOTLIGHT_UI(4, false, float3(0.2, 1.0, 0.5), float2(0.0, 1.0),
             SPOT_RADIUS_DEFAULT, SPOT_INTENSITY_DEFAULT, SPOT_ANGLE_DEFAULT, 180.0, /* Pointing up */
             SPOT_SWAYSPEED_DEFAULT, SPOT_SWAYANGLE_DEFAULT, 1, SPOT_AUDIOMULT_DEFAULT)
+
+// --- Animation ---
+AS_ANIMATION_UI(AnimationSpeed, AnimationKeyframe, AS_CAT_ANIMATION)
 
 // --- Bokeh Settings ---
 uniform float BokehDensity < ui_type = "slider"; ui_label = "Density"; ui_min = BOKEH_DENSITY_MIN; ui_max = BOKEH_DENSITY_MAX; ui_category = "Stage Effects"; > = BOKEH_DENSITY_DEFAULT;
@@ -223,7 +228,7 @@ float3 ProcessSpotlight(float2 diff, SpotlightParams params, out float maskValue
     if (!params.enable) return float3(0, 0, 0);
     
     // --- Initial setup ---
-    float time = AS_getTime();
+    float time = AS_getAnimationTime(AnimationSpeed, AnimationKeyframe);
     float dist = length(diff);
     
     // Skip early if we're far beyond the maximum radius (optimization)
@@ -252,7 +257,7 @@ float3 ProcessSpotlight(float2 diff, SpotlightParams params, out float maskValue
     }
     
     // Get audio value and calculate intensity
-    float audioVal = AS_getAudioSource(mappedAudioSource);
+    float audioVal = AS_audioLevelFromSource(mappedAudioSource);
     float sourceIntensity = params.audioMult * audioVal;
     float intensity = params.intensity + sourceIntensity;
     
@@ -380,7 +385,7 @@ float3 renderSpotlights(float2 texcoord, float audioPulse, out float3 spotSum, o
 float3 renderBokeh(float2 uv, float3 spotSum) { 
     float3 bokeh = 0;
     float2 uv_screen = uv * float2(BUFFER_WIDTH, BUFFER_HEIGHT);
-    float2 seed = uv_screen * 0.1 + AS_getTime() * 10.0;
+    float2 seed = uv_screen * 0.1 + AS_getAnimationTime(AnimationSpeed, AnimationKeyframe) * 10.0;
     
     const int BOKEH_SAMPLES = 8;
     for (int i = 0; i < BOKEH_SAMPLES; ++i) {
@@ -401,15 +406,8 @@ float3 renderBokeh(float2 uv, float3 spotSum) {
 }
 
 float4 PS_Spotlights(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target {
-    // Get original image first
-    float4 orig = tex2D(ReShade::BackBuffer, texcoord);
-    
-    // Get scene depth
-    float sceneDepth = ReShade::GetLinearizedDepth(texcoord);
-    
-    // Skip effect if pixel is closer than stage depth
-    if (sceneDepth < StageDepth - AS_DEPTH_EPSILON)
-        return orig;
+    // Depth-aware early return
+    AS_DEPTH_EARLY_RETURN(texcoord, StageDepth)
     
     // Calculate spotlight and bokeh effects
     // Note: The coordinate transformation now happens inside renderSpotlights
@@ -426,10 +424,9 @@ float4 PS_Spotlights(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_
     fx = saturate(fx);
     
     // Apply appropriate blend mode
-    float3 blended = AS_blendRGB(fx, orig.rgb, BlendMode);
-    float3 result = lerp(orig.rgb, blended, BlendAmount);
-    
-    return float4(result, orig.a);
+    float3 result = AS_composite(fx, _as_originalColor.rgb, BlendMode, BlendAmount);
+
+    return float4(result, _as_originalColor.a);
 }
 
 technique AS_StageSpotlights < ui_label = "[AS] LFX: Stage Spotlights"; ui_tooltip = "Configurable stage spotlights with audio reactivity."; > {

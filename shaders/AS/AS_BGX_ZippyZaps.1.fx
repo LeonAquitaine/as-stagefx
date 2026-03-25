@@ -45,7 +45,7 @@
 #include "AS_Utils.1.fxh"
 #include "AS_Palette.1.fxh" // Color palette support
 
-namespace ASZippyZaps {
+namespace AS_ZippyZaps {
 // ============================================================================
 // TUNABLE CONSTANTS (Defaults and Ranges)
 // ============================================================================
@@ -129,45 +129,44 @@ static const float FINAL_O_U_DOT_DIVISOR_MAX = 500.0;
 static const float FINAL_O_U_DOT_DIVISOR_STEP = 10.0;
 static const float FINAL_O_U_DOT_DIVISOR_DEFAULT = 250.0;
 
-// --- Stage ---
+// --- Appearance ---
 
 uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Zippy Zaps' by SnoopethDuckDuck\nLink: https://www.shadertoy.com/view/XXyGzh\nLicence: CC Share-Alike Non-Commercial\n\n";>;
 
+uniform float U_CoordScalingFactor < ui_type = "slider"; ui_label = "Scaling Factor"; ui_tooltip = "Controls the initial zoom/scale of the effect. Smaller values zoom in (effect appears larger)."; ui_min = U_COORD_SCALING_MIN; ui_max = U_COORD_SCALING_MAX; ui_step = U_COORD_SCALING_STEP; ui_category = AS_CAT_APPEARANCE; > = U_COORD_SCALING_DEFAULT;
+uniform float Loop_A_Increment < ui_type = "slider"; ui_label = "Arc Growth Rate"; ui_tooltip = "Controls the rate of growth for lightning arcs in the effect."; ui_min = LOOP_A_INCREMENT_MIN; ui_max = LOOP_A_INCREMENT_MAX; ui_step = LOOP_A_INCREMENT_STEP; ui_category = AS_CAT_APPEARANCE; > = LOOP_A_INCREMENT_DEFAULT;
+uniform float SinArg_Denom_Offset < ui_type = "slider"; ui_label = "Arc Pattern Density"; ui_tooltip = "Controls the density and pattern of the lightning arcs."; ui_min = SIN_ARG_DENOM_OFFSET_MIN; ui_max = SIN_ARG_DENOM_OFFSET_MAX; ui_step = SIN_ARG_DENOM_OFFSET_STEP; ui_category = AS_CAT_APPEARANCE; > = SIN_ARG_DENOM_OFFSET_DEFAULT;
+uniform float SinArg_U_Scale < ui_type = "slider"; ui_label = "Arc Spread"; ui_tooltip = "Controls how the arcs are distributed across the effect area."; ui_min = SIN_ARG_U_SCALE_MIN; ui_max = SIN_ARG_U_SCALE_MAX; ui_step = SIN_ARG_U_SCALE_STEP; ui_category = AS_CAT_APPEARANCE; > = SIN_ARG_U_SCALE_DEFAULT;
+uniform float SinArg_Swizzle_Factor < ui_type = "slider"; ui_label = "Arc Twisting"; ui_tooltip = "Controls how much the arcs twist and turn."; ui_min = SIN_ARG_SWIZZLE_FACTOR_MIN; ui_max = SIN_ARG_SWIZZLE_FACTOR_MAX; ui_step = SIN_ARG_SWIZZLE_FACTOR_STEP; ui_category = AS_CAT_APPEARANCE; > = SIN_ARG_SWIZZLE_FACTOR_DEFAULT;
+
+// --- Palette & Style ---
+uniform float FinalO_MinClamp < ui_type = "slider"; ui_label = "Color Intensity Clamp"; ui_tooltip = "Maximum intensity cap for color calculation."; ui_min = FINAL_O_MIN_CLAMP_MIN; ui_max = FINAL_O_MIN_CLAMP_MAX; ui_step = FINAL_O_MIN_CLAMP_STEP; ui_category = AS_CAT_PALETTE; > = FINAL_O_MIN_CLAMP_DEFAULT;
+uniform float FinalO_DivNumerator < ui_type = "slider"; ui_label = "Color Division Factor"; ui_tooltip = "Division factor for internal color calculation."; ui_min = FINAL_O_DIV_NUMERATOR_MIN; ui_max = FINAL_O_DIV_NUMERATOR_MAX; ui_step = FINAL_O_DIV_NUMERATOR_STEP; ui_category = AS_CAT_PALETTE; > = FINAL_O_DIV_NUMERATOR_DEFAULT;
+uniform float FinalO_MainDivNumerator < ui_type = "slider"; ui_label = "Main Color Numerator"; ui_tooltip = "Main factor for color intensity calculation."; ui_min = FINAL_O_MAIN_DIV_NUMERATOR_MIN; ui_max = FINAL_O_MAIN_DIV_NUMERATOR_MAX; ui_step = FINAL_O_MAIN_DIV_NUMERATOR_STEP; ui_category = AS_CAT_PALETTE; > = FINAL_O_MAIN_DIV_NUMERATOR_DEFAULT;
+uniform float FinalO_UDotDivisor < ui_type = "slider"; ui_label = "Falloff Divisor"; ui_tooltip = "Controls the color intensity falloff from center."; ui_min = FINAL_O_U_DOT_DIVISOR_MIN; ui_max = FINAL_O_U_DOT_DIVISOR_MAX; ui_step = FINAL_O_U_DOT_DIVISOR_STEP; ui_category = AS_CAT_PALETTE; > = FINAL_O_U_DOT_DIVISOR_DEFAULT;
+AS_USE_PALETTE_UI(UseOriginalColors, AS_CAT_PALETTE)
+uniform float OriginalColorIntensity < ui_type = "slider"; ui_label = "Original Color Intensity"; ui_tooltip = "Adjusts the intensity of original colors when 'Use Original Colors' is enabled"; ui_min = 0.5; ui_max = 2.0; ui_step = 0.01; ui_category = AS_CAT_PALETTE; ui_spacing = 0; > = 1.00;
+uniform float OriginalColorSaturation < ui_type = "slider"; ui_label = "Original Color Saturation"; ui_tooltip = "Adjusts the saturation of original colors"; ui_min = 0.0; ui_max = 2.0; ui_step = 0.01; ui_category = AS_CAT_PALETTE; > = 1.00;
+AS_PALETTE_SELECTION_UI(PalettePreset, "Color Palette", AS_PALETTE_NEON, AS_CAT_PALETTE)
+AS_DECLARE_CUSTOM_PALETTE(ZippyZaps_, AS_CAT_PALETTE)
+AS_COLOR_CYCLE_UI(ColorCycleSpeed, AS_CAT_PALETTE)
+
+// --- Animation ---
+uniform float AnimationKeyframe < ui_type = "slider"; ui_label = "Animation Keyframe"; ui_tooltip = "Sets a specific point in time for the animation. Useful for finding and saving specific patterns."; ui_min = ANIMATION_KEYFRAME_MIN; ui_max = ANIMATION_KEYFRAME_MAX; ui_step = ANIMATION_KEYFRAME_STEP; ui_category = AS_CAT_ANIMATION; > = ANIMATION_KEYFRAME_DEFAULT;
+uniform float AnimationSpeed < ui_type = "slider"; ui_label = "Animation Speed"; ui_tooltip = "Controls the overall animation speed of the effect. Set to 0 to pause animation and use keyframe only."; ui_min = ANIMATION_SPEED_MIN; ui_max = ANIMATION_SPEED_MAX; ui_step = ANIMATION_SPEED_STEP; ui_category = AS_CAT_ANIMATION; > = ANIMATION_SPEED_DEFAULT;
+uniform float Tanh_Arg_Factor < ui_type = "slider"; ui_label = "Arc Sharpness"; ui_tooltip = "Controls the sharpness and definition of individual arcs."; ui_min = TANH_ARG_FACTOR_MIN; ui_max = TANH_ARG_FACTOR_MAX; ui_step = TANH_ARG_FACTOR_STEP; ui_category = AS_CAT_ANIMATION; > = TANH_ARG_FACTOR_DEFAULT;
+uniform float Tanh_Divisor < ui_type = "slider"; ui_label = "Arc Smoothness"; ui_tooltip = "Controls the smoothness of arc transitions."; ui_min = TANH_DIVISOR_MIN; ui_max = TANH_DIVISOR_MAX; ui_step = TANH_DIVISOR_STEP; ui_category = AS_CAT_ANIMATION; > = TANH_DIVISOR_DEFAULT;
+uniform float U_Update_A_Mix_Factor < ui_type = "slider"; ui_label = "Arc Flow Factor"; ui_tooltip = "Controls how the arcs flow and connect with each other. Higher values create more chaotic flow patterns."; ui_min = U_UPDATE_A_MIX_FACTOR_MIN; ui_max = U_UPDATE_A_MIX_FACTOR_MAX; ui_step = U_UPDATE_A_MIX_FACTOR_STEP; ui_category = AS_CAT_ANIMATION; > = U_UPDATE_A_MIX_FACTOR_DEFAULT;
+
+// --- Audio Reactivity ---
+AS_AUDIO_UI(Zippy_AudioSource, "Audio Source", AS_AUDIO_BEAT, AS_CAT_AUDIO)
+AS_AUDIO_MULT_UI(Zippy_AudioMultiplier, "Audio Intensity", AUDIO_MULTIPLIER_DEFAULT, AUDIO_MULTIPLIER_MAX, AS_CAT_AUDIO)
+AS_AUDIO_TARGET_UI(Zippy_AudioTarget, "None\0Arc Growth Rate\0Arc Flow Factor\0Main Color Numerator\0", AUDIO_TARGET_DEFAULT)
+
+// --- Stage ---
 AS_STAGEDEPTH_UI(EffectDepth)
 AS_ROTATION_UI(EffectSnapRotation, EffectFineRotation)
 AS_POSITION_SCALE_UI(Position, Scale)
-
-// --- Appearance ---
-
-uniform float U_CoordScalingFactor < ui_type = "slider"; ui_label = "Scaling Factor"; ui_tooltip = "Controls the initial zoom/scale of the effect. Smaller values zoom in (effect appears larger)."; ui_min = U_COORD_SCALING_MIN; ui_max = U_COORD_SCALING_MAX; ui_step = U_COORD_SCALING_STEP; ui_category = "Appearance"; > = U_COORD_SCALING_DEFAULT;
-uniform float Loop_A_Increment < ui_type = "slider"; ui_label = "Arc Growth Rate"; ui_tooltip = "Controls the rate of growth for lightning arcs in the effect."; ui_min = LOOP_A_INCREMENT_MIN; ui_max = LOOP_A_INCREMENT_MAX; ui_step = LOOP_A_INCREMENT_STEP; ui_category = "Appearance"; > = LOOP_A_INCREMENT_DEFAULT;
-uniform float SinArg_Denom_Offset < ui_type = "slider"; ui_label = "Arc Pattern Density"; ui_tooltip = "Controls the density and pattern of the lightning arcs."; ui_min = SIN_ARG_DENOM_OFFSET_MIN; ui_max = SIN_ARG_DENOM_OFFSET_MAX; ui_step = SIN_ARG_DENOM_OFFSET_STEP; ui_category = "Appearance"; > = SIN_ARG_DENOM_OFFSET_DEFAULT;
-uniform float SinArg_U_Scale < ui_type = "slider"; ui_label = "Arc Spread"; ui_tooltip = "Controls how the arcs are distributed across the effect area."; ui_min = SIN_ARG_U_SCALE_MIN; ui_max = SIN_ARG_U_SCALE_MAX; ui_step = SIN_ARG_U_SCALE_STEP; ui_category = "Appearance"; > = SIN_ARG_U_SCALE_DEFAULT;
-uniform float SinArg_Swizzle_Factor < ui_type = "slider"; ui_label = "Arc Twisting"; ui_tooltip = "Controls how much the arcs twist and turn."; ui_min = SIN_ARG_SWIZZLE_FACTOR_MIN; ui_max = SIN_ARG_SWIZZLE_FACTOR_MAX; ui_step = SIN_ARG_SWIZZLE_FACTOR_STEP; ui_category = "Appearance"; > = SIN_ARG_SWIZZLE_FACTOR_DEFAULT;
-
-// --- Animation ---
-uniform float AnimationKeyframe < ui_type = "slider"; ui_label = "Animation Keyframe"; ui_tooltip = "Sets a specific point in time for the animation. Useful for finding and saving specific patterns."; ui_min = ANIMATION_KEYFRAME_MIN; ui_max = ANIMATION_KEYFRAME_MAX; ui_step = ANIMATION_KEYFRAME_STEP; ui_category = "Animation"; > = ANIMATION_KEYFRAME_DEFAULT;
-uniform float AnimationSpeed < ui_type = "slider"; ui_label = "Animation Speed"; ui_tooltip = "Controls the overall animation speed of the effect. Set to 0 to pause animation and use keyframe only."; ui_min = ANIMATION_SPEED_MIN; ui_max = ANIMATION_SPEED_MAX; ui_step = ANIMATION_SPEED_STEP; ui_category = "Animation"; > = ANIMATION_SPEED_DEFAULT;
-uniform float Tanh_Arg_Factor < ui_type = "slider"; ui_label = "Arc Sharpness"; ui_tooltip = "Controls the sharpness and definition of individual arcs."; ui_min = TANH_ARG_FACTOR_MIN; ui_max = TANH_ARG_FACTOR_MAX; ui_step = TANH_ARG_FACTOR_STEP; ui_category = "Animation"; > = TANH_ARG_FACTOR_DEFAULT;
-uniform float Tanh_Divisor < ui_type = "slider"; ui_label = "Arc Smoothness"; ui_tooltip = "Controls the smoothness of arc transitions."; ui_min = TANH_DIVISOR_MIN; ui_max = TANH_DIVISOR_MAX; ui_step = TANH_DIVISOR_STEP; ui_category = "Animation"; > = TANH_DIVISOR_DEFAULT;
-uniform float U_Update_A_Mix_Factor < ui_type = "slider"; ui_label = "Arc Flow Factor"; ui_tooltip = "Controls how the arcs flow and connect with each other. Higher values create more chaotic flow patterns."; ui_min = U_UPDATE_A_MIX_FACTOR_MIN; ui_max = U_UPDATE_A_MIX_FACTOR_MAX; ui_step = U_UPDATE_A_MIX_FACTOR_STEP; ui_category = "Animation"; > = U_UPDATE_A_MIX_FACTOR_DEFAULT;
-
-// --- Audio Reactivity ---
-AS_AUDIO_UI(Zippy_AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
-AS_AUDIO_MULT_UI(Zippy_AudioMultiplier, "Audio Intensity", AUDIO_MULTIPLIER_DEFAULT, AUDIO_MULTIPLIER_MAX, "Audio Reactivity")
-uniform int Zippy_AudioTarget < ui_type = "combo"; ui_label = "Audio Target Parameter"; ui_items = "None\0Arc Growth Rate\0Arc Flow Factor\0Main Color Numerator\0"; ui_category = "Audio Reactivity"; > = AUDIO_TARGET_DEFAULT;
-
-// --- Palette & Style ---
-uniform float FinalO_MinClamp < ui_type = "slider"; ui_label = "Color Intensity Clamp"; ui_tooltip = "Maximum intensity cap for color calculation."; ui_min = FINAL_O_MIN_CLAMP_MIN; ui_max = FINAL_O_MIN_CLAMP_MAX; ui_step = FINAL_O_MIN_CLAMP_STEP; ui_category = "Palette & Style"; > = FINAL_O_MIN_CLAMP_DEFAULT;
-uniform float FinalO_DivNumerator < ui_type = "slider"; ui_label = "Color Division Factor"; ui_tooltip = "Division factor for internal color calculation."; ui_min = FINAL_O_DIV_NUMERATOR_MIN; ui_max = FINAL_O_DIV_NUMERATOR_MAX; ui_step = FINAL_O_DIV_NUMERATOR_STEP; ui_category = "Palette & Style"; > = FINAL_O_DIV_NUMERATOR_DEFAULT;
-uniform float FinalO_MainDivNumerator < ui_type = "slider"; ui_label = "Main Color Numerator"; ui_tooltip = "Main factor for color intensity calculation."; ui_min = FINAL_O_MAIN_DIV_NUMERATOR_MIN; ui_max = FINAL_O_MAIN_DIV_NUMERATOR_MAX; ui_step = FINAL_O_MAIN_DIV_NUMERATOR_STEP; ui_category = "Palette & Style"; > = FINAL_O_MAIN_DIV_NUMERATOR_DEFAULT;
-uniform float FinalO_UDotDivisor < ui_type = "slider"; ui_label = "Falloff Divisor"; ui_tooltip = "Controls the color intensity falloff from center."; ui_min = FINAL_O_U_DOT_DIVISOR_MIN; ui_max = FINAL_O_U_DOT_DIVISOR_MAX; ui_step = FINAL_O_U_DOT_DIVISOR_STEP; ui_category = "Palette & Style"; > = FINAL_O_U_DOT_DIVISOR_DEFAULT;
-uniform bool UseOriginalColors < ui_label = "Use Original Colors"; ui_tooltip = "When enabled, uses the original mathematical color calculation instead of palette-based colors"; ui_category = "Palette & Style"; > = true;
-uniform float OriginalColorIntensity < ui_type = "slider"; ui_label = "Original Color Intensity"; ui_tooltip = "Adjusts the intensity of original colors when 'Use Original Colors' is enabled"; ui_min = 0.5; ui_max = 2.0; ui_step = 0.01; ui_category = "Palette & Style"; ui_spacing = 0; > = 1.00;
-uniform float OriginalColorSaturation < ui_type = "slider"; ui_label = "Original Color Saturation"; ui_tooltip = "Adjusts the saturation of original colors"; ui_min = 0.0; ui_max = 2.0; ui_step = 0.01; ui_category = "Palette & Style"; > = 1.00;
-AS_PALETTE_SELECTION_UI(PalettePreset, "Color Palette", AS_PALETTE_NEON, "Palette & Style")
-AS_DECLARE_CUSTOM_PALETTE(ZippyZaps_, "Palette & Style")
-uniform float ColorCycleSpeed < ui_type = "slider"; ui_label = "Color Cycle Speed"; ui_tooltip = "Controls how fast colors cycle. 0 = static"; ui_min = -5.0; ui_max = 5.0; ui_step = 0.1; ui_category = "Palette & Style"; > = 0.0;
 
 // --- Final Mix ---
 AS_BLENDMODE_UI(BlendMode)
@@ -211,22 +210,14 @@ float3 getZippyZapsColor(float t, float time) {
     }
     t = saturate(t); // Ensure t is within valid range [0, 1]
     
-    if (PalettePreset == AS_PALETTE_CUSTOM) { // Use custom palette
-        return AS_GET_INTERPOLATED_CUSTOM_COLOR(ZippyZaps_, t);
-    }
-    return AS_getInterpolatedColor(PalettePreset, t); // Use preset palette
+    return AS_GET_PALETTE_COLOR(ZippyZaps_, PalettePreset, t);
 }
 
 // Main Pixel Shader function
 float4 ShaderToyPS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD0) : SV_TARGET {
     // Get original pixel color
-    float4 originalColor = tex2D(ReShade::BackBuffer, texcoord);
-
-    // Apply depth test
-    float depth = ReShade::GetLinearizedDepth(texcoord);
-    if (depth < EffectDepth) {
-        return originalColor;
-    }
+    // Depth-aware early return
+    AS_DEPTH_EARLY_RETURN(texcoord, EffectDepth)
 
     // Apply audio reactivity to selected parameters
     float animSpeed = AnimationSpeed;
@@ -235,7 +226,7 @@ float4 ShaderToyPS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD0) : SV_
     float finalOMainDivNumerator = FinalO_MainDivNumerator;
     float flowFactor = U_Update_A_Mix_Factor;
     
-    float audioReactivity = AS_applyAudioReactivity(1.0, Zippy_AudioSource, Zippy_AudioMultiplier, true);
+    float audioReactivity = AS_audioModulate(1.0, Zippy_AudioSource, Zippy_AudioMultiplier, true, 0);
     
     if (Zippy_AudioTarget == 1) {
         loopAIncrement *= audioReactivity;
@@ -257,7 +248,7 @@ float4 ShaderToyPS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD0) : SV_
         iTime = AnimationKeyframe;
     } else {
         // Otherwise use animated time plus keyframe offset
-        iTime = (AS_getTime() * animSpeed) + AnimationKeyframe;
+        iTime = (AS_timeSeconds() * animSpeed) + AnimationKeyframe;
     }
 
     // Transform to resolution-independent centered coordinates
@@ -272,12 +263,7 @@ float4 ShaderToyPS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD0) : SV_
 
     // Apply rotation from standard UI controls
     float rotationRadians = AS_getRotationRadians(EffectSnapRotation, EffectFineRotation);
-    float s = sin(rotationRadians);
-    float c = cos(rotationRadians);
-    float2 rotatedCoord = float2(
-        centeredCoord.x * c - centeredCoord.y * s,
-        centeredCoord.x * s + centeredCoord.y * c
-    );
+    float2 rotatedCoord = AS_rotate2D(centeredCoord, rotationRadians);
 
     // Initialize vectors for the effect calculation
     float2 u = rotatedCoord / U_CoordScalingFactor;
@@ -394,8 +380,7 @@ float4 ShaderToyPS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD0) : SV_
         originalRGB = originalRGB * OriginalColorIntensity;
         
         // Apply saturation adjustment (lerp toward gray at lower saturation)
-    float3 grayColor = dot(originalRGB, AS_LUMA_REC709);
-        finalRGB = lerp(grayColor, originalRGB, OriginalColorSaturation);
+        finalRGB = AS_adjustSaturation(originalRGB, OriginalColorSaturation);
     } else {
         // Map color using palette
         float3 paletteColor = getZippyZapsColor(colorIntensity, iTime);
@@ -407,8 +392,7 @@ float4 ShaderToyPS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD0) : SV_
     o = float4(finalRGB, 1.0f);
 
     // Blend with original color using standard blend mode function
-    float3 blendedColor = AS_blendRGB(finalRGB, originalColor.rgb, BlendMode);
-    float4 finalColor = float4(lerp(originalColor.rgb, blendedColor, BlendStrength), originalColor.a);
+    float4 finalColor = float4(AS_composite(finalRGB, _as_originalColor.rgb, BlendMode, BlendStrength), _as_originalColor.a);
     
     // Show debug overlay if enabled
     if (DebugMode != AS_DEBUG_OFF) {
@@ -431,7 +415,7 @@ float4 ShaderToyPS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD0) : SV_
     
     return finalColor;
 }
-} // namespace ASZippyZaps
+} // namespace AS_ZippyZaps
 
 // ReShade FX Technique
 technique AS_BGX_ZippyZaps <ui_label="[AS] BGX: ZippyZaps"; ui_tooltip="Creates dynamic electric arcs and lightning patterns for a striking background effect.";>
@@ -439,7 +423,7 @@ technique AS_BGX_ZippyZaps <ui_label="[AS] BGX: ZippyZaps"; ui_tooltip="Creates 
     pass
     {
         VertexShader = PostProcessVS;
-        PixelShader = ASZippyZaps::ShaderToyPS;
+        PixelShader = AS_ZippyZaps::ShaderToyPS;
     }
 }
 

@@ -47,6 +47,7 @@
 // ============================================================================
 // INCLUDES
 // ============================================================================
+#include "ReShade.fxh"
 #include "AS_Utils.1.fxh"
 
 // ============================================================================
@@ -187,7 +188,7 @@ STICKER_UI(4, false, float2(POSITION_DEFAULT, POSITION_DEFAULT - 0.2), SCALE_DEF
 
 uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'StageDepth.fx' by Marot Satil\nLink: https://github.com/Otakumouse/stormshade/blob/master/v4.X/reshade-shaders/Shader%20Library/Recommended/StageDepth.fx\nLicence: Creative Commons Attribution 4.0 International\n\n";>;
 
-uniform int BoomSticker_AudioAffect < ui_type = "combo"; ui_label = "Audio Affects"; ui_items = "Opacity\0Scale\0"; ui_category = "Audio Reactivity"; > = 1;
+AS_AUDIO_TARGET_UI(BoomSticker_AudioAffect, "Opacity\0Scale\0", 1)
 
 // Use the standard AS_AUDIO_UI macro to select audio source
 AS_AUDIO_UI(BoomSticker_AudioSource, "Audio Source", AS_AUDIO_VOLUME, "Audio Reactivity")
@@ -299,16 +300,6 @@ float2 GetStickerDimensions(int stickerIndex) {
     else return float2(BoomSticker4_Width, BoomSticker4_Height); // stickerIndex == 4
 }
 
-// Helper function to rotate UVs
-float2 rotateUV(float2 uv, float angle) {
-    float s = sin(angle);
-    float c = cos(angle);
-    float2 center = float2(0.5, 0.5);
-    uv -= center;
-    float2 rotated = float2(uv.x * c - uv.y * s, uv.x * s + uv.y * c);
-    return rotated + center;
-}
-
 // Helper function to apply a sticker to the original color
 float4 ApplySticker(float4 originalColor, float2 texCoord, int stickerIndex, float audioValue) {
     StickerParams params = GetStickerParams(stickerIndex);
@@ -403,7 +394,7 @@ void PS_BoomSticker(in float4 position : SV_Position, in float2 texCoord : TEXCO
     // Handle debug modes
     if (DebugMode == 1) {
         // Debug audio beat - use AS_getAudioSource instead of direct Listeningway reference
-        float beat = AS_getAudioSource(AS_AUDIO_BEAT);
+        float beat = AS_audioLevelFromSource(AS_AUDIO_BEAT);
         passColor = float4(beat, beat, beat, 1.0);
         return;
     }
@@ -415,7 +406,7 @@ void PS_BoomSticker(in float4 position : SV_Position, in float2 texCoord : TEXCO
     }
     else if (DebugMode == 3) {
         // Debug selected audio source
-        float audioValue = AS_getAudioSource(BoomSticker_AudioSource);
+        float audioValue = AS_audioLevelFromSource(BoomSticker_AudioSource);
         passColor = float4(audioValue, audioValue, audioValue, 1.0);
         return;
     }
@@ -423,7 +414,7 @@ void PS_BoomSticker(in float4 position : SV_Position, in float2 texCoord : TEXCO
     // Get scene depth
     float sceneDepth = ReShade::GetLinearizedDepth(texCoord);
       // Get the raw audio value without scaling it by a base value
-    float audioSourceValue = AS_getAudioSource(BoomSticker_AudioSource);
+    float audioSourceValue = AS_audioLevelFromSource(BoomSticker_AudioSource);
     float audioValue = audioSourceValue * BoomSticker_AudioIntensity;
     
     // Initialize output color with original color
