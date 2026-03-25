@@ -1,6 +1,6 @@
 # AS-StageFX Shader Gallery
 
-This gallery provides detailed descriptions and visual examples of the complete AS-StageFX collection, which includes **64 shaders** across four categories: **27 Background (BGX)**, **11 Graphic (GFX)**, **3 Lighting (LFX)**, and **23 Visual (VFX)** effects.
+This gallery provides detailed descriptions and visual examples of the complete AS-StageFX collection, which includes **85 shaders** across four categories: **28 Background (BGX)**, **23 Graphic (GFX)**, **3 Lighting (LFX)**, and **31 Visual (VFX)** effects.
 
 For installation instructions and general information, please refer to the [main README](../README.md).
 
@@ -362,6 +362,17 @@ Based on '<a href="https://www.shadertoy.com/view/lcl3z2" target="_new">Time Cry
 </tr>
 <tr>
 <td width="50%">
+<h3>Vinyl Disc </h3>
+<h5><code>AS_BGX_VinylDisc.1.fx</code></h5>
+Renders a spinning vinyl record with realistic concentric grooves and thin-film iridescence. Features multiple LP color presets including picture disc mode, customizable label with texture support, configurable groove detail, palette-driven or rainbow iridescence with wedge reflection model, 5 background styles, and full audio reactivity.
+
+</td>
+<td width="50%"><div style="text-align:center">
+<img src="" alt="Vinyl Disc Effect" style="max-width:100%;">
+</div></td>
+</tr>
+<tr>
+<td width="50%">
 <h3>Vortex </h3>
 <h5><code>AS_BGX_Vortex.1.fx</code></h5>
 Creates a psychedelic swirling vortex pattern. The effect is animated and features controls for color, animation speed, swirl characteristics, and brightness. Suitable as a dynamic background. Features animated vortex with customizable speed, palette-based coloring, swirl intensity/frequency/sharpness, brightness falloff, and standard AS-StageFX blending and positioning.
@@ -429,6 +440,17 @@ Based on '<a href="https://www.shadertoy.com/view/XXyGzh" target="_new">Zippy Za
 <table>
 <tr>
 <td width="50%">
+<h3>Anamorphic Flare </h3>
+<h5><code>AS_GFX_AnamorphicFlare.1.fx</code></h5>
+Simulates the characteristic horizontal streak flares produced by anamorphic cinema lenses. Detects bright areas in the scene and stretches them into wide horizontal streaks with palette-based coloring, configurable streak length, and audio reactivity.
+
+</td>
+<td width="50%"><div style="text-align:center">
+<img src="" alt="Anamorphic Flare Effect" style="max-width:100%;">
+</div></td>
+</tr>
+<tr>
+<td width="50%">
 <h3>Aspect Ratio </h3>
 <h5><code>AS_GFX_AspectRatio.1.fx</code></h5>
 A versatile aspect ratio framing tool designed to help position subjects for social media posts, photography, and video composition. Features preset aspect ratios for common social media and photography formats (1:1, 16:9, 4:5, etc.), custom aspect ratio input, adjustable clipped area color and opacity, optional composition guides (rule of thirds, golden ratio, center lines), horizontal/vertical alignment controls, and adjustable border appearance. Perfect for precise subject positioning and consistent framing across platforms.
@@ -447,6 +469,17 @@ Displays animated arrows or indicators that visualize the directionality of audi
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-audiodirection.gif" alt="Audio Direction Effect" style="max-width:100%;">
+</div></td>
+</tr>
+<tr>
+<td width="50%">
+<h3>Bleach Bypass </h3>
+<h5><code>AS_GFX_BleachBypass.1.fx</code></h5>
+Emulates the bleach bypass (silver retention) film development process. Skips the bleach step to retain silver halide, producing a gritty, desaturated, high-contrast image with metallic sheen. Features configurable strength, contrast, and silver retention controls.
+
+</td>
+<td width="50%"><div style="text-align:center">
+<img src="" alt="Bleach Bypass Effect" style="max-width:100%;">
 </div></td>
 </tr>
 <tr>
@@ -473,6 +506,17 @@ A high-quality cinematic diffusion/bloom filter that replicates classic film dif
 </tr>
 <tr>
 <td width="50%">
+<h3>Color Pop </h3>
+<h5><code>AS_GFX_ColorPop.1.fx</code></h5>
+Isolates a single hue range and desaturates everything else for dramatic color-pop photography. Features configurable target hue, range width, smooth falloff, and background desaturation level.
+
+</td>
+<td width="50%"><div style="text-align:center">
+<img src="" alt="Color Pop Effect" style="max-width:100%;">
+</div></td>
+</tr>
+<tr>
+<td width="50%">
 <h3>Cosmic Glow </h3>
 <h5><code>AS_GFX_CosmicGlow.1.fx</code></h5>
 Renders an abstract, glowing overlay effect composed of hundreds of animated, rotating arcs arranged in concentric rings. Features animated, rotating arcs with customizable density and count; perspective distortion with axis inclination for realistic 3D viewing angles; two coloring modes: original mathematical formula or standard AS-StageFX palettes; audio reactivity targeting Ring Brightness, Arc Intensity, and Ring Count for dynamic effects; and full integration with AS-StageFX controls for animation, positioning, depth, and blending.
@@ -484,6 +528,17 @@ Based on '<a href="https://www.shadertoy.com/view/ls3XW8" target="_new">Cosmic</
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="" alt="Cosmic Glow Effect" style="max-width:100%;">
+</div></td>
+</tr>
+<tr>
+<td width="50%">
+<h3>Cross Processing </h3>
+<h5><code>AS_GFX_CrossProcessing.1.fx</code></h5>
+Recreates the look of developing film in the wrong chemistry (E-6 in C-41 or vice versa). Features 5 classic cross-processing presets with per-channel curve manipulation, producing dramatic color shifts, elevated contrast, and distinctive color casts.
+
+</td>
+<td width="50%"><div style="text-align:center">
+<img src="" alt="Cross Processing Effect" style="max-width:100%;">
 </div></td>
 </tr>
 <tr>
@@ -503,6 +558,28 @@ Based on '<a href="https://www.shadertoy.com/view/MdBSWV" target="_new">Protecti
 </tr>
 <tr>
 <td width="50%">
+<h3>Faded Blacks </h3>
+<h5><code>AS_GFX_FadedBlacks.1.fx</code></h5>
+Creates the popular Instagram-style faded blacks aesthetic by lifting shadow levels. Converts deep blacks into soft milky tones with configurable fade color, amount, and tonal range for vintage film and editorial photography looks.
+
+</td>
+<td width="50%"><div style="text-align:center">
+<img src="" alt="Faded Blacks Effect" style="max-width:100%;">
+</div></td>
+</tr>
+<tr>
+<td width="50%">
+<h3>Film Stock </h3>
+<h5><code>AS_GFX_FilmStock.1.fx</code></h5>
+Comprehensive film stock emulation with multiple preset profiles from warm Kodak Gold to punchy Tri-X black and white. Features accurate color science, film grain, tonal curves, and halation characteristics for each film type.
+
+</td>
+<td width="50%"><div style="text-align:center">
+<img src="" alt="Film Stock Effect" style="max-width:100%;">
+</div></td>
+</tr>
+<tr>
+<td width="50%">
 <h3>Focus Frame </h3>
 <h5><code>AS_GFX_FocusFrame.1.fx</code></h5>
 This shader creates a "focus frame" effect by defining a clear, centered rectangular area with a soft, feathered edge. The frame's aspect ratio is fully adjustable. The surrounding space is rendered as a blurred, zoomed, and dimmed version of the background, ideal for creating cinematic compositions. Features a fully adjustable central frame with controls for size and aspect ratio, soft feathered edges for smooth blending between focus area and background, high-quality performant two-pass Gaussian blur for the background, intuitive controls for composition and background effects, depth-aware rendering with standard blending, and debug visualization for frame boundaries.
@@ -510,6 +587,28 @@ This shader creates a "focus frame" effect by defining a clear, centered rectang
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-focusframe.gif" alt="Focus Frame Effect" style="max-width:100%;">
+</div></td>
+</tr>
+<tr>
+<td width="50%">
+<h3>Gradient Map </h3>
+<h5><code>AS_GFX_GradientMap.1.fx</code></h5>
+Converts scene luminance values to colors from the AS StageFX palette system. Dark areas map to palette color 1, bright areas to color 5, with smooth interpolation between. Enables dramatic cinematic color grading with any of the 25+ built-in palettes or custom colors.
+
+</td>
+<td width="50%"><div style="text-align:center">
+<img src="" alt="Gradient Map Effect" style="max-width:100%;">
+</div></td>
+</tr>
+<tr>
+<td width="50%">
+<h3>Halation </h3>
+<h5><code>AS_GFX_Halation.1.fx</code></h5>
+Simulates halation, the warm glow caused by light reflecting off the film backing plate in analog cameras. The red channel blooms wider than green and blue, creating the characteristic warm halo around highlights seen in classic film photography.
+
+</td>
+<td width="50%"><div style="text-align:center">
+<img src="" alt="Halation Effect" style="max-width:100%;">
 </div></td>
 </tr>
 <tr>
@@ -529,6 +628,17 @@ Based on '<a href="https://www.shadertoy.com/view/XtVGD1" target="_new">notebook
 </tr>
 <tr>
 <td width="50%">
+<h3>Light Wrap </h3>
+<h5><code>AS_GFX_LightWrap.1.fx</code></h5>
+Multi-pass effect that isolates bright background areas, applies alpha-weighted Gaussian blur, and composites the result around foreground subjects using depth separation. Features Fresnel-based surface reach control, luminance threshold, solid color or palette-based silhouette modes, and configurable blur radius.
+
+</td>
+<td width="50%"><div style="text-align:center">
+<img src="" alt="Light Wrap Effect" style="max-width:100%;">
+</div></td>
+</tr>
+<tr>
+<td width="50%">
 <h3>MultiLayer Halftone </h3>
 <h5><code>AS_GFX_MultiLayerHalftone.1.fx</code></h5>
 Creates a highly customizable multi-layer halftone effect with support for up to four independent layers. Each layer can use different pattern types (dots, lines, crosshatch), isolation methods (brightness, RGB, hue, depth), colors, thresholds, scales, densities, and angles. Features layer blending with transparency support.
@@ -536,6 +646,28 @@ Creates a highly customizable multi-layer halftone effect with support for up to
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-multilayerhalftone.gif" alt="MultiLayer Halftone Effect" style="max-width:100%;">
+</div></td>
+</tr>
+<tr>
+<td width="50%">
+<h3>Orton Effect </h3>
+<h5><code>AS_GFX_OrtonEffect.1.fx</code></h5>
+Classic portrait photography technique that isolates bright areas, applies multi-pass Gaussian blur, then multiplies the sharp original with the soft overlay. Creates a dreamy, painterly quality ideal for fantasy portraits and landscapes.
+
+</td>
+<td width="50%"><div style="text-align:center">
+<img src="" alt="Orton Effect Effect" style="max-width:100%;">
+</div></td>
+</tr>
+<tr>
+<td width="50%">
+<h3>Soft Diffusion </h3>
+<h5><code>AS_GFX_SoftDiffusion.1.fx</code></h5>
+Three-pass beauty filter that selectively softens midtone skin areas while preserving sharp edges and details. Creates the classic glamour photography skin glow look with configurable softness and edge preservation.
+
+</td>
+<td width="50%"><div style="text-align:center">
+<img src="" alt="Soft Diffusion Effect" style="max-width:100%;">
 </div></td>
 </tr>
 <tr>
@@ -562,6 +694,17 @@ Based on '<a href="https://www.shadertoy.com/view/XfjyWG" target="_new">Hexagona
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-vignetteplus.gif" alt="Vignette Plus Effect" style="max-width:100%;">
+</div></td>
+</tr>
+<tr>
+<td width="50%">
+<h3>Y2K Digicam </h3>
+<h5><code>AS_GFX_Y2KDigicam.1.fx</code></h5>
+Recreates the aesthetic of early 2000s consumer digital cameras. Features flash wash, color cast, digital noise grain, chromatic aberration, barrel distortion, and vignette for authentic Y2K nostalgia photography.
+
+</td>
+<td width="50%"><div style="text-align:center">
+<img src="" alt="Y2K Digicam Effect" style="max-width:100%;">
 </div></td>
 </tr>
 </table>
@@ -611,26 +754,6 @@ Simulates moving stage spotlights with adjustable beam width, color, intensity, 
 ## Visual Effects (VFX)
 
 <table>
-<tr>
-<td width="50%">
-<h3> </h3>
-<h5><code>AS_VFX_GlossyGradient.1.fx</code></h5>
-
-</td>
-<td width="50%"><div style="text-align:center">
-<img src="" alt=" Effect" style="max-width:100%;">
-</div></td>
-</tr>
-<tr>
-<td width="50%">
-<h3> </h3>
-<h5><code>AS_VFX_VolumetricFog.1.fx</code></h5>
-
-</td>
-<td width="50%"><div style="text-align:center">
-<img src="" alt=" Effect" style="max-width:100%;">
-</div></td>
-</tr>
 <tr>
 <td width="50%">
 <h3>Boom Sticker </h3>
@@ -689,6 +812,17 @@ Provides precise color grading by adjusting the balance of shadows, midtones, an
 </tr>
 <tr>
 <td width="50%">
+<h3>Cross-Screen Stars </h3>
+<h5><code>AS_VFX_CrossScreenStars.1.fx</code></h5>
+Adds 4 or 6-point star diffraction spikes on bright areas in the scene. Simulates a physical cross-screen (star) filter attached to a camera lens with configurable spike count, length, rotation, brightness threshold, and audio reactivity.
+
+</td>
+<td width="50%"><div style="text-align:center">
+<img src="" alt="Cross-Screen Stars Effect" style="max-width:100%;">
+</div></td>
+</tr>
+<tr>
+<td width="50%">
 <h3>Digital Artifacts </h3>
 <h5><code>AS_VFX_DigitalArtifacts.1.fx</code></h5>
 Applies digital compression artifacts such as blockiness, color banding, and quantization noise. Features adjustable artifact strength, block size, and color depth. Useful for retro, glitch, or degraded video effects.
@@ -696,6 +830,17 @@ Applies digital compression artifacts such as blockiness, color banding, and qua
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-digitalartifacts.gif" alt="Digital Artifacts Effect" style="max-width:100%;">
+</div></td>
+</tr>
+<tr>
+<td width="50%">
+<h3>Double Exposure </h3>
+<h5><code>AS_VFX_DoubleExposure.1.fx</code></h5>
+Creates a double exposure effect by blending the scene with a scaled, repositioned, or rotated copy of itself. Uses depth buffer separation so foreground silhouettes are filled with background imagery, mimicking analog film double exposure technique.
+
+</td>
+<td width="50%"><div style="text-align:center">
+<img src="" alt="Double Exposure Effect" style="max-width:100%;">
 </div></td>
 </tr>
 <tr>
@@ -711,6 +856,17 @@ Simulates floating dust motes and particles drifting through the scene. Features
 </tr>
 <tr>
 <td width="50%">
+<h3>Film Burn </h3>
+<h5><code>AS_VFX_FilmBurn.1.fx</code></h5>
+Generates procedural film burn effects with warm overexposure drifting from frame edges. Simulates the look of film overheating in a projector gate with animated burn patterns, palette-based coloring, and audio reactivity.
+
+</td>
+<td width="50%"><div style="text-align:center">
+<img src="" alt="Film Burn Effect" style="max-width:100%;">
+</div></td>
+</tr>
+<tr>
+<td width="50%">
 <h3>Focused Chaos </h3>
 <h5><code>AS_VFX_FocusedChaos.1.fx</code></h5>
 Creates a visually complex and dynamic abstract effect resembling a focused point of chaotic energy or a swirling cosmic vortex. Patterns are generated using 3D Simplex noise and Fractional Brownian Motion (FBM), with colors evolving based on noise patterns and spatial coordinates, animated over time. Features transparent background, customizable animation, artistic controls for swirl/noise/color/alpha, dithering, domain warping, and standard AS-StageFX depth/blending controls.
@@ -722,6 +878,28 @@ Based on '<a href="https://www.shadertoy.com/view/lcfyDj" target="_new">BlackHol
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-focusedchaos.gif" alt="Focused Chaos Effect" style="max-width:100%;">
+</div></td>
+</tr>
+<tr>
+<td width="50%">
+<h3>Glossy Gradient </h3>
+<h5><code>AS_VFX_GlossyGradient.1.fx</code></h5>
+Generates smooth, mathematically precise gradient patterns ideal for stylish backgrounds and color overlays. Features animated flow, palette-based coloring, and configurable gradient parameters with audio reactivity.
+
+</td>
+<td width="50%"><div style="text-align:center">
+<img src="" alt="Glossy Gradient Effect" style="max-width:100%;">
+</div></td>
+</tr>
+<tr>
+<td width="50%">
+<h3>Light Leak </h3>
+<h5><code>AS_VFX_LightLeak.1.fx</code></h5>
+Generates procedural warm light blobs that drift organically across the frame, simulating light leaking through gaps in a film camera body. Features palette-based coloring, animated drift, configurable blob count and size, and audio reactivity.
+
+</td>
+<td width="50%"><div style="text-align:center">
+<img src="" alt="Light Leak Effect" style="max-width:100%;">
 </div></td>
 </tr>
 <tr>
@@ -744,6 +922,39 @@ Applies trailing motion blur to moving objects or the whole scene. Features adju
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-motiontrails.gif" alt="Motion Trails Effect" style="max-width:100%;">
+</div></td>
+</tr>
+<tr>
+<td width="50%">
+<h3>Neon Edge Glow </h3>
+<h5><code>AS_VFX_NeonEdgeGlow.1.fx</code></h5>
+Detects edges using the depth buffer and applies vivid neon-colored glow around foreground subjects. Creates a cyberpunk/synthwave aesthetic with configurable edge detection sensitivity, glow color from palette, and audio-reactive intensity.
+
+</td>
+<td width="50%"><div style="text-align:center">
+<img src="" alt="Neon Edge Glow Effect" style="max-width:100%;">
+</div></td>
+</tr>
+<tr>
+<td width="50%">
+<h3>Pixel Sort </h3>
+<h5><code>AS_VFX_PixelSort.1.fx</code></h5>
+Implements directional pixel sorting glitch art. Sorts pixels along rows or columns based on luminance or hue thresholds, creating dramatic streaked distortions. Features configurable sort direction, threshold, streak length, and audio-reactive intensity.
+
+</td>
+<td width="50%"><div style="text-align:center">
+<img src="" alt="Pixel Sort Effect" style="max-width:100%;">
+</div></td>
+</tr>
+<tr>
+<td width="50%">
+<h3>Prism Overlay </h3>
+<h5><code>AS_VFX_PrismOverlay.1.fx</code></h5>
+Simulates holding a crystal prism in front of the camera lens. Uses SDF crystal geometry with chromatic aberration to create rainbow refraction effects and dreamy distortions. Features configurable prism shape, refraction strength, and positioning.
+
+</td>
+<td width="50%"><div style="text-align:center">
+<img src="" alt="Prism Overlay Effect" style="max-width:100%;">
 </div></td>
 </tr>
 <tr>
@@ -822,6 +1033,17 @@ Displays an audio spectrum analyzer in a ring format. Features adjustable band c
 </tr>
 <tr>
 <td width="50%">
+<h3>Speed Lines </h3>
+<h5><code>AS_VFX_SpeedLines.1.fx</code></h5>
+Creates radial zoom blur emanating from a configurable center point. Simulates motion, speed, and impact effects with adjustable blur strength, sample count, and beat-reactive intensity for dynamic action scenes.
+
+</td>
+<td width="50%"><div style="text-align:center">
+<img src="" alt="Speed Lines Effect" style="max-width:100%;">
+</div></td>
+</tr>
+<tr>
+<td width="50%">
 <h3>Stencil Mask </h3>
 <h5><code>AS_VFX_StencilMask.1.fx</code></h5>
 Applies a stencil mask to selectively reveal or hide parts of the scene. Features controls for mask shape, size, position, feathering, and blending. Useful for transitions, overlays, or compositing effects.
@@ -844,6 +1066,17 @@ Based on '<a href="https://www.youtube.com/watch?v=Tfj6RDqXEHM" target="_new">Go
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-tiltedgrid.gif" alt="Tilted Grid Effect" style="max-width:100%;">
+</div></td>
+</tr>
+<tr>
+<td width="50%">
+<h3>Volumetric Fog </h3>
+<h5><code>AS_VFX_VolumetricFog.1.fx</code></h5>
+Adds atmospheric volumetric fog with procedural noise-based density variation. Features wind direction and speed controls, depth-based layering, configurable fog color and density, and audio-reactive intensity for dynamic environmental atmosphere.
+
+</td>
+<td width="50%"><div style="text-align:center">
+<img src="" alt="Volumetric Fog Effect" style="max-width:100%;">
 </div></td>
 </tr>
 <tr>

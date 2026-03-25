@@ -1,17 +1,22 @@
 # AS StageFX Shader Template Guide
 
-This document explains how to use the shader template and provides specific guidance for different shader types.
+This document explains how to use the shader templates and provides specific guidance for different shader types.
 
-## Template Location
+## Template Files
 
-The comprehensive shader template is located at:
-`docs/template/shader-template.fx.example`
+| Template | Mode | Purpose |
+|----------|------|---------|
+| `shader-template.fx.example` | Generic | Base template with all patterns |
+| `bgx-template.fx.example` | A: Generator | Full-screen procedural backgrounds |
+| `vfx-template.fx.example` | B: Overlay | Visual effects overlaid on scene |
+| `gfx-template.fx.example` | C: Filter | Image processing / post-processing |
+| `lfx-template.fx.example` | E: Multi-Instance | Multi-instance lighting effects |
 
-## Using the Template
+## Using the Templates
 
-1. **Copy the template file** to your shader location
+1. **Copy the appropriate template file** to `shaders/AS/`
 2. **Replace placeholders** marked with `[BRACKETS]` with your specific values
-3. **Remove optional sections** that don't apply to your shader type
+3. **Remove optional sections** that don't apply to your effect
 4. **Customize UI parameters** based on your effect's needs
 5. **Implement your effect algorithm** in the pixel shader
 
@@ -21,193 +26,268 @@ The comprehensive shader template is located at:
 |-------------|-------------|----------|
 | `[TYPECODE]` | Shader category code | BGX, VFX, LFX, GFX |
 | `[EffectName]` | CamelCase effect name | BlueCorona, CircularSpectrum |
-| `[Version]` | Major version number | 1, 2, 3 |
-| `[Brief Description]` | One-line summary | "Blue Corona Background Effect" |
+| `[Effect Display Name]` | Human-readable name | "Blue Corona", "Circular Spectrum" |
 | `[Author Name]` | Your name | "Leon Aquitaine" |
+| `[Brief Description]` | One-line summary | "Blue Corona Background Effect" |
+
+## Critical Conventions
+
+### Technique Guard Format
+Use mixed case with `_1_` version suffix:
+```hlsl
+#ifndef __AS_BGX_CosmicStorm_1_fx
+#define __AS_BGX_CosmicStorm_1_fx
+```
+NOT all caps, NOT missing version suffix.
+
+### Namespace Convention
+Use `AS_` prefix with underscore:
+```hlsl
+namespace AS_CosmicStorm {
+```
+
+### Shader Descriptor
+Place immediately after includes. Include a user-friendly description (what will this do to my screenshot?):
+```hlsl
+uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " "; ui_text = "AS StageFX | Cosmic Storm | Swirling fractal vortex background with volumetric lighting. | by Leon Aquitaine"; > = 0;
+```
+Descriptions should be in visual terms, not technical — see ImplementationGuide.md "Writing Good Shader Descriptions" for guidelines.
+
+### Category Constants
+Use `AS_CAT_*` constants instead of hardcoded strings:
+```hlsl
+// CORRECT:
+ui_category = AS_CAT_PALETTE;
+ui_category = AS_CAT_ANIMATION;
+ui_category = AS_CAT_AUDIO;
+ui_category = AS_CAT_STAGE;
+ui_category = AS_CAT_FINAL;
+ui_category = AS_CAT_DEBUG;
+
+// WRONG:
+ui_category = "Palette & Style";
+ui_category = "Animation";
+```
+Effect-specific categories remain as strings (e.g., `"Pattern"`, `"Fractal"`).
+
+### Function Names (Current API)
+Use the current function names, not deprecated ones:
+```hlsl
+// CURRENT                          // DEPRECATED (do not use)
+AS_audioModulate(v, src, mul, f, 0) // AS_applyAudioReactivity(v, src, mul, f)
+AS_audioModulate(v, src, mul, f, m) // AS_applyAudioReactivityEx(v, src, mul, f, m)
+AS_audioLevelFromSource(source)     // AS_getAudioSource(source)
+AS_timeSeconds()                    // AS_getTime()
+AS_rotate2D(coords, angle)         // AS_applyRotation(coords, angle)
+```
+
+### Standard UI Macros
+Use these macros for standard controls:
+```hlsl
+// Audio target selector
+AS_AUDIO_TARGET_UI(EffectName_AudioTarget, "None\0Speed\0Intensity\0", 0)
+
+// Color cycling speed
+AS_COLOR_CYCLE_UI(ColorCycleSpeed, AS_CAT_PALETTE)
+
+// Toggle between mathematical and palette coloring
+AS_USE_PALETTE_UI(UseOriginalColors, AS_CAT_PALETTE)
+```
+
+### Compositing Pattern
+Use `AS_composite()` for final output instead of manual blend + lerp:
+```hlsl
+// PREFERRED: Single-call compositing
+float3 finalRgb = AS_composite(effectColor, originalColor.rgb, BlendMode, BlendStrength);
+
+// EQUIVALENT but verbose:
+float3 blendedColor = AS_blendRGB(effectColor, originalColor.rgb, BlendMode);
+float3 finalRgb = lerp(originalColor.rgb, blendedColor, BlendStrength);
+```
+
+For additive glow effects, compute light and add to scene:
+```hlsl
+float3 finalRgb = originalColor.rgb + effectLight;
+```
+
+BlendMode is for USER final mix control, not for core effect compositing.
 
 ## Shader Type Guidelines
 
-### BGX (Background Effects)
+### BGX (Background Effects) - Mode A: Generator
 **Purpose**: Full-screen background patterns and environments
 
-**Typical Features**:
-- Procedural pattern generation using AS_Utils noise functions
-- Full-screen coverage with depth testing
-- Animation and audio reactivity
-- Color palette support
+**Includes ALL standard controls**:
+- Position, Scale, Rotation (Stage)
+- Animation speed and keyframe
+- Audio source, multiplier, and target
+- Full palette system: `AS_PALETTE_SELECTION_UI` + `AS_DECLARE_CUSTOM_PALETTE` + `AS_USE_PALETTE_UI` + `AS_COLOR_CYCLE_UI`
+- Background color
+- Depth testing, blend mode, debug
 
 **Key Implementation Points**:
 - Use `AS_getAnimationTime()` for consistent animation
-- Apply audio reactivity to pattern parameters
+- Apply `AS_audioModulate()` to pattern parameters
+- Use `AS_rotate2D()` for coordinate rotation
 - Ensure resolution independence
 - Use depth testing to render behind scene objects
 
-**Example Parameters**:
-- Pattern scale, speed, complexity
-- Color weights or palette selection
-- Background color
-- Animation controls
-
-### VFX (Visual Effects)
+### VFX (Visual Effects) - Mode B: Overlay
 **Purpose**: Overlay effects, particles, distortions, audio visualizers
 
-**Typical Features**:
-- Audio-reactive elements using FreqBands data
-- Particle systems or geometric patterns
-- Position and scale controls
-- Advanced blending modes
+**Includes position/scale/rotation** and depth masking with `AS_STAGEDEPTH_UI`.
 
 **Key Implementation Points**:
-- Use `AS_applyAudioReactivity()` for audio response
-- Implement AS_Palette system for dynamic coloring
-- Support multiple instances (use UI macros for repeated controls)
-- Consider texture-based effects with preprocessor customization
+- Use `AS_audioModulate()` for audio response
+- Implement palette system for dynamic coloring
+- Use `AS_COLOR_CYCLE_UI` for color animation
+- Depth masking via `AS_STAGEDEPTH_UI`
+- Consider additive blending for glow effects
 
-**Example Parameters**:
-- Audio sensitivity and target selection
-- Particle count, size, behavior
-- Effect positioning and scaling
-- Bloom and glow controls
-
-### LFX (Lighting Effects)
-**Purpose**: Lighting simulation, flame effects, spotlights
-
-**Typical Features**:
-- Realistic lighting simulation
-- Multi-instance support (multiple lights/flames)
-- Depth-aware rendering
-- Advanced shape and color controls
-
-**Key Implementation Points**:
-- Use UI macros to define multiple instances efficiently
-- Implement proper depth occlusion
-- Create helper functions for repeated calculations
-- Support fine-tuned positioning and sizing
-
-**Example Parameters**:
-- Light/flame position, size, intensity
-- Color temperature or palette
-- Shape and behavior controls
-- Flicker and animation settings
-
-### GFX (Graphics/Post-Processing)
+### GFX (Graphics/Post-Processing) - Mode C: Filter
 **Purpose**: Image processing, composition aids, screen-space effects
 
-**Typical Features**:
-- Non-destructive image processing
-- Composition guides and overlays
-- Aspect ratio and framing tools
-- Screen-space transformations
+**Does NOT include position/scale by default** - filters process the entire image.
 
 **Key Implementation Points**:
 - Focus on enhancing rather than replacing the original image
-- Provide comprehensive control sets for professional use
-- Implement multiple overlay modes
-- Ensure pixel-perfect accuracy for guides
+- Show depth-aware compositing (selective application by depth)
+- Can use multi-pass techniques (e.g., 2-pass separable Gaussian blur)
+- Audio reactivity is optional
 
-**Example Parameters**:
-- Processing intensity and thresholds
-- Guide types and visibility
-- Overlay colors and opacity
-- Precision positioning controls
+### LFX (Lighting Effects) - Mode E: Multi-Instance
+**Purpose**: Lighting simulation, flame effects, spotlights
+
+**Uses the per-instance macro pattern**:
+1. Define `EFFECT_UI` macro with all per-instance parameters
+2. Create a `Params` struct to hold instance data
+3. Create a `GetParams()` getter function
+4. Each instance can have its own audio source selection
+
+**Key Implementation Points**:
+- Define `EFFECT_UI` macro for repeatable instance UI
+- Use `struct LightParams` + `GetLightParams()` for clean parameter access
+- Each instance gets independent audio source via the macro
+- Global controls (palette, animation, blend) shared across instances
+- Use `AS_audioLevelFromSource()` for per-instance audio
+
+## Canonical UI Ordering
+
+All shaders should follow this order for standard controls:
+
+```hlsl
+// ---- Effect-Specific Parameters ----
+// ... (custom categories like "Pattern", "Fractal", "Shape")
+
+// ---- Standard Controls (canonical order) ----
+// Palette & Style    (AS_CAT_PALETTE)
+// Animation          (AS_CAT_ANIMATION)
+// Audio Reactivity   (AS_CAT_AUDIO)
+// Stage              (AS_CAT_STAGE)
+// Final Mix          (AS_CAT_FINAL)
+// Debug              (AS_CAT_DEBUG)
+```
 
 ## Advanced Patterns
 
-### Audio Reactivity Pattern
-```hlsl
-// Parameter-specific audio target selection
-uniform int AudioTarget < ui_type = "combo"; ui_label = "Audio Target";
-    ui_items = "None\0Parameter A\0Parameter B\0"; > = 0;
-
-// In pixel shader
-float paramA_final = paramA;
-if (AudioTarget == 1) {
-    float audioValue = AS_applyAudioReactivity(1.0, AudioSource, AudioMult, true) - 1.0;
-    paramA_final = paramA + (paramA * audioValue * scaleFactor);
-}
-```
-
-### Multi-Instance Pattern
-```hlsl
-#define INSTANCE_UI(index, defaultEnable, defaultPos, defaultScale) \
-uniform bool Instance##index##_Enable < ui_label = "Enable Instance " #index; ui_category = "Instance " #index; > = defaultEnable; \
-uniform float2 Instance##index##_Position < ui_type = "slider"; ui_label = "Position"; ui_min = -1.0; ui_max = 1.0; ui_category = "Instance " #index; > = defaultPos; \
-uniform float Instance##index##_Scale < ui_type = "slider"; ui_label = "Scale"; ui_min = 0.1; ui_max = 2.0; ui_category = "Instance " #index; > = defaultScale;
-
-// Use the macro for each instance
-INSTANCE_UI(1, true, float2(0.0, 0.0), 1.0)
-INSTANCE_UI(2, false, float2(0.2, 0.2), 0.8)
-```
-
-### Texture-Based Pattern
-```hlsl
-// Preprocessor-based texture customization
-#ifndef TEXTURE_PATH
-#define TEXTURE_PATH "default.png"
-#endif
-
-texture EffectTexture < source = TEXTURE_PATH; ui_label = "Texture"; > 
-{ Width = 256; Height = 256; Format = RGBA8; };
-sampler TextureSampler { Texture = EffectTexture; /* sampling settings */ };
-```
-
-### Palette Integration Pattern
+### Audio Reactivity with AS_AUDIO_TARGET_UI
 ```hlsl
 // In UI section
-AS_PALETTE_SELECTION_UI(EffectPalette, "Color Palette", AS_PALETTE_FIRE, "Colors")
-AS_DECLARE_CUSTOM_PALETTE(Effect_, "Colors")
+AS_AUDIO_UI(Effect_AudioSource, "Audio Source", AS_AUDIO_BEAT, AS_CAT_AUDIO)
+AS_AUDIO_MULT_UI(Effect_AudioMultiplier, "Intensity", 1.0, 2.0, AS_CAT_AUDIO)
+AS_AUDIO_TARGET_UI(MyEffect_AudioTarget, "None\0Parameter A\0Parameter B\0", 0)
 
 // In pixel shader
+float paramA = ParamA;
+float paramB = ParamB;
+float audioValue = AS_audioModulate(1.0, Effect_AudioSource, Effect_AudioMultiplier, true, 0);
+if (MyEffect_AudioTarget == 1) paramA *= audioValue;
+else if (MyEffect_AudioTarget == 2) paramB *= audioValue;
+```
+
+### Full Palette System
+```hlsl
+// In UI section
+AS_PALETTE_SELECTION_UI(EffectPalette, "Color Palette", AS_PALETTE_FIRE, AS_CAT_PALETTE)
+AS_DECLARE_CUSTOM_PALETTE(Effect_, AS_CAT_PALETTE)
+AS_USE_PALETTE_UI(UseOriginalColors, AS_CAT_PALETTE)
+AS_COLOR_CYCLE_UI(ColorCycleSpeed, AS_CAT_PALETTE)
+
+// In pixel shader
+float colorPos = effectValue;
+if (abs(ColorCycleSpeed) > AS_EPSILON) {
+    colorPos = frac(colorPos + AS_timeSeconds() * ColorCycleSpeed * 0.1);
+}
+
 float3 effectColor;
-if (EffectPalette == AS_PALETTE_CUSTOM) {
-    effectColor = AS_GET_INTERPOLATED_CUSTOM_COLOR(Effect_, colorPosition);
+if (!UseOriginalColors) {
+    if (EffectPalette == AS_PALETTE_CUSTOM) {
+        effectColor = AS_GET_INTERPOLATED_CUSTOM_COLOR(Effect_, colorPos);
+    } else {
+        effectColor = AS_getInterpolatedColor(EffectPalette, colorPos);
+    }
 } else {
-    effectColor = AS_getInterpolatedColor(EffectPalette, colorPosition);
+    effectColor = originalMathColor; // Your mathematical coloring
 }
 ```
 
-## Best Practices
+### Multi-Instance Pattern (LFX)
+```hlsl
+#define EFFECT_UI(index, defaultEnable, defaultPos, defaultSize, defaultAudioSource) \
+uniform bool Inst##index##_Enable < ui_label = "Enable " #index; ui_category = "Instance " #index; > = defaultEnable; \
+uniform float2 Inst##index##_Position < ui_type = "slider"; ui_label = "Position"; ui_min = -1.5; ui_max = 1.5; ui_category = "Instance " #index; > = defaultPos; \
+uniform float Inst##index##_Size < ui_type = "slider"; ui_label = "Size"; ui_min = 0.01; ui_max = 1.0; ui_category = "Instance " #index; > = defaultSize; \
+uniform int Inst##index##_AudioSource < ui_type = "combo"; ui_label = "Audio Source"; ui_items = "Off\0Volume\0Beat\0Bass\0"; ui_category = "Instance " #index; > = defaultAudioSource;
 
-### UI Organization
-1. **Tunable Constants** - Core effect parameters
-2. **Palette & Style** - Color and appearance controls
-3. **Effect-Specific** - Unique parameters for this effect
-4. **Animation Controls** - Speed and keyframe controls
-5. **Audio Reactivity** - Audio source and target selection
-6. **Stage/Position** - Positioning, scaling, rotation, depth
-7. **Final Mix** - Blend mode and strength
-8. **Debug Controls** - Development and troubleshooting aids
+EFFECT_UI(1, true, float2(0.0, 0.0), 0.5, 2)
+EFFECT_UI(2, false, float2(0.3, 0.3), 0.3, 2)
 
-### Coordinate System
-- Always apply transformations in this order: **rotation → position → scale**
-- Use `AS_getRotationRadians()` for consistent rotation handling
-- Apply aspect ratio correction: `coords.x *= ReShade::AspectRatio`
-- Rotate around screen center, not effect center
+struct InstanceParams { bool enable; float2 position; float size; int audioSource; };
 
-### Performance Considerations
-- Use constants instead of magic numbers
-- Minimize texture samples in loops
-- Use `saturate()`, `lerp()`, and `smoothstep()` for smooth transitions
-- Cache expensive calculations outside loops
-
-### Code Style
-- Use meaningful variable names
-- Group related UI controls with consistent categories
-- Add helpful tooltips to all UI elements
-- Comment complex mathematical operations
-- Use helper functions for repeated calculations
+InstanceParams GetInstanceParams(int idx) {
+    InstanceParams p;
+    if (idx == 0) { p.enable = Inst1_Enable; p.position = Inst1_Position; p.size = Inst1_Size; p.audioSource = Inst1_AudioSource; }
+    else { p.enable = Inst2_Enable; p.position = Inst2_Position; p.size = Inst2_Size; p.audioSource = Inst2_AudioSource; }
+    return p;
+}
+```
 
 ## Validation Checklist
 
 Before committing your shader:
 
-- [ ] All placeholder values replaced
-- [ ] UI controls properly organized and categorized
-- [ ] Audio reactivity implemented and tested
+**Structure:**
+- [ ] All `[BRACKET]` placeholder values replaced
+- [ ] Technique guard uses mixed case: `__AS_TypeCode_EffectName_1_fx`
+- [ ] Namespace uses `AS_EffectName` format (with underscore)
+- [ ] Shader descriptor present with user-friendly description
+- [ ] Documentation header complete (DESCRIPTION, FEATURES, IMPLEMENTATION OVERVIEW)
+- [ ] All uniforms on single lines (parsing tools require this)
+- [ ] Textures/samplers prefixed with shader name (prevents conflicts)
+
+**UI Quality:**
+- [ ] UI categories use `AS_CAT_*` constants (not hardcoded strings)
+- [ ] Standard controls follow canonical ordering (effect → palette → animation → audio → stage → final → debug)
+- [ ] All sliders have `ui_step` specified
+- [ ] All sliders have `ui_tooltip` explaining the visual result (not the algorithm)
+- [ ] Named constants for all min/max/default values
+- [ ] Default values produce a visible, tasteful result on first enable
+
+**API Compliance:**
+- [ ] Uses `AS_audioModulate()` not `AS_applyAudioReactivity()`
+- [ ] Uses `AS_timeSeconds()` not `AS_getTime()`
+- [ ] Uses `AS_rotate2D()` not `AS_applyRotation()`
+- [ ] Uses `AS_AUDIO_TARGET_UI()` macro for audio target
+- [ ] Uses `AS_composite()` for final output — BlendMode is for user's final mix only
+- [ ] No `fmod()` — use `AS_mod()`
+- [ ] No `tex2D()` inside loops — use `tex2Dlod(sampler, float4(uv, 0, 0))`
+- [ ] No deprecated function calls (see ImplementationGuide.md)
+
+**Functional:**
+- [ ] Audio reactivity works (and gracefully degrades without Listeningway)
 - [ ] Depth testing working correctly
 - [ ] Effect scales properly with resolution
-- [ ] Blend modes function as expected
-- [ ] Debug modes provide useful information
-- [ ] Documentation header complete and accurate
-- [ ] Technique guard uses correct identifier
-- [ ] No compilation errors or warnings
+- [ ] Additive light effects never darken the scene
+- [ ] Debug modes provide useful information (at minimum: audio + depth)
+
+See also: **ImplementationGuide.md § "Lessons Learned"** for common pitfalls and their fixes.

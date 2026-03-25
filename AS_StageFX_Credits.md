@@ -123,6 +123,11 @@ This document lists all external sources, original authors, and inspiration cred
 - **Original Title**: Time Crystal
 - **Notes**: 
 - **Source**: https://www.shadertoy.com/view/lcl3z2
+### AS_BGX_VinylDisc.1.fx - Vinyl Disc
+- **Original Author**: 
+- **Original Title**: 
+- **Notes**: 
+- **Source**: 
 ### AS_BGX_Vortex.1.fx - Vortex
 - **Original Author**: LonkDong
 - **Original Title**: Vortex__ 
@@ -145,16 +150,6 @@ This document lists all external sources, original authors, and inspiration cred
 - **Source**: https://www.shadertoy.com/view/XXyGzh
 
 ## Shadertoy & External Adaptations (VFX)
-### AS_VFX_GlossyGradient.1.fx - 
-- **Original Author**: 
-- **Original Title**: 
-- **Notes**: 
-- **Source**: 
-### AS_VFX_VolumetricFog.1.fx - 
-- **Original Author**: 
-- **Original Title**: 
-- **Notes**: 
-- **Source**: 
 ### AS_VFX_BoomSticker.1.fx - Boom Sticker
 - **Original Author**: Marot Satil
 - **Original Title**: StageDepth.fx
@@ -175,7 +170,17 @@ This document lists all external sources, original authors, and inspiration cred
 - **Original Title**: 
 - **Notes**: 
 - **Source**: 
+### AS_VFX_CrossScreenStars.1.fx - Cross-Screen Stars
+- **Original Author**: 
+- **Original Title**: 
+- **Notes**: 
+- **Source**: 
 ### AS_VFX_DigitalArtifacts.1.fx - Digital Artifacts
+- **Original Author**: 
+- **Original Title**: 
+- **Notes**: 
+- **Source**: 
+### AS_VFX_DoubleExposure.1.fx - Double Exposure
 - **Original Author**: 
 - **Original Title**: 
 - **Notes**: 
@@ -185,17 +190,47 @@ This document lists all external sources, original authors, and inspiration cred
 - **Original Title**: 
 - **Notes**: 
 - **Source**: 
+### AS_VFX_FilmBurn.1.fx - Film Burn
+- **Original Author**: 
+- **Original Title**: 
+- **Notes**: 
+- **Source**: 
 ### AS_VFX_FocusedChaos.1.fx - Focused Chaos
 - **Original Author**: misterprada
 - **Original Title**: BlackHole (swirl, portal)
 - **Notes**: 
 - **Source**: https://www.shadertoy.com/view/lcfyDj
+### AS_VFX_GlossyGradient.1.fx - Glossy Gradient
+- **Original Author**: 
+- **Original Title**: 
+- **Notes**: 
+- **Source**: 
+### AS_VFX_LightLeak.1.fx - Light Leak
+- **Original Author**: 
+- **Original Title**: 
+- **Notes**: 
+- **Source**: 
 ### AS_VFX_MotionFocus.1.fx - Motion Focus
 - **Original Author**: 
 - **Original Title**: 
 - **Notes**: 
 - **Source**: 
 ### AS_VFX_MotionTrails.1.fx - Motion Trails
+- **Original Author**: 
+- **Original Title**: 
+- **Notes**: 
+- **Source**: 
+### AS_VFX_NeonEdgeGlow.1.fx - Neon Edge Glow
+- **Original Author**: 
+- **Original Title**: 
+- **Notes**: 
+- **Source**: 
+### AS_VFX_PixelSort.1.fx - Pixel Sort
+- **Original Author**: 
+- **Original Title**: 
+- **Notes**: 
+- **Source**: 
+### AS_VFX_PrismOverlay.1.fx - Prism Overlay
 - **Original Author**: 
 - **Original Title**: 
 - **Notes**: 
@@ -230,6 +265,11 @@ This document lists all external sources, original authors, and inspiration cred
 - **Original Title**: 
 - **Notes**: 
 - **Source**: 
+### AS_VFX_SpeedLines.1.fx - Speed Lines
+- **Original Author**: 
+- **Original Title**: 
+- **Notes**: 
+- **Source**: 
 ### AS_VFX_StencilMask.1.fx - Stencil Mask
 - **Original Author**: 
 - **Original Title**: 
@@ -240,6 +280,11 @@ This document lists all external sources, original authors, and inspiration cred
 - **Original Title**: Godot 4: Tilted Grid Effect Tutorial
 - **Notes**: 
 - **Source**: https://www.youtube.com/watch?v=Tfj6RDqXEHM
+### AS_VFX_VolumetricFog.1.fx - Volumetric Fog
+- **Original Author**: 
+- **Original Title**: 
+- **Notes**: 
+- **Source**: 
 ### AS_VFX_VolumetricLight.1.fx - Volumetric Light
 - **Original Author**: int_45h
 - **Original Title**: fake volumetric 2d light wip
@@ -262,12 +307,22 @@ This document lists all external sources, original authors, and inspiration cred
 - **Source**: 
 
 ## Shadertoy & External Adaptations (GFX)
+### AS_GFX_AnamorphicFlare.1.fx - Anamorphic Flare
+- **Original Author**: 
+- **Original Title**: 
+- **Notes**: 
+- **Source**: 
 ### AS_GFX_AspectRatio.1.fx - Aspect Ratio
 - **Original Author**: 
 - **Original Title**: 
 - **Notes**: 
 - **Source**: 
 ### AS_GFX_AudioDirection.1.fx - Audio Direction
+- **Original Author**: 
+- **Original Title**: 
+- **Notes**: 
+- **Source**: 
+### AS_GFX_BleachBypass.1.fx - Bleach Bypass
 - **Original Author**: 
 - **Original Title**: 
 - **Notes**: 
@@ -282,17 +337,47 @@ This document lists all external sources, original authors, and inspiration cred
 - **Original Title**: 
 - **Notes**: 
 - **Source**: 
+### AS_GFX_ColorPop.1.fx - Color Pop
+- **Original Author**: 
+- **Original Title**: 
+- **Notes**: 
+- **Source**: 
 ### AS_GFX_CosmicGlow.1.fx - Cosmic Glow
 - **Original Author**: XorDev
 - **Original Title**: Cosmic
 - **Notes**: 
 - **Source**: https://www.shadertoy.com/view/ls3XW8
+### AS_GFX_CrossProcessing.1.fx - Cross Processing
+- **Original Author**: 
+- **Original Title**: 
+- **Notes**: 
+- **Source**: 
 ### AS_GFX_Hologram.1.fx - Depth Hologram
 - **Original Author**: Alexander Alekseev aka TDM
 - **Original Title**: Protection hologram
 - **Notes**: 
 - **Source**: https://www.shadertoy.com/view/MdBSWV
+### AS_GFX_FadedBlacks.1.fx - Faded Blacks
+- **Original Author**: 
+- **Original Title**: 
+- **Notes**: 
+- **Source**: 
+### AS_GFX_FilmStock.1.fx - Film Stock
+- **Original Author**: 
+- **Original Title**: 
+- **Notes**: 
+- **Source**: 
 ### AS_GFX_FocusFrame.1.fx - Focus Frame
+- **Original Author**: 
+- **Original Title**: 
+- **Notes**: 
+- **Source**: 
+### AS_GFX_GradientMap.1.fx - Gradient Map
+- **Original Author**: 
+- **Original Title**: 
+- **Notes**: 
+- **Source**: 
+### AS_GFX_Halation.1.fx - Halation
 - **Original Author**: 
 - **Original Title**: 
 - **Notes**: 
@@ -302,7 +387,22 @@ This document lists all external sources, original authors, and inspiration cred
 - **Original Title**: notebook drawings
 - **Notes**: Based on 'notebook drawings' by Flockaroo (2016).
 - **Source**: https://www.shadertoy.com/view/XtVGD1
+### AS_GFX_LightWrap.1.fx - Light Wrap
+- **Original Author**: 
+- **Original Title**: 
+- **Notes**: 
+- **Source**: 
 ### AS_GFX_MultiLayerHalftone.1.fx - MultiLayer Halftone
+- **Original Author**: 
+- **Original Title**: 
+- **Notes**: 
+- **Source**: 
+### AS_GFX_OrtonEffect.1.fx - Orton Effect
+- **Original Author**: 
+- **Original Title**: 
+- **Notes**: 
+- **Source**: 
+### AS_GFX_SoftDiffusion.1.fx - Soft Diffusion
 - **Original Author**: 
 - **Original Title**: 
 - **Notes**: 
@@ -317,6 +417,11 @@ This document lists all external sources, original authors, and inspiration cred
 - **Original Title**: Hexagonal Wipe
 - **Notes**: Hexagonal grid implementation adapted from 'hexagonal wipe' by blandprix.
 - **Source**: https://www.shadertoy.com/view/XfjyWG
+### AS_GFX_Y2KDigicam.1.fx - Y2K Digicam
+- **Original Author**: 
+- **Original Title**: 
+- **Notes**: 
+- **Source**: 
 
 ## Shadertoy & External Adaptations (LFX)
 ### AS_LFX_CandleFlame.1.fx - Candle Flame

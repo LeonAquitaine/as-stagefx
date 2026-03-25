@@ -1,216 +1,260 @@
-// AS_GFX_[EffectName].1.fx - Graphics/Post-Processing Effect Template
+// AS_GFX_[EffectName].1.fx - Graphics/Post-Processing Effect Template (Mode C: Filter)
 // Replace [EffectName] with your effect name (e.g., "CompositionGuides")
+//
+// GFX shaders are filters that process the existing image.
+// They do NOT include position/scale by default.
+// They should show depth-aware compositing and can use multi-pass techniques.
 
 /**
  * AS_GFX_[EffectName].1.fx - [Brief Description]
  * Author: [Author Name]
  * License: Creative Commons Attribution 4.0 International
+ * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
+ *
+ * CREDITS (Optional):
+ * Based on "[Original Title]" by [Original Author]
+ * [Platform]: [URL]
+ *
+ * ===================================================================================
+ *
+ * DESCRIPTION:
+ * [2-3 sentences describing the post-processing effect.]
+ *
+ * FEATURES:
+ * - [Feature list]
+ *
+ * IMPLEMENTATION OVERVIEW:
+ * 1. [Steps]
+ *
+ * ===================================================================================
  */
 
+// ============================================================================
+// TECHNIQUE GUARD
+// ============================================================================
 #ifndef __AS_GFX_[EffectName]_1_fx
 #define __AS_GFX_[EffectName]_1_fx
 
+// ============================================================================
+// INCLUDES
+// ============================================================================
 #include "ReShade.fxh"
 #include "AS_Utils.1.fxh"
 
-namespace AS[EffectName] {
+// ============================================================================
+// SHADER DESCRIPTOR
+// ============================================================================
+uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " "; ui_text = "AS StageFX | [Effect Display Name] | [1-2 sentence description of what the effect does visually] | by [Author Name]"; > = 0;
 
 // ============================================================================
-// CONSTANTS
+// NAMESPACE
+// ============================================================================
+namespace AS_[EffectName] {
+
+// ============================================================================
+// TUNABLE CONSTANTS
 // ============================================================================
 static const float EFFECT_INTENSITY_MIN = 0.0;
 static const float EFFECT_INTENSITY_MAX = 2.0;
 static const float EFFECT_INTENSITY_DEFAULT = 1.0;
 
-static const float OVERLAY_OPACITY_MIN = 0.0;
-static const float OVERLAY_OPACITY_MAX = 1.0;
-static const float OVERLAY_OPACITY_DEFAULT = 0.8;
+// Blur radius for multi-pass example
+static const float BLUR_RADIUS_MIN = 0.0;
+static const float BLUR_RADIUS_MAX = 10.0;
+static const float BLUR_RADIUS_DEFAULT = 3.0;
 
-// Guide/Overlay constants
-static const float GUIDE_WIDTH_MIN = 0.5;
-static const float GUIDE_WIDTH_MAX = 5.0;
-static const float GUIDE_WIDTH_DEFAULT = 1.0;
+} // namespace AS_[EffectName]
+
+// ============================================================================
+// TEXTURES & SAMPLERS (for multi-pass effects)
+// ============================================================================
+/*
+// Example: Intermediate texture for 2-pass separable Gaussian blur
+texture EffectTempTex { Width = BUFFER_WIDTH; Height = BUFFER_HEIGHT; Format = RGBA8; };
+sampler EffectTempSampler { Texture = EffectTempTex; };
+*/
 
 // ============================================================================
 // UI CONTROLS
 // ============================================================================
 
-// Main Effect Controls
-uniform float EffectIntensity < ui_type = "slider"; ui_label = "Effect Intensity"; ui_tooltip = "Overall intensity of the effect"; ui_min = EFFECT_INTENSITY_MIN; ui_max = EFFECT_INTENSITY_MAX; ui_step = 0.01; ui_category = "Effect"; > = EFFECT_INTENSITY_DEFAULT;
+// ---- Effect-Specific Parameters ----
+// GFX shaders typically have processing parameters, NOT position/scale
+uniform float EffectIntensity < ui_type = "slider"; ui_label = "Effect Intensity"; ui_tooltip = "Overall intensity of the effect"; ui_min = AS_[EffectName]::EFFECT_INTENSITY_MIN; ui_max = AS_[EffectName]::EFFECT_INTENSITY_MAX; ui_step = 0.01; ui_category = "Effect"; > = AS_[EffectName]::EFFECT_INTENSITY_DEFAULT;
 
 // Processing Parameters (example for image enhancement)
 uniform float Contrast < ui_type = "slider"; ui_label = "Contrast"; ui_tooltip = "Adjust image contrast"; ui_min = 0.0; ui_max = 2.0; ui_step = 0.01; ui_category = "Processing"; > = 1.0;
 uniform float Saturation < ui_type = "slider"; ui_label = "Saturation"; ui_tooltip = "Adjust color saturation"; ui_min = 0.0; ui_max = 2.0; ui_step = 0.01; ui_category = "Processing"; > = 1.0;
-uniform float Brightness < ui_type = "slider"; ui_label = "Brightness"; ui_tooltip = "Adjust image brightness"; ui_min = -1.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Processing"; > = 0.0;
 
-// Guide/Overlay Controls
-uniform bool ShowGuides < ui_label = "Show Guides"; ui_tooltip = "Enable/disable guide overlays"; ui_category = "Guides"; > = true;
-uniform int GuideType < ui_type = "combo"; ui_label = "Guide Type"; ui_items = "None\0Rule of Thirds\0Center Lines\0Golden Ratio\0Custom Grid\0"; ui_category = "Guides"; > = 1;
-uniform float3 GuideColor < ui_type = "color"; ui_label = "Guide Color"; ui_tooltip = "Color for guide lines"; ui_category = "Guides"; > = float3(1.0, 1.0, 1.0);
-uniform float GuideOpacity < ui_type = "slider"; ui_label = "Guide Opacity"; ui_tooltip = "Opacity of guide lines"; ui_min = OVERLAY_OPACITY_MIN; ui_max = OVERLAY_OPACITY_MAX; ui_step = 0.01; ui_category = "Guides"; > = OVERLAY_OPACITY_DEFAULT;
-uniform float GuideWidth < ui_type = "slider"; ui_label = "Guide Width"; ui_tooltip = "Width of guide lines"; ui_min = GUIDE_WIDTH_MIN; ui_max = GUIDE_WIDTH_MAX; ui_step = 0.1; ui_category = "Guides"; > = GUIDE_WIDTH_DEFAULT;
+/*
+// Example: Blur radius for multi-pass Gaussian
+uniform float BlurRadius < ui_type = "slider"; ui_label = "Blur Radius"; ui_tooltip = "Radius of the blur effect in pixels"; ui_min = AS_[EffectName]::BLUR_RADIUS_MIN; ui_max = AS_[EffectName]::BLUR_RADIUS_MAX; ui_step = 0.1; ui_category = "Processing"; > = AS_[EffectName]::BLUR_RADIUS_DEFAULT;
+*/
 
-// Custom Grid Controls (when GuideType == 4)
-uniform int GridColumns < ui_type = "slider"; ui_label = "Grid Columns"; ui_tooltip = "Number of vertical grid lines"; ui_min = 2; ui_max = 20; ui_category = "Guides"; ui_category_closed = true; > = 3;
-uniform int GridRows < ui_type = "slider"; ui_label = "Grid Rows"; ui_tooltip = "Number of horizontal grid lines"; ui_min = 2; ui_max = 20; ui_category = "Guides"; > = 3;
+// ---- Standard Controls (canonical order) ----
+// Note: GFX shaders typically omit Palette & Style, Position/Scale, and Rotation
 
-// Audio Reactivity (optional for GFX shaders)
-AS_AUDIO_UI(Effect_AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
-AS_AUDIO_MULT_UI(Effect_AudioMultiplier, "Audio Intensity", 1.0, 2.0, "Audio Reactivity")
-uniform int Effect_AudioTarget < ui_type = "combo"; ui_label = "Audio Target"; ui_items = "None\0Effect Intensity\0Guide Opacity\0"; ui_category = "Audio Reactivity"; > = 0;
+// Animation (optional for GFX)
+// AS_ANIMATION_UI(AnimationSpeed, AnimationKeyframe, AS_CAT_ANIMATION)
+
+// Audio Reactivity (optional for GFX)
+AS_AUDIO_UI(Effect_AudioSource, "Audio Source", AS_AUDIO_BEAT, AS_CAT_AUDIO)
+AS_AUDIO_MULT_UI(Effect_AudioMultiplier, "Audio Intensity", 1.0, 2.0, AS_CAT_AUDIO)
+AS_AUDIO_TARGET_UI(EffectName_AudioTarget, "None\0Effect Intensity\0Contrast\0", 0)
+
+// Stage (GFX uses depth for depth-aware compositing, but NOT position/scale)
+AS_STAGEDEPTH_UI(EffectDepth)
 
 // Final Mix
 AS_BLENDMODE_UI_DEFAULT(BlendMode, AS_BLEND_NORMAL)
 AS_BLENDAMOUNT_UI(BlendStrength)
 
 // Debug
-AS_DEBUG_UI("Off\0Show Audio\0")
+AS_DEBUG_UI("Off\0Show Audio\0Show Depth\0")
+
+// ============================================================================
+// RE-ENTER NAMESPACE FOR FUNCTIONS & PIXEL SHADER
+// ============================================================================
+namespace AS_[EffectName] {
 
 // ============================================================================
 // HELPER FUNCTIONS
 // ============================================================================
 
-// Function to draw a line with anti-aliasing
-float drawLine(float2 coord, float2 start, float2 end, float width) {
-    float2 dir = end - start;
-    float2 perp = normalize(float2(-dir.y, dir.x));
-    float2 toPoint = coord - start;
-    
-    // Project point onto line
-    float t = dot(toPoint, dir) / dot(dir, dir);
-    t = saturate(t);
-    
-    float2 closestPoint = start + t * dir;
-    float distance = length(coord - closestPoint);
-    
-    // Anti-aliased line
-    return 1.0 - smoothstep(width * 0.5, width * 0.5 + 1.0 / BUFFER_HEIGHT, distance);
-}
-
 // Function to apply image processing
-float3 applyProcessing(float3 color, float contrast, float saturation, float brightness) {
-    // Apply brightness
-    color += brightness;
-    
+float3 applyProcessing(float3 color, float contrast, float saturation) {
     // Apply contrast
     color = (color - 0.5) * contrast + 0.5;
-    
+
     // Apply saturation
     float luminance = dot(color, float3(0.299, 0.587, 0.114));
     color = lerp(luminance.xxx, color, saturation);
-    
+
     return saturate(color);
 }
 
-// Function to generate composition guides
-float3 generateGuides(float2 texcoord, float3 originalColor) {
-    if (!ShowGuides) return originalColor;
-    
-    float3 result = originalColor;
-    float lineIntensity = 0.0;
-    float pixelWidth = GuideWidth / BUFFER_HEIGHT;
-    
-    if (GuideType == 1) { // Rule of Thirds
-        // Vertical lines at 1/3 and 2/3
-        lineIntensity += drawLine(texcoord, float2(1.0/3.0, 0.0), float2(1.0/3.0, 1.0), pixelWidth);
-        lineIntensity += drawLine(texcoord, float2(2.0/3.0, 0.0), float2(2.0/3.0, 1.0), pixelWidth);
-        
-        // Horizontal lines at 1/3 and 2/3
-        lineIntensity += drawLine(texcoord, float2(0.0, 1.0/3.0), float2(1.0, 1.0/3.0), pixelWidth);
-        lineIntensity += drawLine(texcoord, float2(0.0, 2.0/3.0), float2(1.0, 2.0/3.0), pixelWidth);
+/*
+// ============================================================================
+// MULTI-PASS BLUR EXAMPLE (2-pass separable Gaussian)
+// ============================================================================
+// Pass 1: Horizontal blur -> writes to EffectTempTex
+float4 BlurHorizontalPS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD) : SV_TARGET {
+    float3 color = float3(0.0, 0.0, 0.0);
+    float totalWeight = 0.0;
+    float2 pixelSize = 1.0 / float2(BUFFER_WIDTH, BUFFER_HEIGHT);
+
+    // 9-tap Gaussian kernel (sigma ~= BlurRadius / 3)
+    for (int i = -4; i <= 4; i++) {
+        float weight = exp(-0.5 * (i * i) / (BlurRadius * BlurRadius * 0.11 + 0.001));
+        float2 offset = float2(i * pixelSize.x * BlurRadius * 0.25, 0.0);
+        color += tex2Dlod(ReShade::BackBuffer, float4(texcoord + offset, 0, 0)).rgb * weight;
+        totalWeight += weight;
     }
-    else if (GuideType == 2) { // Center Lines
-        // Vertical center line
-        lineIntensity += drawLine(texcoord, float2(0.5, 0.0), float2(0.5, 1.0), pixelWidth);
-        
-        // Horizontal center line
-        lineIntensity += drawLine(texcoord, float2(0.0, 0.5), float2(1.0, 0.5), pixelWidth);
-    }
-    else if (GuideType == 3) { // Golden Ratio
-        float phi = 1.618033988749895;
-        float ratio = 1.0 / phi;
-        
-        // Vertical golden ratio lines
-        lineIntensity += drawLine(texcoord, float2(ratio, 0.0), float2(ratio, 1.0), pixelWidth);
-        lineIntensity += drawLine(texcoord, float2(1.0 - ratio, 0.0), float2(1.0 - ratio, 1.0), pixelWidth);
-        
-        // Horizontal golden ratio lines
-        lineIntensity += drawLine(texcoord, float2(0.0, ratio), float2(1.0, ratio), pixelWidth);
-        lineIntensity += drawLine(texcoord, float2(0.0, 1.0 - ratio), float2(1.0, 1.0 - ratio), pixelWidth);
-    }
-    else if (GuideType == 4) { // Custom Grid
-        // Vertical grid lines
-        for (int i = 1; i < GridColumns; i++) {
-            float x = float(i) / float(GridColumns);
-            lineIntensity += drawLine(texcoord, float2(x, 0.0), float2(x, 1.0), pixelWidth);
-        }
-        
-        // Horizontal grid lines
-        for (int j = 1; j < GridRows; j++) {
-            float y = float(j) / float(GridRows);
-            lineIntensity += drawLine(texcoord, float2(0.0, y), float2(1.0, y), pixelWidth);
-        }
-    }
-    
-    // Apply guide overlay
-    lineIntensity = saturate(lineIntensity) * GuideOpacity;
-    result = lerp(result, GuideColor, lineIntensity);
-    
-    return result;
+
+    return float4(color / totalWeight, 1.0);
 }
 
+// Pass 2: Vertical blur -> reads from EffectTempTex
+float4 BlurVerticalPS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD) : SV_TARGET {
+    float3 color = float3(0.0, 0.0, 0.0);
+    float totalWeight = 0.0;
+    float2 pixelSize = 1.0 / float2(BUFFER_WIDTH, BUFFER_HEIGHT);
+
+    for (int i = -4; i <= 4; i++) {
+        float weight = exp(-0.5 * (i * i) / (BlurRadius * BlurRadius * 0.11 + 0.001));
+        float2 offset = float2(0.0, i * pixelSize.y * BlurRadius * 0.25);
+        color += tex2Dlod(EffectTempSampler, float4(texcoord + offset, 0, 0)).rgb * weight;
+        totalWeight += weight;
+    }
+
+    float3 blurred = color / totalWeight;
+    float4 originalColor = tex2D(ReShade::BackBuffer, texcoord);
+
+    // Depth-aware compositing: only apply to pixels beyond EffectDepth
+    float depth = ReShade::GetLinearizedDepth(texcoord);
+    if (depth < EffectDepth) {
+        return originalColor;
+    }
+
+    return float4(AS_composite(blurred, originalColor.rgb, BlendMode, BlendStrength), 1.0);
+}
+*/
+
 // ============================================================================
-// PIXEL SHADER
+// PIXEL SHADER (single-pass example)
 // ============================================================================
 float4 EffectPS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD) : SV_TARGET {
     float4 originalColor = tex2D(ReShade::BackBuffer, texcoord);
-    
-    // Apply audio reactivity
+
+    // --- DEPTH-AWARE COMPOSITING ---
+    // GFX shaders can optionally respect depth for selective application
+    float depth = ReShade::GetLinearizedDepth(texcoord);
+    if (depth < EffectDepth) {
+        return originalColor;
+    }
+
+    // --- AUDIO REACTIVITY ---
     float effectIntensity = EffectIntensity;
-    float guideOpacity = GuideOpacity;
-    
-    float audioValue = AS_applyAudioReactivity(1.0, Effect_AudioSource, Effect_AudioMultiplier, true);
-    if (Effect_AudioTarget == 1) effectIntensity *= audioValue;
-    else if (Effect_AudioTarget == 2) guideOpacity *= audioValue;
-    
-    // IMPLEMENT YOUR PROCESSING EFFECT HERE
-    // Example: Basic image processing
-    float3 processedColor = applyProcessing(originalColor.rgb, Contrast, Saturation, Brightness);
-    
-    // Apply effect intensity
+    float contrast = Contrast;
+
+    float audioValue = AS_audioModulate(1.0, Effect_AudioSource, Effect_AudioMultiplier, true, 0);
+    if (EffectName_AudioTarget == 1) effectIntensity *= audioValue;
+    else if (EffectName_AudioTarget == 2) contrast *= audioValue;
+
+    // --- PROCESSING ---
+    float3 processedColor = applyProcessing(originalColor.rgb, contrast, Saturation);
+
+    // Apply effect intensity (lerp between original and processed)
     float3 effectColor = lerp(originalColor.rgb, processedColor, effectIntensity);
-    
-    // Add composition guides
-    effectColor = generateGuides(texcoord, effectColor);
-    
-    // Apply blending
-    float3 blendedColor = AS_blendRGB(effectColor, originalColor.rgb, BlendMode);
-    float4 finalColor = float4(blendedColor, 1.0);
-    finalColor = lerp(originalColor, finalColor, BlendStrength);
-    
-    // Debug overlay
+
+    // --- FINAL COMPOSITING ---
+    float3 finalRgb = AS_composite(effectColor, originalColor.rgb, BlendMode, BlendStrength);
+
+    // --- DEBUG ---
     if (DebugMode == 1) {
         float2 debugCenter = float2(0.1, 0.1);
         if (length(texcoord - debugCenter) < 0.08) {
             return float4(audioValue, audioValue, audioValue, 1.0);
         }
+    } else if (DebugMode == 2) {
+        // Show depth buffer
+        return float4(depth, depth, depth, 1.0);
     }
-    
-    return finalColor;
+
+    return float4(finalRgb, 1.0);
 }
 
-} // namespace AS[EffectName]
+} // namespace AS_[EffectName]
 
 // ============================================================================
 // TECHNIQUE
 // ============================================================================
+// Single-pass technique:
 technique AS_GFX_[EffectName] < ui_label="[AS] GFX: [Effect Display Name]"; ui_tooltip="[Description of the graphics effect]"; >
 {
     pass
     {
         VertexShader = PostProcessVS;
-        PixelShader = AS[EffectName]::EffectPS;
+        PixelShader = AS_[EffectName]::EffectPS;
     }
 }
+
+/*
+// Multi-pass technique (2-pass separable Gaussian blur example):
+technique AS_GFX_[EffectName] < ui_label="[AS] GFX: [Effect Display Name]"; ui_tooltip="[Description]"; >
+{
+    pass HorizontalBlur
+    {
+        VertexShader = PostProcessVS;
+        PixelShader = AS_[EffectName]::BlurHorizontalPS;
+        RenderTarget = EffectTempTex;
+    }
+    pass VerticalBlurAndComposite
+    {
+        VertexShader = PostProcessVS;
+        PixelShader = AS_[EffectName]::BlurVerticalPS;
+    }
+}
+*/
 
 #endif // __AS_GFX_[EffectName]_1_fx

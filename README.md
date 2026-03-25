@@ -40,7 +40,7 @@ AS-StageFX provides a collection of performant, customizable, and audio-reactive
 
 ## Available Shaders
 
-AS-StageFX includes **64 shaders** across four categories: **27 Background (BGX)**, **11 Graphic (GFX)**, **3 Lighting (LFX)**, and **23 Visual (VFX)** effects.
+AS-StageFX includes **85 shaders** across four categories: **28 Background (BGX)**, **23 Graphic (GFX)**, **3 Lighting (LFX)**, and **31 Visual (VFX)** effects.
 
 **Detailed descriptions and examples: [Shader Gallery](docs/gallery.md).**
 
@@ -71,6 +71,7 @@ AS-StageFX includes **64 shaders** across four categories: **27 Background (BGX)
 | **Stained Lights** | Dynamic, colorful patterns like stained glass with shifting light, blurred layers, and audio reactivity. | CC BY-NC-SA |
 | **Sunset Clouds** | Raymarched volumetric clouds with animated turbulence and dynamic sunset coloring. | CC BY-NC-SA |
 | **Time Crystal** | Hypnotic, crystalline fractal structure with dynamic animation, color cycling, and audio reactivity. | CC BY-NC-SA |
+| **Vinyl Disc** | Spinning vinyl record with iridescent grooves, customizable LP presets, label textures, and animated neon backgrounds. | CC BY 4.0 |
 | **Vortex** | Psychedelic swirling vortex pattern with animated color, swirl, and brightness controls. | CC BY-NC-SA |
 | **Wavy Squares** | Hypnotic pattern of wavy, animated, transforming square tiles with dynamic size changes. Audio-reactive and depth-aware. | CC BY-NC-SA |
 | **Wavy Squiggles** | Mesmerizing pattern of adaptive wavy lines forming intricate, rotating designs. Audio-reactive and depth-aware. | CC BY-NC-SA |
@@ -80,17 +81,29 @@ AS-StageFX includes **64 shaders** across four categories: **27 Background (BGX)
 
 | Shader                 | Description                                                                                                | License   |
 | ---------------------- | ---------------------------------------------------------------------------------------------------------- | --------- |
+| **Anamorphic Flare** | Horizontal anamorphic streak flares from bright areas, simulating cinema lens optics. | CC BY 4.0 |
 | **Aspect Ratio** | A versatile aspect ratio framing tool for subject positioning and composition. | CC BY 4.0 |
 | **Audio Direction** | Visualizes audio directionality as animated arrows or indicators, ideal for music-driven scenes or overlays. | CC BY 4.0 |
+| **Bleach Bypass** | Desaturated high-contrast metallic look from the bleach bypass film process. | CC BY 4.0 |
 | **Brush Stroke** | Transforms the scene with painterly brush stroke textures and dynamic, layered paint effects. | CC BY 4.0 |
 | **Cinematic Diffusion** | High-quality cinematic diffusion/bloom filter with 8 classic presets and a fully customizable mode. | CC BY 4.0 |
+| **Color Pop** | Selective desaturation that keeps one hue range vivid against a monochrome scene. | CC BY 4.0 |
 | **Cosmic Glow** | Renders an abstract, glowing overlay effect composed of hundreds of animated, rotating arcs arranged in concentric rings with distinct perspective quality and depth. | CC BY-NC-SA |
+| **Cross Processing** | Simulates cross-processed film with dramatic color shifts from chemistry mismatches. | CC BY 4.0 |
 | **Depth Hologram** | Transforms the entire scene's depth buffer into a holographic field, using 3D information for holographic parallax, color shifts, and lighting effects. | CC BY-NC-SA |
+| **Faded Blacks** | Lifts black shadows to milky gray, brown, or blue for the signature vintage film look. | CC BY 4.0 |
+| **Film Stock** | Emulates classic analog film stocks with grain, color science, and tonal character. | CC BY 4.0 |
 | **Focus Frame** | Creates a focused frame with a stylized background and soft, feathered edges for cinematic compositions. | CC BY 4.0 |
+| **Gradient Map** | Maps scene luminance to a color gradient using the palette system for cinematic grading. | CC BY 4.0 |
+| **Halation** | Film halation with warm red/orange bloom around bright areas characteristic of analog film. | CC BY 4.0 |
 | **Hand Drawing** | Transforms the scene into a stylized hand-drawn sketch with distinct linework. | CC BY-NC-SA |
+| **Light Wrap** | Bleeds bright background light around foreground edges for natural compositing. | CC BY 4.0 |
 | **MultiLayer Halftone** | Highly customizable multi-layer halftone (up to 4 layers) with various patterns, isolation methods, and blending options. | CC BY 4.0 |
+| **Orton Effect** | Dreamy glow combining sharp detail with soft luminous overlay for ethereal mood. | CC BY 4.0 |
+| **Soft Diffusion** | Beauty portrait soft diffusion filter that smooths midtones while preserving edges. | CC BY 4.0 |
 | **Tilt-Shift** | High-quality, depth-aware tilt-shift/DoF shader with realistic bokeh effects and precise depth-based focusing. | CC BY 4.0 |
 | **Vignette Plus** | Advanced vignette effect with customizable shape, color, animation, blur, and audio reactivity. | CC BY-NC-SA |
+| **Y2K Digicam** | Early 2000s point-and-shoot digital camera simulation with flash, grain, and artifacts. | CC BY 4.0 |
 
 ### Lighting Effects (LFX)
 
@@ -104,25 +117,33 @@ AS-StageFX includes **64 shaders** across four categories: **27 Background (BGX)
 
 | Shader                 | Description                                                                                                | License   |
 | ---------------------- | ---------------------------------------------------------------------------------------------------------- | --------- |
-| **** |  | CC BY 4.0 |
-| **** |  | CC BY 4.0 |
 | **Boom Sticker** | Displays a texture overlay ('sticker') with controls for placement, scale, rotation, and audio reactivity. | CC BY 4.0 |
 | **Circular Spectrum** | Displays a circular audio spectrum analyzer with customizable bands, colors, and animation. | CC BY-NC-SA |
 | **Clair Obscur** | Applies dramatic chiaroscuro lighting with strong contrast and stylized shadows. | CC BY-NC-SA |
 | **Color Balancer** | Adjusts scene color balance with independent controls for shadows, midtones, and highlights. | CC BY 4.0 |
+| **Cross-Screen Stars** | Star-shaped diffraction spikes on bright highlights simulating a cross-screen lens filter. | CC BY 4.0 |
 | **Digital Artifacts** | Simulates digital compression artifacts, blockiness, and color banding. | CC BY 4.0 |
+| **Double Exposure** | Classic double exposure blending the scene with a transformed copy using depth separation. | CC BY 4.0 |
 | **Dust Motes** | Adds floating dust motes and particles with customizable density, size, and animation. | CC BY 4.0 |
+| **Film Burn** | Animated warm overexposure spreading from frame edges simulating film overheating. | CC BY 4.0 |
 | **Focused Chaos** | Swirling cosmic vortex/black hole effect with animated noise and artistic controls. | CC BY-NC-SA |
+| **Glossy Gradient** | Smooth flowing gradient patterns with mathematical precision for stylish backgrounds. | CC BY 4.0 |
+| **Light Leak** | Organic blobs of warm light drifting across the frame like light leaking into a film camera. | CC BY 4.0 |
 | **Motion Focus** | Automatic motion-based camera focus and zoom using inter-frame motion analysis. | CC BY 4.0 |
 | **Motion Trails** | Creates trailing motion blur effects for moving objects or the entire scene. | CC BY 4.0 |
+| **Neon Edge Glow** | Cyberpunk-style neon edge glow using depth-based edge detection for vivid rim lighting. | CC BY 4.0 |
+| **Pixel Sort** | Glitch art pixel sorting that streaks pixels by brightness for dramatic stylized distortions. | CC BY 4.0 |
+| **Prism Overlay** | Crystal prism held in front of the lens creating rainbow refractions and dreamy distortions. | CC BY 4.0 |
 | **Radial Lens Distortion** | Emulates radial and lens-specific distortions including blur, chromatic aberration, and geometric warping. | CC BY 4.0 |
 | **Radiant Fire** | Simulates radiant, glowing fire with animated flames and color gradients. | CC BY-NC-SA |
 | **Rainy Window** | Simulates raindrops and streaks on a window with refraction and blur effects. | CC BY-NC-SA |
 | **Screen Ring** | Draws animated rings or circular overlays with customizable size, color, and animation. | CC BY 4.0 |
 | **Sparkle Bloom** | Adds sparkling bloom highlights with animated glints and color controls. | CC BY 4.0 |
 | **Spectrum Ring** | Visualizes audio spectrum as a ring with customizable bands, colors, and animation. | CC BY 4.0 |
+| **Speed Lines** | Radial zoom blur from a configurable center point simulating motion and speed. | CC BY 4.0 |
 | **Stencil Mask** | Applies a stencil mask for selective effect application with shape and position controls. | CC BY 4.0 |
 | **Tilted Grid** | Draws a tilted, animated grid overlay with customizable angle, spacing, and color. | CC BY 4.0 |
+| **Volumetric Fog** | Atmospheric fog with procedural noise, wind, and depth layering for outdoor scenes. | CC BY 4.0 |
 | **Volumetric Light** | Simulates volumetric light rays and god rays with customizable source, color, and intensity. | CC BY-NC-SA |
 | **VUMeter** | Displays a classic VU meter with audio-reactive bars and customizable appearance. | CC BY 4.0 |
 | **Warp Distort** | Applies animated warp distortion with customizable strength, direction, and speed. | CC BY 4.0 |
