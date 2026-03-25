@@ -80,7 +80,7 @@ float3 AS_getInterpolatedColor(int paletteIdx, float t) {
 
 // Standard palette selection UI
 #define AS_PALETTE_SELECTION_UI(name, label, defaultPalette, category) \
-uniform int name < ui_type = "combo"; ui_label = label; ui_items = AS_PALETTE_ITEMS; ui_category = category; > = defaultPalette; // AS_PALETTE_ITEMS is now from AS_Palette_Styles.1.fxh
+uniform int name < ui_type = "combo"; ui_label = label; ui_tooltip = "Choose a color palette preset, or select Custom to define your own colors."; ui_items = AS_PALETTE_ITEMS; ui_category = category; > = defaultPalette; // AS_PALETTE_ITEMS is now from AS_Palette_Styles.1.fxh
 
 // Macro to declare custom palette uniforms with a unique prefix
 #define AS_DECLARE_CUSTOM_PALETTE(prefix, category) \
