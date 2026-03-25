@@ -57,12 +57,17 @@ static const float AS_QUARTER_PI = 0.7853981633974483096156608458199f;
 static const float AS_INV_PI = 0.3183098861837906715377675267450f;
 static const float AS_E = 2.7182818284590452353602874713527f;
 static const float AS_GOLDEN_RATIO = 1.6180339887498948482045868343656f;
+static const float AS_ONE = 1.0f;                        // Unity value
+static const float AS_ZERO = 0.0f;                       // Zero value
 
 // Physics & graphics constants
 static const float AS_EPSILON = 1e-6f;          // Very small number to avoid division by zero
 static const float AS_EPS_SAFE = 1e-5f;      // Slightly larger epsilon for screen-space operations
 static const float AS_DEGREES_TO_RADIANS = AS_PI / 180.0f;
 static const float AS_RADIANS_TO_DEGREES = 180.0f / AS_PI;
+static const float AS_INV_255 = 0.0039215686274509803921568627451f; // 1/255 for color normalization
+static const float AS_GAMMA_SRGB = 2.2f;         // Standard sRGB gamma exponent
+static const float3 AS_LUMA_REC709 = float3(0.2126f, 0.7152f, 0.0722f); // Rec.709 luminance weights
 
 // Common numerical constants
 static const float AS_HALF = 0.5f;                          // 1/2 - useful for centered coordinates
@@ -70,10 +75,60 @@ static const float AS_QUARTER = 0.25f;                        // 1/4
 static const float AS_THIRD = 0.3333333333333333333333333333333f;    // 1/3
 static const float AS_TWO_THIRDS = 0.6666666666666666666666666666667f; // 2/3
 static const float AS_SQRT_TWO = 1.4142135623730950488016887242097f; // Square root of 2, useful for diagonal calculations
+static const float AS_INV_SQRT_TWO = 0.70710678118654752440084436210485f; // 1/sqrt(2), diagonal normalization
+static const float AS_SQRT_TWO_THIRD = AS_SQRT_TWO / 3.0f; // sqrt(2)/3, used by some simplex formulations
+static const float AS_MIN_NORM = 0.0001f;        // Small minimum for normalized radii/thickness to avoid collapse
+static const float AS_NORMAL_EPSILON = 1e-3f;    // Epsilon for finite difference normal estimation in SDF/raymarching
+// Friendly alias for 2π
+#define AS_TAU AS_TWO_PI
 
 // Depth testing constants 
 static const float AS_DEPTH_EPSILON = 0.0005f;  // Standard depth epsilon for z-fighting prevention
 static const float AS_EDGE_AA = 0.05f;        // Standard anti-aliasing edge size for smoothstep
+
+// Additional stability/epsilon constants used across effects (centralized to avoid magic numbers)
+static const float AS_DEPTH_EPSILON_SMALL = 0.0001f; // Tighter depth epsilon for precise comparisons
+static const float AS_STABILITY_EPSILON = 1e-6f;     // Generic small epsilon for denominators/weights
+static const float AS_ALPHA_EPSILON = 1e-5f;         // Minimum alpha threshold for masking/visibility
+static const float AS_GAUSS_EXP_EPSILON = 1e-5f;     // Gaussian exponent denominator stability constant
+static const float AS_MIN_STROKE_THICKNESS = 0.0005f; // Min line/stroke thickness in normalized screen units
+static const float AS_OPAQUE_ALPHA = 1.0f;           // Opaque alpha value (semantic alias)
+
+// ============================================================================
+// COORDINATE NAMING CONVENTION
+// ============================================================================
+// Use these names consistently across all shaders:
+//   texcoord      - Raw input UV from vertex shader, range [0, 1]
+//   uvCentered    - Centered coordinates, (0,0) = screen center
+//   uvAspect      - Centered + aspect-ratio corrected (circles are circular)
+//   uvTransformed - After position, scale, and/or rotation applied
+//   uvPolar       - Polar coordinates: .x = angle (radians), .y = radius
+
+// ============================================================================
+// STANDARD UI CATEGORY NAMES
+// ============================================================================
+// Use these constants in ui_category to ensure consistent naming and ordering.
+// Canonical ordering (top to bottom in ReShade panel):
+//   1. Effect-specific categories (use descriptive names, e.g., "Pattern", "Fractal")
+//   2. AS_CAT_PALETTE       - Color palette and style controls
+//   3. AS_CAT_APPEARANCE    - Visual appearance tuning
+//   4. AS_CAT_ANIMATION     - Animation speed, keyframe, sway
+//   5. AS_CAT_AUDIO         - Audio reactivity source and intensity
+//   6. AS_CAT_STAGE         - Stage depth, position, rotation, scale
+//   7. AS_CAT_PERFORMANCE   - Quality, iteration count, resolution
+//   8. AS_CAT_FINAL         - Blend mode and blend strength
+//   9. AS_CAT_DEBUG         - Debug visualization modes
+#define AS_CAT_PALETTE      "Palette & Style"
+#define AS_CAT_APPEARANCE   "Appearance"
+#define AS_CAT_PATTERN      "Pattern"
+#define AS_CAT_LIGHTING     "Lighting"
+#define AS_CAT_COLOR        "Color"
+#define AS_CAT_ANIMATION    "Animation"
+#define AS_CAT_AUDIO        "Audio Reactivity"
+#define AS_CAT_STAGE        "Stage"
+#define AS_CAT_PERFORMANCE  "Performance"
+#define AS_CAT_FINAL        "Final Mix"
+#define AS_CAT_DEBUG        "Debug"
 
 // ============================================================================
 // UI STANDARDIZATION & MACROS
@@ -85,12 +140,16 @@ static const float AS_EDGE_AA = 0.05f;        // Standard anti-aliasing edge siz
 #ifndef __LISTENINGWAY_INSTALLED
     // Since we're not including ListeningwayUniforms.fxh anymore,
     // provide a complete compatible implementation directly here
-    #define LISTENINGWAY_NUM_BANDS 32
+    #define LISTENINGWAY_NUM_BANDS 64
     #define __LISTENINGWAY_INSTALLED 1
 
     // Create fallback uniforms with the same interface as the real Listeningway
     uniform float Listeningway_Volume < source = "listeningway_volume"; > = 0.0f;
     uniform float Listeningway_FreqBands[LISTENINGWAY_NUM_BANDS] < source = "listeningway_freqbands"; > = {
+        0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+        0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+        0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+        0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
         0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
         0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
         0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
@@ -202,7 +261,7 @@ static const float AS_SCREEN_CENTER_Y = 0.5f;    // Screen center Y coordinate
 
 // Default number of frequency bands
 #ifndef LISTENINGWAY_NUM_BANDS
-    #define LISTENINGWAY_NUM_BANDS 32
+    #define LISTENINGWAY_NUM_BANDS 64
 #endif
 #define AS_DEFAULT_NUM_BANDS LISTENINGWAY_NUM_BANDS
 
@@ -212,16 +271,38 @@ static const float AS_SCREEN_CENTER_Y = 0.5f;    // Screen center Y coordinate
 // --- UI Control Macros ---
 // Define standard audio source control (reuse this macro for each audio reactive parameter)
 #define AS_AUDIO_UI(name, label, defaultSource, category) \
-uniform int name < ui_type = "combo"; ui_label = label; ui_items = AS_AUDIO_SOURCE_ITEMS; ui_category = category; > = defaultSource;
+uniform int name < ui_type = "combo"; ui_label = label; ui_tooltip = "Select the audio frequency band that drives this effect."; ui_items = AS_AUDIO_SOURCE_ITEMS; ui_category = category; > = defaultSource;
 
 // Define standard multiplier control for audio reactivity
 #define AS_AUDIO_MULT_UI(name, label, defaultValue, maxValue, category) \
 uniform float name < ui_type = "slider"; ui_label = label; ui_tooltip = "Controls how much the selected audio source affects this parameter."; ui_min = 0.0; ui_max = maxValue; ui_step = 0.05; ui_category = category; > = defaultValue;
 
+// Standard audio target selector (combo for choosing which parameter responds to audio)
+#define AS_AUDIO_TARGET_UI(name, items, defaultTarget) \
+uniform int name < ui_type = "combo"; ui_label = "Audio Target"; ui_tooltip = "Select which parameter responds to audio input."; ui_items = items; ui_category = AS_CAT_AUDIO; > = defaultTarget;
+
+// Per-parameter audio gain slider (how much audio affects a specific parameter)
+#define AS_AUDIO_GAIN_UI(name, label, maxValue, defaultValue) \
+uniform float name < ui_type = "slider"; ui_label = label; ui_tooltip = "How much audio affects " label "."; ui_min = 0.0; ui_max = maxValue; ui_step = 0.01; ui_category = AS_CAT_AUDIO; > = defaultValue;
+
+// --- Background Color ---
+// Standard background color picker for effects that replace the scene
+#define AS_BACKGROUND_COLOR_UI(name, defaultColor, category) \
+uniform float3 name < ui_type = "color"; ui_label = "Background Color"; ui_tooltip = "Base background color when the effect does not fully cover the screen."; ui_category = category; > = defaultColor;
+
+// --- Palette Color Mode & Cycling ---
+// Toggle between mathematical coloring and palette coloring
+#define AS_USE_PALETTE_UI(name, category) \
+uniform bool name < ui_label = "Use Palette Coloring"; ui_tooltip = "When enabled, uses palette colors instead of mathematical coloring."; ui_category = category; > = false;
+
+// Standard color cycle speed slider for palette-based effects
+#define AS_COLOR_CYCLE_UI(name, category) \
+uniform float name < ui_type = "slider"; ui_label = "Color Cycle Speed"; ui_tooltip = "Speed of palette color cycling. Negative reverses direction. 0 = static."; ui_min = -2.0; ui_max = 2.0; ui_step = 0.1; ui_category = category; > = 0.0;
+
 // --- Debug Mode Standardization ---
 // --- Debug UI Macro ---
 #define AS_DEBUG_UI(items) \
-uniform int DebugMode < ui_type = "combo"; ui_label = "Debug View"; ui_tooltip = "Show various visualization modes for debugging."; ui_items = items; ui_category = "Debug"; > = 0;
+uniform int DebugMode < ui_type = "combo"; ui_label = "Debug View"; ui_tooltip = "Show various visualization modes for debugging."; ui_items = items; ui_category = AS_CAT_DEBUG; > = 0;
 
 // --- Debug Helper Functions ---
 bool AS_isDebugMode(int currentMode, int targetMode) {
@@ -254,27 +335,38 @@ uniform float name < ui_type = "slider"; ui_label = "Sway Angle"; ui_tooltip = "
 // --- Position UI Macros ---
 // Creates a standardized position control (as float2)
 #define AS_POS_UI(name) \
-uniform float2 name < ui_type = "drag"; ui_label = "Position"; ui_tooltip = "Position of the effect center (X,Y)."; ui_min = AS_POSITION_MIN; ui_max = AS_POSITION_MAX; ui_step = AS_POSITION_STEP; ui_category = "Position"; > = float2(AS_POSITION_DEFAULT, AS_POSITION_DEFAULT);
+uniform float2 name < ui_type = "drag"; ui_label = "Position"; ui_tooltip = "Position of the effect center (X,Y)."; ui_min = AS_POSITION_MIN; ui_max = AS_POSITION_MAX; ui_step = AS_POSITION_STEP; ui_category = AS_CAT_STAGE; > = float2(AS_POSITION_DEFAULT, AS_POSITION_DEFAULT);
 
 // Creates a standardized scale control
 #define AS_SCALE_UI(name) \
-uniform float name < ui_type = "slider"; ui_label = "Scale"; ui_tooltip = "Size of the effect. Higher values zoom out, lower values zoom in."; ui_min = AS_SCALE_MIN; ui_max = AS_SCALE_MAX; ui_step = AS_SCALE_STEP; ui_category = "Position"; > = AS_SCALE_DEFAULT;
+uniform float name < ui_type = "slider"; ui_label = "Scale"; ui_tooltip = "Size of the effect. Higher values zoom out, lower values zoom in."; ui_min = AS_SCALE_MIN; ui_max = AS_SCALE_MAX; ui_step = AS_SCALE_STEP; ui_category = AS_CAT_STAGE; > = AS_SCALE_DEFAULT;
 
 // Combined position and scale UI for convenience
 #define AS_POSITION_SCALE_UI(posName, scaleName) \
-uniform float2 posName < ui_type = "drag"; ui_label = "Position"; ui_tooltip = "Position of the effect center (X,Y)."; ui_min = AS_POSITION_MIN; ui_max = AS_POSITION_MAX; ui_step = AS_POSITION_STEP; ui_category = "Position"; > = float2(AS_POSITION_DEFAULT, AS_POSITION_DEFAULT); \
-uniform float scaleName < ui_type = "slider"; ui_label = "Scale"; ui_tooltip = "Size of the effect. Higher values zoom out, lower values zoom in."; ui_min = AS_SCALE_MIN; ui_max = AS_SCALE_MAX; ui_step = AS_SCALE_STEP; ui_category = "Position"; > = AS_SCALE_DEFAULT;
+uniform float2 posName < ui_type = "drag"; ui_label = "Position"; ui_tooltip = "Position of the effect center (X,Y)."; ui_min = AS_POSITION_MIN; ui_max = AS_POSITION_MAX; ui_step = AS_POSITION_STEP; ui_category = AS_CAT_STAGE; > = float2(AS_POSITION_DEFAULT, AS_POSITION_DEFAULT); \
+uniform float scaleName < ui_type = "slider"; ui_label = "Scale"; ui_tooltip = "Size of the effect. Higher values zoom out, lower values zoom in."; ui_min = AS_SCALE_MIN; ui_max = AS_SCALE_MAX; ui_step = AS_SCALE_STEP; ui_category = AS_CAT_STAGE; > = AS_SCALE_DEFAULT;
 
 // --- Position Helper Functions ---
-// Applies position offset and scaling to centered coordinates
-float2 AS_applyPosScale(float2 coord, float2 pos, float scale) {
+/**
+ * Applies position offset and scale to centered coordinates.
+ * coord: Centered coordinate (0,0 = screen center).
+ * pos: Position offset. X moves right, Y moves UP (inverted from screen space).
+ * scale: Zoom factor. Values > 1.0 zoom out, < 1.0 zoom in. Clamped to AS_EPSILON minimum.
+ * Returns the transformed coordinate.
+ */
+float2 AS_applyPositionAndScale(float2 coord, float2 pos, float scale) {
     coord.x -= pos.x;
     coord.y += pos.y; 
     return coord / max(scale, AS_EPSILON); 
 }
 
-// Converts normalized texcoord to centered, aspect-corrected coordinates
-float2 AS_centerCoord(float2 texcoord, float aspectRatio) {
+/**
+ * Converts normalized UV coordinates [0,1] to centered coordinates with aspect ratio correction.
+ * texcoord: Input UV in [0,1] range.
+ * aspectRatio: Screen aspect ratio (width/height). Use ReShade::AspectRatio.
+ * Returns centered coordinates where (0,0) is screen center, corrected so circles remain circular.
+ */
+float2 AS_centeredUVWithAspect(float2 texcoord, float aspectRatio) {
     float2 centered = texcoord - 0.5;
     if (aspectRatio >= 1.0) {
         centered.x *= aspectRatio;
@@ -284,11 +376,11 @@ float2 AS_centerCoord(float2 texcoord, float aspectRatio) {
     return centered;
 }
 
-// All-in-one function that handles the common position/scale pattern
-float2 AS_transformCoord(float2 texcoord, float2 pos, float scale, float rotation) {
+// All-in-one UV transform: center + position/scale + optional rotation (radians)
+float2 AS_transformUVCentered(float2 texcoord, float2 pos, float scale, float rotation) {
     float aspectRatio = ReShade::AspectRatio;
-    float2 centered = AS_centerCoord(texcoord, aspectRatio);
-    float2 positioned = AS_applyPosScale(centered, pos, scale);
+    float2 centered = AS_centeredUVWithAspect(texcoord, aspectRatio);
+    float2 positioned = AS_applyPositionAndScale(centered, pos, scale);
     if (abs(rotation) > AS_EPSILON) {
         float s = sin(rotation);
         float c = cos(rotation);
@@ -316,38 +408,219 @@ float2 AS_rotate2D(float2 p, float a)
     );
 }
 
+// DEPRECATED: Use AS_rotate2D() directly. Will be removed in v2.0.
 float2 AS_applyRotation(float2 coord, float rotation)
 { return AS_rotate2D(coord, rotation);}
 
+// Build a 2x2 rotation matrix (radians)
+float2x2 AS_rot2x2(float radians)
+{
+    float s = sin(radians);
+    float c = cos(radians);
+    return float2x2(c, s, -s, c);
+}
+
+// Compute polar angle (atan2) and radius from texcoord using aspect-corrected centered space
+// Returns float2(angleRadians, radius)
+float2 AS_polarAngleRadius(float2 texcoord, float aspectRatio)
+{
+    float2 p = AS_centeredUVWithAspect(texcoord, aspectRatio);
+    return float2(atan2(p.y, p.x), length(p));
+}
+
+// Apply simple screen-space dithering using a hash pattern; strength is in [0,2] approx.
+float3 AS_applyDither(float3 rgb, float2 texcoord, float strength)
+{
+    if (strength <= AS_EPSILON) return rgb;
+    // Local lightweight hash to avoid cross-header dependency
+    float2 p = texcoord * ReShade::ScreenSize.xy * 0.25f;
+    float n = frac(sin(dot(p, float2(12.9898f, 78.233f))) * 43758.5453f);
+    float adj = (n - 0.5f) * (strength * AS_INV_255);
+    return saturate(rgb + adj);
+}
+
+/**
+ * Generates a radial spotlight falloff mask.
+ * centeredAspectUV: Aspect-corrected centered coordinates (from AS_centeredUVWithAspect).
+ * intensity: Peak brightness at center. Higher values = brighter, wider coverage.
+ * radius: Falloff rate. Higher values = tighter, more focused spot.
+ * Returns a value >= 0 representing light intensity (can exceed 1.0 for HDR).
+ */
+float AS_spotlightMask(float2 centeredAspectUV, float intensity, float radius)
+{
+    return max(intensity - length(centeredAspectUV) * max(radius, AS_EPSILON), 0.0);
+}
+
+// Simple radial vignette mask in [0,1], power controls hardness
+float AS_vignetteMask(float2 texcoord, float power)
+{
+    float2 p = texcoord - 0.5;
+    float r = length(p) / AS_INV_SQRT_TWO; // normalize to roughly [0,1] at corners
+    return pow(saturate(1.0 - r), max(0.1f, power));
+}
+
+// Depth check helper: returns true if the scene is behind the effect plane
+bool AS_isSceneBehind(float2 texcoord, float effectDepth)
+{
+    float sceneDepth = ReShade::GetLinearizedDepth(texcoord);
+    return sceneDepth >= effectDepth - AS_DEPTH_EPSILON;
+}
+
+/**
+ * Returns true if the scene pixel is IN FRONT of the effect's stage depth plane.
+ * When true, the effect should be skipped (early return the original color).
+ * Usage: if (AS_isInFrontOfStage(texcoord, StageDepth)) return originalColor;
+ */
+bool AS_isInFrontOfStage(float2 texcoord, float stageDepth)
+{
+    return ReShade::GetLinearizedDepth(texcoord) < stageDepth - AS_DEPTH_EPSILON;
+}
+
+// Signed distance to axis-aligned box of half-size s at origin
+float AS_sdfBox(float3 p, float3 s)
+{
+    p = abs(p) - s;
+    return max(p.x, max(p.y, p.z));
+}
+
 // --- Math Helpers ---
+/**
+ * Safe modulo that handles negative values correctly (always returns positive result).
+ * Unlike HLSL fmod() which preserves the sign of x, this always wraps into [0, y).
+ * Returns x if y is near zero (division-by-zero safe).
+ */
 float AS_mod(float x, float y) {
     if (abs(y) < AS_EPSILON) return x;
     return x - y * floor(x / y);
 }
 
-float fmod(float x, float y) { // Ensure fmod is available if AS_mod is used as a replacement
-    return AS_mod(x, y);
-}
+// Avoid shadowing HLSL's fmod intrinsic — prefer AS_mod directly
 
+/**
+ * Creates a depth-based mask that fades from 1.0 (near) to 0.0 (far).
+ * depth: Linearized scene depth at current pixel.
+ * nearPlane: Depth where mask starts (full intensity = 1.0).
+ * farPlane: Depth where mask ends (zero intensity = 0.0).
+ * curve: Falloff curve exponent. >1.0 = sharper falloff, <1.0 = softer falloff.
+ * Returns mask value in [0, 1].
+ */
+float AS_depthMask(float depth, float nearPlane, float farPlane, float curve)
+{
+    float d = saturate((depth - nearPlane) / max(farPlane - nearPlane, AS_EPSILON));
+    d = pow(d, max(curve, 0.0001f));
+    return 1.0f - d;
+}
 
 // ============================================================================
 // VISUAL EFFECTS & BLEND MODES
 // ============================================================================
 
 // --- Blend Functions ---
-float3 AS_applyBlend(float3 fgColor, float3 bgColor, int blendMode) {
+// Blend helpers — explicit foreground-over-background naming to avoid confusion
+// Foreground-over-background RGB blend (no opacity handling)
+float3 AS_blendRgbFgOverBg(float3 fgColor, float3 bgColor, int blendMode) {
     // Assuming ComHeaders::Blending::Blend is available from Blending.fxh
     // The Blend function in Blending.fxh is:
     // float3 Blend(const int type, const float3 backdrop, const float3 source, const float opacity = 1.0)
     return ComHeaders::Blending::Blend(blendMode, bgColor, fgColor, 1.0).rgb; 
 }
 
-float4 AS_applyBlend(float4 fgColor, float4 bgColor, int blendMode, float blendOpacity) {
-    float3 effect_rgb = AS_applyBlend(fgColor.rgb, bgColor.rgb, blendMode);
+// Foreground-over-background RGBA blend (with opacity)
+float4 AS_blendFgOverBg(float4 fgColor, float4 bgColor, int blendMode, float blendOpacity) {
+    float3 effect_rgb = AS_blendRgbFgOverBg(fgColor.rgb, bgColor.rgb, blendMode);
     float final_opacity = saturate(fgColor.a * blendOpacity);
     float3 final_rgb = lerp(bgColor.rgb, effect_rgb, final_opacity);
     return float4(final_rgb, bgColor.a); 
 }
+
+// Semantic aliases (clear entry points)
+float3 AS_blendRGB(float3 fgRgb, float3 bgRgb, int mode) { return AS_blendRgbFgOverBg(fgRgb, bgRgb, mode); }
+float4 AS_blendRGBA(float4 fgRgba, float4 bgRgba, int mode, float opacity) { return AS_blendFgOverBg(fgRgba, bgRgba, mode, opacity); }
+
+// Back-compat shim for existing call sites that use AS_applyBlend in both RGB and RGBA forms
+// (Deprecated) AS_applyBlend shims removed after migration to AS_blendRGB / AS_blendRGBA
+
+// --- Composite Helpers ---
+/**
+ * Blends effect color over background using the specified blend mode and strength.
+ * Combines AS_blendRGB + lerp in a single call.
+ * effectRgb: Foreground effect color.
+ * bgRgb: Background scene color.
+ * blendMode: Blend mode index (see AS_BLEND_* constants).
+ * blendAmount: Mix strength in [0, 1]. 0.0 = no effect, 1.0 = full effect.
+ * Returns the composited RGB color.
+ */
+float3 AS_composite(float3 effectRgb, float3 bgRgb, int blendMode, float blendAmount) {
+    float3 blended = AS_blendRGB(effectRgb, bgRgb, blendMode);
+    return lerp(bgRgb, blended, blendAmount);
+}
+
+/** RGBA variant of AS_composite. Preserves background alpha. */
+float4 AS_compositeRGBA(float3 effectRgb, float4 bgRgba, int blendMode, float blendAmount) {
+    return float4(AS_composite(effectRgb, bgRgba.rgb, blendMode, blendAmount), bgRgba.a);
+}
+
+// ============================================================================
+// COLOR ADJUSTMENT HELPERS
+// ============================================================================
+
+/**
+ * Adjusts color saturation using Rec.709 luminance weights.
+ * saturation: 0.0 = grayscale, 1.0 = original, >1.0 = oversaturated.
+ */
+float3 AS_adjustSaturation(float3 color, float saturation) {
+    float luma = dot(color, AS_LUMA_REC709);
+    return lerp(float3(luma, luma, luma), color, saturation);
+}
+
+/** Converts sRGB color to linear space. */
+float3 AS_srgbToLinear(float3 c) { return pow(abs(c), AS_GAMMA_SRGB); }
+
+/** Converts linear color to sRGB space. */
+float3 AS_linearToSrgb(float3 c) { return pow(abs(c), 1.0 / AS_GAMMA_SRGB); }
+
+// ============================================================================
+// ANTI-ALIASED EDGE HELPERS
+// ============================================================================
+
+/**
+ * Smooth anti-aliased edge transition.
+ * Returns 1.0 when dist < edge-aa, 0.0 when dist > edge+aa, smooth transition between.
+ * dist: Distance value to test.
+ * edge: Edge position (threshold).
+ * aa: Anti-aliasing width (half-width of the transition zone).
+ */
+float AS_smoothEdge(float dist, float edge, float aa) {
+    return smoothstep(edge + aa, edge - aa, dist);
+}
+
+// ============================================================================
+// DEPTH EARLY-RETURN MACRO
+// ============================================================================
+// Reads the back buffer and returns early if the pixel is in front of the stage depth.
+// Usage: Place at the top of your pixel shader. After this macro, _as_originalColor
+// is available as a float4 containing the original scene color.
+//
+//   AS_DEPTH_EARLY_RETURN(texcoord, EffectDepth)
+//   // ... rest of pixel shader can use _as_originalColor ...
+//
+#define AS_DEPTH_EARLY_RETURN(tc, depthUniform) \
+    float4 _as_originalColor = tex2D(ReShade::BackBuffer, tc); \
+    if (AS_isInFrontOfStage(tc, depthUniform)) return _as_originalColor;
+
+// ============================================================================
+// PALETTE COLOR FETCH MACRO
+// ============================================================================
+// Fetches an interpolated color from either the custom palette or a preset palette.
+// Eliminates the repeated if (palette == AS_PALETTE_CUSTOM) pattern.
+//   prefix: Shader-specific prefix for custom palette uniforms (e.g., BlueCorona_)
+//   paletteUniform: The int uniform holding the palette selection
+//   t: Interpolation parameter [0, 1]
+//
+#define AS_GET_PALETTE_COLOR(prefix, paletteUniform, t) \
+    ((paletteUniform == AS_PALETTE_CUSTOM) \
+        ? AS_GET_INTERPOLATED_CUSTOM_COLOR(prefix, t) \
+        : AS_getInterpolatedColor(paletteUniform, t))
 
 float3 AS_paletteLerp(float3 c0, float3 c1, float t) {
     return lerp(c0, c1, t);
@@ -383,7 +656,8 @@ float2x2 AS_mul_float2x2_float2x2(float2x2 A, float2x2 B)
 // --- Time Functions ---
 uniform int frameCount < source = "framecount"; >; 
 
-float AS_getTime() {
+// Returns elapsed time in seconds, preferring Listeningway clocks when available
+float AS_timeSeconds() {
 #if defined(__LISTENINGWAY_INSTALLED)
     if (Listeningway_TotalPhases120Hz > AS_EPSILON) {
         return Listeningway_TotalPhases120Hz * (1.0f / 120.0f); 
@@ -394,6 +668,9 @@ float AS_getTime() {
 #endif
     return float(frameCount) * (1.0f / 60.0f);
 }
+
+// DEPRECATED: Use AS_timeSeconds() directly. Will be removed in v2.0.
+float AS_getTime() { return AS_timeSeconds(); }
 
 // --- Listeningway Helpers ---
 int AS_getFreqBands() {
@@ -427,14 +704,15 @@ float AS_getVU(int source) {
 #if defined(__LISTENINGWAY_INSTALLED)
     if (source == 0) return Listeningway_Volume;
     if (source == 1) return Listeningway_Beat;
-    if (source == 2) return Listeningway_FreqBands[min(0, LISTENINGWAY_NUM_BANDS - 1)]; 
-    if (source == 3) return Listeningway_FreqBands[min(14, LISTENINGWAY_NUM_BANDS - 1)];
-    if (source == 4) return Listeningway_FreqBands[min(28, LISTENINGWAY_NUM_BANDS - 1)]; 
+    if (source == 2) return Listeningway_FreqBands[0]; // Bass - first band
+    if (source == 3) return Listeningway_FreqBands[min(LISTENINGWAY_NUM_BANDS / 3, LISTENINGWAY_NUM_BANDS - 1)]; // Mid-bass - 1/3 through spectrum
+    if (source == 4) return Listeningway_FreqBands[min((LISTENINGWAY_NUM_BANDS * 7) / 8, LISTENINGWAY_NUM_BANDS - 1)]; // Treble - 7/8 through spectrum
 #endif
     return 0.0;
 }
 
-float AS_getAudioSource(int source) {
+// Returns a normalized audio level for the given abstracted source
+float AS_audioLevelFromSource(int source) {
     if (source == AS_AUDIO_OFF)   return 0.0;         
     if (source == AS_AUDIO_SOLID)  return 1.0;         
 #if defined(__LISTENINGWAY_INSTALLED)
@@ -455,15 +733,17 @@ float AS_getAudioSource(int source) {
     return 0.0; 
 }
 
-float AS_applyAudioReactivity(float baseValue, int audioSource, float multiplier, bool enableFlag) {
+// Multiplies baseValue by (1 + audioLevel * multiplier) when enabled
+float AS_audioModulateMul(float baseValue, int audioSource, float multiplier, bool enableFlag) {
     if (!enableFlag || audioSource == AS_AUDIO_OFF) return baseValue;
-    float audioLevel = AS_getAudioSource(audioSource);
+    float audioLevel = AS_audioLevelFromSource(audioSource);
     return baseValue * (1.0 + audioLevel * multiplier);
 }
 
-float AS_applyAudioReactivityEx(float baseValue, int audioSource, float multiplier, bool enableFlag, int mode) {
+// mode 0 = multiplicative (default), mode 1 = additive
+float AS_audioModulate(float baseValue, int audioSource, float multiplier, bool enableFlag, int mode) {
     if (!enableFlag || audioSource == AS_AUDIO_OFF) return baseValue;
-    float audioLevel = AS_getAudioSource(audioSource);
+    float audioLevel = AS_audioLevelFromSource(audioSource);
     if (mode == 1) { // Additive mode
         return baseValue + (audioLevel * multiplier);
     } else { // Multiplicative mode (default)
@@ -508,7 +788,7 @@ float2 AS_getStereoBalance() {
 float AS_getStereoAudioReactivity(float position, int audioSource) {
     if (audioSource == AS_AUDIO_OFF) return 0.0;
     if (!AS_isStereoAvailable()) {
-        return AS_getAudioSource(audioSource);
+        return AS_audioLevelFromSource(audioSource);
     }
 #if defined(__LISTENINGWAY_INSTALLED)
     float2 stereoBalance = AS_getStereoBalance(); // This uses Listeningway_AudioPan
@@ -522,7 +802,7 @@ float AS_getStereoAudioReactivity(float position, int audioSource) {
     if (audioSource == AS_AUDIO_VOLUME_RIGHT) 
         return Listeningway_VolumeRight * rightWeight; 
 
-    float generalAudioValue = AS_getAudioSource(audioSource);
+    float generalAudioValue = AS_audioLevelFromSource(audioSource);
 
     if (audioSource == AS_AUDIO_BASS || audioSource == AS_AUDIO_MID || audioSource == AS_AUDIO_TREBLE || audioSource == AS_AUDIO_BEAT) {
          float panEffect = (position < 0) ? stereoBalance.x : stereoBalance.y; 
@@ -535,7 +815,7 @@ float AS_getStereoAudioReactivity(float position, int audioSource) {
     
     return generalAudioValue; 
 #else     
-    return AS_getAudioSource(audioSource);
+    return AS_audioLevelFromSource(audioSource);
 #endif
 }
 
@@ -575,7 +855,7 @@ uniform float multName < ui_type = "slider"; ui_label = label " Multiplier"; ui_
 // ============================================================================
 // ENHANCED AUDIO HELPER FUNCTIONS
 // ============================================================================
-float AS_applyAudioReactivityStereo(float baseValue, int audioSource, float multiplier, float stereoPosition, bool enableFlag) {
+float AS_audioModulateMulStereo(float baseValue, int audioSource, float multiplier, float stereoPosition, bool enableFlag) {
     if (!enableFlag || audioSource == AS_AUDIO_OFF) return baseValue;
     float audioLevel = AS_getStereoAudioReactivity(stereoPosition, audioSource);
     return baseValue * (1.0 + audioLevel * multiplier);
@@ -584,19 +864,20 @@ float AS_applyAudioReactivityStereo(float baseValue, int audioSource, float mult
 float AS_getAudioSourceSafe(int source, float fallbackValue = 0.0) {
 #if defined(__LISTENINGWAY_INSTALLED)
     if (Listeningway_TotalPhases120Hz > AS_EPSILON || Listeningway_Volume > AS_EPSILON || Listeningway_AudioFormat > 0) { 
-        return AS_getAudioSource(source);
+    return AS_audioLevelFromSource(source);
     }
 #endif
     return (source == AS_AUDIO_SOLID) ? 1.0 : fallbackValue;
 }
 
-float AS_getSmoothedAudio(int source, float smoothing = 0.1) {
-    static float previousValue = 0.0; 
-    float currentValue = AS_getAudioSourceSafe(source); 
-    float smoothed = lerp(previousValue, currentValue, saturate(smoothing)); 
-    previousValue = smoothed;
-    return smoothed;
-}
+// DEPRECATED: AS_getSmoothedAudio - Removed due to static variable causing crashes
+// Static variables in shaders can cause race conditions and crashes when accessed by multiple pixels
+// Use external smoothing or implement per-frame smoothing outside of pixel shaders instead
+// 
+// float AS_getSmoothedAudio(int source, float smoothing = 0.1) {
+//     // DO NOT USE: static variables are unsafe in pixel shaders
+//     return AS_getAudioSourceSafe(source); 
+// }
 
 float AS_getFreqByPercent(float percent) {
 #if defined(__LISTENINGWAY_INSTALLED)
@@ -666,11 +947,13 @@ float4 AS_debugAudio(float2 texcoord, int debugMode) {
 
 // --- Rotation UI Standardization ---
 #define AS_ROTATION_UI(snapName, fineName) \
-uniform int snapName < ui_category = "Stage"; ui_label = "Snap Rotation"; ui_type = "slider"; ui_min = -4; ui_max = 4; ui_step = 1; ui_tooltip = "Snap rotation in 45° steps (-180° to +180°)"; ui_spacing = 0; > = 0; \
-uniform float fineName < ui_category = "Stage"; ui_label = "Fine Rotation"; ui_type = "slider"; ui_min = -45.0; ui_max = 45.0; ui_step = 0.1; ui_tooltip = "Fine rotation adjustment in degrees"; ui_same_line = true; > = 0.0;
+uniform int snapName < ui_category = AS_CAT_STAGE; ui_label = "Snap Rotation"; ui_type = "slider"; ui_min = -4; ui_max = 4; ui_step = 1; ui_tooltip = "Snap rotation in 45° steps (-180° to +180°)"; ui_spacing = 0; > = 0; \
+uniform float fineName < ui_category = AS_CAT_STAGE; ui_label = "Fine Rotation"; ui_type = "slider"; ui_min = -45.0; ui_max = 45.0; ui_step = 0.1; ui_tooltip = "Fine rotation adjustment in degrees"; ui_same_line = true; > = 0.0;
+
+static const float AS_SNAP_ROTATION_DEGREES = 45.0f; // Degrees per snap rotation step
 
 float AS_getRotationRadians(int snapRotation, float fineRotation) {
-    float snapAngle = float(snapRotation) * 45.0;
+    float snapAngle = float(snapRotation) * AS_SNAP_ROTATION_DEGREES;
     return (snapAngle + fineRotation) * AS_DEGREES_TO_RADIANS;
 }
 
@@ -699,7 +982,7 @@ float AS_getAnimationTime(float speed, float keyframe) {
     if (abs(speed) < AS_EPSILON) { 
         return keyframe;
     }
-    return (AS_getTime() * speed) + keyframe;
+    return (AS_timeSeconds() * speed) + keyframe;
 }
 
 float2 AS_aspectCorrect(float2 uv, float width, float height) { // Corrected parameter name
@@ -727,15 +1010,54 @@ float2 AS_rescaleToScreen(float2 uv) {
 }
 
 // ============================================================================
+// BACK-COMPAT SHIMS (Legacy function aliases)
+// ----------------------------------------------------------------------------
+// Many existing shaders refer to legacy helper names. These aliases map them to
+// the newer centralized implementations to preserve backward compatibility.
+// ============================================================================
+
+// DEPRECATED: Use AS_audioModulate() directly. Will be removed in v2.0.
+float AS_applyAudioReactivity(float baseValue, int audioSource, float multiplier, bool enableFlag)
+{
+    return AS_audioModulate(baseValue, audioSource, multiplier, enableFlag, 0);
+}
+
+// DEPRECATED: Use AS_audioModulate() directly. Will be removed in v2.0.
+float AS_applyAudioReactivityEx(float baseValue, int audioSource, float multiplier, bool enableFlag, int mode)
+{
+    return AS_audioModulate(baseValue, audioSource, multiplier, enableFlag, mode);
+}
+
+// DEPRECATED: Use AS_audioLevelFromSource() directly. Will be removed in v2.0.
+float AS_getAudioSource(int source)
+{
+    return AS_audioLevelFromSource(source);
+}
+
+// DEPRECATED: Use AS_transformUVCentered() directly. Will be removed in v2.0.
+float2 AS_transformCoord(float2 texcoord, float2 pos, float scale, float rotation)
+{
+    return AS_transformUVCentered(texcoord, pos, scale, rotation);
+}
+
+// DEPRECATED: Use AS_applyPositionAndScale() directly. Will be removed in v2.0.
+float2 AS_applyPosScale(float2 coord, float2 pos, float scale)
+{
+    return AS_applyPositionAndScale(coord, pos, scale);
+}
+
+// (Removed) Legacy EPSILON macro alias and legacy rot_hlsl/box_hlsl helpers
+
+// ============================================================================
 // DEPTH, SURFACE & VISUAL EFFECTS
 // ============================================================================
-float AS_depthMask(float depth, float nearPlane, float farPlane, float curve) {
+float AS_depthFalloffMask(float depth, float nearPlane, float farPlane, float curve) {
     farPlane = max(nearPlane + AS_EPS_SAFE, farPlane); 
     float mask = smoothstep(nearPlane, farPlane, depth);
     return 1.0 - pow(mask, max(0.1f, curve)); 
 }
 
-float3 AS_reconstructNormal(float2 texcoord) {
+float3 AS_normalFromDepth(float2 texcoord) {
     float depth = ReShade::GetLinearizedDepth(texcoord);
     float px = max(abs(ReShade::PixelSize.x), AS_EPSILON);
     float py = max(abs(ReShade::PixelSize.y), AS_EPSILON);
@@ -748,22 +1070,22 @@ float3 AS_reconstructNormal(float2 texcoord) {
     return normalize(cross(dy, dx)); 
 }
 
-float AS_fresnel(float3 normal, float3 viewDir, float power) {
+float AS_fresnelTerm(float3 normal, float3 viewDir, float power) {
     normal = normalize(normal); 
     viewDir = normalize(viewDir);
     return pow(1.0 - saturate(dot(normal, viewDir)), max(0.1f, power)); 
 }
 
-float stanh(float x, float safetyThreshold = 12.0) {
+float AS_safeTanh(float x, float safetyThreshold = 12.0) {
     if (abs(x) <= safetyThreshold) {
         return tanh(x);
     }
     return sign(x) * (1.0f - exp(-abs(x - sign(x) * safetyThreshold)) * (1.0f - tanh(safetyThreshold * sign(x))));
 }
 
-float2 stanh(float2 x, float safetyThreshold = 12.0) { return float2(stanh(x.x, safetyThreshold), stanh(x.y, safetyThreshold)); }
-float3 stanh(float3 x, float safetyThreshold = 12.0) { return float3(stanh(x.x, safetyThreshold), stanh(x.y, safetyThreshold), stanh(x.z, safetyThreshold)); }
-float4 stanh(float4 x, float safetyThreshold = 12.0) { return float4(stanh(x.x, safetyThreshold), stanh(x.y, safetyThreshold), stanh(x.z, safetyThreshold), stanh(x.w, safetyThreshold)); }
+float2 AS_safeTanh(float2 x, float safetyThreshold = 12.0) { return float2(AS_safeTanh(x.x, safetyThreshold), AS_safeTanh(x.y, safetyThreshold)); }
+float3 AS_safeTanh(float3 x, float safetyThreshold = 12.0) { return float3(AS_safeTanh(x.x, safetyThreshold), AS_safeTanh(x.y, safetyThreshold), AS_safeTanh(x.z, safetyThreshold)); }
+float4 AS_safeTanh(float4 x, float safetyThreshold = 12.0) { return float4(AS_safeTanh(x.x, safetyThreshold), AS_safeTanh(x.y, safetyThreshold), AS_safeTanh(x.z, safetyThreshold), AS_safeTanh(x.w, safetyThreshold)); }
 
 float AS_fadeInOut(float cycle, float fadeInEnd, float fadeOutStart) {
     fadeInEnd = saturate(fadeInEnd);
@@ -780,13 +1102,13 @@ float AS_fadeInOut(float cycle, float fadeInEnd, float fadeOutStart) {
 }
 
 float AS_applySway(float swayAngle, float swaySpeed) {
-    float time = AS_getTime();
+    float time = AS_timeSeconds();
     float swayPhase = time * swaySpeed;
     return AS_radians(swayAngle) * sin(swayPhase);
 }
 
 float AS_applyAudioSway(float swayAngle, float swaySpeed, int audioSource, float audioMult) {
-    float time = AS_getTime();
+    float time = AS_timeSeconds();
     float audioLevel = AS_getAudioSourceSafe(audioSource); 
     float reactiveAngle = swayAngle * (1.0 + audioLevel * audioMult);
     float swayPhase = time * swaySpeed;
@@ -800,7 +1122,7 @@ float4 AS_debugOutput(int mode, float4 orig, float4 value1, float4 value2, float
     return orig; 
 }
 
-float AS_starMask(float2 p, float size, float points, float angle) {
+float AS_starShapeMask(float2 p, float size, float points, float angle) {
     float2 uv = p / max(size, AS_EPS_SAFE); 
     float a = atan2(uv.y, uv.x) + AS_radians(angle); 
     float r = length(uv); 
@@ -812,16 +1134,16 @@ float AS_starMask(float2 p, float size, float points, float angle) {
 // STAGE DEPTH & BLEND UI HELPERS
 // ============================================================================
 #define AS_STAGEDEPTH_UI(name) \
-uniform float name < ui_type = "slider"; ui_label = "Effect Depth"; ui_tooltip = "Controls how far back the stage effect appears (Linear Depth 0-1)."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Stage"; > = 0.05;
+uniform float name < ui_type = "slider"; ui_label = "Effect Depth"; ui_tooltip = "Controls how far back the stage effect appears (Linear Depth 0-1)."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = AS_CAT_STAGE; > = 0.05;
 
 #define AS_BLENDMODE_UI_DEFAULT(name, defaultMode) \
-BLENDING_COMBO(name, "Mode", "Select how the effect will mix with the background.", "Final Mix", false, 0, defaultMode)
+BLENDING_COMBO(name, "Mode", "Select how the effect will mix with the background.", AS_CAT_FINAL, false, 0, defaultMode)
 
 #define AS_BLENDMODE_UI(name) \
-    AS_BLENDMODE_UI_DEFAULT(name, 0) 
+    AS_BLENDMODE_UI_DEFAULT(name, 0)
 
 #define AS_BLENDAMOUNT_UI(name) \
-uniform float name < ui_type = "slider"; ui_label = "Strength"; ui_tooltip = "Controls the overall intensity/opacity of the effect blend."; ui_min = 0.0; ui_max = 1.0; ui_category = "Final Mix"; > = 1.0;
+uniform float name < ui_type = "slider"; ui_label = "Strength"; ui_tooltip = "Controls the overall intensity/opacity of the effect blend."; ui_min = 0.0; ui_max = 1.0; ui_category = AS_CAT_FINAL; > = 1.0;
 
 // ============================================================================
 // TEXTURE & SAMPLER CREATION

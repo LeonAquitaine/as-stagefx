@@ -53,6 +53,8 @@
 #include "ReShade.fxh"
 #include "AS_Utils.1.fxh"
 
+uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " "; ui_text = "\nLens distortion with tangential blur and chromatic aberration presets.\nSimulates vintage and cinematic lens character.\n\nAS StageFX | Radial Lens Distortion by Leon Aquitaine\n"; > = 0;
+
 // ============================================================================
 // TUNABLE CONSTANTS
 // ============================================================================
@@ -128,32 +130,32 @@ uniform int LensModelPreset < ui_type = "combo"; ui_label = "Lens Model";
 
 uniform float2 EffectCenterUV < ui_type="drag"; ui_min=0.0f; ui_max=1.0f; ui_label = "Effect Center (UV Coords)";
     ui_tooltip = "Center point of the lens distortion effect (0,0 is top-left; 0.5,0.5 is screen center).";
-    ui_category = "Effect Settings"; > = EFFECT_CENTER_UV_DEFAULT;
+    ui_category = AS_CAT_APPEARANCE; > = EFFECT_CENTER_UV_DEFAULT;
 
 uniform float GlobalEffectStrength < ui_type = "slider"; ui_label = "Global Effect Strength";
     ui_min = GLOBAL_STRENGTH_MIN; ui_max = GLOBAL_STRENGTH_MAX; ui_step = GLOBAL_STRENGTH_STEP;
     ui_tooltip = "Master multiplier for the overall intensity of the calculated blur and chromatic aberration.";
-    ui_category = "Effect Settings"; > = GLOBAL_STRENGTH_DEFAULT;
+    ui_category = AS_CAT_APPEARANCE; > = GLOBAL_STRENGTH_DEFAULT;
 
 uniform float EffectFocusExponent < ui_type = "slider"; ui_label = "Effect Focus Exponent";
     ui_min = EFFECT_FOCUS_EXP_MIN; ui_max = EFFECT_FOCUS_EXP_MAX; ui_step = EFFECT_FOCUS_EXP_STEP;
     ui_tooltip = "Controls the falloff curve of effect intensity from center to edge.\n1.0 = linear.\n<1.0 = effect concentrated near center.\n>1.0 = effect pushed towards edges.";
-    ui_category = "Effect Settings"; > = EFFECT_FOCUS_EXP_DEFAULT;
+    ui_category = AS_CAT_APPEARANCE; > = EFFECT_FOCUS_EXP_DEFAULT;
     
 uniform float BlurStrength < ui_type = "slider"; ui_label = "Base Blur Strength (Pixels)";
     ui_min = BLUR_STRENGTH_MIN; ui_max = BLUR_STRENGTH_MAX; ui_step = BLUR_STRENGTH_STEP;
     ui_tooltip = "Base strength for tangential (rotational) blur, in approximate visual pixels at max distance (before Global Strength/Focus). Active if 'Lens Model' is 'Custom'.";
-    ui_category = "Effect Settings"; > = BLUR_STRENGTH_DEFAULT;
+    ui_category = AS_CAT_APPEARANCE; > = BLUR_STRENGTH_DEFAULT;
 
 uniform float AberrationAmount < ui_type = "slider"; ui_label = "Base Chromatic Aberration (Pixels)";
     ui_min = ABERRATION_AMOUNT_MIN; ui_max = ABERRATION_AMOUNT_MAX; ui_step = ABERRATION_AMOUNT_STEP;
     ui_tooltip = "Base strength for color channel separation (tangential or horizontal), in approximate visual pixels at max distance (before Global Strength/Focus). Active if 'Lens Model' is 'Custom'.";
-    ui_category = "Effect Settings"; > = ABERRATION_AMOUNT_DEFAULT;
+    ui_category = AS_CAT_APPEARANCE; > = ABERRATION_AMOUNT_DEFAULT;
 
 uniform int SampleCount < ui_type = "slider"; ui_label = "Sample Count (Quality)";
     ui_min = SAMPLE_COUNT_MIN; ui_max = SAMPLE_COUNT_MAX;
     ui_tooltip = "Number of samples taken for the effect. Higher values improve quality but reduce performance.";
-    ui_category = "Effect Settings"; > = SAMPLE_COUNT_DEFAULT;
+    ui_category = AS_CAT_APPEARANCE; > = SAMPLE_COUNT_DEFAULT;
 
 AS_BLENDMODE_UI_DEFAULT(BlendMode, AS_BLEND_NORMAL)
 AS_BLENDAMOUNT_UI(BlendAmount)
@@ -211,10 +213,10 @@ float4 PS_RadialLensDistortion(float4 pos : SV_Position, float2 texcoord : TEXCO
     effect_center_uv = EffectCenterUV;
     
     if (abs(lensDistortionStrength) > AS_EPSILON) {
-        float2 vec_from_center = texcoord - effect_center_uv;
-        float2 vec_from_center_aspect_corrected = vec_from_center;
-        if (ReShade::AspectRatio > UNITY_VALUE) vec_from_center_aspect_corrected.x /= ReShade::AspectRatio;
-        else vec_from_center_aspect_corrected.y *= ReShade::AspectRatio;
+    float2 vec_from_center = texcoord - effect_center_uv;
+    float2 vec_from_center_aspect_corrected = vec_from_center;
+    if (ReShade::AspectRatio > UNITY_VALUE) vec_from_center_aspect_corrected.x /= ReShade::AspectRatio;
+    else vec_from_center_aspect_corrected.y *= ReShade::AspectRatio;
         float r_aspect_corrected = length(vec_from_center_aspect_corrected);
         vec_from_center *= (UNITY_VALUE + lensDistortionStrength * r_aspect_corrected);
         texcoord_for_effect = effect_center_uv + vec_from_center;
@@ -303,7 +305,7 @@ float4 PS_RadialLensDistortion(float4 pos : SV_Position, float2 texcoord : TEXCO
     calculated_effect_rgb.b = b_accum / current_sample_count;
 
     // Apply RGB effect with full opacity, preserve original alpha
-    float4 blended_rgb = AS_applyBlend(float4(calculated_effect_rgb.rgb, UNITY_VALUE), original_color_sample, BlendMode, BlendAmount);
+    float4 blended_rgb = AS_blendRGBA(float4(calculated_effect_rgb.rgb, UNITY_VALUE), original_color_sample, BlendMode, BlendAmount);
     
     return float4(blended_rgb.rgb, original_color_sample.a);
 }

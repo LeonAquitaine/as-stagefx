@@ -42,9 +42,10 @@
 // INCLUDES
 // ============================================================================
 #include "ReShade.fxh"
-#include "AS_Utils.1.fxh" // For AS_getTime(), AS_getAudioSource(), UI macros, AS_PI etc.
+#include "AS_Utils.1.fxh" // For AS_timeSeconds(), AS_audioLevelFromSource(), UI macros, AS_PI etc.
+#include "AS_Noise.1.fxh" // For AS_hash21, AS_hash22
 
-namespace ASConstellation {
+namespace AS_Constellation {
 
 // ============================================================================
 // CONSTANTS
@@ -111,22 +112,17 @@ static const float ZOOM_MAX = 5.0;
 static const float ZOOM_DEFAULT = 1.0;
 
 // --- Audio Reactivity ---
-static const float AUDIO_GAIN_ZOOM_MIN = 0.0;
 static const float AUDIO_GAIN_ZOOM_MAX = 2.0;
 static const float AUDIO_GAIN_ZOOM_DEFAULT = 0.0;
-static const float AUDIO_GAIN_GRADIENT_MIN = 0.0;
 static const float AUDIO_GAIN_GRADIENT_MAX = 5.0;
 static const float AUDIO_GAIN_GRADIENT_DEFAULT = 1.0;
 
-static const float AUDIO_GAIN_LINE_BRIGHTNESS_MIN = 0.0;
 static const float AUDIO_GAIN_LINE_BRIGHTNESS_MAX = 2.0;
 static const float AUDIO_GAIN_LINE_BRIGHTNESS_DEFAULT = 0.0;
 
-static const float AUDIO_GAIN_LINE_FALLOFF_MIN = 0.0;
 static const float AUDIO_GAIN_LINE_FALLOFF_MAX = 2.0;
 static const float AUDIO_GAIN_LINE_FALLOFF_DEFAULT = 0.0;
 
-static const float AUDIO_GAIN_SPARKLE_MAG_MIN = 0.0;
 static const float AUDIO_GAIN_SPARKLE_MAG_MAX = 3.0;
 static const float AUDIO_GAIN_SPARKLE_MAG_DEFAULT = 0.0;
 
@@ -135,50 +131,50 @@ static const float AUDIO_GAIN_SPARKLE_MAG_DEFAULT = 0.0;
 // ============================================================================
 
 //------------------------------------------------------------------------------------------------
-// Animation & Time Controls
+// Constellation Lines
 //------------------------------------------------------------------------------------------------
 
 uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'old joseph' by jairoandre\nLink: https://www.shadertoy.com/view/slfGzf\nLicence: CC Share-Alike Non-Commercial\n\n";>;
 
+uniform float LineCoreThickness < ui_type = "drag"; ui_label = "Core Thickness"; ui_tooltip = "Width of the solid center of each constellation line. Increase for bolder, more visible connections."; ui_min = LINE_CORE_THICKNESS_MIN; ui_max = LINE_CORE_THICKNESS_MAX; ui_step = 0.001; ui_category = "Lines"; > = LINE_CORE_THICKNESS_DEFAULT;
+uniform float LineFalloffWidth < ui_type = "drag"; ui_label = "Edge Softness"; ui_tooltip = "How gradually constellation lines fade at their edges. Higher values create softer, more diffused lines."; ui_min = LINE_FALLOFF_WIDTH_MIN; ui_max = LINE_FALLOFF_WIDTH_MAX; ui_step = 0.001; ui_category = "Lines"; > = LINE_FALLOFF_WIDTH_DEFAULT;
+uniform float LineOverallBrightness < ui_type = "drag"; ui_label = "Overall Brightness"; ui_tooltip = "Master brightness multiplier for all constellation lines. Increase to make the line network more prominent."; ui_min = LINE_OVERALL_BRIGHTNESS_MIN; ui_max = LINE_OVERALL_BRIGHTNESS_MAX; ui_step = 0.1; ui_category = "Lines"; > = LINE_OVERALL_BRIGHTNESS_DEFAULT;
+uniform float LineLengthModStrength < ui_type = "drag"; ui_label = "Length Affects Brightness"; ui_tooltip = "How much a line's length influences its brightness. At 1.0, shorter lines appear brighter than longer ones."; ui_min = LINE_LENGTH_MOD_STRENGTH_MIN; ui_max = LINE_LENGTH_MOD_STRENGTH_MAX; ui_step = 0.01; ui_category = "Lines"; > = LINE_LENGTH_MOD_STRENGTH_DEFAULT;
+
+//------------------------------------------------------------------------------------------------
+// Star Sparkles
+//------------------------------------------------------------------------------------------------
+uniform float SparkleSharpness < ui_type = "drag"; ui_label = "Sharpness"; ui_tooltip = "How focused each star point appears. Higher values create tiny pinpoint stars; lower values make broader glows."; ui_min = SPARKLE_SHARPNESS_MIN; ui_max = SPARKLE_SHARPNESS_MAX; ui_step = 0.1; ui_category = "Stars"; > = SPARKLE_SHARPNESS_DEFAULT;
+uniform float SparkleBaseIntensity < ui_type = "drag"; ui_label = "Base Intensity"; ui_tooltip = "Base brightness of each star before twinkling is applied. Zero hides the stars completely."; ui_min = SPARKLE_BASE_INTENSITY_MIN; ui_max = SPARKLE_BASE_INTENSITY_MAX; ui_step = 0.01; ui_category = "Stars"; > = SPARKLE_BASE_INTENSITY_DEFAULT;
+uniform float SparkleTwinkleSpeed < ui_type = "drag"; ui_label = "Twinkle Speed"; ui_tooltip = "How fast the stars flicker on and off. Higher values produce rapid twinkling."; ui_min = SPARKLE_TWINKLE_SPEED_MIN; ui_max = SPARKLE_TWINKLE_SPEED_MAX; ui_step = 0.1; ui_category = "Stars"; > = SPARKLE_TWINKLE_SPEED_DEFAULT;
+uniform float SparkleTwinkleMagnitude < ui_type = "drag"; ui_label = "Twinkle Amount"; ui_tooltip = "Strength of the twinkling effect. At zero stars shine steadily; at maximum they pulse dramatically."; ui_min = SPARKLE_TWINKLE_MAGNITUDE_MIN; ui_max = SPARKLE_TWINKLE_MAGNITUDE_MAX; ui_step = 0.01; ui_category = "Stars"; > = SPARKLE_TWINKLE_MAGNITUDE_DEFAULT;
+uniform float SparklePhaseVariation < ui_type = "drag"; ui_label = "Twinkle Variation"; ui_tooltip = "How differently each star twinkles relative to its neighbors. Higher values make each star blink independently."; ui_min = SPARKLE_PHASE_VARIATION_MIN; ui_max = SPARKLE_PHASE_VARIATION_MAX; ui_step = 0.1; ui_category = "Stars"; > = SPARKLE_PHASE_VARIATION_DEFAULT;
+
+//------------------------------------------------------------------------------------------------
+// Color Palette
+//------------------------------------------------------------------------------------------------
+uniform float PaletteTimeScale < ui_type = "drag"; ui_label = "Palette Animation Speed"; ui_tooltip = "How fast the color palette shifts over time. Zero freezes the colors; higher values cycle quickly."; ui_min = PALETTE_TIME_SCALE_MIN; ui_max = PALETTE_TIME_SCALE_MAX; ui_step = 0.1; ui_category = AS_CAT_PALETTE; > = PALETTE_TIME_SCALE_DEFAULT;
+uniform float3 PaletteColorPhaseFactors < ui_type = "drag"; ui_label = "Palette Color Phase Factors (RGB)"; ui_tooltip = "Controls the phase offset for each color channel, determining which colors appear at different times."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.001; ui_category = AS_CAT_PALETTE; > = float3(0.345f, 0.543f, 0.682f);
+uniform float PaletteColorAmplitude < ui_type = "drag"; ui_label = "Palette Color Amplitude"; ui_tooltip = "Range of color variation in the palette. Higher values produce more vivid color swings."; ui_min = PALETTE_COLOR_AMPLITUDE_MIN; ui_max = PALETTE_COLOR_AMPLITUDE_MAX; ui_step = 0.01; ui_category = AS_CAT_PALETTE; > = PALETTE_COLOR_AMPLITUDE_DEFAULT;
+uniform float PaletteColorBias < ui_type = "drag"; ui_label = "Palette Color Bias (Brightness)"; ui_tooltip = "Base brightness offset for the palette. Higher values make the overall color scheme lighter and warmer."; ui_min = PALETTE_COLOR_BIAS_MIN; ui_max = PALETTE_COLOR_BIAS_MAX; ui_step = 0.01; ui_category = AS_CAT_PALETTE; > = PALETTE_COLOR_BIAS_DEFAULT;
+
+//------------------------------------------------------------------------------------------------
+// Animation & Time Controls
+//------------------------------------------------------------------------------------------------
 AS_ANIMATION_UI(TimeSpeed, TimeKeyframe, "Animation")
 
-uniform float Zoom < ui_type = "drag"; ui_label = "Zoom"; ui_tooltip = "Adjust to zoom in or out of the pattern."; ui_min = ZOOM_MIN; ui_max = ZOOM_MAX; ui_step = 0.01; ui_category = "Animation"; > = ZOOM_DEFAULT;
+uniform float Zoom < ui_type = "drag"; ui_label = "Zoom"; ui_tooltip = "Adjust to zoom in or out of the pattern."; ui_min = ZOOM_MIN; ui_max = ZOOM_MAX; ui_step = 0.01; ui_category = AS_CAT_ANIMATION; > = ZOOM_DEFAULT;
 
 //------------------------------------------------------------------------------------------------
 // Audio Reactivity
 //------------------------------------------------------------------------------------------------
 AS_AUDIO_UI(MasterAudioSource, "Audio Source", AS_AUDIO_BASS, "Audio Reactivity")
 
-uniform float AudioGain_GradientEffect < ui_type = "slider"; ui_label = "Gradient"; ui_tooltip = "How much audio affects the color gradient subtraction."; ui_min = AUDIO_GAIN_GRADIENT_MIN; ui_max = AUDIO_GAIN_GRADIENT_MAX; ui_step = 0.01; ui_category = "Audio Reactivity"; > = AUDIO_GAIN_GRADIENT_DEFAULT;
-uniform float AudioGain_LineBrightness < ui_type = "slider"; ui_label = "Line Brightness"; ui_tooltip = "How much audio affects overall line brightness."; ui_min = AUDIO_GAIN_LINE_BRIGHTNESS_MIN; ui_max = AUDIO_GAIN_LINE_BRIGHTNESS_MAX; ui_step = 0.01; ui_category = "Audio Reactivity"; > = AUDIO_GAIN_LINE_BRIGHTNESS_DEFAULT;
-uniform float AudioGain_LineFalloff < ui_type = "slider"; ui_label = "Line Softness"; ui_tooltip = "How much audio affects line falloff width (can make Lines appear thinner/softer)."; ui_min = AUDIO_GAIN_LINE_FALLOFF_MIN; ui_max = AUDIO_GAIN_LINE_FALLOFF_MAX; ui_step = 0.01; ui_category = "Audio Reactivity"; > = AUDIO_GAIN_LINE_FALLOFF_DEFAULT;
-uniform float AudioGain_SparkleMagnitude < ui_type = "slider"; ui_label = "Sparkle Amount"; ui_tooltip = "How much audio affects sparkle twinkle strength."; ui_min = AUDIO_GAIN_SPARKLE_MAG_MIN; ui_max = AUDIO_GAIN_SPARKLE_MAG_MAX; ui_step = 0.01; ui_category = "Audio Reactivity"; > = AUDIO_GAIN_SPARKLE_MAG_DEFAULT;
-uniform float AudioGain_Zoom < ui_type = "slider"; ui_label = "Zoom"; ui_tooltip = "How much audio affects the zoom level (pulse effect)."; ui_min = AUDIO_GAIN_ZOOM_MIN; ui_max = AUDIO_GAIN_ZOOM_MAX; ui_step = 0.01; ui_category = "Audio Reactivity"; > = AUDIO_GAIN_ZOOM_DEFAULT;
-
-//------------------------------------------------------------------------------------------------
-// Constellation Lines
-//------------------------------------------------------------------------------------------------
-uniform float LineCoreThickness < ui_type = "drag"; ui_label = "Core Thickness"; ui_min = LINE_CORE_THICKNESS_MIN; ui_max = LINE_CORE_THICKNESS_MAX; ui_step = 0.001; ui_category = "Lines"; > = LINE_CORE_THICKNESS_DEFAULT;
-uniform float LineFalloffWidth < ui_type = "drag"; ui_label = "Edge Softness"; ui_min = LINE_FALLOFF_WIDTH_MIN; ui_max = LINE_FALLOFF_WIDTH_MAX; ui_step = 0.001; ui_category = "Lines"; > = LINE_FALLOFF_WIDTH_DEFAULT;
-uniform float LineOverallBrightness < ui_type = "drag"; ui_label = "Overall Brightness"; ui_min = LINE_OVERALL_BRIGHTNESS_MIN; ui_max = LINE_OVERALL_BRIGHTNESS_MAX; ui_step = 0.1; ui_category = "Lines"; > = LINE_OVERALL_BRIGHTNESS_DEFAULT;
-uniform float LineLengthModStrength < ui_type = "drag"; ui_label = "Length Affects Brightness"; ui_min = LINE_LENGTH_MOD_STRENGTH_MIN; ui_max = LINE_LENGTH_MOD_STRENGTH_MAX; ui_step = 0.01; ui_category = "Lines"; > = LINE_LENGTH_MOD_STRENGTH_DEFAULT;
-
-//------------------------------------------------------------------------------------------------
-// Star Sparkles
-//------------------------------------------------------------------------------------------------
-uniform float SparkleSharpness < ui_type = "drag"; ui_label = "Sharpness"; ui_min = SPARKLE_SHARPNESS_MIN; ui_max = SPARKLE_SHARPNESS_MAX; ui_step = 0.1; ui_category = "Stars"; > = SPARKLE_SHARPNESS_DEFAULT;
-uniform float SparkleBaseIntensity < ui_type = "drag"; ui_label = "Base Intensity"; ui_min = SPARKLE_BASE_INTENSITY_MIN; ui_max = SPARKLE_BASE_INTENSITY_MAX; ui_step = 0.01; ui_category = "Stars"; > = SPARKLE_BASE_INTENSITY_DEFAULT;
-uniform float SparkleTwinkleSpeed < ui_type = "drag"; ui_label = "Twinkle Speed"; ui_min = SPARKLE_TWINKLE_SPEED_MIN; ui_max = SPARKLE_TWINKLE_SPEED_MAX; ui_step = 0.1; ui_category = "Stars"; > = SPARKLE_TWINKLE_SPEED_DEFAULT;
-uniform float SparkleTwinkleMagnitude < ui_type = "drag"; ui_label = "Twinkle Amount"; ui_min = SPARKLE_TWINKLE_MAGNITUDE_MIN; ui_max = SPARKLE_TWINKLE_MAGNITUDE_MAX; ui_step = 0.01; ui_category = "Stars"; > = SPARKLE_TWINKLE_MAGNITUDE_DEFAULT;
-uniform float SparklePhaseVariation < ui_type = "drag"; ui_label = "Twinkle Variation"; ui_min = SPARKLE_PHASE_VARIATION_MIN; ui_max = SPARKLE_PHASE_VARIATION_MAX; ui_step = 0.1; ui_category = "Stars"; > = SPARKLE_PHASE_VARIATION_DEFAULT;
-
-//------------------------------------------------------------------------------------------------
-// Color Palette
-//------------------------------------------------------------------------------------------------
-uniform float PaletteTimeScale < ui_type = "drag"; ui_label = "Palette Animation Speed"; ui_min = PALETTE_TIME_SCALE_MIN; ui_max = PALETTE_TIME_SCALE_MAX; ui_step = 0.1; ui_category = "Color Palette"; > = PALETTE_TIME_SCALE_DEFAULT;
-uniform float3 PaletteColorPhaseFactors < ui_type = "drag"; ui_label = "Palette Color Phase Factors (RGB)"; ui_min = 0.0; ui_max = 1.0; ui_step = 0.001; ui_category = "Color Palette"; > = float3(0.345f, 0.543f, 0.682f);
-uniform float PaletteColorAmplitude < ui_type = "drag"; ui_label = "Palette Color Amplitude"; ui_min = PALETTE_COLOR_AMPLITUDE_MIN; ui_max = PALETTE_COLOR_AMPLITUDE_MAX; ui_step = 0.01; ui_category = "Color Palette"; > = PALETTE_COLOR_AMPLITUDE_DEFAULT;
-uniform float PaletteColorBias < ui_type = "drag"; ui_label = "Palette Color Bias (Brightness)"; ui_min = PALETTE_COLOR_BIAS_MIN; ui_max = PALETTE_COLOR_BIAS_MAX; ui_step = 0.01; ui_category = "Color Palette"; > = PALETTE_COLOR_BIAS_DEFAULT;
+AS_AUDIO_GAIN_UI(AudioGain_GradientEffect, "Gradient", AUDIO_GAIN_GRADIENT_MAX, AUDIO_GAIN_GRADIENT_DEFAULT)
+AS_AUDIO_GAIN_UI(AudioGain_LineBrightness, "Line Brightness", AUDIO_GAIN_LINE_BRIGHTNESS_MAX, AUDIO_GAIN_LINE_BRIGHTNESS_DEFAULT)
+AS_AUDIO_GAIN_UI(AudioGain_LineFalloff, "Line Softness", AUDIO_GAIN_LINE_FALLOFF_MAX, AUDIO_GAIN_LINE_FALLOFF_DEFAULT)
+AS_AUDIO_GAIN_UI(AudioGain_SparkleMagnitude, "Sparkle Amount", AUDIO_GAIN_SPARKLE_MAG_MAX, AUDIO_GAIN_SPARKLE_MAG_DEFAULT)
+AS_AUDIO_GAIN_UI(AudioGain_Zoom, "Zoom", AUDIO_GAIN_ZOOM_MAX, AUDIO_GAIN_ZOOM_DEFAULT)
 
 //------------------------------------------------------------------------------------------------
 // Stage & Depth
@@ -201,19 +197,8 @@ float calculateDistanceToLine(float2 refPoint, float2 Linestart, float2 lineEnd)
     return length(pointToLinestart - lineVector * t);   
 }
 
-float hashRandom1D(float2 p) {
-    p = frac(p * float2(233.24f, 851.73f));
-    p += dot(p, p + 23.45f);
-    return frac(p.x * p.y);
-}
-
-float2 hashRandom2D(float2 p) {
-    float n = hashRandom1D(p);
-    return float2(n, hashRandom1D(p + n)); 
-}
-
 float2 calculatePointPosition(float2 gridIndex, float2 offset, float currentTime) { 
-    float2 noise = hashRandom2D(gridIndex + offset) * currentTime; 
+    float2 noise = AS_hash22(gridIndex + offset) * currentTime; 
     return offset + sin(noise) * 0.4f; 
 }
 
@@ -263,7 +248,7 @@ float4 PS_Constellation(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) 
     float2 normalizedUV = (screenPosition - 0.5f * ReShade::ScreenSize) / ReShade::ScreenSize.y;
     
     // Get master audio level once
-    float masterAudioLevel = AS_getAudioSource(MasterAudioSource);
+    float masterAudioLevel = AS_audioLevelFromSource(MasterAudioSource);
     
     // Calculate audio-reactive zoom effect (audio increases = zoom out)
     float audioBoostedZoom = Zoom * (1.0f + masterAudioLevel * AudioGain_Zoom);
@@ -311,12 +296,10 @@ float4 PS_Constellation(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) 
     finalColor -= gradientEffect * colorPalette; 
     
     // Apply depth masking
-    float depth = ReShade::GetLinearizedDepth(texcoord);
-    float depthMask = depth >= EffectDepth;
-    
+    float depthMask = AS_isInFrontOfStage(texcoord, EffectDepth) ? 0.0 : 1.0;
+
     // Blend the final color with the original scene
-    float3 blended = AS_applyBlend(saturate(finalColor), originalColor.rgb, BlendMode);
-    return float4(lerp(originalColor.rgb, blended, BlendStrength * depthMask), 1.0f);
+    return float4(AS_composite(saturate(finalColor), originalColor.rgb, BlendMode, BlendStrength * depthMask), 1.0f);
 }
 
 // ============================================================================
@@ -335,6 +318,6 @@ technique AS_BGX_Constellation <
     }
 }
 
-} // namespace ASConstellation
+} // namespace AS_Constellation
 
 #endif // __AS_BGX_Constellation_1_fx

@@ -45,8 +45,8 @@
 // ============================================================================
 // TECHNIQUE GUARD
 // ============================================================================
-#ifndef __AS_VFX_CIRCULARSPECTRUMDOTS_1_FX
-#define __AS_VFX_CIRCULARSPECTRUMDOTS_1_FX
+#ifndef __AS_VFX_CircularSpectrum_1_fx
+#define __AS_VFX_CircularSpectrum_1_fx
 
 // ============================================================================
 // INCLUDES
@@ -146,32 +146,32 @@ AS_POS_UI(EffectCenter)
 AS_SCALE_UI(EffectScale) 
 
 // --- Palette & Style ---
-AS_PALETTE_SELECTION_UI(PaletteSelection, "Dot Palette", PALETTE_DEFAULT_SELECTION, "Palette & Style") //
-AS_DECLARE_CUSTOM_PALETTE(CircularSpectrum_, "Palette & Style") // Defines CircularSpectrum_CustomPaletteColor0..4
+AS_PALETTE_SELECTION_UI(PaletteSelection, "Dot Palette", PALETTE_DEFAULT_SELECTION, AS_CAT_PALETTE) //
+AS_DECLARE_CUSTOM_PALETTE(CircularSpectrum_, AS_CAT_PALETTE) // Defines CircularSpectrum_CustomPaletteColor0..4
 
 // --- Dot Appearance ---
 
-uniform bool MirrorFreqBands < ui_label = "Mirror Frequency Bands"; ui_tooltip = "If true, spectrum is mirrored (0-Max-0 around circle). If false, linear (0-Max)."; ui_category = "Pattern"; > = false;
-uniform float DotSizeMultiplier < ui_label = "Dot Size Multiplier"; ui_tooltip = "Adjusts the visual size of the dots. Range: 0.25 to 2.0"; ui_type = "slider"; ui_min = DOT_SIZE_MIN; ui_max = DOT_SIZE_MAX; ui_step = 0.05; ui_category = "Pattern"; > = DOT_SIZE_DEFAULT;
-uniform float RadialGapMultiplier < ui_label = "Radial Gap Multiplier"; ui_tooltip = "Controls the radial spacing between dot centers. Range: 0.0 to 3.0"; ui_type = "slider"; ui_min = RADIAL_GAP_MIN; ui_max = RADIAL_GAP_MAX; ui_step = 0.05; ui_category = "Pattern"; > = RADIAL_GAP_DEFAULT;
-uniform int NumSpokes < ui_label = "Number of Spokes"; ui_tooltip = "Number of angular spokes for the visualizer. Range: 16 to 128"; ui_type = "slider"; ui_min = NUM_SPOKES_MIN; ui_max = NUM_SPOKES_MAX; ui_step = 1; ui_category = "Pattern"; > = NUM_SPOKES_DEFAULT;
-uniform int MaxDotsPerSpoke < ui_label = "Max Dots Per Spoke"; ui_tooltip = "Maximum number of dots radially outward per spoke. Range: 5 to 30"; ui_type = "slider"; ui_min = MAX_DOTS_PER_SPOKE_MIN; ui_max = MAX_DOTS_PER_SPOKE_MAX; ui_step = 1; ui_category = "Pattern"; > = MAX_DOTS_PER_SPOKE_DEFAULT;
+uniform bool MirrorFreqBands < ui_label = "Mirror Frequency Bands"; ui_tooltip = "If true, spectrum is mirrored (0-Max-0 around circle). If false, linear (0-Max)."; ui_category = AS_CAT_PATTERN; > = false;
+uniform float DotSizeMultiplier < ui_label = "Dot Size Multiplier"; ui_tooltip = "Adjusts the visual size of the dots. Range: 0.25 to 2.0"; ui_type = "slider"; ui_min = DOT_SIZE_MIN; ui_max = DOT_SIZE_MAX; ui_step = 0.05; ui_category = AS_CAT_PATTERN; > = DOT_SIZE_DEFAULT;
+uniform float RadialGapMultiplier < ui_label = "Radial Gap Multiplier"; ui_tooltip = "Controls the radial spacing between dot centers. Range: 0.0 to 3.0"; ui_type = "slider"; ui_min = RADIAL_GAP_MIN; ui_max = RADIAL_GAP_MAX; ui_step = 0.05; ui_category = AS_CAT_PATTERN; > = RADIAL_GAP_DEFAULT;
+uniform int NumSpokes < ui_label = "Number of Spokes"; ui_tooltip = "Number of angular spokes for the visualizer. Range: 16 to 128"; ui_type = "slider"; ui_min = NUM_SPOKES_MIN; ui_max = NUM_SPOKES_MAX; ui_step = 1; ui_category = AS_CAT_PATTERN; > = NUM_SPOKES_DEFAULT;
+uniform int MaxDotsPerSpoke < ui_label = "Max Dots Per Spoke"; ui_tooltip = "Maximum number of dots radially outward per spoke. Range: 5 to 30"; ui_type = "slider"; ui_min = MAX_DOTS_PER_SPOKE_MIN; ui_max = MAX_DOTS_PER_SPOKE_MAX; ui_step = 1; ui_category = AS_CAT_PATTERN; > = MAX_DOTS_PER_SPOKE_DEFAULT;
 
 // --- Animation Controls ---
 AS_ANIMATION_UI(AnimationSpeed, AnimationKeyframe, "Animation")
 
+// --- Effect Settings ---
+uniform float Brightness < ui_label = "Overall Brightness"; ui_tooltip = "Overall brightness of the effect. Range: 1.0 to 8.0"; ui_type = "slider"; ui_min = BRIGHTNESS_MIN; ui_max = BRIGHTNESS_MAX; ui_step = 0.1; ui_category = AS_CAT_APPEARANCE; > = BRIGHTNESS_DEFAULT;
+uniform float BloomSize < ui_label = "Bloom Size"; ui_tooltip = "Size of the bloom/glow effect. Range: 1.0 to 15.0"; ui_type = "slider"; ui_min = BLOOM_SIZE_MIN; ui_max = BLOOM_SIZE_MAX; ui_step = 0.1; ui_category = AS_CAT_APPEARANCE; > = BLOOM_SIZE_DEFAULT;
+uniform float BloomIntensity < ui_label = "Bloom Intensity"; ui_tooltip = "Intensity of the bloom. Range: 0.1 to 2.0"; ui_type = "slider"; ui_min = BLOOM_INTENSITY_MIN; ui_max = BLOOM_INTENSITY_MAX; ui_step = 0.05; ui_category = AS_CAT_APPEARANCE; > = BLOOM_INTENSITY_DEFAULT;
+uniform float BloomFalloff < ui_label = "Bloom Falloff Rate"; ui_tooltip = "How quickly the bloom fades. Range: 1.0 to 4.0"; ui_type = "slider"; ui_min = BLOOM_FALLOFF_MIN; ui_max = BLOOM_FALLOFF_MAX; ui_step = 0.1; ui_category = AS_CAT_APPEARANCE; > = BLOOM_FALLOFF_DEFAULT;
+
 // --- Audio Reactivity ---
 AS_AUDIO_UI(AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
 AS_AUDIO_MULT_UI(AudioMultiplier, "Audio Intensity", AUDIO_MULT_DEFAULT, AUDIO_MULT_MAX, "Audio Reactivity")
-uniform int AudioTarget < ui_type = "combo"; ui_label = "Audio Target"; ui_tooltip = "Which parameter reacts to audio input"; ui_items = "None\0Dot Size Multiplier\0Bloom Size\0Bloom Intensity\0Bloom Falloff Rate\0"; ui_category = "Audio Reactivity"; > = 0;
-uniform float Sensitivity < ui_label = "Audio Sensitivity"; ui_tooltip = "Controls responsiveness to audio. Range: 0.5 to 5.0"; ui_type = "slider"; ui_min = SENSITIVITY_MIN; ui_max = SENSITIVITY_MAX; ui_step = 0.1; ui_category = "Audio Reactivity"; > = SENSITIVITY_DEFAULT;
-uniform bool UseLogScale < ui_label = "Use Logarithmic Scale"; ui_tooltip = "True = logarithmic audio scaling, False = linear."; ui_category = "Audio Reactivity"; > = false;
-
-// --- Effect Settings ---
-uniform float Brightness < ui_label = "Overall Brightness"; ui_tooltip = "Overall brightness of the effect. Range: 1.0 to 8.0"; ui_type = "slider"; ui_min = BRIGHTNESS_MIN; ui_max = BRIGHTNESS_MAX; ui_step = 0.1; ui_category = "Effect Settings"; > = BRIGHTNESS_DEFAULT;
-uniform float BloomSize < ui_label = "Bloom Size"; ui_tooltip = "Size of the bloom/glow effect. Range: 1.0 to 15.0"; ui_type = "slider"; ui_min = BLOOM_SIZE_MIN; ui_max = BLOOM_SIZE_MAX; ui_step = 0.1; ui_category = "Effect Settings"; > = BLOOM_SIZE_DEFAULT;
-uniform float BloomIntensity < ui_label = "Bloom Intensity"; ui_tooltip = "Intensity of the bloom. Range: 0.1 to 2.0"; ui_type = "slider"; ui_min = BLOOM_INTENSITY_MIN; ui_max = BLOOM_INTENSITY_MAX; ui_step = 0.05; ui_category = "Effect Settings"; > = BLOOM_INTENSITY_DEFAULT;
-uniform float BloomFalloff < ui_label = "Bloom Falloff Rate"; ui_tooltip = "How quickly the bloom fades. Range: 1.0 to 4.0"; ui_type = "slider"; ui_min = BLOOM_FALLOFF_MIN; ui_max = BLOOM_FALLOFF_MAX; ui_step = 0.1; ui_category = "Effect Settings"; > = BLOOM_FALLOFF_DEFAULT;
+AS_AUDIO_TARGET_UI(AudioTarget, "None\0Dot Size Multiplier\0Bloom Size\0Bloom Intensity\0Bloom Falloff Rate\0", 0)
+uniform float Sensitivity < ui_label = "Audio Sensitivity"; ui_tooltip = "Controls responsiveness to audio. Range: 0.5 to 5.0"; ui_type = "slider"; ui_min = SENSITIVITY_MIN; ui_max = SENSITIVITY_MAX; ui_step = 0.1; ui_category = AS_CAT_AUDIO; > = SENSITIVITY_DEFAULT;
+uniform bool UseLogScale < ui_label = "Use Logarithmic Scale"; ui_tooltip = "True = logarithmic audio scaling, False = linear."; ui_category = AS_CAT_AUDIO; > = false;
 
 // --- Stage Controls ---
 AS_STAGEDEPTH_UI(EffectDepth) 
@@ -226,14 +226,12 @@ float getMirroredFreqBand(float spoke_angle_rad, bool mirror_active)
 // ============================================================================
 float4 PS_CircularSpectrumDots(float4 vpos : SV_Position, float2 texcoord : TexCoord) : SV_Target
 {
-    float4 originalColor = tex2D(ReShade::BackBuffer, texcoord);
-    float sceneDepth = ReShade::GetLinearizedDepth(texcoord);    if (sceneDepth < EffectDepth - AS_DEPTH_EPSILON) 
-    {
-                return originalColor;    }
+    // Depth-aware early return
+    AS_DEPTH_EARLY_RETURN(texcoord, EffectDepth)
 
-    // Standard AS coordinate transformation using AS_transformCoord
+    // Standard AS coordinate transformation using AS_transformUVCentered
     float globalRotation = AS_getRotationRadians(SnapRotation, FineRotation);
-    float2 uv = AS_transformCoord(texcoord, EffectCenter, EffectScale, globalRotation);    // Level-of-detail optimization: reduce quality for pixels far from center
+    float2 uv = AS_transformUVCentered(texcoord, EffectCenter, EffectScale, globalRotation);    // Level-of-detail optimization: reduce quality for pixels far from center
     float2 center_offset = uv - float2(0.0, 0.0);
     float distance_from_center = length(center_offset);
     
@@ -255,7 +253,7 @@ float4 PS_CircularSpectrumDots(float4 vpos : SV_Position, float2 texcoord : TexC
     
     if (AudioTarget != AUDIO_TARGET_NONE) {
         // Get a general audio value for parameter modulation (using beat detection)
-        float audioValue = AS_applyAudioReactivity(1.0, AudioSource, AudioMultiplier, true) - 1.0;
+        float audioValue = AS_audioModulate(1.0, AudioSource, AudioMultiplier, true, 0) - 1.0;
         
         // Apply audio modulation to the selected parameter
         if (AudioTarget == AUDIO_TARGET_DOT_SIZE) {
@@ -313,7 +311,7 @@ float4 PS_CircularSpectrumDots(float4 vpos : SV_Position, float2 texcoord : TexC
         float raw_amp = getMirroredFreqBand(base_spoke_angle, MirrorFreqBands);
         
         // Apply standard audio reactivity with user controls
-        float audio_multiplied = AS_applyAudioReactivity(raw_amp, AudioSource, AudioMultiplier, true);
+        float audio_multiplied = AS_audioModulate(raw_amp, AudioSource, AudioMultiplier, true, 0);
         float amp_processed = audio_multiplied * Sensitivity;
         if (UseLogScale) {
             amp_processed = log(1.0 + amp_processed * 9.0) / log(10.0);
@@ -349,12 +347,7 @@ float4 PS_CircularSpectrumDots(float4 vpos : SV_Position, float2 texcoord : TexC
             }
             
             // Get color once per dot
-            float3 dot_color;
-            if (PaletteSelection == AS_PALETTE_CUSTOM) {
-                dot_color = AS_GET_INTERPOLATED_CUSTOM_COLOR(CircularSpectrum_, palette_map_value);
-            } else {
-                dot_color = AS_getInterpolatedColor(PaletteSelection, palette_map_value);
-            }
+            float3 dot_color = AS_GET_PALETTE_COLOR(CircularSpectrum_, PaletteSelection, palette_map_value);
 
             // Sharp dot contribution (only if within dot radius)
             if (dist_sq_to_dot < dot_radius_sq) { 
@@ -378,7 +371,7 @@ float4 PS_CircularSpectrumDots(float4 vpos : SV_Position, float2 texcoord : TexC
     
     effectColor += bloomAccumulator; 
 
-    return AS_applyBlend(float4(effectColor, 1.0), originalColor, BlendMode, BlendAmount);
+    return AS_blendRGBA(float4(effectColor, 1.0), _as_originalColor, BlendMode, BlendAmount);
 }
 
 // ============================================================================
@@ -396,4 +389,4 @@ technique AS_VFX_CircularSpectrum <
     }
 }
 
-#endif // __AS_VFX_CIRCULARSPECTRUMDOTS_1_FX
+#endif // __AS_VFX_CircularSpectrum_1_fx

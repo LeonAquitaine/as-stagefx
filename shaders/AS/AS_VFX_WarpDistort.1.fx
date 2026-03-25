@@ -40,29 +40,32 @@
 #ifndef __AS_VFX_WarpDistort_1_fx
 #define __AS_VFX_WarpDistort_1_fx
 
+#include "ReShade.fxh"
 #include "AS_Utils.1.fxh"
+
+uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " "; ui_text = "\nCircular warp distortion with wave ripples and audio reactivity.\nCreates dreamy portal and ripple effects.\n\nAS StageFX | Audio-Reactive Warp Distortion by Leon Aquitaine\n"; > = 0;
 
 // ============================================================================
 // EFFECT-SPECIFIC PARAMETERS
 // ============================================================================
 
 // --- Audio Mirror Controls ---
-uniform int MirrorShape < ui_type = "combo"; ui_label = "Shape"; ui_items = "Resolution-Relative\0Circular\0"; ui_category = "Audio Mirror"; > = 1;
-uniform float MirrorBaseRadius < ui_type = "slider"; ui_label = "Base Radius"; ui_tooltip = "Base radius of the mirror circle."; ui_min = 0.05; ui_max = 0.5; ui_step = 0.01; ui_category = "Audio Mirror"; > = 0.18;
-uniform float MirrorWaveFreq < ui_type = "slider"; ui_label = "Wave Freq"; ui_tooltip = "Frequency of the wave/ripple effect."; ui_min = 1.0; ui_max = 20.0; ui_step = 0.1; ui_category = "Audio Mirror"; > = 8.0;
-uniform float MirrorWaveStrength < ui_type = "slider"; ui_label = "Wave Strength"; ui_tooltip = "Strength of the wave/ripple distortion."; ui_min = 0.0; ui_max = 0.2; ui_step = 0.005; ui_category = "Audio Mirror"; > = 0.06;
-uniform float MirrorEdgeSoftness < ui_type = "slider"; ui_label = "Edge Softness"; ui_tooltip = "Softness of the mirror's edge (fade out)."; ui_min = 0.0; ui_max = 0.2; ui_step = 0.005; ui_category = "Audio Mirror"; > = 0.08;
-uniform float MirrorReflectStrength < ui_type = "slider"; ui_label = "Mirror Strength"; ui_tooltip = "How strongly the mirror distorts the scene (1 = full mirror, 0 = no effect)."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Audio Mirror"; > = 0.85;
+uniform int MirrorShape < ui_type = "combo"; ui_label = "Shape"; ui_tooltip = "Circular keeps the warp perfectly round regardless of screen ratio. Resolution-Relative stretches with the display."; ui_items = "Resolution-Relative\0Circular\0"; ui_category = AS_CAT_AUDIO; > = 1;
+uniform float MirrorBaseRadius < ui_type = "slider"; ui_label = "Base Radius"; ui_tooltip = "Base radius of the mirror circle."; ui_min = 0.05; ui_max = 0.5; ui_step = 0.01; ui_category = AS_CAT_AUDIO; > = 0.18;
+uniform float MirrorWaveFreq < ui_type = "slider"; ui_label = "Wave Freq"; ui_tooltip = "Frequency of the wave/ripple effect."; ui_min = 1.0; ui_max = 20.0; ui_step = 0.1; ui_category = AS_CAT_AUDIO; > = 8.0;
+uniform float MirrorWaveStrength < ui_type = "slider"; ui_label = "Wave Strength"; ui_tooltip = "Strength of the wave/ripple distortion."; ui_min = 0.0; ui_max = 0.2; ui_step = 0.005; ui_category = AS_CAT_AUDIO; > = 0.06;
+uniform float MirrorEdgeSoftness < ui_type = "slider"; ui_label = "Edge Softness"; ui_tooltip = "Softness of the mirror's edge (fade out)."; ui_min = 0.0; ui_max = 0.2; ui_step = 0.005; ui_category = AS_CAT_AUDIO; > = 0.08;
+uniform float MirrorReflectStrength < ui_type = "slider"; ui_label = "Mirror Strength"; ui_tooltip = "How strongly the mirror distorts the scene (1 = full mirror, 0 = no effect)."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = AS_CAT_AUDIO; > = 0.85;
 
 // ============================================================================
 // AUDIO REACTIVITY
 // ============================================================================
 
-AS_AUDIO_UI(MirrorAudioSource, "Radius Source", AS_AUDIO_VOLUME, "Audio Reactivity")
-AS_AUDIO_MULT_UI(MirrorRadiusAudioMult, "Radius Strength", 0.12, 0.5, "Audio Reactivity")
+AS_AUDIO_UI(MirrorAudioSource, "Radius Source", AS_AUDIO_VOLUME, AS_CAT_AUDIO)
+AS_AUDIO_MULT_UI(MirrorRadiusAudioMult, "Radius Strength", 0.12, 0.5, AS_CAT_AUDIO)
 
-AS_AUDIO_UI(MirrorWaveAudioSource, "Wave Source", AS_AUDIO_BEAT, "Audio Reactivity")
-AS_AUDIO_MULT_UI(MirrorWaveAudioMult, "Wave Strength", 0.3, 1.0, "Audio Reactivity")
+AS_AUDIO_UI(MirrorWaveAudioSource, "Wave Source", AS_AUDIO_BEAT, AS_CAT_AUDIO)
+AS_AUDIO_MULT_UI(MirrorWaveAudioMult, "Wave Strength", 0.3, 1.0, AS_CAT_AUDIO)
 
 // ============================================================================
 // STAGE/POSITION CONTROLS
@@ -87,13 +90,8 @@ AS_DEBUG_UI("Off\0Audio Levels\0Warp Pattern\0")
 // ============================================================================
 
 float4 PS_AudioMirror(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target {
-    // --- Setup --- 
-    float4 orig = tex2D(ReShade::BackBuffer, texcoord);    float sceneDepth = ReShade::GetLinearizedDepth(texcoord);
-    float effectDepth = WarpDepth;
-
-    if (sceneDepth < effectDepth - AS_DEPTH_EPSILON) {
-        return orig;
-    }
+    // Depth-aware early return
+    AS_DEPTH_EARLY_RETURN(texcoord, WarpDepth)
 
     float aspect_ratio = ReShade::AspectRatio;
     // float rotation_rad = AS_getRotationRadians(WarpSnapRotation, WarpFineRotation); // Rotation removed    // Compute effective WarpCenter Offset ---
@@ -102,9 +100,7 @@ float4 PS_AudioMirror(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV
     effective_WarpCenter_offset.y = -WarpCenter.y * AS_UI_POSITION_SCALE;
 
     // --- Coordinate Transformation --- 
-    float2 uv_centered_aspect;
-    uv_centered_aspect.x = (texcoord.x - AS_HALF) * aspect_ratio;
-    uv_centered_aspect.y = texcoord.y - AS_HALF;
+    float2 uv_centered_aspect = AS_centeredUVWithAspect(texcoord, aspect_ratio);
 
     // Vector from the effect's center to the current pixel, in centered aspect-aware space.
     // This is now the effect's local coordinate system as there's no rotation.
@@ -125,12 +121,12 @@ float4 PS_AudioMirror(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV
     }
 
     // --- Audio and Effect Calculations --- 
-    float audio = AS_getAudioSource(MirrorAudioSource);
-    float waveAudio = AS_getAudioSource(MirrorWaveAudioSource);
+    float audio = AS_audioLevelFromSource(MirrorAudioSource);
+    float waveAudio = AS_audioLevelFromSource(MirrorWaveAudioSource);
     float radius = MirrorBaseRadius + audio * MirrorRadiusAudioMult;
     float edge = smoothstep(radius, radius + MirrorEdgeSoftness, dist);
     float mask = 1.0 - edge;
-    float time = AS_getTime();
+    float time = AS_timeSeconds();
     float wave = sin(dist * MirrorWaveFreq * AS_TWO_PI + time * 2.0) * (MirrorWaveStrength + waveAudio * MirrorWaveAudioMult);
 
     // --- Source Coordinate Calculation in Effect Space --- 
@@ -172,9 +168,7 @@ float4 PS_AudioMirror(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV
     // Note: DebugMode for "Warp Pattern" (value 2 in AS_DEBUG_UI) would typically show 'final_texcoord_to_sample' or similar.
     // For now, re-using audio display for DebugMode == 2.
 
-    float3 blended = AS_applyBlend(scene.rgb, orig.rgb, BlendMode);
-    float3 final_color = lerp(orig.rgb, blended, BlendAmount);
-    return float4(final_color, orig.a);
+    return AS_compositeRGBA(scene.rgb, _as_originalColor, BlendMode, BlendAmount);
 }
 
 technique AS_Warp < ui_label = "[AS] VFX: Warp Distort"; ui_tooltip = "Creates a warp distortion effect that pulses and waves with audio, featuring shape and depth controls."; > {

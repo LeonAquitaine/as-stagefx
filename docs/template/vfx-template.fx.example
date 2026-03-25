@@ -1,23 +1,58 @@
-// AS_VFX_[EffectName].1.fx - Visual Effect Template
+// AS_VFX_[EffectName].1.fx - Visual Effect Template (Mode B: Overlay)
 // Replace [EffectName] with your effect name (e.g., "AudioRings")
+//
+// VFX shaders overlay effects on the scene (particles, distortions, visualizers).
+// They include position/scale/rotation and depth masking with AS_STAGEDEPTH_UI.
 
 /**
  * AS_VFX_[EffectName].1.fx - [Brief Description]
  * Author: [Author Name]
  * License: Creative Commons Attribution 4.0 International
+ * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
+ *
+ * CREDITS (Optional):
+ * Based on "[Original Title]" by [Original Author]
+ * [Platform]: [URL]
+ *
+ * ===================================================================================
+ *
+ * DESCRIPTION:
+ * [2-3 sentences describing the visual effect.]
+ *
+ * FEATURES:
+ * - [Feature list]
+ *
+ * IMPLEMENTATION OVERVIEW:
+ * 1. [Steps]
+ *
+ * ===================================================================================
  */
 
+// ============================================================================
+// TECHNIQUE GUARD
+// ============================================================================
 #ifndef __AS_VFX_[EffectName]_1_fx
 #define __AS_VFX_[EffectName]_1_fx
 
+// ============================================================================
+// INCLUDES
+// ============================================================================
 #include "ReShade.fxh"
 #include "AS_Utils.1.fxh"
 #include "AS_Palette.1.fxh"
 
-namespace AS[EffectName] {
+// ============================================================================
+// SHADER DESCRIPTOR
+// ============================================================================
+uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " "; ui_text = "AS StageFX | [Effect Display Name] | [1-2 sentence description of what the effect does visually] | by [Author Name]"; > = 0;
 
 // ============================================================================
-// CONSTANTS
+// NAMESPACE
+// ============================================================================
+namespace AS_[EffectName] {
+
+// ============================================================================
+// TUNABLE CONSTANTS
 // ============================================================================
 static const float EFFECT_SIZE_MIN = 0.1;
 static const float EFFECT_SIZE_MAX = 2.0;
@@ -27,43 +62,50 @@ static const float SENSITIVITY_MIN = 0.5;
 static const float SENSITIVITY_MAX = 5.0;
 static const float SENSITIVITY_DEFAULT = 1.5;
 
-static const int AUDIO_TARGET_NONE = 0;
-static const int AUDIO_TARGET_SIZE = 1;
-static const int AUDIO_TARGET_INTENSITY = 2;
-static const int AUDIO_TARGET_SPEED = 3;
+} // namespace AS_[EffectName]
 
 // ============================================================================
 // UI CONTROLS
 // ============================================================================
 
-// Effect Parameters
-uniform float EffectSize < ui_type = "slider"; ui_label = "Effect Size"; ui_min = EFFECT_SIZE_MIN; ui_max = EFFECT_SIZE_MAX; ui_category = "Effect"; > = EFFECT_SIZE_DEFAULT;
+// ---- Effect-Specific Parameters ----
+uniform float EffectSize < ui_type = "slider"; ui_label = "Effect Size"; ui_min = AS_[EffectName]::EFFECT_SIZE_MIN; ui_max = AS_[EffectName]::EFFECT_SIZE_MAX; ui_category = "Effect"; > = AS_[EffectName]::EFFECT_SIZE_DEFAULT;
 uniform float EffectIntensity < ui_type = "slider"; ui_label = "Effect Intensity"; ui_min = 0.0; ui_max = 2.0; ui_category = "Effect"; > = 1.0;
 
-// Audio Reactivity
-AS_AUDIO_UI(Effect_AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
-AS_AUDIO_MULT_UI(Effect_AudioMultiplier, "Audio Intensity", 1.0, 3.0, "Audio Reactivity")
-uniform float AudioSensitivity < ui_type = "slider"; ui_label = "Audio Sensitivity"; ui_min = SENSITIVITY_MIN; ui_max = SENSITIVITY_MAX; ui_category = "Audio Reactivity"; > = SENSITIVITY_DEFAULT;
-uniform int Effect_AudioTarget < ui_type = "combo"; ui_label = "Audio Target"; ui_items = "None\0Effect Size\0Effect Intensity\0Animation Speed\0"; ui_category = "Audio Reactivity"; > = AUDIO_TARGET_NONE;
+// ---- Standard Controls (canonical order) ----
 
-// Colors
-AS_PALETTE_SELECTION_UI(EffectPalette, "Color Palette", AS_PALETTE_RAINBOW, "Colors")
-AS_DECLARE_CUSTOM_PALETTE(Effect_, "Colors")
+// Palette & Style
+AS_PALETTE_SELECTION_UI(EffectPalette, "Color Palette", AS_PALETTE_RAINBOW, AS_CAT_PALETTE)
+AS_DECLARE_CUSTOM_PALETTE(Effect_, AS_CAT_PALETTE)
+AS_COLOR_CYCLE_UI(ColorCycleSpeed, AS_CAT_PALETTE)
 
 // Animation
-AS_ANIMATION_UI(AnimationSpeed, AnimationKeyframe, "Animation")
+AS_ANIMATION_UI(AnimationSpeed, AnimationKeyframe, AS_CAT_ANIMATION)
 
-// Stage Controls
+// Audio Reactivity
+AS_AUDIO_UI(Effect_AudioSource, "Audio Source", AS_AUDIO_BEAT, AS_CAT_AUDIO)
+AS_AUDIO_MULT_UI(Effect_AudioMultiplier, "Audio Intensity", 1.0, 3.0, AS_CAT_AUDIO)
+AS_AUDIO_TARGET_UI(EffectName_AudioTarget, "None\0Effect Size\0Effect Intensity\0Animation Speed\0", 0)
+uniform float AudioSensitivity < ui_type = "slider"; ui_label = "Audio Sensitivity"; ui_min = AS_[EffectName]::SENSITIVITY_MIN; ui_max = AS_[EffectName]::SENSITIVITY_MAX; ui_category = AS_CAT_AUDIO; > = AS_[EffectName]::SENSITIVITY_DEFAULT;
+
+// Stage (VFX includes position, scale, rotation, and depth masking)
 AS_POSITION_SCALE_UI(EffectCenter, EffectScale)
 AS_STAGEDEPTH_UI(EffectDepth)
 AS_ROTATION_UI(EffectRotationSnap, EffectRotationFine)
 
 // Final Mix
-AS_BLENDMODE_UI_DEFAULT(BlendMode, AS_BLEND_LIGHTENITIVE)
+// Note: BlendMode is for USER final mix, not for core effect compositing.
+// For additive glow effects, compute effectLight and add to scene: originalColor.rgb + effectLight
+AS_BLENDMODE_UI_DEFAULT(BlendMode, AS_BLEND_LIGHTEN)
 AS_BLENDAMOUNT_UI(BlendStrength)
 
 // Debug
-AS_DEBUG_UI("Off\0Show Audio\0Show Frequency Bands\0")
+AS_DEBUG_UI("Off\0Show Audio\0Show Depth Mask\0")
+
+// ============================================================================
+// RE-ENTER NAMESPACE FOR FUNCTIONS & PIXEL SHADER
+// ============================================================================
+namespace AS_[EffectName] {
 
 // ============================================================================
 // PIXEL SHADER
@@ -71,95 +113,84 @@ AS_DEBUG_UI("Off\0Show Audio\0Show Frequency Bands\0")
 float4 EffectPS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD) : SV_TARGET {
     float4 originalColor = tex2D(ReShade::BackBuffer, texcoord);
     float depth = ReShade::GetLinearizedDepth(texcoord);
-    
-    // Depth test
+
+    // Depth masking - effect renders behind scene objects at EffectDepth
     if (depth < EffectDepth) {
         return originalColor;
     }
-    
-    // Get audio data
-    float audioValue = AS_applyAudioReactivity(1.0, Effect_AudioSource, Effect_AudioMultiplier, true);
-    
-    // Apply audio reactivity to parameters
+
+    // --- AUDIO REACTIVITY ---
+    float audioValue = AS_audioModulate(1.0, Effect_AudioSource, Effect_AudioMultiplier, true, 0);
+
     float effectSize = EffectSize;
     float effectIntensity = EffectIntensity;
     float animSpeed = AnimationSpeed;
-    
-    if (Effect_AudioTarget == AUDIO_TARGET_SIZE) effectSize *= audioValue;
-    else if (Effect_AudioTarget == AUDIO_TARGET_INTENSITY) effectIntensity *= audioValue;
-    else if (Effect_AudioTarget == AUDIO_TARGET_SPEED) animSpeed *= audioValue;
-    
-    // Get animation time
+
+    if (EffectName_AudioTarget == 1) effectSize *= audioValue;
+    else if (EffectName_AudioTarget == 2) effectIntensity *= audioValue;
+    else if (EffectName_AudioTarget == 3) animSpeed *= audioValue;
+
+    // --- ANIMATION ---
     float time = AS_getAnimationTime(animSpeed, AnimationKeyframe);
-    
-    // Transform coordinates
+
+    // --- COORDINATE TRANSFORMATION ---
     float rotation = AS_getRotationRadians(EffectRotationSnap, EffectRotationFine);
     float2 coords = (texcoord - AS_HALF) * 2.0;
     coords.x *= ReShade::AspectRatio;
-    
-    // Apply rotation
-    float sinRot, cosRot;
-    sincos(-rotation, sinRot, cosRot);
-    coords = float2(
-        coords.x * cosRot - coords.y * sinRot,
-        coords.x * sinRot + coords.y * cosRot
-    );
-    
-    // Apply position and scale
+    coords = AS_rotate2D(coords, -rotation);
     coords = coords / EffectScale - EffectCenter;
-    
-    // IMPLEMENT YOUR VISUAL EFFECT HERE
+
+    // --- IMPLEMENT YOUR VISUAL EFFECT HERE ---
     // Example: Audio-reactive circular effect
     float distance = length(coords) / effectSize;
-    
+
     // Create pulsing effect based on audio
     float pulse = sin(time * 2.0 + distance * 10.0) * 0.5 + 0.5;
     pulse *= audioValue * AudioSensitivity;
-    
+
     // Create the effect shape
     float effectMask = 1.0 - smoothstep(0.0, 1.0, distance);
     effectMask *= pulse * effectIntensity;
-    
-    // Generate color from palette
-    float colorPosition = distance + time * 0.1; // Animate color along distance
+
+    // --- COLOR FROM PALETTE ---
+    float colorPosition = distance + time * 0.1;
+    if (abs(ColorCycleSpeed) > AS_EPSILON) {
+        colorPosition += AS_timeSeconds() * ColorCycleSpeed * 0.1;
+    }
+
     float3 effectColor;
-    
     if (EffectPalette == AS_PALETTE_CUSTOM) {
         effectColor = AS_GET_INTERPOLATED_CUSTOM_COLOR(Effect_, frac(colorPosition));
     } else {
         effectColor = AS_getInterpolatedColor(EffectPalette, frac(colorPosition));
     }
-    
-    // Apply effect mask
+
+    // Apply effect mask to color
     effectColor *= effectMask;
-    
-    // Apply blending
-    float3 blendedColor = AS_applyBlend(effectColor, originalColor.rgb, BlendMode);
-    float4 finalColor = float4(blendedColor, 1.0);
-    finalColor = lerp(originalColor, finalColor, BlendStrength);
-    
-    // Debug overlays
+
+    // --- FINAL COMPOSITING ---
+    // For additive glow effects, you can use: originalColor.rgb + effectColor
+    // For standard compositing, use AS_composite:
+    float3 finalRgb = AS_composite(effectColor, originalColor.rgb, BlendMode, BlendStrength);
+
+    // --- DEBUG ---
     if (DebugMode == 1) { // Show Audio
         float2 debugCenter = float2(0.1, 0.1);
         if (length(texcoord - debugCenter) < 0.08) {
             return float4(audioValue, audioValue, audioValue, 1.0);
         }
-    } else if (DebugMode == 2) { // Show Frequency Bands
-        float2 debugPos = float2(0.05, 0.95 - texcoord.y * 0.9);
-        if (abs(texcoord.x - debugPos.x) < 0.02) {
-            // Simple frequency band visualization
-            float bandIndex = (1.0 - texcoord.y) * 16.0; // 16 bands
-            float bandValue = AS_getAudioSource(Effect_AudioSource, int(bandIndex));
-            if (bandValue > 0.1) {
-                return float4(1.0, 0.5, 0.0, 1.0);
-            }
+    } else if (DebugMode == 2) { // Show Depth Mask
+        float depthMask = depth >= EffectDepth ? 1.0 : 0.0;
+        float2 debugCenter = float2(0.1, 0.1);
+        if (length(texcoord - debugCenter) < 0.08) {
+            return float4(depthMask, depthMask * 0.5, 0.0, 1.0);
         }
     }
-    
-    return finalColor;
+
+    return float4(finalRgb, 1.0);
 }
 
-} // namespace AS[EffectName]
+} // namespace AS_[EffectName]
 
 // ============================================================================
 // TECHNIQUE
@@ -169,7 +200,7 @@ technique AS_VFX_[EffectName] < ui_label="[AS] VFX: [Effect Display Name]"; ui_t
     pass
     {
         VertexShader = PostProcessVS;
-        PixelShader = AS[EffectName]::EffectPS;
+        PixelShader = AS_[EffectName]::EffectPS;
     }
 }
 

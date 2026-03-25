@@ -80,6 +80,8 @@
 #include "ReShade.fxh"
 #include "AS_Utils.1.fxh"
 
+uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " "; ui_text = "\nAutomatic motion-based camera focus that blurs the background around movement.\nSimulates cinematic rack focus for video capture.\n\nAS StageFX | Automatic Motion-Based Camera Focus by Leon Aquitaine\n"; > = 0;
+
 // ============================================================================
 // CONSTANTS
 // ============================================================================
@@ -245,6 +247,10 @@ AS_AUDIO_MULT_UI(FocusAudioMult, "Focus Audio Multiplier", 1.0, 4.0, "Audio Reac
 AS_AUDIO_UI(ZoomAudioSource, "Zoom Audio Source", AS_AUDIO_OFF, "Audio Reactivity")
 AS_AUDIO_MULT_UI(ZoomAudioMult, "Zoom Audio Multiplier", 1.0, 4.0, "Audio Reactivity")
 
+// --- Final Mix ---
+AS_BLENDMODE_UI(BlendMode)
+AS_BLENDAMOUNT_UI(BlendAmount)
+
 // --- Debug Controls ---
 AS_DEBUG_UI("Off\0Motion Intensity (Mid-Pass)\0Quadrant Motion Data (Final)\0")
 
@@ -346,8 +352,8 @@ float2 CalculateMotionCenter(int precisionMode) {
  * RETURNS: Audio-modulated strength values as float2(focus, zoom)
  */
 float2 ApplyAudioReactivity(float focusStrength, float zoomStrength) {
-    float focusStrength_reactive = AS_applyAudioReactivity(focusStrength, FocusAudioSource, FocusAudioMult, true);
-    float zoomStrength_reactive = AS_applyAudioReactivity(zoomStrength, ZoomAudioSource, ZoomAudioMult, true);
+    float focusStrength_reactive = AS_audioModulate(focusStrength, FocusAudioSource, FocusAudioMult, true, 0);
+    float zoomStrength_reactive = AS_audioModulate(zoomStrength, ZoomAudioSource, ZoomAudioMult, true, 0);
     return float2(focusStrength_reactive, zoomStrength_reactive);
 }
 
@@ -672,8 +678,11 @@ float4 PS_MotionFocusDisplay(float4 pos : SV_Position, float2 texcoord : TEXCOOR
     transformedUv += edgeCorrectionOffset;
     transformedUv = clamp(transformedUv, AS_EPSILON, 1.0 - AS_EPSILON);
 
-    // Step 12: Sample and return the transformed image
-    return tex2D(ReShade::BackBuffer, transformedUv);
+    // Step 12: Sample the transformed image and composite with original
+    float4 originalColor = tex2D(ReShade::BackBuffer, texcoord);
+    float3 effectColor = tex2D(ReShade::BackBuffer, transformedUv).rgb;
+    float3 composited = AS_composite(effectColor, originalColor.rgb, BlendMode, BlendAmount);
+    return float4(composited, 1.0);
 }
 
 // ============================================================================

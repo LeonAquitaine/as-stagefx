@@ -35,6 +35,8 @@
 #include "ReShade.fxh"
 #include "AS_Utils.1.fxh"
 
+uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " "; ui_text = "\nWater reflection surface with animated waves and depth-based perspective.\nSimulates looking through or across water.\n\nAS StageFX | Water Surface Reflection Effect by Leon Aquitaine\n"; > = 0;
+
 // ============================================================================
 // TEXTURES AND SAMPLERS
 // ============================================================================
@@ -79,11 +81,6 @@ uniform float WaterTransparency < ui_type = "slider"; ui_label = "Water Transpar
 uniform float ReflectionIntensity < ui_type = "slider"; ui_label = "Reflection Intensity"; ui_tooltip = "Strength of the reflection effect."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Water"; > = 1.0;
 uniform float ReflectionCompress < ui_type = "slider"; ui_label = "Reflection Compress"; ui_tooltip = "Compresses the reflection vertically (lower value = shorter reflection)."; ui_min = REFLECT_COMPRESS_MIN; ui_max = REFLECT_COMPRESS_MAX; ui_step = 0.01; ui_category = "Water"; > = REFLECT_COMPRESS_DEFAULT;
 
-// --- Depth Settings ---
-uniform float DepthScale < ui_type = "slider"; ui_label = "Depth Scale"; ui_tooltip = "How much object depth affects the reflection horizon (0 = flat reflection, 1 = maximum effect)."; ui_min = DEPTH_SCALE_MIN; ui_max = DEPTH_SCALE_MAX; ui_step = 0.01; ui_category = "Depth"; > = DEPTH_SCALE_DEFAULT;
-uniform float DepthFalloff < ui_type = "slider"; ui_label = "Depth Falloff"; ui_tooltip = "How quickly the depth effect diminishes with distance (higher = faster falloff)."; ui_min = 0.1; ui_max = 10.0; ui_step = 0.1; ui_category = "Depth"; > = 1.0;
-uniform float Perspective < ui_type = "slider"; ui_label = "Perspective"; ui_tooltip = "Modifies the depth offset for the reflection horizon."; ui_min = 0.5; ui_max = 5.0; ui_step = 0.01; ui_category = "Depth"; > = 1.0;
-
 // --- Wave Settings ---
 uniform float2 WaveDirection < ui_type = "slider"; ui_label = "Wave Direction"; ui_tooltip = "Direction of wave movement."; ui_min = -1.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Waves"; > = float2(1.0, 0.0);
 uniform float WaveSpeed < ui_type = "slider"; ui_label = "Wave Speed"; ui_tooltip = "Speed of wave animation."; ui_min = WAVE_SPEED_MIN; ui_max = WAVE_SPEED_MAX; ui_step = 0.01; ui_category = "Waves"; > = WAVE_SPEED_DEFAULT;
@@ -91,9 +88,12 @@ uniform float WaveScale < ui_type = "slider"; ui_label = "Wave Scale"; ui_toolti
 uniform float WaveDistortion < ui_type = "slider"; ui_label = "Wave Distortion"; ui_tooltip = "Amount of distortion applied to reflection."; ui_min = DISTORTION_MIN; ui_max = DISTORTION_MAX; ui_step = 0.001; ui_category = "Waves"; > = DISTORTION_DEFAULT;
 uniform float WaveScaleCurve < ui_type = "slider"; ui_label = "Wave Scale Curve"; ui_tooltip = "Controls how quickly wave scale increases near the horizon (logarithmic curve)."; ui_min = 0.1; ui_max = 5.0; ui_step = 0.01; ui_category = "Waves"; > = 0.1;
 
-// --- Water Position ---
-uniform float WaterLevel < ui_type = "slider"; ui_label = "Water Level"; ui_tooltip = "Position of the water horizon line (0.5 = middle of screen)."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Stage"; > = 0.5;
-uniform float WaterFadeSize < ui_type = "slider"; ui_label = "Water Edge Fade"; ui_tooltip = "Size of the fade at the water's edge."; ui_min = 0.0; ui_max = 0.1; ui_step = 0.001; ui_category = "Stage"; > = 0.005;
+// --- Stage Controls ---
+uniform float DepthScale < ui_type = "slider"; ui_label = "Depth Scale"; ui_tooltip = "How much object depth affects the reflection horizon (0 = flat reflection, 1 = maximum effect)."; ui_min = DEPTH_SCALE_MIN; ui_max = DEPTH_SCALE_MAX; ui_step = 0.01; ui_category = AS_CAT_STAGE; > = DEPTH_SCALE_DEFAULT;
+uniform float DepthFalloff < ui_type = "slider"; ui_label = "Depth Falloff"; ui_tooltip = "How quickly the depth effect diminishes with distance (higher = faster falloff)."; ui_min = 0.1; ui_max = 10.0; ui_step = 0.1; ui_category = AS_CAT_STAGE; > = 1.0;
+uniform float Perspective < ui_type = "slider"; ui_label = "Perspective"; ui_tooltip = "Modifies the depth offset for the reflection horizon."; ui_min = 0.5; ui_max = 5.0; ui_step = 0.01; ui_category = AS_CAT_STAGE; > = 1.0;
+uniform float WaterLevel < ui_type = "slider"; ui_label = "Water Level"; ui_tooltip = "Position of the water horizon line (0.5 = middle of screen)."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = AS_CAT_STAGE; > = 0.5;
+uniform float WaterFadeSize < ui_type = "slider"; ui_label = "Water Edge Fade"; ui_tooltip = "Size of the fade at the water's edge."; ui_min = 0.0; ui_max = 0.1; ui_step = 0.001; ui_category = AS_CAT_STAGE; > = 0.005;
 
 // --- Final Mix ---
 AS_BLENDMODE_UI_DEFAULT(BlendMode, 0)
@@ -167,7 +167,7 @@ float4 PS_WaterSurface(float4 vpos : SV_Position, float2 texcoord : TEXCOORD) : 
     // --- Initial Setup ---
     float4 originalColor = tex2D(ReShade::BackBuffer, texcoord);
     float depth = ReShade::GetLinearizedDepth(texcoord);
-    float time = AS_getTime();
+    float time = AS_timeSeconds();
 
     // Debug depth map
     if (DebugMode == 2) return float4(depth.xxx, 1.0);
@@ -227,8 +227,7 @@ float4 PS_WaterSurface(float4 vpos : SV_Position, float2 texcoord : TEXCOORD) : 
 
     // --- Blending ---
     float3 waterWithReflection = lerp(WaterColor, reflectionColor.rgb, ReflectionIntensity * WaterTransparency);
-    float3 blendedColor = AS_applyBlend(waterWithReflection, originalColor.rgb, BlendMode);
-    float3 result = lerp(originalColor.rgb, blendedColor, edgeFade * BlendAmount);
+    float3 result = AS_composite(waterWithReflection, originalColor.rgb, BlendMode, edgeFade * BlendAmount);
 
     // Normal Mode Output
     if (DebugMode == 0) return float4(result, originalColor.a);

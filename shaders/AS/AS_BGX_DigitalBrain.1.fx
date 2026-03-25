@@ -44,7 +44,7 @@
 #define __AS_BGX_DigitalBrain_1_fx
 
 #include "ReShade.fxh"
-#include "AS_Utils.1.fxh" // For AS_getTime() and other utilities
+#include "AS_Utils.1.fxh" // For AS_timeSeconds() and other utilities
 
 // ============================================================================
 // TUNABLE CONSTANTS
@@ -96,18 +96,12 @@ sampler DigitalBrain_NoiseSampler { Texture = DigitalBrain_NoiseTex; AddressU = 
 // UI DECLARATIONS
 // ============================================================================
 
-// Animation Controls
+// Effect-Specific Parameters
+
+// Pattern Controls
 
 uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Digital Brain' by srtuss\nLink: https://www.shadertoy.com/view/4sl3Dr\nLicence: CC Share-Alike Non-Commercial\n\n";>;
 
-uniform float CameraSpeed < ui_type = "slider"; ui_label = "Camera Speed"; ui_tooltip = "Controls how fast the camera moves through the pattern."; ui_min = CAMERA_SPEED_MIN; ui_max = CAMERA_SPEED_MAX; ui_step = CAMERA_SPEED_STEP; ui_category = "Animation Controls"; > = CAMERA_SPEED_DEFAULT;
-uniform float CameraMovementAmount < ui_type = "slider"; ui_label = "Camera Movement"; ui_tooltip = "Controls amplitude of camera movement animation."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Animation Controls"; > = 0.4;
-uniform float CameraRotationAmount < ui_type = "slider"; ui_label = "Camera Rotation"; ui_tooltip = "Controls amplitude of camera rotation animation."; ui_min = 0.0; ui_max = 2.0; ui_step = 0.01; ui_category = "Animation Controls"; > = 1.0;
-uniform float SynapseSpeed < ui_type = "slider"; ui_label = "Synapse Speed"; ui_tooltip = "Controls how fast the neurons/synapses move in the pattern."; ui_min = SYNAPSE_SPEED_MIN; ui_max = SYNAPSE_SPEED_MAX; ui_step = SYNAPSE_SPEED_STEP; ui_category = "Animation Controls"; > = SYNAPSE_SPEED_DEFAULT;
-uniform float FlickerIntensity < ui_type = "slider"; ui_label = "Flicker Intensity"; ui_tooltip = "Controls the intensity of the flickering effect."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Animation Controls"; > = 0.8;
-uniform float FlickerFrequency < ui_type = "slider"; ui_label = "Flicker Frequency"; ui_tooltip = "Controls how rapidly the flicker effect changes."; ui_min = 0.5; ui_max = 5.0; ui_step = 0.1; ui_category = "Animation Controls"; > = 2.0;
-
-// Pattern Controls
 uniform float ZoomFactor < ui_type = "slider"; ui_label = "Zoom Factor"; ui_tooltip = "Adjusts the zoom level of the pattern."; ui_min = 0.2; ui_max = 2.0; ui_step = 0.01; ui_category = "Pattern Controls"; > = 0.6;
 uniform float PatternDensity < ui_type = "slider"; ui_label = "Pattern Density"; ui_tooltip = "Controls density of the Voronoi patterns."; ui_min = 0.5; ui_max = 5.0; ui_step = 0.1; ui_category = "Pattern Controls"; > = 1.0;
 uniform int OctaveCount < ui_type = "slider"; ui_label = "Octave Count"; ui_tooltip = "Number of Voronoi detail layers (higher = more detail but slower)."; ui_min = 1; ui_max = 4; ui_category = "Pattern Controls"; > = 3;
@@ -127,18 +121,26 @@ uniform float ColorNoiseInfluence < ui_type = "slider"; ui_label = "Color Noise 
 uniform float ColorVariationScale < ui_type = "slider"; ui_label = "Color Variation Scale"; ui_tooltip = "Controls scaling of the secondary color variation sampling."; ui_min = 0.005; ui_max = 0.05; ui_step = 0.001; ui_category = "Texture Controls"; > = 0.01;
 
 // Color Settings
-uniform float3 ColorMultiplier < ui_type = "color"; ui_label = "Color Multiplier"; ui_tooltip = "Adjusts the color balance of the effect."; ui_category = "Color Settings"; > = float3(1.0, 1.0, 1.0);
-uniform float ColorIntensity < ui_type = "slider"; ui_label = "Color Intensity"; ui_tooltip = "Overall brightness of the effect."; ui_min = 0.5; ui_max = 4.0; ui_step = 0.1; ui_category = "Color Settings"; > = 2.0;
-uniform bool UseClassicColors < ui_label = "Use Classic Blue Colors"; ui_tooltip = "Use the original blue-colored version instead of texture-based colors."; ui_category = "Color Settings"; > = false;
-uniform float3 ClassicColorBalance < ui_type = "slider"; ui_label = "Classic Color Balance"; ui_tooltip = "RGB balance for classic mode colors (higher values = stronger color)."; ui_min = 0.5; ui_max = 8.0; ui_step = 0.1; ui_category = "Color Settings"; > = float3(6.0, 4.0, 2.0);
+uniform float3 ColorMultiplier < ui_type = "color"; ui_label = "Color Multiplier"; ui_tooltip = "Adjusts the color balance of the effect."; ui_category = AS_CAT_COLOR; > = float3(1.0, 1.0, 1.0);
+uniform float ColorIntensity < ui_type = "slider"; ui_label = "Color Intensity"; ui_tooltip = "Overall brightness of the effect."; ui_min = 0.5; ui_max = 4.0; ui_step = 0.1; ui_category = AS_CAT_COLOR; > = 2.0;
+uniform bool UseClassicColors < ui_label = "Use Classic Blue Colors"; ui_tooltip = "Use the original blue-colored version instead of texture-based colors."; ui_category = AS_CAT_COLOR; > = false;
+uniform float3 ClassicColorBalance < ui_type = "slider"; ui_label = "Classic Color Balance"; ui_tooltip = "RGB balance for classic mode colors (higher values = stronger color)."; ui_min = 0.5; ui_max = 8.0; ui_step = 0.1; ui_category = AS_CAT_COLOR; > = float3(6.0, 4.0, 2.0);
+
+// Animation Controls
+uniform float CameraSpeed < ui_type = "slider"; ui_label = "Camera Speed"; ui_tooltip = "Controls how fast the camera moves through the pattern."; ui_min = CAMERA_SPEED_MIN; ui_max = CAMERA_SPEED_MAX; ui_step = CAMERA_SPEED_STEP; ui_category = AS_CAT_ANIMATION; > = CAMERA_SPEED_DEFAULT;
+uniform float CameraMovementAmount < ui_type = "slider"; ui_label = "Camera Movement"; ui_tooltip = "Controls amplitude of camera movement animation."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = AS_CAT_ANIMATION; > = 0.4;
+uniform float CameraRotationAmount < ui_type = "slider"; ui_label = "Camera Rotation"; ui_tooltip = "Controls amplitude of camera rotation animation."; ui_min = 0.0; ui_max = 2.0; ui_step = 0.01; ui_category = AS_CAT_ANIMATION; > = 1.0;
+uniform float SynapseSpeed < ui_type = "slider"; ui_label = "Synapse Speed"; ui_tooltip = "Controls how fast the neurons/synapses move in the pattern."; ui_min = SYNAPSE_SPEED_MIN; ui_max = SYNAPSE_SPEED_MAX; ui_step = SYNAPSE_SPEED_STEP; ui_category = AS_CAT_ANIMATION; > = SYNAPSE_SPEED_DEFAULT;
+uniform float FlickerIntensity < ui_type = "slider"; ui_label = "Flicker Intensity"; ui_tooltip = "Controls the intensity of the flickering effect."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = AS_CAT_ANIMATION; > = 0.8;
+uniform float FlickerFrequency < ui_type = "slider"; ui_label = "Flicker Frequency"; ui_tooltip = "Controls how rapidly the flicker effect changes."; ui_min = 0.5; ui_max = 5.0; ui_step = 0.1; ui_category = AS_CAT_ANIMATION; > = 2.0;
+
+AS_ANIMATION_SPEED_UI(AnimationSpeed, "Animation")
+AS_ANIMATION_KEYFRAME_UI(AnimationKeyframe, "Animation")
 
 // Audio Reactivity
 AS_AUDIO_UI(DigitalBrain_AudioSource, "Audio Source", AS_AUDIO_BASS, "Audio Reactivity")
 AS_AUDIO_MULT_UI(DigitalBrain_AudioMultiplier, "Audio Multiplier", AUDIO_MULTIPLIER_DEFAULT, AUDIO_MULTIPLIER_MAX, "Audio Reactivity")
-uniform int DigitalBrain_AudioTarget < ui_type = "combo"; ui_label = "Audio Target"; ui_items = "None\0Pattern Intensity\0Camera Movement\0Synapse Speed\0Camera Speed\0"; ui_category = "Audio Reactivity"; > = 0;
-
-AS_ANIMATION_SPEED_UI(AnimationSpeed, "Animation")
-AS_ANIMATION_KEYFRAME_UI(AnimationKeyframe, "Animation")
+AS_AUDIO_TARGET_UI(DigitalBrain_AudioTarget, "None\0Pattern Intensity\0Camera Movement\0Synapse Speed\0Camera Speed\0", 0)
 
 // Position & Stage Controls
 AS_STAGEDEPTH_UI(StageDepth)
@@ -155,14 +157,6 @@ AS_DEBUG_UI("Off\0Pattern\0UV Coords\0Vignette\0Audio Reactivity\0")
 // ============================================================================
 // HELPER FUNCTIONS
 // ============================================================================
-
-// Rotate position around axis
-float2 rotate(float2 p, float a)
-{
-    float s = sin(a);
-    float c = cos(a);
-    return float2(p.x * c - p.y * s, p.x * s + p.y * c);
-}
 
 // 1D random numbers
 float rand_1d(float n)
@@ -221,29 +215,14 @@ float voronoi(float2 x)
 // ============================================================================
 float4 PS_DigitalBrain(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : SV_Target
 {
-    float4 originalColor = tex2D(ReShade::BackBuffer, texcoord);
-    float depth = ReShade::GetLinearizedDepth(texcoord);
-      // Skip processing if pixel is beyond stage depth
-    if (depth < StageDepth - AS_DEPTH_EPSILON)
-        return originalColor;
+    // Depth-aware early return
+    AS_DEPTH_EARLY_RETURN(texcoord, StageDepth)
     
-    // Apply position offset and scaling
-    // We'll do this directly while maintaining aspect ratio
-    float2 positionAdjustedUV = texcoord;
-    
-    // Calculate normalized offset (centered around 0.5)
-    float2 centeredUV = texcoord - 0.5;
-      // Apply proper aspect ratio compensation for positioning
-    if (ReShade::AspectRatio > 1.0)
-        centeredUV.x *= ReShade::AspectRatio;
-    else
-        centeredUV.y *= ReShade::AspectRatio;
-        
-    // Apply scale
+    // Apply position offset and scaling using shared aspect-corrected centering
+    float2 centeredUV = AS_centeredUVWithAspect(texcoord, ReShade::AspectRatio);
     centeredUV *= Scale;
-      // Apply offset and recenter
     centeredUV += PositionOffset * 0.5; // Convert from [-1,1] to [-0.5,0.5] range
-    positionAdjustedUV = centeredUV + 0.5;
+    float2 positionAdjustedUV = centeredUV + 0.5;
     
     // Calculate animation time with keyframe handling
     float currentTime;
@@ -252,12 +231,12 @@ float4 PS_DigitalBrain(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) :
         currentTime = AnimationKeyframe;
     } else {
         // Otherwise use animated time plus keyframe offset
-        currentTime = (AS_getTime() * AnimationSpeed) + AnimationKeyframe;
+        currentTime = (AS_timeSeconds() * AnimationSpeed) + AnimationKeyframe;
     }    // Enhanced flicker control with separate frequency and intensity
     float flicker = noise1(currentTime * FlickerFrequency) * FlickerIntensity + (1.0 - FlickerIntensity / 2.0);
 
     // Apply audio reactivity if enabled
-    float audioReactivity = AS_applyAudioReactivity(1.0, DigitalBrain_AudioSource, DigitalBrain_AudioMultiplier, true);
+    float audioReactivity = AS_audioModulate(1.0, DigitalBrain_AudioSource, DigitalBrain_AudioMultiplier, true, 0);
     
     // Pattern intensity and camera speeds will be modified by audio if selected
     float patternIntensity = 1.0;
@@ -291,7 +270,7 @@ float4 PS_DigitalBrain(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) :
       // Apply both manual and animated rotation in non-stretched space for proper circular movement
     float rotationAmount = sin(currentTime * cameraSpeedValue * 0.3f) * CameraRotationAmount;
     float totalRotation = rotationAmount + AS_getRotationRadians(SnapRotation, ManualRotation);
-    uv = rotate(uv, totalRotation);
+    uv = AS_rotate2D(uv, totalRotation);
     
     // NOW apply aspect ratio correction to the rotated coordinates
     uv.x *= ReShade::AspectRatio;    // Apply pattern stretching control to compensate for compression
@@ -338,12 +317,8 @@ float4 PS_DigitalBrain(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) :
         f *= FrequencyMultiplier;
         a *= AmplitudeDecay;
     }// Apply advanced vignette with user controls
-    // Adjust for aspect ratio to ensure circular vignette regardless of screen dimensions
-    float2 vignetteUV = suv;
-    if (ReShade::AspectRatio > 1.0)
-        vignetteUV.x /= ReShade::AspectRatio; // Correct for wider screens
-    else
-        vignetteUV.y *= ReShade::AspectRatio; // Correct for taller screens
+    // Use shared helper for aspect-correct centered UVs for circular vignette behavior
+    float2 vignetteUV = AS_centeredUVWithAspect(texcoord, ReShade::AspectRatio);
         
     float vignetteX = abs(vignetteUV.x);
     float vignetteY = abs(vignetteUV.y);
@@ -370,27 +345,23 @@ float4 PS_DigitalBrain(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) :
     if (DebugMode == 1)
     {
         // Show the raw pattern without color processing
-        return float4(v.xxx, originalColor.a);
+        return float4(v.xxx, _as_originalColor.a);
     }
     else if (DebugMode == 2)
     {
         // Show the UV coordinates (helps debug positioning/rotation)
-        return float4(frac(uv.x), frac(uv.y), 0.0, originalColor.a);
+        return float4(frac(uv.x), frac(uv.y), 0.0, _as_originalColor.a);
     }
     else if (DebugMode == 3)
     {
         // Show the vignette mask
-        float2 vignetteUV = suv;
-        if (ReShade::AspectRatio > 1.0)
-            vignetteUV.x /= ReShade::AspectRatio;
-        else
-            vignetteUV.y *= ReShade::AspectRatio;
+        float2 vignetteUV = AS_centeredUVWithAspect(texcoord, ReShade::AspectRatio);
         
         float vignetteX = abs(vignetteUV.x);
         float vignetteY = abs(vignetteUV.y);
         float vignetteFactor = pow(pow(vignetteX, VignetteRoundness) + pow(vignetteY, VignetteRoundness), 1.0/VignetteRoundness);
-        float vignetteMask = exp(-VignetteStrength * vignetteFactor) * VignetteRadius;
-        return float4(vignetteMask.xxx, originalColor.a);
+    float vignetteMask = exp(-VignetteStrength * vignetteFactor) * VignetteRadius;
+        return float4(vignetteMask.xxx, _as_originalColor.a);
     }
     else if (DebugMode == 4) 
     {
@@ -403,8 +374,7 @@ float4 PS_DigitalBrain(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) :
     }
     
     // Apply the standard blend function for final output
-    float3 blendedColor = AS_applyBlend(col, originalColor.rgb, BlendMode);
-    return float4(lerp(originalColor.rgb, blendedColor, BlendStrength), originalColor.a);
+    return float4(AS_composite(col, _as_originalColor.rgb, BlendMode, BlendStrength), _as_originalColor.a);
 }
 
 // ============================================================================

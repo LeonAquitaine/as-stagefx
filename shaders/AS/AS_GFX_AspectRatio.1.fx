@@ -50,6 +50,8 @@
 #include "ReShade.fxh"
 #include "AS_Utils.1.fxh"
 
+uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " "; ui_text = "\nAdjustable frame overlay with composition guides (rule of thirds, golden ratio).\nEssential for composing well-framed screenshots.\n\nAS StageFX | Aspect Ratio Framing Tool by Leon Aquitaine\n"; > = 0;
+
 // ============================================================================
 // CONSTANTS
 // ============================================================================
@@ -76,124 +78,21 @@
 
 // Aspect Ratio Selection
 // ============================= Aspect Ratio Configuration =============================
-uniform int AspectRatioPreset < ui_type = "combo"; ui_label = "Aspect Ratio Preset"; ui_tooltip = "Select from common aspect ratios or choose 'Custom' to define your own"; ui_category = "Aspect Ratio"; ui_items = "Custom\0"
-                                "Eorzea Collection\0"
-                                "  [EC] Standard Image (5:3 Landscape)\0"
-                                "  [EC] Standard Image (3:5 Portrait)\0"
-                                "  [EC] Layout 2 - Main Image (104:57)\0"
-                                "  [EC] Layout 3 - Grid Image (103:56)\0"
-                                "  [EC] Layout 4 - Wide Image (123:50)\0"
-                                "  [EC] Layout 5 - Thumbnail (85:70)\0"
-                                "  [EC] Layout 6 - Center Image (115:95)\0"                                
-                                "BlueSky\0"
-                                "  [BS] Post Image (Square 1:1)\0"
-                                "  [BS] Post Image (1.91:1 Landscape)\0"
-                                "  [BS] Post Image (5:4 Landscape)\0"
-                                "  [BS] Post Image (4:5 Portrait)\0"
-                                "  [BS] Profile Picture (1:1)\0"
-                                "  [BS] Banner Image (3:1)\0"                                
-                                "Instagram\0"
-                                "  [IG] Feed Post (Square 1:1)\0"
-                                "  [IG] Feed Post (5:4 Landscape)\0"
-                                "  [IG] Feed Post (4:5 Portrait)\0"
-                                "  [IG] Feed Post (1.91:1 Landscape)\0"
-                                "  [IG] Story / Reels (16:9 Landscape)\0"
-                                "  [IG] Story / Reels (9:16 Portrait)\0"                                
-                                "Facebook\0"
-                                "  [FB] Feed Post (1.91:1 Landscape)\0"
-                                "  [FB] Feed Post (5:4 Landscape)\0"
-                                "  [FB] Feed Post (4:5 Portrait)\0"
-                                "  [FB] Story (16:9 Landscape)\0"
-                                "  [FB] Story (9:16 Portrait)\0"
-                                "  [FB] Cover Photo (2.63:1 Landscape)\0"                                
-                                "Twitter (X)\0"
-                                "  [TW] Single Image (9:16 Portrait)\0"
-                                "  [TW] Single Image (16:9 Landscape)\0"
-                                "  [TW] Multi-Image 2 Images (7:8 Landscape)\0"
-                                "  [TW] Multi-Image 2 Images (8:7 Portrait)\0"
-                                "  [TW] Multi-Image 4 Images (2:1 Landscape)\0"                                
-                                "LinkedIn\0"
-                                "  [LI] Feed Post (1.91:1 Landscape)\0"
-                                "  [LI] Story (16:9 Landscape)\0"
-                                "  [LI] Story (9:16 Portrait)\0"                                
-                                "Pinterest\0"
-                                "  [PI] Pin (3:2 Landscape)\0"
-                                "  [PI] Pin (2:3 Portrait)\0"
-                                "  [PI] Max Length Pin (2.1:1 Landscape)\0"
-                                "  [PI] Max Length Pin (1:2.1 Portrait)\0"                                
-                                "TikTok / Snapchat\0"
-                                "  [TS] Video / Story (16:9 Landscape)\0"
-                                "  [TS] Video / Story (9:16 Portrait)\0"
-                                "YouTube\0"
-                                "  [YT] Thumbnail (9:16 Portrait)\0"
-                                "  [YT] Shorts (16:9 Landscape)\0"
-                                "  [YT] Community Post (1:1)\0"
-                                "Streaming Platforms\0"
-                                "  [Twitch] Stream / Webcam (16:9 Landscape)\0" // Tag corrected
-                                "  [Twitch] Profile Banner (5:2 Landscape)\0"  // Tag corrected
-                                "  [Twitch] Offline Banner (16:9 Landscape)\0" // Tag corrected
-                                "Community / Forum\0"
-                                "  [Discord] Profile / Server Icon (1:1 Square)\0" // Tag corrected
-                                "  [Discord] Server Banner (16:9 Landscape)\0"     // Tag corrected
-                                "  [Reddit] Feed Post (4:5 Portrait)\0"            // Tag corrected
-                                "  [Reddit] Feed Post (16:9 Landscape)\0"          // Tag corrected
-                                "  [Tumblr] Photo Post (2:3 Portrait)\0"           // Tag corrected
-                                "  [Tumblr] Header (3:1 Landscape)\0"              // Tag corrected
-                                "Photography\0"
-                                "  [PH] 3:2 (Classic)\0"
-                                "  [PH] 4:3 (Standard)\0"
-                                "  [PH] 5:4 (Medium Format)\0"
-                                "  [PH] 1:1 (Square)\0"
-                                "Cinema\0"
-                                "  [CM] 16:9 (HD/4K/TV)\0"
-                                "  [CM] 1.85:1 (Academy Flat)\0"
-                                "  [CM] 2.35:1 (CinemaScope)\0"
-                                "  [CM] 2.39:1 (Anamorphic)\0"
-                                "  [CM] 21:9 (Ultrawide)\0"
-                                "  [CM] 4:3 (Classic TV)\0"
-                                "  [CM] 1:1 (Square)\0"
-                                "  [CM] 9:16 (Vertical)\0";
-> = 3;
+uniform int AspectRatioPreset < ui_type = "combo"; ui_label = "Aspect Ratio Preset"; ui_tooltip = "Select from common aspect ratios or choose 'Custom' to define your own"; ui_category = "Aspect Ratio"; ui_items = "Custom\0Eorzea Collection\0  [EC] Standard Image (5:3 Landscape)\0  [EC] Standard Image (3:5 Portrait)\0  [EC] Layout 2 - Main Image (104:57)\0  [EC] Layout 3 - Grid Image (103:56)\0  [EC] Layout 4 - Wide Image (123:50)\0  [EC] Layout 5 - Thumbnail (85:70)\0  [EC] Layout 6 - Center Image (115:95)\0BlueSky\0  [BS] Post Image (Square 1:1)\0  [BS] Post Image (1.91:1 Landscape)\0  [BS] Post Image (5:4 Landscape)\0  [BS] Post Image (4:5 Portrait)\0  [BS] Profile Picture (1:1)\0  [BS] Banner Image (3:1)\0Instagram\0  [IG] Feed Post (Square 1:1)\0  [IG] Feed Post (5:4 Landscape)\0  [IG] Feed Post (4:5 Portrait)\0  [IG] Feed Post (1.91:1 Landscape)\0  [IG] Story / Reels (16:9 Landscape)\0  [IG] Story / Reels (9:16 Portrait)\0Facebook\0  [FB] Feed Post (1.91:1 Landscape)\0  [FB] Feed Post (5:4 Landscape)\0  [FB] Feed Post (4:5 Portrait)\0  [FB] Story (16:9 Landscape)\0  [FB] Story (9:16 Portrait)\0  [FB] Cover Photo (2.63:1 Landscape)\0Twitter (X)\0  [TW] Single Image (9:16 Portrait)\0  [TW] Single Image (16:9 Landscape)\0  [TW] Multi-Image 2 Images (7:8 Landscape)\0  [TW] Multi-Image 2 Images (8:7 Portrait)\0  [TW] Multi-Image 4 Images (2:1 Landscape)\0LinkedIn\0  [LI] Feed Post (1.91:1 Landscape)\0  [LI] Story (16:9 Landscape)\0  [LI] Story (9:16 Portrait)\0Pinterest\0  [PI] Pin (3:2 Landscape)\0  [PI] Pin (2:3 Portrait)\0  [PI] Max Length Pin (2.1:1 Landscape)\0  [PI] Max Length Pin (1:2.1 Portrait)\0TikTok / Snapchat\0  [TS] Video / Story (16:9 Landscape)\0  [TS] Video / Story (9:16 Portrait)\0YouTube\0  [YT] Thumbnail (9:16 Portrait)\0  [YT] Shorts (16:9 Landscape)\0  [YT] Community Post (1:1)\0Streaming Platforms\0  [Twitch] Stream / Webcam (16:9 Landscape)\0  [Twitch] Profile Banner (5:2 Landscape)\0  [Twitch] Offline Banner (16:9 Landscape)\0Community / Forum\0  [Discord] Profile / Server Icon (1:1 Square)\0  [Discord] Server Banner (16:9 Landscape)\0  [Reddit] Feed Post (4:5 Portrait)\0  [Reddit] Feed Post (16:9 Landscape)\0  [Tumblr] Photo Post (2:3 Portrait)\0  [Tumblr] Header (3:1 Landscape)\0Photography\0  [PH] 3:2 (Classic)\0  [PH] 4:3 (Standard)\0  [PH] 5:4 (Medium Format)\0  [PH] 1:1 (Square)\0Cinema\0  [CM] 16:9 (HD/4K/TV)\0  [CM] 1.85:1 (Academy Flat)\0  [CM] 2.35:1 (CinemaScope)\0  [CM] 2.39:1 (Anamorphic)\0  [CM] 21:9 (Ultrawide)\0  [CM] 4:3 (Classic TV)\0  [CM] 1:1 (Square)\0  [CM] 9:16 (Vertical)\0"; > = 3;
 
 uniform float2 CustomAspectRatio < ui_type = "drag"; ui_label = "Custom Aspect Ratio"; ui_tooltip = "Set your own aspect ratio (X:Y)"; ui_category = "Aspect Ratio"; ui_min = AS_RANGE_SCALE_MIN; ui_max = AS_RANGE_SCALE_MAX * 2.0; ui_step = 0.01; > = float2(16.0, 9.0);
 
 // ============================= Appearance Controls =============================
-uniform float4 ClippedAreaColor < ui_type = "color"; ui_label = "Masked Area Color"; ui_tooltip = "Color for areas outside the selected aspect ratio"; ui_category = "Appearance"; > = float4(AS_RANGE_ZERO_ONE_MIN, AS_RANGE_ZERO_ONE_MIN, AS_RANGE_ZERO_ONE_MIN, AS_OP_MAX);
+uniform float4 ClippedAreaColor < ui_type = "color"; ui_label = "Masked Area Color"; ui_tooltip = "Color for areas outside the selected aspect ratio"; ui_category = AS_CAT_APPEARANCE; > = float4(AS_RANGE_ZERO_ONE_MIN, AS_RANGE_ZERO_ONE_MIN, AS_RANGE_ZERO_ONE_MIN, AS_OP_MAX);
 
-uniform float4 GuideColor < ui_type = "color"; ui_label = "Guide Color"; ui_tooltip = "Color for the guide lines"; ui_category = "Appearance"; > = float4(AS_RANGE_ZERO_ONE_MAX, AS_RANGE_ZERO_ONE_MAX, AS_RANGE_ZERO_ONE_MAX, AS_HALF);
+uniform float4 GuideColor < ui_type = "color"; ui_label = "Guide Color"; ui_tooltip = "Color for the guide lines"; ui_category = AS_CAT_APPEARANCE; > = float4(AS_RANGE_ZERO_ONE_MAX, AS_RANGE_ZERO_ONE_MAX, AS_RANGE_ZERO_ONE_MAX, AS_HALF);
 
-uniform float GuideIntensity < ui_type = "drag"; ui_label = "Guide Intensity"; ui_tooltip = "Adjusts the opacity of composition guides"; ui_category = "Appearance"; ui_min = AS_AR_GUIDE_INTENSITY_MIN; ui_max = AS_OP_MAX; ui_step = 0.05; > = AS_OP_DEFAULT;
+uniform float GuideIntensity < ui_type = "drag"; ui_label = "Guide Intensity"; ui_tooltip = "Adjusts the opacity of composition guides"; ui_category = AS_CAT_APPEARANCE; ui_min = AS_AR_GUIDE_INTENSITY_MIN; ui_max = AS_OP_MAX; ui_step = 0.05; > = AS_OP_DEFAULT;
 
-uniform float GridWidth < ui_type = "drag"; ui_label = "Grid Width"; ui_tooltip = "Width of grid lines and border (in pixels)"; ui_category = "Appearance"; ui_min = AS_RANGE_SCALE_DEFAULT; ui_max = AS_AR_GRID_WIDTH_MAX; ui_step = 1.0; > = AS_RANGE_SCALE_DEFAULT;
+uniform float GridWidth < ui_type = "drag"; ui_label = "Grid Width"; ui_tooltip = "Width of grid lines and border (in pixels)"; ui_category = AS_CAT_APPEARANCE; ui_min = AS_RANGE_SCALE_DEFAULT; ui_max = AS_AR_GRID_WIDTH_MAX; ui_step = 1.0; > = AS_RANGE_SCALE_DEFAULT;
 
 // ============================= Composition Guides =============================
-uniform int GuideType < ui_type = "combo"; ui_label = "Composition Guide"; ui_tooltip = "Optional grid overlay to help with composition"; ui_category = "Composition Guides"; ui_items = "None\0"
-                               "Basic Guides\0"
-                               "  Rule of Thirds\0"
-                               "  Golden Ratio\0"
-                               "  Center Lines\0"
-                               "  Phi Grid (Golden Grid)\0"
-                               "Dynamic Guides\0"
-                               "  Diagonal Method - Both\0"
-                               "  Diagonal Method - Baroque\0"
-                               "  Diagonal Method - Sinister\0"
-                               "  Triangle - Up\0"
-                               "  Triangle - Down\0"
-                               "  Triangle - Diagonal\0"
-                               "  Golden Spiral - Lower Right\0"
-                               "  Golden Spiral - Upper Right\0"
-                               "  Golden Spiral - Upper Left\0"
-                               "  Golden Spiral - Lower Left\0"
-                               "  Harmonic Armature - Basic\0"
-                               "  Harmonic Armature - Reciprocal\0"
-                               "  Harmonic Armature - Complex\0"
-                               "Practical Guides\0"
-                               "  Grid 3×3\0"
-                               "  Grid 4×4\0"
-                               "  Grid 5×5\0"
-                               "  Grid 6×6\0"
-                               "  Safe Zones\0";
-> = 0;
+uniform int GuideType < ui_type = "combo"; ui_label = "Composition Guide"; ui_tooltip = "Optional grid overlay to help with composition"; ui_category = "Composition Guides"; ui_items = "None\0Basic Guides\0  Rule of Thirds\0  Golden Ratio\0  Center Lines\0  Phi Grid (Golden Grid)\0Dynamic Guides\0  Diagonal Method - Both\0  Diagonal Method - Baroque\0  Diagonal Method - Sinister\0  Triangle - Up\0  Triangle - Down\0  Triangle - Diagonal\0  Golden Spiral - Lower Right\0  Golden Spiral - Upper Right\0  Golden Spiral - Upper Left\0  Golden Spiral - Lower Left\0  Harmonic Armature - Basic\0  Harmonic Armature - Reciprocal\0  Harmonic Armature - Complex\0Practical Guides\0  Grid 3x3\0  Grid 4x4\0  Grid 5x5\0  Grid 6x6\0  Safe Zones\0"; > = 0;
 
 // ============================= Advanced Guide Options =============================
 uniform bool PatternAdvanced < ui_label = "Advanced Pattern Controls"; ui_tooltip = "Enable additional pattern customization"; ui_category = "Advanced Guide Options"; > = false;
@@ -648,7 +547,7 @@ float3 DrawGuides(float2 texcoord, float3 originalColor, float3 guideColor, floa
                 // Apply rotation if enabled
                 float2 rotatedCoord = frameCoord;
                 if (PatternAdvanced && PatternRotation != 0.0) {
-                    rotatedCoord = RotatePoint(frameCoord, float2(0.5, 0.5), PatternRotation * AS_PI / 180.0);
+                    rotatedCoord = RotatePoint(frameCoord, float2(0.5, 0.5), AS_radians(PatternRotation));
                 }
                 
                 if (actualSubType == 0 || actualSubType == 1) {

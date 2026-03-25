@@ -70,10 +70,10 @@ uniform float3 BorderColor < ui_type = "color"; ui_label = "Border Color"; ui_to
 // ============================================================================
 // AUDIO REACTIVITY
 // ============================================================================
-AS_AUDIO_UI(Grid_AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
-AS_AUDIO_MULT_UI(Grid_AudioMultiplier, "Intensity", 0.1, 4.0, "Audio Reactivity")
+AS_AUDIO_UI(Grid_AudioSource, "Audio Source", AS_AUDIO_BEAT, AS_CAT_AUDIO)
+AS_AUDIO_MULT_UI(Grid_AudioMultiplier, "Intensity", 0.1, 4.0, AS_CAT_AUDIO)
 
-uniform int AudioTarget < ui_type = "combo"; ui_label = "Audio Target Parameter"; ui_tooltip = "Select which parameter will be affected by audio reactivity"; ui_items = "None\0Cell Size\0Border Thickness\0Chamfer Size\0Border + Chamfer\0"; ui_category = "Audio Reactivity"; > = 1;
+AS_AUDIO_TARGET_UI(AudioTarget, "None\0Cell Size\0Border Thickness\0Chamfer Size\0Border + Chamfer\0", 1)
 
 // ============================================================================
 // STAGE DISTANCE
@@ -169,9 +169,9 @@ namespace AS_TiltedGrid {
              // Distance from cell edges [0, 0.5]
             float2 distToEdge = min(cellFrac, 1.0 - cellFrac);
             // Check distance to horizontal edges
-            float borderX = smoothstep(halfBorderWidth + aa, halfBorderWidth - aa, distToEdge.x);
+            float borderX = AS_smoothEdge(distToEdge.x, halfBorderWidth, aa);
             // Check distance to vertical edges
-            float borderY = smoothstep(halfBorderWidth + aa, halfBorderWidth - aa, distToEdge.y);
+            float borderY = AS_smoothEdge(distToEdge.y, halfBorderWidth, aa);
             // Combine - pixel is on border if close to EITHER horizontal OR vertical edge
             squareBorderMask = max(borderX, borderY);
 
@@ -214,11 +214,8 @@ namespace AS_TiltedGrid {
 // ============================================================================
 float4 PS_TiltedGrid(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target
 {
-    // --- Initial Setup & Depth Test ---
-    float4 orig = tex2D(ReShade::BackBuffer, texcoord);
-    float depth = ReShade::GetLinearizedDepth(texcoord);
-    if (depth < EffectDepth - 0.0005)
-        return orig;
+    // Depth-aware early return
+    AS_DEPTH_EARLY_RETURN(texcoord, EffectDepth)
 
     // --- Constants & Inputs ---
     float aspectRatio = ReShade::AspectRatio;
@@ -230,7 +227,7 @@ float4 PS_TiltedGrid(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_
     float chamferSizeFinal = ChamferSize;
 
     if (AudioTarget > 0) {
-        float audioValue = AS_applyAudioReactivity(1.0, Grid_AudioSource, Grid_AudioMultiplier, true);
+        float audioValue = AS_audioModulate(1.0, Grid_AudioSource, Grid_AudioMultiplier, true, 0);
         
         if (AudioTarget == 1) { // Cell Size
             gridSizeFinal = GridSize * audioValue;
@@ -303,8 +300,7 @@ float4 PS_TiltedGrid(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_
     }
 
     // --- Final Blending ---
-    float3 blendedColor = AS_applyBlend(finalColor, orig.rgb, BlendMode);
-    return float4(lerp(orig.rgb, blendedColor, BlendAmount), orig.a);
+    return AS_compositeRGBA(finalColor, _as_originalColor, BlendMode, BlendAmount);
 }
 
 // ============================================================================

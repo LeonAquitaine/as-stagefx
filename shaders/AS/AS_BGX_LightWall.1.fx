@@ -38,6 +38,8 @@
 #include "AS_Palette.1.fxh"
 #include "AS_Noise.1.fxh"
 
+uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " "; ui_text = "\nGrid of illuminated panels with animated patterns and VU meter modes.\nGreat for concert stages and DJ booths.\n\nAS StageFX | Light Wall Grid Effect by Leon Aquitaine\n"; > = 0;
+
 // --- Tunable Constants ---
 static const float MIN_MARGIN = 0.10; // Minimum margin as a fraction of cell size (10%)
 static const float DEFAULT_BLOB_RADIUS_FACTOR = 0.8;
@@ -130,10 +132,10 @@ static const float BLENDAMOUNT_DEFAULT = 1.0;
 
 // --- Controls ---
 // --- Light Boxes ---
-uniform float GridSpacing < ui_type = "slider"; ui_label = "Size"; ui_min = GRIDSPACING_MIN; ui_max = GRIDSPACING_MAX; ui_category = "Light Boxes"; > = GRIDSPACING_DEFAULT;
-uniform float GridGlow < ui_type = "slider"; ui_label = "Glow Diffusion"; ui_min = GRIDGLOW_MIN; ui_max = GRIDGLOW_MAX; ui_category = "Light Boxes"; > = GRIDGLOW_DEFAULT;
-uniform float GridStrength < ui_type = "slider"; ui_label = "Light Intensity"; ui_min = GRIDSTRENGTH_MIN; ui_max = GRIDSTRENGTH_MAX; ui_category = "Light Boxes"; > = GRIDSTRENGTH_DEFAULT;
-uniform float GridLineThickness < ui_type = "slider"; ui_label = "Divider Size"; ui_min = GRIDLINETHICKNESS_MIN; ui_max = GRIDLINETHICKNESS_MAX; ui_category = "Light Boxes"; > = GRIDLINETHICKNESS_DEFAULT;
+uniform float GridSpacing < ui_type = "slider"; ui_label = "Size"; ui_tooltip = "Size of each light panel. Smaller values create more panels across the screen."; ui_min = GRIDSPACING_MIN; ui_max = GRIDSPACING_MAX; ui_category = "Light Boxes"; > = GRIDSPACING_DEFAULT;
+uniform float GridGlow < ui_type = "slider"; ui_label = "Glow Diffusion"; ui_tooltip = "How far each panel's glow spreads outward. Higher values create a softer, more diffused light."; ui_min = GRIDGLOW_MIN; ui_max = GRIDGLOW_MAX; ui_category = "Light Boxes"; > = GRIDGLOW_DEFAULT;
+uniform float GridStrength < ui_type = "slider"; ui_label = "Light Intensity"; ui_tooltip = "Overall brightness of the light panels. Higher values produce stronger, more vivid panels."; ui_min = GRIDSTRENGTH_MIN; ui_max = GRIDSTRENGTH_MAX; ui_category = "Light Boxes"; > = GRIDSTRENGTH_DEFAULT;
+uniform float GridLineThickness < ui_type = "slider"; ui_label = "Divider Size"; ui_tooltip = "Width of the dark gaps between light panels. Larger values create wider borders separating each box."; ui_min = GRIDLINETHICKNESS_MIN; ui_max = GRIDLINETHICKNESS_MAX; ui_category = "Light Boxes"; > = GRIDLINETHICKNESS_DEFAULT;
 
 // --- Vertical Grid Shift ---
 uniform float GridShiftY < ui_type = "slider"; ui_label = "Elevation"; ui_tooltip = "Adjust the vertical position of the light boxes (-8 to +8 boxes)."; ui_min = GRIDSHIFTY_MIN; ui_max = GRIDSHIFTY_MAX; ui_step = 0.01; ui_category = "Light Boxes"; > = GRIDSHIFTY_DEFAULT;
@@ -143,51 +145,51 @@ uniform float TiltX < ui_type = "slider"; ui_label = "Pitch"; ui_tooltip = "Tilt
 uniform float TiltY < ui_type = "slider"; ui_label = "Roll"; ui_tooltip = "Tilt the light boxes left or right."; ui_min = TILTY_MIN; ui_max = TILTY_MAX; ui_step = 0.1; ui_category = "Light Boxes"; > = TILTY_DEFAULT;
 
 // --- Pattern Selection ---
-uniform int PatternPreset < ui_type = "combo"; ui_label = "Pattern"; ui_items = "Full Stage\0Heart\0Empty Heart\0Diamond\0Checker\0Stripes\0Circle\0X-Cross\0Pac-Man\0Bunny\0Star\0Smile\0Space Invader\0Beat Meter\0"; ui_category = "Light Boxes"; > = 2;
-
-// --- Parallax Scroll ---
-uniform float ParallaxScroll < ui_type = "slider"; ui_label = "Runway Scroll"; ui_tooltip = "Animates the pattern horizontally. Negative = left, positive = right. Higher magnitude = faster."; ui_min = PARALLAXSCROLL_MIN; ui_max = PARALLAXSCROLL_MAX; ui_step = 1; ui_category = "Performance"; > = PARALLAXSCROLL_DEFAULT;
-
-// --- Sway ---
-uniform float SwayInclination < ui_type = "slider"; ui_label = "Crowd Angle"; ui_min = SWAYINCLINATION_MIN; ui_max = SWAYINCLINATION_MAX; ui_category = "Performance"; > = SWAYINCLINATION_DEFAULT;
-uniform float SwayAngle < ui_type = "slider"; ui_label = "Intensity"; ui_min = SWAYANGLE_MIN; ui_max = SWAYANGLE_MAX; ui_category = "Performance"; > = SWAYANGLE_DEFAULT;
-uniform float SwaySpeed < ui_type = "slider"; ui_label = "Tempo"; ui_min = SWAYSPEED_MIN; ui_max = SWAYSPEED_MAX; ui_category = "Performance"; > = SWAYSPEED_DEFAULT;
+uniform int PatternPreset < ui_type = "combo"; ui_label = "Pattern"; ui_tooltip = "Shape formed by the lit panels. Beat Meter responds to audio input for a dynamic equalizer look."; ui_items = "Full Stage\0Heart\0Empty Heart\0Diamond\0Checker\0Stripes\0Circle\0X-Cross\0Pac-Man\0Bunny\0Star\0Smile\0Space Invader\0Beat Meter\0"; ui_category = "Light Boxes"; > = 2;
 
 // --- Hotspots ---
-uniform float2 HotspotPos < ui_type = "drag"; ui_label = "Position"; ui_min = HOTSPOTPOS_MIN; ui_max = HOTSPOTPOS_MAX; ui_category = "Spotlights"; > = float2(HOTSPOTPOS_DEFAULT_X, HOTSPOTPOS_DEFAULT_Y);
+uniform float2 HotspotPos < ui_type = "drag"; ui_label = "Position"; ui_tooltip = "Position of the bright spotlight center within each light panel."; ui_min = HOTSPOTPOS_MIN; ui_max = HOTSPOTPOS_MAX; ui_category = "Spotlights"; > = float2(HOTSPOTPOS_DEFAULT_X, HOTSPOTPOS_DEFAULT_Y);
 uniform float2 BeamLength < ui_type = "drag"; ui_label = "Beam Length"; ui_tooltip = "Controls the length of light beams (X = Horizontal, Y = Vertical)"; ui_min = BEAMLENGTH_MIN; ui_max = BEAMLENGTH_MAX; ui_category = "Spotlights"; > = float2(BEAMLENGTH_DEFAULT_X, BEAMLENGTH_DEFAULT_Y);
 // Specular
-uniform float SpecularSize < ui_type = "slider"; ui_label = "Burst Size"; ui_min = SPECULARSIZE_MIN; ui_max = SPECULARSIZE_MAX; ui_category = "Spotlights"; > = SPECULARSIZE_DEFAULT;
-uniform float SpecularBlur < ui_type = "slider"; ui_label = "Burst Softness"; ui_min = SPECULARBLUR_MIN; ui_max = SPECULARBLUR_MAX; ui_category = "Spotlights"; > = SPECULARBLUR_DEFAULT;
-uniform float SpecularBrightness < ui_type = "slider"; ui_label = "Burst Intensity"; ui_min = SPECULARBRIGHTNESS_MIN; ui_max = SPECULARBRIGHTNESS_MAX; ui_category = "Spotlights"; > = SPECULARBRIGHTNESS_DEFAULT;
-uniform float SpecularStrength < ui_type = "slider"; ui_label = "Burst Power"; ui_min = SPECULARSTRENGTH_MIN; ui_max = SPECULARSTRENGTH_MAX; ui_category = "Spotlights"; > = SPECULARSTRENGTH_DEFAULT;
+uniform float SpecularSize < ui_type = "slider"; ui_label = "Burst Size"; ui_tooltip = "Radius of the bright specular highlight at the hotspot center."; ui_min = SPECULARSIZE_MIN; ui_max = SPECULARSIZE_MAX; ui_category = "Spotlights"; > = SPECULARSIZE_DEFAULT;
+uniform float SpecularBlur < ui_type = "slider"; ui_label = "Burst Softness"; ui_tooltip = "Softness of the specular highlight falloff. Lower values create a sharper, more defined burst."; ui_min = SPECULARBLUR_MIN; ui_max = SPECULARBLUR_MAX; ui_category = "Spotlights"; > = SPECULARBLUR_DEFAULT;
+uniform float SpecularBrightness < ui_type = "slider"; ui_label = "Burst Intensity"; ui_tooltip = "Peak brightness of the specular highlight. Higher values make the burst glow more intensely."; ui_min = SPECULARBRIGHTNESS_MIN; ui_max = SPECULARBRIGHTNESS_MAX; ui_category = "Spotlights"; > = SPECULARBRIGHTNESS_DEFAULT;
+uniform float SpecularStrength < ui_type = "slider"; ui_label = "Burst Power"; ui_tooltip = "Overall contribution of the specular burst to the final panel appearance."; ui_min = SPECULARSTRENGTH_MIN; ui_max = SPECULARSTRENGTH_MAX; ui_category = "Spotlights"; > = SPECULARSTRENGTH_DEFAULT;
 
 // --- Appearance ---
 uniform float VignetteRoundness < ui_type = "slider"; ui_label = "Shape"; ui_tooltip = "0 = square blocks, 1 = round blocks"; ui_min = VIGNETTEROUNDNESS_MIN; ui_max = VIGNETTEROUNDNESS_MAX; ui_category = "Stage Effects"; > = VIGNETTEROUNDNESS_DEFAULT;
 uniform float GlowShape < ui_type = "slider"; ui_label = "Glow Pattern"; ui_tooltip = "0 = circular glow, 1 = square glow"; ui_min = GLOWSHAPE_MIN; ui_max = GLOWSHAPE_MAX; ui_category = "Stage Effects"; > = GLOWSHAPE_DEFAULT;
-uniform float MarginGradientStrength < ui_type = "slider"; ui_label = "Edge Darkness"; ui_min = MARGINGRADIENTSTRENGTH_MIN; ui_max = MARGINGRADIENTSTRENGTH_MAX; ui_category = "Stage Effects"; > = MARGINGRADIENTSTRENGTH_DEFAULT;
+uniform float MarginGradientStrength < ui_type = "slider"; ui_label = "Edge Darkness"; ui_tooltip = "How dark the edges of each panel become. Higher values create a stronger vignette within each box."; ui_min = MARGINGRADIENTSTRENGTH_MIN; ui_max = MARGINGRADIENTSTRENGTH_MAX; ui_category = "Stage Effects"; > = MARGINGRADIENTSTRENGTH_DEFAULT;
 
 // --- Color ---
 // Use the AS_Utils palette selection UI macro for the LightWall shader
-AS_PALETTE_SELECTION_UI(PalettePreset, "Theme", AS_PALETTE_REDLINE, "Lighting")
-AS_DECLARE_CUSTOM_PALETTE(LightWall_, "Lighting")
+AS_PALETTE_SELECTION_UI(PalettePreset, "Theme", AS_PALETTE_REDLINE, AS_CAT_LIGHTING)
+AS_DECLARE_CUSTOM_PALETTE(LightWall_, AS_CAT_LIGHTING)
 
 // --- Color Visualization ---
-uniform int VisualizationMode < ui_type = "combo"; ui_label = "Color Mode"; ui_items = "Light Panel\0Wave\0VU Meter\0VU Wave\0"; ui_tooltip = "How colors are distributed across the light panels"; ui_category = "Lighting"; > = 0;
+uniform int VisualizationMode < ui_type = "combo"; ui_label = "Color Mode"; ui_items = "Light Panel\0Wave\0VU Meter\0VU Wave\0"; ui_tooltip = "How colors are distributed across the light panels"; ui_category = AS_CAT_LIGHTING; > = 0;
 
 // --- Listeningway Integration ---
-uniform int VUMeterSource < ui_type = "combo"; ui_label = "Source"; ui_items = "Volume\0Beat\0Bass\0Mid\0Treble\0"; ui_category = "Audio Reactivity"; > = 1;
-uniform float VUBarLogMultiplier < ui_type = "slider"; ui_label = "Frequency Boost"; ui_tooltip = "Boosts higher frequency bars logarithmically. 1.0 = no boost, higher = more boost."; ui_min = VUBARLOGMULTIPLIER_MIN; ui_max = VUBARLOGMULTIPLIER_MAX; ui_step = 0.01; ui_category = "Audio Reactivity"; > = VUBARLOGMULTIPLIER_DEFAULT;
+uniform int VUMeterSource < ui_type = "combo"; ui_label = "Source"; ui_tooltip = "Audio frequency band used for VU meter patterns and beam reactivity."; ui_items = "Volume\0Beat\0Bass\0Mid\0Treble\0"; ui_category = AS_CAT_AUDIO; > = 1;
+uniform float VUBarLogMultiplier < ui_type = "slider"; ui_label = "Frequency Boost"; ui_tooltip = "Boosts higher frequency bars logarithmically. 1.0 = no boost, higher = more boost."; ui_min = VUBARLOGMULTIPLIER_MIN; ui_max = VUBARLOGMULTIPLIER_MAX; ui_step = 0.01; ui_category = AS_CAT_AUDIO; > = VUBARLOGMULTIPLIER_DEFAULT;
 
 // --- Stage Depth ---
 AS_STAGEDEPTH_UI(StageDepth)
+
+// --- Parallax Scroll ---
+uniform float ParallaxScroll < ui_type = "slider"; ui_label = "Runway Scroll"; ui_tooltip = "Animates the pattern horizontally. Negative = left, positive = right. Higher magnitude = faster."; ui_min = PARALLAXSCROLL_MIN; ui_max = PARALLAXSCROLL_MAX; ui_step = 1; ui_category = AS_CAT_PERFORMANCE; > = PARALLAXSCROLL_DEFAULT;
+
+// --- Sway ---
+uniform float SwayInclination < ui_type = "slider"; ui_label = "Crowd Angle"; ui_tooltip = "Base tilt angle for the sway animation. Tilts the entire wall to one side."; ui_min = SWAYINCLINATION_MIN; ui_max = SWAYINCLINATION_MAX; ui_category = AS_CAT_PERFORMANCE; > = SWAYINCLINATION_DEFAULT;
+uniform float SwayAngle < ui_type = "slider"; ui_label = "Intensity"; ui_tooltip = "How far the wall sways back and forth. Zero disables the swaying motion."; ui_min = SWAYANGLE_MIN; ui_max = SWAYANGLE_MAX; ui_category = AS_CAT_PERFORMANCE; > = SWAYANGLE_DEFAULT;
+uniform float SwaySpeed < ui_type = "slider"; ui_label = "Tempo"; ui_tooltip = "Speed of the sway animation. Match to your music tempo for a concert feel."; ui_min = SWAYSPEED_MIN; ui_max = SWAYSPEED_MAX; ui_category = AS_CAT_PERFORMANCE; > = SWAYSPEED_DEFAULT;
 
 // --- Blend ---
 AS_BLENDMODE_UI(BlendMode)
 AS_BLENDAMOUNT_UI(BlendAmount)
 
 // --- Debug ---
-uniform int DebugMode < ui_type = "combo"; ui_label = "View"; ui_items = "Off\0Block Glow\0Light Bursts\0Block Outlines\0"; ui_category = "Debug"; > = 0;
+uniform int DebugMode < ui_type = "combo"; ui_label = "View"; ui_tooltip = "Shows individual effect components in isolation for fine-tuning."; ui_items = "Off\0Block Glow\0Light Bursts\0Block Outlines\0"; ui_category = AS_CAT_DEBUG; > = 0;
 
 // 8x8 patterns
 static const int PATTERN_SIZE = 8;
@@ -325,7 +327,7 @@ static const int PATTERN_ARROWLEFT[PATTERN_SIZE * PATTERN_SIZE] = {
 };
 
 int getPatternValue(int x, int y) {
-    float time = AS_getTime();
+    float time = AS_timeSeconds();
     int shift = (int)floor(ParallaxScroll * time * 0.2);
     int fineY = (int)round(GridShiftY);
     int px = ((x + shift) % PATTERN_SIZE + PATTERN_SIZE) % PATTERN_SIZE;
@@ -366,10 +368,7 @@ float3 getCustomPaletteColor(int idx) {
 }
 
 float3 LightWall_getPaletteColor(float t) {
-    if (PalettePreset == AS_PALETTE_CUSTOM) {
-        return AS_GET_INTERPOLATED_CUSTOM_COLOR(LightWall_, t);
-    }
-    return AS_getInterpolatedColor(PalettePreset, t);
+    return AS_GET_PALETTE_COLOR(LightWall_, PalettePreset, t);
 }
 
 float glowFalloff(float2 local, float shape) {
@@ -462,7 +461,7 @@ float cruxRayH(float2 local) {
 }
 
 float3 renderLavaLampGrid(float2 uv) {
-    float time = AS_getTime();
+    float time = AS_timeSeconds();
     // Remove full-effect parallax: do NOT offset uv by ParallaxScroll
     float2 uv_sway = swayRotate(uv, time);
     float2 grid_size = float2(GridSpacing * BUFFER_HEIGHT / BUFFER_WIDTH, GridSpacing);
@@ -547,14 +546,11 @@ float3 renderLavaLampGrid(float2 uv) {
 float4 PS_StageGrid(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target {
     float2 uv = texcoord;
     float3 fx = renderLavaLampGrid(uv);
-    float4 orig = tex2D(ReShade::BackBuffer, texcoord);
-    float sceneDepth = ReShade::GetLinearizedDepth(texcoord);
-    if (sceneDepth < StageDepth - 0.0005)
-        return orig;
+    // Depth-aware early return
+    AS_DEPTH_EARLY_RETURN(texcoord, StageDepth)
     fx = saturate(fx);
-    float3 blended = AS_applyBlend(fx, orig.rgb, BlendMode);
-    float3 result = lerp(orig.rgb, blended, BlendAmount);
-    return float4(result, orig.a);
+    float3 result = AS_composite(fx, _as_originalColor.rgb, BlendMode, BlendAmount);
+    return float4(result, _as_originalColor.a);
 }
 
 technique AS_LightWall < ui_label = "[AS] BGX: Light Wall"; ui_tooltip = "Soft glowing multicolor grid."; > {

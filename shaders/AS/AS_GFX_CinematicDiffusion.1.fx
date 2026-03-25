@@ -28,6 +28,8 @@
 #include "ReShade.fxh"
 #include "AS_Utils.1.fxh"
 
+uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " "; ui_text = "\nProfessional diffusion filter with 8 film filter presets (Pro-Mist, Satin, etc.).\nAdds soft cinematic glow to any scene.\n\nAS StageFX | Cinematic Diffusion Filter by Leon Aquitaine\n"; > = 0;
+
 // ============================================================================
 // Render Targets for Multi-Pass Bloom
 // ============================================================================
@@ -46,20 +48,18 @@ sampler CinematicDiffusion_SampBlur4 { Texture = CinematicDiffusion_TexBlur4; Ad
 // ============================================================================
 // UI: UNIFORMS
 // ============================================================================
-uniform int Preset < ui_type = "combo"; ui_label = "Filter Preset"; ui_items = "Custom\0Pro-Mist\0Black Pro-Mist\0Hollywood Black Magic\0Classic Soft\0Tiffen Satin\0Black Supermist\0Radiant Soft\0Pearlescent\0"; ui_category = "Preset"; > = 0;
-uniform float HighlightThreshold <
- ui_text = "The following controls are only active when Filter Preset is set to 'Custom'. Preset selection will override these values.";
- ui_type = "slider"; ui_min = 0.0; ui_max = 1.0; ui_label = "Highlight Threshold"; ui_tooltip = "Luminance level above which diffusion occurs."; ui_category = "Custom Settings"; > = 0.7;
+uniform int Preset < ui_type = "combo"; ui_label = "Filter Preset"; ui_tooltip = "Select a classic cinematic diffusion filter look, or choose Custom to manually adjust all parameters below."; ui_items = "Custom\0Pro-Mist\0Black Pro-Mist\0Hollywood Black Magic\0Classic Soft\0Tiffen Satin\0Black Supermist\0Radiant Soft\0Pearlescent\0"; ui_category = "Preset"; > = 0;
+uniform float HighlightThreshold < ui_text = "The following controls are only active when Filter Preset is set to 'Custom'. Preset selection will override these values."; ui_type = "slider"; ui_min = 0.0; ui_max = 1.0; ui_label = "Highlight Threshold"; ui_tooltip = "Luminance level above which diffusion occurs."; ui_category = "Custom Settings"; > = 0.7;
 uniform float HighlightKnee < ui_type = "slider"; ui_min = 0.01; ui_max = 1.0; ui_label = "Highlight Soft Knee"; ui_tooltip = "Smoothness of the transition into the diffused area."; ui_category = "Custom Settings"; > = 0.2;
 uniform float BloomIntensity < ui_type = "slider"; ui_min = 0.0; ui_max = 5.0; ui_label = "Bloom Intensity"; ui_tooltip = "Overall strength of the diffusion glow."; ui_category = "Custom Settings"; > = 1.0;
 uniform float BloomRadius < ui_type = "slider"; ui_min = 0.0; ui_max = 1.0; ui_label = "Bloom Radius"; ui_tooltip = "The spread/size of the glow."; ui_category = "Custom Settings"; > = 1.0;
 uniform float AnamorphicRatio < ui_type = "slider"; ui_min = -1.0; ui_max = 1.0; ui_label = "Anamorphic Ratio"; ui_tooltip = "Stretches the glow. Negative=Vertical, Positive=Horizontal."; ui_category = "Custom Settings"; > = 0.0;
-uniform float3 BloomTint < ui_type = "color"; ui_label = "Bloom Color Tint"; ui_category = "Custom Settings"; > = float3(1.0, 1.0, 1.0);
+uniform float3 BloomTint < ui_type = "color"; ui_label = "Bloom Color Tint"; ui_tooltip = "Tints the diffusion glow with a color. White is neutral; warm tones mimic classic film halation."; ui_category = "Custom Settings"; > = float3(1.0, 1.0, 1.0);
 uniform float HalationIntensity < ui_type = "slider"; ui_min = 0.0; ui_max = 1.0; ui_label = "Halation (Color Fringing)"; ui_tooltip = "Adds subtle chromatic aberration to the glow."; ui_category = "Custom Settings"; > = 0.0;
 uniform float Contrast < ui_type = "slider"; ui_min = 0.5; ui_max = 1.5; ui_label = "Contrast Compensation"; ui_tooltip = "Recovers contrast lost from the diffusion."; ui_category = "Custom Settings"; > = 1.0;
 AS_BLENDMODE_UI_DEFAULT(BlendMode, AS_BLEND_LIGHTEN)
 AS_BLENDAMOUNT_UI(BlendAmount)
-uniform bool Debug_SplitScreen < ui_type = "checkbox"; ui_label = "Debug: Split Screen Compare"; ui_category = "Debug Controls"; ui_category_closed = true; > = false;
+uniform bool Debug_SplitScreen < ui_type = "checkbox"; ui_label = "Debug: Split Screen Compare"; ui_category = AS_CAT_DEBUG; ui_category_closed = true; > = false;
 
 // ============================================================================
 // SHADER LOGIC
@@ -172,7 +172,7 @@ void PS_Combine(float4 pos : SV_Position, float2 texcoord : TEXCOORD, out float4
     bloom *= tint * intensity;
 
     // Blend back with original and apply contrast
-    float3 finalImage = AS_applyBlend(float4(bloom, 1.0), float4(originalColor, 1.0), BlendMode, BlendAmount).rgb;
+    float3 finalImage = AS_blendRGBA(float4(bloom, 1.0), float4(originalColor, 1.0), BlendMode, BlendAmount).rgb;
     finalImage = pow(finalImage, contrast);
 
     // Debug split screen: left = original, right = effect

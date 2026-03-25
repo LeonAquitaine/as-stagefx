@@ -47,14 +47,14 @@
 // ============================================================================
 // NAMESPACE
 // ============================================================================
-namespace ASVignettePlus {
+namespace AS_VignettePlus {
 
 // ============================================================================
 // CONSTANTS
 // ============================================================================
 
 // --- Threshold Constants ---
-static const float ALPHA_EPSILON = 0.00001f; // Minimum alpha threshold for processing
+// Use centralized alpha epsilon threshold
 static const float CENTER_COORD = 0.5f; // Screen center coordinate
 static const float PERCENT_TO_NORMAL = 0.01f; // Conversion from percentage to 0-1 range
 static const float FULL_OPACITY = 1.0f; // Full opacity value
@@ -110,8 +110,8 @@ uniform float FalloffStart < ui_type = "slider"; ui_label = "Falloff Start (%)";
 uniform float FalloffEnd < ui_type = "slider"; ui_label = "Falloff End (%)"; ui_min = MIN_FALLOFF; ui_max = MAX_FALLOFF; ui_step = 0.1; ui_tooltip = "Defines where the effect becomes fully transparent after transitioning. Order of Start/End doesn't matter."; ui_category = "Falloff"; > = DEFAULT_FALLOFF_END;
 
 // --- Group III: Pattern Specifics (for Duotone/Lines) ---
-uniform float PatternElementSize < ui_type = "slider"; ui_label = "Pattern Element Size / Spacing"; ui_tooltip = "For Duotone/Lines: Controls the base size of circles, or spacing of lines."; ui_min = MIN_PATTERN_SIZE; ui_max = MAX_PATTERN_SIZE; ui_step = 0.001; ui_category = "Pattern"; > = DEFAULT_PATTERN_SIZE;
-uniform float PatternCoverageBoost < ui_type = "slider"; ui_label = "Pattern Coverage Boost"; ui_tooltip = "For Duotone/Lines: Slightly enlarges elements in solid areas to ensure full coverage. 1.0 = no boost."; ui_min = MIN_COVERAGE_BOOST; ui_max = MAX_COVERAGE_BOOST; ui_step = 0.005; ui_category = "Pattern"; > = DEFAULT_COVERAGE_BOOST;
+uniform float PatternElementSize < ui_type = "slider"; ui_label = "Pattern Element Size / Spacing"; ui_tooltip = "For Duotone/Lines: Controls the base size of circles, or spacing of lines."; ui_min = MIN_PATTERN_SIZE; ui_max = MAX_PATTERN_SIZE; ui_step = 0.001; ui_category = AS_CAT_PATTERN; > = DEFAULT_PATTERN_SIZE;
+uniform float PatternCoverageBoost < ui_type = "slider"; ui_label = "Pattern Coverage Boost"; ui_tooltip = "For Duotone/Lines: Slightly enlarges elements in solid areas to ensure full coverage. 1.0 = no boost."; ui_min = MIN_COVERAGE_BOOST; ui_max = MAX_COVERAGE_BOOST; ui_step = 0.005; ui_category = AS_CAT_PATTERN; > = DEFAULT_COVERAGE_BOOST;
 
 // --- Group IV: Direction & Orientation ---
 // --- Stage Depth Control ---
@@ -212,7 +212,7 @@ float GetCompositionFactor(float2 texcoord, float rotation_radians, int mirrorSt
                        ReShade::ScreenSize.y * abs(sin_angle));
     
     // Normalize to [0,1] range for directional factor
-    float base_directional_factor = (projected_value_pixel_scaled / (max_extent_pixel_scaled + ALPHA_EPSILON)) * CENTER_COORD + CENTER_COORD;
+    float base_directional_factor = (projected_value_pixel_scaled / (max_extent_pixel_scaled + AS_ALPHA_EPSILON)) * CENTER_COORD + CENTER_COORD;
     base_directional_factor = saturate(base_directional_factor); // Ensure it's 0-1 before mirroring logic
 
     // Apply mirroring based on selected style
@@ -273,12 +273,11 @@ float4 ApplySmoothGradientPS(float raw_alpha_param, float3 color) {
 
 float4 ApplyDuotoneCirclesPS(float2 texcoord, float raw_alpha_param, float3 color,
                             float circle_cell_radius_base, float coverage_boost_uniform) {
-    if (raw_alpha_param <= ALPHA_EPSILON) 
+    if (raw_alpha_param <= AS_ALPHA_EPSILON) 
         return float4(color, 0.0f);
     
     // Prepare UV coordinates with aspect ratio correction
-    float2 uv_dither = texcoord; 
-    uv_dither.y /= ReShade::AspectRatio;
+    float2 uv_dither = AS_centeredUVWithAspect(texcoord, ReShade::AspectRatio) + CENTER_COORD;
     
     // Calculate grid density from cell radius
     float current_grid_density = 1.0f / circle_cell_radius_base;
@@ -298,14 +297,14 @@ float4 ApplyDuotoneCirclesPS(float2 texcoord, float raw_alpha_param, float3 colo
     float aa_w = fwidth(dist);
     
     // Apply anti-aliasing with smoothstep
-    return float4(color, smoothstep(radius + aa_w * 0.5f, radius - aa_w * 0.5f, dist));
+    return float4(color, AS_smoothEdge(dist, radius, aa_w * 0.5f));
 }
 
 // Shared logic for both line pattern functions to reduce code duplication
 float4 ApplyDuotoneLinesSharedLogic(float2 texcoord, float raw_alpha_param, float3 color,
                                    float line_cycle_width_uv, float effect_rotation_rad, 
                                    float coverage_boost_uniform, bool use_u_component_for_banding) {
-    if (raw_alpha_param <= ALPHA_EPSILON) 
+    if (raw_alpha_param <= AS_ALPHA_EPSILON) 
         return float4(color, 0.0f);
     
     // Center coordinates for rotation
@@ -333,7 +332,7 @@ float4 ApplyDuotoneLinesSharedLogic(float2 texcoord, float raw_alpha_param, floa
     }
     
     // Normalize position to [0,1] range and calculate cycle position
-    float norm_pos_banding = (comp_pixels / (max_extent_pixels + ALPHA_EPSILON)) * CENTER_COORD + CENTER_COORD;
+    float norm_pos_banding = (comp_pixels / (max_extent_pixels + AS_ALPHA_EPSILON)) * CENTER_COORD + CENTER_COORD;
     float cycle_in_raw = saturate(norm_pos_banding) / line_cycle_width_uv;
     float coord_cycle = frac(cycle_in_raw);
     
@@ -350,7 +349,7 @@ float4 ApplyDuotoneLinesSharedLogic(float2 texcoord, float raw_alpha_param, floa
     float aa_w_cycle = fwidth(cycle_in_raw);
     
     // Apply anti-aliasing with smoothstep
-    return float4(color, smoothstep(edge_thresh + aa_w_cycle * 0.5f, edge_thresh - aa_w_cycle * 0.5f, val_to_test));
+    return float4(color, AS_smoothEdge(val_to_test, edge_thresh, aa_w_cycle * 0.5f));
 }
 
 // Pattern-specific wrapper functions for parallel and perpendicular lines
@@ -370,11 +369,8 @@ float4 ApplyDuotoneLinesPerpendicularPS(float2 texcoord, float raw_alpha, float3
 // Pixel Shader
 //------------------------------------------------------------------------------------------------
 float4 VignettePlusPS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : SV_Target {
-    // Get depth and handle depth-based masking
-    float depth = ReShade::GetLinearizedDepth(texcoord);
-    if (depth < EffectDepth) {
-        return tex2D(ReShade::BackBuffer, texcoord);
-    }
+    // Depth-aware early return
+    AS_DEPTH_EARLY_RETURN(texcoord, EffectDepth)
     
     // Get original pixel color
     float3 original_color = tex2D(ReShade::BackBuffer, texcoord).rgb;
@@ -428,7 +424,7 @@ float4 VignettePlusPS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : 
     // Apply blend mode if amount is less than full
     if (BlendAmount < FULL_OPACITY) {
         float4 background = float4(original_color, FULL_OPACITY);
-        final_color = AS_applyBlend(effect_result, background, BlendMode, BlendAmount);
+    final_color = AS_blendRGBA(effect_result, background, BlendMode, BlendAmount);
     }
     
     // Handle debug modes
@@ -456,10 +452,10 @@ technique AS_GFX_VignettePlus < ui_label = "[AS] GFX: Vignette Plus"; ui_tooltip
 {
     pass {
         VertexShader = PostProcessVS;
-        PixelShader = ASVignettePlus::VignettePlusPS;
+        PixelShader = AS_VignettePlus::VignettePlusPS;
     }
 }
 
-} // namespace ASVignettePlus
+} // namespace AS_VignettePlus
 
 #endif // __AS_GFX_VignettePlus_1_fx

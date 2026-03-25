@@ -38,8 +38,8 @@
 // ============================================================================
 // TECHNIQUE GUARD
 // ============================================================================
-#ifndef __AS_GFX_BRUSHSTROKE_1_FX
-#define __AS_GFX_BRUSHSTROKE_1_FX
+#ifndef __AS_GFX_BrushStroke_1_fx
+#define __AS_GFX_BrushStroke_1_fx
 
 // ============================================================================
 // INCLUDES
@@ -47,6 +47,8 @@
 #include "ReShade.fxh"
 #include "AS_Utils.1.fxh"
 #include "AS_Noise.1.fxh" // For AS_Fbm2D
+
+uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " "; ui_text = "\nStylized ink brush stroke band with textured edges and drop shadow.\nPerfect for title cards and cinematic framing.\n\nAS StageFX | Stylized Brush Stroke Band Effect by Leon Aquitaine\n"; > = 0;
 
 // ============================================================================
 // CONSTANTS
@@ -66,7 +68,7 @@ static const float BRUSHSTROKE_SHAPE_Y_MAX = 100.0f;
 static const float BRUSHSTROKE_SHAPE_Y_DEFAULT = 63.9f;
 
 // Edge and Texture Constants
-static const float BRUSHSTROKE_FEATHER_MIN = 0.0001f;
+static const float BRUSHSTROKE_FEATHER_MIN = AS_MIN_NORM;
 static const float BRUSHSTROKE_FEATHER_MAX = 0.2f; 
 static const float BRUSHSTROKE_FEATHER_DEFAULT = 0.0195f;
 static const float BRUSHSTROKE_CONTRAST_MIN = 0.5f;
@@ -124,13 +126,13 @@ uniform float MinInkThresholdAtCenter < ui_type = "slider"; ui_label = "Min Ink 
 uniform float EdgeExtendFactor < ui_type = "slider"; ui_label = "Edge Extend Factor"; ui_tooltip = "How far (relative to half stroke height) ink can 'bleed' or 'splatter' beyond the nominal stroke height."; ui_min = BRUSHSTROKE_EXTEND_MIN; ui_max = BRUSHSTROKE_EXTEND_MAX; ui_step = 0.01f; ui_category = "Stroke Appearance"; > = BRUSHSTROKE_EXTEND_DEFAULT;
 
 // --- Category: Colors ---
-uniform float3 StrokeColor < ui_type = "color"; ui_label = "Stroke Color"; ui_category = "Colors"; > = float3(0.1f, 0.1f, 0.1f); 
+uniform float3 StrokeColor < ui_type = "color"; ui_label = "Stroke Color"; ui_category = AS_CAT_COLOR; > = float3(0.1f, 0.1f, 0.1f); 
 
-uniform bool InvertStroke < ui_type = "input"; ui_label = "Invert Stroke"; ui_tooltip = "When enabled, stroke areas become transparent and non-stroke areas are filled with stroke color."; ui_category = "Colors"; > = false;
+uniform bool InvertStroke < ui_type = "input"; ui_label = "Invert Stroke"; ui_tooltip = "When enabled, stroke areas become transparent and non-stroke areas are filled with stroke color."; ui_category = AS_CAT_COLOR; > = false;
 
-uniform float StrokeTextureShadowIntensity < ui_type = "slider"; ui_label = "Ink Texture Shadow Intensity"; ui_tooltip = "Darkens parts of the ink based on FBM noise values, adding texture to the main stroke."; ui_min = BRUSHSTROKE_SHADOW_INT_MIN; ui_max = BRUSHSTROKE_SHADOW_INT_MAX; ui_step = 0.01f; ui_category = "Colors"; > = BRUSHSTROKE_SHADOW_INT_DEFAULT;
+uniform float StrokeTextureShadowIntensity < ui_type = "slider"; ui_label = "Ink Texture Shadow Intensity"; ui_tooltip = "Darkens parts of the ink based on FBM noise values, adding texture to the main stroke."; ui_min = BRUSHSTROKE_SHADOW_INT_MIN; ui_max = BRUSHSTROKE_SHADOW_INT_MAX; ui_step = 0.01f; ui_category = AS_CAT_COLOR; > = BRUSHSTROKE_SHADOW_INT_DEFAULT;
 
-uniform float StrokeTextureHighlightIntensity < ui_type = "slider"; ui_label = "Ink Texture Highlight Intensity"; ui_tooltip = "Brightens parts of the ink based on FBM noise values, adding texture to the main stroke."; ui_min = BRUSHSTROKE_HIGHLIGHT_INT_MIN; ui_max = BRUSHSTROKE_HIGHLIGHT_INT_MAX; ui_step = 0.01f; ui_category = "Colors"; > = BRUSHSTROKE_HIGHLIGHT_INT_DEFAULT;
+uniform float StrokeTextureHighlightIntensity < ui_type = "slider"; ui_label = "Ink Texture Highlight Intensity"; ui_tooltip = "Brightens parts of the ink based on FBM noise values, adding texture to the main stroke."; ui_min = BRUSHSTROKE_HIGHLIGHT_INT_MIN; ui_max = BRUSHSTROKE_HIGHLIGHT_INT_MAX; ui_step = 0.01f; ui_category = AS_CAT_COLOR; > = BRUSHSTROKE_HIGHLIGHT_INT_DEFAULT;
 
 // --- Category: Shadow Settings ---
 uniform float ShadowOpacity < ui_type = "slider"; ui_label = "Shadow Opacity"; ui_tooltip = "Opacity of the drop shadow. 0.0 disables the shadow."; ui_min = BRUSHSTROKE_SHADOW_OPACITY_MIN; ui_max = BRUSHSTROKE_SHADOW_OPACITY_MAX; ui_step = 0.01f; ui_category = "Shadow Settings"; ui_category_closed = true; > = BRUSHSTROKE_SHADOW_OPACITY_DEFAULT;
@@ -146,9 +148,9 @@ uniform bool EnableCountershadow < ui_label = "Enable Countershadow"; ui_tooltip
 uniform float3 CounterShadowColor < ui_type = "color"; ui_label = "Countershadow Color"; ui_category = "Shadow Settings"; > = float3(0.0f, 0.0f, 0.0f);
 
 // --- Category: Audio Reactivity ---
-AS_AUDIO_UI(AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
-AS_AUDIO_MULT_UI(AudioMultiplier, "Audio Intensity", 1.0, 2.0, "Audio Reactivity")
-uniform int AudioTarget < ui_type = "combo"; ui_label = "Audio Target"; ui_items = "None\0Stroke Height\0Ink Contrast\0Shadow Opacity\0"; ui_category = "Audio Reactivity"; ui_category_closed = true; > = 0;
+AS_AUDIO_UI(AudioSource, "Audio Source", AS_AUDIO_BEAT, AS_CAT_AUDIO)
+AS_AUDIO_MULT_UI(AudioMultiplier, "Audio Intensity", 1.0, 2.0, AS_CAT_AUDIO)
+AS_AUDIO_TARGET_UI(AudioTarget, "None\0Stroke Height\0Ink Contrast\0Shadow Opacity\0", 0)
 
 // --- Category: Stage/Position Controls ---
 AS_POSITION_SCALE_UI(StrokeCenter, StrokeScale)
@@ -172,17 +174,16 @@ float GetStrokeAlpha(
     float current_stroke_feather, float current_edge_extend_factor,
     out float out_fbm_noise_contrasted // Pass out the fbm noise for shading
     )
-{    float current_band_half_height = current_band_height * 0.5f;
-    if (current_band_half_height < 0.0001f) current_band_half_height = 0.0001f; 
+{    float current_band_half_height = current_band_height * AS_HALF;
+    if (current_band_half_height < AS_MIN_NORM) current_band_half_height = AS_MIN_NORM; 
 
     // Apply aspect ratio correction to texture coordinates and scale
-    float2 centered_tc = current_texcoord - current_stroke_center;
-    centered_tc.x *= ReShade::AspectRatio; // Correct for aspect ratio
+    float2 centered_tc = AS_centeredUVWithAspect(current_texcoord, ReShade::AspectRatio) - AS_centeredUVWithAspect(current_stroke_center, ReShade::AspectRatio);
     centered_tc /= current_stroke_scale; // Apply scale
     
     // Apply rotation in the aspect-corrected space
     float2 local_uv = centered_tc;
-    if (abs(current_rotation_radians) > 0.001f) {
+    if (abs(current_rotation_radians) > AS_EPS_SAFE) {
         float s_rot = sin(current_rotation_radians);
         float c_rot = cos(current_rotation_radians);
         local_uv.x = centered_tc.x * c_rot - centered_tc.y * s_rot;
@@ -195,14 +196,14 @@ float GetStrokeAlpha(
     float fbm_amplitude_norm_factor = 1.0f + fbm_gain + pow(fbm_gain, 2) + pow(fbm_gain, 3);    float2 fbm_sample_coord = float2(local_uv.x * current_stroke_shape_x, local_uv.y * current_stroke_shape_y);
     float fbm_val = AS_Fbm2D(fbm_sample_coord, fbm_octaves, fbm_lacunarity, fbm_gain); 
     
-    fbm_val = saturate((fbm_val / fbm_amplitude_norm_factor + 1.0f) * 0.5f);
+    fbm_val = saturate((fbm_val / fbm_amplitude_norm_factor + 1.0f) * AS_HALF);
     out_fbm_noise_contrasted = pow(fbm_val, current_ink_contrast); // Store for shading
 
     float dist_y_norm = abs(local_uv.y) / current_band_half_height;
     float dynamic_threshold = lerp(current_min_ink_thresh_center, current_min_ink_thresh_edge, saturate(dist_y_norm));
 
-    float calculated_alpha = smoothstep(dynamic_threshold - current_stroke_feather * 0.5f, 
-                                      dynamic_threshold + current_stroke_feather * 0.5f, 
+    float calculated_alpha = smoothstep(dynamic_threshold - current_stroke_feather * AS_HALF, 
+                                      dynamic_threshold + current_stroke_feather * AS_HALF, 
                                       out_fbm_noise_contrasted);    float band_max_extent = current_band_half_height * (1.0f + current_edge_extend_factor);
     float falloff_start = max(current_band_half_height * 0.99f, current_band_half_height - current_stroke_feather); 
     float band_falloff_mask = 1.0f - smoothstep(falloff_start, band_max_extent, abs(local_uv.y));
@@ -215,25 +216,21 @@ float GetStrokeAlpha(
 // ============================================================================
 float4 PS_BrushStroke(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target
 {
-    float4 original_color = tex2D(ReShade::BackBuffer, texcoord);
-    float depth = ReShade::GetLinearizedDepth(texcoord);
-      // Depth test - render behind scene objects
-    if (depth < StrokeDepth) {
-        return original_color;
-    }
+    // Depth-aware early return
+    AS_DEPTH_EARLY_RETURN(texcoord, StrokeDepth)
       // Get rotation in radians
     float rotation = AS_getRotationRadians(StrokeRotationSnap, StrokeRotationFine);
     
     // Transform coordinates using AS standard coordinate system
     // Convert AS UI coordinates (-1.5 to 1.5, default 0,0) to screen coordinates (0.5 = center)
-    float2 stroke_screen_position = float2(0.5, 0.5) + (StrokeCenter * 0.5);
+    float2 stroke_screen_position = float2(AS_HALF, AS_HALF) + (StrokeCenter * AS_HALF);
       // --- Audio Reactivity ---
     float current_band_height = BandHeight;
     float current_ink_contrast = InkContrast;
     float current_shadow_opacity = ShadowOpacity;
     
     if (AudioTarget > 0) {
-        float audioReactivity = AS_applyAudioReactivity(1.0, AudioSource, AudioMultiplier, true);
+        float audioReactivity = AS_audioModulate(1.0, AudioSource, AudioMultiplier, true, 0);
         
         if (AudioTarget == 1) { // Stroke Height
             current_band_height = BandHeight * audioReactivity;
@@ -250,14 +247,14 @@ float4 PS_BrushStroke(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV
     }
     
     float main_stroke_fbm_noise; // Will be filled by GetStrokeAlpha    // --- Shadow Pass ---
-    float3 background_with_shadow = original_color.rgb;
-    if (current_shadow_opacity > 0.001f)
+    float3 background_with_shadow = _as_originalColor.rgb;
+    if (current_shadow_opacity > AS_ALPHA_EPSILON)
     {
         // Shadow angle is relative to stroke rotation
-        float shadow_angle_rad = AS_radians(ShadowAngle + rotation);
+        float shadow_angle_rad = AS_radians(ShadowAngle) + rotation;
         float2 shadow_offset_vector;
-        // ShadowDistance is fraction of screen height. Correct X offset for aspect ratio.
-        shadow_offset_vector.x = cos(shadow_angle_rad) * ShadowDistance / ReShade::AspectRatio; 
+    // ShadowDistance is fraction of screen height. Correct X offset for aspect ratio.
+    shadow_offset_vector.x = cos(shadow_angle_rad) * ShadowDistance / ReShade::AspectRatio; 
         shadow_offset_vector.y = sin(shadow_angle_rad) * ShadowDistance;
           float2 shadow_sample_texcoord = texcoord - shadow_offset_vector; // Sample from where caster would be
 
@@ -272,21 +269,21 @@ float4 PS_BrushStroke(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV
         );
         
         // Apply invert logic to shadow as well
-        float final_shadow_alpha = InvertStroke ? (1.0 - shadow_casting_alpha) : shadow_casting_alpha;
-          if (final_shadow_alpha > 0.001f)
+                float final_shadow_alpha = InvertStroke ? (1.0 - shadow_casting_alpha) : shadow_casting_alpha;
+                    if (final_shadow_alpha > AS_ALPHA_EPSILON)
         {
             background_with_shadow = lerp(background_with_shadow, ShadowColor, final_shadow_alpha * current_shadow_opacity);        
         }
     }
 
     // --- Countershadow Pass ---
-    if (EnableCountershadow && current_shadow_opacity > 0.001f)
+    if (EnableCountershadow && current_shadow_opacity > AS_ALPHA_EPSILON)
     {
         // Countershadow angle is opposite to main shadow (180 degrees offset)
-        float countershadow_angle_rad = AS_radians(ShadowAngle + 180.0 + rotation);
+        float countershadow_angle_rad = AS_radians(ShadowAngle + 180.0) + rotation;
         float2 countershadow_offset_vector;
-        // Use same distance as main shadow, corrected for aspect ratio
-        countershadow_offset_vector.x = cos(countershadow_angle_rad) * ShadowDistance / ReShade::AspectRatio; 
+    // Use same distance as main shadow, corrected for aspect ratio
+    countershadow_offset_vector.x = cos(countershadow_angle_rad) * ShadowDistance / ReShade::AspectRatio; 
         countershadow_offset_vector.y = sin(countershadow_angle_rad) * ShadowDistance;
           
         float2 countershadow_sample_texcoord = texcoord - countershadow_offset_vector; // Sample from where caster would be
@@ -304,7 +301,7 @@ float4 PS_BrushStroke(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV
         // Apply invert logic to countershadow as well
         float final_countershadow_alpha = InvertStroke ? (1.0 - countershadow_casting_alpha) : countershadow_casting_alpha;
         
-        if (final_countershadow_alpha > 0.001f)
+    if (final_countershadow_alpha > AS_ALPHA_EPSILON)
         {
             background_with_shadow = lerp(background_with_shadow, CounterShadowColor, final_countershadow_alpha * current_shadow_opacity);        
         }
@@ -323,16 +320,15 @@ float4 PS_BrushStroke(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV
     float3 modified_stroke_color = StrokeColor; 
     if (stroke_alpha > 0.01f) { 
         // Use main_stroke_fbm_noise (which is already contrasted) for texture
-        modified_stroke_color = lerp(modified_stroke_color, StrokeColor * (1.0f + StrokeTextureHighlightIntensity * 0.4f), saturate(main_stroke_fbm_noise * 1.5f - 0.5f) );
-        modified_stroke_color = lerp(modified_stroke_color, StrokeColor * (1.0f - StrokeTextureShadowIntensity * 0.4f), saturate(0.5f - main_stroke_fbm_noise * 1.5f) );
+    modified_stroke_color = lerp(modified_stroke_color, StrokeColor * (1.0f + StrokeTextureHighlightIntensity * 0.4f), saturate(main_stroke_fbm_noise * 1.5f - AS_HALF) );
+    modified_stroke_color = lerp(modified_stroke_color, StrokeColor * (1.0f - StrokeTextureShadowIntensity * 0.4f), saturate(AS_HALF - main_stroke_fbm_noise * 1.5f) );
         modified_stroke_color = saturate(modified_stroke_color);
     }      // Apply invert logic if enabled
     float final_alpha = InvertStroke ? (1.0 - stroke_alpha) : stroke_alpha;
     float3 final_stroke_color = InvertStroke ? modified_stroke_color : modified_stroke_color;
     float3 final_background = InvertStroke ? background_with_shadow : background_with_shadow;    // Apply blending
     float3 effect_color = lerp(final_background, final_stroke_color, final_alpha);
-    float3 blended_color = AS_applyBlend(effect_color, original_color.rgb, BlendMode);
-    float4 final_color = lerp(original_color, float4(blended_color, 1.0), BlendStrength);
+    float4 final_color = AS_compositeRGBA(effect_color, _as_originalColor, BlendMode, BlendStrength);
 
     return final_color;
 }
@@ -349,4 +345,4 @@ technique AS_GFX_BrushStroke < ui_label = "[AS] GFX: Brush Stroke"; ui_tooltip =
     }
 }
 
-#endif // __AS_GFX_BRUSHSTROKE_1_FX
+#endif // __AS_GFX_BrushStroke_1_fx

@@ -51,7 +51,7 @@
 #include "AS_Utils.1.fxh"     
 #include "AS_Palette.1.fxh"  
 
-namespace ASWavySquiggles {
+namespace AS_WavySquiggles {
 
 // ============================================================================
 // TUNABLE CONSTANTS (Defaults and Ranges)
@@ -135,31 +135,31 @@ static const float SMOOTH_GRADIENT_SCALE = 1.0; // Scaling factor for smooth gra
 
 uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Interactive 2.5D Squiggles' by SnoopethDuckDuck\nLink: https://www.shadertoy.com/view/7sBfDD\nLicence: CC Share-Alike Non-Commercial\n\n";>;
 
-uniform float RotationInfluence < ui_type = "slider"; ui_label = "Rotation Influence"; ui_tooltip = "Controls how angle affects the pattern rotation."; ui_min = ROTATION_INFLUENCE_MIN; ui_max = ROTATION_INFLUENCE_MAX; ui_step = ROTATION_INFLUENCE_STEP; ui_category = "Pattern"; > = ROTATION_INFLUENCE_DEFAULT;
-uniform float LineTargetDistance < ui_type = "slider"; ui_label = "Target Distance"; ui_tooltip = "Distance at which lines will form patterns."; ui_min = LINE_DISTANCE_MIN; ui_max = LINE_DISTANCE_MAX; ui_step = LINE_DISTANCE_STEP; ui_category = "Pattern"; > = LINE_DISTANCE_DEFAULT;
-uniform float LineThickness < ui_type = "slider"; ui_label = "Line Thickness"; ui_tooltip = "Controls the thickness of the pattern lines."; ui_min = LINE_THICKNESS_MIN; ui_max = LINE_THICKNESS_MAX; ui_step = LINE_THICKNESS_STEP; ui_category = "Pattern"; > = LINE_THICKNESS_DEFAULT;
-uniform float LineSmoothing < ui_type = "slider"; ui_label = "Line Smoothing"; ui_tooltip = "Controls how smooth the pattern lines appear. 0 = hard edges, 1 = fully blended gradients."; ui_min = LINE_SMOOTHING_MIN; ui_max = LINE_SMOOTHING_MAX; ui_step = LINE_SMOOTHING_STEP; ui_category = "Pattern"; > = LINE_SMOOTHING_DEFAULT;
-uniform int PatternIterations < ui_type = "slider"; ui_label = "Pattern Iterations"; ui_tooltip = "Number of pattern iterations. Higher values create more intricate patterns."; ui_min = PATTERN_ITERATIONS_MIN; ui_max = PATTERN_ITERATIONS_MAX; ui_step = PATTERN_ITERATIONS_STEP; ui_category = "Pattern"; > = PATTERN_ITERATIONS_DEFAULT;
+uniform float RotationInfluence < ui_type = "slider"; ui_label = "Rotation Influence"; ui_tooltip = "Controls how angle affects the pattern rotation."; ui_min = ROTATION_INFLUENCE_MIN; ui_max = ROTATION_INFLUENCE_MAX; ui_step = ROTATION_INFLUENCE_STEP; ui_category = AS_CAT_PATTERN; > = ROTATION_INFLUENCE_DEFAULT;
+uniform float LineTargetDistance < ui_type = "slider"; ui_label = "Target Distance"; ui_tooltip = "Distance at which lines will form patterns."; ui_min = LINE_DISTANCE_MIN; ui_max = LINE_DISTANCE_MAX; ui_step = LINE_DISTANCE_STEP; ui_category = AS_CAT_PATTERN; > = LINE_DISTANCE_DEFAULT;
+uniform float LineThickness < ui_type = "slider"; ui_label = "Line Thickness"; ui_tooltip = "Controls the thickness of the pattern lines."; ui_min = LINE_THICKNESS_MIN; ui_max = LINE_THICKNESS_MAX; ui_step = LINE_THICKNESS_STEP; ui_category = AS_CAT_PATTERN; > = LINE_THICKNESS_DEFAULT;
+uniform float LineSmoothing < ui_type = "slider"; ui_label = "Line Smoothing"; ui_tooltip = "Controls how smooth the pattern lines appear. 0 = hard edges, 1 = fully blended gradients."; ui_min = LINE_SMOOTHING_MIN; ui_max = LINE_SMOOTHING_MAX; ui_step = LINE_SMOOTHING_STEP; ui_category = AS_CAT_PATTERN; > = LINE_SMOOTHING_DEFAULT;
+uniform int PatternIterations < ui_type = "slider"; ui_label = "Pattern Iterations"; ui_tooltip = "Number of pattern iterations. Higher values create more intricate patterns."; ui_min = PATTERN_ITERATIONS_MIN; ui_max = PATTERN_ITERATIONS_MAX; ui_step = PATTERN_ITERATIONS_STEP; ui_category = AS_CAT_PATTERN; > = PATTERN_ITERATIONS_DEFAULT;
 
 // --- Displacement ---
-uniform float DisplacementAngle < ui_type = "slider"; ui_label = "Displacement Angle"; ui_tooltip = "Angle in degrees for displacement from pattern center."; ui_min = DISPLACEMENT_ANGLE_MIN; ui_max = DISPLACEMENT_ANGLE_MAX; ui_step = DISPLACEMENT_ANGLE_STEP; ui_category = "Displacement"; > = DISPLACEMENT_ANGLE_DEFAULT;
-uniform float DisplacementStrength < ui_type = "slider"; ui_label = "Displacement Strength"; ui_tooltip = "How far from center the pattern is displaced."; ui_min = DISPLACEMENT_STRENGTH_MIN; ui_max = DISPLACEMENT_STRENGTH_MAX; ui_step = DISPLACEMENT_STRENGTH_STEP; ui_category = "Displacement"; > = DISPLACEMENT_STRENGTH_DEFAULT;
+uniform float DisplacementAngle < ui_type = "slider"; ui_label = "Displacement Angle"; ui_tooltip = "Angle in degrees for displacement from pattern center."; ui_min = DISPLACEMENT_ANGLE_MIN; ui_max = DISPLACEMENT_ANGLE_MAX; ui_step = DISPLACEMENT_ANGLE_STEP; ui_category = AS_CAT_PATTERN; > = DISPLACEMENT_ANGLE_DEFAULT;
+uniform float DisplacementStrength < ui_type = "slider"; ui_label = "Displacement Strength"; ui_tooltip = "How far from center the pattern is displaced."; ui_min = DISPLACEMENT_STRENGTH_MIN; ui_max = DISPLACEMENT_STRENGTH_MAX; ui_step = DISPLACEMENT_STRENGTH_STEP; ui_category = AS_CAT_PATTERN; > = DISPLACEMENT_STRENGTH_DEFAULT;
 
 // --- Palette & Style ---
-uniform bool UseOriginalColors < ui_label = "Use Original Math Colors"; ui_tooltip = "When enabled, uses the mathematically calculated RGB colors instead of palettes."; ui_category = "Palette & Style"; > = true;
-uniform float OriginalColorIntensity < ui_type = "slider"; ui_label = "Original Color Intensity"; ui_tooltip = "Adjusts the intensity of original colors when enabled."; ui_min = 0.1; ui_max = ORIG_COLOR_INTENSITY_MAX; ui_step = 0.01; ui_category = "Palette & Style"; ui_spacing = 0; > = ORIG_COLOR_INTENSITY_DEFAULT;
-uniform float OriginalColorSaturation < ui_type = "slider"; ui_label = "Original Color Saturation"; ui_tooltip = "Adjusts the saturation of original colors when enabled."; ui_min = 0.0; ui_max = ORIG_COLOR_SATURATION_MAX; ui_step = 0.01; ui_category = "Palette & Style"; > = ORIG_COLOR_SATURATION_DEFAULT;
-AS_PALETTE_SELECTION_UI(PalettePreset, "Color Palette", AS_PALETTE_NEON, "Palette & Style")
-AS_DECLARE_CUSTOM_PALETTE(WavySquiggles_, "Palette & Style")
-uniform float ColorCycleSpeed < ui_type = "slider"; ui_label = "Color Cycle Speed"; ui_tooltip = "Controls how fast palette colors cycle. 0 = static."; ui_min = -COLOR_CYCLE_SPEED_MAX; ui_max = COLOR_CYCLE_SPEED_MAX; ui_step = 0.1; ui_category = "Palette & Style"; > = COLOR_CYCLE_SPEED_DEFAULT;
+AS_USE_PALETTE_UI(UseOriginalColors, AS_CAT_PALETTE)
+uniform float OriginalColorIntensity < ui_type = "slider"; ui_label = "Original Color Intensity"; ui_tooltip = "Adjusts the intensity of original colors when enabled."; ui_min = 0.1; ui_max = ORIG_COLOR_INTENSITY_MAX; ui_step = 0.01; ui_category = AS_CAT_PALETTE; ui_spacing = 0; > = ORIG_COLOR_INTENSITY_DEFAULT;
+uniform float OriginalColorSaturation < ui_type = "slider"; ui_label = "Original Color Saturation"; ui_tooltip = "Adjusts the saturation of original colors when enabled."; ui_min = 0.0; ui_max = ORIG_COLOR_SATURATION_MAX; ui_step = 0.01; ui_category = AS_CAT_PALETTE; > = ORIG_COLOR_SATURATION_DEFAULT;
+AS_PALETTE_SELECTION_UI(PalettePreset, "Color Palette", AS_PALETTE_NEON, AS_CAT_PALETTE)
+AS_DECLARE_CUSTOM_PALETTE(WavySquiggles_, AS_CAT_PALETTE)
+AS_COLOR_CYCLE_UI(ColorCycleSpeed, AS_CAT_PALETTE)
 
 // --- Animation ---
-AS_ANIMATION_UI(AnimationSpeed, AnimationKeyframe, "Animation")
+AS_ANIMATION_UI(AnimationSpeed, AnimationKeyframe, AS_CAT_ANIMATION)
 
 // --- Audio Reactivity ---
-AS_AUDIO_UI(WavySquiggles_AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
-AS_AUDIO_MULT_UI(WavySquiggles_AudioMultiplier, "Audio Intensity", AUDIO_MULTIPLIER_DEFAULT, AUDIO_MULTIPLIER_MAX, "Audio Reactivity")
-uniform int WavySquiggles_AudioTarget < ui_type = "combo"; ui_label = "Audio Target Parameter"; ui_items = "None\0Animation Speed\0Rotation Influence\0Line Distance\0Line Thickness\0Line Smoothing\0Displacement Strength\0"; ui_category = "Audio Reactivity"; > = AUDIO_TARGET_DEFAULT;
+AS_AUDIO_UI(WavySquiggles_AudioSource, "Audio Source", AS_AUDIO_BEAT, AS_CAT_AUDIO)
+AS_AUDIO_MULT_UI(WavySquiggles_AudioMultiplier, "Audio Intensity", AUDIO_MULTIPLIER_DEFAULT, AUDIO_MULTIPLIER_MAX, AS_CAT_AUDIO)
+AS_AUDIO_TARGET_UI(WavySquiggles_AudioTarget, "None\0Animation Speed\0Rotation Influence\0Line Distance\0Line Thickness\0Line Smoothing\0Displacement Strength\0", AUDIO_TARGET_DEFAULT)
 
 // --- Stage/Position ---
 AS_STAGEDEPTH_UI(EffectDepth)
@@ -177,11 +177,7 @@ AS_DEBUG_UI("Off\0Show Audio Reactivity\0")
 // HELPER FUNCTIONS
 // ============================================================================
 
-// Standard 2D rotation matrix, assuming pre-multiplication with a column vector
-float2x2 Rot(float a) {
-    float c = cos(a), s = sin(a);
-    return float2x2(c, -s, s, c); // [row0: c, -s] [row1: s, c]
-}
+// Use shared rotation matrix helper
 
 // Get color from the currently selected palette
 float3 getWavySquigglesColor(float t, float time) {
@@ -190,9 +186,7 @@ float3 getWavySquigglesColor(float t, float time) {
         t = frac(t + cycleRate * time);
     }    t = saturate(t); 
     
-    if (PalettePreset == AS_PALETTE_CUSTOM) { // Use custom palette
-        return AS_GET_INTERPOLATED_CUSTOM_COLOR(WavySquiggles_, t);    }
-    return AS_getInterpolatedColor(PalettePreset, t); // Use preset palette
+    return AS_GET_PALETTE_COLOR(WavySquiggles_, PalettePreset, t);
 }
 
 // Original color function from the SnoopethDuckDuck Shadertoy shader
@@ -205,14 +199,8 @@ float3 pal(float t, float3 a, float3 b, float3 c, float3 d) {
 // PIXEL SHADER
 // ============================================================================
 float4 WavySquigglesPS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD) : SV_TARGET {
-    // Get original pixel color and depth
-    float4 originalColor = tex2D(ReShade::BackBuffer, texcoord);
-    float depth = ReShade::GetLinearizedDepth(texcoord);
-
-    // Apply depth test
-    if (depth < EffectDepth) {
-        return originalColor;
-    }    // Apply audio reactivity to selected parameters
+    // Depth-aware early return
+    AS_DEPTH_EARLY_RETURN(texcoord, EffectDepth)    // Apply audio reactivity to selected parameters
     float animSpeed = AnimationSpeed;
     float rotationInf = RotationInfluence;
     float lineDistance = LineTargetDistance;
@@ -220,7 +208,7 @@ float4 WavySquigglesPS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD) : 
     float lineSmooth = LineSmoothing;
     float dispStrength = DisplacementStrength;
     
-    float audioReactivity = AS_applyAudioReactivity(1.0, WavySquiggles_AudioSource, WavySquiggles_AudioMultiplier, true);
+    float audioReactivity = AS_audioModulate(1.0, WavySquiggles_AudioSource, WavySquiggles_AudioMultiplier, true, 0);
     
     // Map audio target combo index to parameter adjustment
     if (WavySquiggles_AudioTarget == 1) animSpeed *= audioReactivity;
@@ -237,9 +225,8 @@ float4 WavySquigglesPS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD) : 
     float rotationRadians = AS_getRotationRadians(EffectSnapRotation, EffectFineRotation);
     
     // --- POSITION HANDLING ---
-    // Step 1: Center and correct for aspect ratio
-    float2 p_centered = (texcoord - AS_HALF) * 2.0;          // Center coordinates (-1 to 1)
-    p_centered.x *= ReShade::AspectRatio;                // Correct for aspect ratio
+    // Step 1: Center and correct for aspect ratio using shared helper
+    float2 p_centered = AS_centeredUVWithAspect(texcoord, ReShade::AspectRatio) * 2.0; // [-1,1]
     
     // Step 2: Apply rotation around center FIRST (negative rotation for clockwise)
     float sinRot, cosRot;
@@ -287,7 +274,7 @@ float4 WavySquigglesPS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD) : 
         float2 fpos = frac(sc * uv + 0.5 * i * patternCenter) - 0.5;
         
         // Apply rotation based on angle of direction vector
-        fpos = mul(Rot(a), fpos);
+    fpos = mul(AS_rot2x2(a), fpos);
         
         // Use x-component of rotated pattern for distance calculation
         float d = abs(fpos.x);
@@ -323,8 +310,7 @@ float4 WavySquigglesPS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD) : 
         finalRGB = rawColor * OriginalColorIntensity;
         
         // Apply saturation adjustment
-        float3 grayColor = dot(finalRGB, float3(0.299, 0.587, 0.114)); // Luma calculation
-        finalRGB = lerp(grayColor, finalRGB, OriginalColorSaturation);
+        finalRGB = AS_adjustSaturation(finalRGB, OriginalColorSaturation);
     } else {
         // Use palette-based colors
         float3 paletteColor = getWavySquigglesColor(val, time);
@@ -337,8 +323,7 @@ float4 WavySquigglesPS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD) : 
     float4 effectColor = float4(finalRGB, 1.0);
     
     // --- Final Blending & Debug ---
-    float4 finalColor = float4(AS_applyBlend(effectColor.rgb, originalColor.rgb, BlendMode), 1.0);
-    finalColor = lerp(originalColor, finalColor, BlendStrength);
+    float4 finalColor = float4(AS_composite(effectColor.rgb, _as_originalColor.rgb, BlendMode, BlendStrength), 1.0);
     
     // Show debug overlay if enabled
     if (DebugMode != AS_DEBUG_OFF) {
@@ -357,7 +342,7 @@ float4 WavySquigglesPS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD) : 
     return finalColor;
 }
 
-} // namespace ASWavySquiggles
+} // namespace AS_WavySquiggles
 
 // ============================================================================
 // TECHNIQUE
@@ -367,7 +352,7 @@ technique AS_BGX_WavySquiggles < ui_label="[AS] BGX: Wavy Squiggles"; ui_tooltip
     pass
     {
         VertexShader = PostProcessVS;
-        PixelShader = ASWavySquiggles::WavySquigglesPS;
+        PixelShader = AS_WavySquiggles::WavySquigglesPS;
     }
 }
 

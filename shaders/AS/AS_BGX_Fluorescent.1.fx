@@ -77,7 +77,7 @@ static const float EFFECT_SCALE_MIN = 1.0;
 static const float EFFECT_SCALE_MAX = 20.0;
 static const float EFFECT_SCALE_DEFAULT = 12.053; // Updated based on UI optimization
 static const float COLOR_PHASE_MIN = 0.0;
-static const float COLOR_PHASE_MAX = 6.28318; // 2*PI
+static const float COLOR_PHASE_MAX = AS_TWO_PI; // 2*PI
 static const float COLOR_PHASE_R_DEFAULT = 2.0;
 static const float COLOR_PHASE_G_DEFAULT = 3.0;
 static const float COLOR_PHASE_B_DEFAULT = 4.0;
@@ -151,22 +151,18 @@ AS_BLENDAMOUNT_UI(BlendAmount)
 // ============================================================================
 float4 PS_Fluorescent(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : SV_Target
 {
-    // Apply stage depth test
-    float depth = ReShade::GetLinearizedDepth(texcoord);
-    if (depth < StageDepth) {
-        return tex2D(ReShade::BackBuffer, texcoord);
-    }
+    // Depth-aware early return
+    AS_DEPTH_EARLY_RETURN(texcoord, StageDepth)
     
     // Apply coordinate transformations: center → rotate → position/scale
-    float aspectRatio = ReShade::AspectRatio;
-    float2 centeredCoord = AS_centerCoord(texcoord, aspectRatio);
+    float2 centeredCoord = AS_centeredUVWithAspect(texcoord, ReShade::AspectRatio);
     
     // Apply rotation
     float rotation = AS_getRotationRadians(EffectSnapRotation, EffectFineRotation);
-    float2 rotatedCoord = AS_applyRotation(centeredCoord, rotation);
+    float2 rotatedCoord = AS_rotate2D(centeredCoord, rotation);
     
     // Apply position and scale
-    float2 transformedCoord = AS_applyPosScale(rotatedCoord, Position, Scale);
+    float2 transformedCoord = AS_applyPositionAndScale(rotatedCoord, Position, Scale);
     
     float4 finalColor = float4(0.0, 0.0, 0.0, 0.0); // Accumulated color
     float time = AS_getAnimationTime(AnimationSpeed, AnimationKeyframe);
@@ -241,10 +237,7 @@ float4 PS_Fluorescent(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : 
     float4 originalColor = tex2D(ReShade::BackBuffer, texcoord);
     
     // Apply the blend mode between effect and original background
-    float3 blendedColor = AS_applyBlend(effectOutput.rgb, originalColor.rgb, BlendMode);
-    
-    // Mix between original and blended result based on BlendAmount
-    float3 finalResult = lerp(originalColor.rgb, blendedColor, BlendAmount);
+    float3 finalResult = AS_composite(effectOutput.rgb, originalColor.rgb, BlendMode, BlendAmount);
     
     return float4(finalResult, originalColor.a);
 }

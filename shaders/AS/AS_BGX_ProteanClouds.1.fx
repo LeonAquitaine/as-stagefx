@@ -73,11 +73,11 @@ AS_ANIMATION_UI(MasterTimeSpeed, MasterTimeKeyframe, "Global Animation")
 
 // --- Performance & Quality ---
 
-uniform int Raymarch_Steps < ui_category="Performance & Quality"; ui_type="slider"; ui_min=30; ui_max=250; ui_step=1; ui_label="Raymarch Steps"; ui_tooltip="Max steps for raymarching clouds. Original: 130"; > = 130;
-uniform int Noise_Octaves < ui_category="Performance & Quality"; ui_type="slider"; ui_min=1; ui_max=8; ui_step=1; ui_label="Noise Octaves"; ui_tooltip="Number of layers for cloud noise generation. Original: 5"; > = 5;
-uniform float DynamicStep_Min < ui_category="Performance & Quality"; ui_type="drag"; ui_min=0.01; ui_max=0.5; ui_step=0.01; ui_label="Min Dynamic Step Size"; ui_tooltip="Minimum step size for raymarching. Original: 0.09"; > = 0.09f;
-uniform float DynamicStep_Max < ui_category="Performance & Quality"; ui_type="drag"; ui_min=0.1; ui_max=1.0; ui_step=0.01; ui_label="Max Dynamic Step Size"; ui_tooltip="Maximum step size for raymarching. Original: 0.3"; > = 0.3f;
-uniform float DynamicStep_DensityInfluence < ui_category="Performance & Quality"; ui_type="drag"; ui_min=0.0; ui_max=0.2; ui_step=0.001; ui_label="Density Influence on Step Size"; ui_tooltip="How much cloud density affects step size reduction. Original: 0.05"; > = 0.05f;
+uniform int Raymarch_Steps < ui_category=AS_CAT_PERFORMANCE; ui_type="slider"; ui_min=30; ui_max=250; ui_step=1; ui_label="Raymarch Steps"; ui_tooltip="Max steps for raymarching clouds. Original: 130"; > = 130;
+uniform int Noise_Octaves < ui_category=AS_CAT_PERFORMANCE; ui_type="slider"; ui_min=1; ui_max=8; ui_step=1; ui_label="Noise Octaves"; ui_tooltip="Number of layers for cloud noise generation. Original: 5"; > = 5;
+uniform float DynamicStep_Min < ui_category=AS_CAT_PERFORMANCE; ui_type="drag"; ui_min=0.01; ui_max=0.5; ui_step=0.01; ui_label="Min Dynamic Step Size"; ui_tooltip="Minimum step size for raymarching. Original: 0.09"; > = 0.09f;
+uniform float DynamicStep_Max < ui_category=AS_CAT_PERFORMANCE; ui_type="drag"; ui_min=0.1; ui_max=1.0; ui_step=0.01; ui_label="Max Dynamic Step Size"; ui_tooltip="Maximum step size for raymarching. Original: 0.3"; > = 0.3f;
+uniform float DynamicStep_DensityInfluence < ui_category=AS_CAT_PERFORMANCE; ui_type="drag"; ui_min=0.0; ui_max=0.2; ui_step=0.001; ui_label="Density Influence on Step Size"; ui_tooltip="How much cloud density affects step size reduction. Original: 0.05"; > = 0.05f;
 
 // --- Camera & Scene Animation ---
 uniform float Camera_PathSpeedFactor < ui_category="Camera & Scene Animation"; ui_type="drag"; ui_min=0.1; ui_max=10.0; ui_step=0.1; ui_label="Camera Path Speed"; ui_tooltip="Speed of camera movement along its Z-axis path. Original factor for time: 3.0"; > = 3.0;
@@ -133,15 +133,12 @@ AS_BLENDAMOUNT_UI(BlendAmount)
 // ============================================================================
 
 // Tunable Constants
-uniform float Light_DistanceOffset < ui_type = "slider"; ui_label = "Light Distance Offset"; ui_min = 0.0; ui_max = 10.0; ui_step = 0.1; ui_category = "Lighting"; > = 2.5;
+uniform float Light_DistanceOffset < ui_type = "slider"; ui_label = "Light Distance Offset"; ui_min = 0.0; ui_max = 10.0; ui_step = 0.1; ui_category = AS_CAT_LIGHTING; > = 2.5;
 
 //--------------------------------------------------------------------------------------
 // HELPER FUNCTIONS
 //--------------------------------------------------------------------------------------
-float2x2 rot(float a) { // Removed 'in'
-    float c = cos(a); float s = sin(a);
-    return float2x2(c, s, -s, c);
-}
+// Use shared rotation matrix helper
 static const float3x3 m3 = float3x3(0.33338f,0.56034f,-0.71817f,-0.87887f,0.32651f,-0.15323f,0.15162f,0.69596f,0.61339f) * 1.93f;
 float mag2(float2 p) { return dot(p,p); }
 float linstep(float mn, float mx, float x) { return saturate((x-mn)/(mx-mn)); } // Removed 'in'
@@ -152,7 +149,7 @@ float2 disp(float t, float sway_freq_scale) {
 float2 map(float3 p) { // Removed 'in', uses g_iTime_global_for_map, g_prm1, g_bsMo_NoMouse
     float3 p2 = p;
     p2.xy -= disp(p.z, 1.0f).xy; 
-    p.xy = mul(p.xy, rot(sin(p.z + g_iTime_global_for_map) * (0.1f + g_prm1 * 0.05f) + g_iTime_global_for_map * Scene_InternalRotationSpeedFactor));
+    p.xy = mul(p.xy, AS_rot2x2(sin(p.z + g_iTime_global_for_map) * (0.1f + g_prm1 * 0.05f) + g_iTime_global_for_map * Scene_InternalRotationSpeedFactor));
     float cl = mag2(p2.xy);
     float d = 0.0f;
     p *= Cloud_OverallScale;
@@ -212,7 +209,7 @@ float4 render(float3 ro, float3 rd, float time_for_render_logic) { // Removed 'i
 
 float getsat(float3 c) { float mi=min(min(c.x,c.y),c.z); float ma=max(max(c.x,c.y),c.z); return (ma-mi)/(ma+AS_EPSILON); }
 float3 iLerp(float3 a, float3 b, float x) { // Removed 'in' 
-    float3 ic = lerp(a,b,x)+float3(1e-6f,0,0); 
+    float3 ic = lerp(a,b,x)+float3(AS_STABILITY_EPSILON,0,0); 
     float sd=abs(getsat(ic)-lerp(getsat(a),getsat(b),x)); 
     float3 dir=normalize(float3(2.*ic.x-ic.y-ic.z,2.*ic.y-ic.x-ic.z,2.*ic.z-ic.y-ic.x)+AS_EPSILON.xxx); 
     float lgt=dot(1.0f.xxx,ic); 
@@ -225,11 +222,8 @@ float3 iLerp(float3 a, float3 b, float x) { // Removed 'in'
 //--------------------------------------------------------------------------------------
 float4 PS_ProteanClouds(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : SV_Target
 {
-    // Stage depth cut-out - early return if depth is less than stage depth
-    float depth = ReShade::GetLinearizedDepth(texcoord);
-    if (depth < StageDepth) {
-        return tex2D(ReShade::BackBuffer, texcoord);
-    }    float2 R_Screen = float2(BUFFER_WIDTH, BUFFER_HEIGHT);
+    // Depth-aware early return
+    AS_DEPTH_EARLY_RETURN(texcoord, StageDepth)    float2 R_Screen = float2(BUFFER_WIDTH, BUFFER_HEIGHT);
     float master_time = AS_getAnimationTime(MasterTimeSpeed, MasterTimeKeyframe); 
 
     g_iTime_global_for_map = master_time;
@@ -269,7 +263,7 @@ float4 PS_ProteanClouds(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) 
     
     float3 rd=normalize((p_centered_uv.x*rightdir + p_centered_uv.y*updir)*Camera_FOV_Effect - target_vec);
     
-    rd.xy = mul(rd.xy, rot(-disp(g_iTime_global_for_map + 3.5f, 1.0f).x * RayDir_RotationStrength)); 
+    rd.xy = mul(rd.xy, AS_rot2x2(-disp(g_iTime_global_for_map + 3.5f, 1.0f).x * RayDir_RotationStrength)); 
 
     float4 scn = render(ro, rd, time_for_main_logic); 
         
@@ -281,8 +275,7 @@ float4 PS_ProteanClouds(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) 
     
     // Apply blend mode
     float4 originalColor = tex2D(ReShade::BackBuffer, texcoord);
-    float3 blended = AS_applyBlend(col, originalColor.rgb, BlendMode);
-    float3 result = lerp(originalColor.rgb, blended, BlendAmount);
+    float3 result = AS_composite(col, originalColor.rgb, BlendMode, BlendAmount);
     
     return float4(result, originalColor.a);
 }

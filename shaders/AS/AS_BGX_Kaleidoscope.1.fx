@@ -40,16 +40,16 @@
 // INCLUDES
 // ============================================================================
 #include "ReShade.fxh"
-#include "AS_Utils.1.fxh" // For AS_getTime(), AS_getAudioSource(), UI macros, AS_PI etc.
+#include "AS_Utils.1.fxh" // For AS_timeSeconds(), AS_audioLevelFromSource(), UI macros, AS_PI etc.
 #include "AS_Palette.1.fxh" // AS palette system
 
-namespace ASKaleidoscope {
+namespace AS_Kaleidoscope {
 
 // ============================================================================
 // CONSTANTS
 // ============================================================================
 
-static const float EPSILON = 0.00001f; // Local epsilon
+// Use centralized AS_EPS_SAFE from AS_Utils
 
 // ============================================================================
 // TUNABLE CONSTANTS (Defaults and Ranges)
@@ -104,7 +104,6 @@ static const float PATTERN_PULSING_ZOOM_SPEED_MAX = 2.0;
 static const float PATTERN_PULSING_ZOOM_SPEED_DEFAULT = 0.5;
 
 // --- Audio Reactivity ---
-static const float AUDIO_GAIN_FRACTAL_ZOOM_MIN = 0.0;
 static const float AUDIO_GAIN_FRACTAL_ZOOM_MAX = 0.5;
 static const float AUDIO_GAIN_FRACTAL_ZOOM_DEFAULT = 0.0;
 
@@ -112,7 +111,6 @@ static const float AUDIO_GAIN_WAVE_AMPLITUDE_MIN = 0.0;
 static const float AUDIO_GAIN_WAVE_AMPLITUDE_MAX = 10.0;
 static const float AUDIO_GAIN_WAVE_AMPLITUDE_DEFAULT = 0.0;
 
-static const float AUDIO_GAIN_ROTATION_MIN = 0.0;
 static const float AUDIO_GAIN_ROTATION_MAX = 2.0;
 static const float AUDIO_GAIN_ROTATION_DEFAULT = 0.0;
 
@@ -121,27 +119,12 @@ static const float AUDIO_GAIN_ROTATION_DEFAULT = 0.0;
 // ============================================================================
 
 //------------------------------------------------------------------------------------------------
-// Animation & Time Controls
+// Kaleidoscope Controls
 //------------------------------------------------------------------------------------------------
 
 uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Kaleidoscope' by Kanduvisla\nLink: https://www.shadertoy.com/view/ddsyDN\nLicence: CC Share-Alike Non-Commercial\n\n";>;
 
-AS_ANIMATION_UI(TimeSpeed, TimeKeyframe, "Animation")
-
-//------------------------------------------------------------------------------------------------
-// Kaleidoscope Controls
-//------------------------------------------------------------------------------------------------
-
 uniform int Sectors < ui_type = "slider"; ui_label = "Mirrors"; ui_tooltip = "Number of kaleidoscope sectors. 1 means no effect. Even numbers often look best."; ui_min = SECTORS_MIN; ui_max = SECTORS_MAX; ui_step = 1; ui_category = "Kaleidoscope"; > = SECTORS_DEFAULT;
-
-//------------------------------------------------------------------------------------------------
-// Audio Reactivity
-//------------------------------------------------------------------------------------------------
-AS_AUDIO_UI(MasterAudioSource, "Audio Source", AS_AUDIO_BASS, "Audio Reactivity")
-
-uniform float AudioGain_FractalZoom < ui_type = "slider"; ui_label = "Fractal Zoom"; ui_tooltip = "How much audio affects the fractal zoom. Higher = more pulsing with audio."; ui_min = AUDIO_GAIN_FRACTAL_ZOOM_MIN; ui_max = AUDIO_GAIN_FRACTAL_ZOOM_MAX; ui_step = 0.01; ui_category = "Audio Reactivity"; > = AUDIO_GAIN_FRACTAL_ZOOM_DEFAULT;
-uniform float AudioGain_WaveAmplitude < ui_type = "slider"; ui_label = "Wave Amplitude"; ui_tooltip = "How much audio affects the wave amplitude. Higher = more intense tendril motion with audio."; ui_min = AUDIO_GAIN_WAVE_AMPLITUDE_MIN; ui_max = AUDIO_GAIN_WAVE_AMPLITUDE_MAX; ui_step = 0.1; ui_category = "Audio Reactivity"; > = AUDIO_GAIN_WAVE_AMPLITUDE_DEFAULT;
-uniform float AudioGain_Rotation < ui_type = "slider"; ui_label = "Pattern Rotation"; ui_tooltip = "How much audio affects pattern rotation. Higher = more rotation with audio."; ui_min = AUDIO_GAIN_ROTATION_MIN; ui_max = AUDIO_GAIN_ROTATION_MAX; ui_step = 0.01; ui_category = "Audio Reactivity"; > = AUDIO_GAIN_ROTATION_DEFAULT;
 
 //------------------------------------------------------------------------------------------------
 // Fractal Pattern Controls
@@ -171,13 +154,27 @@ uniform float GlobalPulsingZoomSpeed < ui_type = "slider"; ui_label = "Pattern P
 AS_PALETTE_SELECTION_UI(PaletteSelect, "Color Palette", AS_PALETTE_CUSTOM, "Color Palette")
 
 // Manually declare custom palette colors to set specific defaults for this shader
-uniform float3 ASKaleidoscopeCustomPaletteColor0 < ui_type = "color"; ui_label = "Custom Color 1 (Offset)"; ui_category = "Color Palette"; > = float3(0.5, 0.5, 0.5);
-uniform float3 ASKaleidoscopeCustomPaletteColor1 < ui_type = "color"; ui_label = "Custom Color 2 (Amplitude)"; ui_category = "Color Palette"; > = float3(0.5, 0.5, 0.5);
-uniform float3 ASKaleidoscopeCustomPaletteColor2 < ui_type = "color"; ui_label = "Custom Color 3 (Frequency)"; ui_category = "Color Palette"; > = float3(1.0, 1.0, 1.0);
-uniform float3 ASKaleidoscopeCustomPaletteColor3 < ui_type = "color"; ui_label = "Custom Color 4 (Phase)"; ui_category = "Color Palette"; > = float3(0.263, 0.416, 0.557);
-uniform float3 ASKaleidoscopeCustomPaletteColor4 < ui_type = "color"; ui_label = "Custom Color 5 (Background)"; ui_category = "Color Palette"; > = float3(0.0, 0.0, 0.0); // Default Black for the 5th color
+uniform float3 AS_KaleidoscopeCustomPaletteColor0 < ui_type = "color"; ui_label = "Custom Color 1 (Offset)"; ui_category = AS_CAT_PALETTE; > = float3(0.5, 0.5, 0.5);
+uniform float3 AS_KaleidoscopeCustomPaletteColor1 < ui_type = "color"; ui_label = "Custom Color 2 (Amplitude)"; ui_category = AS_CAT_PALETTE; > = float3(0.5, 0.5, 0.5);
+uniform float3 AS_KaleidoscopeCustomPaletteColor2 < ui_type = "color"; ui_label = "Custom Color 3 (Frequency)"; ui_category = AS_CAT_PALETTE; > = float3(1.0, 1.0, 1.0);
+uniform float3 AS_KaleidoscopeCustomPaletteColor3 < ui_type = "color"; ui_label = "Custom Color 4 (Phase)"; ui_category = AS_CAT_PALETTE; > = float3(0.263, 0.416, 0.557);
+uniform float3 AS_KaleidoscopeCustomPaletteColor4 < ui_type = "color"; ui_label = "Custom Color 5 (Background)"; ui_category = AS_CAT_PALETTE; > = float3(0.0, 0.0, 0.0); // Default Black for the 5th color
 
-uniform float PaletteCycleSpeed < ui_type = "slider"; ui_label = "Color Cycle Speed"; ui_tooltip = "How fast colors cycle through the palette."; ui_min = PALETTE_CYCLE_SPEED_MIN; ui_max = PALETTE_CYCLE_SPEED_MAX; ui_step = 0.01; ui_category = "Color Palette"; > = PALETTE_CYCLE_SPEED_DEFAULT;
+uniform float PaletteCycleSpeed < ui_type = "slider"; ui_label = "Color Cycle Speed"; ui_tooltip = "How fast colors cycle through the palette."; ui_min = PALETTE_CYCLE_SPEED_MIN; ui_max = PALETTE_CYCLE_SPEED_MAX; ui_step = 0.01; ui_category = AS_CAT_PALETTE; > = PALETTE_CYCLE_SPEED_DEFAULT;
+
+//------------------------------------------------------------------------------------------------
+// Animation & Time Controls
+//------------------------------------------------------------------------------------------------
+AS_ANIMATION_UI(TimeSpeed, TimeKeyframe, "Animation")
+
+//------------------------------------------------------------------------------------------------
+// Audio Reactivity
+//------------------------------------------------------------------------------------------------
+AS_AUDIO_UI(MasterAudioSource, "Audio Source", AS_AUDIO_BASS, "Audio Reactivity")
+
+AS_AUDIO_GAIN_UI(AudioGain_FractalZoom, "Fractal Zoom", AUDIO_GAIN_FRACTAL_ZOOM_MAX, AUDIO_GAIN_FRACTAL_ZOOM_DEFAULT)
+uniform float AudioGain_WaveAmplitude < ui_type = "slider"; ui_label = "Wave Amplitude"; ui_tooltip = "How much audio affects the wave amplitude. Higher = more intense tendril motion with audio."; ui_min = AUDIO_GAIN_WAVE_AMPLITUDE_MIN; ui_max = AUDIO_GAIN_WAVE_AMPLITUDE_MAX; ui_step = 0.1; ui_category = AS_CAT_AUDIO; > = AUDIO_GAIN_WAVE_AMPLITUDE_DEFAULT;
+AS_AUDIO_GAIN_UI(AudioGain_Rotation, "Pattern Rotation", AUDIO_GAIN_ROTATION_MAX, AUDIO_GAIN_ROTATION_DEFAULT)
 
 //------------------------------------------------------------------------------------------------
 // Stage & Depth
@@ -202,7 +199,7 @@ float2 kaleidoscope_transform(float2 uv, int sectors) {
     float num_sectors_float = (float)sectors;
     float slice_angle_rad = AS_PI / num_sectors_float; 
     
-    angle = fmod(angle, 2.0 * slice_angle_rad);
+    angle = AS_mod(angle, 2.0 * slice_angle_rad);
     if (angle < 0.0) {
         angle += 2.0 * slice_angle_rad;
     }
@@ -221,7 +218,7 @@ float4 PS_Kaleidoscope(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) :
     float animationTime = AS_getAnimationTime(TimeSpeed, TimeKeyframe);
     
     // Get audio level for reactivity
-    float masterAudioLevel = AS_getAudioSource(MasterAudioSource);
+    float masterAudioLevel = AS_audioLevelFromSource(MasterAudioSource);
     
     // Convert texcoord to centered coordinates
     float2 screenPosition = texcoord * ReShade::ScreenSize; 
@@ -234,16 +231,14 @@ float4 PS_Kaleidoscope(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) :
     
     // 2. Apply base pattern rotation with audio reactivity
     float audioModulatedRotation = BasePatternRotationSpeed * (1.0 + masterAudioLevel * AudioGain_Rotation);
-    if (abs(audioModulatedRotation) > EPSILON) {
+    if (abs(audioModulatedRotation) > AS_EPS_SAFE) {
         float baseRotAngle = animationTime * audioModulatedRotation;
-        float sRot = sin(baseRotAngle);
-        float cRot = cos(baseRotAngle);
-        float2x2 baseRotMatrix = float2x2(cRot, sRot, -sRot, cRot); 
-        normalizedUV = mul(normalizedUV, baseRotMatrix);
+        // Apply rotation using shared helper (rotates around origin)
+        normalizedUV = AS_rotate2D(normalizedUV, baseRotAngle);
     }
 
     // 3. Apply pattern pulsing zoom
-    if (abs(GlobalPulsingZoomStrength) > EPSILON) {
+    if (abs(GlobalPulsingZoomStrength) > AS_EPS_SAFE) {
         float zoomFactor = 1.0 + sin(animationTime * GlobalPulsingZoomSpeed) * GlobalPulsingZoomStrength;
         normalizedUV *= zoomFactor;
     }
@@ -254,7 +249,7 @@ float4 PS_Kaleidoscope(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) :
     // Initialize finalColor with the 5th palette color (background)
     float3 backgroundColor;
     if (PaletteSelect == AS_PALETTE_CUSTOM) {
-        backgroundColor = AS_GET_CUSTOM_PALETTE_COLOR(ASKaleidoscope, 4);
+        backgroundColor = AS_GET_CUSTOM_PALETTE_COLOR(AS_Kaleidoscope, 4);
     } else {
         backgroundColor = AS_getPaletteColor(PaletteSelect, 4);
     }
@@ -264,7 +259,7 @@ float4 PS_Kaleidoscope(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) :
     float audioModulatedZoom = FractalZoomBase;
     
     // Add zoom pulsing from animation
-    if (abs(FractalZoomPulseStrength) > EPSILON) {
+    if (abs(FractalZoomPulseStrength) > AS_EPS_SAFE) {
         audioModulatedZoom += sin(animationTime * FractalZoomPulseSpeed) * FractalZoomPulseStrength;
     }
     
@@ -295,10 +290,10 @@ float4 PS_Kaleidoscope(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) :
         // Get A, B, C, D components from the selected palette
         float3 palA, palB, palC, palD;
         if (PaletteSelect == AS_PALETTE_CUSTOM) {
-            palA = AS_GET_CUSTOM_PALETTE_COLOR(ASKaleidoscope, 0);
-            palB = AS_GET_CUSTOM_PALETTE_COLOR(ASKaleidoscope, 1);
-            palC = AS_GET_CUSTOM_PALETTE_COLOR(ASKaleidoscope, 2);
-            palD = AS_GET_CUSTOM_PALETTE_COLOR(ASKaleidoscope, 3);
+            palA = AS_GET_CUSTOM_PALETTE_COLOR(AS_Kaleidoscope, 0);
+            palB = AS_GET_CUSTOM_PALETTE_COLOR(AS_Kaleidoscope, 1);
+            palC = AS_GET_CUSTOM_PALETTE_COLOR(AS_Kaleidoscope, 2);
+            palD = AS_GET_CUSTOM_PALETTE_COLOR(AS_Kaleidoscope, 3);
         } else {
             palA = AS_getPaletteColor(PaletteSelect, 0);
             palB = AS_getPaletteColor(PaletteSelect, 1);
@@ -311,24 +306,21 @@ float4 PS_Kaleidoscope(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) :
         
         // Apply sine wave distortion with audio reactivity
         float waveEffect = sin(distance * WaveFrequency + animationTime * WaveMotionSpeed);
-        waveEffect /= max(EPSILON, audioModulatedWaveAmplitude);
+    waveEffect /= max(AS_EPS_SAFE, audioModulatedWaveAmplitude);
         waveEffect = abs(waveEffect);
         
         // Apply power function to create "tendril" effect
-        float intensity = pow(0.01 / (waveEffect + EPSILON), 1.2);
+    float intensity = pow(0.01 / (waveEffect + AS_EPS_SAFE), 1.2);
         
         // Add to final color
         finalColor += color * intensity;
     }
     
     // Apply depth masking
-    float depth = ReShade::GetLinearizedDepth(texcoord);
-    float depthMask = depth >= EffectDepth;
-    
+    float depthMask = AS_isInFrontOfStage(texcoord, EffectDepth) ? 0.0 : 1.0;
+
     // Blend the final color with the original scene
-    float3 blended = AS_applyBlend(saturate(finalColor), originalColor.rgb, BlendMode);
-    
-    return float4(lerp(originalColor.rgb, blended, BlendStrength * depthMask), 1.0);
+    return float4(AS_composite(saturate(finalColor), originalColor.rgb, BlendMode, BlendStrength * depthMask), 1.0);
 }
 
 // ============================================================================
@@ -347,6 +339,6 @@ technique AS_BGX_Kaleidoscope <
     }
 }
 
-} // namespace ASKaleidoscope
+} // namespace AS_Kaleidoscope
 
 #endif // __AS_BGX_Kaleidoscope_1_fx

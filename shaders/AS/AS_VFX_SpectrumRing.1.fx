@@ -33,8 +33,11 @@
 #ifndef __AS_VFX_SpectrumRing_1_fx
 #define __AS_VFX_SpectrumRing_1_fx
 
+#include "ReShade.fxh"
 #include "AS_Utils.1.fxh"
 #include "AS_Palette.1.fxh"
+
+uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " "; ui_text = "\nCircular audio frequency visualizer ring with color gradient.\nIdeal for music streaming overlays.\n\nAS StageFX | Audio-Reactive Spectrum Ring by Leon Aquitaine\n"; > = 0;
 
 // --- Tunable Constants ---
 static const int REPETITIONS_MIN = 1;
@@ -61,28 +64,28 @@ static const float BLENDSTRENGTH_DEFAULT = 1.0;
 
 // --- Palette & Style ---
 // Use the AS_Palettes palette selection UI macro
-AS_PALETTE_SELECTION_UI(ColorPattern, "Color Pattern", AS_PALETTE_RAINBOW, "Palette & Style")
-AS_DECLARE_CUSTOM_PALETTE(SpectrumRing_, "Palette & Style")
+AS_PALETTE_SELECTION_UI(ColorPattern, "Color Pattern", AS_PALETTE_RAINBOW, AS_CAT_PALETTE)
+AS_DECLARE_CUSTOM_PALETTE(SpectrumRing_, AS_CAT_PALETTE)
 
-uniform bool InvertColors < ui_label = "Invert Colors"; ui_tooltip = "Invert the color pattern (reverse gradient direction)."; ui_category = "Palette & Style"; > = false;
+uniform bool InvertColors < ui_label = "Invert Colors"; ui_tooltip = "Invert the color pattern (reverse gradient direction)."; ui_category = AS_CAT_PALETTE; > = false;
 
 // --- Effect-Specific Appearance ---
-uniform int Repetitions < ui_type = "slider"; ui_label = "Repetitions"; ui_tooltip = "Number of spectrum repetitions (actual repetitions = 2^value)."; ui_min = REPETITIONS_MIN; ui_max = REPETITIONS_MAX; ui_step = 1; ui_category = "Effect-Specific Appearance"; > = REPETITIONS_DEFAULT;
-uniform int PatternStyle < ui_type = "combo"; ui_label = "Pattern Style"; ui_items = "Linear\0Mirrored\0"; ui_category = "Effect-Specific Appearance"; > = 1;
-uniform float Radius < ui_type = "slider"; ui_label = "Radius"; ui_tooltip = "Base radius of the spectrum ring."; ui_min = RADIUS_MIN; ui_max = RADIUS_MAX; ui_step = 0.01; ui_category = "Effect-Specific Appearance"; > = RADIUS_DEFAULT;
-uniform float Thickness < ui_type = "slider"; ui_label = "Thickness"; ui_tooltip = "Thickness of the spectrum ring pattern."; ui_min = THICKNESS_MIN; ui_max = THICKNESS_MAX; ui_step = 0.005; ui_category = "Effect-Specific Appearance"; > = THICKNESS_DEFAULT;
-uniform float Fade < ui_type = "slider"; ui_label = "Fade"; ui_tooltip = "Edge fade for the spectrum ring pattern."; ui_min = FADE_MIN; ui_max = FADE_MAX; ui_step = 0.01; ui_category = "Effect-Specific Appearance"; > = FADE_DEFAULT;
-uniform int Shape < ui_type = "combo"; ui_label = "Shape"; ui_items = "Screen-Relative\0Circular\0"; ui_category = "Effect-Specific Appearance"; > = 1;
+uniform int Repetitions < ui_type = "slider"; ui_label = "Repetitions"; ui_tooltip = "Number of spectrum repetitions (actual repetitions = 2^value)."; ui_min = REPETITIONS_MIN; ui_max = REPETITIONS_MAX; ui_step = 1; ui_category = AS_CAT_APPEARANCE; > = REPETITIONS_DEFAULT;
+uniform int PatternStyle < ui_type = "combo"; ui_label = "Pattern Style"; ui_items = "Linear\0Mirrored\0"; ui_category = AS_CAT_APPEARANCE; > = 1;
+uniform float Radius < ui_type = "slider"; ui_label = "Radius"; ui_tooltip = "Base radius of the spectrum ring."; ui_min = RADIUS_MIN; ui_max = RADIUS_MAX; ui_step = 0.01; ui_category = AS_CAT_APPEARANCE; > = RADIUS_DEFAULT;
+uniform float Thickness < ui_type = "slider"; ui_label = "Thickness"; ui_tooltip = "Thickness of the spectrum ring pattern."; ui_min = THICKNESS_MIN; ui_max = THICKNESS_MAX; ui_step = 0.005; ui_category = AS_CAT_APPEARANCE; > = THICKNESS_DEFAULT;
+uniform float Fade < ui_type = "slider"; ui_label = "Fade"; ui_tooltip = "Edge fade for the spectrum ring pattern."; ui_min = FADE_MIN; ui_max = FADE_MAX; ui_step = 0.01; ui_category = AS_CAT_APPEARANCE; > = FADE_DEFAULT;
+uniform int Shape < ui_type = "combo"; ui_label = "Shape"; ui_items = "Screen-Relative\0Circular\0"; ui_category = AS_CAT_APPEARANCE; > = 1;
 
 // --- Audio Reactivity ---
-AS_AUDIO_UI(AlphaSource, "Transparency Source", AS_AUDIO_BEAT, "Audio Reactivity")
-AS_AUDIO_UI(RadiusSource, "Radius Source", AS_AUDIO_BEAT, "Audio Reactivity")
-AS_AUDIO_MULT_UI(RadiusMult, "Radius Impact", 0.5, 2.0, "Audio Reactivity")
-uniform int BandTarget < ui_type = "combo"; ui_label = "Band Target"; ui_tooltip = "What property to adjust based on band intensity"; ui_items = "Radius\0Thickness\0"; ui_category = "Audio Reactivity"; > = 0;
-uniform float BandMult < ui_type = "slider"; ui_label = "Band Impact"; ui_tooltip = "How strongly the selected frequency band affects the target property."; ui_min = BANDMULT_MIN; ui_max = BANDMULT_MAX; ui_step = 0.1; ui_category = "Audio Reactivity"; > = BANDMULT_DEFAULT;
+AS_AUDIO_UI(AlphaSource, "Transparency Source", AS_AUDIO_BEAT, AS_CAT_AUDIO)
+AS_AUDIO_UI(RadiusSource, "Radius Source", AS_AUDIO_BEAT, AS_CAT_AUDIO)
+AS_AUDIO_MULT_UI(RadiusMult, "Radius Impact", 0.5, 2.0, AS_CAT_AUDIO)
+uniform int BandTarget < ui_type = "combo"; ui_label = "Band Target"; ui_tooltip = "What property to adjust based on band intensity"; ui_items = "Radius\0Thickness\0"; ui_category = AS_CAT_AUDIO; > = 0;
+uniform float BandMult < ui_type = "slider"; ui_label = "Band Impact"; ui_tooltip = "How strongly the selected frequency band affects the target property."; ui_min = BANDMULT_MIN; ui_max = BANDMULT_MAX; ui_step = 0.1; ui_category = AS_CAT_AUDIO; > = BANDMULT_DEFAULT;
 
 // --- Stage Distance ---
-uniform float EffectDepth < ui_type = "slider"; ui_label = "Effect Depth"; ui_tooltip = "Controls the reference depth for the spectrum ring effect. Lower values bring the effect closer to the camera, higher values push it further back."; ui_min = EFFECTDEPTH_MIN; ui_max = EFFECTDEPTH_MAX; ui_step = 0.01; ui_category = "Stage Distance"; > = EFFECTDEPTH_DEFAULT;
+uniform float EffectDepth < ui_type = "slider"; ui_label = "Effect Depth"; ui_tooltip = "Controls the reference depth for the spectrum ring effect. Lower values bring the effect closer to the camera, higher values push it further back."; ui_min = EFFECTDEPTH_MIN; ui_max = EFFECTDEPTH_MAX; ui_step = 0.01; ui_category = AS_CAT_STAGE; > = EFFECTDEPTH_DEFAULT;
 
 // --- Final Mix ---
 AS_BLENDMODE_UI_DEFAULT(BlendMode, 0)
@@ -92,10 +95,8 @@ AS_BLENDAMOUNT_UI(BlendAmount)
 AS_DEBUG_UI("Off\0Bands\0")
 
 // --- Helper Functions ---
-float3 SpectrumRing_getPaletteColor(float t) {    if (ColorPattern == AS_PALETTE_CUSTOM) {
-        return AS_GET_INTERPOLATED_CUSTOM_COLOR(SpectrumRing_, t);
-    }
-    return AS_getInterpolatedColor(ColorPattern, t);
+float3 SpectrumRing_getPaletteColor(float t) {
+    return AS_GET_PALETTE_COLOR(SpectrumRing_, ColorPattern, t);
 }
 
 // Namespace for spectrum ring specific functions
@@ -111,12 +112,8 @@ namespace AS_SpectrumRing {
 
 // --- Main Effect ---
 float4 PS_SpectrumRing(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target {
-    // Get original color and apply depth cutoff
-    float4 orig = tex2D(ReShade::BackBuffer, texcoord);
-    float sceneDepth = ReShade::GetLinearizedDepth(texcoord);
-    
-    if (sceneDepth < EffectDepth - 0.0005)
-        return orig;
+    // Depth-aware early return
+    AS_DEPTH_EARLY_RETURN(texcoord, EffectDepth)
     
     // Calculate spectrum ring position and coordinates
     float2 center = float2(0.5, 0.5);
@@ -174,7 +171,7 @@ float4 PS_SpectrumRing(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : S
     // Fallback for debugging
     if (debugMode) {
         // Generate a simple pattern for debugging
-        bandValue = sin(freqIdx * 0.5 + AS_getTime() * 2.0) * 0.5 + 0.5;
+        bandValue = sin(freqIdx * 0.5 + AS_timeSeconds() * 2.0) * 0.5 + 0.5;
     } else {
         // Use standardized frequency band access function from AS_Utils
         // This will automatically handle different band sizes and provide graceful fallback
@@ -182,7 +179,7 @@ float4 PS_SpectrumRing(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : S
     }
     
     // Apply audio reactivity to radius
-    float audioRadius = max(0.1, AS_getAudioSource(RadiusSource));
+    float audioRadius = max(0.1, AS_audioLevelFromSource(RadiusSource));
     float radius = Radius * (1.0 + audioRadius * RadiusMult);
     
     // Apply band intensity to selected target property for this specific band
@@ -210,7 +207,7 @@ float4 PS_SpectrumRing(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : S
     float3 color = AS_SpectrumRing::bandColor(bandValue);
     
     // Handle audio-reactive transparency - ensure minimum value for visibility
-    float alpha = max(0.5, AS_getAudioSource(AlphaSource));
+    float alpha = max(0.5, AS_audioLevelFromSource(AlphaSource));
     
     // Special handling for transparent color patterns
     if (ColorPattern == 10 || ColorPattern == 11) {
@@ -223,10 +220,9 @@ float4 PS_SpectrumRing(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : S
     }
     
     // Apply blend mode and blend amount
-    float3 blended = AS_applyBlend(color, orig.rgb, BlendMode);
     float blendAlpha = edge * mask * alpha * BlendAmount;
-    
-    return float4(lerp(orig.rgb, blended, blendAlpha), 1.0);
+
+    return float4(AS_composite(color, _as_originalColor.rgb, BlendMode, blendAlpha), 1.0);
 }
 
 technique AS_SpectrumRing < ui_label = "[AS] VFX: Spectrum Ring"; ui_tooltip = "Creates an audio-reactive circular visualizer for the full audio spectrum."; > {

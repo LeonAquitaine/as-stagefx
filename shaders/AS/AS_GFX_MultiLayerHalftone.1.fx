@@ -36,6 +36,8 @@
 #include "ReShade.fxh"
 #include "AS_Utils.1.fxh"
 
+uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " "; ui_text = "\nUp to 4 customizable halftone layers (dots, lines, crosshatch).\nCreate comic book, newspaper, and pop art styles.\n\nAS StageFX | Multi-Layer Halftone Effect by Leon Aquitaine\n"; > = 0;
+
 // ============================================================================
 // HELPER MACROS & CONSTANTS
 // ============================================================================
@@ -191,20 +193,14 @@ float GeneratePattern(float2 uv, int patternType, float scale, float density, fl
     float pattern = AS_RANGE_ZERO_ONE_MIN;
     
     if (patternType == PATTERN_DOT_ROUND || patternType == PATTERN_DOT_SQUARE) {        // For dot patterns, we need a completely different approach to rotation
-        // First convert angle to radians
-        float angleRad = angle * AS_DEGREES_TO_RADIANS;
-        
-        // Create rotation matrix
-        float2x2 rotMatrix = float2x2(
-            cos(angleRad), -sin(angleRad),
-            sin(angleRad), cos(angleRad)
-        );
+    // First convert angle to radians
+    float angleRad = angle * AS_DEGREES_TO_RADIANS;
         
         // Scale coordinates by screen size to maintain aspect ratio
         float2 scaledCoord = uv * ReShade::ScreenSize * scaleFactor;
         
-        // Rotate the grid coordinates (not the dots themselves)
-        float2 rotatedCoord = mul(rotMatrix, scaledCoord);
+    // Rotate the grid coordinates (not the dots themselves) using shared helper
+    float2 rotatedCoord = mul(AS_rot2x2(angleRad), scaledCoord);
           // Get cell position and local position within cell
         float2 cell = floor(rotatedCoord);
         float2 localPos = rotatedCoord - cell - AS_HALF; // Center within cell
@@ -222,7 +218,7 @@ float GeneratePattern(float2 uv, int patternType, float scale, float density, fl
     }
     else if (patternType == PATTERN_LINE) {
         // For lines, rotation works well with UV rotation
-        float2 rotatedUV = RotatePoint(uv, angle, screenCenter);
+    float2 rotatedUV = AS_transformUVCentered(uv, screenCenter, 1.0, angle * AS_DEGREES_TO_RADIANS);
         float2 scaledUV = rotatedUV * ReShade::ScreenSize * scaleFactor;
           // Lines pattern
         float lineValue = frac(scaledUV.y);
@@ -231,12 +227,13 @@ float GeneratePattern(float2 uv, int patternType, float scale, float density, fl
     else if (patternType == PATTERN_CROSSHATCH) {
         // For crosshatch, use two rotated line patterns
         // Primary lines
-        float2 rotatedUV1 = RotatePoint(uv, angle, screenCenter);
+    float2 rotatedUV1 = AS_transformUVCentered(uv, screenCenter, 1.0, angle * AS_DEGREES_TO_RADIANS);
         float2 scaledUV1 = rotatedUV1 * ReShade::ScreenSize * scaleFactor;
         float lineValue1 = frac(scaledUV1.y);
         float pattern1 = step(lineValue1, density * 0.5);
           // Secondary lines (90 degrees to primary)
-        float2 rotatedUV2 = RotatePoint(uv, angle + AS_HALF_PI * AS_RADIANS_TO_DEGREES, screenCenter);        float2 scaledUV2 = rotatedUV2 * ReShade::ScreenSize * scaleFactor;
+    float2 rotatedUV2 = AS_transformUVCentered(uv, screenCenter, 1.0, (angle * AS_DEGREES_TO_RADIANS) + AS_HALF_PI);
+    float2 scaledUV2 = rotatedUV2 * ReShade::ScreenSize * scaleFactor;
         float lineValue2 = frac(scaledUV2.y);
         float pattern2 = step(lineValue2, density * AS_HALF);
         

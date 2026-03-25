@@ -33,8 +33,8 @@
 // ============================================================================
 // TECHNIQUE GUARD - Prevents duplicate loading of the same shader
 // ============================================================================
-#ifndef __AS_BGX_LogSpirals_fx
-#define __AS_BGX_LogSpirals_fx
+#ifndef __AS_BGX_LogSpirals_1_fx
+#define __AS_BGX_LogSpirals_1_fx
 
 // ============================================================================
 // INCLUDES
@@ -43,17 +43,17 @@
 #include "AS_Utils.1.fxh"    // Custom header for AS utilities
 #include "AS_Palette.1.fxh"  // Color palette system
 
-namespace ASLogSpirals {
+namespace AS_LogSpirals {
 
 // ============================================================================
 // CONSTANTS
 // ============================================================================
-static const float ALPHA_EPSILON = 0.00001f; // For safe division
+// Use centralized AS_ALPHA_EPSILON from AS_Utils
 
 // Define local constants as needed
 #define LOCAL_PI AS_PI
 #define LOCAL_TAU AS_TWO_PI
-#define ROT(a) float2x2(cos(a), sin(a), -sin(a), cos(a))
+// Use shared rotation helper from AS_Utils
 
 // Additional constants to avoid magic numbers
 static const float REFLECTION_Z_BASE = 0.1f; // Z value for reflection normal calculation
@@ -178,36 +178,31 @@ uniform float AmbientLightLevel < ui_type = "slider"; ui_label = "Ambient Light 
 // Color Controls
 //------------------------------------------------------------------------------------------------
 uniform float ColorHueFactor < ui_type = "slider"; ui_label = "Primary Color Hue Factor"; ui_min = COLOR_HUE_MIN; ui_max = COLOR_HUE_MAX; ui_step = 0.01; ui_tooltip = "Controls the hue variation of the primary colors."; ui_category = "Color Controls"; > = COLOR_HUE_DEFAULT;
-uniform float3 BackgroundColor < ui_type = "color"; ui_label = "Background Color"; ui_tooltip = "Base color for the background. Set all channels to 0 for black background."; ui_category = "Color Controls";> = float3(0.0, 0.0, 0.0);
+AS_BACKGROUND_COLOR_UI(BackgroundColor, float3(0.0, 0.0, 0.0), "Color Controls")
 uniform float GlowColorIntensity < ui_type = "slider"; ui_label = "Ambient Glow Intensity"; ui_min = GLOW_INTENSITY_MIN; ui_max = GLOW_INTENSITY_MAX; ui_step = 0.001; ui_tooltip = "Controls the intensity of the ambient glow effect."; ui_category = "Color Controls"; > = GLOW_INTENSITY_DEFAULT;
 uniform float OutputBrightness < ui_type = "slider"; ui_label = "Output Brightness Boost"; ui_min = BRIGHTNESS_MIN; ui_max = BRIGHTNESS_MAX; ui_step = 0.01; ui_tooltip = "Overall brightness adjustment."; ui_category = "Color Controls"; > = BRIGHTNESS_DEFAULT;
 uniform float DetailGlowStrength < ui_type = "slider"; ui_label = "Detail-based Glow Strength"; ui_min = DETAIL_GLOW_MIN; ui_max = DETAIL_GLOW_MAX; ui_step = 0.1; ui_tooltip = "Controls the strength of detail-based glow effects."; ui_category = "Color Controls"; > = DETAIL_GLOW_DEFAULT;
 //------------------------------------------------------------------------------------------------
 // Palette & Style
 //------------------------------------------------------------------------------------------------
-uniform bool UseOriginalColors < ui_label = "Use Original Colors"; ui_tooltip = "When enabled, uses the original mathematical colors. When disabled, uses palettes."; ui_category = "Palette & Style";> = true;
+uniform bool UseOriginalColors < ui_label = "Use Original Colors"; ui_tooltip = "When enabled, uses the original mathematical colors. When disabled, uses palettes."; ui_category = AS_CAT_PALETTE;> = true;
 
-AS_PALETTE_SELECTION_UI(PalettePreset, "Color Palette", AS_PALETTE_ELECTRIC, "Palette & Style")
-AS_DECLARE_CUSTOM_PALETTE(Spiral_, "Palette & Style")
+AS_PALETTE_SELECTION_UI(PalettePreset, "Color Palette", AS_PALETTE_ELECTRIC, AS_CAT_PALETTE)
+AS_DECLARE_CUSTOM_PALETTE(Spiral_, AS_CAT_PALETTE)
 
-uniform float ColorCycleSpeed < ui_type = "slider"; ui_label = "Color Cycle Speed"; ui_tooltip = "Controls how fast palette colors cycle. 0 = static."; ui_min = -2.0; ui_max = 2.0; ui_step = 0.1; ui_category = "Palette & Style";> = 0.0;
+uniform float ColorCycleSpeed < ui_type = "slider"; ui_label = "Color Cycle Speed"; ui_tooltip = "Controls how fast palette colors cycle. 0 = static."; ui_min = -2.0; ui_max = 2.0; ui_step = 0.1; ui_category = AS_CAT_PALETTE;> = 0.0;
 
 //------------------------------------------------------------------------------------------------
 // Audio Reactivity
 //------------------------------------------------------------------------------------------------
-AS_AUDIO_UI(Spiral_AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
-AS_AUDIO_MULT_UI(Spiral_AudioMultiplier, "Audio Intensity", 1.0, 2.0, "Audio Reactivity")
-uniform int Spiral_AudioTarget < 
-    ui_type = "combo"; 
-    ui_label = "Audio Target Parameter"; 
-    ui_items = "None\0Animation Speed\0Global Rotation\0Arm Twist\0Sphere Size\0Brightness\0"; 
-    ui_category = "Audio Reactivity"; 
-> = 0;
+AS_AUDIO_UI(Spiral_AudioSource, "Audio Source", AS_AUDIO_BEAT, AS_CAT_AUDIO)
+AS_AUDIO_MULT_UI(Spiral_AudioMultiplier, "Audio Intensity", 1.0, 2.0, AS_CAT_AUDIO)
+AS_AUDIO_TARGET_UI(Spiral_AudioTarget, "None\0Animation Speed\0Global Rotation\0Arm Twist\0Sphere Size\0Brightness\0", 0)
 
 //------------------------------------------------------------------------------------------------
 // Animation Controls
 //------------------------------------------------------------------------------------------------
-AS_ANIMATION_UI(AnimationSpeed, AnimationKeyframe, "Animation")
+AS_ANIMATION_UI(AnimationSpeed, AnimationKeyframe, AS_CAT_ANIMATION)
 
 //------------------------------------------------------------------------------------------------
 // Stage/Position
@@ -233,10 +228,9 @@ float forward_exp(float l, float exp_base) { // Pass expansion base
 }
 
 float reverse_exp(float l, float exp_base) { // Pass expansion base
-    if (abs(l) < ALPHA_EPSILON && l <= 0.0f) l = ALPHA_EPSILON;
-    else if (abs(l) < ALPHA_EPSILON) l = ALPHA_EPSILON;
+    if (abs(l) < AS_ALPHA_EPSILON) l = AS_ALPHA_EPSILON;
     float log2_exp_base = log2(exp_base);
-    if (abs(log2_exp_base) < ALPHA_EPSILON) return l / (sign(log2_exp_base) * ALPHA_EPSILON);
+    if (abs(log2_exp_base) < AS_ALPHA_EPSILON) return l / (sign(log2_exp_base) * AS_ALPHA_EPSILON);
     return log2(l) / log2_exp_base;
 }
 
@@ -264,7 +258,7 @@ float3 sphere(float3 col, float2x2 rot_matrix, float3 bcol, float2 p_sphere, flo
         ccol += cspe;
         float d_dist = length(p_sphere) - r_sphere;
 
-        if (aa_sphere > ALPHA_EPSILON) {
+    if (aa_sphere > AS_ALPHA_EPSILON) {
              col = lerp(col, ccol, 1.0f - smoothstep(-aa_sphere, 0.0f, d_dist));
         } else { 
              col = lerp(col, ccol, d_dist < 0.0f ? 1.0f : 0.0f);
@@ -273,21 +267,21 @@ float3 sphere(float3 col, float2x2 rot_matrix, float3 bcol, float2 p_sphere, flo
     return col;
 }
 
-float2 toSmith(float2 p_smith) { /* ... same ... */ float d_s=(1.f-p_smith.x)*(1.f-p_smith.x)+p_smith.y*p_smith.y; d_s=abs(d_s)<ALPHA_EPSILON?sign(d_s)*ALPHA_EPSILON:d_s; return float2((1.f+p_smith.x)*(1.f-p_smith.x)-p_smith.y*p_smith.y,2.f*p_smith.y)/d_s; }
-float2 fromSmith(float2 p_smith) { /* ... same, corrected ... */ float d_s=(p_smith.x+1.f)*(p_smith.x+1.f)+p_smith.y*p_smith.y; d_s=abs(d_s)<ALPHA_EPSILON?sign(d_s)*ALPHA_EPSILON:d_s; return float2((p_smith.x+1.f)*(p_smith.x-1.f)+p_smith.y*p_smith.y,2.f*p_smith.y)/d_s; }
+float2 toSmith(float2 p_smith) { /* ... same ... */ float d_s=(1.f-p_smith.x)*(1.f-p_smith.x)+p_smith.y*p_smith.y; d_s=abs(d_s)<AS_ALPHA_EPSILON?sign(d_s)*AS_ALPHA_EPSILON:d_s; return float2((1.f+p_smith.x)*(1.f-p_smith.x)-p_smith.y*p_smith.y,2.f*p_smith.y)/d_s; }
+float2 fromSmith(float2 p_smith) { /* ... same, corrected ... */ float d_s=(p_smith.x+1.f)*(p_smith.x+1.f)+p_smith.y*p_smith.y; d_s=abs(d_s)<AS_ALPHA_EPSILON?sign(d_s)*AS_ALPHA_EPSILON:d_s; return float2((p_smith.x+1.f)*(p_smith.x-1.f)+p_smith.y*p_smith.y,2.f*p_smith.y)/d_s; }
 
 float2 transform_coords(float2 p_in, float time_param, float speed1, float speed2) { // Added speed params
     float2 p_transformed = p_in;
     float2 const_vec_one = float2(1.0f, 1.0f);
     float2 sp0 = toSmith(p_transformed);
-    float2 sp1 = toSmith(p_transformed + mul(ROT(speed1 * time_param), const_vec_one));
-    float2 sp2 = toSmith(p_transformed - mul(ROT(speed2 * time_param), const_vec_one));
+    float2 sp1 = toSmith(p_transformed + mul(AS_rot2x2(speed1 * time_param), const_vec_one));
+    float2 sp2 = toSmith(p_transformed - mul(AS_rot2x2(speed2 * time_param), const_vec_one));
     p_transformed = fromSmith(sp0 + sp1 - sp2);
     return p_transformed;
 }
 
 float3 sRGB_convert(float3 t) { /* ... same ... */ t=max(t,0.f); float3 p=float3(pow(t.x,1.f/2.4f),pow(t.y,1.f/2.4f),pow(t.z,1.f/2.4f)); float3 l=12.92f*t; float3 nl=1.055f*p-0.055f; return float3(t.x<0.0031308f?l.x:nl.x,t.y<0.0031308f?l.y:nl.y,t.z<0.0031308f?l.z:nl.z); }
-float3 aces_approx_convert(float3 v) { /* ... same ... */ v=max(v,0.f); v*=0.6f; float a=2.51f,b=0.03f,c=2.43f,d=0.59f,e=0.14f; float3 num=v*(a*v+b); float3 den=v*(c*v+d)+e; den=float3(abs(den.x)<ALPHA_EPSILON?sign(den.x)*ALPHA_EPSILON:den.x,abs(den.y)<ALPHA_EPSILON?sign(den.y)*ALPHA_EPSILON:den.y,abs(den.z)<ALPHA_EPSILON?sign(den.z)*ALPHA_EPSILON:den.z); return saturate(num/den); }
+float3 aces_approx_convert(float3 v) { /* ... same ... */ v=max(v,0.f); v*=0.6f; float a=2.51f,b=0.03f,c=2.43f,d=0.59f,e=0.14f; float3 num=v*(a*v+b); float3 den=v*(c*v+d)+e; den=float3(abs(den.x)<AS_ALPHA_EPSILON?sign(den.x)*AS_ALPHA_EPSILON:den.x,abs(den.y)<AS_ALPHA_EPSILON?sign(den.y)*AS_ALPHA_EPSILON:den.y,abs(den.z)<AS_ALPHA_EPSILON?sign(den.z)*AS_ALPHA_EPSILON:den.z); return saturate(num/den); }
 
 // Main rendering logic function, now using uniforms
 float3 effect_render(float2 p_eff, float time_eff, 
@@ -307,19 +301,19 @@ float3 effect_render(float2 p_eff, float time_eff,
     float2 p_current = p_initial_transformed;
 
     float ltm = time_eff; // Now using properly scaled animation time from AS_getAnimationTime
-    float2x2 rot0 = ROT(global_rot_speed * ltm); 
+    float2x2 rot0 = AS_rot2x2(global_rot_speed * ltm); 
     p_current = mul(rot0, p_current);
     
     float mtm = frac(ltm);
     float ntm_floor = floor(ltm); // Renamed from ntm to avoid conflict
     float gd = dot(p_current, p_current);
     float zz = forward_exp(mtm, spiral_exp_rate); // Use uniform for expansion rate
-    zz = abs(zz) < ALPHA_EPSILON ? sign(zz) * ALPHA_EPSILON : zz;
+    zz = abs(zz) < AS_ALPHA_EPSILON ? sign(zz) * AS_ALPHA_EPSILON : zz;
 
     float2 p0 = p_current / zz;
     float l0 = length(p0);
       
-    float n0_val = ceil(reverse_exp(max(l0, ALPHA_EPSILON), spiral_exp_rate));
+    float n0_val = ceil(reverse_exp(max(l0, AS_ALPHA_EPSILON), spiral_exp_rate));
     float r0 = forward_exp(n0_val, spiral_exp_rate);
     float r1 = forward_exp(n0_val - 1.0f, spiral_exp_rate);
     float r_avg = (r0 + r1) / 2.0f;
@@ -327,16 +321,16 @@ float3 effect_render(float2 p_eff, float time_eff,
     n0_val -= ntm_floor;
 
     float2 p1 = p0;
-    float reps_calc = floor(LOCAL_TAU * r_avg / (w + ALPHA_EPSILON));
+    float reps_calc = floor(LOCAL_TAU * r_avg / (w + AS_ALPHA_EPSILON));
     reps_calc = max(reps_calc, 1.0f); 
-    float2x2 rot1 = ROT(arm_twist_factor * n0_val); 
+    float2x2 rot1 = AS_rot2x2(arm_twist_factor * n0_val); 
     p1 = mul(rot1, p1);
     float m1_polar = modPolar(p1, reps_calc); // p1 is inout
-    if (abs(reps_calc) > ALPHA_EPSILON) m1_polar /= reps_calc; else m1_polar = 0.0f;
+    if (abs(reps_calc) > AS_ALPHA_EPSILON) m1_polar /= reps_calc; else m1_polar = 0.0f;
     p1.x -= r_avg;
     
     float3 ccol = (1.0f + cos(color_hue_factor * float3(0.0f, 1.0f, 2.0f) + LOCAL_TAU * (m1_polar) + 0.5f * n0_val)) * 0.5f; float3 gcol = (1.0f + cos(float3(0.0f, 1.0f, 2.0f) + global_rot_speed * 0.5f * ltm)) * glow_intensity; // Used global_rot_speed for glow color variation speed
-    float2x2 rot2 = ROT(LOCAL_TAU * m1_polar);
+    float2x2 rot2 = AS_rot2x2(LOCAL_TAU * m1_polar);
 
     float3 col_out = bg_color; // Initialize with background color instead of black
     float fade = 0.5f + 0.5f * cos(LOCAL_TAU * m1_polar + fade_speed * ltm);
@@ -365,14 +359,8 @@ float3 effect_render(float2 p_eff, float time_eff,
 // ============================================================================
 float4 LogSpiralsPS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : SV_Target0
 {
-    // Get original background color for blending and depth check
-    float4 originalColor = tex2D(ReShade::BackBuffer, texcoord);
-    float depth = ReShade::GetLinearizedDepth(texcoord);
-    
-    // Apply depth test - skip effect if pixel is closer than effect depth
-    if (depth < EffectDepth) {
-        return originalColor;
-    }
+    // Depth-aware early return
+    AS_DEPTH_EARLY_RETURN(texcoord, EffectDepth)
       // Apply audio reactivity to selected parameters
     float anim_speed = AnimationSpeed;
     float rot_speed = GlobalRotationSpeed;
@@ -380,7 +368,7 @@ float4 LogSpiralsPS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : SV
     float sphere_radius = SphereBaseRadiusScale;
     float bright = OutputBrightness;
     
-    float audioReactivity = AS_applyAudioReactivity(1.0, Spiral_AudioSource, Spiral_AudioMultiplier, true);
+    float audioReactivity = AS_audioModulate(1.0, Spiral_AudioSource, Spiral_AudioMultiplier, true, 0);
     
     // Apply audio reactivity to targeted parameter
     if (Spiral_AudioTarget == 1) anim_speed *= audioReactivity;
@@ -390,9 +378,8 @@ float4 LogSpiralsPS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : SV
     else if (Spiral_AudioTarget == 5) bright *= audioReactivity;
     
     // --- POSITION HANDLING ---
-    // Step 1: Center and correct for aspect ratio
-    float2 p_centered = (texcoord - AS_HALF) * 2.0; // Center coordinates (-1 to 1)
-    p_centered.x *= ReShade::AspectRatio;   // Correct for aspect ratio
+    // Step 1: Center and correct for aspect ratio using shared helper
+    float2 p_centered = AS_centeredUVWithAspect(texcoord, ReShade::AspectRatio) * 2.0; // [-1,1] with AR correction
     
     // Step 2: Apply rotation around center (negative rotation for clockwise)
     float sinRot, cosRot;
@@ -404,7 +391,7 @@ float4 LogSpiralsPS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : SV
     );
       // Step 3: Apply position and scale
     float2 p_final = p_rotated / Scale - Position; // Calculate the spiral effect
-    // Ensure modPolar is resolved by using the fully qualified name ASLogSpirals::modPolar    // Get animated time using standard animation control with audio reactivity applied
+    // Ensure modPolar is resolved by using the fully qualified name AS_LogSpirals::modPolar    // Get animated time using standard animation control with audio reactivity applied
     float animatedTime = AS_getAnimationTime(anim_speed, AnimationKeyframe);
       float3 col = effect_render(
         p_final, 
@@ -432,15 +419,11 @@ float4 LogSpiralsPS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : SV
         float t = intensity;
         if (ColorCycleSpeed != 0.0) {
             float cycleRate = ColorCycleSpeed * COLOR_CYCLE_RATE_SCALE;
-            t = frac(t + cycleRate * animatedTime); // Use animatedTime instead of AS_getTime()
+            t = frac(t + cycleRate * animatedTime); // Use animatedTime instead of AS_timeSeconds()
         }
         
         // Get color from palette system
-        if (PalettePreset == AS_PALETTE_CUSTOM) {
-            final_color = AS_GET_INTERPOLATED_CUSTOM_COLOR(Spiral_, t);
-        } else {
-            final_color = AS_getInterpolatedColor(PalettePreset, t);
-        }
+        final_color = AS_GET_PALETTE_COLOR(Spiral_, PalettePreset, t);
         
         // Modulate palette color by spiral intensity
         final_color *= intensity;
@@ -450,8 +433,7 @@ float4 LogSpiralsPS(float4 vpos : SV_Position, float2 texcoord : TEXCOORD0) : SV
     float4 effectColor = float4(final_color, 1.0f);
     
     // Apply blend mode and strength
-    float4 finalColor = float4(AS_applyBlend(effectColor.rgb, originalColor.rgb, BlendMode), 1.0);
-    finalColor = lerp(originalColor, finalColor, BlendStrength);
+    float4 finalColor = float4(AS_composite(effectColor.rgb, _as_originalColor.rgb, BlendMode, BlendStrength), 1.0);
     
     // Show debug overlay if enabled
     if (DebugMode != AS_DEBUG_OFF) {
@@ -482,6 +464,6 @@ technique AS_BGX_LogSpirals_Tech <
     }
 }
 
-} // end namespace ASLogSpirals
+} // end namespace AS_LogSpirals
 
-#endif // __AS_BGX_LogSpirals_fx
+#endif // __AS_BGX_LogSpirals_1_fx

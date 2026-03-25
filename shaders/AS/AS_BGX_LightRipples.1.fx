@@ -46,7 +46,7 @@
 #include "AS_Utils.1.fxh"     
 #include "AS_Palette.1.fxh"  
 
-namespace ASLightRipples {
+namespace AS_LightRipples {
 
 // ============================================================================
 // TUNABLE CONSTANTS (Defaults and Ranges)
@@ -117,8 +117,8 @@ static const float COLOR_CYCLE_SPEED_DEFAULT = 0.1;
 static const float COLOR_CYCLE_SPEED_MAX = 2.0;
 
 // --- Internal Constants ---
-static const float EPSILON = 1e-5f; // Adjusted epsilon slightly
-static const float HALF_POINT = 0.5f; 
+static const float EPSILON = AS_EPS_SAFE; // Centralized epsilon
+static const float HALF_POINT = AS_HALF; 
 static const int MAX_LOOP_ITERATIONS = 3; // Fixed loop count from original
 
 // ============================================================================
@@ -129,28 +129,28 @@ static const int MAX_LOOP_ITERATIONS = 3; // Fixed loop count from original
 
 uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Creation by Silexars' by Danguafer/Danilo Guanabara\nLink: https://www.shadertoy.com/view/XsXXDn\nLicence: CC Share-Alike Non-Commercial\n\n";>;
 
-uniform float UI_ZOffsetPerChannel < ui_type = "slider"; ui_label = "RGB Time Offset"; ui_tooltip = "Time offset between RGB channels, affects color separation."; ui_min = Z_OFFSET_PER_CHANNEL_MIN; ui_max = Z_OFFSET_PER_CHANNEL_MAX; ui_step = Z_OFFSET_PER_CHANNEL_STEP; ui_category = "Pattern/Distortion"; > = Z_OFFSET_PER_CHANNEL_DEFAULT;
-uniform float UI_DistortSinZAmp < ui_type = "slider"; ui_label = "Distortion Amplitude (Time)"; ui_tooltip = "Amplitude of time-based distortion wave (sin(z)+Amp)."; ui_min = DISTORT_SIN_Z_AMP_MIN; ui_max = DISTORT_SIN_Z_AMP_MAX; ui_step = DISTORT_SIN_Z_AMP_STEP; ui_category = "Pattern/Distortion"; > = DISTORT_SIN_Z_AMP_DEFAULT;
-uniform float UI_DistortSinLFreq < ui_type = "slider"; ui_label = "Distortion Frequency (Distance)"; ui_tooltip = "Frequency of distance-based distortion wave (sin(l*Freq - ...))."; ui_min = DISTORT_SIN_L_FREQ_MIN; ui_max = DISTORT_SIN_L_FREQ_MAX; ui_step = DISTORT_SIN_L_FREQ_STEP; ui_category = "Pattern/Distortion"; > = DISTORT_SIN_L_FREQ_DEFAULT;
-uniform float UI_DistortSinZFreq < ui_type = "slider"; ui_label = "Distortion Frequency (Time)"; ui_tooltip = "Frequency of time component in distance distortion wave (sin(... - Freq*z))."; ui_min = DISTORT_SIN_Z_FREQ_MIN; ui_max = DISTORT_SIN_Z_FREQ_MAX; ui_step = DISTORT_SIN_Z_FREQ_STEP; ui_category = "Pattern/Distortion"; > = DISTORT_SIN_Z_FREQ_DEFAULT;
-uniform float UI_ChannelIntensityNumerator < ui_type = "slider"; ui_label = "Line Brightness/Thickness"; ui_tooltip = "Numerator controlling brightness/thickness of pattern lines (Num / dist_to_cell_center)."; ui_min = CHANNEL_INTENSITY_NUMERATOR_MIN; ui_max = CHANNEL_INTENSITY_NUMERATOR_MAX; ui_step = CHANNEL_INTENSITY_NUMERATOR_STEP; ui_category = "Pattern/Distortion"; > = CHANNEL_INTENSITY_NUMERATOR_DEFAULT;
-uniform float UI_FinalDistanceFadeFactor < ui_type = "slider"; ui_label = "Center Fade Strength"; ui_tooltip = "Multiplier for fading effect towards the center (Mult / distance_from_center)."; ui_min = FINAL_DISTANCE_FADE_FACTOR_MIN; ui_max = FINAL_DISTANCE_FADE_FACTOR_MAX; ui_step = FINAL_DISTANCE_FADE_FACTOR_STEP; ui_category = "Pattern/Distortion"; > = FINAL_DISTANCE_FADE_FACTOR_DEFAULT;
+uniform float UI_ZOffsetPerChannel < ui_type = "slider"; ui_label = "RGB Time Offset"; ui_tooltip = "Time offset between RGB channels, affects color separation."; ui_min = Z_OFFSET_PER_CHANNEL_MIN; ui_max = Z_OFFSET_PER_CHANNEL_MAX; ui_step = Z_OFFSET_PER_CHANNEL_STEP; ui_category = AS_CAT_PATTERN; > = Z_OFFSET_PER_CHANNEL_DEFAULT;
+uniform float UI_DistortSinZAmp < ui_type = "slider"; ui_label = "Distortion Amplitude (Time)"; ui_tooltip = "Amplitude of time-based distortion wave (sin(z)+Amp)."; ui_min = DISTORT_SIN_Z_AMP_MIN; ui_max = DISTORT_SIN_Z_AMP_MAX; ui_step = DISTORT_SIN_Z_AMP_STEP; ui_category = AS_CAT_PATTERN; > = DISTORT_SIN_Z_AMP_DEFAULT;
+uniform float UI_DistortSinLFreq < ui_type = "slider"; ui_label = "Distortion Frequency (Distance)"; ui_tooltip = "Frequency of distance-based distortion wave (sin(l*Freq - ...))."; ui_min = DISTORT_SIN_L_FREQ_MIN; ui_max = DISTORT_SIN_L_FREQ_MAX; ui_step = DISTORT_SIN_L_FREQ_STEP; ui_category = AS_CAT_PATTERN; > = DISTORT_SIN_L_FREQ_DEFAULT;
+uniform float UI_DistortSinZFreq < ui_type = "slider"; ui_label = "Distortion Frequency (Time)"; ui_tooltip = "Frequency of time component in distance distortion wave (sin(... - Freq*z))."; ui_min = DISTORT_SIN_Z_FREQ_MIN; ui_max = DISTORT_SIN_Z_FREQ_MAX; ui_step = DISTORT_SIN_Z_FREQ_STEP; ui_category = AS_CAT_PATTERN; > = DISTORT_SIN_Z_FREQ_DEFAULT;
+uniform float UI_ChannelIntensityNumerator < ui_type = "slider"; ui_label = "Line Brightness/Thickness"; ui_tooltip = "Numerator controlling brightness/thickness of pattern lines (Num / dist_to_cell_center)."; ui_min = CHANNEL_INTENSITY_NUMERATOR_MIN; ui_max = CHANNEL_INTENSITY_NUMERATOR_MAX; ui_step = CHANNEL_INTENSITY_NUMERATOR_STEP; ui_category = AS_CAT_PATTERN; > = CHANNEL_INTENSITY_NUMERATOR_DEFAULT;
+uniform float UI_FinalDistanceFadeFactor < ui_type = "slider"; ui_label = "Center Fade Strength"; ui_tooltip = "Multiplier for fading effect towards the center (Mult / distance_from_center)."; ui_min = FINAL_DISTANCE_FADE_FACTOR_MIN; ui_max = FINAL_DISTANCE_FADE_FACTOR_MAX; ui_step = FINAL_DISTANCE_FADE_FACTOR_STEP; ui_category = AS_CAT_PATTERN; > = FINAL_DISTANCE_FADE_FACTOR_DEFAULT;
 
 // --- Palette & Style ---
-uniform bool UseOriginalColors < ui_label = "Use Original Math Colors"; ui_tooltip = "When enabled, uses the mathematically calculated RGB colors instead of palettes."; ui_category = "Palette & Style"; > = true;
-uniform float OriginalColorIntensity < ui_type = "slider"; ui_label = "Original Color Intensity"; ui_tooltip = "Adjusts the intensity of original colors when enabled."; ui_min = 0.1; ui_max = ORIG_COLOR_INTENSITY_MAX; ui_step = 0.01; ui_category = "Palette & Style"; ui_spacing = 0; > = ORIG_COLOR_INTENSITY_DEFAULT;
-uniform float OriginalColorSaturation < ui_type = "slider"; ui_label = "Original Color Saturation"; ui_tooltip = "Adjusts the saturation of original colors when enabled."; ui_min = 0.0; ui_max = ORIG_COLOR_SATURATION_MAX; ui_step = 0.01; ui_category = "Palette & Style"; > = ORIG_COLOR_SATURATION_DEFAULT;
-AS_PALETTE_SELECTION_UI(PalettePreset, "Color Palette", AS_PALETTE_NEON, "Palette & Style")
-AS_DECLARE_CUSTOM_PALETTE(LightRipples_, "Palette & Style")
-uniform float ColorCycleSpeed < ui_type = "slider"; ui_label = "Color Cycle Speed"; ui_tooltip = "Controls how fast palette colors cycle. 0 = static."; ui_min = -COLOR_CYCLE_SPEED_MAX; ui_max = COLOR_CYCLE_SPEED_MAX; ui_step = 0.1; ui_category = "Palette & Style"; > = COLOR_CYCLE_SPEED_DEFAULT;
+uniform bool UseOriginalColors < ui_label = "Use Original Math Colors"; ui_tooltip = "When enabled, uses the mathematically calculated RGB colors instead of palettes."; ui_category = AS_CAT_PALETTE; > = true;
+uniform float OriginalColorIntensity < ui_type = "slider"; ui_label = "Original Color Intensity"; ui_tooltip = "Adjusts the intensity of original colors when enabled."; ui_min = 0.1; ui_max = ORIG_COLOR_INTENSITY_MAX; ui_step = 0.01; ui_category = AS_CAT_PALETTE; ui_spacing = 0; > = ORIG_COLOR_INTENSITY_DEFAULT;
+uniform float OriginalColorSaturation < ui_type = "slider"; ui_label = "Original Color Saturation"; ui_tooltip = "Adjusts the saturation of original colors when enabled."; ui_min = 0.0; ui_max = ORIG_COLOR_SATURATION_MAX; ui_step = 0.01; ui_category = AS_CAT_PALETTE; > = ORIG_COLOR_SATURATION_DEFAULT;
+AS_PALETTE_SELECTION_UI(PalettePreset, "Color Palette", AS_PALETTE_NEON, AS_CAT_PALETTE)
+AS_DECLARE_CUSTOM_PALETTE(LightRipples_, AS_CAT_PALETTE)
+uniform float ColorCycleSpeed < ui_type = "slider"; ui_label = "Color Cycle Speed"; ui_tooltip = "Controls how fast palette colors cycle. 0 = static."; ui_min = -COLOR_CYCLE_SPEED_MAX; ui_max = COLOR_CYCLE_SPEED_MAX; ui_step = 0.1; ui_category = AS_CAT_PALETTE; > = COLOR_CYCLE_SPEED_DEFAULT;
 
 // --- Audio Reactivity ---
-AS_AUDIO_UI(LightRipples_AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
-AS_AUDIO_MULT_UI(LightRipples_AudioMultiplier, "Audio Intensity", AUDIO_MULTIPLIER_DEFAULT, AUDIO_MULTIPLIER_MAX, "Audio Reactivity")
-uniform int LightRipples_AudioTarget < ui_type = "combo"; ui_label = "Audio Target Parameter"; ui_items = "None\0Animation Speed\0Distortion Amplitude (Time)\0Distortion Frequency (Distance)\0Line Brightness\0"; ui_category = "Audio Reactivity"; > = AUDIO_TARGET_DEFAULT;
+AS_AUDIO_UI(LightRipples_AudioSource, "Audio Source", AS_AUDIO_BEAT, AS_CAT_AUDIO)
+AS_AUDIO_MULT_UI(LightRipples_AudioMultiplier, "Audio Intensity", AUDIO_MULTIPLIER_DEFAULT, AUDIO_MULTIPLIER_MAX, AS_CAT_AUDIO)
+AS_AUDIO_TARGET_UI(LightRipples_AudioTarget, "None\0Animation Speed\0Distortion Amplitude (Time)\0Distortion Frequency (Distance)\0Line Brightness\0", AUDIO_TARGET_DEFAULT)
 
 // --- Animation ---
-AS_ANIMATION_UI(AnimationSpeed, AnimationKeyframe, "Animation")
+AS_ANIMATION_UI(AnimationSpeed, AnimationKeyframe, AS_CAT_ANIMATION)
 
 // --- Stage/Position ---
 AS_POSITION_SCALE_UI(Position, Scale)
@@ -176,24 +176,15 @@ float3 getLightRipplesColor(float t, float time) {
     }
     t = saturate(t); 
     
-    if (PalettePreset == AS_PALETTE_CUSTOM) { // Use custom palette
-        return AS_GET_INTERPOLATED_CUSTOM_COLOR(LightRipples_, t);
-    }
-    return AS_getInterpolatedColor(PalettePreset, t); // Use preset palette
+    return AS_GET_PALETTE_COLOR(LightRipples_, PalettePreset, t);
 }
 
 // ============================================================================
 // PIXEL SHADER
 // ============================================================================
 float4 LightRipplesPS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD0) : SV_TARGET {
-    // Get original pixel color and depth
-    float4 originalColor = tex2D(ReShade::BackBuffer, texcoord);
-    float depth = ReShade::GetLinearizedDepth(texcoord);
-
-    // Apply depth test
-    if (depth < EffectDepth) {
-        return originalColor;
-    }
+    // Depth-aware early return
+    AS_DEPTH_EARLY_RETURN(texcoord, EffectDepth)
 
     // Apply audio reactivity to selected parameters
     float animSpeed = AnimationSpeed;
@@ -201,7 +192,7 @@ float4 LightRipplesPS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD0) : 
     float distortSinLFreq = UI_DistortSinLFreq;
     float channelIntensityNumerator = UI_ChannelIntensityNumerator;
     
-    float audioReactivity = AS_applyAudioReactivity(1.0, LightRipples_AudioSource, LightRipples_AudioMultiplier, true);
+    float audioReactivity = AS_audioModulate(1.0, LightRipples_AudioSource, LightRipples_AudioMultiplier, true, 0);
     
     // Map audio target combo index to parameter adjustment
     if (LightRipples_AudioTarget == 1) animSpeed *= audioReactivity;
@@ -216,9 +207,8 @@ float4 LightRipplesPS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD0) : 
     float rotationRadians = AS_getRotationRadians(EffectSnapRotation, EffectFineRotation);
     
     // --- POSITION HANDLING ---
-    // Step 1: Center and correct for aspect ratio
-    float2 p_centered = (texcoord - 0.5) * 2.0;          // Center coordinates (-1 to 1)
-    p_centered.x *= ReShade::AspectRatio;                // Correct for aspect ratio
+    // Center and correct for aspect ratio using shared helper
+    float2 p_centered = AS_centeredUVWithAspect(texcoord, ReShade::AspectRatio) * 2.0;
     
     // Step 2: Apply rotation around center FIRST (negative rotation for clockwise)
     float sinRot, cosRot;
@@ -285,8 +275,7 @@ float4 LightRipplesPS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD0) : 
         finalRGB = raw_rgb * OriginalColorIntensity;
         
         // Apply saturation adjustment
-        float3 grayColor = dot(finalRGB, float3(0.299f, 0.587f, 0.114f)); // Luma calculation
-        finalRGB = lerp(grayColor, finalRGB, OriginalColorSaturation);
+        finalRGB = AS_adjustSaturation(finalRGB, OriginalColorSaturation);
     } else {
         // Use palette-based colors
         // Map intensity to palette (using length as a simple measure)
@@ -301,8 +290,7 @@ float4 LightRipplesPS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD0) : 
     float4 effectColor = float4(finalRGB, 1.0f);
 
     // --- Final Blending & Debug ---
-    float4 finalColor = float4(AS_applyBlend(effectColor.rgb, originalColor.rgb, BlendMode), 1.0f);
-    finalColor = lerp(originalColor, finalColor, BlendStrength);
+    float4 finalColor = float4(AS_composite(effectColor.rgb, _as_originalColor.rgb, BlendMode, BlendStrength), 1.0f);
     
     // Show debug overlay if enabled
     if (DebugMode != AS_DEBUG_OFF) {
@@ -321,7 +309,7 @@ float4 LightRipplesPS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD0) : 
     return finalColor;
 }
 
-} // namespace ASLightRipples
+} // namespace AS_LightRipples
 
 // ============================================================================
 // TECHNIQUE
@@ -331,7 +319,7 @@ technique AS_BGX_LightRipples < ui_label="[AS] BGX: Light Ripples"; ui_tooltip="
     pass
     {
         VertexShader = PostProcessVS;
-        PixelShader = ASLightRipples::LightRipplesPS;
+        PixelShader = AS_LightRipples::LightRipplesPS;
     }
 }
 

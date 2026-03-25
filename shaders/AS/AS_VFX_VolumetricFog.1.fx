@@ -47,6 +47,8 @@
 #include "AS_Utils.1.fxh"
 #include "AS_Noise.1.fxh" // For Noise3d variations and AS_hash12
 
+uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " "; ui_text = "\nAtmospheric fog with procedural noise, wind, and depth layering.\nAdds mystery and atmosphere to outdoor scenes.\n\nAS StageFX | Volumetric Fog Effect by Leon Aquitaine\n"; > = 0;
+
 // ============================================================================
 // TUNABLE CONSTANTS
 // ============================================================================
@@ -134,18 +136,18 @@ uniform float Fog_VerticalSpeed < ui_type = "slider"; ui_label = "Updraft"; ui_m
 uniform float Fog_Turbulence < ui_type = "slider"; ui_label = "Turbulence"; ui_min = FOG_TURBULENCE_MIN; ui_max = FOG_TURBULENCE_MAX; ui_step = 0.1; ui_category = "Wind"; ui_tooltip = "Adds swirling, chaotic motion to the wind flow. Higher values create more turbulent, realistic air movement."; > = FOG_TURBULENCE_DEFAULT;
 
 // 4. ANIMATION CONTROLS
-AS_ANIMATION_UI(AnimationSpeed, AnimationKeyframe, "Animation")
+AS_ANIMATION_UI(AnimationSpeed, AnimationKeyframe, AS_CAT_ANIMATION)
 AS_ROTATION_UI(VolumetricFog_SnapRotation, VolumetricFog_FineRotation)
 
 // 6. POSITION - Stage positioning controls
-uniform float Fog_Offset_World_X < ui_type = "slider"; ui_label = "Left/Right Position"; ui_min = FOG_OFFSET_WORLD_MIN; ui_max = FOG_OFFSET_WORLD_MAX; ui_step = 1.0; ui_category = "Position"; ui_tooltip = "Shifts the fog cloud left (negative) or right (positive) relative to your view."; > = 0.0;
-uniform float Fog_Offset_World_Y < ui_type = "slider"; ui_label = "Up/Down Position"; ui_min = FOG_OFFSET_WORLD_MIN; ui_max = FOG_OFFSET_WORLD_MAX; ui_step = 1.0; ui_category = "Position"; ui_tooltip = "Shifts the fog cloud up (positive) or down (negative) relative to your view."; > = -130.0;
-uniform float Fog_Offset_World_Z < ui_type = "slider"; ui_label = "Forward/Back Position"; ui_min = FOG_OFFSET_WORLD_MIN; ui_max = FOG_OFFSET_WORLD_MAX; ui_step = 1.0; ui_category = "Position"; ui_tooltip = "Pushes the fog forward (positive) or backward (negative) in the scene."; > = -130.0;
+uniform float Fog_Offset_World_X < ui_type = "slider"; ui_label = "Left/Right Position"; ui_min = FOG_OFFSET_WORLD_MIN; ui_max = FOG_OFFSET_WORLD_MAX; ui_step = 1.0; ui_category = AS_CAT_STAGE; ui_tooltip = "Shifts the fog cloud left (negative) or right (positive) relative to your view."; > = 0.0;
+uniform float Fog_Offset_World_Y < ui_type = "slider"; ui_label = "Up/Down Position"; ui_min = FOG_OFFSET_WORLD_MIN; ui_max = FOG_OFFSET_WORLD_MAX; ui_step = 1.0; ui_category = AS_CAT_STAGE; ui_tooltip = "Shifts the fog cloud up (positive) or down (negative) relative to your view."; > = -130.0;
+uniform float Fog_Offset_World_Z < ui_type = "slider"; ui_label = "Forward/Back Position"; ui_min = FOG_OFFSET_WORLD_MIN; ui_max = FOG_OFFSET_WORLD_MAX; ui_step = 1.0; ui_category = AS_CAT_STAGE; ui_tooltip = "Pushes the fog forward (positive) or backward (negative) in the scene."; > = -130.0;
 
 // 7. PERFORMANCE - Quality and speed settings
-uniform float Fog_Precision < ui_type = "slider"; ui_label = "Quality"; ui_min = FOG_PRECISION_MIN; ui_max = FOG_PRECISION_MAX; ui_step = 0.01; ui_category = "Performance"; ui_category_closed = true; ui_tooltip = "Fog rendering quality. Higher values = better quality but slower performance."; > = FOG_PRECISION_DEFAULT;
-uniform float Fog_Multiplier < ui_type = "slider"; ui_label = "Speed Boost"; ui_min = FOG_MULTIPLIER_MIN; ui_max = FOG_MULTIPLIER_MAX; ui_step = 0.01; ui_category = "Performance"; ui_category_closed = true; ui_tooltip = "Performance optimization. Higher values = faster rendering but less detail."; > = FOG_MULTIPLIER_DEFAULT;
-uniform int Fog_RayIterations < ui_type = "slider"; ui_label = "Detail Level"; ui_min = FOG_RAY_ITERATIONS_MIN; ui_max = FOG_RAY_ITERATIONS_MAX; ui_step = 1; ui_category = "Performance"; ui_category_closed = true; ui_tooltip = "Fog detail complexity. Higher values = more detailed fog but slower performance."; > = FOG_RAY_ITERATIONS_DEFAULT;
+uniform float Fog_Precision < ui_type = "slider"; ui_label = "Quality"; ui_min = FOG_PRECISION_MIN; ui_max = FOG_PRECISION_MAX; ui_step = 0.01; ui_category = AS_CAT_PERFORMANCE; ui_category_closed = true; ui_tooltip = "Fog rendering quality. Higher values = better quality but slower performance."; > = FOG_PRECISION_DEFAULT;
+uniform float Fog_Multiplier < ui_type = "slider"; ui_label = "Speed Boost"; ui_min = FOG_MULTIPLIER_MIN; ui_max = FOG_MULTIPLIER_MAX; ui_step = 0.01; ui_category = AS_CAT_PERFORMANCE; ui_category_closed = true; ui_tooltip = "Performance optimization. Higher values = faster rendering but less detail."; > = FOG_MULTIPLIER_DEFAULT;
+uniform int Fog_RayIterations < ui_type = "slider"; ui_label = "Detail Level"; ui_min = FOG_RAY_ITERATIONS_MIN; ui_max = FOG_RAY_ITERATIONS_MAX; ui_step = 1; ui_category = AS_CAT_PERFORMANCE; ui_category_closed = true; ui_tooltip = "Fog detail complexity. Higher values = more detailed fog but slower performance."; > = FOG_RAY_ITERATIONS_DEFAULT;
 
 // FOG PATTERN & TEXTURE
 // TEXTURE PATTERN SPECIFIC (requires a texture)
@@ -341,7 +343,7 @@ float calculateFogDensity(in float2 screen_uv, in float linearized_depth, in flo
 {
     // Apply standard rotation to screen coordinates around center
     float rotation_radians = AS_getRotationRadians(VolumetricFog_SnapRotation, VolumetricFog_FineRotation);
-    float2 rotated_uv = AS_applyRotation(screen_uv, rotation_radians);
+    float2 rotated_uv = AS_rotate2D(screen_uv, rotation_radians);
     
     // Pre-calculate constants and repeated values
     float scene_world_distance = linearized_depth * WORLD_SCALE;
@@ -362,7 +364,7 @@ float calculateFogDensity(in float2 screen_uv, in float linearized_depth, in flo
     float step_size_multiplier = Fog_Multiplier;
 
     // Simulate a ray_direction from rotated screen UVs (for screen-centered rotation)
-    float2 normalized_screen_coords = (rotated_uv - AS_HALF) * float2(ReShade::AspectRatio, 1.0) * 2.0;
+    float2 normalized_screen_coords = AS_centeredUVWithAspect(rotated_uv, ReShade::AspectRatio) * 2.0;
     float3 simulated_ray_direction = normalize(float3(normalized_screen_coords.x, normalized_screen_coords.y, -1.0));    // Calculate fog height mask based on rotated screen position and depth (optimized)
     float screen_height_factor = 1.0 - rotated_uv.y; // 0 at top of screen, 1 at bottom
     float horizon_line = 1.0 - Fog_HeightHorizon.y; // Convert to same coordinate system
@@ -438,7 +440,7 @@ float4 PS_VolumetricFog(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : 
     float3 final_color_rgb = lerp(distance_haze_color, Fog_Color.rgb, fog_density_factor);
 
 	// Apply final blending over the original backbuffer.
-    return AS_applyBlend(float4(final_color_rgb, 1.0), original_color, VolumetricFog_BlendMode, VolumetricFog_BlendAmount);
+    return AS_blendRGBA(float4(final_color_rgb, 1.0), original_color, VolumetricFog_BlendMode, VolumetricFog_BlendAmount);
 }
 
 // ============================================================================

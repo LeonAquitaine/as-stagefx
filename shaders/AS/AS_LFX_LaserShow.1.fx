@@ -38,6 +38,8 @@
 #include "AS_Noise.1.fxh"
 #include "AS_Palette.1.fxh"
 
+uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " "; ui_text = "\nAudio-reactive laser beams with smoke and swirling vortices.\nPerfect for concert stages and DJ booth scenes.\n\nAS StageFX | Audio-Reactive Laser Show by Leon Aquitaine\n"; > = 0;
+
 // ============================================================================
 // TUNABLE CONSTANTS
 // ============================================================================
@@ -133,10 +135,10 @@ static const float COLOR_CYCLE_SPEED_DEFAULT = 0.0;
 // PALETTE & STYLE
 // ============================================================================
 // Using standardized AS_Utils palette selection
-AS_PALETTE_SELECTION_UI(PalettePreset, "Palette", AS_PALETTE_NEON, "Palette & Style")
-AS_DECLARE_CUSTOM_PALETTE(LaserShow_, "Palette & Style")
+AS_PALETTE_SELECTION_UI(PalettePreset, "Palette", AS_PALETTE_NEON, AS_CAT_PALETTE)
+AS_DECLARE_CUSTOM_PALETTE(LaserShow_, AS_CAT_PALETTE)
 
-uniform float ColorCycleSpeed < ui_type = "slider"; ui_label = "Color Cycle Speed"; ui_tooltip = "Controls how fast the beam colors cycle. 0 = static, negative = counter-clockwise, positive = clockwise"; ui_min = COLOR_CYCLE_SPEED_MIN; ui_max = COLOR_CYCLE_SPEED_MAX; ui_step = 0.1; ui_category = "Palette & Style"; > = COLOR_CYCLE_SPEED_DEFAULT;
+AS_COLOR_CYCLE_UI(ColorCycleSpeed, AS_CAT_PALETTE)
 
 // ============================================================================
 // EFFECT-SPECIFIC APPEARANCE
@@ -152,20 +154,21 @@ uniform float BeamSpread < ui_type = "slider"; ui_label = "Base Spread Angle (de
 // ============================================================================
 // ANIMATION
 // ============================================================================
-uniform float FanMagnitude < ui_type = "slider"; ui_label = "Fanning Magnitude"; ui_min = FAN_MAG_MIN; ui_max = FAN_MAG_MAX; ui_step = 0.01; ui_category = "Animation"; > = FAN_MAG_DEFAULT;
-uniform float FanSpeed < ui_type = "slider"; ui_label = "Fanning Speed"; ui_min = FAN_SPEED_MIN; ui_max = FAN_SPEED_MAX; ui_step = 0.01; ui_category = "Animation"; > = FAN_SPEED_DEFAULT;
-uniform float BlinkSpeed < ui_type = "slider"; ui_label = "Blinking Speed"; ui_min = BLINK_SPEED_MIN; ui_max = BLINK_SPEED_MAX; ui_step = 0.01; ui_category = "Animation"; > = BLINK_SPEED_DEFAULT;
+AS_ANIMATION_UI(AnimationSpeed, AnimationKeyframe, AS_CAT_ANIMATION)
+uniform float FanMagnitude < ui_type = "slider"; ui_label = "Fanning Magnitude"; ui_min = FAN_MAG_MIN; ui_max = FAN_MAG_MAX; ui_step = 0.01; ui_category = AS_CAT_ANIMATION; > = FAN_MAG_DEFAULT;
+uniform float FanSpeed < ui_type = "slider"; ui_label = "Fanning Speed"; ui_min = FAN_SPEED_MIN; ui_max = FAN_SPEED_MAX; ui_step = 0.01; ui_category = AS_CAT_ANIMATION; > = FAN_SPEED_DEFAULT;
+uniform float BlinkSpeed < ui_type = "slider"; ui_label = "Blinking Speed"; ui_min = BLINK_SPEED_MIN; ui_max = BLINK_SPEED_MAX; ui_step = 0.01; ui_category = AS_CAT_ANIMATION; > = BLINK_SPEED_DEFAULT;
 // Using standardized UI macros for sway parameters
-AS_SWAYSPEED_UI(SwaySpeed, "Animation")
-AS_SWAYANGLE_UI(SwayAngle, "Animation")
+AS_SWAYSPEED_UI(SwaySpeed, AS_CAT_ANIMATION)
+AS_SWAYANGLE_UI(SwayAngle, AS_CAT_ANIMATION)
 
 // ============================================================================
 // AUDIO REACTIVITY
 // ============================================================================
-AS_AUDIO_UI(FanAudioSource, "Fanning Audio Source", AS_AUDIO_OFF, "Audio Reactivity")
-AS_AUDIO_MULT_UI(FanAudioMult, "Fanning Audio Multiplier", 1.0, 2.0, "Audio Reactivity")
-AS_AUDIO_UI(BlinkAudioSource, "Blinking Audio Source", AS_AUDIO_VOLUME, "Audio Reactivity")
-AS_AUDIO_MULT_UI(BlinkAudioMult, "Blinking Audio Multiplier", 1.0, 2.0, "Audio Reactivity")
+AS_AUDIO_UI(FanAudioSource, "Fanning Audio Source", AS_AUDIO_OFF, AS_CAT_AUDIO)
+AS_AUDIO_MULT_UI(FanAudioMult, "Fanning Audio Multiplier", 1.0, 2.0, AS_CAT_AUDIO)
+AS_AUDIO_UI(BlinkAudioSource, "Blinking Audio Source", AS_AUDIO_VOLUME, AS_CAT_AUDIO)
+AS_AUDIO_MULT_UI(BlinkAudioMult, "Blinking Audio Multiplier", 1.0, 2.0, AS_CAT_AUDIO)
 
 // ============================================================================
 // NOISE (SMOKE)
@@ -227,10 +230,7 @@ float3 LaserShow_getPaletteColor(float t, float time) {
     }
     
     // Return the color from the selected palette
-    if (PalettePreset == AS_PALETTE_CUSTOM) {
-        return AS_GET_INTERPOLATED_CUSTOM_COLOR(LaserShow_, t);
-    }
-    return AS_getInterpolatedColor(PalettePreset, t);
+    return AS_GET_PALETTE_COLOR(LaserShow_, PalettePreset, t);
 }
 
 // --- Simplex Noise Implementation (2D, optimized for FBM) ---
@@ -303,18 +303,18 @@ float4 PS_LaserShow(float4 pos : SV_Position, float2 texcoord : TexCoord) : SV_T
 
     // --- Depth cutoff (stage depth) ---
     float sceneDepth = ReShade::GetLinearizedDepth(texcoord);
-    if (sceneDepth < StageDepth)
+    if (AS_isInFrontOfStage(texcoord, StageDepth))
         return orig;
 
     // --- Noise (smoke) ---
-    float time = AS_getTime();
+    float time = AS_getAnimationTime(AnimationSpeed, AnimationKeyframe);
     float noise = AS_LaserShow::FBMNoise(aspectUV, time, NoiseScale, NoiseSpeed);
     float smoke = pow(noise, SmokeDensity);
 
     // --- Fanning and Blinking Animation (audio-reactive) ---
     bool enableAudio = true; // Always enable audio reactivity since we removed the checkbox
-    float fanAudio = AS_applyAudioReactivity(1.0, FanAudioSource, FanAudioMult, enableAudio);
-    float blinkAudio = AS_applyAudioReactivity(1.0, BlinkAudioSource, BlinkAudioMult, enableAudio);
+    float fanAudio = AS_audioModulate(1.0, FanAudioSource, FanAudioMult, enableAudio, 0);
+    float blinkAudio = AS_audioModulate(1.0, BlinkAudioSource, BlinkAudioMult, enableAudio, 0);
 
     float fanPhase = time * FanSpeed * fanAudio;
     float blinkPhase = time * BlinkSpeed * blinkAudio;
@@ -377,9 +377,7 @@ float4 PS_LaserShow(float4 pos : SV_Position, float2 texcoord : TexCoord) : SV_T
     float4 outColor = AS_debugOutput(DebugMode, orig, maskDbg, audioDbg, laserDbg);
     if (DebugMode == 0) {
         // Use standard blend function from AS_Utils with blend amount
-        float3 blended = AS_applyBlend(effect.rgb, orig.rgb, BlendMode);
-        // Apply blend amount for final mix
-        outColor = float4(lerp(orig.rgb, blended, BlendAmount), orig.a);
+        outColor = float4(AS_composite(effect.rgb, orig.rgb, BlendMode, BlendAmount), orig.a);
     }
     return outColor;
 }

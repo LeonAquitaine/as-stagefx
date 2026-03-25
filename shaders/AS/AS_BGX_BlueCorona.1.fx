@@ -48,7 +48,7 @@
 #include "AS_Utils.1.fxh"     
 #include "AS_Palette.1.fxh"  
 
-namespace ASBlueCorona {
+namespace AS_BlueCorona {
 
 // ============================================================================
 // TUNABLE CONSTANTS (Defaults and Ranges)
@@ -129,15 +129,15 @@ uniform int IterationCount < ui_type = "slider"; ui_label = "Iteration Count"; u
 uniform float FlowMultiplier < ui_type = "slider"; ui_label = "Flow Multiplier"; ui_tooltip = "Controls how much the pattern flows and distorts."; ui_min = FLOW_MULTIPLIER_MIN; ui_max = FLOW_MULTIPLIER_MAX; ui_step = FLOW_MULTIPLIER_STEP; ui_category = "Pattern"; > = FLOW_MULTIPLIER_DEFAULT;
 
 // --- Color Tuning ---
-uniform float RedWeight < ui_type = "slider"; ui_label = "Red Channel Weight"; ui_tooltip = "Weight applied to the red channel. Higher values produce stronger red color."; ui_min = RED_WEIGHT_MIN; ui_max = RED_WEIGHT_MAX; ui_step = RED_WEIGHT_STEP; ui_category = "Color"; > = RED_WEIGHT_DEFAULT;
-uniform float GreenWeight < ui_type = "slider"; ui_label = "Green Channel Weight"; ui_tooltip = "Weight applied to the green channel. Higher values produce stronger green color."; ui_min = GREEN_WEIGHT_MIN; ui_max = GREEN_WEIGHT_MAX; ui_step = GREEN_WEIGHT_STEP; ui_category = "Color"; > = GREEN_WEIGHT_DEFAULT;
-uniform float BlueWeight < ui_type = "slider"; ui_label = "Blue Channel Weight"; ui_tooltip = "Weight applied to the blue channel. Higher values produce stronger blue color."; ui_min = BLUE_WEIGHT_MIN; ui_max = BLUE_WEIGHT_MAX; ui_step = BLUE_WEIGHT_STEP; ui_category = "Color"; > = BLUE_WEIGHT_DEFAULT;
-uniform float3 BackgroundColor < ui_type = "color"; ui_label = "Background Color"; ui_tooltip = "Base color for the background of the effect."; ui_category = "Color"; > = BACKGROUND_COLOR_DEFAULT;
+uniform float RedWeight < ui_type = "slider"; ui_label = "Red Channel Weight"; ui_tooltip = "Weight applied to the red channel. Higher values produce stronger red color."; ui_min = RED_WEIGHT_MIN; ui_max = RED_WEIGHT_MAX; ui_step = RED_WEIGHT_STEP; ui_category = AS_CAT_COLOR; > = RED_WEIGHT_DEFAULT;
+uniform float GreenWeight < ui_type = "slider"; ui_label = "Green Channel Weight"; ui_tooltip = "Weight applied to the green channel. Higher values produce stronger green color."; ui_min = GREEN_WEIGHT_MIN; ui_max = GREEN_WEIGHT_MAX; ui_step = GREEN_WEIGHT_STEP; ui_category = AS_CAT_COLOR; > = GREEN_WEIGHT_DEFAULT;
+uniform float BlueWeight < ui_type = "slider"; ui_label = "Blue Channel Weight"; ui_tooltip = "Weight applied to the blue channel. Higher values produce stronger blue color."; ui_min = BLUE_WEIGHT_MIN; ui_max = BLUE_WEIGHT_MAX; ui_step = BLUE_WEIGHT_STEP; ui_category = AS_CAT_COLOR; > = BLUE_WEIGHT_DEFAULT;
+AS_BACKGROUND_COLOR_UI(BackgroundColor, BACKGROUND_COLOR_DEFAULT, AS_CAT_COLOR)
 
 // --- Audio Reactivity ---
 AS_AUDIO_UI(BlueCorona_AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
 AS_AUDIO_MULT_UI(BlueCorona_AudioMultiplier, "Audio Intensity", AUDIO_MULTIPLIER_DEFAULT, AUDIO_MULTIPLIER_MAX, "Audio Reactivity")
-uniform int BlueCorona_AudioTarget < ui_type = "combo"; ui_label = "Audio Target Parameter"; ui_items = "None\0Animation Speed\0Pattern Scale\0Flow Multiplier\0Red Weight\0Green Weight\0Blue Weight\0Background Brightness\0Iteration Count (Inverse)\0"; ui_category = "Audio Reactivity"; > = AUDIO_TARGET_DEFAULT;
+AS_AUDIO_TARGET_UI(BlueCorona_AudioTarget, "None\0Animation Speed\0Pattern Scale\0Flow Multiplier\0Red Weight\0Green Weight\0Blue Weight\0Background Brightness\0Iteration Count (Inverse)\0", AUDIO_TARGET_DEFAULT)
 
 // --- Animation ---
 AS_ANIMATION_UI(AnimationSpeed, AnimationKeyframe, "Animation")
@@ -158,14 +158,8 @@ AS_DEBUG_UI("Off\0Show Audio Reactivity\0")
 // PIXEL SHADER
 // ============================================================================
 float4 BlueCoronaPS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD) : SV_TARGET {
-    // Get original pixel color and depth
-    float4 originalColor = tex2D(ReShade::BackBuffer, texcoord);
-    float depth = ReShade::GetLinearizedDepth(texcoord);
-    
-    // Apply depth test
-    if (depth < EffectDepth) {
-        return originalColor;
-    }
+    // Depth-aware early return
+    AS_DEPTH_EARLY_RETURN(texcoord, EffectDepth)
       // Apply audio reactivity to selected parameters
     float animSpeed = AnimationSpeed/4.0; // Normalize speed for better control
     float patternScl = PatternScale;
@@ -176,7 +170,7 @@ float4 BlueCoronaPS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD) : SV_
     float3 bgColor = BackgroundColor;
     int iterCount = IterationCount;
     
-    float audioReactivity = AS_applyAudioReactivity(1.0, BlueCorona_AudioSource, BlueCorona_AudioMultiplier, true);
+    float audioReactivity = AS_audioModulate(1.0, BlueCorona_AudioSource, BlueCorona_AudioMultiplier, true, 0);
     
     // Map audio target combo index to parameter adjustment
     if (BlueCorona_AudioTarget == 1) animSpeed *= audioReactivity;
@@ -200,25 +194,17 @@ float4 BlueCoronaPS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD) : SV_
     float rotationRadians = AS_getRotationRadians(EffectSnapRotation, EffectFineRotation);
     
     // --- POSITION HANDLING ---
-    // Step 1: Center and correct for aspect ratio
-    float2 p_centered = (texcoord - AS_HALF) * 2.0;          // Center coordinates (-1 to 1)
-    p_centered.x *= ReShade::AspectRatio;                // Correct for aspect ratio
+    // Center and correct for aspect ratio using shared helper
+    float2 p_centered = AS_centeredUVWithAspect(texcoord, ReShade::AspectRatio) * 2.0; // [-1,1]
     
     // Step 2: Apply rotation around center (negative rotation for clockwise)
-    float sinRot, cosRot;
-    sincos(-rotationRadians, sinRot, cosRot);
-    float2 p_rotated = float2(
-        p_centered.x * cosRot - p_centered.y * sinRot,
-        p_centered.x * sinRot + p_centered.y * cosRot
-    );
+    float2 p_rotated = AS_rotate2D(p_centered, -rotationRadians);
       
     // Step 3: Apply position and scale
     float2 coordsAdjusted = p_rotated / Scale - Position;
     
-    // Generate normalized coordinates for the algorithm
-    // Important: We need to preserve aspect ratio correction here
+    // Generate normalized coordinates for the algorithm (already aspect-corrected)
     float2 aspectCorrectedCoords = coordsAdjusted;
-    aspectCorrectedCoords.y *= ReShade::AspectRatio / BUFFER_WIDTH * BUFFER_HEIGHT;
     
     // Scale to screen space but maintain aspect ratio
     float2 f_loop_var = float2(1.0, 1.0);  // Use normalized coordinates instead of screen resolution
@@ -271,8 +257,7 @@ float4 BlueCoronaPS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD) : SV_
     float4 effectColor = float4(effectColorRGB, 1.0);
     
     // --- Final Blending & Debug ---
-    float4 finalColor = float4(AS_applyBlend(effectColor.rgb,originalColor.rgb, BlendMode), 1.0);
-    finalColor = lerp(originalColor, finalColor, BlendStrength);
+    float4 finalColor = float4(AS_composite(effectColor.rgb, _as_originalColor.rgb, BlendMode, BlendStrength), 1.0);
     
     // Show debug overlay if enabled
     if (DebugMode != AS_DEBUG_OFF) {
@@ -291,7 +276,7 @@ float4 BlueCoronaPS(float4 vpos : SV_POSITION, float2 texcoord : TEXCOORD) : SV_
     return finalColor;
 }
 
-} // namespace ASBlueCorona
+} // namespace AS_BlueCorona
 
 // ============================================================================
 // TECHNIQUE
@@ -301,7 +286,7 @@ technique AS_BGX_BlueCorona < ui_label="[AS] BGX: Blue Corona"; ui_tooltip="Crea
     pass
     {
         VertexShader = PostProcessVS;
-        PixelShader = ASBlueCorona::BlueCoronaPS;
+        PixelShader = AS_BlueCorona::BlueCoronaPS;
     }
 }
 

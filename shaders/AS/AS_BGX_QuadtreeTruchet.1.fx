@@ -46,7 +46,7 @@
 #define __AS_BGX_QuadtreeTruchet_1_fx
 
 #include "ReShade.fxh"
-#include "AS_Utils.1.fxh" // For AS_getAnimationTime, AS_applyBlend, AS_PI, etc.
+#include "AS_Utils.1.fxh" // For AS_getAnimationTime, AS_blendRGB/RGBA, AS_PI, etc.
 #include "AS_Noise.1.fxh" // For AS_hash22
 #include "AS_Palette.1.fxh" // For AS palette support
 
@@ -76,10 +76,10 @@ uniform float MediumTileProbability < ui_type = "slider"; ui_label = "Medium Til
 uniform float PatternSeed < ui_type = "slider"; ui_label = "Pattern Seed"; ui_tooltip = "Changes the random pattern without affecting other parameters. Different values create different arrangements."; ui_min = PATTERN_SEED_MIN; ui_max = PATTERN_SEED_MAX; ui_category = "Pattern Distribution"; > = PATTERN_SEED_DEFAULT;
 
 // Style & Color
-AS_PALETTE_SELECTION_UI(PaletteSelection, "Color Palette", AS_PALETTE_CLASSIC_VU, "Palette & Style")
-AS_DECLARE_CUSTOM_PALETTE(TruchetPalette, "Palette & Style")
-uniform int ColorMode < ui_type = "combo"; ui_label = "Color Application Mode"; ui_items = "Two-Tone\0Spectrum Blend\0Gradient Blend\0"; ui_tooltip = "How colors from the palette are applied to the pattern."; ui_category = "Palette & Style"; > = 1;
-uniform bool EnableStackedTiles < ui_label = "Enable Stacked Tiles View"; ui_tooltip = "Shows tile layers stacked, revealing the generation process. Disables continuous surface look."; ui_category = "Palette & Style"; > = false;
+AS_PALETTE_SELECTION_UI(PaletteSelection, "Color Palette", AS_PALETTE_CLASSIC_VU, AS_CAT_PALETTE)
+AS_DECLARE_CUSTOM_PALETTE(TruchetPalette, AS_CAT_PALETTE)
+uniform int ColorMode < ui_type = "combo"; ui_label = "Color Application Mode"; ui_items = "Two-Tone\0Spectrum Blend\0Gradient Blend\0"; ui_tooltip = "How colors from the palette are applied to the pattern."; ui_category = AS_CAT_PALETTE; > = 1;
+uniform bool EnableStackedTiles < ui_label = "Enable Stacked Tiles View"; ui_tooltip = "Shows tile layers stacked, revealing the generation process. Disables continuous surface look."; ui_category = AS_CAT_PALETTE; > = false;
 
 // Visual Effects
 static const float STRIPE_FREQUENCY_MIN = 5.0, STRIPE_FREQUENCY_MAX = 40.0, STRIPE_FREQUENCY_DEFAULT = 20.0;
@@ -91,19 +91,19 @@ uniform float HighlightFrequency < ui_type = "slider"; ui_label = "Highlight Den
 uniform float LinePatternFrequency < ui_type = "slider"; ui_label = "Line Pattern Frequency"; ui_tooltip = "Controls the frequency of the decorative line pattern overlay."; ui_min = LINE_PATTERN_FREQUENCY_MIN; ui_max = LINE_PATTERN_FREQUENCY_MAX; ui_category = "Visual Effects"; > = LINE_PATTERN_FREQUENCY_DEFAULT;
 
 // Animation Controls
-AS_ANIMATION_UI(AnimationSpeed, AnimationKeyframe, "Animation")
+AS_ANIMATION_UI(AnimationSpeed, AnimationKeyframe, AS_CAT_ANIMATION)
 static const float ANIM_TIME_SCALE_MIN = 0.01, ANIM_TIME_SCALE_MAX = 2.0, ANIM_TIME_SCALE_DEFAULT = 0.125; // Original was iTime/8
 static const float ROTATION_SPEED_MIN = 0.0, ROTATION_SPEED_MAX = 1.0, ROTATION_SPEED_DEFAULT = 0.25; // Adjusted for visual feel
 static const float PAN_SPEED_MIN = -2.0, PAN_SPEED_MAX = 2.0, PAN_SPEED_DEFAULT = 0.2; // Adjusted for visual feel
 
-uniform float AnimationTimeScale < ui_type = "slider"; ui_label = "Animation Time Scale Factor"; ui_tooltip = "Scales the internal time used for animations (e.g., rotation cycle speed)."; ui_min = ANIM_TIME_SCALE_MIN; ui_max = ANIM_TIME_SCALE_MAX; ui_category = "Animation"; > = ANIM_TIME_SCALE_DEFAULT;
-uniform float OverallRotationSpeed < ui_type = "slider"; ui_label = "Overall Rotation Speed"; ui_tooltip = "Speed of the main pattern rotation."; ui_min = ROTATION_SPEED_MIN; ui_max = ROTATION_SPEED_MAX; ui_category = "Animation"; > = ROTATION_SPEED_DEFAULT;
-uniform float PanSpeedY < ui_type = "slider"; ui_label = "Vertical Pan Speed"; ui_tooltip = "Speed of the vertical panning animation."; ui_min = PAN_SPEED_MIN; ui_max = PAN_SPEED_MAX; ui_category = "Animation"; > = PAN_SPEED_DEFAULT;
+uniform float AnimationTimeScale < ui_type = "slider"; ui_label = "Animation Time Scale Factor"; ui_tooltip = "Scales the internal time used for animations (e.g., rotation cycle speed)."; ui_min = ANIM_TIME_SCALE_MIN; ui_max = ANIM_TIME_SCALE_MAX; ui_category = AS_CAT_ANIMATION; > = ANIM_TIME_SCALE_DEFAULT;
+uniform float OverallRotationSpeed < ui_type = "slider"; ui_label = "Overall Rotation Speed"; ui_tooltip = "Speed of the main pattern rotation."; ui_min = ROTATION_SPEED_MIN; ui_max = ROTATION_SPEED_MAX; ui_category = AS_CAT_ANIMATION; > = ROTATION_SPEED_DEFAULT;
+uniform float PanSpeedY < ui_type = "slider"; ui_label = "Vertical Pan Speed"; ui_tooltip = "Speed of the vertical panning animation."; ui_min = PAN_SPEED_MIN; ui_max = PAN_SPEED_MAX; ui_category = AS_CAT_ANIMATION; > = PAN_SPEED_DEFAULT;
 
 // Audio Reactivity
-AS_AUDIO_UI(AudioSource, "Audio Source", AS_AUDIO_BEAT, "Audio Reactivity")
-AS_AUDIO_MULT_UI(AudioMultiplier, "Audio Intensity", 1.0, 2.0, "Audio Reactivity")
-uniform int AudioTarget < ui_type = "combo"; ui_label = "Audio Target"; ui_items = "None\0Pattern Scale\0Rotation Speed\0Pattern Seed\0Tile Density\0"; ui_tooltip = "Which parameter reacts to audio input."; ui_category = "Audio Reactivity"; > = 0;
+AS_AUDIO_UI(AudioSource, "Audio Source", AS_AUDIO_BEAT, AS_CAT_AUDIO)
+AS_AUDIO_MULT_UI(AudioMultiplier, "Audio Intensity", 1.0, 2.0, AS_CAT_AUDIO)
+AS_AUDIO_TARGET_UI(AudioTarget, "None\0Pattern Scale\0Rotation Speed\0Pattern Seed\0Tile Density\0", 0)
 
 // Atmosphere
 static const float SPOTLIGHT_INTENSITY_MIN = 0.5, SPOTLIGHT_INTENSITY_MAX = 2.0, SPOTLIGHT_INTENSITY_DEFAULT = 1.15;
@@ -122,8 +122,8 @@ uniform float WeaveThickness < ui_type = "slider"; ui_label = "Weave Effect Thic
 static const float STAGE_OFFSET_X_MIN = -1.0, STAGE_OFFSET_X_MAX = 1.0, STAGE_OFFSET_X_DEFAULT = 0.0;
 static const float STAGE_OFFSET_Y_MIN = -1.0, STAGE_OFFSET_Y_MAX = 1.0, STAGE_OFFSET_Y_DEFAULT = 0.0;
 
-uniform float StageOffsetX < ui_type = "slider"; ui_label = "Stage Offset X"; ui_tooltip = "Horizontal offset of the pattern on the stage."; ui_min = STAGE_OFFSET_X_MIN; ui_max = STAGE_OFFSET_X_MAX; ui_category = "Stage/Position"; ui_category_closed = true; > = STAGE_OFFSET_X_DEFAULT;
-uniform float StageOffsetY < ui_type = "slider"; ui_label = "Stage Offset Y"; ui_tooltip = "Vertical offset of the pattern on the stage."; ui_min = STAGE_OFFSET_Y_MIN; ui_max = STAGE_OFFSET_Y_MAX; ui_category = "Stage/Position"; ui_category_closed = true; > = STAGE_OFFSET_Y_DEFAULT;
+uniform float StageOffsetX < ui_type = "slider"; ui_label = "Stage Offset X"; ui_tooltip = "Horizontal offset of the pattern on the stage."; ui_min = STAGE_OFFSET_X_MIN; ui_max = STAGE_OFFSET_X_MAX; ui_category = AS_CAT_STAGE; ui_category_closed = true; > = STAGE_OFFSET_X_DEFAULT;
+uniform float StageOffsetY < ui_type = "slider"; ui_label = "Stage Offset Y"; ui_tooltip = "Vertical offset of the pattern on the stage."; ui_min = STAGE_OFFSET_Y_MIN; ui_max = STAGE_OFFSET_Y_MAX; ui_category = AS_CAT_STAGE; ui_category_closed = true; > = STAGE_OFFSET_Y_DEFAULT;
 
 // Stage
 AS_STAGEDEPTH_UI(EffectDepth)
@@ -133,37 +133,27 @@ AS_BLENDMODE_UI_DEFAULT(BlendMode, 0)
 AS_BLENDAMOUNT_UI(BlendAmount)
 
 // Debug
-uniform bool ShowGrid < ui_label = "Show Quadtree Grid"; ui_tooltip = "Overlays the quadtree grid structure for debugging."; ui_category = "Debug"; > = false;
-uniform float GridLineWidth < ui_type = "slider"; ui_label = "Debug Grid Line Width"; ui_tooltip = "Width of the debug grid lines."; ui_min = GRID_LINE_WIDTH_MIN; ui_max = GRID_LINE_WIDTH_MAX; ui_category = "Debug"; > = GRID_LINE_WIDTH_DEFAULT;
+uniform bool ShowGrid < ui_label = "Show Quadtree Grid"; ui_tooltip = "Overlays the quadtree grid structure for debugging."; ui_category = AS_CAT_DEBUG; > = false;
+uniform float GridLineWidth < ui_type = "slider"; ui_label = "Debug Grid Line Width"; ui_tooltip = "Width of the debug grid lines."; ui_min = GRID_LINE_WIDTH_MIN; ui_max = GRID_LINE_WIDTH_MAX; ui_category = AS_CAT_DEBUG; > = GRID_LINE_WIDTH_DEFAULT;
 
 // ============================================================================
 // HELPER FUNCTIONS
 // ============================================================================
 
-// Standard 2D rotation matrix.
-float2x2 r2(float a) {
-    float c = cos(a);
-    float s = sin(a);
-    return float2x2(c, s, -s, c);
-}
+// Use shared rotation matrix helper AS_rot2x2 from AS_Utils
 
 // ============================================================================
 // PIXEL SHADER
 // ============================================================================
 
 float4 PS_ASBGXQuadtreeTruchet(float4 vpos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target {
-    float4 orig_color = tex2D(ReShade::BackBuffer, texcoord);
-    
-    // Stage depth check - early exit if scene depth is in front of effect depth
-    float sceneDepth = ReShade::GetLinearizedDepth(texcoord);
-    if (sceneDepth < EffectDepth - AS_DEPTH_EPSILON) {
-        return orig_color;
-    }
+    // Depth-aware early return
+    AS_DEPTH_EARLY_RETURN(texcoord, EffectDepth)
     
     float time = AS_getAnimationTime(AnimationSpeed, AnimationKeyframe);
 
     // Screen coordinates, centered, aspect corrected (y ranges approx -0.5 to 0.5).
-    float2 uv_screen_centered = (texcoord - 0.5) * float2(ReShade::AspectRatio, 1.0);
+    float2 uv_screen_centered = AS_centeredUVWithAspect(texcoord, ReShade::AspectRatio);
 
     // Apply audio reactivity to selected parameters
     float patternScale_final = PatternScale;
@@ -172,7 +162,7 @@ float4 PS_ASBGXQuadtreeTruchet(float4 vpos : SV_Position, float2 texcoord : TEXC
     float largeTileProbability_final = LargeTileProbability;
     
     if (AudioTarget > 0) {
-        float audioValue = AS_applyAudioReactivity(1.0, AudioSource, AudioMultiplier, true) - 1.0;
+        float audioValue = AS_audioModulate(1.0, AudioSource, AudioMultiplier, true, 0) - 1.0;
         
         // Pattern Scale
         if (AudioTarget == 1) {
@@ -193,7 +183,7 @@ float4 PS_ASBGXQuadtreeTruchet(float4 vpos : SV_Position, float2 texcoord : TEXC
     }    // Scaling, rotation and translation for pattern space.
     float2 oP = uv_screen_centered * patternScale_final;
     float anim_time_scaled = time * AnimationTimeScale; // Original used iTime/8.
-    oP = mul(r2(sin(anim_time_scaled) * AS_PI / 8.0 * rotationSpeed_final), oP); // AS_PI/8.0 part of original angle calc.
+    oP = mul(AS_rot2x2(sin(anim_time_scaled) * AS_PI / 8.0 * rotationSpeed_final), oP); // AS_PI/8.0 part of original angle calc.
     oP.y -= PanSpeedY * time; // Original was oP -= vec2(cos(iTime/8.)*0., -iTime); which simplifies to oP.y += iTime with speed control
     
     // Apply stage offset
@@ -400,11 +390,7 @@ float4 PS_ASBGXQuadtreeTruchet(float4 vpos : SV_Position, float2 texcoord : TEXC
             // Use interpolated palette colors based on distance field
             float gradientT = saturate((d_combined + 0.05) * 2.0); // Normalize distance to 0-1
             
-            if (PaletteSelection == AS_PALETTE_CUSTOM) {
-                col = AS_GET_INTERPOLATED_CUSTOM_COLOR(TruchetPalette, gradientT);
-            } else {
-                col = AS_getInterpolatedColor(PaletteSelection, gradientT);
-            }
+            col = AS_GET_PALETTE_COLOR(TruchetPalette, PaletteSelection, gradientT);
             
             col = lerp(col, float3(0,0,0), (1.0 - smoothstep(0.0, fo * 5.0, d_combined)) * 0.35);
             col = lerp(col, float3(0,0,0), 1.0 - smoothstep(0.0, fo, d_combined));
@@ -422,7 +408,7 @@ float4 PS_ASBGXQuadtreeTruchet(float4 vpos : SV_Position, float2 texcoord : TEXC
     }
     
     // Mild spotlight.
-    col *= max(SpotlightIntensity - length(uv_screen_centered) * SpotlightRadius, 0.0);    // Debug Grid Visualization
+    col *= AS_spotlightMask(uv_screen_centered, SpotlightIntensity, SpotlightRadius);    // Debug Grid Visualization
     if (ShowGrid) {
         // Get grid colors from palette
         float3 vCol1, vCol2;
@@ -454,12 +440,7 @@ float4 PS_ASBGXQuadtreeTruchet(float4 vpos : SV_Position, float2 texcoord : TEXC
         col = lerp(col, col.zxy, uv_screen_centered.x * 0.7 + 0.5);
     } else if (ColorMode == 2) { // Gradient Blend - add subtle position-based variation
         float positionVariation = (uv_screen_centered.x + uv_screen_centered.y) * 0.1;
-        float3 positionColor;
-        if (PaletteSelection == AS_PALETTE_CUSTOM) {
-            positionColor = AS_GET_INTERPOLATED_CUSTOM_COLOR(TruchetPalette, positionVariation + 0.5);
-        } else {
-            positionColor = AS_getInterpolatedColor(PaletteSelection, positionVariation + 0.5);
-        }
+        float3 positionColor = AS_GET_PALETTE_COLOR(TruchetPalette, PaletteSelection, positionVariation + 0.5);
         col = lerp(col, positionColor, 0.15);
     }
 
@@ -467,7 +448,7 @@ float4 PS_ASBGXQuadtreeTruchet(float4 vpos : SV_Position, float2 texcoord : TEXC
     col = sqrt(max(col, 0.0));
     float4 final_effect_color = float4(col, 1.0);
 
-    return AS_applyBlend(final_effect_color, orig_color, BlendMode, BlendAmount);
+    return AS_blendRGBA(final_effect_color, _as_originalColor, BlendMode, BlendAmount);
 }
 
 // ============================================================================

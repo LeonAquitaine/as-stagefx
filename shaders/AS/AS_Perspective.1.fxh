@@ -106,7 +106,7 @@ float2 AS_applyPerspectiveTransform(float2 texcoord, float2 rotation_angles_deg,
     // If pnt.z is negative (moved closer), effective distance decreases, enlarging the projection.
     
     float perspective_divisor = (focal_length + pnt.z);
-    if (abs(perspective_divisor) < 1e-5f) perspective_divisor = 1e-5f; // Avoid division by zero
+    if (abs(perspective_divisor) < AS_EPS_SAFE) perspective_divisor = AS_EPS_SAFE; // Avoid division by zero
 
     float2 projected_uv;
     projected_uv.x = (pnt.x * focal_length) / perspective_divisor;

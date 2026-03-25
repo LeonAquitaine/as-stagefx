@@ -50,7 +50,7 @@
 // INCLUDES
 // ============================================================================
 #include "ReShade.fxh"
-#include "AS_Utils.1.fxh" // Contains AS_PI, AS_HALF_PI, AS_getTime, AS_applyBlend, AS_BLEND_OPAQUE, etc.
+#include "AS_Utils.1.fxh" // Contains AS_PI, AS_HALF_PI, AS_timeSeconds, AS_blendRGB/RGBA, AS_BLEND_OPAQUE, etc.
 // AS_Palette.1.fxh is not strictly needed as custom color logic is primary here.
 
 // ============================================================================
@@ -156,14 +156,14 @@ uniform float TorusMainRadius < ui_type = "slider"; ui_label = "Link Thickness";
 uniform float TorusTubeRadius < ui_type = "slider"; ui_label = "Link Width"; ui_min = TORUS_TUBE_RADIUS_MIN; ui_max = TORUS_TUBE_RADIUS_MAX; ui_category = "Link Size"; > = TORUS_TUBE_RADIUS_DEFAULT;
 
 // Appearance
-uniform float3 BaseColorFactor < ui_type = "color"; ui_label = "Base Color"; ui_category = "Appearance"; > = float3(COLOR_BASE_R_DEFAULT, COLOR_BASE_G_DEFAULT, COLOR_BASE_B_DEFAULT);
-uniform float4 BackgroundColor < ui_type = "color"; ui_label = "Background Color"; ui_category = "Appearance"; > = float4(0.5, 0.5, 0.5, 0.0);
-uniform float ColorIterMultiplier < ui_type = "slider"; ui_label = "Color Variation"; ui_min = COLOR_ITER_MULT_MIN; ui_max = COLOR_ITER_MULT_MAX; ui_category = "Appearance"; > = COLOR_ITER_MULT_DEFAULT;
-uniform float ColorIterAdd < ui_type = "slider"; ui_label = "Brightness Offset"; ui_min = COLOR_ITER_ADD_MIN; ui_max = COLOR_ITER_ADD_MAX; ui_category = "Appearance"; > = COLOR_ITER_ADD_DEFAULT;
+uniform float3 BaseColorFactor < ui_type = "color"; ui_label = "Base Color"; ui_category = AS_CAT_APPEARANCE; > = float3(COLOR_BASE_R_DEFAULT, COLOR_BASE_G_DEFAULT, COLOR_BASE_B_DEFAULT);
+uniform float4 BackgroundColor < ui_type = "color"; ui_label = "Background Color"; ui_category = AS_CAT_APPEARANCE; > = float4(0.5, 0.5, 0.5, 0.0);
+uniform float ColorIterMultiplier < ui_type = "slider"; ui_label = "Color Variation"; ui_min = COLOR_ITER_MULT_MIN; ui_max = COLOR_ITER_MULT_MAX; ui_category = AS_CAT_APPEARANCE; > = COLOR_ITER_MULT_DEFAULT;
+uniform float ColorIterAdd < ui_type = "slider"; ui_label = "Brightness Offset"; ui_min = COLOR_ITER_ADD_MIN; ui_max = COLOR_ITER_ADD_MAX; ui_category = AS_CAT_APPEARANCE; > = COLOR_ITER_ADD_DEFAULT;
 
 // Lighting
-uniform float LightDotProductMultiplier < ui_type = "slider"; ui_label = "Light Intensity"; ui_min = LIGHT_DOT_PRODUCT_MULT_MIN; ui_max = LIGHT_DOT_PRODUCT_MULT_MAX; ui_category = "Lighting"; > = LIGHT_DOT_PRODUCT_MULT_DEFAULT;
-uniform float LightAmbient < ui_type = "slider"; ui_label = "Ambient Light"; ui_min = LIGHT_AMBIENT_MIN; ui_max = LIGHT_AMBIENT_MAX; ui_category = "Lighting"; > = LIGHT_AMBIENT_DEFAULT;
+uniform float LightDotProductMultiplier < ui_type = "slider"; ui_label = "Light Intensity"; ui_min = LIGHT_DOT_PRODUCT_MULT_MIN; ui_max = LIGHT_DOT_PRODUCT_MULT_MAX; ui_category = AS_CAT_LIGHTING; > = LIGHT_DOT_PRODUCT_MULT_DEFAULT;
+uniform float LightAmbient < ui_type = "slider"; ui_label = "Ambient Light"; ui_min = LIGHT_AMBIENT_MIN; ui_max = LIGHT_AMBIENT_MAX; ui_category = AS_CAT_LIGHTING; > = LIGHT_AMBIENT_DEFAULT;
 
 // Color Grading
 uniform float FinalColorPower < ui_type = "slider"; ui_label = "Contrast"; ui_min = FINAL_COLOR_POW_MIN; ui_max = FINAL_COLOR_POW_MAX; ui_category = "Color Grading"; ui_category_closed = true; > = FINAL_COLOR_POW_DEFAULT;
@@ -171,25 +171,25 @@ uniform float FinalColorMultiplier < ui_type = "slider"; ui_label = "Exposure"; 
 uniform float FinalColorScale < ui_type = "slider"; ui_label = "Saturation"; ui_min = FINAL_COLOR_SCALE_MIN; ui_max = FINAL_COLOR_SCALE_MAX; ui_category = "Color Grading"; ui_category_closed = true; > = FINAL_COLOR_SCALE_DEFAULT;
 uniform float FinalColorSubtract < ui_type = "slider"; ui_label = "Black Level"; ui_min = FINAL_COLOR_SUB_MIN; ui_max = FINAL_COLOR_SUB_MAX; ui_category = "Color Grading"; ui_category_closed = true; > = FINAL_COLOR_SUB_DEFAULT;
 
-// Quality Settings
-uniform int RaymarchSteps < ui_type = "slider"; ui_label = "Detail Level"; ui_min = RAYMARCH_STEPS_MIN; ui_max = RAYMARCH_STEPS_MAX; ui_category = "Quality Settings"; ui_category_closed = true; > = RAYMARCH_STEPS_DEFAULT;
-uniform float RaymarchFarPlane < ui_type = "slider"; ui_label = "View Distance"; ui_min = RAYMARCH_FAR_MIN; ui_max = RAYMARCH_FAR_MAX; ui_category = "Quality Settings"; ui_category_closed = true; > = RAYMARCH_FAR_DEFAULT;
-uniform float RaymarchStepScale < ui_type = "slider"; ui_label = "Precision"; ui_min = RAYMARCH_STEP_SCALE_MIN; ui_max = RAYMARCH_STEP_SCALE_MAX; ui_category = "Quality Settings"; ui_category_closed = true; > = RAYMARCH_STEP_SCALE_DEFAULT;
-uniform float RaymarchHitThreshold < ui_type = "slider"; ui_label = "Surface Accuracy"; ui_min = RAYMARCH_HIT_THRESHOLD_MIN; ui_max = RAYMARCH_HIT_THRESHOLD_MAX; ui_category = "Quality Settings"; ui_category_closed = true; > = RAYMARCH_HIT_THRESHOLD_DEFAULT;
-
 // Chain Detail
 uniform float MapIterationScale < ui_type = "slider"; ui_label = "Link Complexity"; ui_min = MAP_ITER_SCALE_MIN; ui_max = MAP_ITER_SCALE_MAX; ui_category = "Chain Detail"; ui_category_closed = true; > = MAP_ITER_SCALE_DEFAULT;
 uniform float MapIterationShrink < ui_type = "slider"; ui_label = "Detail Scaling"; ui_min = MAP_ITER_SHRINK_MIN; ui_max = MAP_ITER_SHRINK_MAX; ui_category = "Chain Detail"; ui_category_closed = true; > = MAP_ITER_SHRINK_DEFAULT;
 uniform int MapIterations < ui_type = "slider"; ui_label = "Detail Layers"; ui_min = MAP_ITERATIONS_MIN; ui_max = MAP_ITERATIONS_MAX; ui_step = 1; ui_category = "Chain Detail"; ui_category_closed = true; > = MAP_ITERATIONS_DEFAULT;
 
-// Animation
-AS_ANIMATION_UI(AnimationSpeed, AnimationKeyframe, "Animation")
-uniform float TimeMultiplier < ui_type = "slider"; ui_label = "Animation Speed"; ui_min = TIME_MULTIPLIER_MIN; ui_max = TIME_MULTIPLIER_MAX; ui_category = "Animation"; > = TIME_MULTIPLIER_DEFAULT;
-
 // Camera View
 uniform float3 CameraPosition < ui_type = "drag"; ui_label = "Camera Position"; ui_tooltip = "Position of the camera in 3D space"; ui_min = -5.0; ui_max = 5.0; ui_step = 0.01; ui_category = "Camera View"; ui_category_closed = true; > = float3(0.0, 0.0, -1.0);
 uniform float CameraPitch < ui_type = "slider"; ui_label = "Look Up/Down"; ui_tooltip = "Camera tilt up/down"; ui_min = -90.0; ui_max = 90.0; ui_step = 0.1; ui_category = "Camera View"; ui_category_closed = true; > = 0.0;
 uniform float CameraYaw < ui_type = "slider"; ui_label = "Look Left/Right"; ui_tooltip = "Camera rotation left/right"; ui_min = -180.0; ui_max = 180.0; ui_step = 0.1; ui_category = "Camera View"; ui_category_closed = true; > = 0.0;
+
+// Animation
+AS_ANIMATION_UI(AnimationSpeed, AnimationKeyframe, AS_CAT_ANIMATION)
+uniform float TimeMultiplier < ui_type = "slider"; ui_label = "Animation Speed"; ui_min = TIME_MULTIPLIER_MIN; ui_max = TIME_MULTIPLIER_MAX; ui_category = AS_CAT_ANIMATION; > = TIME_MULTIPLIER_DEFAULT;
+
+// Quality Settings
+uniform int RaymarchSteps < ui_type = "slider"; ui_label = "Detail Level"; ui_min = RAYMARCH_STEPS_MIN; ui_max = RAYMARCH_STEPS_MAX; ui_category = AS_CAT_PERFORMANCE; ui_category_closed = true; > = RAYMARCH_STEPS_DEFAULT;
+uniform float RaymarchFarPlane < ui_type = "slider"; ui_label = "View Distance"; ui_min = RAYMARCH_FAR_MIN; ui_max = RAYMARCH_FAR_MAX; ui_category = AS_CAT_PERFORMANCE; ui_category_closed = true; > = RAYMARCH_FAR_DEFAULT;
+uniform float RaymarchStepScale < ui_type = "slider"; ui_label = "Precision"; ui_min = RAYMARCH_STEP_SCALE_MIN; ui_max = RAYMARCH_STEP_SCALE_MAX; ui_category = AS_CAT_PERFORMANCE; ui_category_closed = true; > = RAYMARCH_STEP_SCALE_DEFAULT;
+uniform float RaymarchHitThreshold < ui_type = "slider"; ui_label = "Surface Accuracy"; ui_min = RAYMARCH_HIT_THRESHOLD_MIN; ui_max = RAYMARCH_HIT_THRESHOLD_MAX; ui_category = AS_CAT_PERFORMANCE; ui_category_closed = true; > = RAYMARCH_HIT_THRESHOLD_DEFAULT;
 
 // Stage Controls
 AS_POSITION_SCALE_UI(EffectCenter, EffectScale) // Combined position and scale controls
@@ -203,7 +203,7 @@ AS_BLENDAMOUNT_UI(BlendStrength)
 // ============================================================================
 // NAMESPACE
 // ============================================================================
-namespace ASRaymarchedChain {
+namespace AS_RaymarchedChain {
 
 // ============================================================================
 // GLOBAL VARIABLES & HELPER FUNCTIONS
@@ -211,7 +211,7 @@ namespace ASRaymarchedChain {
 
 // Global variable to store color from map function
 static float3 ps_cor;
-static float ps_current_time; // To store AS_getTime() * TimeMultiplier result
+static float ps_current_time; // To store AS_timeSeconds() * TimeMultiplier result
 
 // Rotation matrix function
 float2x2 fn_rot(float a) {
@@ -291,22 +291,21 @@ float4 PS_RaymarchedChain(float4 vpos : SV_Position, float2 texcoord : TEXCOORD)
     float4 original_color = tex2D(ReShade::BackBuffer, texcoord);
     ps_current_time = AS_getAnimationTime(AnimationSpeed, AnimationKeyframe) * TimeMultiplier;
       // Early depth check - skip effect if pixel is in front of EffectDepth
-    float sceneDepth = ReShade::GetLinearizedDepth(texcoord);
-    if (sceneDepth < EffectDepth - AS_DEPTH_EPSILON) {
+    if (AS_isInFrontOfStage(texcoord, EffectDepth)) {
         return original_color;
     }
     
     // Apply standard AS coordinate transformation
     float effect_rotation = AS_getRotationRadians(EffectRotationSnap * -1, EffectRotationFine * -1);
-    float2 uv_norm = AS_transformCoord(texcoord, EffectCenter, EffectScale, effect_rotation);
+    float2 uv_norm = AS_transformUVCentered(texcoord, EffectCenter, EffectScale, effect_rotation);
     
     // Camera setup
     float3 ro = CameraPosition; // Camera position from UI
     float3 rd = normalize(float3(uv_norm.x, uv_norm.y, 1.0)); // Ray direction
     
     // Apply camera rotation to ray direction (in radians)
-    float camera_pitch_rad = CameraPitch * (AS_PI / 180.0);
-    float camera_yaw_rad = CameraYaw * (AS_PI / 180.0);
+    float camera_pitch_rad = AS_radians(CameraPitch);
+    float camera_yaw_rad = AS_radians(CameraYaw);
     
     rd.yz = mul(rd.yz, fn_rot(camera_pitch_rad)); 
     rd.xz = mul(rd.xz, fn_rot(camera_yaw_rad));
@@ -332,10 +331,10 @@ float4 PS_RaymarchedChain(float4 vpos : SV_Position, float2 texcoord : TEXCOORD)
         col_final = BackgroundColor; // Use the full RGBA from background color
     }
 
-    col_final = saturate(col_final);    return AS_applyBlend(col_final, original_color, BlendMode, BlendStrength);
+    col_final = saturate(col_final);    return AS_blendRGBA(col_final, original_color, BlendMode, BlendStrength);
 }
 
-} // namespace ASRaymarchedChain
+} // namespace AS_RaymarchedChain
 
 // ============================================================================
 // TECHNIQUE DEFINITION
@@ -346,7 +345,7 @@ technique AS_BGX_RaymarchedChain <
                  "Original GLSL shader 'Corrente' by Elsio on Shadertoy.";
 > {    pass MainPass {
         VertexShader = PostProcessVS;
-        PixelShader = ASRaymarchedChain::PS_RaymarchedChain;
+        PixelShader = AS_RaymarchedChain::PS_RaymarchedChain;
     }
 }
 
