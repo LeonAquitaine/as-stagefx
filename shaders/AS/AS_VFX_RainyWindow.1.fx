@@ -1,8 +1,9 @@
 /**
  * AS_VFX_RainyWindow.1.fx - Realistic rainy window effect with dynamic blur and refraction
  * Author: Leon Aquitaine
- * License: Creative Commons Attribution 4.0 International
- * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
+ * License: Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-NC-SA 3.0)
+ * Inherited from the upstream work published on Shadertoy (explicitly stated by BigWings in the source file header).
+ * Free for non-commercial use with attribution. Derivatives must be distributed under the same licence.
  *  * CREDITS:
  * Based on "Heartfelt" by Martijn Steinrucken (BigWings)
  * Shadertoy: https://www.shadertoy.com/view/ltffzl
@@ -75,7 +76,7 @@ static const float LIGHTNING_FREQ_APOCALYPSE = 4.0f;
 // ============================================================================
 // R=focus_val, GB=normal.xy, A=drop_coverage
 
-uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Heartfelt' by Martijn Steinrucken (BigWings)\nLink: https://www.shadertoy.com/view/ltffzl\nLicence: CC Share-Alike Non-Commercial\n\n";>;
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Heartfelt' by Martijn Steinrucken (BigWings)\nLink: https://www.shadertoy.com/view/ltffzl\nLicence: CC BY-NC-SA 3.0 Unported\n\n";>;
 
 AS_CREATE_TEX_SAMPLER(RainyWindow_EffectMapTarget, RainyWindow_EffectMapSampler, float2(BUFFER_WIDTH, BUFFER_HEIGHT), RGBA16F, 1, POINT, CLAMP)
 

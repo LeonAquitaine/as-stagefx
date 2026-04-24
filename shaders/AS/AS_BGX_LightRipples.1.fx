@@ -1,8 +1,9 @@
 /**
  * AS_BGX_LightRipples.1.fx - Kaleidoscopic rippling light effect
  * Author: Leon Aquitaine
- * License: Creative Commons Attribution 4.0 International
- * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
+ * License: Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-NC-SA 3.0)
+ * Inherited from the upstream work published on Shadertoy (default licence per https://www.shadertoy.com/terms).
+ * Free for non-commercial use with attribution. Derivatives must be distributed under the same licence.
  *  * CREDITS:
  * Based on "Creation by Silexars" by Danguafer/Danilo Guanabara
  * Shadertoy: https://www.shadertoy.com/view/XsXXDn
@@ -127,7 +128,7 @@ static const int MAX_LOOP_ITERATIONS = 3; // Fixed loop count from original
 
 // --- Pattern/Distortion ---
 
-uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Creation by Silexars' by Danguafer/Danilo Guanabara\nLink: https://www.shadertoy.com/view/XsXXDn\nLicence: CC Share-Alike Non-Commercial\n\n";>;
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Creation by Silexars' by Danguafer/Danilo Guanabara\nLink: https://www.shadertoy.com/view/XsXXDn\nLicence: CC BY-NC-SA 3.0 Unported\n\n";>;
 
 uniform float UI_ZOffsetPerChannel < ui_type = "slider"; ui_label = "RGB Time Offset"; ui_tooltip = "Time offset between RGB channels, affects color separation."; ui_min = Z_OFFSET_PER_CHANNEL_MIN; ui_max = Z_OFFSET_PER_CHANNEL_MAX; ui_step = Z_OFFSET_PER_CHANNEL_STEP; ui_category = AS_CAT_PATTERN; > = Z_OFFSET_PER_CHANNEL_DEFAULT;
 uniform float UI_DistortSinZAmp < ui_type = "slider"; ui_label = "Distortion Amplitude (Time)"; ui_tooltip = "Amplitude of time-based distortion wave (sin(z)+Amp)."; ui_min = DISTORT_SIN_Z_AMP_MIN; ui_max = DISTORT_SIN_Z_AMP_MAX; ui_step = DISTORT_SIN_Z_AMP_STEP; ui_category = AS_CAT_PATTERN; > = DISTORT_SIN_Z_AMP_DEFAULT;

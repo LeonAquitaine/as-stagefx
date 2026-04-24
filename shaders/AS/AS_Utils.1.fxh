@@ -139,7 +139,14 @@ static const float AS_OPAQUE_ALPHA = 1.0f;           // Opaque alpha value (sema
 // Define a complete fallback implementation for Listeningway
 #ifndef __LISTENINGWAY_INSTALLED
     // Since we're not including ListeningwayUniforms.fxh anymore,
-    // provide a complete compatible implementation directly here
+    // provide a complete compatible implementation directly here.
+    // LISTENINGWAY_NUM_BANDS must match DEFAULT_NUM_BANDS in Listeningway's
+    // C++ constants (src/core/constants.h) — that value is the compile-time
+    // size of the shader-side Listeningway_FreqBands[] array and the runtime
+    // default band count. The addon clamps any misconfigured num_bands to
+    // this ceiling at uniform-write time. The live band count is also
+    // published via Listeningway_NumBands below; AS_getFreqBands() returns
+    // that runtime value so shaders iterate only populated bands.
     #define LISTENINGWAY_NUM_BANDS 64
     #define __LISTENINGWAY_INSTALLED 1
 
@@ -155,6 +162,10 @@ static const float AS_OPAQUE_ALPHA = 1.0f;           // Opaque alpha value (sema
         0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
         0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f
     };
+    // Live band count, published by the Listeningway addon. Defaults to the
+    // compile-time array size when the addon is not installed so shaders
+    // iterating to int(Listeningway_NumBands) still behave sensibly.
+    uniform float Listeningway_NumBands < source = "listeningway_numbands"; > = float(LISTENINGWAY_NUM_BANDS);
     uniform float Listeningway_Beat < source = "listeningway_beat"; > = 0.0f;
 
     // Time uniforms
@@ -259,7 +270,9 @@ static const float AS_SCREEN_CENTER_Y = 0.5f;    // Screen center Y coordinate
 // If used, ensure it's in a context where BUFFER_HEIGHT is defined.
 // static const float AS_RESOLUTION_SCALE = 1080.0f / BUFFER_HEIGHT; // Resolution scaling factor
 
-// Default number of frequency bands
+// Default number of frequency bands (compile-time ceiling — matches
+// Listeningway's DEFAULT_NUM_BANDS; the runtime-live count comes from
+// Listeningway_NumBands via AS_getFreqBands()).
 #ifndef LISTENINGWAY_NUM_BANDS
     #define LISTENINGWAY_NUM_BANDS 64
 #endif
@@ -673,9 +686,15 @@ float AS_timeSeconds() {
 float AS_getTime() { return AS_timeSeconds(); }
 
 // --- Listeningway Helpers ---
+// Returns the live band count published by the Listeningway addon (via the
+// Listeningway_NumBands uniform), clamped to the compile-time array size.
+// Shaders should use this value as the upper bound when iterating
+// Listeningway_FreqBands[] — entries beyond it are never written and will
+// read as zero / stale.
 int AS_getFreqBands() {
 #if defined(__LISTENINGWAY_INSTALLED) && defined(LISTENINGWAY_NUM_BANDS)
-    return LISTENINGWAY_NUM_BANDS;
+    int liveCount = int(Listeningway_NumBands);
+    return clamp(liveCount, 1, LISTENINGWAY_NUM_BANDS);
 #else
     return AS_DEFAULT_NUM_BANDS;
 #endif
@@ -702,11 +721,13 @@ int AS_mapAngleToBand(float angleRadians, int repetitions) {
 
 float AS_getVU(int source) {
 #if defined(__LISTENINGWAY_INSTALLED)
+    int numBands = AS_getFreqBands();
+    int maxIndex = max(0, numBands - 1);
     if (source == 0) return Listeningway_Volume;
     if (source == 1) return Listeningway_Beat;
-    if (source == 2) return Listeningway_FreqBands[0]; // Bass - first band
-    if (source == 3) return Listeningway_FreqBands[min(LISTENINGWAY_NUM_BANDS / 3, LISTENINGWAY_NUM_BANDS - 1)]; // Mid-bass - 1/3 through spectrum
-    if (source == 4) return Listeningway_FreqBands[min((LISTENINGWAY_NUM_BANDS * 7) / 8, LISTENINGWAY_NUM_BANDS - 1)]; // Treble - 7/8 through spectrum
+    if (source == 2) return Listeningway_FreqBands[0];                                 // Bass - first band
+    if (source == 3) return Listeningway_FreqBands[min(numBands / 3, maxIndex)];       // Mid-bass - 1/3 through the live spectrum
+    if (source == 4) return Listeningway_FreqBands[min((numBands * 7) / 8, maxIndex)]; // Treble - 7/8 through the live spectrum
 #endif
     return 0.0;
 }
@@ -878,6 +899,45 @@ float AS_getAudioSourceSafe(int source, float fallbackValue = 0.0) {
 //     // DO NOT USE: static variables are unsafe in pixel shaders
 //     return AS_getAudioSourceSafe(source); 
 // }
+
+// Smoothly-interpolated frequency band access using a Catmull-Rom spline
+// through four adjacent Listeningway_FreqBands[] samples. Produces a
+// continuous C1 curve that passes exactly through each band value (no
+// plateau-and-step artefacts), ideal for waveform-style visualisations that
+// otherwise show visible banding between samples. Endpoints are extended by
+// repeating the nearest band so the spline degenerates cleanly into linear
+// interpolation at the edges rather than extrapolating wildly.
+float AS_getFreqByPercentSmooth(float percent) {
+#if defined(__LISTENINGWAY_INSTALLED)
+    int numBands = AS_getFreqBands();
+    if (numBands <= 1) return 0.0;
+
+    float pos = saturate(percent) * float(numBands - 1);
+    int i1 = clamp(int(floor(pos)), 0, numBands - 1);
+    float t = pos - float(i1);
+
+    int i0 = max(i1 - 1, 0);
+    int i2 = min(i1 + 1, numBands - 1);
+    int i3 = min(i1 + 2, numBands - 1);
+
+    float p0 = Listeningway_FreqBands[i0];
+    float p1 = Listeningway_FreqBands[i1];
+    float p2 = Listeningway_FreqBands[i2];
+    float p3 = Listeningway_FreqBands[i3];
+
+    // Catmull-Rom (tension = 0.5): q(t) = a3*t^3 + a2*t^2 + a1*t + a0
+    float a0 = p1;
+    float a1 = 0.5 * (p2 - p0);
+    float a2 = p0 - 2.5 * p1 + 2.0 * p2 - 0.5 * p3;
+    float a3 = 0.5 * (p3 - p0) + 1.5 * (p1 - p2);
+
+    float t2 = t * t;
+    float t3 = t2 * t;
+    return saturate(a0 + a1 * t + a2 * t2 + a3 * t3);
+#else
+    return 0.0;
+#endif
+}
 
 float AS_getFreqByPercent(float percent) {
 #if defined(__LISTENINGWAY_INSTALLED)

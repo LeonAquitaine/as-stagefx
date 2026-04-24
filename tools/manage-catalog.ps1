@@ -228,14 +228,18 @@ $packageConfig = Get-Content -Path $ConfigPath -Raw | ConvertFrom-Json
 $defaultLicenseDesc = $packageConfig.license.description
 $defaultLicenseCode = $packageConfig.license.code
 
-# Set licence and license code for all shaders and update credits block
+# Set licence and license code for all shaders and update credits block.
+# Shadertoy default licence is CC BY-NC-SA 3.0 Unported (per shadertoy.com/terms),
+# so shaders that are ported from Shadertoy inherit that licence unless the upstream
+# author explicitly chose a different licence (those exceptions are set manually
+# post-regeneration; see LICENSING.md).
 foreach ($entry in $catalog) {
     $isShadertoy = $false
     if ($entry.credits -and $entry.credits.externalUrl -and ($entry.credits.externalUrl -match 'shadertoy.com')) {
-        $entry | Add-Member -NotePropertyName 'licence' -NotePropertyValue 'CC Share-Alike Non-Commercial' -Force
-        $entry | Add-Member -NotePropertyName 'licenseCode' -NotePropertyValue 'CC BY-NC-SA' -Force
-        $entry.credits | Add-Member -NotePropertyName 'licence' -NotePropertyValue 'CC Share-Alike Non-Commercial' -Force
-        $entry.credits | Add-Member -NotePropertyName 'licenseCode' -NotePropertyValue 'CC BY-NC-SA' -Force
+        $entry | Add-Member -NotePropertyName 'licence' -NotePropertyValue 'CC BY-NC-SA 3.0 Unported' -Force
+        $entry | Add-Member -NotePropertyName 'licenseCode' -NotePropertyValue 'CC BY-NC-SA 3.0' -Force
+        $entry.credits | Add-Member -NotePropertyName 'licence' -NotePropertyValue 'CC BY-NC-SA 3.0 Unported' -Force
+        $entry.credits | Add-Member -NotePropertyName 'licenseCode' -NotePropertyValue 'CC BY-NC-SA 3.0' -Force
         $isShadertoy = $true
     }
     if (-not $isShadertoy) {

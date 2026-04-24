@@ -12,7 +12,7 @@
       },
       "name": "AS_BGX_ProteanClouds.1",
       "performance": "Heavy",
-      "filename": "[PRE] AS_BGX_ProteanClouds.1.fx",
+      "filename": "AS_BGX_ProteanClouds.1.fx",
       "author": "Leon Aquitaine"
     },
     {
@@ -26,7 +26,7 @@
       },
       "name": "AS_BGX_SunsetClouds.1",
       "performance": "Moderate",
-      "filename": "[PRE] AS_BGX_SunsetClouds.1.fx",
+      "filename": "AS_BGX_SunsetClouds.1.fx",
       "author": "Leon Aquitaine"
     },
     {
@@ -42,25 +42,25 @@
       },
       "name": "AS_VFX_FocusedChaos.1",
       "performance": "Moderate",
-      "filename": "[PRE] AS_VFX_FocusedChaos.1.fx",
+      "filename": "AS_VFX_FocusedChaos.1.fx",
       "author": "Leon Aquitaine"
     },
     {
       "credits": {
-        "license": "Creative Commons Attribution 4.0 International"
+        "license": "CC BY-NC-SA 3.0 Unported (inherited from Shadertoy upstream)"
       },
       "name": "AS_BGX_Fluorescent.1",
       "performance": "Light",
-      "filename": "[PRE] AS_BGX_Fluorescent.1.fx",
+      "filename": "AS_BGX_Fluorescent.1.fx",
       "author": "Leon Aquitaine"
     },
     {
       "credits": {
-        "license": "Creative Commons Attribution 4.0 International"
+        "license": "CC BY-NC-SA 3.0 Unported (inherited from Shadertoy upstream)"
       },
       "name": "AS_BGX_Vortex.1",
       "performance": "Moderate",
-      "filename": "[PRE] AS_BGX_Vortex.1.fx",
+      "filename": "AS_BGX_Vortex.1.fx",
       "author": "Leon Aquitaine"
     },
     {
@@ -87,7 +87,7 @@
         "link": "https://www.shadertoy.com/view/wftXzr",
         "author": "int_45h",
         "platform": "Shadertoy",
-        "license": "Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)",
+        "license": "Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License",
         "adaptedBy": "Leon Aquitaine"
       },
       "name": "AS_VFX_VolumetricLight.1",
@@ -124,11 +124,8 @@
     },
     {
       "credits": {
-        "originalName": "Old Joseph",
-        "link": "https://www.shadertoy.com/view/slfGzf",
-        "author": "jairoandre",
-        "platform": "Shadertoy",
-        "adaptedBy": "Leon Aquitaine"
+        "description": "Clean-room original implementation by Leon Aquitaine (2026-04-24) produced from behavioural specification docs/specs/AS_BGX_Constellation.spec.md.",
+        "license": "Creative Commons Attribution 4.0 International"
       },
       "name": "AS_BGX_Constellation.1",
       "performance": "Moderate",
@@ -150,10 +147,11 @@
     },
     {
       "credits": {
-        "originalName": "cosmos in crystal",
-        "link": "https://www.shadertoy.com/view/MXccR4",
-        "author": "nayk",
+        "originalName": "Star Nest",
+        "link": "https://www.shadertoy.com/view/XlfGRj",
+        "author": "Kali",
         "platform": "Shadertoy",
+        "license": "CC BY-NC-SA 3.0 Unported",
         "adaptedBy": "Leon Aquitaine"
       },
       "name": "AS_BGX_CosmicKaleidoscope.1",
@@ -178,7 +176,10 @@
     {
       "credits": {
         "originalName": "Golden apollian",
+        "link": "https://www.shadertoy.com/view/WlcfRS",
         "author": "mrange",
+        "platform": "Shadertoy",
+        "license": "CC0 1.0 Universal",
         "adaptedBy": "Leon Aquitaine"
       },
       "name": "AS_BGX_GoldenClockwork.1",
@@ -222,11 +223,8 @@
     },
     {
       "credits": {
-        "originalName": "Liquid Chrome",
-        "link": "https://neort.io/art/bkm813c3p9f7drq1j86g",
-        "author": "iamsaitam",
-        "platform": "Neort",
-        "adaptedBy": "Leon Aquitaine"
+        "description": "Clean-room original implementation by Leon Aquitaine (2026-04-24) produced from behavioural specification docs/specs/AS_BGX_LiquidChrome.spec.md.",
+        "license": "Creative Commons Attribution 4.0 International"
       },
       "name": "AS_BGX_LiquidChrome.1",
       "performance": "Light",
@@ -235,10 +233,11 @@
     },
     {
       "credits": {
-        "originalName": "Logarithmic spirals tweaked",
-        "link": "https://www.shadertoy.com/view/cdKXDV",
+        "originalName": "Logarithmic spiral of spheres",
+        "link": "https://www.shadertoy.com/view/msGXRD",
         "author": "mrange",
         "platform": "Shadertoy",
+        "license": "CC0 1.0 Universal",
         "adaptedBy": "Leon Aquitaine"
       },
       "name": "AS_BGX_LogSpirals.1",
@@ -248,11 +247,8 @@
     },
     {
       "credits": {
-        "originalName": "70s Melt",
-        "link": "https://www.shadertoy.com/view/XsX3zl",
-        "author": "tomorrowevening",
-        "platform": "Shadertoy",
-        "adaptedBy": "Leon Aquitaine"
+        "description": "Clean-room original implementation by Leon Aquitaine (2026-04-24) produced from behavioural specification docs/specs/AS_BGX_MeltWave.spec.md.",
+        "license": "Creative Commons Attribution 4.0 International"
       },
       "name": "AS_BGX_MeltWave.1",
       "performance": "Light",
@@ -283,7 +279,7 @@
     },
     {
       "credits": {
-        "license": "Creative Commons Attribution 4.0 International"
+        "license": "CC BY-NC-SA 3.0 Unported (inherited from Shadertoy upstream)"
       },
       "name": "AS_BGX_PlasmaFlow.1",
       "performance": "Light",
@@ -297,7 +293,7 @@
         "author": "Shane",
         "platform": "Shadertoy",
         "creationDate": "2018-06-21",
-        "license": "Creative Commons Attribution 4.0 International",
+        "license": "CC BY-NC-SA 3.0 Unported",
         "adaptedBy": "Leon Aquitaine"
       },
       "name": "AS_BGX_QuadtreeTruchet.1",
@@ -529,7 +525,7 @@
       },
       "name": "AS_VFX_MotionFocus.1",
       "performance": "Moderate",
-      "filename": "[PRE] AS_VFX_MotionFocus.1.fx",
+      "filename": "AS_VFX_MotionFocus.1.fx",
       "author": "Leon Aquitaine"
     },
     {
@@ -641,20 +637,6 @@
       "name": "AS_VFX_WaterSurface.1",
       "performance": "Light",
       "filename": "AS_VFX_WaterSurface.1.fx",
-      "author": "Leon Aquitaine"
-    },
-    {
-      "credits": {
-        "originalName": "Fluorescent",
-        "link": "https://x.com/XorDev/status/1928504290290635042",
-        "author": "XorDev",
-        "platform": "Twitter/X",
-        "license": "Creative Commons Attribution 4.0 International",
-        "adaptedBy": "Leon Aquitaine"
-      },
-      "name": "AS_BGX_Fluorescent.1",
-      "performance": "Medium",
-      "filename": "AS_BGX_Fluorescent.1.fx",
       "author": "Leon Aquitaine"
     },
     {
@@ -868,8 +850,104 @@
       "filename": "AS_VFX_SpeedLines.1.fx",
       "name": "AS_VFX_SpeedLines.1",
       "performance": "Light"
+    },
+    {
+      "credits": {
+        "originalName": "Hologram stars",
+        "link": "https://www.shadertoy.com/view/NlycDG",
+        "author": "hypothete",
+        "platform": "Shadertoy",
+        "license": "CC BY-NC-SA 3.0 Unported",
+        "adaptedBy": "Leon Aquitaine"
+      },
+      "name": "AS_BGX_Hologram.1",
+      "performance": "Light",
+      "filename": "AS_BGX_Hologram.1.fx",
+      "author": "Leon Aquitaine"
+    },
+    {
+      "author": "Leon Aquitaine",
+      "credits": {
+        "license": "Creative Commons Attribution 4.0 International"
+      },
+      "filename": "AS_GFX_AudioDirection.1.fx",
+      "name": "AS_GFX_AudioDirection.1",
+      "performance": "Light"
+    },
+    {
+      "author": "Leon Aquitaine",
+      "credits": {
+        "license": "Creative Commons Attribution 4.0 International"
+      },
+      "filename": "AS_GFX_CinematicDiffusion.1.fx",
+      "name": "AS_GFX_CinematicDiffusion.1",
+      "performance": "Light"
+    },
+    {
+      "credits": {
+        "originalName": "Cosmic [256 Chars]",
+        "link": "https://www.shadertoy.com/view/msjXRK",
+        "author": "Xor (XorDev)",
+        "platform": "Shadertoy",
+        "creationDate": "2022-12-09",
+        "license": "CC BY-NC-SA 3.0 Unported",
+        "adaptedBy": "Leon Aquitaine"
+      },
+      "name": "AS_GFX_CosmicGlow.1",
+      "performance": "Light",
+      "filename": "AS_GFX_CosmicGlow.1.fx",
+      "author": "Leon Aquitaine"
+    },
+    {
+      "credits": {
+        "originalName": "Protection hologram",
+        "link": "https://www.shadertoy.com/view/MdBSWV",
+        "author": "Alexander Alekseev aka TDM",
+        "platform": "Shadertoy",
+        "creationDate": "2014",
+        "license": "CC BY-NC-SA 3.0 Unported",
+        "adaptedBy": "Leon Aquitaine"
+      },
+      "name": "AS_GFX_Hologram.1",
+      "performance": "Light",
+      "filename": "AS_GFX_Hologram.1.fx",
+      "author": "Leon Aquitaine"
+    },
+    {
+      "author": "Leon Aquitaine",
+      "credits": {
+        "license": "Creative Commons Attribution 4.0 International"
+      },
+      "filename": "AS_GFX_FocusFrame.1.fx",
+      "name": "AS_GFX_FocusFrame.1",
+      "performance": "Light"
+    },
+    {
+      "author": "Leon Aquitaine",
+      "credits": {
+        "license": "Creative Commons Attribution 4.0 International"
+      },
+      "filename": "AS_GFX_TiltShift.1.fx",
+      "name": "AS_GFX_TiltShift.1",
+      "performance": "Light"
+    },
+    {
+      "credits": {
+        "originalName": "Waveform [315]",
+        "link": "https://www.shadertoy.com/view/Wcc3z2",
+        "author": "Xor (XorDev)",
+        "platform": "Shadertoy",
+        "creationDate": "2025-05-14",
+        "license": "CC BY-NC-SA 3.0 Unported",
+        "adaptedBy": "Leon Aquitaine",
+        "notes": "Shadertoy original had a commented-out Soundcloud audio sample. This port replaces it with Listeningway frequency-band sampling."
+      },
+      "name": "AS_BGX_Waveform.1",
+      "performance": "Heavy",
+      "filename": "AS_BGX_Waveform.1.fx",
+      "author": "Leon Aquitaine"
     }
   ],
-  "count": 79,
-  "generated": "2026-03-24"
+  "count": 86,
+  "generated": "2026-04-24"
 }

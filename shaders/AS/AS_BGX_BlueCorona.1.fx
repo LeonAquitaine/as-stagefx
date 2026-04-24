@@ -1,8 +1,9 @@
 /**
  * AS_BGX_BlueCorona.1.fx - Blue Corona Background Effect
  * Author: Leon Aquitaine
- * License: Creative Commons Attribution 4.0 International
- * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
+ * License: Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-NC-SA 3.0)
+ * Inherited from the upstream work published on Shadertoy (default licence per https://www.shadertoy.com/terms).
+ * Free for non-commercial use with attribution. Derivatives must be distributed under the same licence.
  *  * CREDITS:
  * Based on "Blue Corona [256 Chars]" by SnoopethDuckDuck
  * Shadertoy: https://www.shadertoy.com/view/XfKGWV
@@ -121,7 +122,7 @@ static const float COLOR_FACTOR = 0.001;
 
 // --- Pattern Parameters ---
 
-uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Blue Corona [256 Chars]' by SnoopethDuckDuck\nLink: https://www.shadertoy.com/view/XfKGWV\nLicence: CC Share-Alike Non-Commercial\n\n";>;
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Blue Corona [256 Chars]' by SnoopethDuckDuck\nLink: https://www.shadertoy.com/view/XfKGWV\nLicence: CC BY-NC-SA 3.0 Unported\n\n";>;
 
 uniform float PatternScale < ui_type = "slider"; ui_label = "Pattern Scale"; ui_tooltip = "Controls the overall scale of the corona pattern."; ui_min = PATTERN_SCALE_MIN; ui_max = PATTERN_SCALE_MAX; ui_step = PATTERN_SCALE_STEP; ui_category = "Pattern"; > = PATTERN_SCALE_DEFAULT;
 uniform float PatternOffset < ui_type = "slider"; ui_label = "Pattern Offset"; ui_tooltip = "Adjusts the offset/threshold of the pattern."; ui_min = PATTERN_OFFSET_MIN; ui_max = PATTERN_OFFSET_MAX; ui_step = PATTERN_OFFSET_STEP; ui_category = "Pattern"; > = PATTERN_OFFSET_DEFAULT;

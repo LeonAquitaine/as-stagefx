@@ -1,7 +1,9 @@
 /**
  * AS_BGX_Hologram.1.fx - Holographic Plasma Background
  * Author: Leon Aquitaine (Adapted from hypothete)
- * License: Creative Commons Attribution 4.0 International
+ * License: Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-NC-SA 3.0)
+ * Inherited from the upstream work published on Shadertoy (default licence per https://www.shadertoy.com/terms).
+ * Free for non-commercial use with attribution. Derivatives must be distributed under the same licence.
  * Original Source: "Hologram stars" by hypothete on Shadertoy
  * Source URL: https://www.shadertoy.com/view/NlycDG
  *
@@ -55,7 +57,7 @@
 
 // --- Plasma & View ---
 
-uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Hologram stars' by hypothete\nLink: https://www.shadertoy.com/view/NlycDG\nLicence: CC Share-Alike Non-Commercial\n\n";>;
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Hologram stars' by hypothete\nLink: https://www.shadertoy.com/view/NlycDG\nLicence: CC BY-NC-SA 3.0 Unported\n\n";>;
 
 AS_POSITION_SCALE_UI(ViewPosition, ViewPosition_Scale) 
 static const float HOLO_PLASMA_SCALE_MIN = 0.01;

@@ -1,7 +1,9 @@
 /**
  * AS_GFX_Hologram.1.fx - Depth-Based Holographic Field
  * Author: Leon Aquitaine (Adapted from Alexander Alekseev aka TDM)
- * License: Creative Commons Attribution 4.0 International
+ * License: Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-NC-SA 3.0)
+ * Inherited from the upstream work published on Shadertoy (default licence per https://www.shadertoy.com/terms).
+ * Free for non-commercial use with attribution. Derivatives must be distributed under the same licence.
  * Original Source: "Protection hologram" by TDM (2014)
  *
  * ===================================================================================
@@ -51,7 +53,7 @@
 
 // --- Palette ---
 
-uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Protection hologram' by Alexander Alekseev aka TDM\nLink: https://www.shadertoy.com/view/MdBSWV\nLicence: CC Share-Alike Non-Commercial\n\n";>;
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Protection hologram' by Alexander Alekseev aka TDM\nLink: https://www.shadertoy.com/view/MdBSWV\nLicence: CC BY-NC-SA 3.0 Unported\n\n";>;
 
 AS_PALETTE_SELECTION_UI(HologramPalette, "Hologram Palette", AS_PALETTE_RAINBOW, AS_CAT_PALETTE)
 

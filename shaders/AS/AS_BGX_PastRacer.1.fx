@@ -1,8 +1,9 @@
 /**
  * AS_BGX_PastRacer.1.fx - Abstract procedural raymarching with audio reactivity
  * Author: Leon Aquitaine
- * License: Creative Commons Attribution 4.0 International
- * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
+ * License: Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-NC-SA 3.0)
+ * Inherited from the upstream work published on Shadertoy (default licence per https://www.shadertoy.com/terms).
+ * Free for non-commercial use with attribution. Derivatives must be distributed under the same licence.
  * CREDITS:
  * Based on "Outline 2020 Freestyle Live code" by NuSan
  * Shadertoy: https://www.shadertoy.com/view/tsBBzG
@@ -108,7 +109,7 @@ static const float3 DEFAULT_LOOK_AT_POSITION = float3(0.0f, 0.0f, 0.0f);
 
 // --- Camera ---
 
-uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Outline 2020 Freestyle Live code' by NuSan\nLink: https://www.shadertoy.com/view/tsBBzG\nLicence: CC Share-Alike Non-Commercial\n\n";>;
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Outline 2020 Freestyle Live code' by NuSan\nLink: https://www.shadertoy.com/view/tsBBzG\nLicence: CC BY-NC-SA 3.0 Unported\n\n";>;
 
 uniform float FieldOfView < ui_type = "drag"; ui_min = 0.1; ui_max = 2.0; ui_step = 0.01; ui_label = "Field of View"; ui_tooltip = "Controls the camera's field of view. Smaller is more zoomed in (larger value for fov parameter in code)."; ui_category = "Camera"; > = DEFAULT_FIELD_OF_VIEW;
 uniform float CameraShakeAmount < ui_type = "drag"; ui_min = 0.0; ui_max = 1.0; ui_step = 0.05; ui_label = "Camera Shake"; ui_tooltip = "Amount of procedural camera shake"; ui_category = "Camera"; > = DEFAULT_CAMERA_SHAKE_AMOUNT;

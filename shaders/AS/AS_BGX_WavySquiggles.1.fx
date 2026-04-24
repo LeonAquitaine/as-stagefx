@@ -1,8 +1,9 @@
 /**
  * AS_BGX_WavySquiggles.1.fx - Wavy Squiggles Background
  * Author: Leon Aquitaine
- * License: Creative Commons Attribution 4.0 International
- * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
+ * License: Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-NC-SA 3.0)
+ * Inherited from the upstream work published on Shadertoy (default licence per https://www.shadertoy.com/terms).
+ * Free for non-commercial use with attribution. Derivatives must be distributed under the same licence.
  * 
  * CREDITS:
  * Based on "Interactive 2.5D Squiggles" by SnoopethDuckDuck
@@ -133,7 +134,7 @@ static const float SMOOTH_GRADIENT_SCALE = 1.0; // Scaling factor for smooth gra
 
 // --- Pattern Parameters ---
 
-uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Interactive 2.5D Squiggles' by SnoopethDuckDuck\nLink: https://www.shadertoy.com/view/7sBfDD\nLicence: CC Share-Alike Non-Commercial\n\n";>;
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Interactive 2.5D Squiggles' by SnoopethDuckDuck\nLink: https://www.shadertoy.com/view/7sBfDD\nLicence: CC BY-NC-SA 3.0 Unported\n\n";>;
 
 uniform float RotationInfluence < ui_type = "slider"; ui_label = "Rotation Influence"; ui_tooltip = "Controls how angle affects the pattern rotation."; ui_min = ROTATION_INFLUENCE_MIN; ui_max = ROTATION_INFLUENCE_MAX; ui_step = ROTATION_INFLUENCE_STEP; ui_category = AS_CAT_PATTERN; > = ROTATION_INFLUENCE_DEFAULT;
 uniform float LineTargetDistance < ui_type = "slider"; ui_label = "Target Distance"; ui_tooltip = "Distance at which lines will form patterns."; ui_min = LINE_DISTANCE_MIN; ui_max = LINE_DISTANCE_MAX; ui_step = LINE_DISTANCE_STEP; ui_category = AS_CAT_PATTERN; > = LINE_DISTANCE_DEFAULT;

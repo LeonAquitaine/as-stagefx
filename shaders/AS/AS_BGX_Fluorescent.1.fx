@@ -1,8 +1,9 @@
 /**
  * AS_BGX_Fluorescent.1.fx - Neon Fluorescent Background Effect
  * Author: Leon Aquitaine
- * License: Creative Commons Attribution 4.0 International
- * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
+ * License: Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-NC-SA 3.0)
+ * Inherited from the upstream work published on Shadertoy (default licence per https://www.shadertoy.com/terms).
+ * Free for non-commercial use with attribution. Derivatives must be distributed under the same licence.
  * 
  * CREDITS:
  * Based on "Fluorescent [292]" by Xor
@@ -111,7 +112,7 @@ static const float STEP_INCREMENT = 1.0;     // Step increment for pre-increment
 
 // --- Category: Raymarching Engine ---
 
-uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Fluorescent [292]' by Xor\nLink: https://www.shadertoy.com/view/WcGGDd\nLicence: CC Share-Alike Non-Commercial\n\n";>;
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Fluorescent [292]' by Xor\nLink: https://www.shadertoy.com/view/WcGGDd\nLicence: CC BY-NC-SA 3.0 Unported\n\n";>;
 
 uniform int IterationCount < ui_type = "slider"; ui_label = "Quality vs. Performance"; ui_tooltip = "Number of steps for ray marching. Higher values increase detail and accuracy but reduce performance significantly. Lower for speed, higher for final renders."; ui_min = ITERATIONS_MIN; ui_max = ITERATIONS_MAX; ui_category = "Raymarching Engine"; > = ITERATIONS_DEFAULT;
 uniform float StepBase < ui_type = "slider"; ui_label = "Minimum Ray Step Size"; ui_tooltip = "Smallest distance the ray advances in each step. Affects detail in dense areas and performance."; ui_min = STEP_BASE_MIN; ui_max = STEP_BASE_MAX; ui_category = "Raymarching Engine"; > = STEP_BASE_DEFAULT;

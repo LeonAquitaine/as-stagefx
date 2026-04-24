@@ -1,8 +1,9 @@
 /**
  * AS_VFX_RadiantFire.1.fx - Reactive fire simulation that radiates from subject edges
  * Author: Leon Aquitaine
- * License: Creative Commons Attribution 4.0 International
- * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
+ * License: Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-NC-SA 3.0)
+ * Inherited from the upstream work published on Shadertoy (default licence per https://www.shadertoy.com/terms).
+ * Free for non-commercial use with attribution. Derivatives must be distributed under the same licence.
  * 
  * CREDITS:
  * Original: "301's Fire Shader - Remix 3" by mu6k (2016-07-27)
@@ -122,7 +123,7 @@ static const float DEFAULT_FLAME_COLOR_THRESHOLD_MID = 0.5f;
 
 // --- Flame Physics ---
 
-uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on '301's Fire Shader - Remix 3' by mu6k\nLink: https://www.shadertoy.com/view/4ttGWM\nLicence: CC Share-Alike Non-Commercial\n\n";>;
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on '301's Fire Shader - Remix 3' by mu6k\nLink: https://www.shadertoy.com/view/4ttGWM\nLicence: CC BY-NC-SA 3.0 Unported\n\n";>;
 
 uniform float AdvectionStrength < ui_type = "slider"; ui_label = "Velocity Influence"; ui_tooltip = "How strongly flames follow their existing velocity (advection)."; ui_min = 0.0; ui_max = 5.0; ui_step = 0.01; ui_category = "Flame Physics"; > = DEFAULT_ADVECTION_STRENGTH;
 uniform float RepulsionStrength < ui_type = "slider"; ui_label = "Repulsion Strength"; ui_tooltip = "How strongly flames are pushed from the Repulsion Center. Affected by Rotation."; ui_min = 0.0; ui_max = 0.01; ui_step = 0.0001; ui_category = "Flame Physics"; > = DEFAULT_REPULSION_STRENGTH;

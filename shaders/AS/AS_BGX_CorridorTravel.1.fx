@@ -1,8 +1,9 @@
 /**
  * AS_BGX_CorridorTravel.1.fx - Dynamic Corridor Travel Effect
  * Author: Leon Aquitaine
- * License: Creative Commons Attribution 4.0 International
- * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
+ * License: Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-NC-SA 3.0)
+ * Inherited from the upstream work published on Shadertoy (default licence per https://www.shadertoy.com/terms).
+ * Free for non-commercial use with attribution. Derivatives must be distributed under the same licence.
  *  * CREDITS:
  * Based on "Corridor Travel" by NuSan
  * Shadertoy: https://www.shadertoy.com/view/3sXyRN
@@ -56,7 +57,7 @@ static const float DEFAULT_FOV = 2.0f;
 // EMISSIVE PATTERN
 // ============================================================================
 
-uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Corridor Travel' by NuSan\nLink: https://www.shadertoy.com/view/3sXyRN\nLicence: CC Share-Alike Non-Commercial\n\n";>;
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Corridor Travel' by NuSan\nLink: https://www.shadertoy.com/view/3sXyRN\nLicence: CC BY-NC-SA 3.0 Unported\n\n";>;
 
 uniform float3 PR_Emission_BaseTint < ui_type = "color"; ui_label = "Base Color"; ui_tooltip = "Base color for the main emissive pattern."; ui_category = "Emissive Pattern"; > = float3(1.0f, 0.5f, 0.2f);
 

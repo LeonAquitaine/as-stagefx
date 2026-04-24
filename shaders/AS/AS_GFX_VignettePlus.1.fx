@@ -1,8 +1,9 @@
 /**
  * AS_GFX_VignettePlus.1.fx - Enhanced vignette effects with customizable patterns
  * Author: Leon Aquitaine
- * License: Creative Commons Attribution 4.0 International
- * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
+ * License: Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-NC-SA 3.0)
+ * Inherited from the upstream work published on Shadertoy (default licence per https://www.shadertoy.com/terms).
+ * Free for non-commercial use with attribution. Derivatives must be distributed under the same licence.
  * 
  * CREDITS:
  * The hexagonal grid implementation is inspired by/adapted from the hexagonal wipe shader on Shadertoy:
@@ -98,7 +99,7 @@ static const int DEBUG_PATTERN_ONLY = 4;
 
 // --- Group I: Main Effect Style & Appearance ---
 
-uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Hexagonal Wipe' by blandprix\nLink: https://www.shadertoy.com/view/XfjyWG\nLicence: CC Share-Alike Non-Commercial\n\n";>;
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Hexagonal Wipe' by blandprix\nLink: https://www.shadertoy.com/view/XfjyWG\nLicence: CC BY-NC-SA 3.0 Unported\n\n";>;
 
 uniform int EffectStyle < ui_type = "combo"; ui_label = "Visual Style"; ui_items = "Smooth Gradient\0Duotone: Circles\0Lines - Perpendicular\0Lines - Parallel\0"; ui_tooltip = "Selects the overall visual appearance of the effect."; ui_category = "Style"; > = STYLE_DUOTONE_CIRCLES;
 uniform float3 EffectColor < ui_type = "color"; ui_label = "Effect Color"; ui_tooltip = "The primary color used for the gradient or duotone patterns."; ui_category = "Style"; > = float3(0.0, 0.0, 0.0);

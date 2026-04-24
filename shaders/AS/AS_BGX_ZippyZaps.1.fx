@@ -1,8 +1,9 @@
 /**
  * AS_BGX_ZippyZaps.1.fx - Dynamic electricity/lightning-like background effect
  * Author: Leon Aquitaine
- * License: Creative Commons Attribution 4.0 International
- * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
+ * License: Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-NC-SA 3.0)
+ * Inherited from the upstream work published on Shadertoy (default licence per https://www.shadertoy.com/terms).
+ * Free for non-commercial use with attribution. Derivatives must be distributed under the same licence.
  * 
  * CREDITS:
  * Based on "Zippy Zaps" by SnoopethDuckDuck
@@ -131,7 +132,7 @@ static const float FINAL_O_U_DOT_DIVISOR_DEFAULT = 250.0;
 
 // --- Appearance ---
 
-uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Zippy Zaps' by SnoopethDuckDuck\nLink: https://www.shadertoy.com/view/XXyGzh\nLicence: CC Share-Alike Non-Commercial\n\n";>;
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Zippy Zaps' by SnoopethDuckDuck\nLink: https://www.shadertoy.com/view/XXyGzh\nLicence: CC BY-NC-SA 3.0 Unported\n\n";>;
 
 uniform float U_CoordScalingFactor < ui_type = "slider"; ui_label = "Scaling Factor"; ui_tooltip = "Controls the initial zoom/scale of the effect. Smaller values zoom in (effect appears larger)."; ui_min = U_COORD_SCALING_MIN; ui_max = U_COORD_SCALING_MAX; ui_step = U_COORD_SCALING_STEP; ui_category = AS_CAT_APPEARANCE; > = U_COORD_SCALING_DEFAULT;
 uniform float Loop_A_Increment < ui_type = "slider"; ui_label = "Arc Growth Rate"; ui_tooltip = "Controls the rate of growth for lightning arcs in the effect."; ui_min = LOOP_A_INCREMENT_MIN; ui_max = LOOP_A_INCREMENT_MAX; ui_step = LOOP_A_INCREMENT_STEP; ui_category = AS_CAT_APPEARANCE; > = LOOP_A_INCREMENT_DEFAULT;

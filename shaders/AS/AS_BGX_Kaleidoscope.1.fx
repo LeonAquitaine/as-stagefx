@@ -1,8 +1,9 @@
 /**
  * AS_BGX_Kaleidoscope.1.fx - Dynamic Fractal Kaleidoscope Pattern
  * Author: Leon Aquitaine
- * License: Creative Commons Attribution 4.0 International
- * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
+ * License: Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-NC-SA 3.0)
+ * Inherited from the upstream work published on Shadertoy (default licence per https://www.shadertoy.com/terms).
+ * Free for non-commercial use with attribution. Derivatives must be distributed under the same licence.
  *  * CREDITS:
  * Based on "Kaleidoscope" by Kanduvisla
  * Shadertoy: https://www.shadertoy.com/view/ddsyDN
@@ -122,7 +123,7 @@ static const float AUDIO_GAIN_ROTATION_DEFAULT = 0.0;
 // Kaleidoscope Controls
 //------------------------------------------------------------------------------------------------
 
-uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Kaleidoscope' by Kanduvisla\nLink: https://www.shadertoy.com/view/ddsyDN\nLicence: CC Share-Alike Non-Commercial\n\n";>;
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Kaleidoscope' by Kanduvisla\nLink: https://www.shadertoy.com/view/ddsyDN\nLicence: CC BY-NC-SA 3.0 Unported\n\n";>;
 
 uniform int Sectors < ui_type = "slider"; ui_label = "Mirrors"; ui_tooltip = "Number of kaleidoscope sectors. 1 means no effect. Even numbers often look best."; ui_min = SECTORS_MIN; ui_max = SECTORS_MAX; ui_step = 1; ui_category = "Kaleidoscope"; > = SECTORS_DEFAULT;
 

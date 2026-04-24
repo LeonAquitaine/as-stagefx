@@ -1,7 +1,9 @@
 /**
  * AS_BGX_ProteanClouds.1.fx - Volumetric, Procedural Clouds with Raymarching
  * Author: Leon Aquitaine
- * License: Creative Commons Attribution 4.0 International
+ * License: Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-NC-SA 3.0)
+ * Inherited from the upstream work published on Shadertoy (default licence per https://www.shadertoy.com/terms).
+ * Free for non-commercial use with attribution. Derivatives must be distributed under the same licence.
  *
  * ===================================================================================
  *
@@ -67,7 +69,7 @@ static float g_iTime_global_for_map;
 // UI UNIFORMS
 //--------------------------------------------------------------------------------------
 
-uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Protean clouds' by nimitz\nLink: https://www.shadertoy.com/view/3l23Rh\nLicence: CC Share-Alike Non-Commercial\n\n";>;
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Protean clouds' by nimitz\nLink: https://www.shadertoy.com/view/3l23Rh\nLicence: CC BY-NC-SA 3.0 Unported\n\n";>;
 
 AS_ANIMATION_UI(MasterTimeSpeed, MasterTimeKeyframe, "Global Animation")
 

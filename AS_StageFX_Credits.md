@@ -1,456 +1,285 @@
-<!-- filepath: docs/template/AS_StageFX_Credits.md -->
+<!-- filepath: AS_StageFX_Credits.md -->
 # AS-StageFX External Credits and Attribution
 
-**Repository**: AS-StageFX ReShade Shader Collection  
-
-This document lists all external sources, original authors, and inspiration credits for the AS-StageFX shader collection. The majority of the shaders are adaptations and ports, but proper attribution to original creators is maintained as required by Creative Commons licensing.
-
----
-
-## Shadertoy & External Adaptations (BGX)
-### AS_BGX_BlueCorona.1.fx - Blue Corona
-- **Original Author**: SnoopethDuckDuck
-- **Original Title**: Blue Corona [256 Chars]
-- **Notes**: Inspired by the 'Blue Corona [256 Chars]' shader by @SnoopethDuckDuck.
-- **Source**: https://www.shadertoy.com/view/XfKGWV
-### AS_BGX_Constellation.1.fx - Constellation
-- **Original Author**: jairoandre
-- **Original Title**: old joseph
-- **Notes**: Based on the 'old joseph' effect by jairoandre.
-- **Source**: https://www.shadertoy.com/view/slfGzf
-### AS_BGX_CorridorTravel.1.fx - Corridor Travel
-- **Original Author**: NuSan
-- **Original Title**: Corridor Travel
-- **Notes**: Inspired by the 'Corridor Travel' shader by NuSan.
-- **Source**: https://www.shadertoy.com/view/3sXyRN
-### AS_BGX_CosmicKaleidoscope.1.fx - Cosmic Kaleidoscope
-- **Original Author**: Kali
-- **Original Title**: Star Nest
-- **Notes**: Inspired by 'Star Nest' from Kali
-- **Source**: https://www.shadertoy.com/view/XlfGRj
-### AS_BGX_DigitalBrain.1.fx - Digital Brain
-- **Original Author**: srtuss
-- **Original Title**: Digital Brain
-- **Notes**: Voronoi pattern logic inspired by 'Digital Brain' from srtuss.
-- **Source**: https://www.shadertoy.com/view/4sl3Dr
-### AS_BGX_Fluorescent.1.fx - Fluorescent
-- **Original Author**: Xor
-- **Original Title**: Fluorescent [292]
-- **Notes**: 
-- **Source**: https://www.shadertoy.com/view/WcGGDd
-### AS_BGX_GoldenClockwork.1.fx - Golden Clockwork
-- **Original Author**: mrange
-- **Original Title**: Golden apollian
-- **Notes**: 
-- **Source**: https://www.shadertoy.com/view/WlcfRS
-### AS_BGX_Hologram.1.fx - Hologram
-- **Original Author**: hypothete
-- **Original Title**: Hologram stars
-- **Notes**: 
-- **Source**: https://www.shadertoy.com/view/NlycDG
-### AS_BGX_Kaleidoscope.1.fx - Kaleidoscope
-- **Original Author**: Kanduvisla
-- **Original Title**: Kaleidoscope
-- **Notes**: 
-- **Source**: https://www.shadertoy.com/view/ddsyDN
-### AS_BGX_LightRipples.1.fx - Light Ripples
-- **Original Author**: Danguafer/Danilo Guanabara
-- **Original Title**: Creation by Silexars
-- **Notes**: 
-- **Source**: https://www.shadertoy.com/view/XsXXDn
-### AS_BGX_LightWall.1.fx - Light Wall
-- **Original Author**: 
-- **Original Title**: 
-- **Notes**: 
-- **Source**: 
-### AS_BGX_LiquidChrome.1.fx - Liquid Chrome
-- **Original Author**: iamsaitam
-- **Original Title**: Liquid Chrome
-- **Notes**: 
-- **Source**: https://neort.io/art/bkm813c3p9f7drq1j86g
-### AS_BGX_LogSpirals.1.fx - Log Spirals
-- **Original Author**: mrange
-- **Original Title**: Logarithmic spiral of spheres
-- **Notes**: Based on 'Logarithmic spiral of spheres' by mrange.
-- **Source**: https://www.shadertoy.com/view/msGXRD
-### AS_BGX_MeltWave.1.fx - Melt Wave
-- **Original Author**: tomorrowevening
-- **Original Title**: 70s Melt
-- **Notes**: 
-- **Source**: https://www.shadertoy.com/view/XsX3zl
-### AS_BGX_MistyGrid.1.fx - Misty Grid
-- **Original Author**: NuSan
-- **Original Title**: [twitch] Misty Grid
-- **Notes**: 
-- **Source**: https://www.shadertoy.com/view/wl2Szd
-### AS_BGX_PastRacer.1.fx - Past Racer
-- **Original Author**: NuSan
-- **Original Title**: Outline 2020 Freestyle Live code
-- **Notes**: 
-- **Source**: https://www.shadertoy.com/view/tsBBzG
-### AS_BGX_PlasmaFlow.1.fx - Plasma Flow
-- **Original Author**: fuzzmoon
-- **Original Title**: Plasma Storm
-- **Notes**: 
-- **Source**: https://www.shadertoy.com/view/slSBDd
-### AS_BGX_ProteanClouds.1.fx - Protean Clouds
-- **Original Author**: nimitz
-- **Original Title**: Protean clouds
-- **Notes**: 
-- **Source**: https://www.shadertoy.com/view/3l23Rh
-### AS_BGX_QuadtreeTruchet.1.fx - Quadtree Truchet
-- **Original Author**: Shane
-- **Original Title**: Quadtree Truchet
-- **Notes**: 
-- **Source**: https://www.shadertoy.com/view/4t3BW4
-### AS_BGX_RaymarchedChain.1.fx - Raymarched Chain
-- **Original Author**: Elsio
-- **Original Title**: Corrente
-- **Notes**: 
-- **Source**: https://www.shadertoy.com/view/ctSfRV
-### AS_BGX_StainedLights.1.fx - Stained Lights
-- **Original Author**: 104
-- **Original Title**: Stained Lights
-- **Notes**: 
-- **Source**: https://www.shadertoy.com/view/WlsSzM
-### AS_BGX_SunsetClouds.1.fx - Sunset Clouds
-- **Original Author**: Xor
-- **Original Title**: Sunset [280]
-- **Notes**: 
-- **Source**: https://www.shadertoy.com/view/wXjSRt
-### AS_BGX_TimeCrystal.1.fx - Time Crystal
-- **Original Author**: raphaeljmu
-- **Original Title**: Time Crystal
-- **Notes**: 
-- **Source**: https://www.shadertoy.com/view/lcl3z2
-### AS_BGX_VinylDisc.1.fx - Vinyl Disc
-- **Original Author**: 
-- **Original Title**: 
-- **Notes**: 
-- **Source**: 
-### AS_BGX_Vortex.1.fx - Vortex
-- **Original Author**: LonkDong
-- **Original Title**: Vortex__ 
-- **Notes**: 
-- **Source**: https://www.shadertoy.com/view/3fKGRd
-### AS_BGX_WavySquares.1.fx - Wavy Squares
-- **Original Author**: SnoopethDuckDuck
-- **Original Title**: Square Tiling Example E
-- **Notes**: 
-- **Source**: https://www.shadertoy.com/view/NdfBzn
-### AS_BGX_WavySquiggles.1.fx - Wavy Squiggles
-- **Original Author**: SnoopethDuckDuck
-- **Original Title**: Interactive 2.5D Squiggles
-- **Notes**: Based on 'Interactive 2.5D Squiggles' by SnoopethDuckDuck.
-- **Source**: https://www.shadertoy.com/view/7sBfDD
-### AS_BGX_ZippyZaps.1.fx - Zippy Zaps
-- **Original Author**: SnoopethDuckDuck
-- **Original Title**: Zippy Zaps
-- **Notes**: 
-- **Source**: https://www.shadertoy.com/view/XXyGzh
-
-## Shadertoy & External Adaptations (VFX)
-### AS_VFX_BoomSticker.1.fx - Boom Sticker
-- **Original Author**: Marot Satil
-- **Original Title**: StageDepth.fx
-- **Notes**: Heavily inspired by 'StageDepth.fx' by Marot Satil (2019), original depth masking implementation.
-- **Source**: https://github.com/Otakumouse/stormshade/blob/master/v4.X/reshade-shaders/Shader%20Library/Recommended/StageDepth.fx
-### AS_VFX_CircularSpectrum.1.fx - Circular Spectrum
-- **Original Author**: AIandDesign
-- **Original Title**: Circular audio visualizer
-- **Notes**: Based on 'Circular audio visualizer' by AIandDesign.
-- **Source**: https://www.shadertoy.com/view/tcyGW1
-### AS_VFX_ClairObscur.1.fx - Clair Obscur
-- **Original Author**: deeplo
-- **Original Title**: [RGR] Hearts
-- **Notes**: Motion inspired by '[RGR] Hearts' by deeplo.
-- **Source**: https://www.shadertoy.com/view/ttcBRs
-### AS_VFX_ColorBalancer.1.fx - Color Balancer
-- **Original Author**: 
-- **Original Title**: 
-- **Notes**: 
-- **Source**: 
-### AS_VFX_CrossScreenStars.1.fx - Cross-Screen Stars
-- **Original Author**: 
-- **Original Title**: 
-- **Notes**: 
-- **Source**: 
-### AS_VFX_DigitalArtifacts.1.fx - Digital Artifacts
-- **Original Author**: 
-- **Original Title**: 
-- **Notes**: 
-- **Source**: 
-### AS_VFX_DoubleExposure.1.fx - Double Exposure
-- **Original Author**: 
-- **Original Title**: 
-- **Notes**: 
-- **Source**: 
-### AS_VFX_DustMotes.1.fx - Dust Motes
-- **Original Author**: 
-- **Original Title**: 
-- **Notes**: 
-- **Source**: 
-### AS_VFX_FilmBurn.1.fx - Film Burn
-- **Original Author**: 
-- **Original Title**: 
-- **Notes**: 
-- **Source**: 
-### AS_VFX_FocusedChaos.1.fx - Focused Chaos
-- **Original Author**: misterprada
-- **Original Title**: BlackHole (swirl, portal)
-- **Notes**: 
-- **Source**: https://www.shadertoy.com/view/lcfyDj
-### AS_VFX_GlossyGradient.1.fx - Glossy Gradient
-- **Original Author**: 
-- **Original Title**: 
-- **Notes**: 
-- **Source**: 
-### AS_VFX_LightLeak.1.fx - Light Leak
-- **Original Author**: 
-- **Original Title**: 
-- **Notes**: 
-- **Source**: 
-### AS_VFX_MotionFocus.1.fx - Motion Focus
-- **Original Author**: 
-- **Original Title**: 
-- **Notes**: 
-- **Source**: 
-### AS_VFX_MotionTrails.1.fx - Motion Trails
-- **Original Author**: 
-- **Original Title**: 
-- **Notes**: 
-- **Source**: 
-### AS_VFX_NeonEdgeGlow.1.fx - Neon Edge Glow
-- **Original Author**: 
-- **Original Title**: 
-- **Notes**: 
-- **Source**: 
-### AS_VFX_PixelSort.1.fx - Pixel Sort
-- **Original Author**: 
-- **Original Title**: 
-- **Notes**: 
-- **Source**: 
-### AS_VFX_PrismOverlay.1.fx - Prism Overlay
-- **Original Author**: 
-- **Original Title**: 
-- **Notes**: 
-- **Source**: 
-### AS_VFX_RadialLensDistortion.1.fx - Radial Lens Distortion
-- **Original Author**: 
-- **Original Title**: 
-- **Notes**: 
-- **Source**: 
-### AS_VFX_RadiantFire.1.fx - Radiant Fire
-- **Original Author**: mu6k
-- **Original Title**: 301's Fire Shader - Remix 3
-- **Notes**: Flame generation inspired by '301's Fire Shader - Remix 3' by mu6k.
-- **Source**: https://www.shadertoy.com/view/4ttGWM
-### AS_VFX_RainyWindow.1.fx - Rainy Window
-- **Original Author**: Martijn Steinrucken (BigWings)
-- **Original Title**: Heartfelt
-- **Notes**: Inspired by 'Heartfelt' by Martijn Steinrucken (BigWings).
-- **Source**: https://www.shadertoy.com/view/ltffzl
-### AS_VFX_ScreenRing.1.fx - Screen Ring
-- **Original Author**: 
-- **Original Title**: 
-- **Notes**: 
-- **Source**: 
-### AS_VFX_SparkleBloom.1.fx - Sparkle Bloom
-- **Original Author**: 
-- **Original Title**: 
-- **Notes**: 
-- **Source**: 
-### AS_VFX_SpectrumRing.1.fx - Spectrum Ring
-- **Original Author**: 
-- **Original Title**: 
-- **Notes**: 
-- **Source**: 
-### AS_VFX_SpeedLines.1.fx - Speed Lines
-- **Original Author**: 
-- **Original Title**: 
-- **Notes**: 
-- **Source**: 
-### AS_VFX_StencilMask.1.fx - Stencil Mask
-- **Original Author**: 
-- **Original Title**: 
-- **Notes**: 
-- **Source**: 
-### AS_VFX_TiltedGrid.1.fx - Tilted Grid
-- **Original Author**: FencerDevLog
-- **Original Title**: Godot 4: Tilted Grid Effect Tutorial
-- **Notes**: 
-- **Source**: https://www.youtube.com/watch?v=Tfj6RDqXEHM
-### AS_VFX_VolumetricFog.1.fx - Volumetric Fog
-- **Original Author**: 
-- **Original Title**: 
-- **Notes**: 
-- **Source**: 
-### AS_VFX_VolumetricLight.1.fx - Volumetric Light
-- **Original Author**: int_45h
-- **Original Title**: fake volumetric 2d light wip
-- **Notes**: 
-- **Source**: https://www.shadertoy.com/view/wftXzr
-### AS_VFX_VUMeter.1.fx - VUMeter
-- **Original Author**: 
-- **Original Title**: 
-- **Notes**: 
-- **Source**: 
-### AS_VFX_WarpDistort.1.fx - Warp Distort
-- **Original Author**: 
-- **Original Title**: 
-- **Notes**: 
-- **Source**: 
-### AS_VFX_WaterSurface.1.fx - Water Surface
-- **Original Author**: 
-- **Original Title**: 
-- **Notes**: 
-- **Source**: 
-
-## Shadertoy & External Adaptations (GFX)
-### AS_GFX_AnamorphicFlare.1.fx - Anamorphic Flare
-- **Original Author**: 
-- **Original Title**: 
-- **Notes**: 
-- **Source**: 
-### AS_GFX_AspectRatio.1.fx - Aspect Ratio
-- **Original Author**: 
-- **Original Title**: 
-- **Notes**: 
-- **Source**: 
-### AS_GFX_AudioDirection.1.fx - Audio Direction
-- **Original Author**: 
-- **Original Title**: 
-- **Notes**: 
-- **Source**: 
-### AS_GFX_BleachBypass.1.fx - Bleach Bypass
-- **Original Author**: 
-- **Original Title**: 
-- **Notes**: 
-- **Source**: 
-### AS_GFX_BrushStroke.1.fx - Brush Stroke
-- **Original Author**: 
-- **Original Title**: 
-- **Notes**: 
-- **Source**: 
-### AS_GFX_CinematicDiffusion.1.fx - Cinematic Diffusion
-- **Original Author**: 
-- **Original Title**: 
-- **Notes**: 
-- **Source**: 
-### AS_GFX_ColorPop.1.fx - Color Pop
-- **Original Author**: 
-- **Original Title**: 
-- **Notes**: 
-- **Source**: 
-### AS_GFX_CosmicGlow.1.fx - Cosmic Glow
-- **Original Author**: XorDev
-- **Original Title**: Cosmic
-- **Notes**: 
-- **Source**: https://www.shadertoy.com/view/ls3XW8
-### AS_GFX_CrossProcessing.1.fx - Cross Processing
-- **Original Author**: 
-- **Original Title**: 
-- **Notes**: 
-- **Source**: 
-### AS_GFX_Hologram.1.fx - Depth Hologram
-- **Original Author**: Alexander Alekseev aka TDM
-- **Original Title**: Protection hologram
-- **Notes**: 
-- **Source**: https://www.shadertoy.com/view/MdBSWV
-### AS_GFX_FadedBlacks.1.fx - Faded Blacks
-- **Original Author**: 
-- **Original Title**: 
-- **Notes**: 
-- **Source**: 
-### AS_GFX_FilmStock.1.fx - Film Stock
-- **Original Author**: 
-- **Original Title**: 
-- **Notes**: 
-- **Source**: 
-### AS_GFX_FocusFrame.1.fx - Focus Frame
-- **Original Author**: 
-- **Original Title**: 
-- **Notes**: 
-- **Source**: 
-### AS_GFX_GradientMap.1.fx - Gradient Map
-- **Original Author**: 
-- **Original Title**: 
-- **Notes**: 
-- **Source**: 
-### AS_GFX_Halation.1.fx - Halation
-- **Original Author**: 
-- **Original Title**: 
-- **Notes**: 
-- **Source**: 
-### AS_GFX_HandDrawing.1.fx - Hand Drawing
-- **Original Author**: Flockaroo
-- **Original Title**: notebook drawings
-- **Notes**: Based on 'notebook drawings' by Flockaroo (2016).
-- **Source**: https://www.shadertoy.com/view/XtVGD1
-### AS_GFX_LightWrap.1.fx - Light Wrap
-- **Original Author**: 
-- **Original Title**: 
-- **Notes**: 
-- **Source**: 
-### AS_GFX_MultiLayerHalftone.1.fx - MultiLayer Halftone
-- **Original Author**: 
-- **Original Title**: 
-- **Notes**: 
-- **Source**: 
-### AS_GFX_OrtonEffect.1.fx - Orton Effect
-- **Original Author**: 
-- **Original Title**: 
-- **Notes**: 
-- **Source**: 
-### AS_GFX_SoftDiffusion.1.fx - Soft Diffusion
-- **Original Author**: 
-- **Original Title**: 
-- **Notes**: 
-- **Source**: 
-### AS_GFX_TiltShift.1.fx - Tilt-Shift
-- **Original Author**: 
-- **Original Title**: 
-- **Notes**: 
-- **Source**: 
-### AS_GFX_VignettePlus.1.fx - Vignette Plus
-- **Original Author**: blandprix
-- **Original Title**: Hexagonal Wipe
-- **Notes**: Hexagonal grid implementation adapted from 'hexagonal wipe' by blandprix.
-- **Source**: https://www.shadertoy.com/view/XfjyWG
-### AS_GFX_Y2KDigicam.1.fx - Y2K Digicam
-- **Original Author**: 
-- **Original Title**: 
-- **Notes**: 
-- **Source**: 
-
-## Shadertoy & External Adaptations (LFX)
-### AS_LFX_CandleFlame.1.fx - Candle Flame
-- **Original Author**: 
-- **Original Title**: 
-- **Notes**: 
-- **Source**: 
-### AS_LFX_LaserShow.1.fx - Laser Show
-- **Original Author**: 
-- **Original Title**: 
-- **Notes**: 
-- **Source**: 
-### AS_LFX_StageSpotlights.1.fx - Stage Spotlights
-- **Original Author**: 
-- **Original Title**: 
-- **Notes**: 
-- **Source**: 
-
----
-
-## Attribution Notice
-
-All adaptations maintain proper attribution to original creators as required by Creative Commons licensing. When using these shaders, please ensure you include attribution to both Leon Aquitaine (for the ReShade adaptation and AS framework integration) and the original creators listed above.
-
-For commercial use, please verify licensing terms with original creators where applicable, though most Shadertoy content is available under permissive licenses.
-
----
-
-**Compilation Date**:   
-**AS-StageFX Version**:   
+**Repository**: AS-StageFX ReShade Shader Collection
 **Maintainer**: Leon Aquitaine
 
+This document records external sources, original authors, and inspiration credits for the AS-StageFX shader collection, and the licence under which each ported shader is distributed.
+
+The collection contains two categories of externally-informed work:
+
+1. **Original works with inspiration credits** — shaders Leon wrote from scratch, crediting a prior work as visual or conceptual inspiration. These are licensed **CC BY 4.0** (the AS-StageFX project licence).
+2. **Ports and adaptations** — shaders derived from an external source. These inherit the upstream source's licence.
+
+Purely original shaders (no external inspiration) are not listed here; they are covered by the project default of **CC BY 4.0** and appear only in the main [README.md](README.md).
+
+For the overall licensing model see [LICENSING.md](LICENSING.md).
+
+---
+
+## 1. Original Works with Inspiration Credits
+
+These shaders are original implementations by Leon Aquitaine, crediting prior works that inspired them. They are not ports and do not inherit any upstream licence.
+
+### AS_VFX_BoomSticker.1.fx — Boom Sticker
+- **Licence**: CC BY 4.0 (AS-StageFX project licence)
+- **Author**: Leon Aquitaine (original implementation)
+- **Inspiration**: "StageDepth.fx" by Marot Satil (2019), GShade ReShade package — original depth-masked texture-overlay concept.
+- **Upstream reference**: https://github.com/Otakumouse/stormshade/blob/master/v4.X/reshade-shaders/Shader%20Library/Recommended/StageDepth.fx
+
+### AS_VFX_ClairObscur.1.fx — Clair Obscur
+- **Licence**: CC BY 4.0 (AS-StageFX project licence)
+- **Author**: Leon Aquitaine (original implementation)
+- **Inspiration**: Motion inspired by "[RGR] Hearts" by deeplo.
+- **Upstream reference**: https://www.shadertoy.com/view/ttcBRs
+
+### AS_VFX_TiltedGrid.1.fx — Tilted Grid
+- **Licence**: CC BY 4.0 (AS-StageFX project licence)
+- **Author**: Leon Aquitaine (original implementation)
+- **Inspiration**: Technique learned from FencerDevLog's "Godot 4: Tilted Grid Effect Tutorial".
+- **Upstream reference**: https://www.youtube.com/watch?v=Tfj6RDqXEHM (video no longer available)
+
+### AS_BGX_MeltWave.1.fx — Melt Wave
+- **Licence**: CC BY 4.0 (AS-StageFX project licence)
+- **Author**: Leon Aquitaine (clean-room original implementation, 2026-04-24)
+- **History**: An earlier port carrying ambiguous upstream licensing was replaced with a clean-room implementation produced from behavioural specification [docs/specs/AS_BGX_MeltWave.spec.md](docs/specs/AS_BGX_MeltWave.spec.md). The current implementation shares no code with any prior work.
+
+### AS_BGX_Constellation.1.fx — Constellation
+- **Licence**: CC BY 4.0 (AS-StageFX project licence)
+- **Author**: Leon Aquitaine (clean-room original implementation, 2026-04-24)
+- **History**: An earlier port with ambiguous upstream provenance was replaced with a clean-room implementation produced from behavioural specification [docs/specs/AS_BGX_Constellation.spec.md](docs/specs/AS_BGX_Constellation.spec.md). The current implementation shares no code with any prior work.
+
+### AS_BGX_LiquidChrome.1.fx — Liquid Chrome
+- **Licence**: CC BY 4.0 (AS-StageFX project licence)
+- **Author**: Leon Aquitaine (clean-room original implementation, 2026-04-24)
+- **History**: An earlier port of an neort.io work with no explicit redistribution licence was replaced with a clean-room implementation produced from behavioural specification [docs/specs/AS_BGX_LiquidChrome.spec.md](docs/specs/AS_BGX_LiquidChrome.spec.md). The current implementation shares no code with any prior work.
+
+---
+
+## 2. Ports and Adaptations
+
+The following shaders are ports/adaptations of external works. Each inherits the upstream source's licence. Where an author explicitly declared a licence, it is noted; otherwise the platform default applies (Shadertoy's default is CC BY-NC-SA 3.0 Unported per [shadertoy.com/terms](https://www.shadertoy.com/terms)).
+
+### Background Effects (BGX)
+
+#### AS_BGX_BlueCorona.1.fx — Blue Corona
+- **Original Author**: SnoopethDuckDuck
+- **Original Title**: Blue Corona [256 Chars]
+- **Source**: https://www.shadertoy.com/view/XfKGWV
+- **Licence**: CC BY-NC-SA 3.0 Unported (Shadertoy default)
+
+#### AS_BGX_CorridorTravel.1.fx — Corridor Travel
+- **Original Author**: NuSan
+- **Original Title**: Corridor Travel
+- **Source**: https://www.shadertoy.com/view/3sXyRN
+- **Licence**: CC BY-NC-SA 3.0 Unported (Shadertoy default)
+
+#### AS_BGX_CosmicKaleidoscope.1.fx — Cosmic Kaleidoscope
+- **Original Author**: Kali
+- **Original Title**: Star Nest
+- **Source**: https://www.shadertoy.com/view/XlfGRj
+- **Licence**: CC BY-NC-SA 3.0 Unported (Shadertoy default)
+
+#### AS_BGX_DigitalBrain.1.fx — Digital Brain
+- **Original Author**: srtuss
+- **Original Title**: Digital Brain
+- **Source**: https://www.shadertoy.com/view/4sl3Dr
+- **Licence**: CC BY-NC-SA 3.0 Unported (Shadertoy default)
+
+#### AS_BGX_Fluorescent.1.fx — Fluorescent
+- **Original Author**: Xor
+- **Original Title**: Fluorescent [292]
+- **Source**: https://www.shadertoy.com/view/WcGGDd
+- **Licence**: CC BY-NC-SA 3.0 Unported (Shadertoy default)
+
+#### AS_BGX_GoldenClockwork.1.fx — Golden Clockwork
+- **Original Author**: mrange
+- **Original Title**: Golden apollian
+- **Source**: https://www.shadertoy.com/view/WlcfRS
+- **Licence**: **CC0 1.0 Universal** (explicitly dedicated to public domain by the author)
+
+#### AS_BGX_Hologram.1.fx — Hologram
+- **Original Author**: hypothete
+- **Original Title**: Hologram stars
+- **Source**: https://www.shadertoy.com/view/NlycDG
+- **Licence**: CC BY-NC-SA 3.0 Unported (Shadertoy default)
+
+#### AS_BGX_Kaleidoscope.1.fx — Kaleidoscope
+- **Original Author**: Kanduvisla
+- **Original Title**: Kaleidoscope
+- **Source**: https://www.shadertoy.com/view/ddsyDN
+- **Licence**: CC BY-NC-SA 3.0 Unported (Shadertoy default)
+
+#### AS_BGX_LightRipples.1.fx — Light Ripples
+- **Original Author**: Danguafer (Danilo Guanabara)
+- **Original Title**: Creation by Silexars
+- **Source**: https://www.shadertoy.com/view/XsXXDn
+- **Licence**: CC BY-NC-SA 3.0 Unported (Shadertoy default)
+
+#### AS_BGX_LogSpirals.1.fx — Log Spirals
+- **Original Author**: mrange
+- **Original Title**: Logarithmic spiral of spheres
+- **Source**: https://www.shadertoy.com/view/msGXRD
+- **Licence**: **CC0 1.0 Universal** (explicitly dedicated to public domain by the author)
+
+#### AS_BGX_MistyGrid.1.fx — Misty Grid
+- **Original Author**: NuSan
+- **Original Title**: [twitch] Misty Grid
+- **Source**: https://www.shadertoy.com/view/wl2Szd
+- **Licence**: CC BY-NC-SA 3.0 Unported (Shadertoy default)
+
+#### AS_BGX_PastRacer.1.fx — Past Racer
+- **Original Author**: NuSan
+- **Original Title**: Outline 2020 Freestyle Live code
+- **Source**: https://www.shadertoy.com/view/tsBBzG
+- **Licence**: CC BY-NC-SA 3.0 Unported (Shadertoy default)
+
+#### AS_BGX_PlasmaFlow.1.fx — Plasma Flow
+- **Original Author**: fuzzmoon
+- **Original Title**: Plasma Storm
+- **Source**: https://www.shadertoy.com/view/slSBDd
+- **Licence**: CC BY-NC-SA 3.0 Unported (Shadertoy default)
+
+#### AS_BGX_ProteanClouds.1.fx — Protean Clouds
+- **Original Author**: nimitz (twitter: @stormoid)
+- **Original Title**: Protean clouds
+- **Source**: https://www.shadertoy.com/view/3l23Rh
+- **Licence**: CC BY-NC-SA 3.0 Unported (Shadertoy default, also declared inline by the upstream author)
+
+#### AS_BGX_QuadtreeTruchet.1.fx — Quadtree Truchet
+- **Original Author**: Shane
+- **Original Title**: Quadtree Truchet
+- **Source**: https://www.shadertoy.com/view/4t3BW4
+- **Licence**: CC BY-NC-SA 3.0 Unported (Shadertoy default)
+
+#### AS_BGX_RaymarchedChain.1.fx — Raymarched Chain
+- **Original Author**: Elsio
+- **Original Title**: Corrente
+- **Source**: https://www.shadertoy.com/view/ctSfRV
+- **Licence**: CC BY-NC-SA 3.0 Unported (Shadertoy default)
+
+#### AS_BGX_StainedLights.1.fx — Stained Lights
+- **Original Author**: 104
+- **Original Title**: Stained Lights
+- **Source**: https://www.shadertoy.com/view/WlsSzM
+- **Licence**: CC BY-NC-SA 3.0 Unported (Shadertoy default)
+
+#### AS_BGX_SunsetClouds.1.fx — Sunset Clouds
+- **Original Author**: Xor
+- **Original Title**: Sunset [280]
+- **Source**: https://www.shadertoy.com/view/wXjSRt
+- **Licence**: CC BY-NC-SA 3.0 Unported (Shadertoy default)
+
+#### AS_BGX_TimeCrystal.1.fx — Time Crystal
+- **Original Author**: raphaeljmu
+- **Original Title**: Time Crystal
+- **Source**: https://www.shadertoy.com/view/lcl3z2
+- **Licence**: CC BY-NC-SA 3.0 Unported (Shadertoy default)
+
+#### AS_BGX_Vortex.1.fx — Vortex
+- **Original Author**: LonkDong
+- **Original Title**: Vortex__
+- **Source**: https://www.shadertoy.com/view/3fKGRd
+- **Licence**: CC BY-NC-SA 3.0 Unported (Shadertoy default)
+
+#### AS_BGX_Waveform.1.fx — Waveform
+- **Original Author**: Xor (XorDev)
+- **Original Title**: Waveform [315]
+- **Source**: https://www.shadertoy.com/view/Wcc3z2
+- **Licence**: CC BY-NC-SA 3.0 Unported (Shadertoy default)
+- **Note**: The Shadertoy original includes a commented-out Soundcloud audio sample (disabled upstream when Shadertoy's Soundcloud integration stopped working). This port enables audio reactivity via Listeningway frequency bands in place of the original texture lookup.
+
+#### AS_BGX_WavySquares.1.fx — Wavy Squares
+- **Original Author**: SnoopethDuckDuck
+- **Original Title**: Square Tiling Example E
+- **Source**: https://www.shadertoy.com/view/NdfBzn
+- **Licence**: CC BY-NC-SA 3.0 Unported (Shadertoy default)
+
+#### AS_BGX_WavySquiggles.1.fx — Wavy Squiggles
+- **Original Author**: SnoopethDuckDuck
+- **Original Title**: Interactive 2.5D Squiggles
+- **Source**: https://www.shadertoy.com/view/7sBfDD
+- **Licence**: CC BY-NC-SA 3.0 Unported (Shadertoy default)
+
+#### AS_BGX_ZippyZaps.1.fx — Zippy Zaps
+- **Original Author**: SnoopethDuckDuck
+- **Original Title**: Zippy Zaps
+- **Source**: https://www.shadertoy.com/view/XXyGzh
+- **Licence**: CC BY-NC-SA 3.0 Unported (Shadertoy default)
+
+### Graphic Effects (GFX)
+
+#### AS_GFX_CosmicGlow.1.fx — Cosmic Glow
+- **Original Author**: Xor (XorDev)
+- **Original Title**: Cosmic [256 Chars]
+- **Source**: https://www.shadertoy.com/view/msjXRK
+- **Licence**: CC BY-NC-SA 3.0 Unported (Shadertoy default)
+
+#### AS_GFX_HandDrawing.1.fx — Hand Drawing
+- **Original Author**: Flockaroo
+- **Original Title**: notebook drawings
+- **Source**: https://www.shadertoy.com/view/XtVGD1
+- **Licence**: CC BY-NC-SA 3.0 Unported (Shadertoy default)
+
+#### AS_GFX_Hologram.1.fx — Depth Hologram
+- **Original Author**: Alexander Alekseev (TDM)
+- **Original Title**: Protection hologram
+- **Source**: https://www.shadertoy.com/view/MdBSWV
+- **Licence**: CC BY-NC-SA 3.0 Unported (Shadertoy default)
+
+#### AS_GFX_VignettePlus.1.fx — Vignette Plus
+- **Original Author**: blandprix
+- **Original Title**: Hexagonal Wipe
+- **Source**: https://www.shadertoy.com/view/XfjyWG
+- **Licence**: CC BY-NC-SA 3.0 Unported (Shadertoy default)
+
+### Visual Effects (VFX)
+
+#### AS_VFX_CircularSpectrum.1.fx — Circular Spectrum
+- **Original Author**: AIandDesign
+- **Original Title**: Circular audio visualizer
+- **Source**: https://www.shadertoy.com/view/tcyGW1
+- **Licence**: CC BY-NC-SA 3.0 Unported (Shadertoy default)
+
+#### AS_VFX_FocusedChaos.1.fx — Focused Chaos
+- **Original Author**: misterprada
+- **Original Title**: BlackHole (swirl, portal)
+- **Source**: https://www.shadertoy.com/view/lcfyDj
+- **Licence**: CC BY-NC-SA 3.0 Unported (Shadertoy default)
+
+#### AS_VFX_RadiantFire.1.fx — Radiant Fire
+- **Original Author**: mu6k
+- **Original Title**: 301's Fire Shader - Remix 3
+- **Source**: https://www.shadertoy.com/view/4ttGWM
+- **Licence**: CC BY-NC-SA 3.0 Unported (Shadertoy default)
+
+#### AS_VFX_RainyWindow.1.fx — Rainy Window
+- **Original Author**: Martijn Steinrucken (BigWings)
+- **Original Title**: Heartfelt
+- **Source**: https://www.shadertoy.com/view/ltffzl
+- **Licence**: CC BY-NC-SA 3.0 Unported (explicitly declared inline by the upstream author)
+
+#### AS_VFX_VolumetricLight.1.fx — Volumetric Light
+- **Original Author**: int_45h
+- **Original Title**: fake volumetric 2d light wip
+- **Source**: https://www.shadertoy.com/view/wftXzr
+- **Licence**: CC BY-NC-SA 3.0 Unported (Shadertoy default)
+
+---
+
+## 3. Attribution Notice
+
+All adaptations maintain attribution to original creators as required by Creative Commons licensing. When using or redistributing these shaders, please:
+
+- Preserve the original author's attribution (listed above) in any published work.
+- Preserve the licence notice in the shader file header.
+- For CC BY-NC-SA works: do not use commercially, and distribute any derivative under the same licence.
+- For CC0 works: no attribution is legally required, though good practice is to credit.
+- For CC BY 4.0 works (Leon's originals and CC BY 4.0 ports): credit Leon Aquitaine.
+
+For the full licensing model, see [LICENSING.md](LICENSING.md).
+
+---
+
+**Last Updated**: 2026-04-24
+**Compiled by**: Leon Aquitaine (maintainer)

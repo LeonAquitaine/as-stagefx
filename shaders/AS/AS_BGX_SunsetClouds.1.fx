@@ -1,7 +1,9 @@
 /**
  * AS_BGX_SunsetClouds.1.fx - Animated Sunset Clouds with Raymarching
  * Author: Leon Aquitaine
- * License: Creative Commons Attribution 4.0 International
+ * License: Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-NC-SA 3.0)
+ * Inherited from the upstream work published on Shadertoy (default licence per https://www.shadertoy.com/terms).
+ * Free for non-commercial use with attribution. Derivatives must be distributed under the same licence.
  *
  * ===================================================================================
  *
@@ -132,7 +134,7 @@ static const float TONEMAP_EXPOSURE_DEFAULT = 4e8; // Was TonemapStrength
 
 // --- Cloud Shape & Detail ---
 
-uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Sunset [280]' by Xor\nLink: https://www.shadertoy.com/view/wXjSRt\nLicence: CC Share-Alike Non-Commercial\n\n";>;
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Sunset [280]' by Xor\nLink: https://www.shadertoy.com/view/wXjSRt\nLicence: CC BY-NC-SA 3.0 Unported\n\n";>;
 
 uniform float CloudAltitude < ui_type = "slider"; ui_label = "Altitude"; ui_tooltip = "Cloud layer height."; ui_min = CLOUD_ALTITUDE_MIN; ui_max = CLOUD_ALTITUDE_MAX; ui_step = 0.01; ui_category = "Clouds"; > = CLOUD_ALTITUDE_DEFAULT;
 uniform int CloudDetail < ui_type = "slider"; ui_label = "Detail"; ui_tooltip = "Raymarch steps (quality)."; ui_min = CLOUD_DETAIL_MIN; ui_max = CLOUD_DETAIL_MAX; ui_category = "Clouds"; > = CLOUD_DETAIL_DEFAULT;

@@ -186,7 +186,7 @@ STICKER_UI(4, false, float2(POSITION_DEFAULT, POSITION_DEFAULT - 0.2), SCALE_DEF
 // AUDIO REACTIVITY
 // ============================================================================
 
-uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'StageDepth.fx' by Marot Satil\nLink: https://github.com/Otakumouse/stormshade/blob/master/v4.X/reshade-shaders/Shader%20Library/Recommended/StageDepth.fx\nLicence: Creative Commons Attribution 4.0 International\n\n";>;
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nOriginal work by Leon Aquitaine\nInspired by 'StageDepth.fx' by Marot Satil (GShade)\nLicence: CC BY 4.0\n\n";>;
 
 AS_AUDIO_TARGET_UI(BoomSticker_AudioAffect, "Opacity\0Scale\0", 1)
 

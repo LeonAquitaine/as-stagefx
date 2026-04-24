@@ -1,8 +1,9 @@
 /**
  * AS_BGX_QuadtreeTruchet.1.fx - Multiscale Recursive Truchet Pattern
  * Author: Leon Aquitaine
- * License: Creative Commons Attribution 4.0 International
- * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
+ * License: Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-NC-SA 3.0)
+ * Inherited from the upstream work published on Shadertoy (default licence per https://www.shadertoy.com/terms).
+ * Free for non-commercial use with attribution. Derivatives must be distributed under the same licence.
  * 
  * CREDITS:
  * Based on "Quadtree Truchet" by Shane (2018-06-21)
@@ -64,7 +65,7 @@ static const float LARGE_TILE_PROBABILITY_MIN = 0.1, LARGE_TILE_PROBABILITY_MAX 
 static const float MEDIUM_TILE_PROBABILITY_MIN = 0.3, MEDIUM_TILE_PROBABILITY_MAX = 0.9, MEDIUM_TILE_PROBABILITY_DEFAULT = 0.7;
 static const float PATTERN_SEED_MIN = 1.0, PATTERN_SEED_MAX = 100.0, PATTERN_SEED_DEFAULT = 57.0;
 
-uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Quadtree Truchet' by Shane\nLink: https://www.shadertoy.com/view/4t3BW4\nLicence: CC Share-Alike Non-Commercial\n\n";>;
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Quadtree Truchet' by Shane\nLink: https://www.shadertoy.com/view/4t3BW4\nLicence: CC BY-NC-SA 3.0 Unported\n\n";>;
 
 uniform float PatternScale < ui_type = "slider"; ui_label = "Pattern Scale"; ui_tooltip = "Initial zoom level of the pattern."; ui_min = PATTERN_SCALE_MIN; ui_max = PATTERN_SCALE_MAX; ui_category = "Pattern Settings"; > = PATTERN_SCALE_DEFAULT;
 uniform float TileStrokeThickness < ui_type = "slider"; ui_label = "Tile Stroke Thickness"; ui_tooltip = "Thickness of the Truchet tile strokes, relative to tile radius."; ui_min = TILE_STROKE_THICKNESS_MIN; ui_max = TILE_STROKE_THICKNESS_MAX; ui_category = "Pattern Settings"; > = TILE_STROKE_THICKNESS_DEFAULT;

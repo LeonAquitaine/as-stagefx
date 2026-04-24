@@ -2,9 +2,9 @@
  * AS_VFX_VolumetricLight.1.fx - 2D Volumetric Light Shafts with Depth Occlusion and Color Selection
  * Author: Leon Aquitaine
  * Based on: 'fake volumetric 2d light wip' by int_45h (https://www.shadertoy.com/view/wftXzr)
- * License: Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)
- * You are free to use, share, and adapt this shader for non-commercial purposes only, as long as you provide attribution and distribute any derivative works under the same license.
- * Commercial use is NOT permitted.
+ * License: Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-NC-SA 3.0)
+ * Inherited from the upstream work published on Shadertoy (default licence per https://www.shadertoy.com/terms).
+ * Free for non-commercial use with attribution. Derivatives must be distributed under the same licence.
  * 
  * ===================================================================================
  *
@@ -58,7 +58,7 @@ sampler VolumetricLight_ThresholdSampler { Texture = VolumetricLight_ThresholdBu
 
 // Tunable Constants
 
-uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'fake volumetric 2d light wip' by int_45h\nLink: https://www.shadertoy.com/view/wftXzr\nLicence: CC Share-Alike Non-Commercial\n\n";>;
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'fake volumetric 2d light wip' by int_45h\nLink: https://www.shadertoy.com/view/wftXzr\nLicence: CC BY-NC-SA 3.0 Unported\n\n";>;
 
 uniform float LightBrightness < ui_type = "slider"; ui_label = "Light Source Brightness"; ui_tooltip = "Intensity of the light source for rays."; ui_min = 0.01; ui_max = 0.5; ui_category = "Tunable Constants"; > = 0.1;
 uniform float ObjectLightFactor < ui_type = "slider"; ui_label = "Object Direct Light Factor"; ui_tooltip = "How much direct light illuminates objects close to the source."; ui_min = 0.0; ui_max = 0.2; ui_category = "Tunable Constants"; > = 0.05;

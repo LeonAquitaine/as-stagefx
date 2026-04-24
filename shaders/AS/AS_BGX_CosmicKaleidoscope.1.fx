@@ -1,12 +1,13 @@
 /**
  * AS_BGX_CosmicKaleidoscope.1.fx - Volumetric Mandelbox/Mandelbulb-like fractal
  * Author: Leon Aquitaine
- * License: Creative Commons Attribution 4.0 International
- * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
+ * License: Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-NC-SA 3.0)
+ * Inherited from the upstream work published on Shadertoy (default licence per https://www.shadertoy.com/terms).
+ * Free for non-commercial use with attribution. Derivatives must be distributed under the same licence.
  * 
  * CREDITS:
- * Based on "cosmos in crystal" by nayk
- * Shadertoy: https://www.shadertoy.com/view/MXccR4
+ * Based on "Star Nest" by Kali
+ * Shadertoy: https://www.shadertoy.com/view/XlfGRj
  * 
  * ===================================================================================
  *
@@ -74,7 +75,7 @@ static const float COLOR_INTENSITY_DEFAULT = 1.0; static const float COLOR_INTEN
 
 // --- UI Uniform Definitions ---
 
-uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Star Nest' by Kali\nLink: https://www.shadertoy.com/view/XlfGRj\nLicence: CC Share-Alike Non-Commercial\n\n";>;
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Star Nest' by Kali\nLink: https://www.shadertoy.com/view/XlfGRj\nLicence: CC BY-NC-SA 3.0 Unported\n\n";>;
 
 uniform int UI_Iterations < ui_type = "slider"; ui_label = "Fractal Iterations"; ui_tooltip = "Number of fractal detail passes. Higher values reveal more intricate patterns but may reduce performance."; ui_min = ITERATIONS_MIN; ui_max = ITERATIONS_MAX; ui_category = "Fractal Parameters"; > = ITERATIONS_DEFAULT;
 uniform float UI_Formuparam < ui_type = "slider"; ui_label = "Fractal Parameter"; ui_tooltip = "Core fractal shaping value. Small changes produce dramatically different crystal structures."; ui_min = FORMUPARAM_MIN; ui_max = FORMUPARAM_MAX; ui_step = FORMUPARAM_STEP; ui_category = "Fractal Parameters"; > = FORMUPARAM_DEFAULT;

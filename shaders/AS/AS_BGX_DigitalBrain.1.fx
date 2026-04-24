@@ -1,8 +1,9 @@
 /**
  * AS_BGX_DigitalBrain.1.fx - Abstract digital brain visualization with animated Voronoi patterns
  * Author: Leon Aquitaine
- * License: Creative Commons Attribution 4.0 International
- * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
+ * License: Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-NC-SA 3.0)
+ * Inherited from the upstream work published on Shadertoy (default licence per https://www.shadertoy.com/terms).
+ * Free for non-commercial use with attribution. Derivatives must be distributed under the same licence.
  *  * CREDITS:
  * Based on "Digital Brain" by srtuss
  * Shadertoy: https://www.shadertoy.com/view/4sl3Dr
@@ -100,7 +101,7 @@ sampler DigitalBrain_NoiseSampler { Texture = DigitalBrain_NoiseTex; AddressU = 
 
 // Pattern Controls
 
-uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Digital Brain' by srtuss\nLink: https://www.shadertoy.com/view/4sl3Dr\nLicence: CC Share-Alike Non-Commercial\n\n";>;
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Digital Brain' by srtuss\nLink: https://www.shadertoy.com/view/4sl3Dr\nLicence: CC BY-NC-SA 3.0 Unported\n\n";>;
 
 uniform float ZoomFactor < ui_type = "slider"; ui_label = "Zoom Factor"; ui_tooltip = "Adjusts the zoom level of the pattern."; ui_min = 0.2; ui_max = 2.0; ui_step = 0.01; ui_category = "Pattern Controls"; > = 0.6;
 uniform float PatternDensity < ui_type = "slider"; ui_label = "Pattern Density"; ui_tooltip = "Controls density of the Voronoi patterns."; ui_min = 0.5; ui_max = 5.0; ui_step = 0.1; ui_category = "Pattern Controls"; > = 1.0;

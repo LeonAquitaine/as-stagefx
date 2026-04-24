@@ -40,7 +40,7 @@ AS-StageFX provides a collection of performant, customizable, and audio-reactive
 
 ## Available Shaders
 
-AS-StageFX includes **85 shaders** across four categories: **28 Background (BGX)**, **23 Graphic (GFX)**, **3 Lighting (LFX)**, and **31 Visual (VFX)** effects.
+AS-StageFX includes **86 shaders** across four categories: **29 Background (BGX)**, **23 Graphic (GFX)**, **3 Lighting (LFX)**, and **31 Visual (VFX)** effects.
 
 **Detailed descriptions and examples: [Shader Gallery](docs/gallery.md).**
 
@@ -49,19 +49,19 @@ AS-StageFX includes **85 shaders** across four categories: **28 Background (BGX)
 | Shader                 | Description                                                                                                | License   |
 | ---------------------- | ---------------------------------------------------------------------------------------------------------- | --------- |
 | **Blue Corona** | Vibrant, abstract blue corona with fluid, dynamic motion and hypnotic, organic, plasma-like visuals. Customizable and audio-reactive. | CC BY-NC-SA |
-| **Constellation** | Creates an animated stellar constellation pattern with twinkling stars and connecting lines. Perfect for cosmic, night sky, or abstract network visualizations with a hand-drawn aesthetic. | CC BY-NC-SA |
+| **Constellation** | Creates an animated stellar constellation pattern with twinkling stars and connecting lines. Perfect for cosmic, night sky, or abstract network visualizations with a hand-drawn aesthetic. | CC BY 4.0 |
 | **Corridor Travel** | Simulates an artistic flight through an abstract, glowing, patterned tunnel with pseudo-DOF, motion blur, and light bounce simulation. | CC BY-NC-SA |
 | **Cosmic Kaleidoscope** | Renders a raymarched volumetric fractal (Mandelbox/Mandelbulb-like) with kaleidoscopic mirroring, audio reactivity, and palette-based coloring. | CC BY-NC-SA |
 | **Digital Brain** | Abstract visualization of a digital brain neural network with animated Voronoi patterns, neural-like connections, and electrical pulses. | CC BY-NC-SA |
 | **Fluorescent** | Creates a vibrant neon fluorescent background effect with raymarched volumetric patterns. Perfect for retro, cyberpunk, or futuristic atmospheres. | CC BY-NC-SA |
-| **Golden Clockwork** | Intricate, animated golden clockwork or Apollonian fractal patterns. | CC BY-NC-SA |
+| **Golden Clockwork** | Intricate, animated golden clockwork or Apollonian fractal patterns. | CC0 1.0 |
 | **Hologram** | Creates a dynamic, holographic plasma background with shifting rainbow colors and a plasma distortion effect that responds to a user-controlled viewpoint. | CC BY-NC-SA |
 | **Kaleidoscope** | Creates a vibrant, ever-evolving fractal kaleidoscope pattern with animated tendrils. Perfect for psychedelic, cosmic, or abstract backgrounds with a hypnotic quality. | CC BY-NC-SA |
 | **Light Ripples** | Mesmerizing, rippling kaleidoscopic light patterns with customizable distortion, animation, color palettes, and audio reactivity. | CC BY-NC-SA |
 | **Light Wall** | A seamless, soft, overlapping grid of light panels with various built-in patterns. Perfect for creating dance club and concert backdrops. | CC BY 4.0 |
 | **Liquid Chrome** | Creates dynamic, flowing psychedelic patterns reminiscent of liquid metal or chrome, with optional vertical stripe overlays. | CC BY 4.0 |
-| **Log Spirals** | Creates an organic spiral pattern based on logarithmic growth with animated spheres along the spiral arms. | CC BY-NC-SA |
-| **Melt Wave** | Flowing, warping psychedelic effect with sine-based distortions, palette system, keyframe animation, and audio reactivity. | CC BY-NC-SA |
+| **Log Spirals** | Creates an organic spiral pattern based on logarithmic growth with animated spheres along the spiral arms. | CC0 1.0 |
+| **Melt Wave** | Flowing, warping psychedelic effect with sine-based distortions, palette system, keyframe animation, and audio reactivity. | CC BY 4.0 |
 | **Misty Grid** | Abstract fractal-based grid background with a misty, ethereal appearance using raymarching. Audio-reactive and customizable. | CC BY-NC-SA |
 | **Past Racer** | Raymarched abstract procedural scene (2 selectable) with domain repetition, custom transformations, and audio-reactive geometry/flares. | CC BY-NC-SA |
 | **Plasma Flow** | Sophisticated, gentle, flexible plasma effect with procedural noise, domain warping, and customizable audio-reactive color gradients. | CC BY-NC-SA |
@@ -73,6 +73,7 @@ AS-StageFX includes **85 shaders** across four categories: **28 Background (BGX)
 | **Time Crystal** | Hypnotic, crystalline fractal structure with dynamic animation, color cycling, and audio reactivity. | CC BY-NC-SA |
 | **Vinyl Disc** | Spinning vinyl record with iridescent grooves, customizable LP presets, label textures, and animated neon backgrounds. | CC BY 4.0 |
 | **Vortex** | Psychedelic swirling vortex pattern with animated color, swirl, and brightness controls. | CC BY-NC-SA |
+| **Waveform** | Raymarched audio-reactive waveform background. Horizontal axis samples the live audio spectrum via Listeningway, mirrored across a reflective surface. | CC BY-NC-SA |
 | **Wavy Squares** | Hypnotic pattern of wavy, animated, transforming square tiles with dynamic size changes. Audio-reactive and depth-aware. | CC BY-NC-SA |
 | **Wavy Squiggles** | Mesmerizing pattern of adaptive wavy lines forming intricate, rotating designs. Audio-reactive and depth-aware. | CC BY-NC-SA |
 | **Zippy Zaps** | Dynamic electric arcs/lightning patterns with procedural generation, audio reactivity, and 3D positioning. | CC BY-NC-SA |
@@ -119,7 +120,7 @@ AS-StageFX includes **85 shaders** across four categories: **28 Background (BGX)
 | ---------------------- | ---------------------------------------------------------------------------------------------------------- | --------- |
 | **Boom Sticker** | Displays a texture overlay ('sticker') with controls for placement, scale, rotation, and audio reactivity. | CC BY 4.0 |
 | **Circular Spectrum** | Displays a circular audio spectrum analyzer with customizable bands, colors, and animation. | CC BY-NC-SA |
-| **Clair Obscur** | Applies dramatic chiaroscuro lighting with strong contrast and stylized shadows. | CC BY-NC-SA |
+| **Clair Obscur** | Applies dramatic chiaroscuro lighting with strong contrast and stylized shadows. | CC BY 4.0 |
 | **Color Balancer** | Adjusts scene color balance with independent controls for shadows, midtones, and highlights. | CC BY 4.0 |
 | **Cross-Screen Stars** | Star-shaped diffraction spikes on bright highlights simulating a cross-screen lens filter. | CC BY 4.0 |
 | **Digital Artifacts** | Simulates digital compression artifacts, blockiness, and color banding. | CC BY 4.0 |

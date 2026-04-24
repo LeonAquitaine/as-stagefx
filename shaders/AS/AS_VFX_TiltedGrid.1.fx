@@ -57,7 +57,7 @@ static const float CHAMFER_SIZE_DEFAULT = 0.2; // 20% of cell size
 // EFFECT-SPECIFIC PARAMETERS
 // ============================================================================
 
-uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Godot 4: Tilted Grid Effect Tutorial' by FencerDevLog\nLink: https://www.youtube.com/watch?v=Tfj6RDqXEHM\nLicence: Creative Commons Attribution 4.0 International\n\n";>;
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nOriginal work by Leon Aquitaine\nTechnique learned from FencerDevLog's Godot tutorial (YouTube)\nLicence: CC BY 4.0\n\n";>;
 
 uniform float GridSize < ui_type = "slider"; ui_label = "Cell Size"; ui_tooltip = "Size of grid cells as percentage of screen height (0.1% to 20%)."; ui_min = GRID_SIZE_MIN; ui_max = GRID_SIZE_MAX; ui_step = 0.001; ui_category = "Grid Pattern"; > = GRID_SIZE_DEFAULT;
 

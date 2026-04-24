@@ -12,12 +12,12 @@
           "externalUrl": "https://www.shadertoy.com/view/XfKGWV",
           "originalAuthor": "SnoopethDuckDuck",
           "originalTitle": "Blue Corona [256 Chars]",
-          "licence": "CC Share-Alike Non-Commercial",
-          "licenseCode": "CC BY-NC-SA"
+          "licence": "CC BY-NC-SA 3.0 Unported",
+          "licenseCode": "CC BY-NC-SA 3.0"
         },
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-bluecorona.gif",
-        "licence": "CC Share-Alike Non-Commercial",
-        "licenseCode": "CC BY-NC-SA"
+        "licence": "CC BY-NC-SA 3.0 Unported",
+        "licenseCode": "CC BY-NC-SA 3.0"
       },
       {
         "name": "Constellation",
@@ -26,16 +26,13 @@
         "shortDescription": "Creates an animated stellar constellation pattern with twinkling stars and connecting lines. Perfect for cosmic, night sky, or abstract network visualizations with a hand-drawn aesthetic.",
         "longDescription": "Creates an animated stellar constellation pattern with twinkling stars and connecting lines. Perfect for cosmic, night sky, or abstract network visualizations with a hand-drawn aesthetic. Features dynamic constellation lines with customizable thickness and falloff; twinkling star points with adjustable sparkle properties; procedurally animated line connections; animated color palette with adjustable parameters; audio reactivity for zoom, gradient effects, line brightness, and sparkle magnitude; depth-aware rendering; and standard blend options.",
         "credits": {
-          "description": "Based on the 'old joseph' effect by jairoandre.",
-          "externalUrl": "https://www.shadertoy.com/view/slfGzf",
-          "originalAuthor": "jairoandre",
-          "originalTitle": "old joseph",
-          "licence": "CC Share-Alike Non-Commercial",
-          "licenseCode": "CC BY-NC-SA"
+          "description": "Clean-room original implementation by Leon Aquitaine (2026-04-24) produced from behavioural specification docs/specs/AS_BGX_Constellation.spec.md. Shares no code with any prior work.",
+          "licence": "N/A (original work)",
+          "licenseCode": "N/A"
         },
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-constellation.gif",
-        "licence": "CC Share-Alike Non-Commercial",
-        "licenseCode": "CC BY-NC-SA"
+        "licence": "Creative Commons Attribution 4.0 International",
+        "licenseCode": "CC BY 4.0"
       },
       {
         "name": "Corridor Travel",
@@ -48,12 +45,12 @@
           "externalUrl": "https://www.shadertoy.com/view/3sXyRN",
           "originalAuthor": "NuSan",
           "originalTitle": "Corridor Travel",
-          "licence": "CC Share-Alike Non-Commercial",
-          "licenseCode": "CC BY-NC-SA"
+          "licence": "CC BY-NC-SA 3.0 Unported",
+          "licenseCode": "CC BY-NC-SA 3.0"
         },
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-corridortravel.gif",
-        "licence": "CC Share-Alike Non-Commercial",
-        "licenseCode": "CC BY-NC-SA"
+        "licence": "CC BY-NC-SA 3.0 Unported",
+        "licenseCode": "CC BY-NC-SA 3.0"
       },
       {
         "name": "Cosmic Kaleidoscope",
@@ -66,12 +63,12 @@
           "externalUrl": "https://www.shadertoy.com/view/XlfGRj",
           "originalAuthor": "Kali",
           "originalTitle": "Star Nest",
-          "licence": "CC Share-Alike Non-Commercial",
-          "licenseCode": "CC BY-NC-SA"
+          "licence": "CC BY-NC-SA 3.0 Unported",
+          "licenseCode": "CC BY-NC-SA 3.0"
         },
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-cosmickaleidoscope.gif",
-        "licence": "CC Share-Alike Non-Commercial",
-        "licenseCode": "CC BY-NC-SA"
+        "licence": "CC BY-NC-SA 3.0 Unported",
+        "licenseCode": "CC BY-NC-SA 3.0"
       },
       {
         "name": "Digital Brain",
@@ -84,12 +81,12 @@
           "externalUrl": "https://www.shadertoy.com/view/4sl3Dr",
           "originalAuthor": "srtuss",
           "originalTitle": "Digital Brain",
-          "licence": "CC Share-Alike Non-Commercial",
-          "licenseCode": "CC BY-NC-SA"
+          "licence": "CC BY-NC-SA 3.0 Unported",
+          "licenseCode": "CC BY-NC-SA 3.0"
         },
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-digitalbrain.gif",
-        "licence": "CC Share-Alike Non-Commercial",
-        "licenseCode": "CC BY-NC-SA"
+        "licence": "CC BY-NC-SA 3.0 Unported",
+        "licenseCode": "CC BY-NC-SA 3.0"
       },
       {
         "name": "Fluorescent",
@@ -101,12 +98,12 @@
           "externalUrl": "https://www.shadertoy.com/view/WcGGDd",
           "originalAuthor": "Xor",
           "originalTitle": "Fluorescent [292]",
-          "licence": "CC Share-Alike Non-Commercial",
-          "licenseCode": "CC BY-NC-SA"
+          "licence": "CC BY-NC-SA 3.0 Unported",
+          "licenseCode": "CC BY-NC-SA 3.0"
         },
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-fluorescent.gif",
-        "licence": "CC Share-Alike Non-Commercial",
-        "licenseCode": "CC BY-NC-SA"
+        "licence": "CC BY-NC-SA 3.0 Unported",
+        "licenseCode": "CC BY-NC-SA 3.0"
       },
       {
         "name": "Golden Clockwork",
@@ -118,12 +115,12 @@
           "externalUrl": "https://www.shadertoy.com/view/WlcfRS",
           "originalAuthor": "mrange",
           "originalTitle": "Golden apollian",
-          "licence": "CC Share-Alike Non-Commercial",
-          "licenseCode": "CC BY-NC-SA"
+          "licence": "CC0 1.0 Universal",
+          "licenseCode": "CC0 1.0"
         },
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-goldenclockwork.gif",
-        "licence": "CC Share-Alike Non-Commercial",
-        "licenseCode": "CC BY-NC-SA"
+        "licence": "CC0 1.0 Universal",
+        "licenseCode": "CC0 1.0"
       },
       {
         "name": "Hologram",
@@ -137,11 +134,11 @@
           "originalAuthor": "hypothete",
           "platform": "Shadertoy",
           "adaptedBy": "Leon Aquitaine",
-          "licence": "CC Share-Alike Non-Commercial",
-          "licenseCode": "CC BY-NC-SA"
+          "licence": "CC BY-NC-SA 3.0 Unported",
+          "licenseCode": "CC BY-NC-SA 3.0"
         },
-        "licence": "CC Share-Alike Non-Commercial",
-        "licenseCode": "CC BY-NC-SA"
+        "licence": "CC BY-NC-SA 3.0 Unported",
+        "licenseCode": "CC BY-NC-SA 3.0"
       },
       {
         "name": "Kaleidoscope",
@@ -153,12 +150,12 @@
           "externalUrl": "https://www.shadertoy.com/view/ddsyDN",
           "originalAuthor": "Kanduvisla",
           "originalTitle": "Kaleidoscope",
-          "licence": "CC Share-Alike Non-Commercial",
-          "licenseCode": "CC BY-NC-SA"
+          "licence": "CC BY-NC-SA 3.0 Unported",
+          "licenseCode": "CC BY-NC-SA 3.0"
         },
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-kaleidoscope.gif",
-        "licence": "CC Share-Alike Non-Commercial",
-        "licenseCode": "CC BY-NC-SA"
+        "licence": "CC BY-NC-SA 3.0 Unported",
+        "licenseCode": "CC BY-NC-SA 3.0"
       },
       {
         "name": "Light Ripples",
@@ -170,12 +167,12 @@
           "externalUrl": "https://www.shadertoy.com/view/XsXXDn",
           "originalAuthor": "Danguafer/Danilo Guanabara",
           "originalTitle": "Creation by Silexars",
-          "licence": "CC Share-Alike Non-Commercial",
-          "licenseCode": "CC BY-NC-SA"
+          "licence": "CC BY-NC-SA 3.0 Unported",
+          "licenseCode": "CC BY-NC-SA 3.0"
         },
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-lightripples.gif",
-        "licence": "CC Share-Alike Non-Commercial",
-        "licenseCode": "CC BY-NC-SA"
+        "licence": "CC BY-NC-SA 3.0 Unported",
+        "licenseCode": "CC BY-NC-SA 3.0"
       },
       {
         "name": "Light Wall",
@@ -194,11 +191,9 @@
         "shortDescription": "Creates dynamic, flowing psychedelic patterns reminiscent of liquid metal or chrome, with optional vertical stripe overlays.",
         "longDescription": "Creates dynamic, flowing psychedelic patterns reminiscent of liquid metal or chrome. This shader iteratively distorts screen coordinates, creating complex, flowing patterns with optional vertical stripe overlays for additional visual texture.",
         "credits": {
-          "externalUrl": "https://neort.io/art/bkm813c3p9f7drq1j86g",
-          "originalAuthor": "iamsaitam",
-          "originalTitle": "Liquid Chrome",
-          "licence": "Creative Commons Attribution 4.0 International",
-          "licenseCode": "CC BY 4.0"
+          "description": "Clean-room original implementation by Leon Aquitaine (2026-04-24) produced from behavioural specification docs/specs/AS_BGX_LiquidChrome.spec.md. Shares no code with any prior work.",
+          "licence": "N/A (original work)",
+          "licenseCode": "N/A"
         },
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-liquidchrome.gif",
         "licence": "Creative Commons Attribution 4.0 International",
@@ -215,12 +210,12 @@
           "externalUrl": "https://www.shadertoy.com/view/msGXRD",
           "originalAuthor": "mrange",
           "originalTitle": "Logarithmic spiral of spheres",
-          "licence": "CC Share-Alike Non-Commercial",
-          "licenseCode": "CC BY-NC-SA"
+          "licence": "CC0 1.0 Universal",
+          "licenseCode": "CC0 1.0"
         },
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-logspirals.gif",
-        "licence": "CC Share-Alike Non-Commercial",
-        "licenseCode": "CC BY-NC-SA"
+        "licence": "CC0 1.0 Universal",
+        "licenseCode": "CC0 1.0"
       },
       {
         "name": "Melt Wave",
@@ -229,15 +224,13 @@
         "shortDescription": "Flowing, warping psychedelic effect with sine-based distortions, palette system, keyframe animation, and audio reactivity.",
         "longDescription": "Creates a flowing, warping psychedelic effect inspired by 1970s visual aesthetics. Generates mesmerizing colored patterns with sine-based distortions that evolve over time. Features adjustable zoom/intensity, a palette system (mathematical or preset colors), dynamic time-based animation with keyframe support, audio reactivity mappable to different parameters, and resolution-independent transformation with position/rotation controls.",
         "credits": {
-          "externalUrl": "https://www.shadertoy.com/view/XsX3zl",
-          "originalAuthor": "tomorrowevening",
-          "originalTitle": "70s Melt",
-          "licence": "CC Share-Alike Non-Commercial",
-          "licenseCode": "CC BY-NC-SA"
+          "description": "Clean-room original implementation by Leon Aquitaine (2026-04-24) produced from behavioural specification docs/specs/AS_BGX_MeltWave.spec.md. Shares no code with any prior work.",
+          "licence": "N/A (original work)",
+          "licenseCode": "N/A"
         },
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-meltwave.gif",
-        "licence": "CC Share-Alike Non-Commercial",
-        "licenseCode": "CC BY-NC-SA"
+        "licence": "Creative Commons Attribution 4.0 International",
+        "licenseCode": "CC BY 4.0"
       },
       {
         "name": "Misty Grid",
@@ -249,12 +242,12 @@
           "externalUrl": "https://www.shadertoy.com/view/wl2Szd",
           "originalAuthor": "NuSan",
           "originalTitle": "[twitch] Misty Grid",
-          "licence": "CC Share-Alike Non-Commercial",
-          "licenseCode": "CC BY-NC-SA"
+          "licence": "CC BY-NC-SA 3.0 Unported",
+          "licenseCode": "CC BY-NC-SA 3.0"
         },
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-mistygrid.gif",
-        "licence": "CC Share-Alike Non-Commercial",
-        "licenseCode": "CC BY-NC-SA"
+        "licence": "CC BY-NC-SA 3.0 Unported",
+        "licenseCode": "CC BY-NC-SA 3.0"
       },
       {
         "name": "Past Racer",
@@ -266,12 +259,12 @@
           "externalUrl": "https://www.shadertoy.com/view/tsBBzG",
           "originalAuthor": "NuSan",
           "originalTitle": "Outline 2020 Freestyle Live code",
-          "licence": "CC Share-Alike Non-Commercial",
-          "licenseCode": "CC BY-NC-SA"
+          "licence": "CC BY-NC-SA 3.0 Unported",
+          "licenseCode": "CC BY-NC-SA 3.0"
         },
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-pastracer.gif",
-        "licence": "CC Share-Alike Non-Commercial",
-        "licenseCode": "CC BY-NC-SA"
+        "licence": "CC BY-NC-SA 3.0 Unported",
+        "licenseCode": "CC BY-NC-SA 3.0"
       },
       {
         "name": "Plasma Flow",
@@ -283,12 +276,12 @@
           "externalUrl": "https://www.shadertoy.com/view/slSBDd",
           "originalAuthor": "fuzzmoon",
           "originalTitle": "Plasma Storm",
-          "licence": "CC Share-Alike Non-Commercial",
-          "licenseCode": "CC BY-NC-SA"
+          "licence": "CC BY-NC-SA 3.0 Unported",
+          "licenseCode": "CC BY-NC-SA 3.0"
         },
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-plasmaflow.gif",
-        "licence": "CC Share-Alike Non-Commercial",
-        "licenseCode": "CC BY-NC-SA"
+        "licence": "CC BY-NC-SA 3.0 Unported",
+        "licenseCode": "CC BY-NC-SA 3.0"
       },
       {
         "name": "Protean Clouds",
@@ -300,12 +293,12 @@
           "externalUrl": "https://www.shadertoy.com/view/3l23Rh",
           "originalAuthor": "nimitz",
           "originalTitle": "Protean clouds",
-          "licence": "CC Share-Alike Non-Commercial",
-          "licenseCode": "CC BY-NC-SA"
+          "licence": "CC BY-NC-SA 3.0 Unported",
+          "licenseCode": "CC BY-NC-SA 3.0"
         },
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-proteanclouds.gif",
-        "licence": "CC Share-Alike Non-Commercial",
-        "licenseCode": "CC BY-NC-SA"
+        "licence": "CC BY-NC-SA 3.0 Unported",
+        "licenseCode": "CC BY-NC-SA 3.0"
       },
       {
         "name": "Quadtree Truchet",
@@ -317,12 +310,12 @@
           "externalUrl": "https://www.shadertoy.com/view/4t3BW4",
           "originalAuthor": "Shane",
           "originalTitle": "Quadtree Truchet",
-          "licence": "CC Share-Alike Non-Commercial",
-          "licenseCode": "CC BY-NC-SA"
+          "licence": "CC BY-NC-SA 3.0 Unported",
+          "licenseCode": "CC BY-NC-SA 3.0"
         },
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-quadtreetruchet.gif",
-        "licence": "CC Share-Alike Non-Commercial",
-        "licenseCode": "CC BY-NC-SA"
+        "licence": "CC BY-NC-SA 3.0 Unported",
+        "licenseCode": "CC BY-NC-SA 3.0"
       },
       {
         "name": "Raymarched Chain",
@@ -334,12 +327,12 @@
           "externalUrl": "https://www.shadertoy.com/view/ctSfRV",
           "originalAuthor": "Elsio",
           "originalTitle": "Corrente",
-          "licence": "CC Share-Alike Non-Commercial",
-          "licenseCode": "CC BY-NC-SA"
+          "licence": "CC BY-NC-SA 3.0 Unported",
+          "licenseCode": "CC BY-NC-SA 3.0"
         },
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-raymarchedchain.gif",
-        "licence": "CC Share-Alike Non-Commercial",
-        "licenseCode": "CC BY-NC-SA"
+        "licence": "CC BY-NC-SA 3.0 Unported",
+        "licenseCode": "CC BY-NC-SA 3.0"
       },
       {
         "name": "Stained Lights",
@@ -351,12 +344,12 @@
           "externalUrl": "https://www.shadertoy.com/view/WlsSzM",
           "originalAuthor": "104",
           "originalTitle": "Stained Lights",
-          "licence": "CC Share-Alike Non-Commercial",
-          "licenseCode": "CC BY-NC-SA"
+          "licence": "CC BY-NC-SA 3.0 Unported",
+          "licenseCode": "CC BY-NC-SA 3.0"
         },
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-stainedlights.gif",
-        "licence": "CC Share-Alike Non-Commercial",
-        "licenseCode": "CC BY-NC-SA"
+        "licence": "CC BY-NC-SA 3.0 Unported",
+        "licenseCode": "CC BY-NC-SA 3.0"
       },
       {
         "name": "Sunset Clouds",
@@ -368,12 +361,12 @@
           "externalUrl": "https://www.shadertoy.com/view/wXjSRt",
           "originalAuthor": "Xor",
           "originalTitle": "Sunset [280]",
-          "licence": "CC Share-Alike Non-Commercial",
-          "licenseCode": "CC BY-NC-SA"
+          "licence": "CC BY-NC-SA 3.0 Unported",
+          "licenseCode": "CC BY-NC-SA 3.0"
         },
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-sunsetclouds.gif",
-        "licence": "CC Share-Alike Non-Commercial",
-        "licenseCode": "CC BY-NC-SA"
+        "licence": "CC BY-NC-SA 3.0 Unported",
+        "licenseCode": "CC BY-NC-SA 3.0"
       },
       {
         "name": "Time Crystal",
@@ -385,12 +378,12 @@
           "externalUrl": "https://www.shadertoy.com/view/lcl3z2",
           "originalAuthor": "raphaeljmu",
           "originalTitle": "Time Crystal",
-          "licence": "CC Share-Alike Non-Commercial",
-          "licenseCode": "CC BY-NC-SA"
+          "licence": "CC BY-NC-SA 3.0 Unported",
+          "licenseCode": "CC BY-NC-SA 3.0"
         },
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-timecrystal.gif",
-        "licence": "CC Share-Alike Non-Commercial",
-        "licenseCode": "CC BY-NC-SA"
+        "licence": "CC BY-NC-SA 3.0 Unported",
+        "licenseCode": "CC BY-NC-SA 3.0"
       },
       {
         "name": "Vinyl Disc",
@@ -411,12 +404,30 @@
           "externalUrl": "https://www.shadertoy.com/view/3fKGRd",
           "originalAuthor": "LonkDong",
           "originalTitle": "Vortex__ ",
-          "licence": "CC Share-Alike Non-Commercial",
-          "licenseCode": "CC BY-NC-SA"
+          "licence": "CC BY-NC-SA 3.0 Unported",
+          "licenseCode": "CC BY-NC-SA 3.0"
         },
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-vortex.gif",
-        "licence": "CC Share-Alike Non-Commercial",
-        "licenseCode": "CC BY-NC-SA"
+        "licence": "CC BY-NC-SA 3.0 Unported",
+        "licenseCode": "CC BY-NC-SA 3.0"
+      },
+      {
+        "name": "Waveform",
+        "filename": "AS_BGX_Waveform.1.fx",
+        "type": "BGX",
+        "shortDescription": "Raymarched audio-reactive waveform background. Horizontal axis samples the live audio spectrum via Listeningway, mirrored across a reflective surface.",
+        "longDescription": "A raymarched full-screen background that renders a reflective waveform landscape driven by the live audio spectrum. Each horizontal position samples a different Listeningway frequency band, so the surface physically rises and falls with the music. The scene also animates independently via stacked sine-wave octaves, giving continuous motion even when audio is silent. Features adjustable raymarch quality, wave-octave detail, exposure tone-mapping, audio intensity, and frequency spread, plus standard AS-StageFX position/rotation/scale/depth/blend controls.",
+        "credits": {
+          "externalUrl": "https://www.shadertoy.com/view/Wcc3z2",
+          "originalAuthor": "Xor (XorDev)",
+          "originalTitle": "Waveform [315]",
+          "creationDate": "2025-05-14",
+          "licence": "CC BY-NC-SA 3.0 Unported",
+          "licenseCode": "CC BY-NC-SA 3.0"
+        },
+        "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-waveform.gif",
+        "licence": "CC BY-NC-SA 3.0 Unported",
+        "licenseCode": "CC BY-NC-SA 3.0"
       },
       {
         "name": "Wavy Squares",
@@ -428,12 +439,12 @@
           "externalUrl": "https://www.shadertoy.com/view/NdfBzn",
           "originalAuthor": "SnoopethDuckDuck",
           "originalTitle": "Square Tiling Example E",
-          "licence": "CC Share-Alike Non-Commercial",
-          "licenseCode": "CC BY-NC-SA"
+          "licence": "CC BY-NC-SA 3.0 Unported",
+          "licenseCode": "CC BY-NC-SA 3.0"
         },
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-wavysquares.gif",
-        "licence": "CC Share-Alike Non-Commercial",
-        "licenseCode": "CC BY-NC-SA"
+        "licence": "CC BY-NC-SA 3.0 Unported",
+        "licenseCode": "CC BY-NC-SA 3.0"
       },
       {
         "name": "Wavy Squiggles",
@@ -446,12 +457,12 @@
           "externalUrl": "https://www.shadertoy.com/view/7sBfDD",
           "originalAuthor": "SnoopethDuckDuck",
           "originalTitle": "Interactive 2.5D Squiggles",
-          "licence": "CC Share-Alike Non-Commercial",
-          "licenseCode": "CC BY-NC-SA"
+          "licence": "CC BY-NC-SA 3.0 Unported",
+          "licenseCode": "CC BY-NC-SA 3.0"
         },
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-wavysquiggles.gif",
-        "licence": "CC Share-Alike Non-Commercial",
-        "licenseCode": "CC BY-NC-SA"
+        "licence": "CC BY-NC-SA 3.0 Unported",
+        "licenseCode": "CC BY-NC-SA 3.0"
       },
       {
         "name": "Zippy Zaps",
@@ -463,12 +474,12 @@
           "externalUrl": "https://www.shadertoy.com/view/XXyGzh",
           "originalAuthor": "SnoopethDuckDuck",
           "originalTitle": "Zippy Zaps",
-          "licence": "CC Share-Alike Non-Commercial",
-          "licenseCode": "CC BY-NC-SA"
+          "licence": "CC BY-NC-SA 3.0 Unported",
+          "licenseCode": "CC BY-NC-SA 3.0"
         },
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-zippyzaps.gif",
-        "licence": "CC Share-Alike Non-Commercial",
-        "licenseCode": "CC BY-NC-SA"
+        "licence": "CC BY-NC-SA 3.0 Unported",
+        "licenseCode": "CC BY-NC-SA 3.0"
       }
     ],
     "VFX": [
@@ -479,12 +490,12 @@
         "shortDescription": "Displays a texture overlay ('sticker') with controls for placement, scale, rotation, and audio reactivity.",
         "longDescription": "Displays a texture overlay ('sticker') with controls for placement, scale, rotation, and audio reactivity. Features customizable depth masking and support for custom textures. Ideal for adding dynamic, music-responsive overlays.",
         "credits": {
-          "description": "Heavily inspired by 'StageDepth.fx' by Marot Satil (2019), original depth masking implementation.",
+          "description": "Original work by Leon Aquitaine; heavily inspired by 'StageDepth.fx' by Marot Satil (2019) — depth masking concept.",
           "externalUrl": "https://github.com/Otakumouse/stormshade/blob/master/v4.X/reshade-shaders/Shader%20Library/Recommended/StageDepth.fx",
           "originalAuthor": "Marot Satil",
-          "originalTitle": "StageDepth.fx",
-          "licence": "Creative Commons Attribution 4.0 International",
-          "licenseCode": "CC BY 4.0"
+          "originalTitle": "StageDepth.fx (inspiration only, not a port)",
+          "licence": "N/A (inspiration only)",
+          "licenseCode": "N/A"
         },
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-boomsticker.gif",
         "licence": "Creative Commons Attribution 4.0 International",
@@ -501,12 +512,12 @@
           "externalUrl": "https://www.shadertoy.com/view/tcyGW1",
           "originalAuthor": "AIandDesign",
           "originalTitle": "Circular audio visualizer",
-          "licence": "CC Share-Alike Non-Commercial",
-          "licenseCode": "CC BY-NC-SA"
+          "licence": "CC BY-NC-SA 3.0 Unported",
+          "licenseCode": "CC BY-NC-SA 3.0"
         },
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-circularspectrum.gif",
-        "licence": "CC Share-Alike Non-Commercial",
-        "licenseCode": "CC BY-NC-SA"
+        "licence": "CC BY-NC-SA 3.0 Unported",
+        "licenseCode": "CC BY-NC-SA 3.0"
       },
       {
         "name": "Clair Obscur",
@@ -515,16 +526,16 @@
         "shortDescription": "Applies dramatic chiaroscuro lighting with strong contrast and stylized shadows.",
         "longDescription": "Simulates dramatic chiaroscuro (light-dark) lighting, emphasizing strong contrast and stylized shadows. Features controls for light direction, intensity, shadow softness, and color tint. Useful for artistic, cinematic, or moody scene transformations.",
         "credits": {
-          "description": "Motion inspired by '[RGR] Hearts' by deeplo.",
+          "description": "Original work by Leon Aquitaine; motion inspired by '[RGR] Hearts' by deeplo.",
           "externalUrl": "https://www.shadertoy.com/view/ttcBRs",
           "originalAuthor": "deeplo",
-          "originalTitle": "[RGR] Hearts",
-          "licence": "CC Share-Alike Non-Commercial",
-          "licenseCode": "CC BY-NC-SA"
+          "originalTitle": "[RGR] Hearts (inspiration only, not a port)",
+          "licence": "N/A (inspiration only)",
+          "licenseCode": "N/A"
         },
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-clairobscur.gif",
-        "licence": "CC Share-Alike Non-Commercial",
-        "licenseCode": "CC BY-NC-SA"
+        "licence": "Creative Commons Attribution 4.0 International",
+        "licenseCode": "CC BY 4.0"
       },
       {
         "name": "Color Balancer",
@@ -593,12 +604,12 @@
           "externalUrl": "https://www.shadertoy.com/view/lcfyDj",
           "originalAuthor": "misterprada",
           "originalTitle": "BlackHole (swirl, portal)",
-          "licence": "CC Share-Alike Non-Commercial",
-          "licenseCode": "CC BY-NC-SA"
+          "licence": "CC BY-NC-SA 3.0 Unported",
+          "licenseCode": "CC BY-NC-SA 3.0"
         },
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-focusedchaos.gif",
-        "licence": "CC Share-Alike Non-Commercial",
-        "licenseCode": "CC BY-NC-SA"
+        "licence": "CC BY-NC-SA 3.0 Unported",
+        "licenseCode": "CC BY-NC-SA 3.0"
       },
       {
         "type": "VFX",
@@ -686,12 +697,12 @@
           "externalUrl": "https://www.shadertoy.com/view/4ttGWM",
           "originalAuthor": "mu6k",
           "originalTitle": "301's Fire Shader - Remix 3",
-          "licence": "CC Share-Alike Non-Commercial",
-          "licenseCode": "CC BY-NC-SA"
+          "licence": "CC BY-NC-SA 3.0 Unported",
+          "licenseCode": "CC BY-NC-SA 3.0"
         },
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-radiantfire.gif",
-        "licence": "CC Share-Alike Non-Commercial",
-        "licenseCode": "CC BY-NC-SA"
+        "licence": "CC BY-NC-SA 3.0 Unported",
+        "licenseCode": "CC BY-NC-SA 3.0"
       },
       {
         "name": "Rainy Window",
@@ -704,12 +715,12 @@
           "externalUrl": "https://www.shadertoy.com/view/ltffzl",
           "originalAuthor": "Martijn Steinrucken (BigWings)",
           "originalTitle": "Heartfelt",
-          "licence": "CC Share-Alike Non-Commercial",
-          "licenseCode": "CC BY-NC-SA"
+          "licence": "CC BY-NC-SA 3.0 Unported",
+          "licenseCode": "CC BY-NC-SA 3.0"
         },
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-rainywindow.gif",
-        "licence": "CC Share-Alike Non-Commercial",
-        "licenseCode": "CC BY-NC-SA"
+        "licence": "CC BY-NC-SA 3.0 Unported",
+        "licenseCode": "CC BY-NC-SA 3.0"
       },
       {
         "name": "Screen Ring",
@@ -769,9 +780,9 @@
         "credits": {
           "externalUrl": "https://www.youtube.com/watch?v=Tfj6RDqXEHM",
           "originalAuthor": "FencerDevLog",
-          "originalTitle": "Godot 4: Tilted Grid Effect Tutorial",
-          "licence": "Creative Commons Attribution 4.0 International",
-          "licenseCode": "CC BY 4.0"
+          "originalTitle": "Godot 4: Tilted Grid Effect Tutorial (inspiration only, not a port)",
+          "licence": "N/A (inspiration only)",
+          "licenseCode": "N/A"
         },
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-tiltedgrid.gif",
         "licence": "Creative Commons Attribution 4.0 International",
@@ -796,12 +807,12 @@
           "externalUrl": "https://www.shadertoy.com/view/wftXzr",
           "originalAuthor": "int_45h",
           "originalTitle": "fake volumetric 2d light wip",
-          "licence": "CC Share-Alike Non-Commercial",
-          "licenseCode": "CC BY-NC-SA"
+          "licence": "CC BY-NC-SA 3.0 Unported",
+          "licenseCode": "CC BY-NC-SA 3.0"
         },
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-volumetriclight.gif",
-        "licence": "CC Share-Alike Non-Commercial",
-        "licenseCode": "CC BY-NC-SA"
+        "licence": "CC BY-NC-SA 3.0 Unported",
+        "licenseCode": "CC BY-NC-SA 3.0"
       },
       {
         "name": "VUMeter",
@@ -941,16 +952,16 @@
         "shortDescription": "Renders an abstract, glowing overlay effect composed of hundreds of animated, rotating arcs arranged in concentric rings with distinct perspective quality and depth.",
         "longDescription": "Renders an abstract, glowing overlay effect composed of hundreds of animated, rotating arcs arranged in concentric rings. Features animated, rotating arcs with customizable density and count; perspective distortion with axis inclination for realistic 3D viewing angles; two coloring modes: original mathematical formula or standard AS-StageFX palettes; audio reactivity targeting Ring Brightness, Arc Intensity, and Ring Count for dynamic effects; and full integration with AS-StageFX controls for animation, positioning, depth, and blending.",
         "credits": {
-          "originalTitle": "Cosmic",
-          "externalUrl": "https://www.shadertoy.com/view/ls3XW8",
-          "originalAuthor": "XorDev",
+          "originalTitle": "Cosmic [256 Chars]",
+          "externalUrl": "https://www.shadertoy.com/view/msjXRK",
+          "originalAuthor": "Xor (XorDev)",
           "platform": "Shadertoy",
           "adaptedBy": "Leon Aquitaine",
-          "licence": "CC Share-Alike Non-Commercial",
-          "licenseCode": "CC BY-NC-SA"
+          "licence": "CC BY-NC-SA 3.0 Unported",
+          "licenseCode": "CC BY-NC-SA 3.0"
         },
-        "licence": "CC Share-Alike Non-Commercial",
-        "licenseCode": "CC BY-NC-SA"
+        "licence": "CC BY-NC-SA 3.0 Unported",
+        "licenseCode": "CC BY-NC-SA 3.0"
       },
       {
         "name": "Cross Processing",
@@ -973,11 +984,11 @@
           "originalAuthor": "Alexander Alekseev aka TDM",
           "creationDate": "2014",
           "adaptedBy": "Leon Aquitaine",
-          "licence": "CC Share-Alike Non-Commercial",
-          "licenseCode": "CC BY-NC-SA"
+          "licence": "CC BY-NC-SA 3.0 Unported",
+          "licenseCode": "CC BY-NC-SA 3.0"
         },
-        "licence": "CC Share-Alike Non-Commercial",
-        "licenseCode": "CC BY-NC-SA"
+        "licence": "CC BY-NC-SA 3.0 Unported",
+        "licenseCode": "CC BY-NC-SA 3.0"
       },
       {
         "name": "Faded Blacks",
@@ -1037,11 +1048,11 @@
           "externalUrl": "https://www.shadertoy.com/view/XtVGD1",
           "originalAuthor": "Flockaroo",
           "originalTitle": "notebook drawings",
-          "licence": "CC Share-Alike Non-Commercial",
-          "licenseCode": "CC BY-NC-SA"
+          "licence": "CC BY-NC-SA 3.0 Unported",
+          "licenseCode": "CC BY-NC-SA 3.0"
         },
-        "licence": "CC Share-Alike Non-Commercial",
-        "licenseCode": "CC BY-NC-SA"
+        "licence": "CC BY-NC-SA 3.0 Unported",
+        "licenseCode": "CC BY-NC-SA 3.0"
       },
       {
         "name": "Light Wrap",
@@ -1101,12 +1112,12 @@
           "externalUrl": "https://www.shadertoy.com/view/XfjyWG",
           "originalAuthor": "blandprix",
           "originalTitle": "Hexagonal Wipe",
-          "licence": "CC Share-Alike Non-Commercial",
-          "licenseCode": "CC BY-NC-SA"
+          "licence": "CC BY-NC-SA 3.0 Unported",
+          "licenseCode": "CC BY-NC-SA 3.0"
         },
         "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-vignetteplus.gif",
-        "licence": "CC Share-Alike Non-Commercial",
-        "licenseCode": "CC BY-NC-SA"
+        "licence": "CC BY-NC-SA 3.0 Unported",
+        "licenseCode": "CC BY-NC-SA 3.0"
       },
       {
         "name": "Y2K Digicam",

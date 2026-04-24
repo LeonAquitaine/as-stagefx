@@ -1,7 +1,8 @@
 /** * AS_BGX_RaymarchedChain.1.fx - Raymarched Animated Chain
  * Author: Leon Aquitaine
- * License: Creative Commons Attribution 4.0 International
- * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
+ * License: Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-NC-SA 3.0)
+ * Inherited from the upstream work published on Shadertoy (default licence per https://www.shadertoy.com/terms).
+ * Free for non-commercial use with attribution. Derivatives must be distributed under the same licence.
  * 
  * CREDITS:
  * Based on "Corrente" by Elsio
@@ -143,7 +144,7 @@
 
 // Chain Shape
 
-uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Corrente' by Elsio\nLink: https://www.shadertoy.com/view/ctSfRV\nLicence: CC Share-Alike Non-Commercial\n\n";>;
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Corrente' by Elsio\nLink: https://www.shadertoy.com/view/ctSfRV\nLicence: CC BY-NC-SA 3.0 Unported\n\n";>;
 
 uniform float PathScale < ui_type = "slider"; ui_label = "Path Curvature"; ui_min = PATH_SCALE_MIN; ui_max = PATH_SCALE_MAX; ui_category = "Chain Shape"; > = PATH_SCALE_DEFAULT;
 uniform float PathFreq1 < ui_type = "slider"; ui_label = "Twist Rate X"; ui_min = PATH_FREQ1_MIN; ui_max = PATH_FREQ1_MAX; ui_category = "Chain Shape"; > = PATH_FREQ1_DEFAULT;

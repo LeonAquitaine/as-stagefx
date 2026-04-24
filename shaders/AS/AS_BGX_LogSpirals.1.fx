@@ -1,8 +1,9 @@
 /**
  * AS_BGX_LogSpirals.1.fx - Dynamic Logarithmic Spiral Effect
  * Author: Leon Aquitaine
- * License: Creative Commons Attribution 4.0 International
- * You are free to use, share, and adapt this shader for any purpose, including commercially, as long as you provide attribution.
+ * License: CC0 1.0 Universal (Public Domain Dedication)
+ * The upstream author (mrange) explicitly dedicated the original to the public domain under CC0.
+ * Free for any use, commercial or non-commercial, without attribution required.
  *  * CREDITS:
  * Based on "Logarithmic spiral of spheres" by mrange
  * Shadertoy: https://www.shadertoy.com/view/msGXRD
@@ -144,7 +145,7 @@ static const float DETAIL_GLOW_DEFAULT = 10.0;
 // Primary Spiral Controls
 //------------------------------------------------------------------------------------------------
 
-uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Logarithmic spiral of spheres' by mrange\nLink: https://www.shadertoy.com/view/msGXRD\nLicence: CC Share-Alike Non-Commercial\n\n";>;
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Logarithmic spiral of spheres' by mrange\nLink: https://www.shadertoy.com/view/msGXRD\nLicence: CC0 1.0 (Public Domain)\n\n";>;
 
 uniform float AnimationScale < ui_type = "slider"; ui_label = "Animation Scale"; ui_min = ANIMATION_SCALE_MIN; ui_max = ANIMATION_SCALE_MAX; ui_step = 0.01; ui_tooltip = "Legacy animation control. Use Animation Speed in Animation Controls instead."; ui_category = "Spiral Controls"; > = ANIMATION_SCALE_DEFAULT;
 
