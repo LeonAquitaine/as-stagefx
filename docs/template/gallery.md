@@ -25,11 +25,11 @@ The collection includes these foundation libraries used by all shaders:
 <h3>{{name}} {{icon}}</h3>
 <h5><code>{{filename}}</code></h5>
 {{longDescription}}
-{{#if credits}}
 <br><br>
-{{#if credits.originalTitle}}Based on '<a href="{{credits.externalUrl}}" target="_new">{{credits.originalTitle}}</a>' by {{credits.originalAuthor}}<br>{{/if}}
-{{/if}}
-{{#if licence}}<strong>License:</strong> {{licence}} <span style="color:#888;font-size:90%">({{license}})</span>{{/if}}
+{{#if (eq credits.kind "port")}}Based on '<a href="{{credits.externalUrl}}" target="_new">{{credits.originalTitle}}</a>' by {{credits.originalAuthor}}<br>{{/if}}
+{{#if (eq credits.kind "port-adapted")}}Adapted from '<a href="{{credits.externalUrl}}" target="_new">{{credits.originalTitle}}</a>' by {{credits.originalAuthor}} on {{credits.platform}}<br>{{/if}}
+{{#if (eq credits.kind "inspiration")}}Original work by Leon Aquitaine, inspired by '<a href="{{credits.externalUrl}}" target="_new">{{credits.originalTitle}}</a>' by {{credits.originalAuthor}}<br>{{/if}}
+{{#if licence}}<strong>License:</strong> {{licence}} <span style="color:#888;font-size:90%">({{licenseCode}})</span>{{/if}}
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="{{imageUrl}}" alt="{{name}} Effect" style="max-width:100%;">
@@ -49,11 +49,11 @@ The collection includes these foundation libraries used by all shaders:
 <h3>{{name}} {{icon}}</h3>
 <h5><code>{{filename}}</code></h5>
 {{longDescription}}
-{{#if credits}}
 <br><br>
-{{#if credits.originalTitle}}Based on '<a href="{{credits.externalUrl}}" target="_new">{{credits.originalTitle}}</a>' by {{credits.originalAuthor}}<br>{{/if}}
-{{/if}}
-{{#if licence}}<strong>License:</strong> {{licence}} <span style="color:#888;font-size:90%">({{license}})</span>{{/if}}
+{{#if (eq credits.kind "port")}}Based on '<a href="{{credits.externalUrl}}" target="_new">{{credits.originalTitle}}</a>' by {{credits.originalAuthor}}<br>{{/if}}
+{{#if (eq credits.kind "port-adapted")}}Adapted from '<a href="{{credits.externalUrl}}" target="_new">{{credits.originalTitle}}</a>' by {{credits.originalAuthor}} on {{credits.platform}}<br>{{/if}}
+{{#if (eq credits.kind "inspiration")}}Original work by Leon Aquitaine, inspired by '<a href="{{credits.externalUrl}}" target="_new">{{credits.originalTitle}}</a>' by {{credits.originalAuthor}}<br>{{/if}}
+{{#if licence}}<strong>License:</strong> {{licence}} <span style="color:#888;font-size:90%">({{licenseCode}})</span>{{/if}}
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="{{imageUrl}}" alt="{{name}} Effect" style="max-width:100%;">
@@ -73,11 +73,11 @@ The collection includes these foundation libraries used by all shaders:
 <h3>{{name}} {{icon}}</h3>
 <h5><code>{{filename}}</code></h5>
 {{longDescription}}
-{{#if credits}}
 <br><br>
-{{#if credits.originalTitle}}Based on '<a href="{{credits.externalUrl}}" target="_new">{{credits.originalTitle}}</a>' by {{credits.originalAuthor}}<br>{{/if}}
-{{/if}}
-{{#if licence}}<strong>License:</strong> {{licence}} <span style="color:#888;font-size:90%">({{license}})</span>{{/if}}
+{{#if (eq credits.kind "port")}}Based on '<a href="{{credits.externalUrl}}" target="_new">{{credits.originalTitle}}</a>' by {{credits.originalAuthor}}<br>{{/if}}
+{{#if (eq credits.kind "port-adapted")}}Adapted from '<a href="{{credits.externalUrl}}" target="_new">{{credits.originalTitle}}</a>' by {{credits.originalAuthor}} on {{credits.platform}}<br>{{/if}}
+{{#if (eq credits.kind "inspiration")}}Original work by Leon Aquitaine, inspired by '<a href="{{credits.externalUrl}}" target="_new">{{credits.originalTitle}}</a>' by {{credits.originalAuthor}}<br>{{/if}}
+{{#if licence}}<strong>License:</strong> {{licence}} <span style="color:#888;font-size:90%">({{licenseCode}})</span>{{/if}}
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="{{imageUrl}}" alt="{{name}} Effect" style="max-width:100%;">
@@ -97,11 +97,11 @@ The collection includes these foundation libraries used by all shaders:
 <h3>{{name}} {{icon}}</h3>
 <h5><code>{{filename}}</code></h5>
 {{longDescription}}
-{{#if credits}}
 <br><br>
-{{#if credits.originalTitle}}Based on '<a href="{{credits.externalUrl}}" target="_new">{{credits.originalTitle}}</a>' by {{credits.originalAuthor}}{{/if}}
-{{/if}}
-{{#if licence}}<strong>License:</strong> {{licence}} <span style="color:#888;font-size:90%">({{license}})</span>{{/if}}
+{{#if (eq credits.kind "port")}}Based on '<a href="{{credits.externalUrl}}" target="_new">{{credits.originalTitle}}</a>' by {{credits.originalAuthor}}<br>{{/if}}
+{{#if (eq credits.kind "port-adapted")}}Adapted from '<a href="{{credits.externalUrl}}" target="_new">{{credits.originalTitle}}</a>' by {{credits.originalAuthor}} on {{credits.platform}}<br>{{/if}}
+{{#if (eq credits.kind "inspiration")}}Original work by Leon Aquitaine, inspired by '<a href="{{credits.externalUrl}}" target="_new">{{credits.originalTitle}}</a>' by {{credits.originalAuthor}}<br>{{/if}}
+{{#if licence}}<strong>License:</strong> {{licence}} <span style="color:#888;font-size:90%">({{licenseCode}})</span>{{/if}}
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="{{imageUrl}}" alt="{{name}} Effect" style="max-width:100%;">

@@ -228,26 +228,59 @@ $packageConfig = Get-Content -Path $ConfigPath -Raw | ConvertFrom-Json
 $defaultLicenseDesc = $packageConfig.license.description
 $defaultLicenseCode = $packageConfig.license.code
 
-# Set licence and license code for all shaders and update credits block.
-# Shadertoy default licence is CC BY-NC-SA 3.0 Unported (per shadertoy.com/terms),
-# so shaders that are ported from Shadertoy inherit that licence unless the upstream
-# author explicitly chose a different licence (those exceptions are set manually
-# post-regeneration; see LICENSING.md).
+# Ensure every entry has a credits block with 'kind', and backfill licence/licenseCode
+# only when they are MISSING. Hand-curated values in catalog.json (e.g. mrange's CC0,
+# "N/A (inspiration only)") must never be silently overwritten by this step.
+#
+# Kind values:
+#   port          - straight port from an external source (Shadertoy, GitHub, etc.)
+#   port-adapted  - cross-platform adaptation (has platform + adaptedBy)
+#   inspiration   - Leon Aquitaine original inspired by an external work
+#   original      - Leon Aquitaine original (clean-room or from scratch)
+function Get-DefaultKind($entry) {
+    $c = $entry.credits
+    if (-not $c) { return 'original' }
+    if ($c.platform -and $c.adaptedBy) { return 'port-adapted' }
+    if ($c.licence -like 'N/A (inspiration*') { return 'inspiration' }
+    if ($c.licence -like 'N/A (original*') { return 'original' }
+    if ($c.originalAuthor -and $c.externalUrl) { return 'port' }
+    if ($c.description -and -not $c.originalAuthor) { return 'original' }
+    return 'port'
+}
+
 foreach ($entry in $catalog) {
-    $isShadertoy = $false
-    if ($entry.credits -and $entry.credits.externalUrl -and ($entry.credits.externalUrl -match 'shadertoy.com')) {
-        $entry | Add-Member -NotePropertyName 'licence' -NotePropertyValue 'CC BY-NC-SA 3.0 Unported' -Force
-        $entry | Add-Member -NotePropertyName 'licenseCode' -NotePropertyValue 'CC BY-NC-SA 3.0' -Force
-        $entry.credits | Add-Member -NotePropertyName 'licence' -NotePropertyValue 'CC BY-NC-SA 3.0 Unported' -Force
-        $entry.credits | Add-Member -NotePropertyName 'licenseCode' -NotePropertyValue 'CC BY-NC-SA 3.0' -Force
-        $isShadertoy = $true
+    # Ensure credits object exists; kind is required on every entry
+    if (-not $entry.credits) {
+        $entry | Add-Member -NotePropertyName 'credits' -NotePropertyValue ([PSCustomObject]@{ kind = 'original' }) -Force
     }
-    if (-not $isShadertoy) {
-        $entry | Add-Member -NotePropertyName 'licence' -NotePropertyValue $defaultLicenseDesc -Force
-        $entry | Add-Member -NotePropertyName 'licenseCode' -NotePropertyValue $defaultLicenseCode -Force
-        if ($entry.credits) {
-            $entry.credits | Add-Member -NotePropertyName 'licence' -NotePropertyValue $defaultLicenseDesc -Force
-            $entry.credits | Add-Member -NotePropertyName 'licenseCode' -NotePropertyValue $defaultLicenseCode -Force
+    if (-not $entry.credits.kind) {
+        $kind = Get-DefaultKind $entry
+        $entry.credits | Add-Member -NotePropertyName 'kind' -NotePropertyValue $kind -Force
+    }
+
+    # Backfill root licence/licenseCode only when missing
+    $kind = $entry.credits.kind
+    if (-not $entry.licence -or -not $entry.licenseCode) {
+        # Root-level licence is the licence the shader FILE is distributed under,
+        # which for originals and inspirations is always the package default
+        # (CC BY 4.0). For pure ports it inherits the upstream licence.
+        if ($kind -eq 'port' -or $kind -eq 'port-adapted') {
+            if ($entry.credits.licence) {
+                if (-not $entry.licence)     { $entry | Add-Member -NotePropertyName 'licence'     -NotePropertyValue $entry.credits.licence     -Force }
+                if (-not $entry.licenseCode) { $entry | Add-Member -NotePropertyName 'licenseCode' -NotePropertyValue $entry.credits.licenseCode -Force }
+            }
+        } else {
+            if (-not $entry.licence)     { $entry | Add-Member -NotePropertyName 'licence'     -NotePropertyValue $defaultLicenseDesc -Force }
+            if (-not $entry.licenseCode) { $entry | Add-Member -NotePropertyName 'licenseCode' -NotePropertyValue $defaultLicenseCode -Force }
+        }
+    }
+
+    # Backfill credits.licence only for ports that lack one (Shadertoy default).
+    # Inspirations keep "N/A (inspiration only)"; originals don't need a credits.licence.
+    if ($kind -eq 'port' -and $entry.credits.externalUrl -and -not $entry.credits.licence) {
+        if ($entry.credits.externalUrl -match 'shadertoy\.com') {
+            $entry.credits | Add-Member -NotePropertyName 'licence'     -NotePropertyValue 'CC BY-NC-SA 3.0 Unported' -Force
+            $entry.credits | Add-Member -NotePropertyName 'licenseCode' -NotePropertyValue 'CC BY-NC-SA 3.0' -Force
         }
     }
 }
@@ -265,48 +298,130 @@ try {
     exit 1
 }
 
-# --- Update as_shader_descriptor in shader files based on catalog credits ---
+# --- Regenerate as_shader_descriptor uniform in shader files from catalog credits ---
+#
+# Two behaviours worth calling out:
+#  * Multi-line `uniform int as_shader_descriptor < ... >;` blocks are stripped as
+#    a whole (not just their first line), so legacy hand-formatted descriptors
+#    don't leave orphan annotation bodies.
+#  * A file that has no existing descriptor is left alone — we don't inject one
+#    into shaders that were intentionally kept greenfield. If a shader has a
+#    descriptor we regenerate it from catalog credits; otherwise we skip it.
+#  * Descriptor text branches on credits.kind; licences are copied verbatim
+#    from the catalog (never overridden from a hardcoded default here).
+
+function Format-ShaderDescriptor($entry) {
+    $c = $entry.credits
+    if (-not $c) { return $null }
+    $kind = $c.kind
+    $licence = $c.licence
+    if (-not $licence) { $licence = $entry.licence }
+    $lines = @()
+    switch ($kind) {
+        'port' {
+            $title = $c.originalTitle
+            $author = $c.originalAuthor
+            if (-not $title -or -not $author) { return $null }
+            $lines += "Based on '$title' by $author"
+            if ($c.externalUrl) { $lines += "Link: $($c.externalUrl)" }
+            if ($licence) { $lines += "Licence: $licence" }
+        }
+        'port-adapted' {
+            $title = $c.originalTitle
+            $author = $c.originalAuthor
+            $platform = $c.platform
+            if (-not $title -or -not $author) { return $null }
+            $adaptedFrom = if ($platform) { "Adapted from '$title' by $author on $platform" } else { "Adapted from '$title' by $author" }
+            $lines += $adaptedFrom
+            if ($c.externalUrl) { $lines += "Link: $($c.externalUrl)" }
+            if ($licence) { $lines += "Licence: $licence" }
+        }
+        'inspiration' {
+            $title = $c.originalTitle
+            $author = $c.originalAuthor
+            $lines += 'Original work by Leon Aquitaine'
+            if ($title -and $author) {
+                $lines += "Inspired by '$title' by $author"
+                if ($c.externalUrl) { $lines += "Link: $($c.externalUrl)" }
+            }
+            $lines += "Licence: $($entry.licence)"
+        }
+        'original' {
+            $lines += 'Original work by Leon Aquitaine'
+            $lines += "Licence: $($entry.licence)"
+        }
+        default { return $null }
+    }
+    # Assemble as an HLSL string literal with literal \n separators and trailing blank line
+    $joined = ($lines -join '\n')
+    $uiText = "\n$joined\n\n"
+    $uiTextEscaped = $uiText -replace '"', '\\"'
+    return 'uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "' + $uiTextEscaped + '";>;'
+}
+
+function Remove-ExistingShaderDescriptor($text) {
+    # Remove the entire `uniform int as_shader_descriptor < ... >;` block, whether
+    # it's written on a single line, spans multiple lines, or carries a default-
+    # value tail like `> = 0;`. Returns a tuple (new text, removed?).
+    #
+    # Uses `<[^>]*>` rather than `<.*?>` so annotation contents that include `;`
+    # can't make the match drift into the next uniform's closing `>;` — the
+    # annotation body never legitimately contains a `>` character, so bounding
+    # on non-`>` is both safer and more predictable.
+    $pattern = '(?sm)^[ \t]*uniform\s+int\s+as_shader_descriptor\s*<[^>]*>\s*(=\s*[^;]*)?\s*;[ \t]*\r?\n?'
+    $regex = [regex]::new($pattern)
+    if ($regex.IsMatch($text)) {
+        return @($regex.Replace($text, ''), $true)
+    }
+    return @($text, $false)
+}
+
 foreach ($entry in $catalog) {
-    if ($entry.credits) {
-        $shaderPath = Join-Path $shaderDir $entry.filename
-        if (Test-Path $shaderPath) {
-            $shaderLines = Get-Content -Path $shaderPath -Raw -Encoding UTF8 -ErrorAction Stop -Force | ForEach-Object { $_ -split "`r?`n" }
-            # Remove any existing as_shader_descriptor uniform lines (anywhere)
-            $shaderLines = $shaderLines | Where-Object { $_ -notmatch '^\s*uniform\s+int\s+as_shader_descriptor' }
-            # Build descriptor text with /n for line breaks
-            $descText = "Based on '$($entry.credits.originalTitle)' by $($entry.credits.originalAuthor)\nLink: $($entry.credits.externalUrl)"
-            $uiText = "\n$descText\n"
-            if ($entry.licence) {
-                $uiText += "Licence: $($entry.licence)\n\n"
-            }
-            # Escape only double quotes for HLSL string
-            $uiTextEscaped = $uiText -replace '"', '\\"'
-            $descUniform = 'uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "' + $uiTextEscaped + '";>;' 
-            # Find first uniform or AS_ UI macro line not inside a macro
-            $insertIdx = -1
-            $inMacro = $false
-            for ($i = 0; $i -lt $shaderLines.Count; $i++) {
-                $line = $shaderLines[$i]
-                if ($line -match '^\s*#\s*define') { $inMacro = $true }
-                elseif ($inMacro -and ($line -match '^\s*$' -or $line -match '^\s*#')) { $inMacro = $false }
-                if (-not $inMacro -and ($line -match '^\s*uniform ' -or $line -match '^\s*AS_[A-Z_]+')) {
-                    $insertIdx = $i
-                    break
-                }
-            }
-            if ($insertIdx -ge 0) {
-                # Only insert a blank line if the next line is not already blank
-                $afterDescriptor = if ($insertIdx -lt $shaderLines.Count -and $shaderLines[$insertIdx] -ne '') { @('') } else { @() }
-                $shaderLines = $shaderLines[0..($insertIdx-1)] + $descUniform + $afterDescriptor + $shaderLines[$insertIdx..($shaderLines.Count-1)]
-                Set-Content -Path $shaderPath -Value ($shaderLines -join "`r`n") -Encoding UTF8
-                Write-Host "[INFO] Updated as_shader_descriptor in $($entry.filename)"
-            } else {
-                Write-Host "[WARN] No uniform or AS_ UI macro group found in $($entry.filename), skipping descriptor insert." -ForegroundColor Yellow
-            }
-        } else {
-            Write-Host "[WARN] Shader file not found: $shaderPath" -ForegroundColor Yellow
+    $shaderPath = Join-Path $shaderDir $entry.filename
+    if (-not (Test-Path $shaderPath)) {
+        Write-Host "[WARN] Shader file not found: $shaderPath" -ForegroundColor Yellow
+        continue
+    }
+
+    $descUniform = Format-ShaderDescriptor $entry
+    if (-not $descUniform) {
+        Write-Host "[WARN] Could not build descriptor for $($entry.filename) (kind=$($entry.credits.kind))" -ForegroundColor Yellow
+        continue
+    }
+
+    $shaderText = Get-Content -Path $shaderPath -Raw -Encoding UTF8 -ErrorAction Stop
+    $stripResult = Remove-ExistingShaderDescriptor $shaderText
+    $stripped = $stripResult[0]
+    $hadDescriptor = $stripResult[1]
+
+    if (-not $hadDescriptor) {
+        # Greenfield shader without a descriptor — leave it untouched.
+        continue
+    }
+
+    # Reinsert at the same anchor: first line that starts a uniform or AS_ UI macro,
+    # skipping lines inside #define macro bodies.
+    $lines = $stripped -split "`r?`n"
+    $insertIdx = -1
+    $inMacro = $false
+    for ($i = 0; $i -lt $lines.Count; $i++) {
+        $line = $lines[$i]
+        if ($line -match '^\s*#\s*define') { $inMacro = $true }
+        elseif ($inMacro -and ($line -match '^\s*$' -or $line -match '^\s*#')) { $inMacro = $false }
+        if (-not $inMacro -and ($line -match '^\s*uniform\s' -or $line -match '^\s*AS_[A-Z_]+')) {
+            $insertIdx = $i
+            break
         }
     }
+    if ($insertIdx -lt 0) {
+        Write-Host "[WARN] No uniform or AS_ UI macro group found in $($entry.filename), skipping descriptor insert." -ForegroundColor Yellow
+        continue
+    }
+
+    $afterDescriptor = if ($insertIdx -lt $lines.Count -and $lines[$insertIdx] -ne '') { @('') } else { @() }
+    $newLines = $lines[0..($insertIdx-1)] + $descUniform + $afterDescriptor + $lines[$insertIdx..($lines.Count-1)]
+    Set-Content -Path $shaderPath -Value ($newLines -join "`r`n") -Encoding UTF8
+    Write-Host "[INFO] Updated as_shader_descriptor in $($entry.filename) (kind=$($entry.credits.kind))"
 }
 
 # --- Cleanup: Remove duplicated empty lines and trim file end ---

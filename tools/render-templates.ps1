@@ -28,30 +28,76 @@ if ($catalogStats.grouped) {
 }
 $catalogStats | Add-Member -MemberType NoteProperty -Name shaders -Value $allShaders -Force
 
-# Precompute arrays for credits template
-$BGXAdapted = $allShaders | Where-Object { $_.type -eq 'BGX' -and $_.credits -and $_.credits.originalAuthor }
-$OtherAdapted = $allShaders | Where-Object { $_.type -ne 'BGX' -and $_.credits -and $_.credits.originalAuthor }
-$OriginalWorks = $allShaders | Where-Object { -not ($_.credits -and $_.credits.originalAuthor) }
-$catalogStats | Add-Member -MemberType NoteProperty -Name BGXAdapted -Value $BGXAdapted -Force
-$catalogStats | Add-Member -MemberType NoteProperty -Name OtherAdapted -Value $OtherAdapted -Force
-$catalogStats | Add-Member -MemberType NoteProperty -Name OriginalWorks -Value $OriginalWorks -Force
+# Precompute kind-grouped arrays for the Credits template. The template engine
+# doesn't handle nested {{#if}} well, so we do the filtering once here in code
+# and expose flat arrays the template can iterate directly.
+function Get-CreditsKind($item) {
+    if ($item.credits -and $item.credits.kind) { return $item.credits.kind }
+    return 'original'
+}
+
+$portsByType = @{}
+foreach ($type in @('BGX','GFX','LFX','VFX','AFX')) {
+    $portsByType[$type] = @($allShaders | Where-Object {
+        $_.type -eq $type -and (Get-CreditsKind $_) -in @('port','port-adapted')
+    } | Sort-Object filename)
+}
+
+# Originals that we still want listed in Credits.md — the "inspiration" kind
+# (credited as inspired-by) and "original" entries that carry a description /
+# historical note worth surfacing (e.g. clean-room rewrites). Pure originals
+# with no story behind them are covered by the project default licence only.
+$originalsWithInspiration = @($allShaders | Where-Object {
+    (Get-CreditsKind $_) -eq 'inspiration'
+} | Sort-Object filename)
+
+# Derive a ready-to-render `inspirationText` for each inspiration entry. Prefer a
+# hand-written `credits.description`, but strip any redundant "Original work by
+# Leon Aquitaine" preamble since the template already states that on its own
+# line. Fall back to a synthesized "Inspired by '<title>' by <author>" when no
+# description is present (e.g. AS_VFX_TiltedGrid).
+foreach ($item in $originalsWithInspiration) {
+    $text = $null
+    if ($item.credits -and $item.credits.description) {
+        $text = $item.credits.description
+        $text = $text -replace '^Original work by Leon Aquitaine[;:,]?\s*', ''
+        if ($text.Length -gt 0) {
+            $text = $text.Substring(0,1).ToUpper() + $text.Substring(1)
+        }
+    }
+    if (-not $text -and $item.credits -and $item.credits.originalTitle -and $item.credits.originalAuthor) {
+        $text = "Inspired by '$($item.credits.originalTitle)' by $($item.credits.originalAuthor)"
+    }
+    $item | Add-Member -NotePropertyName 'inspirationText' -NotePropertyValue $text -Force
+}
+
+$originalsWithHistory = @($allShaders | Where-Object {
+    (Get-CreditsKind $_) -eq 'original' -and $_.credits -and $_.credits.description
+} | Sort-Object filename)
+
+$catalogStats | Add-Member -MemberType NoteProperty -Name portsBGX -Value $portsByType['BGX'] -Force
+$catalogStats | Add-Member -MemberType NoteProperty -Name portsGFX -Value $portsByType['GFX'] -Force
+$catalogStats | Add-Member -MemberType NoteProperty -Name portsLFX -Value $portsByType['LFX'] -Force
+$catalogStats | Add-Member -MemberType NoteProperty -Name portsVFX -Value $portsByType['VFX'] -Force
+$catalogStats | Add-Member -MemberType NoteProperty -Name portsAFX -Value $portsByType['AFX'] -Force
+$catalogStats | Add-Member -MemberType NoteProperty -Name originalsWithInspiration -Value $originalsWithInspiration -Force
+$catalogStats | Add-Member -MemberType NoteProperty -Name originalsWithHistory -Value $originalsWithHistory -Force
 
 # Load default license info from package-config.json
 $packageConfigPath = "$PSScriptRoot/../config/package-config.json"
 $packageConfig = Get-Content -Path $packageConfigPath -Raw | ConvertFrom-Json
 $defaultLicenseDesc = $packageConfig.license.description
-$defaultLicenseCode = $packageConfig.license.code
 
 # Before rendering, blank out licence/license fields if they match the default
 foreach ($group in $catalogStats.grouped.PSObject.Properties) {
     $items = $group.Value
     foreach ($item in $items) {
+        # Null out only `licence` (the long description) when it matches the project
+        # default, so the gallery's `{{#if licence}}` hides the default licence line.
+        # `licenseCode` stays populated so README's License column can render "CC BY 4.0"
+        # for every entry (that column is expected to be fully populated).
         if ($item.licence -eq $defaultLicenseDesc) { $item.licence = $null }
-        if ($item.license -eq $defaultLicenseCode) { $item.license = $null }
-        if ($item.credits) {
-            if ($item.credits.licence -eq $defaultLicenseDesc) { $item.credits.licence = $null }
-            if ($item.credits.license -eq $defaultLicenseCode) { $item.credits.license = $null }
-        }
+        if ($item.credits -and $item.credits.licence -eq $defaultLicenseDesc) { $item.credits.licence = $null }
     }
 }
 
@@ -75,31 +121,33 @@ function Get-CatalogValue($obj, $path) {
 # 1. Evaluate all {{#if ...}}...{{/if}} blocks first, before any property replacements
 function Get-NestedPropertyValue {
     param($context, $propertyPath)
-    # Support simple (eq field value) and (ne field value) expressions
-    if ($propertyPath -match '^\(eq ([^ ]+) "([^"]+)"\)$') {
-        $field = $matches[1]
-        $val = $matches[2]
-        $actual = $context.$field
-        return ($actual -eq $val)
-    } elseif ($propertyPath -match '^\(ne ([^ ]+) "([^"]+)"\)$') {
-        $field = $matches[1]
-        $val = $matches[2]
-        $actual = $context.$field
-        return ($actual -ne $val)
-    }
-    $parts = $propertyPath -split '\.'
-    $value = $context
-    foreach ($part in $parts) {
-        if ($null -eq $value) { return $null }
-        if ($value -is [System.Collections.IDictionary] -and $value.Contains($part)) {
-            $value = $value[$part]
-        } elseif ($value.PSObject.Properties.Match($part)) {
-            $value = $value.$part
-        } else {
-            return $null
+    # Traverse dotted paths like 'credits.kind' inside the current context
+    function Resolve-DottedPath($ctx, $path) {
+        $parts = $path -split '\.'
+        $v = $ctx
+        foreach ($part in $parts) {
+            if ($null -eq $v) { return $null }
+            if ($v -is [System.Collections.IDictionary] -and $v.Contains($part)) {
+                $v = $v[$part]
+            } elseif ($v.PSObject.Properties.Match($part)) {
+                $v = $v.$part
+            } else {
+                return $null
+            }
         }
+        return $v
     }
-    return $value
+
+    # Support simple (eq path "value") and (ne path "value") expressions, where
+    # path may be dotted (e.g. (eq credits.kind "port"))
+    if ($propertyPath -match '^\(eq ([^ ]+) "([^"]+)"\)$') {
+        $actual = Resolve-DottedPath $context $matches[1]
+        return ($actual -eq $matches[2])
+    } elseif ($propertyPath -match '^\(ne ([^ ]+) "([^"]+)"\)$') {
+        $actual = Resolve-DottedPath $context $matches[1]
+        return ($actual -ne $matches[2])
+    }
+    return (Resolve-DottedPath $context $propertyPath)
 }
 
 $ifBlockPattern = '(?ms){{#if ([^}]+)}}(.*?){{/if}}'
@@ -199,17 +247,14 @@ function Remove-AllIfBlocks {
     return $content
 }
 
-# Before rendering, blank out licence/license fields for each item if they match the default, for all grouped categories (BGX, GFX, LFX, VFX),
-# so the README template will only show license info if it differs from the default.
-foreach ($cat in @('BGX','GFX','LFX','VFX')) {
+# Second pass over typed groups so {{#if licence}} in gallery rows hides the
+# default-licence line even when iterating grouped.BGX/GFX/LFX/VFX. `licenseCode`
+# is intentionally preserved so README's License column can render for every entry.
+foreach ($cat in @('BGX','GFX','LFX','VFX','AFX')) {
     if ($catalogStats.grouped.$cat) {
         foreach ($item in $catalogStats.grouped.$cat) {
             if ($item.licence -eq $defaultLicenseDesc) { $item.licence = $null }
-            if ($item.license -eq $defaultLicenseCode) { $item.license = $null }
-            if ($item.credits) {
-                if ($item.credits.licence -eq $defaultLicenseDesc) { $item.credits.licence = $null }
-                if ($item.credits.license -eq $defaultLicenseCode) { $item.credits.license = $null }
-            }
+            if ($item.credits -and $item.credits.licence -eq $defaultLicenseDesc) { $item.credits.licence = $null }
         }
     }
 }
