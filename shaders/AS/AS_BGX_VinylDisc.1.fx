@@ -139,9 +139,10 @@ static const float SPIN_SPEED_DEFAULT = 0.3;
 // UNIFORMS
 // ============================================================================
 
-uniform int as_shader_descriptor < ui_type = "radio"; ui_label = " "; ui_text = "\nSpinning vinyl record with iridescent grooves and animated backgrounds.\nFeatures thin-film interference, multiple LP color presets, and\n5 background styles including neon rings and geometric particles.\n\nAS StageFX | Vinyl Disc by Leon Aquitaine\n"; > = 0;
-
 // --- Disc Appearance ---
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nOriginal work by Leon Aquitaine\nLicence: Creative Commons Attribution 4.0 International\n\n";>;
+
 uniform int LPColorPreset < ui_type = "combo"; ui_label = "LP Color"; ui_tooltip = "Vinyl color preset. Picture Disc shows the game scene through the record."; ui_items = "Classic Black\0Pearl White\0Transparent Red\0Transparent Blue\0Transparent Green\0Gold\0Silver\0Picture Disc\0Custom\0"; ui_category = "Vinyl Disc"; > = LP_BLACK;
 uniform float3 CustomLPColor < ui_type = "color"; ui_label = "Custom LP Color"; ui_tooltip = "Base color when LP Color is set to Custom."; ui_category = "Vinyl Disc"; > = float3(0.05, 0.05, 0.05);
 uniform int TrackCount < ui_type = "slider"; ui_label = "Track Count"; ui_tooltip = "Number of distinct concentric track bands on the record."; ui_min = TRACK_COUNT_MIN; ui_max = TRACK_COUNT_MAX; ui_step = 1; ui_category = "Vinyl Disc"; > = TRACK_COUNT_DEFAULT;

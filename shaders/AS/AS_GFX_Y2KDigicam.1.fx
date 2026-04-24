@@ -92,9 +92,10 @@ static const int CAST_MODE_NEUTRAL = 2;
 // UNIFORMS
 // ============================================================================
 
-uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " "; ui_text = "\nEarly 2000s point-and-shoot digital camera simulation.\nFlash wash, color cast, grain, chromatic aberration, and vignette.\n\nAS StageFX | Y2K Digicam by Leon Aquitaine\n"; > = 0;
-
 // --- Effect Strength ---
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nOriginal work by Leon Aquitaine\nLicence: Creative Commons Attribution 4.0 International\n\n";>;
+
 uniform float EffectStrength < ui_type = "slider"; ui_label = "Effect Strength"; ui_tooltip = "Overall strength of the digicam effect."; ui_min = STRENGTH_MIN; ui_max = STRENGTH_MAX; ui_step = 0.01; ui_category = "Effect"; > = STRENGTH_DEFAULT;
 
 // --- Flash ---

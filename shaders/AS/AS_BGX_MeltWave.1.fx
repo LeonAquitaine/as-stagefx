@@ -59,7 +59,7 @@ static const float SCALE_DEFAULT             = 1.0;
 static const float AUDIO_MULTIPLIER_DEFAULT  = 1.0;
 static const float AUDIO_MULTIPLIER_MAX      = 5.0;
 
-uniform int as_shader_descriptor < ui_type = "radio"; ui_label = " "; ui_text = "\nMelt Wave\n\n"; >;
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nOriginal work by Leon Aquitaine\nLicence: Creative Commons Attribution 4.0 International\n\n";>;
 
 uniform int Iterations <
     ui_type = "slider";

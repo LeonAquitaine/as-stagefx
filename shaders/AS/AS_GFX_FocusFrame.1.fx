@@ -49,9 +49,10 @@ sampler FocusFrame_BlurHSampler { Texture = FocusFrame_BlurHBuffer; };
 // UI DECLARATIONS
 // ============================================================================
 
-uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " ";ui_text = "\nSharp center frame with blurred, dimmed background.\nIdeal for drawing attention to your subject in portraits.\n\nAS StageFX | Focus Frame by Leon Aquitaine\n";>;
-
 // -- Composition & Framing --
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nOriginal work by Leon Aquitaine\nLicence: Creative Commons Attribution 4.0 International\n\n";>;
+
 uniform float FocusAreaSize < ui_type = "slider"; ui_label = "Frame Size"; ui_tooltip = "Controls the size of the central frame."; ui_min = 0.1; ui_max = 1.0; ui_category = "Composition & Framing"; > = 0.9;
 uniform float FrameAspectRatio < ui_type = "slider"; ui_label = "Frame Aspect Ratio"; ui_tooltip = "Controls the width-to-height ratio of the frame.\n1.0 = Square, < 1.0 = Tall, > 1.0 = Wide."; ui_min = 0.25; ui_max = 4.0; ui_step = 0.05; ui_category = "Composition & Framing"; > = 1.0;
 uniform float Feather < ui_type = "slider"; ui_label = "Edge Softness"; ui_tooltip = "Controls how soft or sharp the frame's edge is. A higher value creates a smoother, more gradual blend."; ui_min = 0.0; ui_max = 0.1; ui_category = "Composition & Framing"; > = 0.005;

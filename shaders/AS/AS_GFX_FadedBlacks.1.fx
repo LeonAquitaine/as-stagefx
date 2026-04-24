@@ -82,9 +82,10 @@ static const int DEBUG_FADE_COLOR = 2;
 // UNIFORMS
 // ============================================================================
 
-uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " "; ui_text = "\nLifts black shadows to a milky gray, brown, or blue for a vintage film look.\nThe signature Instagram faded-blacks aesthetic.\n\nAS StageFX | Faded Blacks by Leon Aquitaine\n"; > = 0;
-
 // --- Effect Controls ---
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nOriginal work by Leon Aquitaine\nLicence: Creative Commons Attribution 4.0 International\n\n";>;
+
 uniform float EffectStrength < ui_type = "slider"; ui_label = "Effect Strength"; ui_tooltip = "How much of the faded look is applied vs the original scene."; ui_min = STRENGTH_MIN; ui_max = STRENGTH_MAX; ui_step = 0.01; ui_category = "Faded Blacks"; > = STRENGTH_DEFAULT;
 uniform float FadeRange < ui_type = "slider"; ui_label = "Fade Range"; ui_tooltip = "How far up the luminance range the fade reaches.\nLow = only deepest shadows. High = reaches into midtones."; ui_min = FADE_RANGE_MIN; ui_max = FADE_RANGE_MAX; ui_step = 0.01; ui_category = "Faded Blacks"; > = FADE_RANGE_DEFAULT;
 uniform float3 FadeColor < ui_type = "color"; ui_label = "Fade Color"; ui_tooltip = "The color that shadows are lifted toward.\nWarm gray gives a vintage film feel."; ui_category = "Faded Blacks"; > = float3(0.25, 0.22, 0.20);

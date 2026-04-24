@@ -40,8 +40,6 @@
 #include "ReShade.fxh"
 #include "AS_Utils.1.fxh"
 
-uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " "; ui_text = "\nDepth-tracked motion trails that fade over time with audio-reactive timing.\nPerfect for dance videos and action sequences.\n\nAS StageFX | Music-Reactive Motion Trails by Leon Aquitaine\n"; > = 0;
-
 // --- Helper Functions and Namespace ---
 namespace AS_DepthEcho {
     // Use AS_Utils' audio functions directly instead of creating a local wrapper
@@ -76,6 +74,9 @@ static const float BLENDAMOUNT_MAX = 1.0;
 static const float BLENDAMOUNT_DEFAULT = 1.0;
 
 // --- UI Uniforms - Main Design Controls ---
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nOriginal work by Leon Aquitaine\nLicence: Creative Commons Attribution 4.0 International\n\n";>;
+
 uniform float fEcho_DepthCutoff < ui_type = "slider"; ui_min = FECHO_DEPTHCUTOFF_MIN; ui_max = FECHO_DEPTHCUTOFF_MAX; ui_step = 0.01; ui_label = "Subject Focus"; ui_tooltip = "Objects closer than this depth value will create trails"; ui_category = "Trail Design"; > = FECHO_DEPTHCUTOFF_DEFAULT;
 uniform float fEcho_FadeRate < ui_type = "slider"; ui_min = FECHO_FADERATE_MIN; ui_max = FECHO_FADERATE_MAX; ui_step = 0.01; ui_label = "Trail Persistence"; ui_tooltip = "How slowly trails fade away (higher = longer lasting)"; ui_category = "Trail Design"; > = FECHO_FADERATE_DEFAULT;
 uniform float3 fEcho_Color < ui_type = "color"; ui_label = "Trail Hue"; ui_tooltip = "Color of the trail effect"; ui_category = "Trail Design"; > = float3(0.2, 0.5, 1.0);

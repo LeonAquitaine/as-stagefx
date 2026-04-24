@@ -82,13 +82,14 @@ sampler SoftDiffusion_SampSoftLayer { Texture = SoftDiffusion_SoftLayer; Address
 // SHADER DESCRIPTOR
 // ============================================================================
 
-uniform int as_shader_descriptor < ui_type = "radio"; ui_label = " "; ui_text = "\nBeauty/portrait soft diffusion filter — smooths midtones while preserving edges.\nCreates the classic skin glow look from glamour photography.\n\nAS StageFX | Soft Diffusion by Leon Aquitaine\n"; > = 0;
-
 // ============================================================================
 // UI DECLARATIONS
 // ============================================================================
 
 // -- Diffusion Controls --
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nOriginal work by Leon Aquitaine\nLicence: Creative Commons Attribution 4.0 International\n\n";>;
+
 uniform float SoftStrength < ui_type = "slider"; ui_label = "Soft Strength"; ui_tooltip = "How much softening is applied to midtone areas.\n0.0 = no softening, 1.0 = full diffusion in midtones."; ui_min = SOFT_STRENGTH_MIN; ui_max = SOFT_STRENGTH_MAX; ui_step = SOFT_STRENGTH_STEP; ui_category = AS_CAT_APPEARANCE; > = SOFT_STRENGTH_DEFAULT;
 uniform int BlurRadius < ui_type = "slider"; ui_label = "Blur Radius"; ui_tooltip = "Size of the softening blur kernel.\nLarger values create broader, dreamier softening."; ui_min = BLUR_RADIUS_MIN; ui_max = BLUR_RADIUS_MAX; ui_category = AS_CAT_APPEARANCE; > = BLUR_RADIUS_DEFAULT;
 uniform float MidtoneFocus < ui_type = "slider"; ui_label = "Midtone Focus"; ui_tooltip = "Controls how narrow the midtone softening band is.\nHigher values restrict softening to only mid-luminance pixels."; ui_min = MIDTONE_FOCUS_MIN; ui_max = MIDTONE_FOCUS_MAX; ui_step = MIDTONE_FOCUS_STEP; ui_category = AS_CAT_APPEARANCE; > = MIDTONE_FOCUS_DEFAULT;

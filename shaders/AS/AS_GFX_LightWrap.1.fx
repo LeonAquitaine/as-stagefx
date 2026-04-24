@@ -92,13 +92,14 @@ sampler LightWrap_BlurSampler { Texture = LightWrap_BlurBuffer; };
 // SHADER DESCRIPTOR
 // ============================================================================
 
-uniform int as_shader_descriptor < ui_type = "radio"; ui_label = " "; ui_text = "\nBleeds bright background light around your subject's edges.\nMakes characters look naturally lit by their environment.\n\nAS StageFX | Light Wrap by Leon Aquitaine\n"; > = 0;
-
 // ============================================================================
 // UI DECLARATIONS
 // ============================================================================
 
 // -- Wrap Appearance --
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nOriginal work by Leon Aquitaine\nLicence: Creative Commons Attribution 4.0 International\n\n";>;
+
 uniform float WrapWidth < ui_type = "slider"; ui_label = "Wrap Width"; ui_tooltip = "How far the background light bleeds around the subject edges. Higher values create a wider, softer wrap."; ui_min = WRAP_WIDTH_MIN; ui_max = WRAP_WIDTH_MAX; ui_step = WRAP_WIDTH_STEP; ui_category = "Wrap Appearance"; > = WRAP_WIDTH_DEFAULT;
 uniform float WrapIntensity < ui_type = "slider"; ui_label = "Wrap Intensity"; ui_tooltip = "Strength of the light wrap effect. Higher values create a more visible bleed."; ui_min = WRAP_INTENSITY_MIN; ui_max = WRAP_INTENSITY_MAX; ui_step = WRAP_INTENSITY_STEP; ui_category = "Wrap Appearance"; > = WRAP_INTENSITY_DEFAULT;
 uniform float LuminanceThreshold < ui_type = "slider"; ui_label = "Luminance Threshold"; ui_tooltip = "Minimum background brightness required to generate wrap. Dark backgrounds produce no bleed. Set to 0 to wrap all backgrounds."; ui_min = LUMA_THRESHOLD_MIN; ui_max = LUMA_THRESHOLD_MAX; ui_step = LUMA_THRESHOLD_STEP; ui_category = "Wrap Appearance"; > = LUMA_THRESHOLD_DEFAULT;

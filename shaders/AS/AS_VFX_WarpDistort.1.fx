@@ -43,13 +43,14 @@
 #include "ReShade.fxh"
 #include "AS_Utils.1.fxh"
 
-uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " "; ui_text = "\nCircular warp distortion with wave ripples and audio reactivity.\nCreates dreamy portal and ripple effects.\n\nAS StageFX | Audio-Reactive Warp Distortion by Leon Aquitaine\n"; > = 0;
-
 // ============================================================================
 // EFFECT-SPECIFIC PARAMETERS
 // ============================================================================
 
 // --- Audio Mirror Controls ---
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nOriginal work by Leon Aquitaine\nLicence: Creative Commons Attribution 4.0 International\n\n";>;
+
 uniform int MirrorShape < ui_type = "combo"; ui_label = "Shape"; ui_tooltip = "Circular keeps the warp perfectly round regardless of screen ratio. Resolution-Relative stretches with the display."; ui_items = "Resolution-Relative\0Circular\0"; ui_category = AS_CAT_AUDIO; > = 1;
 uniform float MirrorBaseRadius < ui_type = "slider"; ui_label = "Base Radius"; ui_tooltip = "Base radius of the mirror circle."; ui_min = 0.05; ui_max = 0.5; ui_step = 0.01; ui_category = AS_CAT_AUDIO; > = 0.18;
 uniform float MirrorWaveFreq < ui_type = "slider"; ui_label = "Wave Freq"; ui_tooltip = "Frequency of the wave/ripple effect."; ui_min = 1.0; ui_max = 20.0; ui_step = 0.1; ui_category = AS_CAT_AUDIO; > = 8.0;

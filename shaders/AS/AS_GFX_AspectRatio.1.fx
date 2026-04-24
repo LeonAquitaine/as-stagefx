@@ -50,8 +50,6 @@
 #include "ReShade.fxh"
 #include "AS_Utils.1.fxh"
 
-uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " "; ui_text = "\nAdjustable frame overlay with composition guides (rule of thirds, golden ratio).\nEssential for composing well-framed screenshots.\n\nAS StageFX | Aspect Ratio Framing Tool by Leon Aquitaine\n"; > = 0;
-
 // ============================================================================
 // CONSTANTS
 // ============================================================================
@@ -78,6 +76,9 @@ uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " "; ui_text = "
 
 // Aspect Ratio Selection
 // ============================= Aspect Ratio Configuration =============================
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nOriginal work by Leon Aquitaine\nLicence: Creative Commons Attribution 4.0 International\n\n";>;
+
 uniform int AspectRatioPreset < ui_type = "combo"; ui_label = "Aspect Ratio Preset"; ui_tooltip = "Select from common aspect ratios or choose 'Custom' to define your own"; ui_category = "Aspect Ratio"; ui_items = "Custom\0Eorzea Collection\0  [EC] Standard Image (5:3 Landscape)\0  [EC] Standard Image (3:5 Portrait)\0  [EC] Layout 2 - Main Image (104:57)\0  [EC] Layout 3 - Grid Image (103:56)\0  [EC] Layout 4 - Wide Image (123:50)\0  [EC] Layout 5 - Thumbnail (85:70)\0  [EC] Layout 6 - Center Image (115:95)\0BlueSky\0  [BS] Post Image (Square 1:1)\0  [BS] Post Image (1.91:1 Landscape)\0  [BS] Post Image (5:4 Landscape)\0  [BS] Post Image (4:5 Portrait)\0  [BS] Profile Picture (1:1)\0  [BS] Banner Image (3:1)\0Instagram\0  [IG] Feed Post (Square 1:1)\0  [IG] Feed Post (5:4 Landscape)\0  [IG] Feed Post (4:5 Portrait)\0  [IG] Feed Post (1.91:1 Landscape)\0  [IG] Story / Reels (16:9 Landscape)\0  [IG] Story / Reels (9:16 Portrait)\0Facebook\0  [FB] Feed Post (1.91:1 Landscape)\0  [FB] Feed Post (5:4 Landscape)\0  [FB] Feed Post (4:5 Portrait)\0  [FB] Story (16:9 Landscape)\0  [FB] Story (9:16 Portrait)\0  [FB] Cover Photo (2.63:1 Landscape)\0Twitter (X)\0  [TW] Single Image (9:16 Portrait)\0  [TW] Single Image (16:9 Landscape)\0  [TW] Multi-Image 2 Images (7:8 Landscape)\0  [TW] Multi-Image 2 Images (8:7 Portrait)\0  [TW] Multi-Image 4 Images (2:1 Landscape)\0LinkedIn\0  [LI] Feed Post (1.91:1 Landscape)\0  [LI] Story (16:9 Landscape)\0  [LI] Story (9:16 Portrait)\0Pinterest\0  [PI] Pin (3:2 Landscape)\0  [PI] Pin (2:3 Portrait)\0  [PI] Max Length Pin (2.1:1 Landscape)\0  [PI] Max Length Pin (1:2.1 Portrait)\0TikTok / Snapchat\0  [TS] Video / Story (16:9 Landscape)\0  [TS] Video / Story (9:16 Portrait)\0YouTube\0  [YT] Thumbnail (9:16 Portrait)\0  [YT] Shorts (16:9 Landscape)\0  [YT] Community Post (1:1)\0Streaming Platforms\0  [Twitch] Stream / Webcam (16:9 Landscape)\0  [Twitch] Profile Banner (5:2 Landscape)\0  [Twitch] Offline Banner (16:9 Landscape)\0Community / Forum\0  [Discord] Profile / Server Icon (1:1 Square)\0  [Discord] Server Banner (16:9 Landscape)\0  [Reddit] Feed Post (4:5 Portrait)\0  [Reddit] Feed Post (16:9 Landscape)\0  [Tumblr] Photo Post (2:3 Portrait)\0  [Tumblr] Header (3:1 Landscape)\0Photography\0  [PH] 3:2 (Classic)\0  [PH] 4:3 (Standard)\0  [PH] 5:4 (Medium Format)\0  [PH] 1:1 (Square)\0Cinema\0  [CM] 16:9 (HD/4K/TV)\0  [CM] 1.85:1 (Academy Flat)\0  [CM] 2.35:1 (CinemaScope)\0  [CM] 2.39:1 (Anamorphic)\0  [CM] 21:9 (Ultrawide)\0  [CM] 4:3 (Classic TV)\0  [CM] 1:1 (Square)\0  [CM] 9:16 (Vertical)\0"; > = 3;
 
 uniform float2 CustomAspectRatio < ui_type = "drag"; ui_label = "Custom Aspect Ratio"; ui_tooltip = "Set your own aspect ratio (X:Y)"; ui_category = "Aspect Ratio"; ui_min = AS_RANGE_SCALE_MIN; ui_max = AS_RANGE_SCALE_MAX * 2.0; ui_step = 0.01; > = float2(16.0, 9.0);

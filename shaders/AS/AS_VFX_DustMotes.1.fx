@@ -42,8 +42,6 @@
 #include "AS_Utils.1.fxh"
 #include "AS_Noise.1.fxh"
 
-uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " "; ui_text = "\nFloating dust particles with two layers and backlight glow.\nAdds atmosphere and depth to any indoor scene.\n\nAS StageFX | Floating Dust Motes Effect by Leon Aquitaine\n"; > = 0;
-
 // ============================================================================
 // NAMESPACE
 // ============================================================================
@@ -127,6 +125,9 @@ static const int DEFAULT_AUDIO_TARGET = 0; // Particle Size
 //------------------------------------------------------------------------------------------------
 
 // --- Appearance ---
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nOriginal work by Leon Aquitaine\nLicence: Creative Commons Attribution 4.0 International\n\n";>;
+
 uniform float3 ParticleColorBright < ui_type = "color"; ui_label = "Particle Color: Bright"; ui_tooltip = "The brightest color particles can take. Used for highlights and well-lit motes."; ui_category = AS_CAT_APPEARANCE; > = DEFAULT_COLOR1_BRIGHT;
 uniform float3 ParticleColorDark < ui_type = "color"; ui_label = "Particle Color: Dark"; ui_tooltip = "The darkest color particles can take. Used for shadowed or distant motes."; ui_category = AS_CAT_APPEARANCE; > = DEFAULT_COLOR2_DARK;
 uniform float ParticleColorVariation < ui_type = "slider"; ui_label = "Particle Color: Variation"; ui_tooltip = "How much each mote's color varies between the Bright and Dark color picks. 0 = uniform, 1 = full range."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = AS_CAT_APPEARANCE; > = DEFAULT_COLOR_VARIANCE;

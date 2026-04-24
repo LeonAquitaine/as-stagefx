@@ -82,13 +82,15 @@ static const int MAX_SPIKE_SAMPLES = 64;
 // ============================================================================
 // SHADER DESCRIPTOR
 // ============================================================================
-uniform int as_shader_descriptor < ui_type = "radio"; ui_label = " "; ui_text = "\nAdds star-shaped diffraction spikes on bright highlights.\nSimulates a cross-screen (star) filter on a camera lens.\n\nAS StageFX | Cross-Screen Stars by Leon Aquitaine\n"; > = 0;
 
 // ============================================================================
 // UI DECLARATIONS
 // ============================================================================
 
 // -- Threshold --
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nOriginal work by Leon Aquitaine\nLicence: Creative Commons Attribution 4.0 International\n\n";>;
+
 uniform float BrightnessThreshold < ui_type = "slider"; ui_label = "Brightness Threshold"; ui_tooltip = "Minimum brightness for a pixel to generate star spikes.\nLower values create stars on dimmer areas."; ui_min = THRESHOLD_MIN; ui_max = THRESHOLD_MAX; ui_step = THRESHOLD_STEP; ui_category = "Threshold"; > = THRESHOLD_DEFAULT;
 uniform float ThresholdKnee < ui_type = "slider"; ui_label = "Threshold Knee"; ui_tooltip = "Soft transition width around the threshold.\nLarger values create a gentler fade-in."; ui_min = KNEE_MIN; ui_max = KNEE_MAX; ui_step = KNEE_STEP; ui_category = "Threshold"; > = KNEE_DEFAULT;
 

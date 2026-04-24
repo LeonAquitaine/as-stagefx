@@ -7,11 +7,7 @@
 #include "ReShade.fxh"
 #include "AS_Utils.1.fxh"
 
-uniform int as_shader_descriptor <
-    ui_type = "radio";
-    ui_label = " ";
-    ui_text = "\nLiquid Chrome\n\n";
->;
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nOriginal work by Leon Aquitaine\nLicence: Creative Commons Attribution 4.0 International\n\n";>;
 
 uniform float coord_scale <
     ui_type = "drag";

@@ -39,8 +39,6 @@
 #include "ReShade.fxh"
 #include "AS_Utils.1.fxh"
 
-uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " "; ui_text = "\nDepth-based subject cutout with customizable border and projected shadow.\nPerfect for character isolation and compositing.\n\nAS StageFX | Stencil Mask Effect by Leon Aquitaine\n"; > = 0;
-
 // ============================================================================
 // TUNABLE CONSTANTS
 // ============================================================================
@@ -66,6 +64,9 @@ static const float SHADOWOFFSET_DEFAULT_X = 0.003;
 static const float SHADOWOFFSET_DEFAULT_Y = 0.003;
 
 // --- Subject Detection ---
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nOriginal work by Leon Aquitaine\nLicence: Creative Commons Attribution 4.0 International\n\n";>;
+
 uniform float ForegroundPlane < ui_type = "slider"; ui_label = "Foreground Plane"; ui_tooltip = "Depth threshold for foreground subjects."; ui_min = FOREGROUNDPLANE_MIN; ui_max = FOREGROUNDPLANE_MAX; ui_step = 0.01; ui_category = AS_CAT_APPEARANCE; > = FOREGROUNDPLANE_DEFAULT;
 
 // --- Border Settings ---

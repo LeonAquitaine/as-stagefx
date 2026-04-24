@@ -38,8 +38,6 @@
 // ============================================================================
 #include "AS_Noise.1.fxh"
 
-uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " "; ui_text = "\nGlitch effects including hologram, RGB shift, block corruption, and scanlines.\nPerfect for cyberpunk and tech-themed shots.\n\nAS StageFX | Digital Artifacts Effect by Leon Aquitaine\n"; > = 0;
-
 // ============================================================================
 // TUNABLE CONSTANTS
 // ============================================================================
@@ -89,6 +87,9 @@ static const float BLEND_AMOUNT_DEFAULT = 1.0;
 // UI DECLARATIONS
 // ============================================================================
 // --- Main Effect Type ---
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nOriginal work by Leon Aquitaine\nLicence: Creative Commons Attribution 4.0 International\n\n";>;
+
 uniform int EffectType < ui_type = "combo"; ui_label = "Effect Type"; ui_items = "Hologram\0RGB Shift\0Block Corruption\0Scanlines\0Noise & Static\0"; ui_category = "Main"; > = 0;
 
 // --- Effect-Specific Appearance ---

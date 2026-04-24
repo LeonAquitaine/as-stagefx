@@ -43,13 +43,14 @@
 #include "ReShade.fxh"
 #include "AS_Utils.1.fxh"
 
-uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " "; ui_text = "\nSmooth, flowing gradient patterns with mathematical precision.\nIdeal for stylish backgrounds and color overlays.\n\nAS StageFX | Glossy Gradient Visual Effect by Leon Aquitaine\n"; > = 0;
-
 // ============================================================================
 // UI DECLARATIONS
 // ============================================================================
 
 // --- Pattern Parameters ---
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nOriginal work by Leon Aquitaine\nLicence: Creative Commons Attribution 4.0 International\n\n";>;
+
 uniform int Iterations < ui_type = "slider"; ui_label = "Pattern Iterations"; ui_min = 3; ui_max = 15; ui_tooltip = "Number of iterations for pattern complexity"; ui_category = AS_CAT_PATTERN; > = 9;
 
 uniform float PatternScale < ui_type = "slider"; ui_label = "Pattern Scale"; ui_min = 0.1; ui_max = 3.0; ui_tooltip = "Overall scale of the gradient pattern"; ui_category = AS_CAT_PATTERN; > = 1.0;

@@ -28,8 +28,6 @@
 #include "ReShade.fxh"
 #include "AS_Utils.1.fxh"
 
-uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " "; ui_text = "\nProfessional diffusion filter with 8 film filter presets (Pro-Mist, Satin, etc.).\nAdds soft cinematic glow to any scene.\n\nAS StageFX | Cinematic Diffusion Filter by Leon Aquitaine\n"; > = 0;
-
 // ============================================================================
 // Render Targets for Multi-Pass Bloom
 // ============================================================================
@@ -48,6 +46,9 @@ sampler CinematicDiffusion_SampBlur4 { Texture = CinematicDiffusion_TexBlur4; Ad
 // ============================================================================
 // UI: UNIFORMS
 // ============================================================================
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nOriginal work by Leon Aquitaine\nLicence: Creative Commons Attribution 4.0 International\n\n";>;
+
 uniform int Preset < ui_type = "combo"; ui_label = "Filter Preset"; ui_tooltip = "Select a classic cinematic diffusion filter look, or choose Custom to manually adjust all parameters below."; ui_items = "Custom\0Pro-Mist\0Black Pro-Mist\0Hollywood Black Magic\0Classic Soft\0Tiffen Satin\0Black Supermist\0Radiant Soft\0Pearlescent\0"; ui_category = "Preset"; > = 0;
 uniform float HighlightThreshold < ui_text = "The following controls are only active when Filter Preset is set to 'Custom'. Preset selection will override these values."; ui_type = "slider"; ui_min = 0.0; ui_max = 1.0; ui_label = "Highlight Threshold"; ui_tooltip = "Luminance level above which diffusion occurs."; ui_category = "Custom Settings"; > = 0.7;
 uniform float HighlightKnee < ui_type = "slider"; ui_min = 0.01; ui_max = 1.0; ui_label = "Highlight Soft Knee"; ui_tooltip = "Smoothness of the transition into the diffused area."; ui_category = "Custom Settings"; > = 0.2;

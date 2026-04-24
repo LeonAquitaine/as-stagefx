@@ -87,11 +87,7 @@ static const float FIELD_ROTATION_SPEED     = 0.03f;
 static const float PALETTE_MAIN_TIME_SCALE  = 0.02f;
 static const float LINE_PREFERRED_LENGTH    = 1.0f;
 
-uniform int as_shader_descriptor <
-    ui_type = "radio";
-    ui_label = " ";
-    ui_text = "\nConstellation\n\n";
->;
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nOriginal work by Leon Aquitaine\nLicence: Creative Commons Attribution 4.0 International\n\n";>;
 
 uniform float LineCoreThickness <
     ui_type = "drag";

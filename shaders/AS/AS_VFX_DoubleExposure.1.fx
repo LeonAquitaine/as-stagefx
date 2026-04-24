@@ -74,13 +74,14 @@ static const int EXPOSURE_BLEND_AVERAGE = 3;
 // SHADER DESCRIPTOR
 // ============================================================================
 
-uniform int as_shader_descriptor < ui_type = "radio"; ui_label = " "; ui_text = "\nClassic double exposure effect — blends the scene with a transformed copy of itself.\nForeground silhouettes filled with background imagery using depth separation.\n\nAS StageFX | Double Exposure by Leon Aquitaine\n"; > = 0;
-
 // ============================================================================
 // UI DECLARATIONS
 // ============================================================================
 
 // -- Effect Controls --
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nOriginal work by Leon Aquitaine\nLicence: Creative Commons Attribution 4.0 International\n\n";>;
+
 uniform float EffectStrength < ui_type = "slider"; ui_label = "Effect Strength"; ui_tooltip = "Overall intensity of the double exposure effect.\n0.0 = original only, 1.0 = full double exposure."; ui_min = STRENGTH_MIN; ui_max = STRENGTH_MAX; ui_step = STRENGTH_STEP; ui_category = AS_CAT_APPEARANCE; > = STRENGTH_DEFAULT;
 uniform int ExposureBlend < ui_type = "combo"; ui_label = "Exposure Blend"; ui_tooltip = "How the two exposures are combined.\nScreen: classic double exposure (light adds).\nMultiply: darker, moody blend.\nLighten: keeps the brighter of the two.\nAverage: simple 50/50 mix."; ui_items = "Screen\0Multiply\0Lighten\0Average\0"; ui_category = AS_CAT_APPEARANCE; > = EXPOSURE_BLEND_SCREEN;
 

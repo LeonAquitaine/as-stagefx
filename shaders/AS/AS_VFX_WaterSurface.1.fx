@@ -35,8 +35,6 @@
 #include "ReShade.fxh"
 #include "AS_Utils.1.fxh"
 
-uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " "; ui_text = "\nWater reflection surface with animated waves and depth-based perspective.\nSimulates looking through or across water.\n\nAS StageFX | Water Surface Reflection Effect by Leon Aquitaine\n"; > = 0;
-
 // ============================================================================
 // TEXTURES AND SAMPLERS
 // ============================================================================
@@ -76,6 +74,9 @@ static const float REFLECT_COMPRESS_DEFAULT = 0.4;
 // EFFECT-SPECIFIC PARAMETERS
 // ============================================================================
 // --- Water Properties ---
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nOriginal work by Leon Aquitaine\nLicence: Creative Commons Attribution 4.0 International\n\n";>;
+
 uniform float3 WaterColor < ui_type = "color"; ui_label = "Water Color"; ui_tooltip = "Base color of the water."; ui_category = "Water"; > = float3(0.1, 0.35, 0.5);
 uniform float WaterTransparency < ui_type = "slider"; ui_label = "Water Transparency"; ui_tooltip = "How transparent the water appears."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Water"; > = 1.0;
 uniform float ReflectionIntensity < ui_type = "slider"; ui_label = "Reflection Intensity"; ui_tooltip = "Strength of the reflection effect."; ui_min = 0.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Water"; > = 1.0;

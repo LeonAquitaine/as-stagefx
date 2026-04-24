@@ -145,7 +145,7 @@ static const float DETAIL_GLOW_DEFAULT = 10.0;
 // Primary Spiral Controls
 //------------------------------------------------------------------------------------------------
 
-uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Logarithmic spiral of spheres' by mrange\nLink: https://www.shadertoy.com/view/msGXRD\nLicence: CC0 1.0 (Public Domain)\n\n";>;
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Logarithmic spiral of spheres' by mrange\nLink: https://www.shadertoy.com/view/msGXRD\nLicence: CC0 1.0 Universal\n\n";>;
 
 uniform float AnimationScale < ui_type = "slider"; ui_label = "Animation Scale"; ui_min = ANIMATION_SCALE_MIN; ui_max = ANIMATION_SCALE_MAX; ui_step = 0.01; ui_tooltip = "Legacy animation control. Use Animation Speed in Animation Controls instead."; ui_category = "Spiral Controls"; > = ANIMATION_SCALE_DEFAULT;
 

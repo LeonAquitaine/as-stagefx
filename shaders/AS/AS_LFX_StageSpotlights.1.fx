@@ -39,8 +39,6 @@
 // ============================================================================
 #include "AS_Noise.1.fxh"
 
-uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " "; ui_text = "\nDirectional stage spotlights with color, sway, and bokeh particles.\nIdeal for concert photography and dramatic lighting.\n\nAS StageFX | Directional Stage Lighting Effect by Leon Aquitaine\n"; > = 0;
-
 // ============================================================================
 // HELPER MACROS & CONSTANTS
 // ============================================================================
@@ -124,6 +122,9 @@ SPOTLIGHT_UI(4, false, float3(0.2, 1.0, 0.5), float2(0.0, 1.0),
             SPOT_SWAYSPEED_DEFAULT, SPOT_SWAYANGLE_DEFAULT, 1, SPOT_AUDIOMULT_DEFAULT)
 
 // --- Animation ---
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nOriginal work by Leon Aquitaine\nLicence: Creative Commons Attribution 4.0 International\n\n";>;
+
 AS_ANIMATION_UI(AnimationSpeed, AnimationKeyframe, AS_CAT_ANIMATION)
 
 // --- Bokeh Settings ---

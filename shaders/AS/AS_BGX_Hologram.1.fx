@@ -57,7 +57,7 @@
 
 // --- Plasma & View ---
 
-uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Hologram stars' by hypothete\nLink: https://www.shadertoy.com/view/NlycDG\nLicence: CC BY-NC-SA 3.0 Unported\n\n";>;
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nAdapted from 'Hologram stars' by hypothete on Shadertoy\nLink: https://www.shadertoy.com/view/NlycDG\nLicence: CC BY-NC-SA 3.0 Unported\n\n";>;
 
 AS_POSITION_SCALE_UI(ViewPosition, ViewPosition_Scale) 
 static const float HOLO_PLASMA_SCALE_MIN = 0.01;

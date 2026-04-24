@@ -38,8 +38,6 @@
 #include "AS_Palette.1.fxh"
 #include "AS_Noise.1.fxh"
 
-uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " "; ui_text = "\nGrid of illuminated panels with animated patterns and VU meter modes.\nGreat for concert stages and DJ booths.\n\nAS StageFX | Light Wall Grid Effect by Leon Aquitaine\n"; > = 0;
-
 // --- Tunable Constants ---
 static const float MIN_MARGIN = 0.10; // Minimum margin as a fraction of cell size (10%)
 static const float DEFAULT_BLOB_RADIUS_FACTOR = 0.8;
@@ -132,6 +130,9 @@ static const float BLENDAMOUNT_DEFAULT = 1.0;
 
 // --- Controls ---
 // --- Light Boxes ---
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nOriginal work by Leon Aquitaine\nLicence: Creative Commons Attribution 4.0 International\n\n";>;
+
 uniform float GridSpacing < ui_type = "slider"; ui_label = "Size"; ui_tooltip = "Size of each light panel. Smaller values create more panels across the screen."; ui_min = GRIDSPACING_MIN; ui_max = GRIDSPACING_MAX; ui_category = "Light Boxes"; > = GRIDSPACING_DEFAULT;
 uniform float GridGlow < ui_type = "slider"; ui_label = "Glow Diffusion"; ui_tooltip = "How far each panel's glow spreads outward. Higher values create a softer, more diffused light."; ui_min = GRIDGLOW_MIN; ui_max = GRIDGLOW_MAX; ui_category = "Light Boxes"; > = GRIDGLOW_DEFAULT;
 uniform float GridStrength < ui_type = "slider"; ui_label = "Light Intensity"; ui_tooltip = "Overall brightness of the light panels. Higher values produce stronger, more vivid panels."; ui_min = GRIDSTRENGTH_MIN; ui_max = GRIDSTRENGTH_MAX; ui_category = "Light Boxes"; > = GRIDSTRENGTH_DEFAULT;

@@ -43,8 +43,6 @@
 #include "ReShadeUI.fxh"
 #include "AS_Noise.1.fxh"
 
-uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " "; ui_text = "\nDynamic sparkles with lifecycle animation and multi-layer bloom glow.\nAdds magical shimmer to any scene.\n\nAS StageFX | Dynamic Sparkle Effect by Leon Aquitaine\n"; > = 0;
-
 // ============================================================================
 // TUNABLE CONSTANTS
 // ============================================================================
@@ -130,6 +128,9 @@ static const float BLOOM_DITHER_SCALE = 0.001;      // Scale for dithering offse
 // ============================================================================
 
 // --- Sparkle Appearance ---
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nOriginal work by Leon Aquitaine\nLicence: Creative Commons Attribution 4.0 International\n\n";>;
+
 uniform float GlitterDensity < ui_type = "slider"; ui_label = "Density"; ui_tooltip = "Controls how many sparkles are generated on the screen. Higher values increase the number of sparkles."; ui_min = GLITTERDENSITY_MIN; ui_max = GLITTERDENSITY_MAX; ui_step = 0.1; ui_category = "Sparkle Appearance"; > = GLITTERDENSITY_DEFAULT;
 uniform float GlitterSize < ui_type = "slider"; ui_label = "Size"; ui_tooltip = "Adjusts the size of each individual sparkle. Larger values make sparkles appear bigger."; ui_min = GLITTERSIZE_MIN; ui_max = GLITTERSIZE_MAX; ui_step = 0.1; ui_category = "Sparkle Appearance"; > = GLITTERSIZE_DEFAULT;
 uniform float GlitterBrightness < ui_type = "slider"; ui_label = "Brightness"; ui_tooltip = "Sets the overall brightness of the sparkles. Higher values make sparkles more intense and visible."; ui_min = GLITTERBRIGHTNESS_MIN; ui_max = GLITTERBRIGHTNESS_MAX; ui_step = 0.1; ui_category = "Sparkle Appearance"; > = GLITTERBRIGHTNESS_DEFAULT;

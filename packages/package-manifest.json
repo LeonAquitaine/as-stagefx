@@ -1,9 +1,10 @@
 {
   "version": "1.11.0",
-  "buildDate": "2026-03-24T22:23:51Z",
+  "buildDate": "2026-04-24T15:18:17Z",
   "packages": [
     {
-      "name": "AS_StageFX",
+      "textureDependencyCount": 3,
+      "version": "1.11.0",
       "dependencies": {
         "fxh": [
           "AS_Utils.1.fxh",
@@ -18,7 +19,9 @@
         ]
       },
       "fxhDependencyCount": 4,
-      "shaderCount": 85,
+      "description": "The complete collection of all AS StageFX shaders and utilities",
+      "name": "AS_StageFX",
+      "shaderCount": 86,
       "shaders": [
         "AS_BGX_BlueCorona.1.fx",
         "AS_BGX_Constellation.1.fx",
@@ -45,6 +48,7 @@
         "AS_BGX_TimeCrystal.1.fx",
         "AS_BGX_VinylDisc.1.fx",
         "AS_BGX_Vortex.1.fx",
+        "AS_BGX_Waveform.1.fx",
         "AS_BGX_WavySquares.1.fx",
         "AS_BGX_WavySquiggles.1.fx",
         "AS_BGX_ZippyZaps.1.fx",
@@ -105,13 +109,11 @@
         "AS_VFX_VUMeter.1.fx",
         "AS_VFX_WarpDistort.1.fx",
         "AS_VFX_WaterSurface.1.fx"
-      ],
-      "version": "1.11.0",
-      "description": "The complete collection of all AS StageFX shaders and utilities",
-      "textureDependencyCount": 3
+      ]
     },
     {
-      "name": "AS_StageFX_Backgrounds",
+      "textureDependencyCount": 1,
+      "version": "1.11.0",
       "dependencies": {
         "fxh": [
           "AS_Utils.1.fxh",
@@ -123,7 +125,9 @@
         ]
       },
       "fxhDependencyCount": 3,
-      "shaderCount": 28,
+      "description": "Complete collection of background effects (Requires Essentials)",
+      "name": "AS_StageFX_Backgrounds",
+      "shaderCount": 29,
       "shaders": [
         "AS_BGX_BlueCorona.1.fx",
         "AS_BGX_Constellation.1.fx",
@@ -150,16 +154,15 @@
         "AS_BGX_TimeCrystal.1.fx",
         "AS_BGX_VinylDisc.1.fx",
         "AS_BGX_Vortex.1.fx",
+        "AS_BGX_Waveform.1.fx",
         "AS_BGX_WavySquares.1.fx",
         "AS_BGX_WavySquiggles.1.fx",
         "AS_BGX_ZippyZaps.1.fx"
-      ],
-      "version": "1.11.0",
-      "description": "Complete collection of background effects (Requires Essentials)",
-      "textureDependencyCount": 1
+      ]
     },
     {
-      "name": "AS_StageFX_Essentials",
+      "textureDependencyCount": 1,
+      "version": "1.11.0",
       "dependencies": {
         "fxh": [
           "AS_Utils.1.fxh",
@@ -173,6 +176,8 @@
         ]
       },
       "fxhDependencyCount": 5,
+      "description": "Core library files and essential visual effects for general use",
+      "name": "AS_StageFX_Essentials",
       "shaderCount": 12,
       "shaders": [
         "AS_BGX_TimeCrystal.1.fx",
@@ -187,13 +192,11 @@
         "AS_VFX_MotionTrails.1.fx",
         "AS_VFX_VolumetricFog.1.fx",
         "AS_VFX_StencilMask.1.fx"
-      ],
-      "version": "1.11.0",
-      "description": "Core library files and essential visual effects for general use",
-      "textureDependencyCount": 1
+      ]
     },
     {
-      "name": "AS_StageFX_VisualEffects",
+      "textureDependencyCount": 3,
+      "version": "1.11.0",
       "dependencies": {
         "fxh": [
           "AS_Utils.1.fxh",
@@ -208,6 +211,8 @@
         ]
       },
       "fxhDependencyCount": 4,
+      "description": "Complete collection of visual effects (Requires Essentials)",
+      "name": "AS_StageFX_VisualEffects",
       "shaderCount": 57,
       "shaders": [
         "AS_GFX_AnamorphicFlare.1.fx",
@@ -267,10 +272,7 @@
         "AS_VFX_VUMeter.1.fx",
         "AS_VFX_WarpDistort.1.fx",
         "AS_VFX_WaterSurface.1.fx"
-      ],
-      "version": "1.11.0",
-      "description": "Complete collection of visual effects (Requires Essentials)",
-      "textureDependencyCount": 3
+      ]
     }
   ]
 }

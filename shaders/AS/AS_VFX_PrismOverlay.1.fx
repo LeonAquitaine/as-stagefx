@@ -83,13 +83,14 @@ static const float BLUR_AMOUNT_DEFAULT = 0.15;
 // SHADER DESCRIPTOR
 // ============================================================================
 
-uniform int as_shader_descriptor < ui_type = "radio"; ui_label = " "; ui_text = "\nSimulates a crystal prism held in front of the lens.\nCreates rainbow refractions and dreamy distortions for creative portraits.\n\nAS StageFX | Prism Overlay by Leon Aquitaine\n"; > = 0;
-
 // ============================================================================
 // UI DECLARATIONS
 // ============================================================================
 
 // -- Prism Shape --
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nOriginal work by Leon Aquitaine\nLicence: Creative Commons Attribution 4.0 International\n\n";>;
+
 uniform float PrismSize < ui_type = "slider"; ui_label = "Prism Size"; ui_tooltip = "How much of the frame the prism covers.\nSmaller = corner accent, larger = dominant overlay."; ui_min = PRISM_SIZE_MIN; ui_max = PRISM_SIZE_MAX; ui_step = PRISM_SIZE_STEP; ui_category = "Prism Shape"; > = PRISM_SIZE_DEFAULT;
 uniform int PrismFacets < ui_type = "slider"; ui_label = "Facets"; ui_tooltip = "Number of prism facets.\n3 = triangle, 4 = diamond, 5+ = rounder crystal."; ui_min = FACETS_MIN; ui_max = FACETS_MAX; ui_category = "Prism Shape"; > = FACETS_DEFAULT;
 uniform float2 PrismCenter < ui_type = "drag"; ui_label = "Position"; ui_tooltip = "Screen position of the prism center."; ui_min = -1.0; ui_max = 1.0; ui_step = 0.01; ui_category = "Prism Shape"; > = float2(-0.3, -0.2);

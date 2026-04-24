@@ -37,8 +37,6 @@
 #include "ReShade.fxh"
 #include "AS_Utils.1.fxh"
 
-uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " "; ui_text = "\nDepth-aware tilt-shift blur for miniature/diorama look.\nMakes scenes look like tiny toy models.\n\nAS StageFX | Tilt-Shift / Depth of Field by Leon Aquitaine\n"; > = 0;
-
 // ============================================================================
 // INTERMEDIATE TEXTURES
 // ============================================================================
@@ -78,6 +76,9 @@ static const float MAX_BLUR_DEFAULT = 15.0;
 // ============================================================================
 
 // -- Focus Settings --
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nOriginal work by Leon Aquitaine\nLicence: Creative Commons Attribution 4.0 International\n\n";>;
+
 uniform float FocusDepth < ui_type = "slider"; ui_label = "Focus Depth"; ui_tooltip = "Selects the distance from the camera to keep in focus.\n0.0 = close, 1.0 = far."; ui_min = FOCUS_DEPTH_MIN; ui_max = FOCUS_DEPTH_MAX; ui_step = 0.001; ui_category = "Focus Settings"; > = FOCUS_DEPTH_DEFAULT;
 uniform float FocusZoneSize < ui_type = "slider"; ui_label = "Focus Zone Size"; ui_tooltip = "The size of the area around the Focus Depth that remains perfectly sharp."; ui_min = FOCUS_ZONE_MIN; ui_max = FOCUS_ZONE_MAX; ui_step = 0.001; ui_category = "Focus Settings"; > = FOCUS_ZONE_DEFAULT;
 uniform float FocusFalloff < ui_type = "slider"; ui_label = "Focus Falloff Curve"; ui_tooltip = "Controls how quickly the blur applies outside the focus zone. Higher values are more aggressive."; ui_min = FOCUS_FALLOFF_MIN; ui_max = FOCUS_FALLOFF_MAX; ui_category = "Focus Settings"; > = FOCUS_FALLOFF_DEFAULT;

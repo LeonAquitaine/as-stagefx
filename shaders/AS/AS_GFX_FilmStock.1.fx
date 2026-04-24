@@ -79,13 +79,15 @@ static const int FILM_CINESTILL_800T = 8;
 // ============================================================================
 // SHADER DESCRIPTOR
 // ============================================================================
-uniform int as_shader_descriptor < ui_type = "radio"; ui_label = " "; ui_text = "\nEmulates classic analog film stocks with grain, color science, and tonal character.\nFrom warm Kodak Gold to punchy Tri-X black and white.\n\nAS StageFX | Film Stock by Leon Aquitaine\n"; > = 0;
 
 // ============================================================================
 // UI DECLARATIONS
 // ============================================================================
 
 // -- Film Stock --
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nOriginal work by Leon Aquitaine\nLicence: Creative Commons Attribution 4.0 International\n\n";>;
+
 uniform int FilmPreset < ui_type = "combo"; ui_label = "Film Stock"; ui_tooltip = "Select a film stock preset or Custom for manual control.\nEach preset emulates the color science of a real-world film."; ui_items = "Custom\0Kodak Gold 200\0Kodak Portra 400\0Fuji Superia 400\0Fuji Velvia 50\0Ilford HP5 (B&W)\0Kodak Tri-X (B&W)\0Kodak Ektar 100\0CineStill 800T\0"; ui_category = "Film Stock"; > = FILM_KODAK_GOLD_200;
 
 // -- Custom Controls (used when Film Stock is Custom) --

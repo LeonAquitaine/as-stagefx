@@ -39,8 +39,6 @@
 #include "AS_Utils.1.fxh" // Includes ReShadeUI.fxh, provides UI macros, helpers
 #include "AS_Palette.1.fxh" // Color palette support
 
-uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " "; ui_text = "\nTextured ring overlay with palette coloring and depth occlusion.\nGreat for UI elements and decorative framing.\n\nAS StageFX | Screen-Space Textured Ring by Leon Aquitaine\n"; > = 0;
-
 // ============================================================================
 // TEXTURES
 // ============================================================================
@@ -87,6 +85,9 @@ static const float ROTATION_SPEED_SCALE = 0.1; // Multiplier for RotationSpeed U
 // ============================================================================
 
 // --- Ring Appearance ---
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nOriginal work by Leon Aquitaine\nLicence: Creative Commons Attribution 4.0 International\n\n";>;
+
 uniform float RingRadius < ui_type = "slider"; ui_label = "Ring Radius"; ui_tooltip = "Radius as percentage of screen height."; ui_min = RING_RADIUS_MIN; ui_max = RING_RADIUS_MAX; ui_step = 0.001; ui_category = "Ring Appearance"; > = RING_RADIUS_DEFAULT;
 uniform float RingThickness < ui_type = "slider"; ui_label = "Ring Thickness"; ui_tooltip = "Thickness as percentage of Radius (0=thin, 1=filled)."; ui_min = RING_THICKNESS_MIN; ui_max = RING_THICKNESS_MAX; ui_step = 0.01; ui_category = "Ring Appearance"; > = RING_THICKNESS_DEFAULT;
 uniform float4 RingColor < ui_type = "color"; ui_label = "Ring Tint & Intensity"; ui_tooltip = "RGB: Color Tint.\nA: Intensity Multiplier."; ui_category = "Ring Appearance"; > = float4(1.0, 1.0, 1.0, 1.0);

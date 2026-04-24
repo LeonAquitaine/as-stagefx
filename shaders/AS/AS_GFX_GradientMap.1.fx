@@ -80,9 +80,10 @@ static const int DEBUG_GRADIENT_RESULT = 2;
 // UNIFORMS
 // ============================================================================
 
-uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " "; ui_text = "\nMaps scene luminance to a color gradient using the palette system.\nCinematic color grading with full palette control.\n\nAS StageFX | Gradient Map by Leon Aquitaine\n"; > = 0;
-
 // --- Effect Controls ---
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nOriginal work by Leon Aquitaine\nLicence: Creative Commons Attribution 4.0 International\n\n";>;
+
 uniform float EffectStrength < ui_type = "slider"; ui_label = "Effect Strength"; ui_tooltip = "Blend between original scene and gradient-mapped result."; ui_min = STRENGTH_MIN; ui_max = STRENGTH_MAX; ui_step = 0.01; ui_category = "Gradient Map"; > = STRENGTH_DEFAULT;
 uniform float Contrast < ui_type = "slider"; ui_label = "Contrast"; ui_tooltip = "Expand or compress the luminance range before mapping to the gradient."; ui_min = CONTRAST_MIN; ui_max = CONTRAST_MAX; ui_step = 0.01; ui_category = "Gradient Map"; > = CONTRAST_DEFAULT;
 uniform float BrightnessOffset < ui_type = "slider"; ui_label = "Brightness Offset"; ui_tooltip = "Shift the luminance center point before mapping."; ui_min = BRIGHTNESS_MIN; ui_max = BRIGHTNESS_MAX; ui_step = 0.01; ui_category = "Gradient Map"; > = BRIGHTNESS_DEFAULT;

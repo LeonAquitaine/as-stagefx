@@ -84,9 +84,10 @@ static const int DEBUG_HUE_MAP = 2;
 // UNIFORMS
 // ============================================================================
 
-uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " "; ui_text = "\nDesaturates everything except one hue range for a dramatic color-pop effect.\nIsolate reds, blues, or any color against a monochrome scene.\n\nAS StageFX | Color Pop by Leon Aquitaine\n"; > = 0;
-
 // --- Hue Selection ---
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nOriginal work by Leon Aquitaine\nLicence: Creative Commons Attribution 4.0 International\n\n";>;
+
 uniform float TargetHue < ui_type = "slider"; ui_label = "Target Hue"; ui_tooltip = "Which hue to keep colorful.\n0.0 = Red, 0.17 = Yellow, 0.33 = Green, 0.5 = Cyan, 0.66 = Blue, 0.83 = Magenta."; ui_min = HUE_MIN; ui_max = HUE_MAX; ui_step = 0.01; ui_category = "Hue Selection"; > = HUE_DEFAULT;
 uniform float HueRange < ui_type = "slider"; ui_label = "Hue Range"; ui_tooltip = "Width of the kept hue band.\nSmaller = more selective, larger = wider color range preserved."; ui_min = HUE_RANGE_MIN; ui_max = HUE_RANGE_MAX; ui_step = 0.005; ui_category = "Hue Selection"; > = HUE_RANGE_DEFAULT;
 uniform float HueSoftness < ui_type = "slider"; ui_label = "Hue Softness"; ui_tooltip = "Smooth transition at the edges of the hue selection.\nHigher = smoother falloff from color to grayscale."; ui_min = HUE_SOFT_MIN; ui_max = HUE_SOFT_MAX; ui_step = 0.005; ui_category = "Hue Selection"; > = HUE_SOFT_DEFAULT;

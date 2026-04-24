@@ -80,8 +80,6 @@
 #include "ReShade.fxh"
 #include "AS_Utils.1.fxh"
 
-uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " "; ui_text = "\nAutomatic motion-based camera focus that blurs the background around movement.\nSimulates cinematic rack focus for video capture.\n\nAS StageFX | Automatic Motion-Based Camera Focus by Leon Aquitaine\n"; > = 0;
-
 // ============================================================================
 // CONSTANTS
 // ============================================================================
@@ -224,6 +222,9 @@ sampler MotionFocus_PrevDataSampler { Texture = MotionFocus_PrevDataTex; Address
 // ============================================================================
 
 // --- Camera Control ---
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nOriginal work by Leon Aquitaine\nLicence: Creative Commons Attribution 4.0 International\n\n";>;
+
 uniform float FocusStrength < ui_type = "slider"; ui_label = "Tracking"; ui_min = FOCUS_STRENGTH_MIN; ui_max = FOCUS_STRENGTH_MAX; ui_step = 0.01; ui_category = "Camera Control"; ui_tooltip = "How aggressively the camera follows motion."; > = FOCUS_STRENGTH_DEFAULT;
 uniform float ZoomStrength < ui_type = "slider"; ui_label = "Zoom Power"; ui_min = ZOOM_STRENGTH_MIN; ui_max = ZOOM_STRENGTH_MAX; ui_step = 0.01; ui_category = "Camera Control"; ui_tooltip = "Intensity of zooming towards motion."; > = ZOOM_STRENGTH_DEFAULT;
 uniform float MaxZoomLevel < ui_type = "slider"; ui_label = "Zoom Limit"; ui_min = MAX_ZOOM_LEVEL_MIN; ui_max = MAX_ZOOM_LEVEL_MAX; ui_step = 0.01; ui_category = "Camera Control"; ui_tooltip = "Maximum zoom level (lower = more zoom)."; > = MAX_ZOOM_LEVEL_DEFAULT;

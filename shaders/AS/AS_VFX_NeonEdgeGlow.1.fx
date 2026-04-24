@@ -75,9 +75,10 @@ static const int GLOW_SAMPLES = 4;
 // UNIFORMS
 // ============================================================================
 
-uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " "; ui_text = "\nCyberpunk-style neon edge glow using depth-based edge detection.\nAdds vivid colored rim lighting to foreground subjects.\n\nAS StageFX | Neon Edge Glow by Leon Aquitaine\n"; > = 0;
-
 // --- Glow Appearance ---
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nOriginal work by Leon Aquitaine\nLicence: Creative Commons Attribution 4.0 International\n\n";>;
+
 uniform float GlowIntensity < ui_type = "slider"; ui_label = "Glow Intensity"; ui_tooltip = "Overall brightness of the edge glow."; ui_min = GLOWINTENSITY_MIN; ui_max = GLOWINTENSITY_MAX; ui_step = 0.01; ui_category = AS_CAT_APPEARANCE; > = GLOWINTENSITY_DEFAULT;
 uniform float GlowWidth < ui_type = "slider"; ui_label = "Glow Width"; ui_tooltip = "How wide the glow extends from detected edges (sampling radius in pixels)."; ui_min = GLOWWIDTH_MIN; ui_max = GLOWWIDTH_MAX; ui_step = 0.5; ui_category = AS_CAT_APPEARANCE; > = GLOWWIDTH_DEFAULT;
 uniform float EdgeSensitivity < ui_type = "slider"; ui_label = "Edge Sensitivity"; ui_tooltip = "How subtle depth changes must be to trigger the glow. Higher values detect finer edges."; ui_min = SENSITIVITY_MIN; ui_max = SENSITIVITY_MAX; ui_step = 1.0; ui_category = AS_CAT_APPEARANCE; > = SENSITIVITY_DEFAULT;

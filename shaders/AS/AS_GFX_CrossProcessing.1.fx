@@ -66,13 +66,14 @@ static const float SAT_DEFAULT = 1.3;
 // SHADER DESCRIPTOR
 // ============================================================================
 
-uniform int as_shader_descriptor < ui_type = "radio"; ui_label = " "; ui_text = "\nSimulates cross-processed film with dramatic color shifts from chemistry mismatches.\nChoose from classic presets or dial in custom per-channel curves.\n\nAS StageFX | Cross Processing by Leon Aquitaine\n"; > = 0;
-
 // ============================================================================
 // UI DECLARATIONS
 // ============================================================================
 
 // -- Chemistry Preset --
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nOriginal work by Leon Aquitaine\nLicence: Creative Commons Attribution 4.0 International\n\n";>;
+
 uniform int ChemistryPreset < ui_type = "combo"; ui_label = "Chemistry Preset"; ui_tooltip = "Select a cross-processing chemistry mismatch, or Custom for manual control.\nEach preset recreates a specific film processing error look."; ui_items = "Custom\0E6 in C41 (Green Shadows)\0C41 in E6 (Magenta Highlights)\0Slide to Negative (Cyan Shift)\0Negative to Slide (Warm Push)\0Extreme Cross (Wild Colors)\0"; ui_category = AS_CAT_APPEARANCE; > = 1;
 uniform float EffectStrength < ui_type = "slider"; ui_label = "Effect Strength"; ui_tooltip = "Overall intensity of the cross-processing effect.\n0.0 = original image, 1.0 = full cross-processed look."; ui_min = STRENGTH_MIN; ui_max = STRENGTH_MAX; ui_step = STRENGTH_STEP; ui_category = AS_CAT_APPEARANCE; > = STRENGTH_DEFAULT;
 

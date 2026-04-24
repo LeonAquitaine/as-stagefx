@@ -49,8 +49,6 @@
 #include "AS_Palette.1.fxh" // Color palette support
 #include "AS_Noise.1.fxh" // For AS_hash21
 
-uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " "; ui_text = "\nAnimated procedural candle flames with realistic flickering.\nPlace up to 4 flames for romantic or atmospheric lighting.\n\nAS StageFX | Procedural Candle Flame Effect by Leon Aquitaine\n"; > = 0;
-
 // ============================================================================
 // TUNABLE CONSTANTS (Defaults and Ranges)
 // ============================================================================
@@ -136,6 +134,9 @@ FLAME_UI(4, false, float2(0.0, -0.4), 0.8,
 // ============================================================================
 // PALETTE & STYLE
 // ============================================================================
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nOriginal work by Leon Aquitaine\nLicence: Creative Commons Attribution 4.0 International\n\n";>;
+
 AS_PALETTE_SELECTION_UI(PalettePreset, "Palette", AS_PALETTE_FIRE, AS_CAT_PALETTE)
 AS_DECLARE_CUSTOM_PALETTE(CandleFlame_, AS_CAT_PALETTE)
 

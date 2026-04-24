@@ -283,7 +283,7 @@ sampler PetalAtlas_Sampler { Texture = PetalAtlasTexture; AddressU = CLAMP; Addr
 
 // ---- Petal Appearance ----
 
-uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nOriginal work by Leon Aquitaine\nMotion inspired by '[RGR] Hearts' by deeplo (https://www.shadertoy.com/view/ttcBRs)\nLicence: CC BY 4.0\n\n";>;
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nOriginal work by Leon Aquitaine\nInspired by '[RGR] Hearts (inspiration only, not a port)' by deeplo\nLink: https://www.shadertoy.com/view/ttcBRs\nLicence: Creative Commons Attribution 4.0 International\n\n";>;
 
 uniform float3 PetalColor < ui_type = "color"; ui_label = "Petal Color"; ui_category = "Petals"; > = float3(1.0, 1.0, 1.0);
 uniform float PetalBaseAlpha < ui_type = "slider"; ui_label = "Opacity"; ui_category = "Petals"; ui_min = 0.0; ui_max = 1.0; > = 1.0;

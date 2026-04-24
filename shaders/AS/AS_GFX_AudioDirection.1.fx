@@ -41,8 +41,6 @@
 #include "AS_Utils.1.fxh"
 #include "AS_Palette.1.fxh"
 
-uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " "; ui_text = "\nVisual arc indicator that points toward audio direction.\nUseful for streaming overlays and audio visualization.\n\nAS StageFX | Audio Direction Visualization by Leon Aquitaine\n"; > = 0;
-
 // ============================================================================
 // CONSTANTS
 // ============================================================================
@@ -85,6 +83,9 @@ static const float INTENSITY_AUDIO_MULT_DEFAULT = 0.8;
 // ============================================================================
 
 // --- Arc Positioning ---
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nOriginal work by Leon Aquitaine\nLicence: Creative Commons Attribution 4.0 International\n\n";>;
+
 uniform float ArcRadius < ui_type = "slider"; ui_label = "Distance from Center"; ui_tooltip = "How far from the center of the screen the arc appears"; ui_min = ARC_RADIUS_MIN; ui_max = ARC_RADIUS_MAX; ui_step = 0.005; ui_category = "Arc Position"; > = ARC_RADIUS_DEFAULT;
 
 // --- Arc Style ---

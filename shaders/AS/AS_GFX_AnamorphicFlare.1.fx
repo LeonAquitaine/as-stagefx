@@ -35,8 +35,6 @@
 #include "AS_Utils.1.fxh"
 #include "AS_Palette.1.fxh"
 
-uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " "; ui_text = "\nHorizontal anamorphic streak flares from bright areas.\nSimulates the look of anamorphic cinema lenses.\n\nAS StageFX | Anamorphic Flare by Leon Aquitaine\n"; > = 0;
-
 // ============================================================================
 // TEXTURES & SAMPLERS
 // ============================================================================
@@ -73,6 +71,9 @@ static const float INTENSITY_DEFAULT = 0.6;
 // ============================================================================
 
 // --- Threshold ---
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nOriginal work by Leon Aquitaine\nLicence: Creative Commons Attribution 4.0 International\n\n";>;
+
 uniform float BrightnessThreshold < ui_type = "slider"; ui_label = "Brightness Threshold"; ui_tooltip = "Minimum brightness to generate a streak."; ui_min = THRESHOLD_MIN; ui_max = THRESHOLD_MAX; ui_step = 0.01; ui_category = "Threshold"; > = THRESHOLD_DEFAULT;
 uniform float ThresholdKnee < ui_type = "slider"; ui_label = "Threshold Knee"; ui_tooltip = "Soft transition width into the streak region."; ui_min = KNEE_MIN; ui_max = KNEE_MAX; ui_step = 0.01; ui_category = "Threshold"; > = KNEE_DEFAULT;
 

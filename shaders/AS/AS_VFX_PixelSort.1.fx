@@ -79,13 +79,14 @@ static const int MAX_SORT_SAMPLES = 64;
 // SHADER DESCRIPTOR
 // ============================================================================
 
-uniform int as_shader_descriptor < ui_type = "radio"; ui_label = " "; ui_text = "\nGlitch art pixel sorting — streaks pixels along rows or columns by brightness.\nCreates dramatic, stylized distortions for music videos and editorial photography.\n\nAS StageFX | Pixel Sort by Leon Aquitaine\n"; > = 0;
-
 // ============================================================================
 // UI DECLARATIONS
 // ============================================================================
 
 // -- Sort Parameters --
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nOriginal work by Leon Aquitaine\nLicence: Creative Commons Attribution 4.0 International\n\n";>;
+
 uniform int SortMode < ui_type = "combo"; ui_label = "Sort By"; ui_tooltip = "What property determines which pixels get sorted.\nLuminance: sort by brightness.\nHue: sort by color.\nSaturation: sort by color intensity."; ui_items = "Luminance\0Hue\0Saturation\0"; ui_category = "Sort Parameters"; > = SORT_MODE_LUMINANCE;
 uniform int SortDirection < ui_type = "combo"; ui_label = "Direction"; ui_tooltip = "Which direction pixels streak.\nHorizontal: left/right streaks.\nVertical: up/down streaks.\nDiagonal: angled streaks."; ui_items = "Horizontal\0Vertical\0Diagonal Down\0Diagonal Up\0"; ui_category = "Sort Parameters"; > = SORT_DIR_VERTICAL;
 uniform int SortOrder < ui_type = "combo"; ui_label = "Sort Order"; ui_tooltip = "Whether bright or dark pixels lead the streak.\nBright First: bright pixels streak outward.\nDark First: dark pixels streak outward."; ui_items = "Bright First\0Dark First\0"; ui_category = "Sort Parameters"; > = SORT_ORDER_BRIGHT_FIRST;

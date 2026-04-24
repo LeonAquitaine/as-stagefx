@@ -48,8 +48,6 @@
 #include "AS_Utils.1.fxh"
 #include "AS_Noise.1.fxh" // For AS_Fbm2D
 
-uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " "; ui_text = "\nStylized ink brush stroke band with textured edges and drop shadow.\nPerfect for title cards and cinematic framing.\n\nAS StageFX | Stylized Brush Stroke Band Effect by Leon Aquitaine\n"; > = 0;
-
 // ============================================================================
 // CONSTANTS
 // ============================================================================
@@ -108,6 +106,9 @@ static const float BRUSHSTROKE_SHADOW_DIST_DEFAULT = 0.0136f;
 // ============================================================================
 
 // --- Category: Tunable Constants ---
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nOriginal work by Leon Aquitaine\nLicence: Creative Commons Attribution 4.0 International\n\n";>;
+
 uniform float BandHeight < ui_type = "slider"; ui_label = "Stroke Height"; ui_tooltip = "Controls the nominal height/thickness of the brush stroke."; ui_min = BRUSHSTROKE_HEIGHT_MIN; ui_max = BRUSHSTROKE_HEIGHT_MAX; ui_step = 0.01f; ui_category = "Tunable Constants"; > = BRUSHSTROKE_HEIGHT_DEFAULT;
 
 // --- Category: Stroke Appearance ---

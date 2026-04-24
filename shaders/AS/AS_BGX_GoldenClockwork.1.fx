@@ -89,7 +89,7 @@ static float4 g_gc_currentEffectStyle; // Renamed from 'current_effect_state'
 
 // Effect-Specific Parameters
 
-uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Golden apollian' by mrange\nLink: https://www.shadertoy.com/view/WlcfRS\nLicence: CC0 1.0 (Public Domain)\n\n";>;
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Golden apollian' by mrange\nLink: https://www.shadertoy.com/view/WlcfRS\nLicence: CC0 1.0 Universal\n\n";>;
 
 uniform float FractalGlobalScale < ui_type = "slider"; ui_label = "Fractal Global Scale"; ui_min = 0.1; ui_max = 2.0; ui_category = "Fractal Details"; ui_tooltip = "Adjusts the overall scale of the Apollonian fractal structures."; > = 1.0;
 uniform float KaleidoscopeStrength < ui_type = "slider"; ui_label = "Kaleidoscope Strength"; ui_min = 0.0; ui_max = 1.0; ui_category = "Kaleidoscope"; ui_tooltip = "Controls smoothness and extent of the kaleidoscopic effect. Applied if an effect style with kaleidoscope is active."; > = 0.5;

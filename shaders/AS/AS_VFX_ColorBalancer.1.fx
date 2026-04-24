@@ -46,8 +46,6 @@
 #include "ReShade.fxh"
 #include "AS_Utils.1.fxh" // For AS_PI, blend helpers (AS_blendRGB/RGBA), etc.
 
-uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " "; ui_text = "\nProfessional color grading with harmony-based toning for shadows, midtones, and highlights.\nEssential for cinematic color correction.\n\nAS StageFX | Cinematic Color Balancer by Leon Aquitaine\n"; > = 0;
-
 // ============================================================================
 // CONSTANTS
 // ============================================================================
@@ -118,6 +116,9 @@ static const int ROLE_HARMONY_4 = 4; // Typically fourth harmony color (for Tetr
 // ============================================================================
 
 // --- Palette & Style ---
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nOriginal work by Leon Aquitaine\nLicence: Creative Commons Attribution 4.0 International\n\n";>;
+
 uniform int PresetSelector < ui_type = "combo"; ui_label = "Cinematic Preset"; ui_items = "Custom\0Amélie (Comp. Red/Green)\0Fight Club (Comp. Teal/Orange)\0Mamma Mia! (Tetradic Cyan-based)\0Moonlight (Triadic Blue-based)\0Drive (Analogous Teal-based)\0"; ui_tooltip = "Select a preconfigured cinematic color palette or choose Custom to set manually."; ui_category = AS_CAT_PALETTE; > = PRESET_CUSTOM;
 
 uniform int ColorScheme < ui_type = "combo"; ui_label = "Color Harmony Scheme"; ui_items = "Complementary\0Analogous (30° spread)\0Triadic (120° spread)\0Split-Complementary\0Tetradic (Square, 90° spread)\0* Manual Hue Shifts\0"; ui_tooltip = "Select the color harmony model. Manual mode uses direct hue shifts. For schemes, 'Harmony Color X' assignments map as follows:\nComplementary: C1=Base, C2=Complement (Base+180°)\nAnalogous: C1=Base, C2=Base-30°, C3=Base+30°\nTriadic: C1=Base, C2=Base+120°, C3=Base+240°\nSplit-Complementary: C1=Base, C2=Complement-30°, C3=Complement+30°\nTetradic (Square): C1=Base, C2=Base+90°, C3=Base+180°, C4=Base+270°"; ui_text = "Defines the color relationship rule. See tooltip for 'Harmony Color X' details per scheme."; ui_category = AS_CAT_PALETTE; > = SCHEME_COMPLEMENTARY;

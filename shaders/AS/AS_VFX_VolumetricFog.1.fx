@@ -47,8 +47,6 @@
 #include "AS_Utils.1.fxh"
 #include "AS_Noise.1.fxh" // For Noise3d variations and AS_hash12
 
-uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " "; ui_text = "\nAtmospheric fog with procedural noise, wind, and depth layering.\nAdds mystery and atmosphere to outdoor scenes.\n\nAS StageFX | Volumetric Fog Effect by Leon Aquitaine\n"; > = 0;
-
 // ============================================================================
 // TUNABLE CONSTANTS
 // ============================================================================
@@ -120,6 +118,9 @@ static const float WORLD_SCALE = 1000.0;
 // ============================================================================
 
 // 1. FOG APPEARANCE - Basic visual properties
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nOriginal work by Leon Aquitaine\nLicence: Creative Commons Attribution 4.0 International\n\n";>;
+
 uniform float3 Fog_Color < ui_type = "color"; ui_label = "Fog Color"; ui_category = "Fog Appearance"; ui_tooltip = "The main color of the fog effect."; > = float3(FOG_COLOR_R_DEFAULT, FOG_COLOR_G_DEFAULT, FOG_COLOR_B_DEFAULT);
 uniform int Fog_NoiseType < ui_type = "combo"; ui_label = "Pattern Type"; ui_items = "Wispy & Organic\0Flowing & Dynamic\0Custom Texture\0Soft & Smooth\0"; ui_category = "Fog Appearance"; ui_tooltip = "Choose the visual pattern of your fog: Wispy for natural looks, Flowing for dynamic motion, Custom Texture for unique patterns, or Soft for gentle fog."; > = NOISE_TYPE_TRIANGLE;
 uniform float Fog_Density < ui_type = "slider"; ui_label = "Density"; ui_min = FOG_DENSITY_MIN; ui_max = FOG_DENSITY_MAX; ui_step = 0.01; ui_category = "Fog Appearance"; ui_tooltip = "Controls how thick and opaque the fog appears."; > = FOG_DENSITY_DEFAULT;

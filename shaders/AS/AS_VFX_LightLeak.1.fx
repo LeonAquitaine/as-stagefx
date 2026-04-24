@@ -81,13 +81,14 @@ static const float BLOB_PHASE_OFFSET = 2.094395; // 2*PI/3 — evenly spaced pha
 // SHADER DESCRIPTOR
 // ============================================================================
 
-uniform int as_shader_descriptor < ui_type = "radio"; ui_label = " "; ui_text = "\nOrganic blobs of warm light drifting across the frame, like light leaking into a film camera.\nAdds nostalgic, analog warmth to any scene.\n\nAS StageFX | Light Leak by Leon Aquitaine\n"; > = 0;
-
 // ============================================================================
 // UI DECLARATIONS
 // ============================================================================
 
 // -- Leak Appearance --
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nOriginal work by Leon Aquitaine\nLicence: Creative Commons Attribution 4.0 International\n\n";>;
+
 uniform float LeakIntensity < ui_type = "slider"; ui_label = "Intensity"; ui_tooltip = "Overall brightness of the light leaks.\nHigher values create more prominent, visible leaks."; ui_min = LEAK_INTENSITY_MIN; ui_max = LEAK_INTENSITY_MAX; ui_step = LEAK_INTENSITY_STEP; ui_category = "Leak Appearance"; > = LEAK_INTENSITY_DEFAULT;
 uniform float LeakSize < ui_type = "slider"; ui_label = "Size"; ui_tooltip = "Scale of the light leak blobs.\nLarger values create broad, sweeping leaks. Smaller values create tighter spots."; ui_min = LEAK_SIZE_MIN; ui_max = LEAK_SIZE_MAX; ui_step = LEAK_SIZE_STEP; ui_category = "Leak Appearance"; > = LEAK_SIZE_DEFAULT;
 uniform float LeakSoftness < ui_type = "slider"; ui_label = "Softness"; ui_tooltip = "How soft and diffused the leak edges are.\nHigher = dreamy, hazy blobs. Lower = more defined shapes."; ui_min = LEAK_SOFTNESS_MIN; ui_max = LEAK_SOFTNESS_MAX; ui_step = LEAK_SOFTNESS_STEP; ui_category = "Leak Appearance"; > = LEAK_SOFTNESS_DEFAULT;

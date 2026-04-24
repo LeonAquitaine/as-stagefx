@@ -53,8 +53,6 @@
 #include "ReShade.fxh"
 #include "AS_Utils.1.fxh"
 
-uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " "; ui_text = "\nLens distortion with tangential blur and chromatic aberration presets.\nSimulates vintage and cinematic lens character.\n\nAS StageFX | Radial Lens Distortion by Leon Aquitaine\n"; > = 0;
-
 // ============================================================================
 // TUNABLE CONSTANTS
 // ============================================================================
@@ -108,6 +106,8 @@ static const float ANAMORPHIC_HORIZONTAL_Y = 0.0f;
 // ============================================================================
 // UI UNIFORMS
 // ============================================================================
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nOriginal work by Leon Aquitaine\nLicence: Creative Commons Attribution 4.0 International\n\n";>;
 
 uniform int LensModelPreset < ui_type = "combo"; ui_label = "Lens Model";
     ui_items =

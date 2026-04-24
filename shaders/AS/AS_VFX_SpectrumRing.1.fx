@@ -37,8 +37,6 @@
 #include "AS_Utils.1.fxh"
 #include "AS_Palette.1.fxh"
 
-uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " "; ui_text = "\nCircular audio frequency visualizer ring with color gradient.\nIdeal for music streaming overlays.\n\nAS StageFX | Audio-Reactive Spectrum Ring by Leon Aquitaine\n"; > = 0;
-
 // --- Tunable Constants ---
 static const int REPETITIONS_MIN = 1;
 static const int REPETITIONS_MAX = 8;
@@ -64,6 +62,9 @@ static const float BLENDSTRENGTH_DEFAULT = 1.0;
 
 // --- Palette & Style ---
 // Use the AS_Palettes palette selection UI macro
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nOriginal work by Leon Aquitaine\nLicence: Creative Commons Attribution 4.0 International\n\n";>;
+
 AS_PALETTE_SELECTION_UI(ColorPattern, "Color Pattern", AS_PALETTE_RAINBOW, AS_CAT_PALETTE)
 AS_DECLARE_CUSTOM_PALETTE(SpectrumRing_, AS_CAT_PALETTE)
 

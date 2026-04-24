@@ -37,8 +37,6 @@
 #include "AS_Utils.1.fxh"
 #include "AS_Palette.1.fxh"
 
-uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " "; ui_text = "\nAudio-reactive VU meter with bars, lines, and dots display modes.\nClassic audio visualizer for music streams.\n\nAS StageFX | Audio-Reactive VU Meter by Leon Aquitaine\n"; > = 0;
-
 // --- Tunable Constants ---
 static const float ZOOM_MIN = 0.2;
 static const float ZOOM_MAX = 2.0;
@@ -65,6 +63,9 @@ static const float BLENDAMOUNT_MAX = 1.0;
 static const float BLENDAMOUNT_DEFAULT = 1.0;
 
 // Use standard rotation controls from AS_Utils
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nOriginal work by Leon Aquitaine\nLicence: Creative Commons Attribution 4.0 International\n\n";>;
+
 AS_ROTATION_UI(SnapRotate, FineRotate)
 
 // --- Appearance ---

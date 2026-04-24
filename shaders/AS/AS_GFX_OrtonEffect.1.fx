@@ -79,13 +79,14 @@ sampler OrtonEffect_SoftLayerSampler { Texture = OrtonEffect_SoftLayer; };
 // SHADER DESCRIPTOR
 // ============================================================================
 
-uniform int as_shader_descriptor < ui_type = "radio"; ui_label = " "; ui_text = "\nDreamy glow that combines sharp detail with soft luminous overlay.\nClassic portrait photography technique for ethereal mood.\n\nAS StageFX | Orton Effect by Leon Aquitaine\n"; > = 0;
-
 // ============================================================================
 // UI DECLARATIONS
 // ============================================================================
 
 // -- Orton Appearance --
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nOriginal work by Leon Aquitaine\nLicence: Creative Commons Attribution 4.0 International\n\n";>;
+
 uniform float OrtonStrength < ui_type = "slider"; ui_label = "Effect Strength"; ui_tooltip = "How much of the Orton glow is mixed into the image.\n0.0 = no effect, 1.0 = full dreamy glow."; ui_min = ORTON_STRENGTH_MIN; ui_max = ORTON_STRENGTH_MAX; ui_step = ORTON_STRENGTH_STEP; ui_category = "Orton Appearance"; > = ORTON_STRENGTH_DEFAULT;
 uniform float GlowBoost < ui_type = "slider"; ui_label = "Glow Brightness"; ui_tooltip = "How much the soft layer is brightened before blending.\nHigher = more luminous, overexposed glow. 1.0 = no boost."; ui_min = GLOW_BOOST_MIN; ui_max = GLOW_BOOST_MAX; ui_step = GLOW_BOOST_STEP; ui_category = "Orton Appearance"; > = GLOW_BOOST_DEFAULT;
 uniform float BlurRadius < ui_type = "slider"; ui_label = "Blur Radius"; ui_tooltip = "Size of the soft glow. Higher = dreamier, more diffused.\nLower = subtle glow with more visible detail."; ui_min = BLUR_RADIUS_MIN; ui_max = BLUR_RADIUS_MAX; ui_step = BLUR_RADIUS_STEP; ui_category = "Orton Appearance"; > = BLUR_RADIUS_DEFAULT;

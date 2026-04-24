@@ -57,11 +57,7 @@ static const float AUDIO_SENSIBILITY_MAX     = 8.0;
 static const float AUDIO_SENSIBILITY_STEP    = 0.05;
 static const float AUDIO_SENSIBILITY_DEFAULT = 2.5;
 
-uniform int as_shader_descriptor <
-    ui_type = "radio";
-    ui_label = " ";
-    ui_text = "\nBased on 'Waveform [315]' by Xor\nLink: https://www.shadertoy.com/view/Wcc3z2\nLicence: CC BY-NC-SA 3.0 Unported\n\n";
->;
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nBased on 'Waveform [315]' by Xor (XorDev)\nLink: https://www.shadertoy.com/view/Wcc3z2\nLicence: CC BY-NC-SA 3.0 Unported\n\n";>;
 
 uniform int RaymarchSteps <
     ui_type = "slider";

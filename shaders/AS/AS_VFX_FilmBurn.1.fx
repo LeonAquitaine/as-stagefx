@@ -96,9 +96,10 @@ static const int NUM_LAYERS = 3;
 // UNIFORMS
 // ============================================================================
 
-uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " "; ui_text = "\nAnimated warm overexposure spreading from frame edges.\nSimulates film overheating with drifting burn effects.\n\nAS StageFX | Film Burn by Leon Aquitaine\n"; > = 0;
-
 // --- Effect Controls ---
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nOriginal work by Leon Aquitaine\nLicence: Creative Commons Attribution 4.0 International\n\n";>;
+
 uniform float BurnIntensity < ui_type = "slider"; ui_label = "Burn Intensity"; ui_tooltip = "Overall brightness of the film burn effect."; ui_min = INTENSITY_MIN; ui_max = INTENSITY_MAX; ui_step = 0.01; ui_category = "Film Burn"; > = INTENSITY_DEFAULT;
 uniform float BurnSpread < ui_type = "slider"; ui_label = "Burn Spread"; ui_tooltip = "How far the burns reach from the frame edges toward the center."; ui_min = SPREAD_MIN; ui_max = SPREAD_MAX; ui_step = 0.01; ui_category = "Film Burn"; > = SPREAD_DEFAULT;
 uniform float Overexposure < ui_type = "slider"; ui_label = "Overexposure"; ui_tooltip = "How much the burn washes out to white at peak intensity."; ui_min = OVEREXPOSURE_MIN; ui_max = OVEREXPOSURE_MAX; ui_step = 0.01; ui_category = "Film Burn"; > = OVEREXPOSURE_DEFAULT;

@@ -82,9 +82,10 @@ static const int DEBUG_DIRECTION_MAP = 2;
 // UNIFORMS
 // ============================================================================
 
-uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " "; ui_text = "\nRadial zoom blur from a configurable center point.\nSimulates motion, speed, and impact with beat-reactive intensity.\n\nAS StageFX | Speed Lines by Leon Aquitaine\n"; > = 0;
-
 // --- Effect Controls ---
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nOriginal work by Leon Aquitaine\nLicence: Creative Commons Attribution 4.0 International\n\n";>;
+
 uniform float BlurStrength < ui_type = "slider"; ui_label = "Blur Strength"; ui_tooltip = "Controls the intensity of the radial zoom blur."; ui_min = BLUR_STRENGTH_MIN; ui_max = BLUR_STRENGTH_MAX; ui_step = 0.01; ui_category = "Speed Lines"; > = BLUR_STRENGTH_DEFAULT;
 uniform float2 CenterPosition < ui_type = "drag"; ui_label = "Center Position"; ui_tooltip = "Screen position where the zoom emanates from. (0,0) = top-left, (1,1) = bottom-right."; ui_min = 0.0; ui_max = 1.0; ui_speed = 0.01; ui_category = "Speed Lines"; > = float2(0.5, 0.5);
 uniform float InnerRadius < ui_type = "slider"; ui_label = "Inner Radius"; ui_tooltip = "Sharp zone around center with no blur applied."; ui_min = INNER_RADIUS_MIN; ui_max = INNER_RADIUS_MAX; ui_step = 0.01; ui_category = "Speed Lines"; > = INNER_RADIUS_DEFAULT;

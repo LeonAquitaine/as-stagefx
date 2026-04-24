@@ -38,8 +38,6 @@
 #include "AS_Noise.1.fxh"
 #include "AS_Palette.1.fxh"
 
-uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " "; ui_text = "\nAudio-reactive laser beams with smoke and swirling vortices.\nPerfect for concert stages and DJ booth scenes.\n\nAS StageFX | Audio-Reactive Laser Show by Leon Aquitaine\n"; > = 0;
-
 // ============================================================================
 // TUNABLE CONSTANTS
 // ============================================================================
@@ -135,6 +133,9 @@ static const float COLOR_CYCLE_SPEED_DEFAULT = 0.0;
 // PALETTE & STYLE
 // ============================================================================
 // Using standardized AS_Utils palette selection
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nOriginal work by Leon Aquitaine\nLicence: Creative Commons Attribution 4.0 International\n\n";>;
+
 AS_PALETTE_SELECTION_UI(PalettePreset, "Palette", AS_PALETTE_NEON, AS_CAT_PALETTE)
 AS_DECLARE_CUSTOM_PALETTE(LaserShow_, AS_CAT_PALETTE)
 

@@ -91,9 +91,10 @@ static const int DEBUG_CONTRAST = 2;
 // UNIFORMS
 // ============================================================================
 
-uniform int as_shader_descriptor <ui_type = "radio"; ui_label = " "; ui_text = "\nDesaturated high-contrast look with metallic sheen — the bleach bypass film process.\nGritty, punchy cinematography for war, noir, and dramatic scenes.\n\nAS StageFX | Bleach Bypass by Leon Aquitaine\n"; > = 0;
-
 // --- Effect Controls ---
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nOriginal work by Leon Aquitaine\nLicence: Creative Commons Attribution 4.0 International\n\n";>;
+
 uniform float EffectStrength < ui_type = "slider"; ui_label = "Effect Strength"; ui_tooltip = "Overall blend between original scene and bleach bypass result."; ui_min = STRENGTH_MIN; ui_max = STRENGTH_MAX; ui_step = 0.01; ui_category = "Bleach Bypass"; > = STRENGTH_DEFAULT;
 uniform float DesatAmount < ui_type = "slider"; ui_label = "Desaturation"; ui_tooltip = "How much color is removed.\n0.7 = most color gone with some undertones remaining."; ui_min = DESAT_MIN; ui_max = DESAT_MAX; ui_step = 0.01; ui_category = "Bleach Bypass"; > = DESAT_DEFAULT;
 uniform float ContrastBoost < ui_type = "slider"; ui_label = "Contrast Boost"; ui_tooltip = "How much contrast is added to the desaturated image.\nHigher values create harsher, punchier contrast."; ui_min = CONTRAST_MIN; ui_max = CONTRAST_MAX; ui_step = 0.01; ui_category = "Bleach Bypass"; > = CONTRAST_DEFAULT;

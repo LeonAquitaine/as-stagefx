@@ -81,13 +81,15 @@ static const int BLUR_STEPS_MAX = 50;
 // ============================================================================
 // SHADER DESCRIPTOR
 // ============================================================================
-uniform int as_shader_descriptor < ui_type = "radio"; ui_label = " "; ui_text = "\nFilm halation — warm red/orange bloom around bright areas.\nCharacteristic of analog film where light reflects off the backing plate.\n\nAS StageFX | Halation by Leon Aquitaine\n"; > = 0;
 
 // ============================================================================
 // UI DECLARATIONS
 // ============================================================================
 
 // -- Film Stock --
+
+uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nOriginal work by Leon Aquitaine\nLicence: Creative Commons Attribution 4.0 International\n\n";>;
+
 uniform int FilmStock < ui_type = "combo"; ui_label = "Film Stock"; ui_tooltip = "Select a film stock preset or Custom for manual control.\nEach stock has its own halation color and spread."; ui_items = "Custom\0Kodak Vision\0Kodak Gold\0CineStill 800T\0"; ui_category = "Film Stock"; > = FILM_KODAK_VISION;
 
 // -- Halation --
