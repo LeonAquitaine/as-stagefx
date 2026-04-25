@@ -101,7 +101,22 @@ function Get-ParsedShaderContentDependencies($shaderPath, $availableDependencies
 }
 
 function Get-AggregatedPackageDependencies($shaders, $allShadersCollection, $currentShadersRoot, $currentAvailableDependencies) {
+    # Seed the package's fxh set with the canonical core library declared in
+    # package-config.json's `essentials.fxh`. The dynamicPackages config says
+    # backgrounds/visualeffects/complete all `inherit: "essentials"`, so every
+    # dynamic package must ship the full core regardless of which individual
+    # .fx files are bundled. Walking #include directives from each .fx file is
+    # not enough on its own — for example AS_Palette.1.fxh #includes
+    # AS_Palette_Styles.1.fxh, but a one-level walk only sees AS_Palette.
     $packageFxhDependencies = @()
+    if ($config.essentials -and $config.essentials.fxh) {
+        foreach ($coreFxh in $config.essentials.fxh) {
+            if ($currentAvailableDependencies.FxhFiles -contains $coreFxh) {
+                $packageFxhDependencies += $coreFxh
+            }
+        }
+    }
+
     $packageTextureDependencies = @()
     foreach ($shaderName in $shaders) {
         $shaderFile = $allShadersCollection | Where-Object { $_.Name -eq $shaderName } | Select-Object -First 1
