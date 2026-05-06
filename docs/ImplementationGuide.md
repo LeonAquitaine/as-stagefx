@@ -408,6 +408,32 @@ centered.x *= aspectRatio;
 | (0, 0) | Exact screen center |
 | (+1, +1) | Bottom-right of central square |
 
+### Length Units
+
+Sizes — border thickness, blur radius, shadow offset, etc. — are authored as **percent of the central square** (equivalent to CSS *vmin %*). A value of 100 equals the screen's shorter dimension, so artwork scales consistently across resolutions and aspect ratios.
+
+The same central-square reference governs both position (±1 = edge) and length (100 = full extent), so artists work in one mental model.
+
+```hlsl
+// CORRECT: convert a UI percent slider value to the target unit
+float  borderPx  = AS_PCT_TO_PX(BorderThickness);   // pixel-space math
+float2 offsetUV  = AS_PCT_TO_UV(ShadowOffset);      // UV-space math
+float  yPctAsUV  = AS_PCT_TO_UV_Y(VerticalSpacing); // single-axis variant
+
+// WRONG: hard-coding pixels (resolution-dependent)
+float borderPx = 8.0;
+
+// LEGACY (do not use): 1080p height-only anchoring
+float resolutionScale = (float)BUFFER_HEIGHT / 1080.0;
+```
+
+A handful of older shaders still use the legacy `BUFFER_HEIGHT / AS_RESOLUTION_BASE_HEIGHT` 1080p anchor (`AS_BGX_PastRacer`, `AS_VFX_WaterSurface`); these are flagged for migration. **New shaders must use `AS_PCT_TO_*`.**
+
+| UI Length Slider | Meaning |
+|------------------|---------|
+| Range 0..20 step 0.1 (typical: borders, shadows) | 1 unit = 1% of central square — fine adjustments |
+| Range 0..100 (full extent) | 100 = full vertical span at standard aspect |
+
 ---
 
 ## Compositing Pattern

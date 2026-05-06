@@ -265,10 +265,25 @@ static const float AS_UI_POSITION_SCALE = 0.5f;  // Position scaling factor for 
 // Common coordinate system values
 static const float AS_SCREEN_CENTER_X = 0.5f;    // Screen center X coordinate
 static const float AS_SCREEN_CENTER_Y = 0.5f;    // Screen center Y coordinate
-// AS_RESOLUTION_SCALE is defined here, but it's better to calculate it dynamically if needed,
-// as BUFFER_HEIGHT might not be known at compile time for all contexts.
-// If used, ensure it's in a context where BUFFER_HEIGHT is defined.
-// static const float AS_RESOLUTION_SCALE = 1080.0f / BUFFER_HEIGHT; // Resolution scaling factor
+
+// --- Resolution-Independent Length Units ---------------------------------
+// Sizes (border thickness, blur radius, shadow offset, etc.) should be authored
+// as percent-of-central-square — equivalent to CSS vmin %. A value of 100
+// equals the screen's shorter dimension regardless of resolution or aspect
+// ratio, so artwork keeps the same proportions on 1080p, 4K, and ultrawides.
+//
+// The same central-square reference governs UI positions (±1 = central-square
+// edge, see AS_POSITION_SCALE_UI / AS_transformUVCentered), so position and
+// length use one mental model.
+//
+// Usage:
+//   float borderPx  = AS_PCT_TO_PX(BorderThickness);   // pixel-space math
+//   float2 offsetUV = AS_PCT_TO_UV(ShadowOffset);      // UV-space math
+static const float AS_REF_DIM = min((float)BUFFER_WIDTH, (float)BUFFER_HEIGHT);
+#define AS_PCT_TO_PX(p)    ((p) * 0.01 * AS_REF_DIM)
+#define AS_PCT_TO_UV_X(p)  (AS_PCT_TO_PX(p) * BUFFER_RCP_WIDTH)
+#define AS_PCT_TO_UV_Y(p)  (AS_PCT_TO_PX(p) * BUFFER_RCP_HEIGHT)
+#define AS_PCT_TO_UV(p)    float2(AS_PCT_TO_UV_X(p), AS_PCT_TO_UV_Y(p))
 
 // Default number of frequency bands (compile-time ceiling — matches
 // Listeningway's DEFAULT_NUM_BANDS; the runtime-live count comes from
