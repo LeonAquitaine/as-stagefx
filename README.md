@@ -40,7 +40,7 @@ AS-StageFX provides a collection of performant, customizable, and audio-reactive
 
 ## Available Shaders
 
-AS-StageFX includes **86 shaders** across four categories: **29 Background (BGX)**, **23 Graphic (GFX)**, **3 Lighting (LFX)**, and **31 Visual (VFX)** effects.
+AS-StageFX includes **88 shaders** across four categories: **29 Background (BGX)**, **23 Graphic (GFX)**, **3 Lighting (LFX)**, and **33 Visual (VFX)** effects.
 
 **Detailed descriptions and examples: [Shader Gallery](docs/gallery.md).**
 
@@ -118,6 +118,8 @@ AS-StageFX includes **86 shaders** across four categories: **29 Background (BGX)
 
 | Shader                 | Description                                                                                                | License   |
 | ---------------------- | ---------------------------------------------------------------------------------------------------------- | --------- |
+| **** |  |  |
+| **** |  |  |
 | **Boom Sticker** | Displays a texture overlay ('sticker') with controls for placement, scale, rotation, and audio reactivity. | CC BY 4.0 |
 | **Circular Spectrum** | Displays a circular audio spectrum analyzer with customizable bands, colors, and animation. | CC BY-NC-SA 3.0 |
 | **Clair Obscur** | Applies dramatic chiaroscuro lighting with strong contrast and stylized shadows. | CC BY 4.0 |

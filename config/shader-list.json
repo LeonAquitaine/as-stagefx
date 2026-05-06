@@ -946,8 +946,26 @@
       "performance": "Heavy",
       "filename": "AS_BGX_Waveform.1.fx",
       "author": "Leon Aquitaine"
+    },
+    {
+      "author": "Leon Aquitaine",
+      "performance": "Light",
+      "filename": "AS_VFX_Snapshot.1.fx",
+      "name": "AS_VFX_Snapshot.1",
+      "credits": {
+        "license": "Creative Commons Attribution 4.0 International"
+      }
+    },
+    {
+      "author": "Leon Aquitaine",
+      "performance": "Light",
+      "filename": "AS_VFX_SnapshotFrame.1.fx",
+      "name": "AS_VFX_SnapshotFrame.1",
+      "credits": {
+        "license": "Creative Commons Attribution 4.0 International"
+      }
     }
   ],
-  "count": 86,
-  "generated": "2026-04-25"
+  "count": 88,
+  "generated": "2026-05-06"
 }

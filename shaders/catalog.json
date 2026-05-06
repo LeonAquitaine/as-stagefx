@@ -863,6 +863,26 @@
     }
   },
   {
+    "type": "VFX",
+    "filename": "AS_VFX_SnapshotFrame.1.fx",
+    "name": "",
+    "credits": {
+      "kind": "original"
+    },
+    "licence": "Creative Commons Attribution 4.0 International",
+    "licenseCode": "CC BY 4.0"
+  },
+  {
+    "type": "VFX",
+    "filename": "AS_VFX_Snapshot.1.fx",
+    "name": "",
+    "credits": {
+      "kind": "original"
+    },
+    "licence": "Creative Commons Attribution 4.0 International",
+    "licenseCode": "CC BY 4.0"
+  },
+  {
     "name": "Boom Sticker",
     "filename": "AS_VFX_BoomSticker.1.fx",
     "type": "VFX",

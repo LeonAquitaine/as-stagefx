@@ -1,6 +1,6 @@
 # AS-StageFX Shader Gallery
 
-This gallery provides detailed descriptions and visual examples of the complete AS-StageFX collection, which includes **86 shaders** across four categories: **29 Background (BGX)**, **23 Graphic (GFX)**, **3 Lighting (LFX)**, and **31 Visual (VFX)** effects.
+This gallery provides detailed descriptions and visual examples of the complete AS-StageFX collection, which includes **88 shaders** across four categories: **29 Background (BGX)**, **23 Graphic (GFX)**, **3 Lighting (LFX)**, and **33 Visual (VFX)** effects.
 
 For installation instructions and general information, please refer to the [main README](../README.md).
 
@@ -865,6 +865,36 @@ Simulates moving stage spotlights with adjustable beam width, color, intensity, 
 ## Visual Effects (VFX)
 
 <table>
+<tr>
+<td width="50%">
+<h3> </h3>
+<h5><code>AS_VFX_Snapshot.1.fx</code></h5>
+
+<br><br>
+
+
+
+
+</td>
+<td width="50%"><div style="text-align:center">
+<img src="" alt=" Effect" style="max-width:100%;">
+</div></td>
+</tr>
+<tr>
+<td width="50%">
+<h3> </h3>
+<h5><code>AS_VFX_SnapshotFrame.1.fx</code></h5>
+
+<br><br>
+
+
+
+
+</td>
+<td width="50%"><div style="text-align:center">
+<img src="" alt=" Effect" style="max-width:100%;">
+</div></td>
+</tr>
 <tr>
 <td width="50%">
 <h3>Boom Sticker </h3>
