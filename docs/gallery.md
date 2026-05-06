@@ -867,36 +867,6 @@ Simulates moving stage spotlights with adjustable beam width, color, intensity, 
 <table>
 <tr>
 <td width="50%">
-<h3> </h3>
-<h5><code>AS_VFX_Snapshot.1.fx</code></h5>
-
-<br><br>
-
-
-
-
-</td>
-<td width="50%"><div style="text-align:center">
-<img src="" alt=" Effect" style="max-width:100%;">
-</div></td>
-</tr>
-<tr>
-<td width="50%">
-<h3> </h3>
-<h5><code>AS_VFX_SnapshotFrame.1.fx</code></h5>
-
-<br><br>
-
-
-
-
-</td>
-<td width="50%"><div style="text-align:center">
-<img src="" alt=" Effect" style="max-width:100%;">
-</div></td>
-</tr>
-<tr>
-<td width="50%">
 <h3>Boom Sticker </h3>
 <h5><code>AS_VFX_BoomSticker.1.fx</code></h5>
 Displays a texture overlay ('sticker') with controls for placement, scale, rotation, and audio reactivity. Features customizable depth masking and support for custom textures. Ideal for adding dynamic, music-responsive overlays.
@@ -1208,6 +1178,36 @@ Draws animated rings or circular overlays on the screen. Features controls for r
 </td>
 <td width="50%"><div style="text-align:center">
 <img src="https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-screenring.gif" alt="Screen Ring Effect" style="max-width:100%;">
+</div></td>
+</tr>
+<tr>
+<td width="50%">
+<h3>Snapshot </h3>
+<h5><code>AS_VFX_Snapshot.1.fx</code></h5>
+Captures the current backbuffer to a persistent texture readable by AS_VFX_SnapshotFrame and any other shader that #includes AS_Snapshot.1.fxh. Two modes: Current (the snapshot mirrors the live backbuffer every frame) and Shutter (capture only on the frame the bound key is pressed; otherwise the prior capture is held). Place earlier in the technique list than any consumer to avoid feedback in Current mode.
+<br><br>
+
+
+
+
+</td>
+<td width="50%"><div style="text-align:center">
+<img src="" alt="Snapshot Effect" style="max-width:100%;">
+</div></td>
+</tr>
+<tr>
+<td width="50%">
+<h3>Snapshot Frame </h3>
+<h5><code>AS_VFX_SnapshotFrame.1.fx</code></h5>
+Reads the persistent texture written by AS_VFX_Snapshot and composites a cropped, 3D-transformed view of it onto the current scene. Features ten crop format presets plus custom aspect, bias and zoom for in-picture framing, full 3-axis rotation with perspective FOV, a Polaroid-style border with corner radius and edge feather, a rotation-aware drop shadow, and one of seven shot filters (monochrome, sepia, cool/warm tone, gaussian blur, pixelate, vignette). All length units are vmin % so the composition is consistent across resolutions.
+<br><br>
+
+
+
+
+</td>
+<td width="50%"><div style="text-align:center">
+<img src="" alt="Snapshot Frame Effect" style="max-width:100%;">
 </div></td>
 </tr>
 <tr>

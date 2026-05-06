@@ -118,8 +118,6 @@ AS-StageFX includes **88 shaders** across four categories: **29 Background (BGX)
 
 | Shader                 | Description                                                                                                | License   |
 | ---------------------- | ---------------------------------------------------------------------------------------------------------- | --------- |
-| **** |  |  |
-| **** |  |  |
 | **Boom Sticker** | Displays a texture overlay ('sticker') with controls for placement, scale, rotation, and audio reactivity. | CC BY 4.0 |
 | **Circular Spectrum** | Displays a circular audio spectrum analyzer with customizable bands, colors, and animation. | CC BY-NC-SA 3.0 |
 | **Clair Obscur** | Applies dramatic chiaroscuro lighting with strong contrast and stylized shadows. | CC BY 4.0 |
@@ -141,6 +139,8 @@ AS-StageFX includes **88 shaders** across four categories: **29 Background (BGX)
 | **Radiant Fire** | Simulates radiant, glowing fire with animated flames and color gradients. | CC BY-NC-SA 3.0 |
 | **Rainy Window** | Simulates raindrops and streaks on a window with refraction and blur effects. | CC BY-NC-SA 3.0 |
 | **Screen Ring** | Draws animated rings or circular overlays with customizable size, color, and animation. | CC BY 4.0 |
+| **Snapshot** | Captures the current backbuffer to a persistent texture readable by AS_VFX_SnapshotFrame. | CC BY 4.0 |
+| **Snapshot Frame** | Composites a cropped, 3D-transformed copy of the snapshot onto the scene — for printed-photo, viewfinder, and phone-screen looks. | CC BY 4.0 |
 | **Sparkle Bloom** | Adds sparkling bloom highlights with animated glints and color controls. | CC BY 4.0 |
 | **Spectrum Ring** | Visualizes audio spectrum as a ring with customizable bands, colors, and animation. | CC BY 4.0 |
 | **Speed Lines** | Radial zoom blur from a configurable center point simulating motion and speed. | CC BY 4.0 |

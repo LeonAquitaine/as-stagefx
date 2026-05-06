@@ -56,6 +56,7 @@ static const int FILTER_VIGNETTE  = 7;
 // ============================================================================
 
 // --- Crop ---
+
 uniform int as_shader_descriptor  <ui_type = "radio"; ui_label = " "; ui_text = "\nOriginal work by Leon Aquitaine\nLicence: Creative Commons Attribution 4.0 International\n\n";>;
 
 uniform int CropFormat <

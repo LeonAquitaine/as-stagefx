@@ -1,8 +1,7 @@
 {
-  "version": "1.11.2",
-  "buildDate": "2026-05-06T15:20:24Z",
   "packages": [
     {
+      "name": "AS_StageFX",
       "shaders": [
         "AS_BGX_BlueCorona.1.fx",
         "AS_BGX_Constellation.1.fx",
@@ -59,8 +58,6 @@
         "AS_LFX_CandleFlame.1.fx",
         "AS_LFX_LaserShow.1.fx",
         "AS_LFX_StageSpotlights.1.fx",
-        "AS_VFX_SnapshotFrame.1.fx",
-        "AS_VFX_Snapshot.1.fx",
         "AS_VFX_BoomSticker.1.fx",
         "AS_VFX_CircularSpectrum.1.fx",
         "AS_VFX_ClairObscur.1.fx",
@@ -82,6 +79,8 @@
         "AS_VFX_RadiantFire.1.fx",
         "AS_VFX_RainyWindow.1.fx",
         "AS_VFX_ScreenRing.1.fx",
+        "AS_VFX_Snapshot.1.fx",
+        "AS_VFX_SnapshotFrame.1.fx",
         "AS_VFX_SparkleBloom.1.fx",
         "AS_VFX_SpectrumRing.1.fx",
         "AS_VFX_SpeedLines.1.fx",
@@ -93,11 +92,6 @@
         "AS_VFX_WarpDistort.1.fx",
         "AS_VFX_WaterSurface.1.fx"
       ],
-      "description": "The complete collection of all AS StageFX shaders and utilities",
-      "textureDependencyCount": 3,
-      "version": "1.11.2",
-      "name": "AS_StageFX",
-      "shaderCount": 88,
       "dependencies": {
         "textures": [
           "perlin512x8CNoise.png",
@@ -113,9 +107,14 @@
           "AS_Snapshot.1.fxh"
         ]
       },
+      "textureDependencyCount": 3,
+      "description": "The complete collection of all AS StageFX shaders and utilities",
+      "shaderCount": 88,
+      "version": "1.11.2",
       "fxhDependencyCount": 6
     },
     {
+      "name": "AS_StageFX_Backgrounds",
       "shaders": [
         "AS_BGX_BlueCorona.1.fx",
         "AS_BGX_Constellation.1.fx",
@@ -147,11 +146,6 @@
         "AS_BGX_WavySquiggles.1.fx",
         "AS_BGX_ZippyZaps.1.fx"
       ],
-      "description": "Complete collection of background effects (Requires Essentials)",
-      "textureDependencyCount": 1,
-      "version": "1.11.2",
-      "name": "AS_StageFX_Backgrounds",
-      "shaderCount": 29,
       "dependencies": {
         "textures": [
           "perlin512x8CNoise.png"
@@ -164,9 +158,14 @@
           "AS_Palette_Styles.1.fxh"
         ]
       },
+      "textureDependencyCount": 1,
+      "description": "Complete collection of background effects (Requires Essentials)",
+      "shaderCount": 29,
+      "version": "1.11.2",
       "fxhDependencyCount": 5
     },
     {
+      "name": "AS_StageFX_Essentials",
       "shaders": [
         "AS_BGX_TimeCrystal.1.fx",
         "AS_BGX_StainedLights.1.fx",
@@ -181,11 +180,6 @@
         "AS_VFX_VolumetricFog.1.fx",
         "AS_VFX_StencilMask.1.fx"
       ],
-      "description": "Core library files and essential visual effects for general use",
-      "textureDependencyCount": 1,
-      "version": "1.11.2",
-      "name": "AS_StageFX_Essentials",
-      "shaderCount": 12,
       "dependencies": {
         "textures": [
           "perlin512x8CNoise.png"
@@ -198,9 +192,14 @@
           "AS_Palette_Styles.1.fxh"
         ]
       },
+      "textureDependencyCount": 1,
+      "description": "Core library files and essential visual effects for general use",
+      "shaderCount": 12,
+      "version": "1.11.2",
       "fxhDependencyCount": 5
     },
     {
+      "name": "AS_StageFX_VisualEffects",
       "shaders": [
         "AS_GFX_AnamorphicFlare.1.fx",
         "AS_GFX_AspectRatio.1.fx",
@@ -228,8 +227,6 @@
         "AS_LFX_CandleFlame.1.fx",
         "AS_LFX_LaserShow.1.fx",
         "AS_LFX_StageSpotlights.1.fx",
-        "AS_VFX_SnapshotFrame.1.fx",
-        "AS_VFX_Snapshot.1.fx",
         "AS_VFX_BoomSticker.1.fx",
         "AS_VFX_CircularSpectrum.1.fx",
         "AS_VFX_ClairObscur.1.fx",
@@ -251,6 +248,8 @@
         "AS_VFX_RadiantFire.1.fx",
         "AS_VFX_RainyWindow.1.fx",
         "AS_VFX_ScreenRing.1.fx",
+        "AS_VFX_Snapshot.1.fx",
+        "AS_VFX_SnapshotFrame.1.fx",
         "AS_VFX_SparkleBloom.1.fx",
         "AS_VFX_SpectrumRing.1.fx",
         "AS_VFX_SpeedLines.1.fx",
@@ -262,11 +261,6 @@
         "AS_VFX_WarpDistort.1.fx",
         "AS_VFX_WaterSurface.1.fx"
       ],
-      "description": "Complete collection of visual effects (Requires Essentials)",
-      "textureDependencyCount": 3,
-      "version": "1.11.2",
-      "name": "AS_StageFX_VisualEffects",
-      "shaderCount": 59,
       "dependencies": {
         "textures": [
           "perlin512x8CNoise.png",
@@ -282,7 +276,13 @@
           "AS_Snapshot.1.fxh"
         ]
       },
+      "textureDependencyCount": 3,
+      "description": "Complete collection of visual effects (Requires Essentials)",
+      "shaderCount": 59,
+      "version": "1.11.2",
       "fxhDependencyCount": 6
     }
-  ]
+  ],
+  "version": "1.11.2",
+  "buildDate": "2026-05-06T15:24:18Z"
 }

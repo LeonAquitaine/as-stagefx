@@ -863,26 +863,6 @@
     }
   },
   {
-    "type": "VFX",
-    "filename": "AS_VFX_SnapshotFrame.1.fx",
-    "name": "",
-    "credits": {
-      "kind": "original"
-    },
-    "licence": "Creative Commons Attribution 4.0 International",
-    "licenseCode": "CC BY 4.0"
-  },
-  {
-    "type": "VFX",
-    "filename": "AS_VFX_Snapshot.1.fx",
-    "name": "",
-    "credits": {
-      "kind": "original"
-    },
-    "licence": "Creative Commons Attribution 4.0 International",
-    "licenseCode": "CC BY 4.0"
-  },
-  {
     "name": "Boom Sticker",
     "filename": "AS_VFX_BoomSticker.1.fx",
     "type": "VFX",
@@ -1175,6 +1155,30 @@
       "kind": "original"
     },
     "imageUrl": "https://raw.githubusercontent.com/LeonAquitaine/as-stagefx/main/docs/res/img/as-stagefx-screenring.gif"
+  },
+  {
+    "type": "VFX",
+    "filename": "AS_VFX_Snapshot.1.fx",
+    "name": "Snapshot",
+    "credits": {
+      "kind": "original"
+    },
+    "licence": "Creative Commons Attribution 4.0 International",
+    "licenseCode": "CC BY 4.0",
+    "shortDescription": "Captures the current backbuffer to a persistent texture readable by AS_VFX_SnapshotFrame.",
+    "longDescription": "Captures the current backbuffer to a persistent texture readable by AS_VFX_SnapshotFrame and any other shader that #includes AS_Snapshot.1.fxh. Two modes: Current (the snapshot mirrors the live backbuffer every frame) and Shutter (capture only on the frame the bound key is pressed; otherwise the prior capture is held). Place earlier in the technique list than any consumer to avoid feedback in Current mode."
+  },
+  {
+    "type": "VFX",
+    "filename": "AS_VFX_SnapshotFrame.1.fx",
+    "name": "Snapshot Frame",
+    "credits": {
+      "kind": "original"
+    },
+    "licence": "Creative Commons Attribution 4.0 International",
+    "licenseCode": "CC BY 4.0",
+    "shortDescription": "Composites a cropped, 3D-transformed copy of the snapshot onto the scene — for printed-photo, viewfinder, and phone-screen looks.",
+    "longDescription": "Reads the persistent texture written by AS_VFX_Snapshot and composites a cropped, 3D-transformed view of it onto the current scene. Features ten crop format presets plus custom aspect, bias and zoom for in-picture framing, full 3-axis rotation with perspective FOV, a Polaroid-style border with corner radius and edge feather, a rotation-aware drop shadow, and one of seven shot filters (monochrome, sepia, cool/warm tone, gaussian blur, pixelate, vignette). All length units are vmin % so the composition is consistent across resolutions."
   },
   {
     "name": "Sparkle Bloom",
