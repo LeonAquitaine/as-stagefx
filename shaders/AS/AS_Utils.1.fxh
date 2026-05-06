@@ -279,7 +279,11 @@ static const float AS_SCREEN_CENTER_Y = 0.5f;    // Screen center Y coordinate
 // Usage:
 //   float borderPx  = AS_PCT_TO_PX(BorderThickness);   // pixel-space math
 //   float2 offsetUV = AS_PCT_TO_UV(ShadowOffset);      // UV-space math
-static const float AS_REF_DIM = min((float)BUFFER_WIDTH, (float)BUFFER_HEIGHT);
+//
+// AS_REF_DIM is a macro (not a static const float) because HLSL forbids
+// function calls in file-scope initializers; the min() must happen at the
+// call site inside a function body.
+#define AS_REF_DIM         ((float)min(BUFFER_WIDTH, BUFFER_HEIGHT))
 #define AS_PCT_TO_PX(p)    ((p) * 0.01 * AS_REF_DIM)
 #define AS_PCT_TO_UV_X(p)  (AS_PCT_TO_PX(p) * BUFFER_RCP_WIDTH)
 #define AS_PCT_TO_UV_Y(p)  (AS_PCT_TO_PX(p) * BUFFER_RCP_HEIGHT)
